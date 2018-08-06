@@ -61,8 +61,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         preparePublicKeyLength(msg);
         selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
+        prepareClientServerRandom(msg);
         signature = new byte[0];
         try {
             signature = generateSignature(selectedSignatureHashAlgo);
@@ -149,8 +148,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
                 HandshakeByteLength.SRP_SALT_LENGTH), msg.getSalt().getValue(), ArrayConverter.intToBytes(msg
                 .getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH), msg.getPublicKey()
                 .getValue());
-        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
-                .getServerRandom().getValue(), srpParams);
+        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(), srpParams);
 
     }
 
@@ -234,16 +232,11 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    private void prepareClientRandom(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private void prepareServerRandom(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setServerRandom(chooser.getServerRandom());
-        LOGGER.debug("ServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
+    private void prepareClientServerRandom(SrpServerKeyExchangeMessage msg) {
+        msg.getComputations().setClientServerRandom(
+                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     private void prepareSignature(SrpServerKeyExchangeMessage msg) {

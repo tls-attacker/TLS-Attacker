@@ -409,26 +409,24 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256(0x16B7),
     TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0x16B8),
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
-    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA);
-    // TODO Grease logic implementation, because the tests fail if the lines
-    // aren't commented
+    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
     // GREASE constants
-    // GREASE_00(0x0A0A),
-    // GREASE_01(0x1A1A),
-    // GREASE_02(0x2A2A),
-    // GREASE_03(0x3A3A),
-    // GREASE_04(0x4A4A),
-    // GREASE_05(0x5A5A),
-    // GREASE_06(0x6A6A),
-    // GREASE_07(0x7A7A),
-    // GREASE_08(0x8A8A),
-    // GREASE_09(0x9A9A),
-    // GREASE_10(0xAAAA),
-    // GREASE_11(0xBABA),
-    // GREASE_12(0xCACA),
-    // GREASE_13(0xDADA),
-    // GREASE_14(0xEAEA),
-    // GREASE_15(0xFAFA);
+    GREASE_00(0x0A0A),
+    GREASE_01(0x1A1A),
+    GREASE_02(0x2A2A),
+    GREASE_03(0x3A3A),
+    GREASE_04(0x4A4A),
+    GREASE_05(0x5A5A),
+    GREASE_06(0x6A6A),
+    GREASE_07(0x7A7A),
+    GREASE_08(0x8A8A),
+    GREASE_09(0x9A9A),
+    GREASE_10(0xAAAA),
+    GREASE_11(0xBABA),
+    GREASE_12(0xCACA),
+    GREASE_13(0xDADA),
+    GREASE_14(0xEAEA),
+    GREASE_15(0xFAFA);
 
     private int value;
 
@@ -532,6 +530,10 @@ public enum CipherSuite {
 
     public boolean isExport() {
         return this.name().contains("EXPORT");
+    }
+
+    public boolean isGrease() {
+        return this.name().contains("GREASE");
     }
 
     public boolean isExportSymmetricCipher() {
@@ -961,4 +963,5 @@ public enum CipherSuite {
     public boolean isWeak() {
         return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
     }
+
 }

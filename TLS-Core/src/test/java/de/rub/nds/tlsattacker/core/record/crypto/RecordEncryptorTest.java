@@ -30,6 +30,7 @@ import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class RecordEncryptorTest {
 
     /**
      * Test of the encrypt method for TLS 1.3, of class RecordEncryptor.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
@@ -126,6 +127,52 @@ public class RecordEncryptorTest {
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
                         .hexStringToByteArray("91A3B6AAA2B64D126E5583B04C1132591010FF2EE70446DA41EA4D83FE2DA55ADFAB9A17F5ACED2BA0068A95B30825119705383687AE8F0DC1BFC17E6D407CF9"));
+    }
+
+    @Test
+    public void testEncryptTLS12Camellia() throws NoSuchAlgorithmException, CryptoException {
+        context.setRandom(new TestRandomData(ArrayConverter
+                .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E34ED3256F1B380C692B962DF892180C5A")));
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("EC28993D8B3F3D81D626C3B419C34547373C5EA49C4A727790C59892AACFF4FEF0945725996013C65581110889D019DE"));
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("DA5BA97EAC47D864C1041B542885F0CD20F05F7F3E0929FBE38D2A72497D5A53"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
+
+        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"));
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+
+        recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        encryptor = new RecordEncryptor(recordCipher, context);
+        encryptor.encrypt(record);
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
+                .getComputations().getNonMetaDataMaced().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
+                .getComputations().getMac().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD"),
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
+                .getPadding().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD0B0B0B0B0B0B0B0B0B0B0B0B"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        assertNull(record.getComputations().getInitialisationVector());
+        assertEquals(12, (int) record.getComputations().getPaddingLength().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"),
+                record.getProtocolMessageBytes().getValue());
     }
 
     @Test

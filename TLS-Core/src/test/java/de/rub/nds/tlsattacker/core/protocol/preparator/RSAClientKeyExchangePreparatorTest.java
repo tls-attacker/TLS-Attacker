@@ -51,6 +51,7 @@ public class RSAClientKeyExchangePreparatorTest {
     public void testPrepare() {
         // TODO
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+        context.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
         context.setServerRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
@@ -59,7 +60,7 @@ public class RSAClientKeyExchangePreparatorTest {
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"),
                         ArrayConverter.hexStringToByteArray("AABBCCDDEEFF")), message.getComputations()
-                        .getClientRandom().getValue());
+                        .getClientServerRandom().getValue());
         assertNotNull(message.getComputations().getPremasterSecret().getValue());
         assertEquals(HandshakeByteLength.PREMASTER_SECRET,
                 message.getComputations().getPremasterSecret().getValue().length);

@@ -34,7 +34,7 @@ public class SignatureCalculatorTest {
      */
     @Test
     public void testGenerateRSASignature() throws CryptoException {
-        SignatureAndHashAlgorithm sigAndHash = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1);
+        SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.RSA_SHA1;
         TlsContext ctx = new TlsContext();
         Chooser chooser = ctx.getChooser();
 

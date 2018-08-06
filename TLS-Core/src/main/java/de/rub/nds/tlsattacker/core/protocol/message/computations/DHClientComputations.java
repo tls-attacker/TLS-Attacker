@@ -32,9 +32,6 @@ public class DHClientComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger generator;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray serverRandom;
-
     public DHClientComputations() {
     }
 
@@ -60,14 +57,6 @@ public class DHClientComputations extends KeyExchangeComputations {
 
     public void setGenerator(BigInteger generator) {
         this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
-    }
-
-    public ModifiableByteArray getServerRandom() {
-        return serverRandom;
-    }
-
-    public void setServerRandom(ModifiableByteArray serverRandom) {
-        this.serverRandom = serverRandom;
     }
 
     public ModifiableBigInteger getPublicKey() {

@@ -87,16 +87,11 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedSigHashAlgorithm() {
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
-                HashAlgorithm.NONE));
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), new SignatureAndHashAlgorithm(
-                SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
-                HashAlgorithm.NONE));
-        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.DSA_SHA1);
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.DSA_SHA1);
     }
 
     /**
@@ -144,7 +139,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(SignatureAndHashAlgorithm.getRandom(random));
+        algoList.add(SignatureAndHashAlgorithm.DSA_MD5);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
@@ -292,14 +287,10 @@ public class DefaultChooserTest {
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
         LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms2 = new LinkedList<>();
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.MD5));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA224));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA512));
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_MD5);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA1);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA256);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA384);
         config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms);
         assertEquals(serverSupportedSignatureAndHashAlgorithms,
                 config.getDefaultServerSupportedSignatureAndHashAlgorithms());
@@ -435,7 +426,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultClientSessionId());
         assertArrayEquals(sessionID, chooser.getClientSessionId());
         context.setClientSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getClientSessionId());
     }
 
     /**
@@ -448,7 +439,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultServerSessionId());
         assertArrayEquals(sessionID, chooser.getServerSessionId());
         context.setServerSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getServerSessionId());
     }
 
     /**

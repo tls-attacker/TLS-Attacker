@@ -45,8 +45,8 @@ public class CertificateRequestPreparatorTest {
         list.add(ClientCertificateType.RSA_EPHEMERAL_DH_RESERVED);
         context.getConfig().setClientCertificateTypes(list);
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
-        algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
+        algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
+        algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
         context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 0, 1, 2 }, message.getDistinguishedNames().getValue());

@@ -78,8 +78,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
                         ArrayConverter
                                 .hexStringToByteArray("3082024E308201B7A003020102020900A85273EFE099F4E5300D06092A864886F70D01010B05003040310B3009060355040613024445310C300A06035504080C034E5257310F300D06035504070C06426F6368756D3112301006035504030C093132372E302E302E31301E170D3137303530393037303130345A170D3237303530373037303130345A3040310B3009060355040613024445310C300A06035504080C034E5257310F300D06035504070C06426F6368756D3112301006035504030C093132372E302E302E3130819F300D06092A864886F70D010101050003818D0030818902818100C4C4F8F259F5AC2016120A7663E406D8C1C37FCBD02638E65A57E4D986ABB48098A926A45C9195269C21A89207F8DB5972564008D03D66B8A061A04E0B9434A77C42601F43A35466D384D82A83342F07CABBF3B29AB638EF35CF547CEEC3ADD729145DA7166E13BF3A0AA71D77B5E73942F6F100C91E8D38FF9D27D05960B6190203010001A350304E301D0603551D0E041604148349ED34A2AA0DFC769249FCA4E5E65D95323E6C301F0603551D230418301680148349ED34A2AA0DFC769249FCA4E5E65D95323E6C300C0603551D13040530030101FF300D06092A864886F70D01010B050003818100B01CD6269DB8D68A79FEB487D26FF7E24CA8F09F7B3536A5F1E4F4B45B2DD5C65342D4943AF1FE7B9390A225BE472487235604EE1FF2624A20F741CF515EF526164649D64B9A6E9027D48CBD2AD692F407D026711099A798C1E888886D24E3698FA553F4A1222D64C0E346430C585953DE42983FE6A35D9482DB6EF6798AC875"));
 
-        assertArrayEquals(tlsContext.getClientRandom(), msg.getComputations().getClientRandom().getValue());
-        assertArrayEquals(tlsContext.getServerRandom(), msg.getComputations().getServerRandom().getValue());
+        assertArrayEquals(ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext.getServerRandom()), msg
+                .getComputations().getClientServerRandom().getValue());
 
         assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getGroupType().getValue()));
         assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedGroup().getValue());
@@ -123,8 +123,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         serverCurves.add(NamedGroup.SECP256R1);
         tlsContext.setClientNamedGroupsList(clientCurves);
         config.setDefaultServerNamedGroups(serverCurves);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA512));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA512);
         List<ECPointFormat> clientFormats = new ArrayList<>();
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_CHAR2);
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_PRIME);
@@ -135,7 +134,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         config.setDefaultServerSupportedPointFormats(serverFormats);
 
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
+        SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA512);
         config.setSupportedSignatureAndHashAlgorithms(SigAndHashList);
     }
 

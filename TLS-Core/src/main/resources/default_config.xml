@@ -14,78 +14,24 @@
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA512</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA384</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA256</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA224</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>MD5</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA512</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA384</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA256</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA224</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>MD5</hashAlgorithm>
-        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA512</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA384</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA256</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA224</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>MD5</hashAlgorithm>
-        <signatureAlgorithm>DSA</signatureAlgorithm>
-    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_MD5</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_SHA1</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_SHA224</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_SHA256</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_SHA384</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>DSA_SHA512</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_MD5</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_SHA1</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_SHA224</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_SHA256</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_SHA384</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>RSA_SHA512</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_MD5</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_SHA1</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_SHA224</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_SHA256</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_SHA384</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>ECDSA_SHA512</supportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>
@@ -1015,14 +961,25 @@
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
     <defaultClientSupportedPointFormats>UNCOMPRESSED</defaultClientSupportedPointFormats>
-    <defaultServerSupportedSignatureAndHashAlgorithms>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </defaultServerSupportedSignatureAndHashAlgorithms>
-    <defaultSelectedSignatureAndHashAlgorithm>
-        <hashAlgorithm>SHA1</hashAlgorithm>
-        <signatureAlgorithm>RSA</signatureAlgorithm>
-    </defaultSelectedSignatureAndHashAlgorithm>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_MD5</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_SHA1</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_SHA224</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>DSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_MD5</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_SHA1</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_SHA224</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_MD5</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA1</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA224</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
     <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
@@ -1032,8 +989,14 @@
     <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret/>
     <defaultPreMasterSecret/>
-    <defaultClientRandom/>
-    <defaultServerRandom/>
+    <defaultClientRandom>
+        00 11 22 33 44 55 66 77  88 99 AA BB CC DD EE FF
+        FF EE DD CC BB AA 99 88  77 66 55 44 33 22 11 00
+    </defaultClientRandom>
+    <defaultServerRandom>
+        00 11 22 33 44 55 66 77  88 99 AA BB CC DD EE FF
+        FF EE DD CC BB AA 99 88  77 66 55 44 33 22 11 00
+    </defaultServerRandom>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
@@ -1096,7 +1059,7 @@
     <defaultTokenBindingRsaPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultTokenBindingRsaPrivateKey>
     <defaultTokenBindingEcPrivateKey>3</defaultTokenBindingEcPrivateKey>
     <defaultTokenBindingRsaModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultTokenBindingRsaModulus>
-    <useRandomUnixTime>true</useRandomUnixTime>
+    <useFreshRandom>true</useFreshRandom>
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>

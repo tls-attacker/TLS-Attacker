@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -30,7 +29,6 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
@@ -288,7 +286,7 @@ public class Config implements Serializable {
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[0];
 
     /**
      * Default user mapping extension hint type
@@ -759,8 +757,7 @@ public class Config implements Serializable {
 
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
-    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = new SignatureAndHashAlgorithm(
-            SignatureAlgorithm.RSA, HashAlgorithm.SHA1);
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
 
     private List<SNIEntry> defaultClientSNIEntryList;
 
@@ -785,10 +782,12 @@ public class Config implements Serializable {
     private byte[] defaultPreMasterSecret = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientRandom = new byte[0];
+    private byte[] defaultClientRandom = ArrayConverter
+            .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerRandom = new byte[0];
+    private byte[] defaultServerRandom = ArrayConverter
+            .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
@@ -923,7 +922,7 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
-    private Boolean useRandomUnixTime = true;
+    private Boolean useFreshRandom = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
@@ -977,42 +976,7 @@ public class Config implements Serializable {
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms
-                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.MD5));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms
-                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1040,8 +1004,7 @@ public class Config implements Serializable {
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
-        defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1));
+        defaultServerSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultServerSupportedPointFormats = new LinkedList<>();
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
@@ -1152,12 +1115,12 @@ public class Config implements Serializable {
         this.httpsParsingEnabled = httpsParsingEnabled;
     }
 
-    public Boolean isUseRandomUnixTime() {
-        return useRandomUnixTime;
+    public Boolean isUseFreshRandom() {
+        return useFreshRandom;
     }
 
-    public void setUseRandomUnixTime(Boolean useRandomUnixTime) {
-        this.useRandomUnixTime = useRandomUnixTime;
+    public void setUseFreshRandom(Boolean useFreshRandom) {
+        this.useFreshRandom = useFreshRandom;
     }
 
     public Boolean isUseAllProvidedRecords() {

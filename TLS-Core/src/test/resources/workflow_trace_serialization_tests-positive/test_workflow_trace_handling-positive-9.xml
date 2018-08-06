@@ -76,7 +76,7 @@ Test a MITM workflow trace
     </Receive>
     <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
-        <stringEncoding>US_ASCII</stringEncoding>
+        <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>
 </workflowTrace>
 
@@ -169,7 +169,7 @@ Test a MITM workflow trace
     </Receive>
     <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
-        <stringEncoding>US_ASCII</stringEncoding>
+        <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>
 </workflowTrace>
 
@@ -245,6 +245,6 @@ Test a MITM workflow trace
     </Receive>
     <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
-        <stringEncoding>US_ASCII</stringEncoding>
+        <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>
 </workflowTrace>
