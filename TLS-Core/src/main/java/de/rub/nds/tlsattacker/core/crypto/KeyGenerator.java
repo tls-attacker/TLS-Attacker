@@ -23,6 +23,9 @@ import javax.crypto.interfaces.DHPrivateKey;
 
 public class KeyGenerator {
 
+    private KeyGenerator() {
+    }
+
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
         BigInteger modulus;
         BigInteger key;
