@@ -104,6 +104,7 @@ public class CertificateByteChooser {
         filenames.add("ec_rsa_sect283r1_cert.pem");
         filenames.add("ec_sect193r1_cert.pem");
         filenames.add("ec_secp256r1_cert.pem");
+        filenames.add("ec_rsa_secp256r1_cert.pem");
         filenames.add("ec_rsa_cert_secp256r1.pem");
         return filenames;
     }
