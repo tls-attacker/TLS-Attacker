@@ -234,7 +234,7 @@ Further examples on attacks and further explanations on TLS-Attacker can be foun
 Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
 put into the message, e.g., which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
 Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the context is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, TLS-Attacker fills
-this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
+this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the github wiki.
 
 ## Acknowledgements
 The following people have contributed code to the TLS-Attacker project:
@@ -249,6 +249,7 @@ The following people have contributed code to the TLS-Attacker project:
 - Pierre Tilhaus: Code quality improvements
 - Felix Kleine-Wilde: SSL 3 Support
 - Marcel Maehren: 0-RTT Support
+- Asli Yardim: STARTTLS
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
