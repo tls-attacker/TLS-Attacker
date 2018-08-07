@@ -951,6 +951,10 @@ public enum CipherSuite {
         return this.name().contains("SHA256");
     }
 
+    public boolean isSHA384() {
+        return this.name().contains("SHA384");
+    }
+
     public boolean isAnon() {
         return this.name().contains("anon");
     }
