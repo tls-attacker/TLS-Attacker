@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
@@ -45,7 +44,7 @@ import org.bouncycastle.crypto.params.ParametersWithUKM;
 import org.bouncycastle.jcajce.spec.UserKeyingMaterialSpec;
 import org.bouncycastle.jce.interfaces.ECKey;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-import org.bouncycastle.openssl.PEMException;
+import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
@@ -68,102 +67,91 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
     @Override
     public void prepareAfterParse(boolean clientMode) {
         try {
+            LOGGER.debug("Preparing GOST EC VKO. Client mode: " + clientMode);
+
             msg.prepareComputations();
-            if (is2001() || is2012()) {
-                prepareUkm();
+            prepareClientServerRandom();
+            prepareUkm();
 
-                String algorithm = is2012() ? "ECGOST3410-2012-256" : "ECGOST3410";
-                KeyAgreement keyAgreement = KeyAgreement.getInstance(algorithm);
+            if (clientMode) {
+                preparePms();
 
-                if (clientMode) {
-                    clientEcVko(keyAgreement);
+                PrivateKey privateKey;
+                SubjectPublicKeyInfo ephemeralKey = null;
+                if (chooser.getContext().getClientCertificate() != null && areParamSpecsEqual()) {
+                    LOGGER.debug("Using private key belonging to the used client certificate.");
+                    privateKey = getClientPrivateKey();
                 } else {
-                    serverEcVko(keyAgreement);
+                    KeyPair keyPair = generateEphemeralKey();
+                    privateKey = keyPair.getPrivate();
+
+                    ephemeralKey = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
                 }
+
+                prepareKek(privateKey, getServerPublicKey());
+
+                prepareCek();
+                prepareEncryptionParams();
+                prepareKeyBlob(ephemeralKey);
             } else {
-                throw new WorkflowExecutionException("Unsupported cipher suite: " + chooser.getSelectedCipherSuite() + "!");
+                TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob
+                        .getInstance(msg.getKeyTransportBlob().getValue());
+                LOGGER.debug("Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
+
+                GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
+                if (!Arrays.equals(keyBlob.getTransportParameters().getUkm(),
+                        msg.getComputations().getUkm())) {
+                    throw new CryptoException("Client UKM != Server UKM");
+                }
+
+                SubjectPublicKeyInfo ephemeralKey = keyBlob.getTransportParameters().getEphemeralPublicKey();
+                PublicKey publicKey;
+                if (ephemeralKey != null) {
+                    publicKey = new JcaPEMKeyConverter().getPublicKey(ephemeralKey);
+                } else {
+                    publicKey = getClientPublicKey();
+                }
+
+                prepareKek(getServerPrivateKey(), publicKey);
+
+                byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(),
+                        keyBlob.getSessionEncryptedKey().getMacKey());
+
+                byte[] pms = wrap(false, wrapped);
+                msg.getComputations().setPremasterSecret(pms);
             }
         } catch (CryptoException | GeneralSecurityException | IOException e) {
             throw new WorkflowExecutionException("Could not prepare the key agreement!", e);
         }
     }
 
-    private void clientEcVko(KeyAgreement keyAgreement) throws GeneralSecurityException, IOException {
-        LOGGER.debug("Preparing client ECVKO.");
-        preparePms();
+    private void prepareClientServerRandom() {
+        byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        msg.getComputations().setClientServerRandom(random);
+        LOGGER.debug("ClientServerRandom: " + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+    }
 
-        SubjectPublicKeyInfo ephemeralKey = null;
-        if (canUseClientCert()) {
-            LOGGER.debug("Using private key belonging to the client certificate.");
-            init(keyAgreement, getClientPrivateKey());
-        } else {
-            LOGGER.debug("Using an ephemeral key.");
-            KeyPair keyPair = generateEphemeralKey();
-            init(keyAgreement, keyPair.getPrivate());
+    private void prepareUkm() throws NoSuchAlgorithmException {
+        DigestAlgorithm digestAlgorithm = AlgorithmResolver
+                .getDigestAlgorithm(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+        MessageDigest digest = MessageDigest.getInstance(digestAlgorithm.getJavaName());
+        byte[] hash = digest.digest(msg.getComputations().getClientServerRandom().getValue());
 
-            ephemeralKey = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
-        }
+        byte[] ukm = new byte[8];
+        System.arraycopy(hash, 0, ukm, 0, ukm.length);
+        msg.getComputations().setUkm(ukm);
+        LOGGER.debug("UKM: " + ArrayConverter.bytesToHexString(msg.getComputations().getUkm()));
+    }
 
-        keyAgreement.doPhase(getServerPublicKey(), true);
+    private void prepareKek(PrivateKey priv, PublicKey pub) throws GeneralSecurityException {
+        String algorithm = is2012() ? "ECGOST3410-2012-256" : "ECGOST3410";
+        KeyAgreement keyAgreement = KeyAgreement.getInstance(algorithm);
+        keyAgreement.init(priv, new UserKeyingMaterialSpec(msg.getComputations().getUkm()));
+        keyAgreement.doPhase(pub, true);
+
         byte[] kek = keyAgreement.generateSecret();
-        byte[] wrapped = wrap(true, kek, msg.getComputations().getPremasterSecret().getValue());
-        prepareKeyBlob(ephemeralKey, wrapped);
-    }
-
-    private void init(KeyAgreement keyAgreement, PrivateKey key) throws GeneralSecurityException {
-        UserKeyingMaterialSpec spec = new UserKeyingMaterialSpec(msg.getComputations().getUkm().getValue());
-        keyAgreement.init(key, spec);
-    }
-
-    private boolean canUseClientCert() throws InvalidKeyException {
-        return chooser.getContext().getClientCertificate() != null
-                && equalSpecs();
-    }
-
-    private boolean equalSpecs() throws InvalidKeyException {
-        return ((ECKey) getServerPublicKey()).getParameters()
-                .equals(((ECKey) getClientPublicKey()).getParameters());
-    }
-
-    private KeyPair generateEphemeralKey() throws GeneralSecurityException {
-        if (equalSpecs()) {
-            LOGGER.debug("Using key from context.");
-            return new KeyPair(getClientPublicKey(), getClientPrivateKey());
-        } else {
-            String algorithm = is2012() ? "ECGOST3410-2012" : "ECGOST3410";
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm);
-
-            ECNamedCurveSpec params = (ECNamedCurveSpec) ((java.security.interfaces.ECKey) getServerPublicKey()).getParams();
-            LOGGER.debug("Generating " + algorithm + " key using curve " + params.getName());
-            keyGenerator.initialize(params, chooser.getContext().getBadSecureRandom());
-            return keyGenerator.generateKeyPair();
-        }
-    }
-
-    private void serverEcVko(KeyAgreement keyAgreement) throws GeneralSecurityException, PEMException, CryptoException {
-        LOGGER.debug("Preparing server ECVKO");
-        TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob
-                .getInstance(msg.getKeyTransportBlob().getValue());
-        LOGGER.debug("Preparing GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
-        GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
-        if (!Arrays.equals(keyBlob.getTransportParameters().getUkm(),
-                msg.getComputations().getUkm().getValue())) {
-            throw new CryptoException("Client UKM != Server UKM");
-        }
-
-        init(keyAgreement, getServerPrivateKey());
-
-        SubjectPublicKeyInfo ephemeralKey = keyBlob.getTransportParameters().getEphemeralPublicKey();
-        if (ephemeralKey != null) {
-            keyAgreement.doPhase(new JcaPEMKeyConverter().getPublicKey(ephemeralKey), true);
-        } else {
-            keyAgreement.doPhase(getClientPublicKey(), true);
-        }
-
-        byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(),
-                keyBlob.getSessionEncryptedKey().getMacKey());
-        byte[] pms = wrap(false, keyAgreement.generateSecret(), wrapped);
-        msg.getComputations().setPremasterSecret(pms);
+        msg.getComputations().setKek(kek);
+        LOGGER.debug("KEK: " + ArrayConverter.bytesToHexString(msg.getComputations().getKek()));
     }
 
     private void preparePms() {
@@ -179,12 +167,26 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         msg.getComputations().setPremasterSecret(pms);
     }
 
-    private byte[] wrap(boolean wrap, byte[] kek, byte[] bytes) {
-        LOGGER.debug("Using KEK: " + ArrayConverter.bytesToHexString(kek));
+    private KeyPair generateEphemeralKey() throws GeneralSecurityException {
+        if (areParamSpecsEqual()) {
+            LOGGER.debug("Using key from context.");
+            return new KeyPair(getClientPublicKey(), getClientPrivateKey());
+        } else {
+            String algorithm = is2012() ? "ECGOST3410-2012" : "ECGOST3410";
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm);
 
+            ECNamedCurveSpec params = (ECNamedCurveSpec) ((java.security.interfaces.ECKey) getServerPublicKey()).getParams();
+            LOGGER.debug("Generating " + algorithm + " key using curve " + params.getName());
+            keyGenerator.initialize(params, chooser.getContext().getBadSecureRandom());
+            return keyGenerator.generateKeyPair();
+        }
+    }
+
+    private byte[] wrap(boolean wrap, byte[] bytes) {
         byte[] sBox = is2012() ? GOST28147Cipher.SBox_Z : GOST28147Engine.getSBox("E-A");
-        ParametersWithSBox withSBox = new ParametersWithSBox(new KeyParameter(kek), sBox);
-        ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm().getValue());
+        KeyParameter keySpec = new KeyParameter(msg.getComputations().getKek());
+        ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sBox);
+        ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm());
 
         GOST28147WrapEngine cipher = new GOST28147WrapEngine();
         cipher.init(wrap, withIV);
@@ -201,79 +203,84 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         return result;
     }
 
-    private void prepareKeyBlob(SubjectPublicKeyInfo ephemeralKey, byte[] wrapped) throws IOException {
-        byte[] cek = new byte[32];
-        byte[] mac = new byte[wrapped.length - cek.length];
-        System.arraycopy(wrapped, 0, cek, 0, cek.length);
-        System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+    private void prepareCek() {
+        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue());
 
-        ASN1ObjectIdentifier params;
+        byte[] cek = new byte[32];
+        System.arraycopy(wrapped, 0, cek, 0, cek.length);
+        msg.getComputations().setCekEnc(cek);
+
+        byte[] mac = new byte[wrapped.length - cek.length];
+        System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+        msg.getComputations().setCekMac(mac);
+    }
+
+    private void prepareEncryptionParams() {
+        ASN1ObjectIdentifier encryptionParams;
         if (is2012()) {
-            params = RosstandartObjectIdentifiers.id_tc26_gost_28147_param_Z;
+            encryptionParams = RosstandartObjectIdentifiers.id_tc26_gost_28147_param_Z;
         } else {
-            params = CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_A_ParamSet;
+            encryptionParams = CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_A_ParamSet;
         }
 
-        GostR3410TransportParameters transportParameters = new GostR3410TransportParameters(params,
-                ephemeralKey, msg.getComputations().getUkm().getValue());
-        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(cek, mac);
-        GostR3410KeyTransport keyTransport = new GostR3410KeyTransport(encryptedKey, transportParameters);
-        TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(keyTransport);
+        msg.getComputations().setEncryptionAlgOid(encryptionParams);
+    }
+
+    private void prepareKeyBlob(SubjectPublicKeyInfo ephemeralKey) throws IOException {
+        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(),
+                msg.getComputations().getCekMac());
+        GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations().getEncryptionAlgOid(),
+                ephemeralKey, msg.getComputations().getUkm());
+        GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
+        TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport);
+
         msg.setKeyTransportBlob(blob.getEncoded());
-        LOGGER.debug("Preparing GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+        LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
     }
 
-    private void prepareUkm() throws NoSuchAlgorithmException {
-        byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientServerRandom(random);
-
-        DigestAlgorithm digestAlgorithm = AlgorithmResolver
-                .getDigestAlgorithm(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        MessageDigest digest = MessageDigest.getInstance(digestAlgorithm.getJavaName());
-        byte[] hashedRandoms = digest.digest(msg.getComputations().getClientServerRandom().getValue());
-        byte[] finalUkm = new byte[8];
-        System.arraycopy(hashedRandoms, 0, finalUkm, 0, finalUkm.length);
-        LOGGER.debug("Using GOST UKM: " + ArrayConverter.bytesToHexString(finalUkm));
-        msg.getComputations().setUkm(finalUkm);
+    private boolean areParamSpecsEqual() {
+        ECParameterSpec serverParams = ((ECKey) getServerPublicKey()).getParameters();
+        ECParameterSpec clientParams = ((ECKey) getClientPublicKey()).getParameters();
+        return serverParams.equals(clientParams);
     }
 
-    private PrivateKey getClientPrivateKey() throws InvalidKeyException {
+    private PrivateKey getClientPrivateKey() {
         if (is2012()) {
             return chooser.getClientGost12PrivateKey();
         } else if (is2001()) {
             return chooser.getClientGost01PrivateKey();
         } else {
-            throw new InvalidKeyException("Unsupported variant: " + exchangeAlg);
+            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
         }
     }
 
-    private PrivateKey getServerPrivateKey() throws InvalidKeyException {
+    private PrivateKey getServerPrivateKey() {
         if (is2012()) {
             return chooser.getServerGost12PrivateKey();
         } else if (is2001()) {
             return chooser.getServerGost01PrivateKey();
         } else {
-            throw new InvalidKeyException("Unsupported variant: " + exchangeAlg);
+            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
         }
     }
 
-    private PublicKey getClientPublicKey() throws InvalidKeyException {
+    private PublicKey getClientPublicKey() {
         if (is2012()) {
             return chooser.getClientGost12PublicKey();
         } else if (is2001()) {
             return chooser.getClientGost01PublicKey();
         } else {
-            throw new InvalidKeyException("Unsupported variant: " + exchangeAlg);
+            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
         }
     }
 
-    private PublicKey getServerPublicKey() throws InvalidKeyException {
+    private PublicKey getServerPublicKey() {
         if (is2012()) {
             return chooser.getServerGost12PublicKey();
         } else if (is2001()) {
             return chooser.getServerGost01PublicKey();
         } else {
-            throw new InvalidKeyException("Unsupported variant: " + exchangeAlg);
+            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
         }
     }
 
