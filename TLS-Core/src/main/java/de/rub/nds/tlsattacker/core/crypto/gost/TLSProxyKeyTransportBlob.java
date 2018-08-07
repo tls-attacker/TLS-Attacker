@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.crypto.keyexchange;
+package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;

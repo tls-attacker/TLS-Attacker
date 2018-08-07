@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.crypto.keyexchange;
+package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.IOException;

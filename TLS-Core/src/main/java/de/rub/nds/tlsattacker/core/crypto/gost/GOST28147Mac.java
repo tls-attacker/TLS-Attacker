@@ -6,12 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.crypto.mac;
+package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.Mac;
-import org.bouncycastle.crypto.digests.GOST3411Digest;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.crypto.params.ParametersWithSBox;
@@ -90,44 +89,29 @@ public class GOST28147Mac implements Mac, Memoable {
         return key;
     }
 
-    public void init(
-            CipherParameters params)
-            throws IllegalArgumentException
-    {
+    public void init(CipherParameters params) throws IllegalArgumentException {
         reset();
         buf = new byte[blockSize];
         macIV = null;
-        if (params instanceof ParametersWithSBox)
-        {
-            ParametersWithSBox   param = (ParametersWithSBox)params;
 
-            //
-            // Set the S-Box
-            //
+        if (params instanceof ParametersWithIV) {
+            ParametersWithIV param = (ParametersWithIV) params;
+
+            System.arraycopy(param.getIV(), 0, mac, 0, mac.length);
+            macIV = param.getIV(); // don't skip the initial CM5Func
+
+            params = param.getParameters();
+        }
+
+        if (params instanceof ParametersWithSBox) {
+            ParametersWithSBox param = (ParametersWithSBox) params;
             System.arraycopy(param.getSBox(), 0, this.S, 0, param.getSBox().length);
+            params = param.getParameters();
+        }
 
-            //
-            // set key if there is one
-            //
-            if (param.getParameters() != null)
-            {
-                workingKey = generateWorkingKey(((KeyParameter)param.getParameters()).getKey());
-            }
-        }
-        else if (params instanceof KeyParameter)
-        {
-            workingKey = generateWorkingKey(((KeyParameter)params).getKey());
-        }
-        else if (params instanceof ParametersWithIV)
-        {
-            ParametersWithIV p = (ParametersWithIV)params;
-
-            workingKey = generateWorkingKey(((KeyParameter)p.getParameters()).getKey());
-            System.arraycopy(p.getIV(), 0, mac, 0, mac.length);
-            macIV = p.getIV(); // don't skip the initial CM5Func
-        }
-        else
-        {
+        if (params instanceof KeyParameter) {
+            workingKey = generateWorkingKey(((KeyParameter) params).getKey());
+        } else {
             throw new IllegalArgumentException("invalid parameter passed to GOST28147 init - " + params.getClass().getName());
         }
     }
