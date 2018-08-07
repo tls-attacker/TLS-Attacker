@@ -599,11 +599,11 @@ public enum CipherSuite {
     }
 
     public boolean usesGOSTR3411() {
-        return this.name().contains("TLS_GOSTR3410");
+        return this.name().startsWith("TLS_GOSTR3410");
     }
 
     public boolean usesGOSTR34112012() {
-        return this.name().contains("TLS_GOSTR3411");
+        return this.name().startsWith("TLS_GOSTR3411");
     }
 
     /**

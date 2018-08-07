@@ -190,7 +190,6 @@ public class RecordEncryptorTest {
         Record record = new Record();
         record.prepareComputations();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
-        record.setContentMessageType(ProtocolMessageType.CHANGE_CIPHER_SPEC);
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         record.getComputations().setSequenceNumber(BigInteger.ZERO);
 
