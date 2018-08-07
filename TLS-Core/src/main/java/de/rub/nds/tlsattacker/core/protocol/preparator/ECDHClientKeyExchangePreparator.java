@@ -110,7 +110,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setComputationPrivateKey(msg, clientMode);
         ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         if (clientMode) {
-            System.out.println("OMG ITS CLIENT MODE");
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
             if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
@@ -169,7 +168,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                     chooser.getServerEcPublicKey().getY());
         } else {
             serializedPoint = msg.getPublicKey().getValue();
-            System.out.println(ArrayConverter.bytesToHexString(serializedPoint));
             List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
             NamedGroup usedGroup = chooser.getSelectedNamedGroup();
