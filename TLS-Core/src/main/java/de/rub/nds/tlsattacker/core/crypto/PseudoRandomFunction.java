@@ -83,19 +83,10 @@ public class PseudoRandomFunction {
             throws CryptoException {
 
         switch (prfAlgorithm) {
-            case TLS_PRF_GOSTR3411_2012_256:
-                try  {
-                    //GOSTR3411-2012-256 actually has a block size of 64 byte but the GOST TLS
-                    //standards only use a 32 byte master secret to initialize the HMAC
-                    String algorithm = DigestAlgorithm.GOSTR34112012_256.getJavaName();
-                    MessageDigest digest = MessageDigest.getInstance(algorithm);
-                    secret = digest.digest(secret);
-                } catch (NoSuchAlgorithmException e) {
-                   throw new CryptoException("Could not initialize " + prfAlgorithm + "!");
-                }
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:
             case TLS_PRF_GOSTR3411:
+            case TLS_PRF_GOSTR3411_2012_256:
                 return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
             case TLS_PRF_LEGACY:
                 // prf legacy is the prf computation function for older protocol
