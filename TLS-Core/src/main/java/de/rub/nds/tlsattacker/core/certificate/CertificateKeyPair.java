@@ -112,6 +112,18 @@ public class CertificateKeyPair implements Serializable {
         this.signatureGroup = getSignatureNamedGroup(cert);
     }
 
+    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
+            File certFile, File privateKeyFile) throws CertificateException, IOException {
+        this.certPublicKeyType = certPublicKeyType;
+        this.certSignatureType = certSignatureType;
+        Certificate certificate = PemUtil.readCertificate(certFile);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(PemUtil.readPublicKey(certFile));
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(PemUtil.readPrivateKey(privateKeyFile));
+        certificateBytes = certificate.getCertificateAt(0).getEncoded();
+        signatureGroup = getSignatureNamedGroup(certificate);
+        publicKeyGroup = getPublicNamedGroup(certificate);
+    }
+
     private CertificateKeyType getPublicKeyType(Certificate cert) {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
@@ -195,20 +207,6 @@ public class CertificateKeyPair implements Serializable {
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
         }
-    }
-
-    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
-            File certFile, File privateKeyFile) throws CertificateException, IOException {
-        this.certPublicKeyType = certPublicKeyType;
-        this.certSignatureType = certSignatureType;
-        Certificate certificate = PemUtil.readCertificate(certFile);
-        this.publicKey = CertificateUtils.parseCustomPublicKey(PemUtil.readPublicKey(certFile));
-        this.privateKey = CertificateUtils.parseCustomPrivateKey(PemUtil.readPrivateKey(privateKeyFile));
-        certificateBytes = certificate.getCertificateAt(0).getEncoded();
-        certSignatureType = null;
-        certPublicKeyType = null;
-        signatureGroup = null;
-        publicKeyGroup = null; // TODO
     }
 
     public CertificateKeyType getCertPublicKeyType() {
@@ -324,5 +322,13 @@ public class CertificateKeyPair implements Serializable {
         } catch (Exception E) {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CertificateKeyPair{" + "certPublicKeyType=" + certPublicKeyType + ", certSignatureType="
+                + certSignatureType + ", certificateBytes=" + certificateBytes + ", publicKey=" + publicKey
+                + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
+                + publicKeyGroup + '}';
     }
 }
