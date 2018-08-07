@@ -13,6 +13,10 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurveOverF2m;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -106,6 +110,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setComputationPrivateKey(msg, clientMode);
         ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         if (clientMode) {
+            System.out.println("OMG ITS CLIENT MODE");
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
             if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
@@ -117,8 +122,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
             }
         }
-        setComputationPublicKey(msg, clientMode);
 
+        setComputationPublicKey(msg, clientMode);
         LOGGER.debug("PublicKey used:" + msg.getComputations().getPublicKey().toString());
         LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
@@ -164,6 +169,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                     chooser.getServerEcPublicKey().getY());
         } else {
             serializedPoint = msg.getPublicKey().getValue();
+            System.out.println(ArrayConverter.bytesToHexString(serializedPoint));
             List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
             NamedGroup usedGroup = chooser.getSelectedNamedGroup();
@@ -172,8 +178,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             try {
                 ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, ecParams,
                         serializedPoint);
-                msg.getComputations().setPublicKey(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
-                        clientPublicKey.getQ().getRawYCoord().toBigInteger());
+                ECPoint q = clientPublicKey.getQ();
+                q = q.normalize();
+                msg.getComputations().setPublicKey(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
             } catch (IOException ex) {
                 throw new PreparationException("Could not deserialize EC Point: "
                         + ArrayConverter.bytesToHexString(serializedPoint), ex);
