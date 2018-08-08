@@ -184,7 +184,12 @@ public class AlgorithmResolver {
             result.add(PublicKeyAlgorithm.EC);
         } else if (cipher.contains("DSS")) {
             result.add(PublicKeyAlgorithm.DH);
+        } else if (cipher.contains("GOSTR341112")) {
+            result.add(PublicKeyAlgorithm.GOST12);
+        } else if (cipher.contains("GOSTR341001")) {
+            result.add(PublicKeyAlgorithm.GOST01);
         }
+
         if (cipher.contains("_ECDH_")) {
             result.add(PublicKeyAlgorithm.EC);
         } else if (cipher.contains("_DH_")) {
@@ -274,11 +279,10 @@ public class AlgorithmResolver {
         if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA") || cs.contains("WITH_SEED")
-                || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
+                || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA")
+                || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")
-                || cs.contains("28147_CNT")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA") || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
