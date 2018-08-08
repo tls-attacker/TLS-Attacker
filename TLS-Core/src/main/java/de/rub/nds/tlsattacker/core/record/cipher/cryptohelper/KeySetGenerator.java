@@ -195,7 +195,7 @@ public class KeySetGenerator {
     private static int getStreamSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
-        int secretSetSize =  (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
+        int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
         if (cipherSuite.isSteamCipherWithIV()) {
             secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }

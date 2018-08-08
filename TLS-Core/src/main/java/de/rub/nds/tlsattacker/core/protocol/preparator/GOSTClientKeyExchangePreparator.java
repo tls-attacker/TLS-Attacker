@@ -93,13 +93,12 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 prepareEncryptionParams();
                 prepareKeyBlob();
             } else {
-                TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob
-                        .getInstance(msg.getKeyTransportBlob().getValue());
+                TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob()
+                        .getValue());
                 LOGGER.debug("Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
 
                 GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
-                if (!Arrays.equals(keyBlob.getTransportParameters().getUkm(),
-                        msg.getComputations().getUkm())) {
+                if (!Arrays.equals(keyBlob.getTransportParameters().getUkm(), msg.getComputations().getUkm())) {
                     throw new CryptoException("Client UKM != Server UKM");
                 }
 
@@ -113,8 +112,8 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
                 prepareKek(getServerPrivateKey(), publicKey);
 
-                byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(),
-                        keyBlob.getSessionEncryptedKey().getMacKey());
+                byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(), keyBlob
+                        .getSessionEncryptedKey().getMacKey());
 
                 byte[] pms = wrap(false, wrapped);
                 msg.getComputations().setPremasterSecret(pms);
@@ -127,12 +126,13 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
     private void prepareClientServerRandom() {
         byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
-        LOGGER.debug("ClientServerRandom: " + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     private void prepareUkm() throws NoSuchAlgorithmException {
-        DigestAlgorithm digestAlgorithm = AlgorithmResolver
-                .getDigestAlgorithm(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+        DigestAlgorithm digestAlgorithm = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
         MessageDigest digest = MessageDigest.getInstance(digestAlgorithm.getJavaName());
         byte[] hash = digest.digest(msg.getComputations().getClientServerRandom().getValue());
 
@@ -241,10 +241,10 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
             ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
         }
 
-        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(),
-                msg.getComputations().getCekMac());
-        GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations().getEncryptionAlgOid(),
-                ephemeralKey, msg.getComputations().getUkm());
+        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(), msg
+                .getComputations().getCekMac());
+        GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations()
+                .getEncryptionAlgOid(), ephemeralKey, msg.getComputations().getUkm());
         GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
         TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport);
 

@@ -423,7 +423,6 @@ public class TlsContext {
 
     private BigInteger clientGostEc12PrivateKey;
 
-
     /**
      * the currently used type of keySet by the client
      */

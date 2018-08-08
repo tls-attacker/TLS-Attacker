@@ -21,12 +21,12 @@ public class CipherWrapper {
 
     protected static final Logger LOGGER = LogManager.getLogger(CipherWrapper.class.getName());
 
-    public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite,
-            ConnectionEndType connectionEndType, KeySet keySet) {
+    public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
+            KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
-            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite),
-                    keySet.getWriteKey(connectionEndType), keySet.getWriteIv(connectionEndType));
+            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
+                    keySet.getWriteIv(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
@@ -37,12 +37,12 @@ public class CipherWrapper {
         }
     }
 
-    public static DecryptionCipher getDecryptionCipher(CipherSuite cipherSuite,
-            ConnectionEndType connectionEndType, KeySet keySet) {
+    public static DecryptionCipher getDecryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
+            KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
-            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite),
-                    keySet.getReadKey(connectionEndType), keySet.getReadIv(connectionEndType));
+            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
+                    keySet.getReadIv(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {

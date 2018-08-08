@@ -83,7 +83,7 @@ public class RecordAEADCipher extends RecordCipher {
                 sequenceNumberByte);
         byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
-        byte[] cipherText = encryptCipher.encrypt(encryptIV,GCM_TAG_LENGTH * 8, request.getPlainText());
+        byte[] cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
@@ -102,8 +102,8 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-        byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8,
-                request.getAdditionalAuthenticatedData(), request.getPlainText());
+        byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+                request.getPlainText());
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
 
@@ -117,8 +117,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
-        return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8,
-                decryptionRequest.getCipherText());
+        return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
     }
 
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
@@ -135,8 +134,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8,
-                decryptionRequest.getAdditionalAuthenticatedData(), data);
+        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override

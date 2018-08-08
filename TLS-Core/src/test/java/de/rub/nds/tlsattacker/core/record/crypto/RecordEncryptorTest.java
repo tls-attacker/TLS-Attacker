@@ -199,11 +199,11 @@ public class RecordEncryptorTest {
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
 
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
-                record.getComputations().getAuthenticatedMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
 
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("356A2FAF42836E90EDB6CD0CB0DE813D505C0EAF"),
-                record.getProtocolMessageBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("356A2FAF42836E90EDB6CD0CB0DE813D505C0EAF"), record
+                .getProtocolMessageBytes().getValue());
     }
 
     @Test

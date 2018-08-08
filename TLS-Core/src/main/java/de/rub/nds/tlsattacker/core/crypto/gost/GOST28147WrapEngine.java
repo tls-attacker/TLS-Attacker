@@ -39,9 +39,7 @@ import org.bouncycastle.util.Pack;
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-public class GOST28147WrapEngine
-        implements Wrapper
-{
+public class GOST28147WrapEngine implements Wrapper {
     private GOST28147Engine cipher = new GOST28147Engine();
     private GOST28147Mac mac = new GOST28147Mac();
 
@@ -76,13 +74,11 @@ public class GOST28147WrapEngine
         mac.init(new ParametersWithIV(cU, pU.getUKM()));
     }
 
-    public String getAlgorithmName()
-    {
+    public String getAlgorithmName() {
         return "GOST28147Wrap";
     }
 
-    public byte[] wrap(byte[] input, int inOff, int inLen)
-    {
+    public byte[] wrap(byte[] input, int inOff, int inLen) {
         mac.update(input, inOff, inLen);
 
         byte[] wrappedKey = new byte[inLen + mac.getMacSize()];
@@ -115,51 +111,34 @@ public class GOST28147WrapEngine
 
         System.arraycopy(input, inOff + inLen - 4, macExpected, 0, mac.getMacSize());
 
-        if (!Arrays.constantTimeAreEqual(macResult, macExpected))
-        {
+        if (!Arrays.constantTimeAreEqual(macResult, macExpected)) {
             throw new IllegalStateException("mac mismatch");
         }
 
         return decKey;
     }
 
-
     /*
-        RFC 4357 6.5.  CryptoPro KEK Diversification Algorithm
-
-        Given a random 64-bit UKM and a GOST 28147-89 key K, this algorithm
-        creates a new GOST 28147-89 key K(UKM).
-
-         1) Let K[0] = K;
-         2) UKM is split into components a[i,j]:
-            UKM = a[0]|..|a[7] (a[i] - byte, a[i,0]..a[i,7] - it's bits)
-         3) Let i be 0.
-         4) K[1]..K[8] are calculated by repeating the following algorithm
-            eight times:
-          A) K[i] is split into components k[i,j]:
-             K[i] = k[i,0]|k[i,1]|..|k[i,7] (k[i,j] - 32-bit integer)
-          B) Vector S[i] is calculated:
-             S[i] = ((a[i,0]*k[i,0] + ... + a[i,7]*k[i,7]) mod 2^32) |
-             (((~a[i,0])*k[i,0] + ... + (~a[i,7])*k[i,7]) mod 2^32);
-          C) K[i+1] = encryptCFB (S[i], K[i], K[i])
-          D) i = i + 1
-         5) Let K(UKM) be K[8].
-    */
-    private static byte[] cryptoProDiversify(byte[] K, byte[] ukm, byte[] sBox)
-    {
-        for (int i = 0; i != 8; i++)
-        {
+     * RFC 4357 6.5. CryptoPro KEK Diversification Algorithm Given a random
+     * 64-bit UKM and a GOST 28147-89 key K, this algorithm creates a new GOST
+     * 28147-89 key K(UKM). 1) Let K[0] = K; 2) UKM is split into components
+     * a[i,j]: UKM = a[0]|..|a[7] (a[i] - byte, a[i,0]..a[i,7] - it's bits) 3)
+     * Let i be 0. 4) K[1]..K[8] are calculated by repeating the following
+     * algorithm eight times: A) K[i] is split into components k[i,j]: K[i] =
+     * k[i,0]|k[i,1]|..|k[i,7] (k[i,j] - 32-bit integer) B) Vector S[i] is
+     * calculated: S[i] = ((a[i,0]*k[i,0] + ... + a[i,7]*k[i,7]) mod 2^32) |
+     * (((~a[i,0])*k[i,0] + ... + (~a[i,7])*k[i,7]) mod 2^32); C) K[i+1] =
+     * encryptCFB (S[i], K[i], K[i]) D) i = i + 1 5) Let K(UKM) be K[8].
+     */
+    private static byte[] cryptoProDiversify(byte[] K, byte[] ukm, byte[] sBox) {
+        for (int i = 0; i != 8; i++) {
             int sOn = 0;
             int sOff = 0;
-            for (int j = 0; j != 8; j++)
-            {
+            for (int j = 0; j != 8; j++) {
                 int kj = Pack.littleEndianToInt(K, j * 4);
-                if (bitSet(ukm[i], j))
-                {
+                if (bitSet(ukm[i], j)) {
                     sOn += kj;
-                }
-                else
-                {
+                } else {
                     sOff += kj;
                 }
             }
@@ -181,8 +160,7 @@ public class GOST28147WrapEngine
         return K;
     }
 
-    private static boolean bitSet(byte v, int bitNo)
-    {
+    private static boolean bitSet(byte v, int bitNo) {
         return (v & (1 << bitNo)) != 0;
     }
 

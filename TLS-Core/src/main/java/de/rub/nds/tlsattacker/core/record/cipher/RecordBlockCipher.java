@@ -115,9 +115,8 @@ public final class RecordBlockCipher extends RecordCipher {
             if (useExplicitIv) {
                 byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-                plaintext = decryptCipher.decrypt(decryptIv, Arrays
-                        .copyOfRange(decryptionRequest.getCipherText(), decryptCipher.getBlocksize(),
-                                decryptionRequest.getCipherText().length));
+                plaintext = decryptCipher.decrypt(decryptIv, Arrays.copyOfRange(decryptionRequest.getCipherText(),
+                        decryptCipher.getBlocksize(), decryptionRequest.getCipherText().length));
                 usedIv = decryptCipher.getIv();
             } else {
                 byte[] decryptIv = getDecryptionIV();

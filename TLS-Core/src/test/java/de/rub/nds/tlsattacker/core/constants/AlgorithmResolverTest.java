@@ -310,9 +310,12 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetMacAlgorithm() {
-        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT), MacAlgorithm.IMIT_GOST28147);
-        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411);
-        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT), MacAlgorithm.IMIT_GOST28147);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
     }
 
     // Test get Mac algorithm for all ciphersuites

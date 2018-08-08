@@ -622,7 +622,6 @@ public class DefaultChooser extends Chooser {
         }
     }
 
-
     @Override
     public BigInteger getServerGost12PrivateKey() {
         if (context.getServerGostEc12PrivateKey() != null) {

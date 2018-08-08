@@ -64,8 +64,7 @@ public class RecordStreamCipher extends RecordCipher {
     @Override
     public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
         try {
-            return new DecryptionResult(null,
-                    decryptCipher.decrypt(decryptionRequest.getCipherText()), null);
+            return new DecryptionResult(null, decryptCipher.decrypt(decryptionRequest.getCipherText()), null);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
             LOGGER.debug(E);
