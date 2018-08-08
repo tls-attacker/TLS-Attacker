@@ -28,6 +28,10 @@ public class AlgorithmResolverTest {
     public void testGetPRFAlgorithm() {
         // Some protocol versions should always return tls_legacy
         for (CipherSuite suite : CipherSuite.values()) {
+            if (suite.name().contains("GOST")) {
+                continue;
+            }
+
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS11, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
@@ -77,6 +81,10 @@ public class AlgorithmResolverTest {
     @Test
     public void testGetDigestAlgorithm() {
         for (CipherSuite suite : CipherSuite.values()) {
+            if (suite.name().contains("GOST")) {
+                continue;
+            }
+
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS10, suite) == DigestAlgorithm.LEGACY);
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS11, suite) == DigestAlgorithm.LEGACY);
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS10, suite) == DigestAlgorithm.LEGACY);

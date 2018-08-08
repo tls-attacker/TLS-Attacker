@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -20,11 +21,14 @@ import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.security.Security;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import static org.junit.Assert.fail;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.reflections.Reflections;
@@ -32,6 +36,11 @@ import org.reflections.Reflections;
 public class CyclicParserSerializerTest {
 
     protected static final Logger LOGGER = LogManager.getLogger(CyclicParserSerializerTest.class.getName());
+
+    @Before
+    public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     @Test
     public void testParserSerializerPairs() {
@@ -73,6 +82,10 @@ public class CyclicParserSerializerTest {
                     Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
                     try {
                         TlsContext context = new TlsContext();
+                        if (testName.contains("GOST")) {
+                            context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+                        }
+
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
@@ -184,6 +197,10 @@ public class CyclicParserSerializerTest {
                     Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
                     try {
                         TlsContext context = new TlsContext();
+                        if (testName.contains("GOST")) {
+                            context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+                        }
+
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
