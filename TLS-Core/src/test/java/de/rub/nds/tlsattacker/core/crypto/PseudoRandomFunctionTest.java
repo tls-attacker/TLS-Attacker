@@ -28,10 +28,31 @@ import org.junit.runner.RunWith;
 @RunWith(JMockit.class)
 public class PseudoRandomFunctionTest {
 
+    /**
+     * Test of compute method, of class PseudoRandomFunction.
+     *
+     * @param mockedTlsContext
+     * @param mockedParameters
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     */
     @Test
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
             @Mocked final SecurityParameters mockedParameters) throws CryptoException {
         // Record expectations if/as needed:
+        new Expectations() {
+            {
+                mockedTlsContext.getServerVersion();
+                result = ProtocolVersion.TLSv12;
+            }
+            {
+                mockedTlsContext.getSecurityParameters();
+                result = mockedParameters;
+            }
+            {
+                mockedParameters.getPrfAlgorithm();
+                result = 1;
+            }
+        };
 
         byte[] secret = new byte[48];
         String label = "master secret";
@@ -42,6 +63,18 @@ public class PseudoRandomFunctionTest {
 
         byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
         byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
+
+        assertArrayEquals(result1, result2);
+
+        new Expectations() {
+            {
+                mockedParameters.getPrfAlgorithm();
+                result = 2;
+            }
+        };
+
+        result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
 
         assertArrayEquals(result1, result2);
 
