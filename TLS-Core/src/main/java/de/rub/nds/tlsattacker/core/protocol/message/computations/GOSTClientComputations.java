@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 public class GOSTClientComputations extends KeyExchangeComputations {
@@ -30,6 +32,10 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     private ModifiableByteArray kek;
 
     private ModifiableString encryptionAlgOid;
+
+    private ModifiableBigInteger publicKeyX;
+
+    private ModifiableBigInteger publicKeyY;
 
     @Override
     public void setSecretsInConfig(Config config) {
@@ -74,6 +80,19 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     public void setKek(byte[] kek) {
         this.kek = ModifiableVariableFactory.safelySetValue(this.kek, kek);
+    }
+
+    public CustomECPoint getPublicKey() {
+        if (publicKeyX != null && publicKeyY != null) {
+            return new CustomECPoint(publicKeyX.getValue(), publicKeyY.getValue());
+        } else {
+            return null;
+        }
+    }
+
+    public void setPublicKey(CustomECPoint point) {
+        this.publicKeyX = ModifiableVariableFactory.safelySetValue(this.publicKeyX, point.getX());
+        this.publicKeyY = ModifiableVariableFactory.safelySetValue(this.publicKeyY, point.getY());
     }
 
 }

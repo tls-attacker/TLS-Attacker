@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
@@ -22,6 +23,7 @@ import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012Pri
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -46,12 +48,14 @@ public class GOSTClientKeyExchangePreparatorTest {
         BCECGOST3410_2012PublicKey publicKey = (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter()
                 .getPublicKey(cert.getSubjectPublicKeyInfo());
         String curveName = ((ECNamedCurveSpec) publicKey.getParams()).getName();
+        tlsContext.setServerGost12Curve(curveName);
+        ECPoint q = publicKey.getQ();
+        CustomECPoint ecPoint = new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
 
-        tlsContext.setServerGostEc12PublicKey(publicKey);
+        tlsContext.setServerGostEc12PublicKey(ecPoint);
 
-        BCECGOST3410_2012PrivateKey privateKey = GOSTUtils.generate12PrivateKey(curveName,
-                new BigInteger("9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C", 16));
-        tlsContext.setClientGostEc12PrivateKey(privateKey);
+        BigInteger s = new BigInteger("9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C", 16);
+        tlsContext.setClientGostEc12PrivateKey(s);
 
         GOSTClientKeyExchangeMessage message = new GOSTClientKeyExchangeMessage(tlsContext.getConfig());
         GOSTClientKeyExchangePreparator preparator = new GOSTClientKeyExchangePreparator(tlsContext.getChooser(), message);

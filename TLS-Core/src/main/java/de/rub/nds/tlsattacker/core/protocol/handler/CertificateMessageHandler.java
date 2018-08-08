@@ -15,9 +15,9 @@ import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
@@ -35,6 +35,8 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.math.ec.ECPoint;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -130,20 +132,31 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private void adjustGost01Parameters(BCECGOST3410PublicKey publicKey) {
         LOGGER.debug("Adjusting GOST 2001 ECPublicKey");
+        CustomECPoint ecPoint = toCustomECPoint(publicKey.getQ());
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientGostEc01PublicKey(publicKey);
+            tlsContext.setClientGost01Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setClientGostEc01PublicKey(ecPoint);
         } else {
-            tlsContext.setServerGostEc01PublicKey(publicKey);
+            tlsContext.setServerGost01Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setServerGostEc01PublicKey(ecPoint);
         }
     }
 
     private void adjustGost12Parameters(BCECGOST3410_2012PublicKey publicKey) {
         LOGGER.debug("Adjusting GOST 2012 ECPublicKey");
+        CustomECPoint ecPoint = toCustomECPoint(publicKey.getQ());
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientGostEc12PublicKey(publicKey);
+            tlsContext.setClientGost12Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setClientGostEc12PublicKey(ecPoint);
         } else {
-            tlsContext.setServerGostEc12PublicKey(publicKey);
+            tlsContext.setServerGost12Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+
+            tlsContext.setServerGostEc12PublicKey(ecPoint);
         }
+    }
+
+    private CustomECPoint toCustomECPoint(ECPoint q) {
+        return new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
     }
 
     private void adjustDHParameters(DHPublicKeyParameters dhPublicKeyParameters) {
@@ -159,8 +172,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustECParameters(ECPublicKeyParameters ecPublicKeyParameters) {
-        CustomECPoint publicKey = new CustomECPoint(ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger(),
-                ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
+        CustomECPoint publicKey = toCustomECPoint(ecPublicKeyParameters.getQ());
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setClientEcPublicKey(publicKey);
             tlsContext.setEcCertificateCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters

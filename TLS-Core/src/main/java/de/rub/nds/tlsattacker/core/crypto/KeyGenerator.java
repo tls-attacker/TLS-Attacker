@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
+import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.interfaces.DSAPrivateKey;
@@ -45,17 +46,17 @@ public class KeyGenerator {
 
     public static BCECGOST3410PrivateKey getGost01PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return chooser.getClientGost01PrivateKey();
+            return GOSTUtils.generate01PrivateKey(chooser.getClientGost01Curve(), chooser.getClientGost01PrivateKey());
         } else {
-            return chooser.getServerGost01PrivateKey();
+            return GOSTUtils.generate01PrivateKey(chooser.getServerGost01Curve(), chooser.getServerGost01PrivateKey());
         }
     }
 
     public static BCECGOST3410_2012PrivateKey getGost12PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return chooser.getClientGost12PrivateKey();
+            return GOSTUtils.generate12PrivateKey(chooser.getClientGost12Curve(), chooser.getClientGost12PrivateKey());
         } else {
-            return chooser.getServerGost12PrivateKey();
+            return GOSTUtils.generate12PrivateKey(chooser.getServerGost12Curve(), chooser.getServerGost12PrivateKey());
         }
     }
 

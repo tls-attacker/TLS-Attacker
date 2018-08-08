@@ -13,13 +13,16 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.cipher.GOST28147Cipher;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -27,6 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.ECPrivateKey;
 import java.util.Arrays;
 import javax.crypto.KeyAgreement;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -42,9 +46,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithSBox;
 import org.bouncycastle.crypto.params.ParametersWithUKM;
 import org.bouncycastle.jcajce.spec.UserKeyingMaterialSpec;
-import org.bouncycastle.jce.interfaces.ECKey;
+import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
@@ -76,23 +80,18 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
             if (clientMode) {
                 preparePms();
 
-                PrivateKey privateKey;
-                SubjectPublicKeyInfo ephemeralKey = null;
                 if (chooser.getContext().getClientCertificate() != null && areParamSpecsEqual()) {
                     LOGGER.debug("Using private key belonging to the used client certificate.");
-                    privateKey = getClientPrivateKey();
+                    msg.getComputations().setPrivateKey(getClientPrivateKey());
                 } else {
-                    KeyPair keyPair = generateEphemeralKey();
-                    privateKey = keyPair.getPrivate();
-
-                    ephemeralKey = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
+                    prepareEphemeralKey();
                 }
 
-                prepareKek(privateKey, getServerPublicKey());
+                prepareKek(msg.getComputations().getPrivateKey().getValue(), generatePublicKey(getServerPublicKey()));
 
                 prepareCek();
                 prepareEncryptionParams();
-                prepareKeyBlob(ephemeralKey);
+                prepareKeyBlob();
             } else {
                 TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob
                         .getInstance(msg.getKeyTransportBlob().getValue());
@@ -109,7 +108,7 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 if (ephemeralKey != null) {
                     publicKey = new JcaPEMKeyConverter().getPublicKey(ephemeralKey);
                 } else {
-                    publicKey = getClientPublicKey();
+                    publicKey = generatePublicKey(getClientPublicKey());
                 }
 
                 prepareKek(getServerPrivateKey(), publicKey);
@@ -143,10 +142,13 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         LOGGER.debug("UKM: " + ArrayConverter.bytesToHexString(msg.getComputations().getUkm()));
     }
 
-    private void prepareKek(PrivateKey priv, PublicKey pub) throws GeneralSecurityException {
+    private void prepareKek(BigInteger priv, PublicKey pub) throws GeneralSecurityException {
         String algorithm = is2012() ? "ECGOST3410-2012-256" : "ECGOST3410";
         KeyAgreement keyAgreement = KeyAgreement.getInstance(algorithm);
-        keyAgreement.init(priv, new UserKeyingMaterialSpec(msg.getComputations().getUkm()));
+
+        PrivateKey privateKey = generatePrivateKey(priv);
+
+        keyAgreement.init(privateKey, new UserKeyingMaterialSpec(msg.getComputations().getUkm()));
         keyAgreement.doPhase(pub, true);
 
         byte[] kek = keyAgreement.generateSecret();
@@ -167,18 +169,24 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         msg.getComputations().setPremasterSecret(pms);
     }
 
-    private KeyPair generateEphemeralKey() throws GeneralSecurityException {
+    private void prepareEphemeralKey() throws GeneralSecurityException {
         if (areParamSpecsEqual()) {
             LOGGER.debug("Using key from context.");
-            return new KeyPair(getClientPublicKey(), getClientPrivateKey());
+            msg.getComputations().setPrivateKey(getClientPrivateKey());
+            msg.getComputations().setPublicKey(getClientPublicKey());
         } else {
             String algorithm = is2012() ? "ECGOST3410-2012" : "ECGOST3410";
             KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm);
 
-            ECNamedCurveSpec params = (ECNamedCurveSpec) ((java.security.interfaces.ECKey) getServerPublicKey()).getParams();
+            String curve = is2012() ? chooser.getServerGost12Curve() : chooser.getServerGost01Curve();
+            ECNamedCurveSpec params = GOSTUtils.getEcParameterSpec(curve);
+
             LOGGER.debug("Generating " + algorithm + " key using curve " + params.getName());
             keyGenerator.initialize(params, chooser.getContext().getBadSecureRandom());
-            return keyGenerator.generateKeyPair();
+            KeyPair pair = keyGenerator.generateKeyPair();
+
+            msg.getComputations().setPrivateKey(((ECPrivateKey) pair.getPrivate()).getS());
+            msg.getComputations().setPublicKey(toCustomECPoint(((ECPublicKey) pair.getPublic())));
         }
     }
 
@@ -226,7 +234,13 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         msg.getComputations().setEncryptionAlgOid(encryptionParams);
     }
 
-    private void prepareKeyBlob(SubjectPublicKeyInfo ephemeralKey) throws IOException {
+    private void prepareKeyBlob() throws IOException {
+        SubjectPublicKeyInfo ephemeralKey = null;
+        CustomECPoint ecPoint = msg.getComputations().getPublicKey();
+        if (ecPoint != null) {
+            ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
+        }
+
         Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(),
                 msg.getComputations().getCekMac());
         GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations().getEncryptionAlgOid(),
@@ -239,57 +253,52 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private boolean areParamSpecsEqual() {
-        ECParameterSpec serverParams = ((ECKey) getServerPublicKey()).getParameters();
-        ECParameterSpec clientParams = ((ECKey) getClientPublicKey()).getParameters();
-        return serverParams.equals(clientParams);
-    }
-
-    private PrivateKey getClientPrivateKey() {
         if (is2012()) {
-            return chooser.getClientGost12PrivateKey();
-        } else if (is2001()) {
-            return chooser.getClientGost01PrivateKey();
+            return chooser.getServerGost12Curve().equals(chooser.getClientGost12Curve());
         } else {
-            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
+            return chooser.getServerGost01Curve().equals(chooser.getClientGost01Curve());
         }
     }
 
-    private PrivateKey getServerPrivateKey() {
+    private CustomECPoint toCustomECPoint(ECPublicKey key) {
+        ECPoint q = key.getQ();
+        return new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
+    }
+
+    private PrivateKey generatePrivateKey(BigInteger s) {
         if (is2012()) {
-            return chooser.getServerGost12PrivateKey();
-        } else if (is2001()) {
-            return chooser.getServerGost01PrivateKey();
+            return GOSTUtils.generate12PrivateKey(chooser.getServerGost12Curve(), s);
         } else {
-            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
+            return GOSTUtils.generate01PrivateKey(chooser.getServerGost01Curve(), s);
         }
     }
 
-    private PublicKey getClientPublicKey() {
+    private PublicKey generatePublicKey(CustomECPoint point) {
         if (is2012()) {
-            return chooser.getClientGost12PublicKey();
-        } else if (is2001()) {
-            return chooser.getClientGost01PublicKey();
+            return GOSTUtils.generate12PublicKey(chooser.getServerGost12Curve(), point);
         } else {
-            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
+            return GOSTUtils.generate01PublicKey(chooser.getServerGost01Curve(), point);
         }
     }
 
-    private PublicKey getServerPublicKey() {
-        if (is2012()) {
-            return chooser.getServerGost12PublicKey();
-        } else if (is2001()) {
-            return chooser.getServerGost01PublicKey();
-        } else {
-            throw new WorkflowExecutionException("Unsupported variant: " + exchangeAlg);
-        }
+    private BigInteger getClientPrivateKey() {
+        return is2012() ? chooser.getClientGost12PrivateKey() : chooser.getClientGost01PrivateKey();
+    }
+
+    private CustomECPoint getClientPublicKey() {
+        return is2012() ? chooser.getClientGost12PublicKey() : chooser.getClientGost01PublicKey();
+    }
+
+    private BigInteger getServerPrivateKey() {
+        return is2012() ? chooser.getServerGost12PrivateKey() : chooser.getServerGost01PrivateKey();
+    }
+
+    private CustomECPoint getServerPublicKey() {
+        return is2012() ? chooser.getServerGost12PublicKey() : chooser.getServerGost01PublicKey();
     }
 
     private boolean is2012() {
         return exchangeAlg == KeyExchangeAlgorithm.VKO_GOST12;
-    }
-
-    private boolean is2001() {
-        return exchangeAlg == KeyExchangeAlgorithm.VKO_GOST01;
     }
 
 }

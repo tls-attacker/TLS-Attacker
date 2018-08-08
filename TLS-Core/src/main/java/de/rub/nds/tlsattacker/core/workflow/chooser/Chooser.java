@@ -145,21 +145,29 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
-    public abstract BCECGOST3410PublicKey getServerGost01PublicKey();
+    public abstract String getServerGost01Curve();
 
-    public abstract BCECGOST3410PrivateKey getServerGost01PrivateKey();
+    public abstract CustomECPoint getServerGost01PublicKey();
 
-    public abstract BCECGOST3410PublicKey getClientGost01PublicKey();
+    public abstract BigInteger getServerGost01PrivateKey();
 
-    public abstract BCECGOST3410PrivateKey getClientGost01PrivateKey();
+    public abstract String getClientGost01Curve();
 
-    public abstract BCECGOST3410_2012PublicKey getServerGost12PublicKey();
+    public abstract CustomECPoint getClientGost01PublicKey();
 
-    public abstract BCECGOST3410_2012PrivateKey getServerGost12PrivateKey();
+    public abstract BigInteger getClientGost01PrivateKey();
 
-    public abstract BCECGOST3410_2012PublicKey getClientGost12PublicKey();
+    public abstract String getServerGost12Curve();
 
-    public abstract BCECGOST3410_2012PrivateKey getClientGost12PrivateKey();
+    public abstract CustomECPoint getServerGost12PublicKey();
+
+    public abstract BigInteger getServerGost12PrivateKey();
+
+    public abstract String getClientGost12Curve();
+
+    public abstract CustomECPoint getClientGost12PublicKey();
+
+    public abstract BigInteger getClientGost12PrivateKey();
 
     public abstract BigInteger getSRPModulus();
 

@@ -72,7 +72,7 @@ public class GOSTUtils {
         }
     }
 
-    private static ECParameterSpec getEcParameterSpec(String curveName) {
+    public static ECNamedCurveSpec getEcParameterSpec(String curveName) {
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
         return new ECNamedCurveSpec(curveName, spec.getCurve(),
                 spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
