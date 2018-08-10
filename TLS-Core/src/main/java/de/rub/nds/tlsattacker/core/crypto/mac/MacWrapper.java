@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.GOST28147Cipher;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147Mac;
 import java.security.NoSuchAlgorithmException;
 import org.bouncycastle.crypto.digests.GOST3411Digest;
+import org.bouncycastle.crypto.digests.GOST3411_2012_256Digest;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -28,6 +29,9 @@ public class MacWrapper {
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(version, cipherSuite);
         if (macAlg == MacAlgorithm.HMAC_GOSTR3411) {
             GOST3411Digest digest = new GOST3411Digest();
+            return new ContinuousMac(new HMac(digest), digest, new KeyParameter(key));
+        } else if (macAlg == MacAlgorithm.HMAC_GOSTR3411_2012_256) {
+            GOST3411_2012_256Digest digest = new GOST3411_2012_256Digest();
             return new ContinuousMac(new HMac(digest), digest, new KeyParameter(key));
         } else if (macAlg == MacAlgorithm.IMIT_GOST28147) {
             byte[] sBox;
