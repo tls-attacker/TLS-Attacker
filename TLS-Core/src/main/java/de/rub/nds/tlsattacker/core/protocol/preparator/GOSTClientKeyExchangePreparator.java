@@ -191,7 +191,7 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private byte[] wrap(boolean wrap, byte[] bytes) {
-        byte[] sBox = is2012() ? GOST28147Cipher.SBox_Z : GOST28147Engine.getSBox("E-A");
+        byte[] sBox = GOST28147Engine.getSBox(is2012() ? "Param-Z" : "E-A");
         KeyParameter keySpec = new KeyParameter(msg.getComputations().getKek());
         ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sBox);
         ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm());

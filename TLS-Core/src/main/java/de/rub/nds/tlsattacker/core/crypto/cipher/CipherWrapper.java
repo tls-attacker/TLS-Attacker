@@ -54,11 +54,7 @@ public class CipherWrapper {
     }
 
     private static GOST28147ParameterSpec getGostSpec(CipherSuite cipherSuite) {
-        if (cipherSuite.usesGOSTR34112012()) {
-            return new GOST28147ParameterSpec(GOST28147Cipher.SBox_Z);
-        } else {
-            return new GOST28147ParameterSpec("E-A");
-        }
+        return new GOST28147ParameterSpec(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");
     }
 
 }

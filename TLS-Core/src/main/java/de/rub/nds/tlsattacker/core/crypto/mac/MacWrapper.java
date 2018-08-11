@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.cipher.GOST28147Cipher;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147Mac;
 import java.security.NoSuchAlgorithmException;
 import org.bouncycastle.crypto.digests.GOST3411Digest;
@@ -34,12 +33,7 @@ public class MacWrapper {
             GOST3411_2012_256Digest digest = new GOST3411_2012_256Digest();
             return new ContinuousMac(new HMac(digest), digest, new KeyParameter(key));
         } else if (macAlg == MacAlgorithm.IMIT_GOST28147) {
-            byte[] sBox;
-            if (cipherSuite.usesGOSTR34112012()) {
-                sBox = GOST28147Cipher.SBox_Z;
-            } else {
-                sBox = GOST28147Engine.getSBox("E-A");
-            }
+            byte[] sBox = GOST28147Engine.getSBox(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");
             ParametersWithSBox parameters = new ParametersWithSBox(new KeyParameter(key), sBox);
             return new ContinuousMac(new GOST28147Mac(), parameters);
         } else if (macAlg.getJavaName() != null) {

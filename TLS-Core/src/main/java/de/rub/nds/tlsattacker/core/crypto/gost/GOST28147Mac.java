@@ -8,12 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.cipher.GOST28147Cipher;
+import java.security.GeneralSecurityException;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.crypto.params.ParametersWithSBox;
+import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.util.Memoable;
 
 /*
@@ -39,11 +45,14 @@ public class GOST28147Mac implements Mac, Memoable {
     private int blockSize = 8;
     private int macSize = 4;
     private int bufOff;
+    private int processedBytes;
     private byte[] buf;
     private byte[] mac;
     private boolean firstStep = true;
+    private byte[] key;
     private int[] workingKey = null;
     private byte[] macIV = null;
+    private final Cipher meshCipher;
 
     //
     // This is default S-box - E_A.
@@ -57,9 +66,14 @@ public class GOST28147Mac implements Mac, Memoable {
 
     public GOST28147Mac() {
         mac = new byte[blockSize];
-
         buf = new byte[blockSize];
-        bufOff = 0;
+        key = new byte[32];
+
+        try {
+            meshCipher = Cipher.getInstance(CipherAlgorithm.GOST_28147_CNT.getJavaName());
+        } catch (GeneralSecurityException e) {
+            throw new UnsupportedOperationException("Could not initialize mesh cipher!");
+        }
     }
 
     private GOST28147Mac(GOST28147Mac mac) {
@@ -102,7 +116,8 @@ public class GOST28147Mac implements Mac, Memoable {
         }
 
         if (params instanceof KeyParameter) {
-            workingKey = generateWorkingKey(((KeyParameter) params).getKey());
+            key = ((KeyParameter) params).getKey();
+            workingKey = generateWorkingKey(key);
         } else {
             throw new IllegalArgumentException("invalid parameter passed to GOST28147 init - "
                     + params.getClass().getName());
@@ -134,10 +149,23 @@ public class GOST28147Mac implements Mac, Memoable {
         return om << 11 | om >>> (32 - 11); // 11-leftshift
     }
 
-    private void gost28147MacFunc(int[] workingKey, byte[] in, int inOff, byte[] out, int outOff) {
+    private void gost28147MacFunc(byte[] in, byte[] out) {
+        if (processedBytes == 1024) {
+            processedBytes = 0;
+            try {
+                SecretKeySpec spec = new SecretKeySpec(key, meshCipher.getAlgorithm());
+                meshCipher.init(Cipher.DECRYPT_MODE, spec, new GOST28147ParameterSpec(S));
+                key = meshCipher.doFinal(GOST28147Cipher.C);
+                workingKey = generateWorkingKey(key);
+            } catch (GeneralSecurityException e) {
+                throw new IllegalStateException("Could not mesh key!");
+            }
+        }
+        processedBytes += 8;
+
         int N1, N2, tmp; // tmp -> for saving N1
-        N1 = bytesToint(in, inOff);
-        N2 = bytesToint(in, inOff + 4);
+        N1 = bytesToint(in, 0);
+        N2 = bytesToint(in, 4);
 
         for (int k = 0; k < 2; k++) // 1-16 steps
         {
@@ -148,8 +176,8 @@ public class GOST28147Mac implements Mac, Memoable {
             }
         }
 
-        intTobytes(N1, out, outOff);
-        intTobytes(N2, out, outOff + 4);
+        intTobytes(N1, out, 0);
+        intTobytes(N2, out, 4);
     }
 
     // array of bytes to type int
@@ -192,7 +220,7 @@ public class GOST28147Mac implements Mac, Memoable {
                 sumbuf = CM5func(buf, 0, mac);
             }
 
-            gost28147MacFunc(workingKey, sumbuf, 0, mac, 0);
+            gost28147MacFunc(sumbuf, mac);
             bufOff = 0;
         }
 
@@ -221,7 +249,7 @@ public class GOST28147Mac implements Mac, Memoable {
                 sumbuf = CM5func(buf, 0, mac);
             }
 
-            gost28147MacFunc(workingKey, sumbuf, 0, mac, 0);
+            gost28147MacFunc(sumbuf, mac);
 
             bufOff = 0;
             len -= gapLen;
@@ -229,7 +257,7 @@ public class GOST28147Mac implements Mac, Memoable {
 
             while (len > blockSize) {
                 sumbuf = CM5func(in, inOff, mac);
-                gost28147MacFunc(workingKey, sumbuf, 0, mac, 0);
+                gost28147MacFunc(sumbuf, mac);
 
                 len -= blockSize;
                 inOff += blockSize;
@@ -257,7 +285,7 @@ public class GOST28147Mac implements Mac, Memoable {
             sumbuf = CM5func(buf, 0, mac);
         }
 
-        gost28147MacFunc(workingKey, sumbuf, 0, mac, 0);
+        gost28147MacFunc(sumbuf, mac);
 
         System.arraycopy(mac, (mac.length / 2) - macSize, out, outOff, macSize);
 
@@ -287,21 +315,22 @@ public class GOST28147Mac implements Mac, Memoable {
     @Override
     public void reset(Memoable other) {
         GOST28147Mac t = (GOST28147Mac) other;
-        reset();
 
         bufOff = t.bufOff;
         firstStep = t.firstStep;
+        processedBytes = t.processedBytes;
 
         System.arraycopy(t.buf, 0, buf, 0, t.buf.length);
         System.arraycopy(t.mac, 0, mac, 0, t.mac.length);
+        System.arraycopy(t.S, 0, S, 0, t.S.length);
 
-        if (t.workingKey != null) {
-            workingKey = new int[t.workingKey.length];
-            System.arraycopy(t.workingKey, 0, workingKey, 0, t.workingKey.length);
+        if (t.key != null) {
+            System.arraycopy(t.key, 0, key, 0, t.key.length);
+
+            workingKey = generateWorkingKey(key);
         }
 
         if (t.macIV != null) {
-            macIV = new byte[t.macIV.length];
             System.arraycopy(t.macIV, 0, macIV, 0, t.macIV.length);
         }
     }
