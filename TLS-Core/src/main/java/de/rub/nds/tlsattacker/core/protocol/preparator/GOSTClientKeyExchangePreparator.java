@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.cipher.GOST28147Cipher;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
@@ -34,6 +33,7 @@ import java.security.interfaces.ECPrivateKey;
 import java.util.Arrays;
 import javax.crypto.KeyAgreement;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.cryptopro.Gost2814789EncryptedKey;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
@@ -242,11 +242,12 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         }
 
         Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(), msg
-                .getComputations().getCekMac());
+                .getComputations().getMaskKey(), msg.getComputations().getCekMac());
         GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations()
                 .getEncryptionAlgOid(), ephemeralKey, msg.getComputations().getUkm());
         GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
-        TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport);
+        DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(msg.getComputations().getProxyKeyBlobs());
+        TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
 
         msg.setKeyTransportBlob(blob.getEncoded());
         LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));

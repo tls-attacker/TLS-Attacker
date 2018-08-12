@@ -31,6 +31,11 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray kek;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    private ModifiableByteArray maskKey;
+
+    private ModifiableByteArray proxyKeyBlobs;
+
     private ModifiableString encryptionAlgOid;
 
     private ModifiableBigInteger publicKeyX;
@@ -78,6 +83,14 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         return kek.getValue();
     }
 
+    public byte[] getMaskKey() {
+        return maskKey == null ? null : maskKey.getValue();
+    }
+
+    public byte[] getProxyKeyBlobs() {
+        return proxyKeyBlobs == null ? null : proxyKeyBlobs.getValue();
+    }
+
     public void setKek(byte[] kek) {
         this.kek = ModifiableVariableFactory.safelySetValue(this.kek, kek);
     }
@@ -93,6 +106,42 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     public void setPublicKey(CustomECPoint point) {
         this.publicKeyX = ModifiableVariableFactory.safelySetValue(this.publicKeyX, point.getX());
         this.publicKeyY = ModifiableVariableFactory.safelySetValue(this.publicKeyY, point.getY());
+    }
+
+    public void setUkm(ModifiableByteArray ukm) {
+        this.ukm = ukm;
+    }
+
+    public void setCekEnc(ModifiableByteArray cekEnc) {
+        this.cekEnc = cekEnc;
+    }
+
+    public void setCekMac(ModifiableByteArray cekMac) {
+        this.cekMac = cekMac;
+    }
+
+    public void setKek(ModifiableByteArray kek) {
+        this.kek = kek;
+    }
+
+    public void setMaskKey(ModifiableByteArray maskKey) {
+        this.maskKey = maskKey;
+    }
+
+    public void setProxyKeyBlobs(ModifiableByteArray proxyKeyBlobs) {
+        this.proxyKeyBlobs = proxyKeyBlobs;
+    }
+
+    public void setEncryptionAlgOid(ModifiableString encryptionAlgOid) {
+        this.encryptionAlgOid = encryptionAlgOid;
+    }
+
+    public void setPublicKeyX(ModifiableBigInteger publicKeyX) {
+        this.publicKeyX = publicKeyX;
+    }
+
+    public void setPublicKeyY(ModifiableBigInteger publicKeyY) {
+        this.publicKeyY = publicKeyY;
     }
 
 }
