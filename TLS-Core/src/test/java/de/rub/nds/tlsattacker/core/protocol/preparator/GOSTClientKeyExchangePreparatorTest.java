@@ -13,13 +13,11 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
@@ -70,11 +68,11 @@ public class GOSTClientKeyExchangePreparatorTest {
 
         byte[] expected = ArrayConverter
                 .hexStringToByteArray("2B9733F1F6EFEB453035415119E46D3E1798A037488BE6B5836CF8CFB81BB597");
-        byte[] actual = message.getComputations().getCekEnc();
+        byte[] actual = message.getComputations().getEncryptedKey();
         assertArrayEquals(expected, actual);
 
         expected = ArrayConverter.hexStringToByteArray("E2897619");
-        actual = message.getComputations().getCekMac();
+        actual = message.getComputations().getMacKey();
         assertArrayEquals(expected, actual);
     }
 

@@ -23,13 +23,13 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     private ModifiableByteArray ukm;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray cekEnc;
+    private ModifiableByteArray encryptedKey;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray cekMac;
+    private ModifiableByteArray macKey;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray kek;
+    private ModifiableByteArray keyEncryptionKey;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray maskKey;
@@ -63,24 +63,24 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         return new ASN1ObjectIdentifier(encryptionParamSet.getValue());
     }
 
-    public byte[] getCekEnc() {
-        return cekEnc.getValue();
+    public byte[] getEncryptedKey() {
+        return encryptedKey.getValue();
     }
 
-    public void setCekEnc(byte[] cekEnc) {
-        this.cekEnc = ModifiableVariableFactory.safelySetValue(this.cekEnc, cekEnc);
+    public void setEncryptedKey(byte[] encryptedKey) {
+        this.encryptedKey = ModifiableVariableFactory.safelySetValue(this.encryptedKey, encryptedKey);
     }
 
-    public byte[] getCekMac() {
-        return cekMac.getValue();
+    public byte[] getMacKey() {
+        return macKey.getValue();
     }
 
-    public void setCekMac(byte[] cekMac) {
-        this.cekMac = ModifiableVariableFactory.safelySetValue(this.cekMac, cekMac);
+    public void setMacKey(byte[] macKey) {
+        this.macKey = ModifiableVariableFactory.safelySetValue(this.macKey, macKey);
     }
 
-    public byte[] getKek() {
-        return kek.getValue();
+    public byte[] getKeyEncryptionKey() {
+        return keyEncryptionKey.getValue();
     }
 
     public byte[] getMaskKey() {
@@ -91,8 +91,8 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         return proxyKeyBlobs == null ? null : proxyKeyBlobs.getValue();
     }
 
-    public void setKek(byte[] kek) {
-        this.kek = ModifiableVariableFactory.safelySetValue(this.kek, kek);
+    public void setKeyEncryptionKey(byte[] keyEncryptionKey) {
+        this.keyEncryptionKey = ModifiableVariableFactory.safelySetValue(this.keyEncryptionKey, keyEncryptionKey);
     }
 
     public CustomECPoint getClientPublicKey() {
@@ -113,15 +113,15 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setCekEnc(ModifiableByteArray cekEnc) {
-        this.cekEnc = cekEnc;
+        this.encryptedKey = cekEnc;
     }
 
     public void setCekMac(ModifiableByteArray cekMac) {
-        this.cekMac = cekMac;
+        this.macKey = cekMac;
     }
 
     public void setKek(ModifiableByteArray kek) {
-        this.kek = kek;
+        this.keyEncryptionKey = kek;
     }
 
     public void setMaskKey(ModifiableByteArray maskKey) {

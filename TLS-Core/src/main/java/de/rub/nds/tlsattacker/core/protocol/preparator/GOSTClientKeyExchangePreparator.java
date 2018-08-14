@@ -145,8 +145,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         keyAgreement.doPhase(pub, true);
 
         byte[] kek = keyAgreement.generateSecret();
-        msg.getComputations().setKek(kek);
-        LOGGER.debug("KEK: " + ArrayConverter.bytesToHexString(msg.getComputations().getKek()));
+        msg.getComputations().setKeyEncryptionKey(kek);
+        LOGGER.debug("KEK: " + ArrayConverter.bytesToHexString(msg.getComputations().getKeyEncryptionKey()));
     }
 
     private void preparePms() {
@@ -182,7 +182,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     private byte[] wrap(boolean wrap, byte[] bytes) {
         byte[] sBox = GOST28147Engine.getSBox(getSBoxName());
-        KeyParameter keySpec = new KeyParameter(msg.getComputations().getKek());
+        KeyParameter keySpec = new KeyParameter(msg.getComputations().getKeyEncryptionKey());
         ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sBox);
         ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm());
 
@@ -206,11 +206,11 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
         byte[] cek = new byte[32];
         System.arraycopy(wrapped, 0, cek, 0, cek.length);
-        msg.getComputations().setCekEnc(cek);
+        msg.getComputations().setEncryptedKey(cek);
 
         byte[] mac = new byte[wrapped.length - cek.length];
         System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
-        msg.getComputations().setCekMac(mac);
+        msg.getComputations().setMacKey(mac);
     }
 
     private void prepareEncryptionParams() {
@@ -224,8 +224,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
             ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
         }
 
-        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(), msg
-                .getComputations().getMaskKey(), msg.getComputations().getCekMac());
+        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey(), msg
+                .getComputations().getMaskKey(), msg.getComputations().getMacKey());
         GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations()
                 .getEncryptionParamSet(), ephemeralKey, msg.getComputations().getUkm());
         GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
