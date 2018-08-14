@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -21,10 +22,12 @@ import java.security.spec.ECPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
+import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
@@ -75,6 +78,14 @@ public class GOSTUtils {
     public static ECNamedCurveSpec getEcParameterSpec(String curveName) {
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
         return new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
+    }
+
+    public static GOST28147ParameterSpec getGostSpec(CipherSuite cipherSuite) {
+        return new GOST28147ParameterSpec(getGostSBox(cipherSuite));
+    }
+
+    public static byte[] getGostSBox(CipherSuite cipherSuite) {
+        return GOST28147Engine.getSBox(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");
     }
 
 }

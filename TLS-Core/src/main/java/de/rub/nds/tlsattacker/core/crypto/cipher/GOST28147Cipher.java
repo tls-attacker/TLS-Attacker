@@ -29,6 +29,8 @@ public class GOST28147Cipher implements EncryptionCipher, DecryptionCipher {
             (byte) 0x07, (byte) 0x12, (byte) 0xC0, (byte) 0x86, (byte) 0xDC, (byte) 0xC2, (byte) 0xEF, (byte) 0x4C,
             (byte) 0xA9, (byte) 0x2B };
 
+    private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT;
+
     private int keyCount;
 
     private byte[] key;
@@ -36,11 +38,9 @@ public class GOST28147Cipher implements EncryptionCipher, DecryptionCipher {
     private byte[] keyStream;
 
     private final Cipher cipher;
-    private final CipherAlgorithm algorithm;
     private final GOST28147ParameterSpec spec;
 
-    public GOST28147Cipher(CipherAlgorithm algorithm, GOST28147ParameterSpec spec, byte[] key, byte[] iv) {
-        this.algorithm = algorithm;
+    public GOST28147Cipher(GOST28147ParameterSpec spec, byte[] key, byte[] iv) {
         this.spec = spec;
         this.key = key;
         this.state = iv;

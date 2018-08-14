@@ -35,11 +35,11 @@ public class GOST28147CipherTest {
                 .hexStringToByteArray("bcb821452e459f10f92019171e7c3b27b87f24b174306667f67704812c07b70b5e7420f74a9d54feb4897df8");
 
         GOST28147ParameterSpec spec = new GOST28147ParameterSpec("E-A");
-        GOST28147Cipher cipher = new GOST28147Cipher(CipherAlgorithm.GOST_28147_CNT, spec, key, iv);
+        GOST28147Cipher cipher = new GOST28147Cipher(spec, key, iv);
         byte[] actual = cipher.encrypt(plaintext);
         Assert.assertArrayEquals(expectedCiphertext, actual);
 
-        cipher = new GOST28147Cipher(CipherAlgorithm.GOST_28147_CNT, spec, key, iv);
+        cipher = new GOST28147Cipher(spec, key, iv);
         actual = cipher.decrypt(actual);
         Assert.assertArrayEquals(plaintext, actual);
     }
