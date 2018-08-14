@@ -64,7 +64,7 @@ public class GOSTClientKeyExchangePreparatorTest {
         tlsContext.setClientGostEc12PrivateKey(s);
 
         GOSTClientKeyExchangeMessage message = new GOSTClientKeyExchangeMessage(tlsContext.getConfig());
-        GOSTClientKeyExchangePreparator preparator = new GOSTClientKeyExchangePreparator(tlsContext.getChooser(),
+        GOSTClientKeyExchangePreparator preparator = new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(),
                 message);
         preparator.prepare();
 
