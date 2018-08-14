@@ -58,6 +58,18 @@ public class CyclicParserSerializerTest {
                 continue;
             }
             String testName = someParserClass.getSimpleName().replace("Parser", "");
+
+            Class<? extends ProtocolMessagePreparator> preparatorClass = null;
+            try {
+                preparatorClass = getPreparator(testName);
+                if (Modifier.isAbstract(preparatorClass.getModifiers())) {
+                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Skipping:" + preparatorClass.getSimpleName());
+                    continue;
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version.isDTLS()) {
@@ -79,13 +91,9 @@ public class CyclicParserSerializerTest {
                         ex.printStackTrace();
                         fail("Could not create message instance for " + testName);
                     }
-                    Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
+
                     try {
                         TlsContext context = new TlsContext();
-                        if (testName.contains("GOST")) {
-                            context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-                        }
-
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
@@ -173,6 +181,18 @@ public class CyclicParserSerializerTest {
                 continue;
             }
             String testName = someParserClass.getSimpleName().replace("Parser", "");
+
+            Class<? extends ProtocolMessagePreparator> preparatorClass = null;
+            try {
+                preparatorClass = getPreparator(testName);
+                if (Modifier.isAbstract(preparatorClass.getModifiers())) {
+                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Skipping:" + preparatorClass.getSimpleName());
+                    continue;
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version.isDTLS()) {
@@ -194,13 +214,9 @@ public class CyclicParserSerializerTest {
                         ex.printStackTrace();
                         fail("Could not create message instance for " + testName);
                     }
-                    Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
+
                     try {
                         TlsContext context = new TlsContext();
-                        if (testName.contains("GOST")) {
-                            context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-                        }
-
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
