@@ -36,11 +36,11 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     private ModifiableByteArray proxyKeyBlobs;
 
-    private ModifiableString encryptionAlgOid;
+    private ModifiableString encryptionParamSet;
 
-    private ModifiableBigInteger publicKeyX;
+    private ModifiableBigInteger clientPublicKeyX;
 
-    private ModifiableBigInteger publicKeyY;
+    private ModifiableBigInteger clientPublicKeyY;
 
     @Override
     public void setSecretsInConfig(Config config) {
@@ -55,12 +55,12 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         this.ukm = ModifiableVariableFactory.safelySetValue(this.ukm, ukm);
     }
 
-    public void setEncryptionAlgOid(ASN1ObjectIdentifier oid) {
-        this.encryptionAlgOid = ModifiableVariableFactory.safelySetValue(this.encryptionAlgOid, oid.getId());
+    public void setEncryptionParamSet(ASN1ObjectIdentifier oid) {
+        this.encryptionParamSet = ModifiableVariableFactory.safelySetValue(this.encryptionParamSet, oid.getId());
     }
 
-    public ASN1ObjectIdentifier getEncryptionAlgOid() {
-        return new ASN1ObjectIdentifier(encryptionAlgOid.getValue());
+    public ASN1ObjectIdentifier getEncryptionParamSet() {
+        return new ASN1ObjectIdentifier(encryptionParamSet.getValue());
     }
 
     public byte[] getCekEnc() {
@@ -95,17 +95,17 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         this.kek = ModifiableVariableFactory.safelySetValue(this.kek, kek);
     }
 
-    public CustomECPoint getPublicKey() {
-        if (publicKeyX != null && publicKeyY != null) {
-            return new CustomECPoint(publicKeyX.getValue(), publicKeyY.getValue());
+    public CustomECPoint getClientPublicKey() {
+        if (clientPublicKeyX != null && clientPublicKeyY != null) {
+            return new CustomECPoint(clientPublicKeyX.getValue(), clientPublicKeyY.getValue());
         } else {
             return null;
         }
     }
 
-    public void setPublicKey(CustomECPoint point) {
-        this.publicKeyX = ModifiableVariableFactory.safelySetValue(this.publicKeyX, point.getX());
-        this.publicKeyY = ModifiableVariableFactory.safelySetValue(this.publicKeyY, point.getY());
+    public void setClientPublicKey(CustomECPoint point) {
+        this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX());
+        this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY());
     }
 
     public void setUkm(ModifiableByteArray ukm) {
@@ -133,15 +133,15 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setEncryptionAlgOid(ModifiableString encryptionAlgOid) {
-        this.encryptionAlgOid = encryptionAlgOid;
+        this.encryptionParamSet = encryptionAlgOid;
     }
 
-    public void setPublicKeyX(ModifiableBigInteger publicKeyX) {
-        this.publicKeyX = publicKeyX;
+    public void setClientPublicKeyX(ModifiableBigInteger clientPublicKeyX) {
+        this.clientPublicKeyX = clientPublicKeyX;
     }
 
-    public void setPublicKeyY(ModifiableBigInteger publicKeyY) {
-        this.publicKeyY = publicKeyY;
+    public void setClientPublicKeyY(ModifiableBigInteger clientPublicKeyY) {
+        this.clientPublicKeyY = clientPublicKeyY;
     }
 
 }

@@ -173,7 +173,7 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         if (areParamSpecsEqual()) {
             LOGGER.debug("Using key from context.");
             msg.getComputations().setPrivateKey(getClientPrivateKey());
-            msg.getComputations().setPublicKey(getClientPublicKey());
+            msg.getComputations().setClientPublicKey(getClientPublicKey());
         } else {
             String algorithm = is2012() ? "ECGOST3410-2012" : "ECGOST3410";
             KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm);
@@ -186,7 +186,7 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
             KeyPair pair = keyGenerator.generateKeyPair();
 
             msg.getComputations().setPrivateKey(((ECPrivateKey) pair.getPrivate()).getS());
-            msg.getComputations().setPublicKey(toCustomECPoint(((ECPublicKey) pair.getPublic())));
+            msg.getComputations().setClientPublicKey(toCustomECPoint(((ECPublicKey) pair.getPublic())));
         }
     }
 
@@ -231,12 +231,12 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
             encryptionParams = CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_A_ParamSet;
         }
 
-        msg.getComputations().setEncryptionAlgOid(encryptionParams);
+        msg.getComputations().setEncryptionParamSet(encryptionParams);
     }
 
     private void prepareKeyBlob() throws IOException {
         SubjectPublicKeyInfo ephemeralKey = null;
-        CustomECPoint ecPoint = msg.getComputations().getPublicKey();
+        CustomECPoint ecPoint = msg.getComputations().getClientPublicKey();
         if (ecPoint != null) {
             ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
         }
@@ -244,7 +244,7 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
         Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getCekEnc(), msg
                 .getComputations().getMaskKey(), msg.getComputations().getCekMac());
         GostR3410TransportParameters params = new GostR3410TransportParameters(msg.getComputations()
-                .getEncryptionAlgOid(), ephemeralKey, msg.getComputations().getUkm());
+                .getEncryptionParamSet(), ephemeralKey, msg.getComputations().getUkm());
         GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
         DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(msg.getComputations().getProxyKeyBlobs());
         TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
