@@ -27,10 +27,8 @@ public class ResponseExtractor {
     private ResponseExtractor() {
     }
 
-    public static ResponseFingerprint getFingerprint(State state) {
-        TlsContext context = state.getTlsContext();
-        ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
-        boolean receivedTransportHandlerException = context.isReceivedTransportHandlerException();
+    public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
+        boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();
         boolean receivedAnEncryptedAlert = didReceiveEncryptedAlert(action);
         int numberRecordsReceived = action.getReceivedRecords().size();
         int numberOfMessageReceived = action.getReceivedMessages().size();
@@ -42,6 +40,12 @@ public class ResponseExtractor {
         return new ResponseFingerprint(receivedTransportHandlerException, receivedAnEncryptedAlert,
                 numberRecordsReceived, numberOfMessageReceived, recordClasses, messageClasses, messageList, recordList,
                 socketState);
+    }
+
+    public static ResponseFingerprint getFingerprint(State state) {
+        TlsContext context = state.getTlsContext();
+        ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
+        return getFingerprint(state, action);
     }
 
     private static SocketState extractSocketState(State state) {
