@@ -89,7 +89,7 @@ public class CertificateUtils {
             ECPublicKey pubKey = (ECPublicKey) key;
             return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), NamedGroup.NONE);
         } else {
-            throw new UnsupportedOperationException("This public key is not supported:" + key.toString());
+            throw new UnsupportedOperationException("This public key is not supported:" + key);
         }
     }
 
