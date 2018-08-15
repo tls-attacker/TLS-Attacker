@@ -82,9 +82,13 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             tlsContext.setServerCertificate(cert);
         }
         if (cert != null) {
-            CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils
-                    .parsePublicKey(cert));
-            customPublicKey.adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            if (cert.getLength() == 0) {
+                LOGGER.warn("Received empty Certificate Message");
+            } else {
+                CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils
+                        .parsePublicKey(cert));
+                customPublicKey.adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            }
         }
         if (message.getCertificateKeyPair() != null) {
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
