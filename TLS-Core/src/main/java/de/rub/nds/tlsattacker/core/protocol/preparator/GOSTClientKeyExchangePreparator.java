@@ -30,12 +30,16 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.crypto.KeyAgreement;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.cryptopro.Gost2814789EncryptedKey;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 import org.bouncycastle.asn1.cryptopro.GostR3410TransportParameters;
+import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
@@ -51,6 +55,16 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
 
     private final GOSTClientKeyExchangeMessage msg;
+
+    private static Map<ASN1ObjectIdentifier, String> oidMappings = new HashMap<>();
+
+    static {
+        oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_A_ParamSet, "E-A");
+        oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_B_ParamSet, "E-B");
+        oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_C_ParamSet, "E-C");
+        oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_D_ParamSet, "E-D");
+        oidMappings.put(RosstandartObjectIdentifiers.id_tc26_gost_28147_param_Z, "Param-Z");
+    }
 
     public GOSTClientKeyExchangePreparator(Chooser chooser, GOSTClientKeyExchangeMessage msg) {
         super(chooser, msg);
@@ -109,7 +123,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                 byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(), keyBlob
                         .getSessionEncryptedKey().getMacKey());
 
-                byte[] pms = wrap(false, wrapped);
+                String sBoxName = oidMappings.get(keyBlob.getTransportParameters().getEncryptionParamSet());
+                byte[] pms = wrap(false, wrapped, sBoxName);
                 msg.getComputations().setPremasterSecret(pms);
             }
         } catch (CryptoException | GeneralSecurityException | IOException e) {
@@ -180,8 +195,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         }
     }
 
-    private byte[] wrap(boolean wrap, byte[] bytes) {
-        byte[] sBox = GOST28147Engine.getSBox(getSBoxName());
+    private byte[] wrap(boolean wrap, byte[] bytes, String sBoxName) {
+        byte[] sBox = GOST28147Engine.getSBox(sBoxName);
         KeyParameter keySpec = new KeyParameter(msg.getComputations().getKeyEncryptionKey());
         ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sBox);
         ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm());
@@ -202,7 +217,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     }
 
     private void prepareCek() {
-        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue());
+        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), getSBoxName());
 
         byte[] cek = new byte[32];
         System.arraycopy(wrapped, 0, cek, 0, cek.length);
