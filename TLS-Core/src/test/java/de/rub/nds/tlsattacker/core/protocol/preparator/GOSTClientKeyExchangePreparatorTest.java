@@ -68,11 +68,11 @@ public class GOSTClientKeyExchangePreparatorTest {
 
         byte[] expected = ArrayConverter
                 .hexStringToByteArray("2B9733F1F6EFEB453035415119E46D3E1798A037488BE6B5836CF8CFB81BB597");
-        byte[] actual = message.getComputations().getEncryptedKey();
+        byte[] actual = message.getComputations().getEncryptedKey().getValue();
         assertArrayEquals(expected, actual);
 
         expected = ArrayConverter.hexStringToByteArray("E2897619");
-        actual = message.getComputations().getMacKey();
+        actual = message.getComputations().getMacKey().getValue();
         assertArrayEquals(expected, actual);
     }
 

@@ -32,6 +32,10 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyTransportBlob;
 
+    public void setKeyTransportBlob(ModifiableByteArray keyTransportBlob) {
+        this.keyTransportBlob = keyTransportBlob;
+    }
+
     public void setKeyTransportBlob(byte[] keyTransportBlob) {
         this.keyTransportBlob = ModifiableVariableFactory.safelySetValue(this.keyTransportBlob, keyTransportBlob);
     }

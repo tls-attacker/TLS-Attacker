@@ -47,54 +47,6 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     }
 
-    public byte[] getUkm() {
-        return ukm.getValue();
-    }
-
-    public void setUkm(byte[] ukm) {
-        this.ukm = ModifiableVariableFactory.safelySetValue(this.ukm, ukm);
-    }
-
-    public void setEncryptionParamSet(ASN1ObjectIdentifier oid) {
-        this.encryptionParamSet = ModifiableVariableFactory.safelySetValue(this.encryptionParamSet, oid.getId());
-    }
-
-    public ASN1ObjectIdentifier getEncryptionParamSet() {
-        return new ASN1ObjectIdentifier(encryptionParamSet.getValue());
-    }
-
-    public byte[] getEncryptedKey() {
-        return encryptedKey.getValue();
-    }
-
-    public void setEncryptedKey(byte[] encryptedKey) {
-        this.encryptedKey = ModifiableVariableFactory.safelySetValue(this.encryptedKey, encryptedKey);
-    }
-
-    public byte[] getMacKey() {
-        return macKey.getValue();
-    }
-
-    public void setMacKey(byte[] macKey) {
-        this.macKey = ModifiableVariableFactory.safelySetValue(this.macKey, macKey);
-    }
-
-    public byte[] getKeyEncryptionKey() {
-        return keyEncryptionKey.getValue();
-    }
-
-    public byte[] getMaskKey() {
-        return maskKey == null ? null : maskKey.getValue();
-    }
-
-    public byte[] getProxyKeyBlobs() {
-        return proxyKeyBlobs == null ? null : proxyKeyBlobs.getValue();
-    }
-
-    public void setKeyEncryptionKey(byte[] keyEncryptionKey) {
-        this.keyEncryptionKey = ModifiableVariableFactory.safelySetValue(this.keyEncryptionKey, keyEncryptionKey);
-    }
-
     public CustomECPoint getClientPublicKey() {
         if (clientPublicKeyX != null && clientPublicKeyY != null) {
             return new CustomECPoint(clientPublicKeyX.getValue(), clientPublicKeyY.getValue());
@@ -106,6 +58,74 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     public void setClientPublicKey(CustomECPoint point) {
         this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX());
         this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY());
+    }
+
+    public ModifiableBigInteger getClientPublicKeyX() {
+        return clientPublicKeyX;
+    }
+
+    public void setClientPublicKeyX(ModifiableBigInteger clientPublicKeyX) {
+        this.clientPublicKeyX = clientPublicKeyX;
+    }
+
+    public ModifiableBigInteger getClientPublicKeyY() {
+        return clientPublicKeyY;
+    }
+
+    public void setClientPublicKeyY(ModifiableBigInteger clientPublicKeyY) {
+        this.clientPublicKeyY = clientPublicKeyY;
+    }
+
+    public ModifiableByteArray getEncryptedKey() {
+        return encryptedKey;
+    }
+
+    public void setEncryptedKey(byte[] encryptedKey) {
+        this.encryptedKey = ModifiableVariableFactory.safelySetValue(this.encryptedKey, encryptedKey);
+    }
+
+    public ModifiableString getEncryptionParamSet() {
+        return encryptionParamSet;
+    }
+
+    public void setEncryptionParamSet(ASN1ObjectIdentifier oid) {
+        this.encryptionParamSet = ModifiableVariableFactory.safelySetValue(this.encryptionParamSet, oid.getId());
+    }
+
+    public ModifiableByteArray getKeyEncryptionKey() {
+        return keyEncryptionKey;
+    }
+
+    public void setKeyEncryptionKey(byte[] keyEncryptionKey) {
+        this.keyEncryptionKey = ModifiableVariableFactory.safelySetValue(this.keyEncryptionKey, keyEncryptionKey);
+    }
+
+    public ModifiableByteArray getMacKey() {
+        return macKey;
+    }
+
+    public void setMacKey(byte[] macKey) {
+        this.macKey = ModifiableVariableFactory.safelySetValue(this.macKey, macKey);
+    }
+
+    public ModifiableByteArray getMaskKey() {
+        return maskKey;
+    }
+
+    public void setMaskKey(ModifiableByteArray maskKey) {
+        this.maskKey = maskKey;
+    }
+
+    public ModifiableByteArray getProxyKeyBlobs() {
+        return proxyKeyBlobs;
+    }
+
+    public void setProxyKeyBlobs(ModifiableByteArray proxyKeyBlobs) {
+        this.proxyKeyBlobs = proxyKeyBlobs;
+    }
+
+    public ModifiableByteArray getUkm() {
+        return ukm;
     }
 
     public void setUkm(ModifiableByteArray ukm) {
@@ -120,28 +140,16 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         this.macKey = cekMac;
     }
 
-    public void setKek(ModifiableByteArray kek) {
-        this.keyEncryptionKey = kek;
-    }
-
-    public void setMaskKey(ModifiableByteArray maskKey) {
-        this.maskKey = maskKey;
-    }
-
-    public void setProxyKeyBlobs(ModifiableByteArray proxyKeyBlobs) {
-        this.proxyKeyBlobs = proxyKeyBlobs;
-    }
-
     public void setEncryptionAlgOid(ModifiableString encryptionAlgOid) {
         this.encryptionParamSet = encryptionAlgOid;
     }
 
-    public void setClientPublicKeyX(ModifiableBigInteger clientPublicKeyX) {
-        this.clientPublicKeyX = clientPublicKeyX;
+    public void setKek(ModifiableByteArray kek) {
+        this.keyEncryptionKey = kek;
     }
 
-    public void setClientPublicKeyY(ModifiableBigInteger clientPublicKeyY) {
-        this.clientPublicKeyY = clientPublicKeyY;
+    public void setUkm(byte[] ukm) {
+        this.ukm = ModifiableVariableFactory.safelySetValue(this.ukm, ukm);
     }
 
 }
