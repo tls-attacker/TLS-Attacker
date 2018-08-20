@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 
 public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePreparator {
@@ -27,11 +28,6 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     @Override
     protected String getServerCurve() {
         return chooser.getServerGost12Curve();
-    }
-
-    @Override
-    protected String getSBoxName() {
-        return "Param-Z";
     }
 
     @Override
@@ -51,7 +47,8 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
 
     @Override
     protected boolean areParamSpecsEqual() {
-        return getServerCurve().equals(chooser.getClientGost12Curve());
+        return chooser.getSelectedCipherSuite().usesGOSTR34112012()
+                && getServerCurve().equals(chooser.getClientGost12Curve());
     }
 
     @Override

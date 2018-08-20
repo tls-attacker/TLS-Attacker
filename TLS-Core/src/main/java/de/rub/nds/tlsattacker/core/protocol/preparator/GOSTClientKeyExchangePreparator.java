@@ -59,6 +59,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     private static Map<ASN1ObjectIdentifier, String> oidMappings = new HashMap<>();
 
     static {
+        oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_TestParamSet, "E-TEST");
         oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_A_ParamSet, "E-A");
         oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_B_ParamSet, "E-B");
         oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_C_ParamSet, "E-C");
@@ -97,8 +98,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
                 prepareKek(msg.getComputations().getPrivateKey().getValue(), generatePublicKey(getServerPublicKey()));
 
-                prepareCek();
                 prepareEncryptionParams();
+                prepareCek();
                 prepareKeyBlob();
             } else {
                 TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob()
@@ -218,7 +219,9 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     }
 
     private void prepareCek() {
-        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), getSBoxName());
+        ASN1ObjectIdentifier param = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet().getValue());
+        String sBoxName = oidMappings.get(param);
+        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), sBoxName);
 
         byte[] cek = new byte[32];
         System.arraycopy(wrapped, 0, cek, 0, cek.length);
@@ -240,22 +243,34 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
             ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
         }
 
-        byte[] maskKey = null;
-        if (msg.getComputations().getMaskKey() != null) {
-            maskKey = msg.getComputations().getMaskKey().getValue();
-        }
         Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey()
-                .getValue(), maskKey, msg.getComputations().getMacKey().getValue());
+                .getValue(), getMaskKey(), msg.getComputations().getMacKey().getValue());
         ASN1ObjectIdentifier paramSet = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet()
                 .getValue());
         GostR3410TransportParameters params = new GostR3410TransportParameters(paramSet, ephemeralKey, msg
                 .getComputations().getUkm().getValue());
         GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
-        DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(msg.getComputations().getProxyKeyBlobs());
+        DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
         TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
 
         msg.setKeyTransportBlob(blob.getEncoded());
         LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+    }
+
+    private byte[] getProxyKeyBlobs() {
+        if (msg.getComputations().getProxyKeyBlobs() != null) {
+            return msg.getComputations().getProxyKeyBlobs().getValue();
+        } else {
+            return null;
+        }
+    }
+
+    private byte[] getMaskKey() {
+        if (msg.getComputations().getMaskKey() != null) {
+            return msg.getComputations().getMaskKey().getValue();
+        } else {
+            return null;
+        }
     }
 
     private CustomECPoint toCustomECPoint(ECPublicKey key) {
@@ -264,8 +279,6 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     }
 
     protected abstract String getServerCurve();
-
-    protected abstract String getSBoxName();
 
     protected abstract ASN1ObjectIdentifier getEncryptionParameters();
 

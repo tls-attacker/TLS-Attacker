@@ -30,11 +30,6 @@ public class GOST01ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     }
 
     @Override
-    protected String getSBoxName() {
-        return "E-A";
-    }
-
-    @Override
     protected String getKeyAgreementAlgorithm() {
         return "ECGOST3410";
     }
@@ -51,7 +46,8 @@ public class GOST01ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
 
     @Override
     protected boolean areParamSpecsEqual() {
-        return getServerCurve().equals(chooser.getClientGost01Curve());
+        return chooser.getSelectedCipherSuite().usesGOSTR3411()
+                && getServerCurve().equals(chooser.getClientGost01Curve());
     }
 
     @Override
