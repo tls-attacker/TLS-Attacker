@@ -94,10 +94,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             } catch (IOException ex) {
                 throw new PreparationException("Could not write byte[] from CertificatePair", ex);
             }
-            msg.setCertificatesListBytes(stream.toByteArray());
-            msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
-
         }
+        msg.setCertificatesListBytes(stream.toByteArray());
+        msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
     }
 
     private void prepareRequestContext(CertificateMessage msg) {
