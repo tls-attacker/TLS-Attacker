@@ -70,4 +70,8 @@ public class BlobRecord extends AbstractRecord {
         computations = new RecordCryptoComputations();
     }
 
+    @Override
+    public String toString() {
+        return "BlobRecord{" + "computations=" + computations + '}';
+    }
 }

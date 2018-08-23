@@ -138,4 +138,11 @@ public class Record extends AbstractRecord {
             this.computations = new RecordCryptoComputations();
         }
     }
+
+    @Override
+    public String toString() {
+        return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
+                + '}';
+    }
+
 }
