@@ -29,7 +29,7 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
                     try {
                         Object defaultValue = field.get(defaultConfig);
                         Object configValue = field.get(config);
-                        if (configValue != null)
+                        if (configValue != null) {
                             if (field.getType().isArray()) {
                                 if (Array.getLength(defaultValue) == Array.getLength(configValue)) {
                                     boolean equal = true;
@@ -39,13 +39,16 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
                                             break;
                                         }
                                     }
-                                    if (equal)
+                                    if (equal) {
                                         field.set(config, null);
+                                    }
                                 }
                             } else {
-                                if (defaultValue.equals(configValue))
+                                if (defaultValue.equals(configValue)) {
                                     field.set(config, null);
+                                }
                             }
+                        }
                     } catch (IllegalAccessException e) {
                         LOGGER.warn("Could not remove field in Config!", e);
                     }

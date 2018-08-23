@@ -65,8 +65,9 @@ public class EllipticCurveTest {
             }
         }
 
-        if (counter != implemented)
+        if (counter != implemented) {
             fail();
+        }
 
         System.out.println("All elliptic curves work as expected.");
     }
