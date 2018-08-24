@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;

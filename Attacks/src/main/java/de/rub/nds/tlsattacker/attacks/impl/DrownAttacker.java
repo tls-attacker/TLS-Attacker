@@ -33,12 +33,14 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.Arrays;
 import java.util.List;
-
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
+    private static void md5Update(MD5Digest md5, byte[] bytes) {
+        md5.update(bytes, 0, bytes.length);
+    }
 
     public DrownAttacker(DrownCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
@@ -123,11 +125,7 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         byte[] decrypted = new byte[len];
         rc4.processBytes(encrypted, 0, len, decrypted, 0);
 
-        if (Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), context.getClientRandom())) {
-            return true;
-        } else {
-            return false;
-        }
+        return Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), context.getClientRandom());
     }
 
     private byte[] getMD5Output(TlsContext tlsContext) {
@@ -143,7 +141,4 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         return md5Output;
     }
 
-    private static void md5Update(MD5Digest md5, byte[] bytes) {
-        md5.update(bytes, 0, bytes.length);
-    }
 }

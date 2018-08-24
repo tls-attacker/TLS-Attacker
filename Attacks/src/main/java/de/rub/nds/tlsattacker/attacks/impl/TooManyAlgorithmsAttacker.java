@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 

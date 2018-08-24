@@ -146,10 +146,7 @@ public class ResponseFingerprint {
         if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
             return false;
         }
-        if (this.socketState != other.socketState) {
-            return false;
-        }
-        return true;
+        return this.socketState == other.socketState;
     }
 
 }

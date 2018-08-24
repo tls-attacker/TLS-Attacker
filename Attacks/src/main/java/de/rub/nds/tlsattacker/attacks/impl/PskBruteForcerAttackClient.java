@@ -104,7 +104,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                         LOGGER.debug(ex);
                         LOGGER.warn("This Algorithm is not implemented yet!");
                         break;
-                    } catch (Exception c) {
+                    } catch (CryptoException c) {
                         // TODO should be exchanged with
                         // CryptoException with TLS-Attacker
                         // 2.5

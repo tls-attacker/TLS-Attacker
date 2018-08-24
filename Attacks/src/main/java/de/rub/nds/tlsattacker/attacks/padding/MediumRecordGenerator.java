@@ -44,9 +44,7 @@ public class MediumRecordGenerator extends PaddingRecordGenerator {
         byte[][] map = new byte[length][length];
         byte[] correctPadding = createPaddingBytes(length);
         for (int j = 0; j < length; j++) {
-            for (int i = 0; i < length; i++) {
-                map[j][i] = correctPadding[i];
-            }
+            System.arraycopy(correctPadding, 0, map[j], 0, length);
         }
         for (int i = 0; i < map.length; i++) {
             map[i][i] ^= 1;

@@ -280,7 +280,6 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
                     ProtocolMessageType.ALERT, records));
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 

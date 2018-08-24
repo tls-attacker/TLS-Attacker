@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class EarlyCcsAction extends TlsAction {
 
-    private Boolean targetOpenssl1_0_0;
+    private final Boolean targetOpenssl1_0_0;
 
     public EarlyCcsAction(Boolean adjustContext) {
         this.targetOpenssl1_0_0 = adjustContext;

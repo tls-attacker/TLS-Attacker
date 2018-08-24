@@ -18,9 +18,9 @@ import org.apache.logging.log4j.LogManager;
 
 public class ConnectivityChecker {
 
-    private final Connection connection;
 
     public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private final Connection connection;
 
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;

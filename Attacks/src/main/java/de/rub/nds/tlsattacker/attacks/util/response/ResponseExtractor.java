@@ -24,8 +24,6 @@ import java.util.List;
 
 public class ResponseExtractor {
 
-    private ResponseExtractor() {
-    }
 
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
         boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();
@@ -97,5 +95,7 @@ public class ResponseExtractor {
             }
         }
         return false;
+    }
+    private ResponseExtractor() {
     }
 }

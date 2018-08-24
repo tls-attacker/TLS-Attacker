@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -83,8 +84,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                         premasterSecret = BigInteger.ZERO;
                     }
                     LOGGER.debug(premasterSecret.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (DivisionException e) {
                 }
             }
             try {

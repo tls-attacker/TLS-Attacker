@@ -23,22 +23,15 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class BleichenbacherWorkflowGenerator {
 
-    private BleichenbacherWorkflowGenerator() {
-
-    }
-
     public static WorkflowTrace generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type, byte[] encryptedPMS) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
-
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(tlsConfig);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
-
         trace.addTlsAction(new SendAction(cke));
-
-        if (null != type)
+        if (null != type) {
             switch (type) {
                 case CKE:
                     // introduced for readability
@@ -56,8 +49,13 @@ public class BleichenbacherWorkflowGenerator {
                 default:
                     break;
             }
+        }
         trace.addTlsAction(new GenericReceiveAction());
-
         return trace;
     }
+
+    private BleichenbacherWorkflowGenerator() {
+
+    }
+
 }

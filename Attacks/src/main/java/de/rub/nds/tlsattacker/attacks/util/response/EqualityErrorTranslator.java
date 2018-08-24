@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 public class EqualityErrorTranslator {
 
-    private EqualityErrorTranslator() {
-    }
 
     public static String translation(EqualityError error, ResponseFingerprint fingerprint1,
             ResponseFingerprint fingerprint2) {
@@ -63,5 +61,7 @@ public class EqualityErrorTranslator {
                 builder.append(error.toString());
         }
         return builder.toString();
+    }
+    private EqualityErrorTranslator() {
     }
 }

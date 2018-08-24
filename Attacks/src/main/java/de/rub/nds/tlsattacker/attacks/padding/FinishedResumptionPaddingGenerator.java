@@ -1,23 +1,13 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -38,7 +28,7 @@ public class FinishedResumptionPaddingGenerator extends PaddingVectorGenerator {
             WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(
                     WorkflowTraceType.FULL_RESUMPTION, RunningModeType.CLIENT);
             SendAction sendAction = (SendAction) trace.getLastSendingAction();
-            LinkedList<AbstractRecord> recordList = new LinkedList<AbstractRecord>();
+            LinkedList<AbstractRecord> recordList = new LinkedList<>();
             recordList.add(new Record(config));
             recordList.add(record);
             sendAction.setRecords(recordList);

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import com.beust.jcommander.ParametersDelegate;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
@@ -39,14 +39,6 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
-    @Override
-    public Config createConfig() {
-        Config config = super.createConfig();
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
-
-        return config;
-    }
 
     public PskBruteForcerAttackClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -60,6 +52,14 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
             Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
         }
+    }
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
+        config.setQuickReceive(true);
+        config.setEarlyStop(true);
+        
+        return config;
     }
 
     @Override

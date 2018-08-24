@@ -28,4 +28,7 @@ public class PaddingVectorGeneratorFactory {
                 throw new IllegalArgumentException("Unknown PaddingVectorGenerator: " + config.getVectorGeneratorType());
         }
     }
+
+    private PaddingVectorGeneratorFactory() {
+    }
 }

@@ -17,8 +17,6 @@ import org.bouncycastle.util.Arrays;
 
 public class FingerPrintChecker {
 
-    private FingerPrintChecker() {
-    }
 
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
@@ -68,7 +66,6 @@ public class FingerPrintChecker {
             List<Class<AbstractRecord>> recordClassList2) {
         for (int i = 0; i < recordClassList1.size(); i++) {
             if (recordClassList1.get(i).equals(recordClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -80,7 +77,6 @@ public class FingerPrintChecker {
             List<Class<ProtocolMessage>> messageClassList2) {
         for (int i = 0; i < messageClassList1.size(); i++) {
             if (messageClassList1.get(i).equals(messageClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -169,5 +165,7 @@ public class FingerPrintChecker {
             }
         }
         return true;
+    }
+    private FingerPrintChecker() {
     }
 }

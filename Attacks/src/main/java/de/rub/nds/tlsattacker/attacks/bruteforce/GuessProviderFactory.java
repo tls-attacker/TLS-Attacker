@@ -22,4 +22,7 @@ public class GuessProviderFactory {
                 throw new UnsupportedOperationException("Guess provider \"" + type + "\" is not supported");
         }
     }
+
+    private GuessProviderFactory() {
+    }
 }

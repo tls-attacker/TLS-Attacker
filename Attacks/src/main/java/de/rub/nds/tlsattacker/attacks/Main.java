@@ -47,7 +47,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
@@ -185,9 +185,6 @@ public class Main {
     }
 
     public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
-        if (config.getGeneralDelegate().isHelp()) {
-            return true;
-        }
-        return false;
+        return config.getGeneralDelegate().isHelp();
     }
 }
