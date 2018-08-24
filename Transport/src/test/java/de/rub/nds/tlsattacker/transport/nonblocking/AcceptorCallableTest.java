@@ -55,7 +55,7 @@ public class AcceptorCallableTest {
         Socket clientSocket = new Socket();
         clientSocket.connect(new InetSocketAddress("localhost", socket.getLocalPort()));
         try {
-            Thread.currentThread().sleep(10);
+            Thread.sleep(10);
         } catch (InterruptedException ex) {
         }
         assertFalse(t.isAlive());

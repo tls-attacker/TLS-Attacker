@@ -58,7 +58,6 @@ public class ClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }
@@ -89,7 +88,6 @@ public class ClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }

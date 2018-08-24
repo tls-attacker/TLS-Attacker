@@ -57,7 +57,6 @@ public class TimingClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }
@@ -90,7 +89,6 @@ public class TimingClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }

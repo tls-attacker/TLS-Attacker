@@ -17,7 +17,7 @@ public class UdpOutputStream extends OutputStream {
 
     private final static int BUFFER_SIZE = 8192;
 
-    private DatagramSocket socket;
+    private final DatagramSocket socket;
 
     private int index;
 

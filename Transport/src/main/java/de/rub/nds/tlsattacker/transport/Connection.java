@@ -112,9 +112,6 @@ public abstract class Connection {
         if (!Objects.equals(this.timeout, other.timeout)) {
             return false;
         }
-        if (!Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType());
     }
 }

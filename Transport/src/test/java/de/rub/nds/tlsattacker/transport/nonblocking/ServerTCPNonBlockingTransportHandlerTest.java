@@ -105,13 +105,11 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
             assertTrue(handler.isInitialized());
         } catch (IOException ex) {
-            ex.printStackTrace();
             fail("Encountered Exception");
         } finally {
             try {
                 handler.closeConnection();
             } catch (IOException ex) {
-                ex.printStackTrace();
             }
         }
     }
