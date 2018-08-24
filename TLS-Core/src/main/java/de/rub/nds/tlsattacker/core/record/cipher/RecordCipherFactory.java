@@ -39,7 +39,7 @@ public class RecordCipherFactory {
                 return new RecordNullCipher(context);
             }
         } catch (Exception E) {
-            LOGGER.warn("Could not create RecordCipher from the current Context! Creating null Cipher");
+            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", E);
             return new RecordNullCipher(context);
         }
     }
