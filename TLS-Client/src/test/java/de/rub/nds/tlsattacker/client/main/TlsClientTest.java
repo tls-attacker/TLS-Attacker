@@ -75,7 +75,7 @@ public class TlsClientTest {
 
     private static final int TIMEOUT = 2000;
 
-    private BadRandom random = new BadRandom(new Random(0), null);
+    private final BadRandom random = new BadRandom(new Random(0), null);
 
     @Rule
     public ErrorCollector collector = new ErrorCollector();
@@ -196,7 +196,6 @@ public class TlsClientTest {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
-            E.printStackTrace();
         }
 
         String workflowString = state.getWorkflowTrace().toString();
