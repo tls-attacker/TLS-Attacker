@@ -92,7 +92,6 @@ public class ClientHelloTest {
         try {
             m.marshal(cl, writer);
         } catch (JAXBException E) {
-            E.printStackTrace();
             fail();
         }
         String xmlString = writer.toString();

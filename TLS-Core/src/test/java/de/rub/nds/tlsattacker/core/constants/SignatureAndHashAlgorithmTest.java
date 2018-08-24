@@ -25,7 +25,6 @@ public class SignatureAndHashAlgorithmTest {
             System.out.println("---");
             System.out.println("Original Value:" + algo.name());
             System.out.println("HashAlgo:" + algo.getHashAlgorithm());
-            System.out.println("Signature Value:" + algo.getSignatureAlgorithm());
         }
     }
 }

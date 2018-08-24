@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
+import java.util.Arrays;
 
 public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServerKeyExchangeMessage> {
 
@@ -78,7 +79,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      */
     private void parseModulus(SrpServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
-        LOGGER.debug("Modulus: " + msg.getModulus().getValue());
+        LOGGER.debug("Modulus: " + Arrays.toString(msg.getModulus().getValue()));
     }
 
     /**
@@ -100,7 +101,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      */
     private void parseSalt(SrpServerKeyExchangeMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
-        LOGGER.debug("Salt: " + msg.getSalt().getValue().toString());
+        LOGGER.debug("Salt: " + Arrays.toString(msg.getSalt().getValue()));
     }
 
     /**
@@ -122,7 +123,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      */
     private void parseGenerator(SrpServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
-        LOGGER.debug("G: " + msg.getGenerator().getValue());
+        LOGGER.debug("G: " + Arrays.toString(msg.getGenerator().getValue()));
     }
 
     /**

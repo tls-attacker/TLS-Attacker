@@ -26,4 +26,7 @@ public class SHA1Utils {
         return sha1Output;
     }
 
+    private SHA1Utils() {
+    }
+
 }

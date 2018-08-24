@@ -36,15 +36,21 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientRSAPublicKey(publicExponent);
-            context.setClientRsaModulus(modulus);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerRSAPublicKey(publicExponent);
-            context.setServerRsaModulus(modulus);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientRSAPublicKey(publicExponent);
+                    context.setClientRsaModulus(modulus);
+                    break;
+                case SERVER:
+                    context.setServerRSAPublicKey(publicExponent);
+                    context.setServerRsaModulus(modulus);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -83,15 +89,21 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientRSAPublicKey(publicExponent);
-            config.setDefaultClientRSAModulus(modulus);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerRSAPublicKey(publicExponent);
-            config.setDefaultServerRSAModulus(modulus);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientRSAPublicKey(publicExponent);
+                    config.setDefaultClientRSAModulus(modulus);
+                    break;
+                case SERVER:
+                    config.setDefaultServerRSAPublicKey(publicExponent);
+                    config.setDefaultServerRSAModulus(modulus);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -117,9 +129,6 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
         if (!Objects.equals(this.publicExponent, other.publicExponent)) {
             return false;
         }
-        if (!Objects.equals(this.modulus, other.modulus)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.modulus, other.modulus);
     }
 }

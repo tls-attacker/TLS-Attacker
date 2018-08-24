@@ -75,6 +75,16 @@ public class KeyShareCalculator {
         return publicKey;
     }
 
+    protected static ECDomainParameters generateEcParameters(NamedGroup group) {
+        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
+        try {
+            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
+        } catch (IOException ex) {
+            throw new PreparationException("Failed to generate EC domain parameters", ex);
+        }
+    }
+
     private byte[] computeSharedSecret(KeyShareEntry keyShare) {
         switch (keyShare.getGroupConfig()) {
             case ECDH_X25519:
@@ -118,16 +128,6 @@ public class KeyShareCalculator {
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroupConfig()
                         + " is unsupported");
-        }
-    }
-
-    protected static ECDomainParameters generateEcParameters(NamedGroup group) {
-        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
     }
 

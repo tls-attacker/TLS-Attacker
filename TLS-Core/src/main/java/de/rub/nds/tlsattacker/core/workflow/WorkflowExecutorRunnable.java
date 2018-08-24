@@ -26,7 +26,7 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowExecutorRunnable.class);
     private final Socket socket;
-    private State globalState;
+    private final State globalState;
 
     public WorkflowExecutorRunnable(State globalState, Socket socket) {
         this.globalState = globalState;

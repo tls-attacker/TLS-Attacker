@@ -30,9 +30,6 @@ public class SignatureCalculator {
 
     protected static final Logger LOGGER = LogManager.getLogger(SignatureCalculator.class.getName());
 
-    private SignatureCalculator() {
-    }
-
     public static byte[] generateSignature(SignatureAndHashAlgorithm algorithm, Chooser chooser, byte[] toBeSigned)
             throws CryptoException {
         switch (algorithm.getSignatureAlgorithm()) {
@@ -102,5 +99,8 @@ public class SignatureCalculator {
     public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
             SignatureAndHashAlgorithm algorithm) {
         return new byte[0];
+    }
+
+    private SignatureCalculator() {
     }
 }

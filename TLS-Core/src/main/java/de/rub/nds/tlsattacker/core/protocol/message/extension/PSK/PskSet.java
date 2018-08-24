@@ -172,9 +172,6 @@ public class PskSet implements Serializable {
         if (!Arrays.equals(this.ticketAgeAdd, other.ticketAgeAdd)) {
             return false;
         }
-        if (this.cipherSuite != other.cipherSuite) {
-            return false;
-        }
-        return true;
+        return this.cipherSuite == other.cipherSuite;
     }
 }

@@ -168,7 +168,7 @@ public class RecordEncryptorTest {
                 record.getComputations().getPlainRecordBytes().getValue());
 
         assertNull(record.getComputations().getInitialisationVector());
-        assertEquals(12, (int) record.getComputations().getPaddingLength().getValue());
+        assertEquals(12, (long) record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"),

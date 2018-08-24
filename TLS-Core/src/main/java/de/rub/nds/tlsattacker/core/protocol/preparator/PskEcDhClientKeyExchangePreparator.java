@@ -15,6 +15,7 @@ import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
@@ -44,7 +45,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             outputStream.write(ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
             LOGGER.debug("PremasterSecret: dhValue Length: " + premasterSecret.length);
             outputStream.write(premasterSecret);
-            LOGGER.debug("PremasterSecret: dhValue" + premasterSecret);
+            LOGGER.debug("PremasterSecret: dhValue" + Arrays.toString(premasterSecret));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -53,7 +54,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PSK PremasterSecret: " + tempPremasterSecret);
+        LOGGER.debug("PSK PremasterSecret: " + Arrays.toString(tempPremasterSecret));
         return tempPremasterSecret;
     }
 }

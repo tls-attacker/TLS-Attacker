@@ -103,7 +103,7 @@ public enum NamedGroup {
 
     private static final Map<Integer, NamedGroup> MAP;
 
-    private static Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
+    private static final Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
             FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName) {

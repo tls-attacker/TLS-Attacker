@@ -25,6 +25,16 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CertificateTypeExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("0009000100"), 1, 0, null,
+                        Arrays.asList(CertificateType.X509), false },
+                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("000900020100"), 2, 0, 1,
+                        Arrays.asList(CertificateType.X509), true },
+                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("00090003020100"), 3, 0, 2,
+                        Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -48,17 +58,6 @@ public class CertificateTypeExtensionParserTest {
         this.isClientState = isClientState;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("0009000100"), 1, 0, null,
-                        Arrays.asList(CertificateType.X509), false },
-                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("000900020100"), 2, 0, 1,
-                        Arrays.asList(CertificateType.X509), true },
-                { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("00090003020100"), 3, 0, 2,
-                        Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
-    }
-
     @Before
     public void setUp() {
         parser = new CertificateTypeExtensionParser(startParsing, expectedBytes);
@@ -69,7 +68,7 @@ public class CertificateTypeExtensionParserTest {
         msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
 
         if (certificateTypesLength != null) {
             assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());

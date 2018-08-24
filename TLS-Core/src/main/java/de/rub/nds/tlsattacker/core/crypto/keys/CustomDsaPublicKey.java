@@ -44,19 +44,25 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientDsaGenerator(g);
-            context.setClientDsaPrimeP(p);
-            context.setClientDsaPrimeQ(q);
-            context.setClientDsaPublicKey(publicKey);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerDsaGenerator(g);
-            context.setServerDsaPrimeP(p);
-            context.setServerDsaPrimeQ(q);
-            context.setServerDsaPublicKey(publicKey);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientDsaGenerator(g);
+                    context.setClientDsaPrimeP(p);
+                    context.setClientDsaPrimeQ(q);
+                    context.setClientDsaPublicKey(publicKey);
+                    break;
+                case SERVER:
+                    context.setServerDsaGenerator(g);
+                    context.setServerDsaPrimeP(p);
+                    context.setServerDsaPrimeQ(q);
+                    context.setServerDsaPublicKey(publicKey);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -86,19 +92,25 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientDsaGenerator(g);
-            config.setDefaultClientDsaPrimeP(p);
-            config.setDefaultClientDsaPrimeQ(q);
-            config.setDefaultClientDsaPublicKey(publicKey);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerDsaGenerator(g);
-            config.setDefaultServerDsaPrimeP(p);
-            config.setDefaultServerDsaPrimeQ(q);
-            config.setDefaultServerDsaPublicKey(publicKey);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientDsaGenerator(g);
+                    config.setDefaultClientDsaPrimeP(p);
+                    config.setDefaultClientDsaPrimeQ(q);
+                    config.setDefaultClientDsaPublicKey(publicKey);
+                    break;
+                case SERVER:
+                    config.setDefaultServerDsaGenerator(g);
+                    config.setDefaultServerDsaPrimeP(p);
+                    config.setDefaultServerDsaPrimeQ(q);
+                    config.setDefaultServerDsaPublicKey(publicKey);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -132,9 +144,6 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         if (!Objects.equals(this.g, other.g)) {
             return false;
         }
-        if (!Objects.equals(this.publicKey, other.publicKey)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.publicKey, other.publicKey);
     }
 }

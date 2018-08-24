@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer
 
 public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 
-    private HttpsResponseMessage message;
+    private final HttpsResponseMessage message;
 
     public HttpsResponseSerializer(HttpsResponseMessage message, ProtocolVersion version) {
         super(message, version);

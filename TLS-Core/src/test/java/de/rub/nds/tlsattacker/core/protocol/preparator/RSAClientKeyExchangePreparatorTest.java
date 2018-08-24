@@ -114,7 +114,6 @@ public class RSAClientKeyExchangePreparatorTest {
         System.err.println("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800".length());
         context.setServerRandom(ArrayConverter
                 .hexStringToByteArray("a63cd22a46e4fc22b1f03d579c5f0e43cadfda01ef615fd52a9cdbaed3f6c6c2"));
-        System.err.println(context.getChooser().getServerRsaModulus().bitLength());
         // context.setRsaModulus(CertificateUtils.extractRSAModulus(cert));
 
         // Test

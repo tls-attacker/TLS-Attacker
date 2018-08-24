@@ -60,28 +60,40 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientRSAPrivateKey(privateExponent);
-            context.setClientRsaModulus(modulus);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerRSAPrivateKey(privateExponent);
-            context.setServerRsaModulus(modulus);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientRSAPrivateKey(privateExponent);
+                    context.setClientRsaModulus(modulus);
+                    break;
+                case SERVER:
+                    context.setServerRSAPrivateKey(privateExponent);
+                    context.setServerRsaModulus(modulus);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientRSAPrivateKey(privateExponent);
-            config.setDefaultClientRSAModulus(modulus);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerRSAPrivateKey(privateExponent);
-            config.setDefaultServerRSAModulus(modulus);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientRSAPrivateKey(privateExponent);
+                    config.setDefaultClientRSAModulus(modulus);
+                    break;
+                case SERVER:
+                    config.setDefaultServerRSAPrivateKey(privateExponent);
+                    config.setDefaultServerRSAModulus(modulus);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -107,10 +119,7 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
         if (!Objects.equals(this.modulus, other.modulus)) {
             return false;
         }
-        if (!Objects.equals(this.privateExponent, other.privateExponent)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.privateExponent, other.privateExponent);
     }
 
     @Override

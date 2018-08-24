@@ -501,10 +501,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (!checkMessageListsEquals(this.messages, other.messages)) {
             return false;
         }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.records, other.records);
     }
 
     @Override

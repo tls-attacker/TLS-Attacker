@@ -27,6 +27,13 @@ public class FinishedPreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(FinishedPreparatorTest.class);
 
+    private static void registerPreviousMessages(TlsContext context, String... handshakeMessageHex) {
+        for (String hex : handshakeMessageHex) {
+            byte[] bytes = ArrayConverter.hexStringToByteArray(hex);
+            context.getDigest().append(bytes);
+        }
+    }
+
     private FinishedMessage message;
     private TlsContext context;
     private FinishedPreparator preparator;
@@ -130,10 +137,4 @@ public class FinishedPreparatorTest {
         preparator.prepare();
     }
 
-    private static void registerPreviousMessages(TlsContext context, String... handshakeMessageHex) {
-        for (String hex : handshakeMessageHex) {
-            byte[] bytes = ArrayConverter.hexStringToByteArray(hex);
-            context.getDigest().append(bytes);
-        }
-    }
 }

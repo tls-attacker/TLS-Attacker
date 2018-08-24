@@ -15,11 +15,7 @@ import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class GeneralDelegate extends Delegate {

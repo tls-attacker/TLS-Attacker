@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import java.math.BigInteger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
 

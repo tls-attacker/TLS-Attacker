@@ -20,6 +20,19 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class RequestItemV2ParserTest {
+    public static void assertResponderIdList(List<ResponderId> listExpected, List<ResponderId> listActual) {
+        ResponderId itemExpected;
+        ResponderId itemActual;
+        for (int i = 0; i < listExpected.size(); i++) {
+            itemExpected = listExpected.get(i);
+            itemActual = listActual.get(i);
+            ResponderIdPreparator preparator = new ResponderIdPreparator(new TlsContext().getChooser(), itemExpected);
+            preparator.prepare();
+
+            assertEquals(itemExpected.getIdLength().getValue(), itemActual.getIdLength().getValue());
+            assertArrayEquals(itemExpected.getId().getValue(), itemActual.getId().getValue());
+        }
+    }
 
     private final int startParsing = 0;
     private final int requestType = 1;
@@ -38,27 +51,14 @@ public class RequestItemV2ParserTest {
         RequestItemV2Parser parser = new RequestItemV2Parser(startParsing, parsingBytes);
         RequestItemV2 item = parser.parse();
 
-        assertEquals(requestType, (int) item.getRequestType().getValue());
-        assertEquals(requestLength, (int) item.getRequestLength().getValue());
-        assertEquals(responderIdLength, (int) item.getResponderIdListLength().getValue());
+        assertEquals(requestType, (long) item.getRequestType().getValue());
+        assertEquals(requestLength, (long) item.getRequestLength().getValue());
+        assertEquals(responderIdLength, (long) item.getResponderIdListLength().getValue());
         assertArrayEquals(responderIdBytes, item.getResponderIdListBytes().getValue());
         assertResponderIdList(responderIdList, item.getResponderIdList());
-        assertEquals(requestExtensionLength, (int) item.getRequestExtensionsLength().getValue());
+        assertEquals(requestExtensionLength, (long) item.getRequestExtensionsLength().getValue());
         assertArrayEquals(requestExtension, item.getRequestExtensions().getValue());
 
     }
 
-    public static void assertResponderIdList(List<ResponderId> listExpected, List<ResponderId> listActual) {
-        ResponderId itemExpected;
-        ResponderId itemActual;
-        for (int i = 0; i < listExpected.size(); i++) {
-            itemExpected = listExpected.get(i);
-            itemActual = listActual.get(i);
-            ResponderIdPreparator preparator = new ResponderIdPreparator(new TlsContext().getChooser(), itemExpected);
-            preparator.prepare();
-
-            assertEquals(itemExpected.getIdLength().getValue(), itemActual.getIdLength().getValue());
-            assertArrayEquals(itemExpected.getId().getValue(), itemActual.getId().getValue());
-        }
-    }
 }

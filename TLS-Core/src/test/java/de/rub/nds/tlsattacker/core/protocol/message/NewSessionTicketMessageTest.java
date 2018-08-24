@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class NewSessionTicketMessageTest {
 
@@ -39,7 +39,6 @@ public class NewSessionTicketMessageTest {
         sb.append("\n  Ticket: ").append(new SessionTicket().toString());
         System.out.println(message.toString());
         System.out.println();
-        System.out.println(sb.toString());
 
         assertEquals(message.toString(), sb.toString());
     }

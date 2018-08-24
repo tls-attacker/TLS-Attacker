@@ -83,4 +83,7 @@ public class CurveFactory {
         }
     }
 
+    private CurveFactory() {
+    }
+
 }

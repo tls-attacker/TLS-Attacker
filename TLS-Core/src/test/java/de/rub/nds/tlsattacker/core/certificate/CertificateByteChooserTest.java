@@ -16,7 +16,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,17 +23,17 @@ import static org.junit.Assert.*;
  */
 public class CertificateByteChooserTest {
 
-    private CertificateByteChooser chooser;
-
-    public CertificateByteChooserTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    private CertificateByteChooser chooser;
+
+    public CertificateByteChooserTest() {
     }
 
     @Before
@@ -55,7 +54,6 @@ public class CertificateByteChooserTest {
             System.out.println("Pk type:" + pair.getCertPublicKeyType());
             System.out.println("Cert signature type: " + pair.getCertSignatureType());
             System.out.println("PublickeyGroup: " + pair.getPublicKeyGroup());
-            System.out.println("Signature group : " + pair.getSignatureGroup());
         }
     }
 

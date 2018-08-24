@@ -112,10 +112,9 @@ public class RecordDecryptorTest {
         recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
-        System.out.println(ArrayConverter.bytesToHexString(record.getComputations().getInitialisationVector()));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3"), record
                 .getComputations().getInitialisationVector().getValue());
-        assertEquals(11, (int) record.getComputations().getPaddingLength().getValue());
+        assertEquals(11, (long) record.getComputations().getPaddingLength().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());

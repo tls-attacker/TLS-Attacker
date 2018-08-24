@@ -55,10 +55,6 @@ public class HKDFunction {
 
     public static final String RESUMPTION = "resumption";
 
-    public HKDFunction() {
-
-    }
-
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
@@ -193,5 +189,8 @@ public class HKDFunction {
             int outLen) throws CryptoException {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgortihm, prk, info, outLen);
+    }
+
+    private HKDFunction() {
     }
 }

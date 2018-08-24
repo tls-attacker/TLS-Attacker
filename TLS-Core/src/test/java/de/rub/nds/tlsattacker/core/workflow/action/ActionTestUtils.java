@@ -215,4 +215,7 @@ public class ActionTestUtils {
 
         assertEquals(action, actual);
     }
+
+    private ActionTestUtils() {
+    }
 }

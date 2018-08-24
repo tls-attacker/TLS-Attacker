@@ -30,8 +30,8 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
@@ -97,12 +97,6 @@ public class Config implements Serializable {
             LOGGER.warn("Could not close resource Stream!", ex);
         }
         return config;
-    }
-
-    public Config createCopy() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        ConfigIO.write(this, stream);
-        return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -1128,6 +1122,12 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config");
         }
+    }
+
+    public Config createCopy() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ConfigIO.write(this, stream);
+        return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
     public Boolean getStopActionsAfterIOException() {

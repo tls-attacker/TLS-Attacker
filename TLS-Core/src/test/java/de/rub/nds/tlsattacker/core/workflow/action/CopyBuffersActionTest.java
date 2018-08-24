@@ -8,19 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import org.junit.Test;
-
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class CopyBuffersActionTest {
 

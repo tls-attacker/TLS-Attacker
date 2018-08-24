@@ -35,7 +35,7 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
         String line = parseStringTill((byte) 0x0A);
 
         // compatible with \r\n and \n line endings
-        while (!line.trim().equals("")) {
+        while (!line.trim().isEmpty()) {
             HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);

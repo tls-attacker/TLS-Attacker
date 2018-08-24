@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -80,7 +81,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -582,11 +582,11 @@ public class WorkflowConfigurationFactory {
             if (action.isMessageAction()) {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
-                        List<ExtensionMessage> extensions = ((ClientHelloMessage) msg).getExtensions();
+                        List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
                         for (int x = 0; x < extensions.size(); x++) {
                             if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
                                     || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((ClientHelloMessage) msg).getExtensions().remove(extensions.get(x));
+                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
                                 x--;
                             }
                         }

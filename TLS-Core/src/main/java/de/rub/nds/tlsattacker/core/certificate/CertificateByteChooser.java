@@ -29,8 +29,6 @@ public class CertificateByteChooser {
 
     private final static String RESOURCE_PATH = "certs/";
 
-    private List<CertificateKeyPair> keyPairList;
-
     private static CertificateByteChooser instance;
 
     public static synchronized CertificateByteChooser getInstance() {
@@ -39,6 +37,8 @@ public class CertificateByteChooser {
         }
         return instance;
     }
+
+    private final List<CertificateKeyPair> keyPairList;
 
     private CertificateByteChooser() {
         keyPairList = new LinkedList<>();
@@ -121,7 +121,6 @@ public class CertificateByteChooser {
                                 .getResourceAsStream(RESOURCE_PATH + keyName));
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
                     } catch (Exception E) {
-                        E.printStackTrace();
                         LOGGER.warn("Could not load: " + file, E);
                     }
                 }

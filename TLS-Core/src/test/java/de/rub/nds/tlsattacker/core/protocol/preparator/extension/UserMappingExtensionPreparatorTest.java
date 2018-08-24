@@ -19,11 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class UserMappingExtensionPreparatorTest {
+    private static final int EXTENSION_LENGTH = 1;
 
     private TlsContext context;
     private UserMappingExtensionPreparator preparator;
     private UserMappingExtensionMessage msg;
-    private static final int EXTENSION_LENGTH = 1;
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
 
     @Before
@@ -41,7 +41,7 @@ public class UserMappingExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.USER_MAPPING.getValue(), msg.getExtensionType().getValue());
-        assertEquals(EXTENSION_LENGTH, (int) msg.getExtensionLength().getValue());
-        assertEquals(hintType.getValue(), (byte) msg.getUserMappingType().getValue());
+        assertEquals(EXTENSION_LENGTH, (long) msg.getExtensionLength().getValue());
+        assertEquals(hintType.getValue(), (long) msg.getUserMappingType().getValue());
     }
 }

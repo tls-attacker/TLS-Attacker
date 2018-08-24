@@ -38,4 +38,7 @@ public class CipherWrapper {
         }
     }
 
+    private CipherWrapper() {
+    }
+
 }

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
+import java.util.Arrays;
 
 public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL2ClientMasterKeyMessage> {
 
@@ -83,6 +84,6 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL
     private void writeCipherKind(SSL2ClientMasterKeyMessage msg) {
         byte[] cipherKindValue = msg.getCipherKind().getValue();
         appendBytes(cipherKindValue);
-        LOGGER.debug("CipherKind: " + cipherKindValue);
+        LOGGER.debug("CipherKind: " + Arrays.toString(cipherKindValue));
     }
 }

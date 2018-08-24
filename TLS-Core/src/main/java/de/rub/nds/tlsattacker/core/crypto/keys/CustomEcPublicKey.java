@@ -48,15 +48,21 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientEcPublicKey(new CustomECPoint(x, y));
-            context.setSelectedGroup(group);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerEcPublicKey(new CustomECPoint(x, y));
-            context.setSelectedGroup(group);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientEcPublicKey(new CustomECPoint(x, y));
+                    context.setSelectedGroup(group);
+                    break;
+                case SERVER:
+                    context.setServerEcPublicKey(new CustomECPoint(x, y));
+                    context.setSelectedGroup(group);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -93,15 +99,21 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientEcPublicKey(new CustomECPoint(x, y));
-            config.setDefaultSelectedNamedGroup(group);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerEcPublicKey(new CustomECPoint(x, y));
-            config.setDefaultSelectedNamedGroup(group);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientEcPublicKey(new CustomECPoint(x, y));
+                    config.setDefaultSelectedNamedGroup(group);
+                    break;
+                case SERVER:
+                    config.setDefaultServerEcPublicKey(new CustomECPoint(x, y));
+                    config.setDefaultSelectedNamedGroup(group);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -131,10 +143,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         if (!Objects.equals(this.y, other.y)) {
             return false;
         }
-        if (this.group != other.group) {
-            return false;
-        }
-        return true;
+        return this.group == other.group;
     }
 
 }

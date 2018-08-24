@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -79,7 +77,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientSupportedPointFormats().size() == 8);
         assertTrue(chooser.getClientSupportedPointFormats().size() == 8);
         context.setClientPointFormatsList(new LinkedList<ECPointFormat>());
-        assertTrue(chooser.getClientSupportedPointFormats().size() == 0);
+        assertTrue(chooser.getClientSupportedPointFormats().isEmpty());
     }
 
     /**
@@ -107,7 +105,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientNamedGroups().size() == 3);
         assertTrue(chooser.getClientSupportedNamedGroups().size() == 3);
         context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
-        assertTrue(chooser.getClientSupportedNamedGroups().size() == 0);
+        assertTrue(chooser.getClientSupportedNamedGroups().isEmpty());
 
     }
 
@@ -129,7 +127,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultServerSupportedPointFormats().size() == 8);
         assertTrue(chooser.getServerSupportedPointFormats().size() == 8);
         context.setServerPointFormatsList(new LinkedList<ECPointFormat>());
-        assertTrue(chooser.getServerSupportedPointFormats().size() == 0);
+        assertTrue(chooser.getServerSupportedPointFormats().isEmpty());
     }
 
     /**
@@ -144,7 +142,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
         context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
-        assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 0);
+        assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
     /**
@@ -158,7 +156,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientSNIEntryList().size() == 1);
         assertTrue(chooser.getClientSNIEntryList().size() == 1);
         context.setClientSNIEntryList(new LinkedList<SNIEntry>());
-        assertTrue(context.getClientSNIEntryList().size() == 0);
+        assertTrue(context.getClientSNIEntryList().isEmpty());
     }
 
     /**
@@ -204,7 +202,7 @@ public class DefaultChooserTest {
         assertTrue(config.getClientCertificateTypes().size() == 7);
         assertTrue(chooser.getClientCertificateTypes().size() == 7);
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
-        assertTrue(chooser.getClientCertificateTypes().size() == 0);
+        assertTrue(chooser.getClientCertificateTypes().isEmpty());
 
     }
 

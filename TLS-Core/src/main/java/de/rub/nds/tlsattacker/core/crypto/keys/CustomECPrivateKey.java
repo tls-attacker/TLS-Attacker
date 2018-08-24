@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
@@ -76,28 +74,40 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientEcPrivateKey(privatekey);
-            context.setSelectedGroup(group);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerEcPrivateKey(privatekey);
-            context.setSelectedGroup(group);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientEcPrivateKey(privatekey);
+                    context.setSelectedGroup(group);
+                    break;
+                case SERVER:
+                    context.setServerEcPrivateKey(privatekey);
+                    context.setSelectedGroup(group);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientEcPrivateKey(privatekey);
-            config.setDefaultSelectedNamedGroup(group);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerEcPrivateKey(privatekey);
-            config.setDefaultSelectedNamedGroup(group);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientEcPrivateKey(privatekey);
+                    config.setDefaultSelectedNamedGroup(group);
+                    break;
+                case SERVER:
+                    config.setDefaultServerEcPrivateKey(privatekey);
+                    config.setDefaultSelectedNamedGroup(group);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -123,9 +133,6 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
         if (!Objects.equals(this.privatekey, other.privatekey)) {
             return false;
         }
-        if (this.group != other.group) {
-            return false;
-        }
-        return true;
+        return this.group == other.group;
     }
 }

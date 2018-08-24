@@ -25,6 +25,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CachedInfoExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return CachedInfoExtensionParserTest.generateData();
+    }
 
     private final ExtensionType type;
     private final ConnectionEndType isClientState;
@@ -45,11 +49,6 @@ public class CachedInfoExtensionSerializerTest {
         this.cachedObjectList = cachedObjectList;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CachedInfoExtensionParserTest.generateData();
     }
 
     @Before

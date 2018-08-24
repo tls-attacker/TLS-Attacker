@@ -215,10 +215,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
             return false;
         }
         final ReceiveTillAction other = (ReceiveTillAction) obj;
-        if (!Objects.equals(this.waitTillMessage, other.waitTillMessage)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.waitTillMessage, other.waitTillMessage);
     }
 
     @Override

@@ -145,10 +145,7 @@ public class WaitAction extends TlsAction {
             return false;
         }
         final WaitAction other = (WaitAction) obj;
-        if (!Objects.equals(this.time, other.time)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.time, other.time);
     }
 
 }

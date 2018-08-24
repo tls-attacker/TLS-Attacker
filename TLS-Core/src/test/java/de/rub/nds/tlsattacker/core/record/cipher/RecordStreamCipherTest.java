@@ -54,7 +54,6 @@ public class RecordStreamCipherTest {
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
                     && !suite.name().contains("ARIA")) {
-                System.out.println(suite);
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : connections) {
                     context.setConnection(con);

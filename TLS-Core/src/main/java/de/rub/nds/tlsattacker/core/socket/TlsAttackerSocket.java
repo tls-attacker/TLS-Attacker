@@ -23,8 +23,12 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TlsAttackerSocket {
+
+    protected static final Logger LOGGER = LogManager.getLogger(TlsAttackerSocket.class.getName());
 
     private final State state;
 
@@ -84,14 +88,14 @@ public class TlsAttackerSocket {
                     send(message);
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOGGER.warn(ex);
             }
         } while (actuallyRead > 0);
     }
 
     /**
      * Receives bytes and decrypts ApplicationMessage contents
-     * 
+     *
      * @return Received bytes The bytes which are received
      * @throws java.io.IOException
      *             If something goes wrong during the receive

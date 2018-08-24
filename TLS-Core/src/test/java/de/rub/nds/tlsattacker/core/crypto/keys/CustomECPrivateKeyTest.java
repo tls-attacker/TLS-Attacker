@@ -24,13 +24,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class CustomECPrivateKeyTest {
-
-    @Parameter(0)
-    public NamedGroup curve;
-
-    @Rule
-    public ErrorCollector collector = new ErrorCollector();
-
     @Parameters
     public static Iterable<Object[]> createParameters() {
         List<Object[]> testValues = new ArrayList<>();
@@ -42,6 +35,12 @@ public class CustomECPrivateKeyTest {
         return testValues;
     }
 
+    @Parameter(0)
+    public NamedGroup curve;
+
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
+
     /**
      * Test of getParams method, of class CustomECPrivateKey.
      */
@@ -49,7 +48,6 @@ public class CustomECPrivateKeyTest {
     public void testGetParams() {
         CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
         ECParameterSpec params = key.getParams();
-        System.out.println("Supported: " + curve.name());
         assertNotNull(params);
     }
 }

@@ -177,6 +177,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         return message.getExtensionsLength().getValue() > 0;
     }
 
+    @Override
     protected ProtocolVersion getVersion() {
         return version;
     }

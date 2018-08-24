@@ -22,7 +22,7 @@ public enum MacAlgorithm {
     IMIT_GOST28147("IMIT_GOST28147", 0), // java name not verified, size unknown
     HMAC_GOSTR3411("HmacGOSTR3411", 0);// java name not verified
 
-    private int size;
+    private final int size;
 
     MacAlgorithm(String javaName, int size) {
         this.javaName = javaName;

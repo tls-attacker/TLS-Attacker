@@ -10,9 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class PSKKeyExchangeModesExtensionSerializerTest {
 
@@ -44,7 +43,6 @@ public class PSKKeyExchangeModesExtensionSerializerTest {
 
         PSKKeyExchangeModesExtensionSerializer validSerializer = new PSKKeyExchangeModesExtensionSerializer(validMsg);
         byte[] serializedMsg = validSerializer.serialize();
-        System.out.println(ArrayConverter.bytesToHexString(serializedMsg));
 
         assertArrayEquals(new byte[] { 0, // extension_type
                                           // psk_key_exchange_modes(45), 2 bytes

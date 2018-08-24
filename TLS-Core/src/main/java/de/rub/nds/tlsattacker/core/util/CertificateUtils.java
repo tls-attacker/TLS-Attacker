@@ -29,6 +29,7 @@ import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECPrivateKeySpec;
@@ -266,7 +267,7 @@ public class CertificateUtils {
 
     public static BigInteger extractRSAModulus(PrivateKey key) throws IOException {
         if (key instanceof RSAPrivateKey) {
-            return ((RSAPublicKey) key).getModulus();
+            return ((RSAKey) key).getModulus();
         } else {
             return null;
         }
@@ -274,7 +275,7 @@ public class CertificateUtils {
 
     public static BigInteger extractRSAPrivateExponent(PrivateKey key) throws IOException {
         if (key instanceof RSAPrivateKey) {
-            return ((RSAPrivateKey) ((RSAPublicKey) key)).getPrivateExponent();
+            return ((RSAPrivateKey) ((RSAPrivateKey) key)).getPrivateExponent();
         } else {
             return null;
         }
@@ -287,5 +288,8 @@ public class CertificateUtils {
         } else {
             return null;
         }
+    }
+
+    private CertificateUtils() {
     }
 }

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * Highly experimental. Just a starting point.
  */
-public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
+public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger(ThreadedServerWorkflowExecutor.class);
 
@@ -161,7 +161,6 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                    System.err.println("Pool did not terminate");
                 }
             }
         } catch (InterruptedException ie) {

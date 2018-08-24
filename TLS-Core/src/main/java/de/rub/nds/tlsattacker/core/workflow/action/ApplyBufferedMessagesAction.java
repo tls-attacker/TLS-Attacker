@@ -39,7 +39,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         List<ProtocolMessage> messages = ctx.getMessageBuffer();
-        if (messages.size() == 0) {
+        if (messages.isEmpty()) {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
             for (ProtocolMessage msg : messages) {

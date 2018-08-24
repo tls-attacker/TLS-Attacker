@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.config;
 import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;

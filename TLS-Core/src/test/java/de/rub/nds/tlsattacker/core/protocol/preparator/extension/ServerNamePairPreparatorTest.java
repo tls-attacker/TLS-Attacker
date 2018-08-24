@@ -41,8 +41,8 @@ public class ServerNamePairPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(serverName, pair.getServerName().getValue());
-        assertEquals(serverNameType, (byte) pair.getServerNameType().getValue());
-        assertEquals(serverNameLength, (int) pair.getServerNameLength().getValue());
+        assertEquals(serverNameType, (long) pair.getServerNameType().getValue());
+        assertEquals(serverNameLength, (long) pair.getServerNameLength().getValue());
     }
 
 }

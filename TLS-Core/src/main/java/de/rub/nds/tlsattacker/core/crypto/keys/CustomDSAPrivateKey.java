@@ -69,36 +69,48 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientDsaPrivateKey(privateKey);
-            context.setClientDsaGenerator(generator);
-            context.setClientDsaPrimeP(primeP);
-            context.setClientDsaPrimeQ(primeQ);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerDsaPrivateKey(privateKey);
-            context.setServerDsaGenerator(generator);
-            context.setServerDsaPrimeP(primeP);
-            context.setServerDsaPrimeQ(primeQ);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientDsaPrivateKey(privateKey);
+                    context.setClientDsaGenerator(generator);
+                    context.setClientDsaPrimeP(primeP);
+                    context.setClientDsaPrimeQ(primeQ);
+                    break;
+                case SERVER:
+                    context.setServerDsaPrivateKey(privateKey);
+                    context.setServerDsaGenerator(generator);
+                    context.setServerDsaPrimeP(primeP);
+                    context.setServerDsaPrimeQ(primeQ);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientDsaPrivateKey(privateKey);
-            config.setDefaultClientDsaPrimeP(primeP);
-            config.setDefaultClientDsaPrimeQ(primeQ);
-            config.setDefaultClientDsaGenerator(generator);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerDsaPrivateKey(privateKey);
-            config.setDefaultServerDsaPrimeP(primeP);
-            config.setDefaultServerDsaPrimeQ(primeQ);
-            config.setDefaultServerDsaGenerator(generator);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientDsaPrivateKey(privateKey);
+                    config.setDefaultClientDsaPrimeP(primeP);
+                    config.setDefaultClientDsaPrimeQ(primeQ);
+                    config.setDefaultClientDsaGenerator(generator);
+                    break;
+                case SERVER:
+                    config.setDefaultServerDsaPrivateKey(privateKey);
+                    config.setDefaultServerDsaPrimeP(primeP);
+                    config.setDefaultServerDsaPrimeQ(primeQ);
+                    config.setDefaultServerDsaGenerator(generator);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -132,9 +144,6 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
         if (!Objects.equals(this.primeQ, other.primeQ)) {
             return false;
         }
-        if (!Objects.equals(this.generator, other.generator)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.generator, other.generator);
     }
 }

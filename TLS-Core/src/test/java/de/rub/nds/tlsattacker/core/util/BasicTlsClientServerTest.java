@@ -38,7 +38,7 @@ public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
     private static final int SERVER_PORT = 0;
-    private BadRandom random = new BadRandom(new Random(0), null);
+    private final BadRandom random = new BadRandom(new Random(0), null);
 
     public BasicTlsClientServerTest() {
     }
@@ -82,7 +82,6 @@ public class BasicTlsClientServerTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException | InterruptedException ex) {
-            ex.printStackTrace();
             fail();
         }
     }

@@ -9,19 +9,15 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -29,15 +25,15 @@ import static org.junit.Assert.*;
  */
 public class JavaCipherTest {
 
-    public JavaCipherTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public JavaCipherTest() {
     }
 
     @Before
@@ -63,9 +59,7 @@ public class JavaCipherTest {
 
             try {
                 cipher.encrypt(key, plaintext);
-                System.out.println(algo.name() + " worked!");
             } catch (Exception ex) {
-                System.out.println(algo.name() + " did not work!");
                 ex.printStackTrace();
             }
         }

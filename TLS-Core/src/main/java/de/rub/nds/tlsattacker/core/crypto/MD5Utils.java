@@ -26,4 +26,7 @@ public class MD5Utils {
         return md5Output;
     }
 
+    private MD5Utils() {
+    }
+
 }

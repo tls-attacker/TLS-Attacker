@@ -23,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 

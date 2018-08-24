@@ -151,12 +151,8 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public boolean isUsingPadding() {
-        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS
-                || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            return true;
-        } else {
-            return false;
-        }
+        return version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS
+                || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS;
     }
 
     @Override

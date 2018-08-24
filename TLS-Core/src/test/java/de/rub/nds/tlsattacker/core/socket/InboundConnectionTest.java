@@ -33,11 +33,6 @@ public class InboundConnectionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(InboundConnectionTest.class);
 
-    @XmlRootElement
-    @XmlAccessorType(XmlAccessType.FIELD)
-    private static class TestXmlRoot extends InboundConnection {
-    }
-
     private StringWriter writer;
     private JAXBContext context;
     private Marshaller m;
@@ -287,4 +282,8 @@ public class InboundConnectionTest {
     // assertEquals(expected, actual);
     // assertNotSame(expected, actual);
     // }
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    private static class TestXmlRoot extends InboundConnection {
+    }
 }

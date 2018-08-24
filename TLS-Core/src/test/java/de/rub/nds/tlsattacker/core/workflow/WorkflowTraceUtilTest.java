@@ -38,6 +38,14 @@ public class WorkflowTraceUtilTest {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
 
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
+
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
@@ -55,14 +63,6 @@ public class WorkflowTraceUtilTest {
     private SendAction sFinishedMessage;
 
     public WorkflowTraceUtilTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -183,7 +183,6 @@ public class WorkflowTraceUtilTest {
         try {
             trace = WorkflowTraceSerializer.read(stream);
         } catch (JAXBException | IOException | XMLStreamException ex) {
-            System.out.println(ex);
             fail();
         }
         assertNotNull(trace);

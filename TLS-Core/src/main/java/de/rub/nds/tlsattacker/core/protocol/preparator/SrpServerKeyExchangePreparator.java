@@ -118,7 +118,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         try {
             dig = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
         }
         dig.update(toHash);
         return dig.digest();

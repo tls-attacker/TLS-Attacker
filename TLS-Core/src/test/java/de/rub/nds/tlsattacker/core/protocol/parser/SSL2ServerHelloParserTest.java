@@ -85,7 +85,7 @@ public class SSL2ServerHelloParserTest {
     @Test
     public void parseTest() {
         SSL2ServerHelloParser parser = new SSL2ServerHelloParser(message, 0, version);
-        SSL2ServerHelloMessage msg = (SSL2ServerHelloMessage) parser.parse();
+        SSL2ServerHelloMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getMessageLength().getValue() == messageLength);
         assertTrue(msg.getType().getValue() == type.getValue());

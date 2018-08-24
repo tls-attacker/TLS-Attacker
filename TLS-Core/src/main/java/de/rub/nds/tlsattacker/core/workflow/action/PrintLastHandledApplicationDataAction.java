@@ -116,9 +116,6 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         if (!Objects.equals(this.lastHandledApplicationData, other.lastHandledApplicationData)) {
             return false;
         }
-        if (!Objects.equals(this.stringEncoding, other.stringEncoding)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.stringEncoding, other.stringEncoding);
     }
 }

@@ -21,6 +21,13 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ServerAuthzExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] { { ExtensionType.SERVER_AUTHZ,
+                ArrayConverter.hexStringToByteArray("000800050400010203"), 5, 0, 4,
+                ArrayConverter.hexStringToByteArray("00010203") } });
+    }
+
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
@@ -40,22 +47,15 @@ public class ServerAuthzExtensionParserTest {
         this.authzFormatList = authzFormatList;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.SERVER_AUTHZ,
-                ArrayConverter.hexStringToByteArray("000800050400010203"), 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("00010203") } });
-    }
-
     @Test
     public void testParseExtensionMessageContent() {
         parser = new ServerAuthzExtensionParser(startParsing, expectedBytes);
         msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
 
-        assertEquals(authzFormatListLength, (int) msg.getAuthzFormatListLength().getValue());
+        assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());
         assertArrayEquals(authzFormatList, msg.getAuthzFormatList().getValue());
     }
 }

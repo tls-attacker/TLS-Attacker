@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -47,7 +46,6 @@ public class CertificateFetcherTest {
     private static BasicTlsServer tlsServer;
     private static PublicKey expectedPublicKey;
     private static Certificate expectedCertificate;
-    private Config config;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -73,6 +71,8 @@ public class CertificateFetcherTest {
         tlsServer.shutdown();
         LOGGER.info("Done.");
     }
+
+    private Config config;
 
     @Before
     public void setUp() {

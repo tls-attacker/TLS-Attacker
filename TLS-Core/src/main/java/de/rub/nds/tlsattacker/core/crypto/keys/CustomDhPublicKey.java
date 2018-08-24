@@ -41,17 +41,23 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            context.setClientDhGenerator(generator);
-            context.setClientDhModulus(modulus);
-            context.setClientDhPublicKey(publicKey);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            context.setServerDhGenerator(generator);
-            context.setServerDhModulus(modulus);
-            context.setServerDhPublicKey(publicKey);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    context.setClientDhGenerator(generator);
+                    context.setClientDhModulus(modulus);
+                    context.setClientDhPublicKey(publicKey);
+                    break;
+                case SERVER:
+                    context.setServerDhGenerator(generator);
+                    context.setServerDhModulus(modulus);
+                    context.setServerDhPublicKey(publicKey);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -90,17 +96,23 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (ownerOfKey == ConnectionEndType.CLIENT) {
-            config.setDefaultClientDhGenerator(generator);
-            config.setDefaultClientDhModulus(modulus);
-            config.setDefaultClientDhPublicKey(publicKey);
-        } else if (ownerOfKey == ConnectionEndType.SERVER) {
-            config.setDefaultServerDhGenerator(generator);
-            config.setDefaultServerDhModulus(modulus);
-            config.setDefaultServerDhPublicKey(publicKey);
-        } else {
+        if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        }
+        } else
+            switch (ownerOfKey) {
+                case CLIENT:
+                    config.setDefaultClientDhGenerator(generator);
+                    config.setDefaultClientDhModulus(modulus);
+                    config.setDefaultClientDhPublicKey(publicKey);
+                    break;
+                case SERVER:
+                    config.setDefaultServerDhGenerator(generator);
+                    config.setDefaultServerDhModulus(modulus);
+                    config.setDefaultServerDhPublicKey(publicKey);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+            }
     }
 
     @Override
@@ -130,9 +142,6 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         if (!Objects.equals(this.generator, other.generator)) {
             return false;
         }
-        if (!Objects.equals(this.publicKey, other.publicKey)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.publicKey, other.publicKey);
     }
 }

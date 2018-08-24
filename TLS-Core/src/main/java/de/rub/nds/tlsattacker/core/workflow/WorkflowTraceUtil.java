@@ -274,4 +274,7 @@ public class WorkflowTraceUtil {
         return sendingActions.get(sendingActions.size() - 1);
     }
 
+    private WorkflowTraceUtil() {
+    }
+
 }

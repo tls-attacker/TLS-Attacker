@@ -13,10 +13,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -123,8 +121,6 @@ public class TokenbindingMessagePreparatorTest {
         System.out.println("s:" + ArrayConverter.bytesToHexString(sBytes));
         System.out.println("r:" + new ASN1Integer(rBytes).getPositiveValue());
         System.out.println("s:" + new ASN1Integer(sBytes).getPositiveValue());
-        System.out.println(signer.verifySignature(signedContent, new ASN1Integer(rBytes).getPositiveValue(),
-                new ASN1Integer(sBytes).getPositiveValue()));
         // decodeASN1(parsedMessage.getSignature().getValue());
     }
 

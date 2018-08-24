@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -185,7 +184,6 @@ public class CertificateKeyPair implements Serializable {
                 return group;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
         }
@@ -309,10 +307,7 @@ public class CertificateKeyPair implements Serializable {
         if (this.signatureGroup != other.signatureGroup) {
             return false;
         }
-        if (this.publicKeyGroup != other.publicKeyGroup) {
-            return false;
-        }
-        return true;
+        return this.publicKeyGroup == other.publicKeyGroup;
     }
 
     public boolean isCertificateParseable() {
@@ -327,8 +322,8 @@ public class CertificateKeyPair implements Serializable {
     @Override
     public String toString() {
         return "CertificateKeyPair{" + "certPublicKeyType=" + certPublicKeyType + ", certSignatureType="
-                + certSignatureType + ", certificateBytes=" + certificateBytes + ", publicKey=" + publicKey
-                + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
+                + certSignatureType + ", certificateBytes=" + Arrays.toString(certificateBytes) + ", publicKey="
+                + publicKey + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
                 + publicKeyGroup + '}';
     }
 }

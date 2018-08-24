@@ -33,11 +33,6 @@ public class OutboundConnectionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(OutboundConnectionTest.class);
 
-    @XmlRootElement
-    @XmlAccessorType(XmlAccessType.FIELD)
-    private static class TestXmlRoot extends OutboundConnection {
-    }
-
     private StringWriter writer;
     private JAXBContext context;
     private Marshaller m;
@@ -218,5 +213,10 @@ public class OutboundConnectionTest {
         assertNull(con.getHostname());
         assertNull(con.getAlias());
         assertNull(con.getPort());
+    }
+
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    private static class TestXmlRoot extends OutboundConnection {
     }
 }

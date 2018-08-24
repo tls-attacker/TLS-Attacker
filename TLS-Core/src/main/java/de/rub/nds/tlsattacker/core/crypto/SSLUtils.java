@@ -25,7 +25,7 @@ import org.bouncycastle.util.Arrays;
  * SSLUtils is a class with static methods that are supposed to calculate
  * SSL-specific data.
  */
-public final class SSLUtils {
+public class SSLUtils {
 
     private static final MessageFormat ILLEGAL_MAC_ALGORITHM = new MessageFormat(
             "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
@@ -34,40 +34,6 @@ public final class SSLUtils {
     public static final byte[] MD5_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
     public static final byte[] SHA_PAD1 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
     public static final byte[] SHA_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
-
-    /**
-     * From RFC-6101:
-     *
-     * 5.6.9.
-     *
-     * Finished A finished message is always sent immediately after a change
-     * cipher spec message to verify that the key exchange and authentication
-     * processes were successful. The finished message is the first protected
-     * with the just-negotiated algorithms, keys, and secrets. No acknowledgment
-     * of the finished message is required; parties may begin sending encrypted
-     * data immediately after sending the finished message. Recipients of
-     * finished messages must verify that the contents are correct.
-     *
-     * enum { client(0x434C4E54), server(0x53525652) } Sender;
-     */
-    private static enum Sender {
-        CLIENT("434C4E54"),
-        SERVER("53525652");
-
-        Sender(String hex) {
-            value = ArrayConverter.hexStringToByteArray(hex);
-        }
-
-        private final byte[] value;
-
-        public byte[] getValue() {
-            return value;
-        }
-    }
-
-    private SSLUtils() {
-
-    }
 
     /**
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC',
@@ -194,14 +160,20 @@ public final class SSLUtils {
      *         server(0x53525652) } Sender;
      */
     public static byte[] getSenderConstant(ConnectionEndType connectionEndType) {
-        if (connectionEndType == ConnectionEndType.SERVER) {
-            return SSLUtils.Sender.SERVER.getValue();
-        } else if (connectionEndType == ConnectionEndType.CLIENT) {
-            return SSLUtils.Sender.CLIENT.getValue();
-        } else {
+        if (null == connectionEndType) {
             throw new IllegalStateException("The ConnectionEnd should be either of Type Client or Server but it is "
                     + connectionEndType);
-        }
+        } else
+            switch (connectionEndType) {
+                case SERVER:
+                    return SSLUtils.Sender.SERVER.getValue();
+                case CLIENT:
+                    return SSLUtils.Sender.CLIENT.getValue();
+                default:
+                    throw new IllegalStateException(
+                            "The ConnectionEnd should be either of Type Client or Server but it is "
+                                    + connectionEndType);
+            }
     }
 
     /**
@@ -214,13 +186,17 @@ public final class SSLUtils {
      * @return the pad_1
      */
     public static byte[] getPad1(MacAlgorithm macAlgorithm) {
-        if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
-            return MD5_PAD1;
-        } else if (macAlgorithm == MacAlgorithm.SSLMAC_SHA1) {
-            return SHA_PAD1;
-        } else {
+        if (null == macAlgorithm) {
             throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
-        }
+        } else
+            switch (macAlgorithm) {
+                case SSLMAC_MD5:
+                    return MD5_PAD1;
+                case SSLMAC_SHA1:
+                    return SHA_PAD1;
+                default:
+                    throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
+            }
     }
 
     /**
@@ -232,23 +208,31 @@ public final class SSLUtils {
      * @return pad_2
      */
     public static byte[] getPad2(MacAlgorithm macAlgorithm) {
-        if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
-            return MD5_PAD2;
-        } else if (macAlgorithm == MacAlgorithm.SSLMAC_SHA1) {
-            return SHA_PAD2;
-        } else {
+        if (null == macAlgorithm) {
             throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
-        }
+        } else
+            switch (macAlgorithm) {
+                case SSLMAC_MD5:
+                    return MD5_PAD2;
+                case SSLMAC_SHA1:
+                    return SHA_PAD2;
+                default:
+                    throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
+            }
     }
 
     private static String getHashAlgorithm(MacAlgorithm macAlgorithm) {
-        if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
-            return "MD5";
-        } else if (macAlgorithm == MacAlgorithm.SSLMAC_SHA1) {
-            return "SHA-1";
-        } else {
+        if (null == macAlgorithm) {
             throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
-        }
+        } else
+            switch (macAlgorithm) {
+                case SSLMAC_MD5:
+                    return "MD5";
+                case SSLMAC_SHA1:
+                    return "SHA-1";
+                default:
+                    throw new IllegalArgumentException(ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
+            }
     }
 
     /**
@@ -354,6 +338,40 @@ public final class SSLUtils {
             throw new IllegalStateException(
                     "Either MD5 or SHA-1 algorithm is not provided by the Execution-Enviroment, check your providers.",
                     e);
+        }
+    }
+
+    private SSLUtils() {
+
+    }
+
+    /**
+     * From RFC-6101:
+     *
+     * 5.6.9.
+     *
+     * Finished A finished message is always sent immediately after a change
+     * cipher spec message to verify that the key exchange and authentication
+     * processes were successful. The finished message is the first protected
+     * with the just-negotiated algorithms, keys, and secrets. No acknowledgment
+     * of the finished message is required; parties may begin sending encrypted
+     * data immediately after sending the finished message. Recipients of
+     * finished messages must verify that the contents are correct.
+     *
+     * enum { client(0x434C4E54), server(0x53525652) } Sender;
+     */
+    private static enum Sender {
+        CLIENT("434C4E54"),
+        SERVER("53525652");
+
+        Sender(String hex) {
+            value = ArrayConverter.hexStringToByteArray(hex);
+        }
+
+        private final byte[] value;
+
+        public byte[] getValue() {
+            return value;
         }
     }
 

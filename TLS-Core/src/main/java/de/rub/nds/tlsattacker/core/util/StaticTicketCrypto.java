@@ -106,4 +106,7 @@ public class StaticTicketCrypto {
         int padlen = result[result.length - 1];
         return Arrays.copyOf(result, result.length - padlen);
     }
+
+    private StaticTicketCrypto() {
+    }
 }

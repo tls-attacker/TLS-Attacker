@@ -48,7 +48,6 @@ public class Curve25519Test {
         Curve25519.curve(sharedSecretA, privateA, publicB);
         System.out.println("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
         Curve25519.curve(sharedSecretB, privateB, publicA);
-        System.out.println("Aus B: " + ArrayConverter.bytesToHexString(sharedSecretB));
 
         assertArrayEquals(result, sharedSecretA);
         assertArrayEquals(result, sharedSecretB);
@@ -77,7 +76,6 @@ public class Curve25519Test {
         Curve25519.curve(sharedSecretA, privateA, publicB);
         System.out.println("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
         Curve25519.curve(sharedSecretB, privateB, publicA);
-        System.out.println("Aus B: " + ArrayConverter.bytesToHexString(sharedSecretB));
 
         assertArrayEquals(result, sharedSecretA);
         assertArrayEquals(result, sharedSecretB);

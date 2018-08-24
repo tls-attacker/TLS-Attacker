@@ -23,9 +23,6 @@ import javax.crypto.interfaces.DHPrivateKey;
 
 public class KeyGenerator {
 
-    private KeyGenerator() {
-    }
-
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
         BigInteger modulus;
         BigInteger key;
@@ -71,5 +68,8 @@ public class KeyGenerator {
             return new CustomDSAPrivateKey(chooser.getConfig().getDefaultServerDsaPrivateKey(), chooser.getDsaPrimeP(),
                     chooser.getDsaPrimeQ(), chooser.getDsaGenerator());
         }
+    }
+
+    private KeyGenerator() {
     }
 }

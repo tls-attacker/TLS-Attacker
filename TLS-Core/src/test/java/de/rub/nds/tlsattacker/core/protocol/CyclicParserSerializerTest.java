@@ -67,7 +67,6 @@ public class CyclicParserSerializerTest {
                         }
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create message instance for " + testName);
                     }
                     Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
@@ -80,7 +79,6 @@ public class CyclicParserSerializerTest {
                                 context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create preparator instance for " + testName);
                     }
                     // Preparing message
@@ -96,7 +94,6 @@ public class CyclicParserSerializerTest {
                                 message, version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create serializer instance for " + testName);
                     }
                     byte[] serializedMessage = serializer.serialize();
@@ -105,7 +102,6 @@ public class CyclicParserSerializerTest {
                                 serializedMessage, version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create parser instance for " + testName);
                     }
                     try {
@@ -119,14 +115,12 @@ public class CyclicParserSerializerTest {
                                 message, version);
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                             | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create serializer instance for " + testName);
                     }
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " - " + version.name()
                             + " works as expected!");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     fail("Could not execute " + testName + " - " + version.name());
                 }
                 /*
@@ -178,7 +172,6 @@ public class CyclicParserSerializerTest {
                         }
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create message instance for " + testName);
                     }
                     Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
@@ -191,7 +184,6 @@ public class CyclicParserSerializerTest {
                                 context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create preparator instance for " + testName);
                     }
                     // Preparing message
@@ -207,7 +199,6 @@ public class CyclicParserSerializerTest {
                                 message, version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create serializer instance for " + testName);
                     }
                     byte[] serializedMessage = serializer.serialize();
@@ -216,7 +207,6 @@ public class CyclicParserSerializerTest {
                                 serializedMessage, version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create parser instance for " + testName);
                     }
                     try {
@@ -230,18 +220,23 @@ public class CyclicParserSerializerTest {
                                 message, version);
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                             | InvocationTargetException ex) {
-                        ex.printStackTrace();
                         fail("Could not create serializer instance for " + testName);
                     }
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " - " + version.name()
                             + " works as expected!");
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
                     fail("Could not execute " + testName + " - " + version.name());
                 }
                 /*
                  * try { parser =
+                 * someParserClass.getConstructor().newInstance(); } catch
+                 * (NoSuchMethodException | SecurityException |
+                 * InstantiationException | IllegalAccessException |
+                 * IllegalArgumentException | InvocationTargetException ex) {
+                 * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                 * "Could not create instance for:" +
+                 * someParserClass.getName()); } /* try { parser =
                  * someParserClass.getConstructor().newInstance(); } catch
                  * (NoSuchMethodException | SecurityException |
                  * InstantiationException | IllegalAccessException |

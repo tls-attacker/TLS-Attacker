@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
+import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.security.cert.CertificateFactory;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -37,6 +39,8 @@ import org.bouncycastle.util.io.pem.PemWriter;
 
 public class PemUtil {
 
+    protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(PemUtil.class.getName());
+
     public static void writePublicKey(PublicKey key, File targetFile) {
         PemObject pemObject = new PemObject("PublicKey", key.getEncoded());
         PemWriter pemWriter = null;
@@ -44,12 +48,12 @@ public class PemUtil {
             pemWriter = new PemWriter(new FileWriter(targetFile));
             pemWriter.writeObject(pemObject);
         } catch (IOException ex) {
-            Logger.getLogger(PemUtil.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warn(ex);
         } finally {
             try {
                 pemWriter.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOGGER.warn(ex);
             }
         }
     }
@@ -65,12 +69,12 @@ public class PemUtil {
             }
             pemWriter.flush();
         } catch (IOException ex) {
-            Logger.getLogger(PemUtil.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warn(ex);
         } finally {
             try {
                 pemWriter.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOGGER.warn(ex);
             }
         }
     }
@@ -122,9 +126,7 @@ public class PemUtil {
 
     public static PublicKey readPublicKey(InputStream stream) throws IOException {
         InputStreamReader reader = new InputStreamReader(stream);
-        PEMParser parser = null;
-        try {
-            parser = new PEMParser(reader);
+        try (PEMParser parser = new PEMParser(reader)) {
             Object obj = parser.readObject();
             if (obj instanceof PEMKeyPair) {
                 PEMKeyPair pair = (PEMKeyPair) obj;
@@ -136,9 +138,6 @@ public class PemUtil {
         } catch (Exception E) {
             throw new IOException("Could not read public key", E);
         } finally {
-            if (parser != null) {
-                parser.close();
-            }
             stream.close();
             reader.close();
         }
@@ -152,5 +151,8 @@ public class PemUtil {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         cert.encode(stream);
         return stream.toByteArray();
+    }
+
+    private PemUtil() {
     }
 }
