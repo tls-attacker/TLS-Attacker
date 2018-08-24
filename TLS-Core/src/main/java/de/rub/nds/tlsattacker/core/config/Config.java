@@ -105,6 +105,7 @@ public class Config implements Serializable {
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
     private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;

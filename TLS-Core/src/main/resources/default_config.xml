@@ -1,4 +1,8 @@
 <config>
+    <defaultHandshakeSecret>
+        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+    </defaultHandshakeSecret>
     <preferedCertificateSignatureType>RSA</preferedCertificateSignatureType>
     <preferedCertificateSignatureGroup>SECP256R1</preferedCertificateSignatureGroup>
     <autoSelectCertificate>true</autoSelectCertificate>
@@ -740,7 +744,6 @@
     <certificateStatusRequestExtensionResponderIDList/>
     <certificateStatusRequestExtensionRequestExtension/>
     <alpnAnnouncedProtocols>h2</alpnAnnouncedProtocols>
-    <sessionId/>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfiles>
