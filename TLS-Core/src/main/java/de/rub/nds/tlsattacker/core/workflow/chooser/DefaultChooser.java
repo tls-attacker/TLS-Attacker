@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.List;
+import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
@@ -115,7 +116,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getDistinguishedNames() {
         if (context.getDistinguishedNames() != null) {
-            return context.getDistinguishedNames();
+            return copy(context.getDistinguishedNames());
         } else {
             return config.getDistinguishedNames();
         }
@@ -206,7 +207,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getMasterSecret() {
         if (context.getMasterSecret() != null) {
-            return context.getMasterSecret();
+            return copy(context.getMasterSecret());
         } else {
             return config.getDefaultMasterSecret();
         }
@@ -224,7 +225,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getPreMasterSecret() {
         if (context.getPreMasterSecret() != null) {
-            return context.getPreMasterSecret();
+            return copy(context.getPreMasterSecret());
         } else {
             return config.getDefaultPreMasterSecret();
         }
@@ -233,7 +234,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getClientRandom() {
         if (context.getClientRandom() != null) {
-            return context.getClientRandom();
+            return copy(context.getClientRandom());
         } else {
             return config.getDefaultClientRandom();
         }
@@ -242,7 +243,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getServerRandom() {
         if (context.getServerRandom() != null) {
-            return context.getServerRandom();
+            return copy(context.getServerRandom());
         } else {
             return config.getDefaultServerRandom();
         }
@@ -260,7 +261,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getClientSessionId() {
         if (context.getClientSessionId() != null) {
-            return context.getClientSessionId();
+            return copy(context.getClientSessionId());
         } else {
             return config.getDefaultClientSessionId();
         }
@@ -269,7 +270,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getServerSessionId() {
         if (context.getServerSessionId() != null) {
-            return context.getServerSessionId();
+            return copy(context.getServerSessionId());
         } else {
             return config.getDefaultServerSessionId();
         }
@@ -278,7 +279,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getDtlsCookie() {
         if (context.getDtlsCookie() != null) {
-            return context.getDtlsCookie();
+            return copy(context.getDtlsCookie());
         } else {
             return config.getDefaultDtlsCookie();
         }
@@ -301,7 +302,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getSessionTicketTLS() {
         if (context.getSessionTicketTLS() != null) {
-            return context.getSessionTicketTLS();
+            return copy(context.getSessionTicketTLS());
         } else {
             return config.getTlsSessionTicket();
         }
@@ -310,7 +311,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getSignedCertificateTimestamp() {
         if (context.getSignedCertificateTimestamp() != null) {
-            return context.getSignedCertificateTimestamp();
+            return copy(context.getSignedCertificateTimestamp());
         } else {
             return config.getDefaultSignedCertificateTimestamp();
         }
@@ -391,7 +392,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getPSKIdentity() {
         if (context.getPSKIdentity() != null) {
-            return context.getPSKIdentity();
+            return copy(context.getPSKIdentity());
         } else {
             return config.getDefaultPSKIdentity();
         }
@@ -400,7 +401,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getPSKIdentityHint() {
         if (context.getPSKIdentityHint() != null) {
-            return context.getPSKIdentityHint();
+            return copy(context.getPSKIdentityHint());
         } else {
             return config.getDefaultPSKIdentityHint();
         }
@@ -490,7 +491,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getSRPPassword() {
         if (context.getSRPPassword() != null) {
-            return context.getSRPPassword();
+            return copy(context.getSRPPassword());
         } else {
             return config.getDefaultSRPPassword();
         }
@@ -499,7 +500,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getSRPIdentity() {
         if (context.getSRPIdentity() != null) {
-            return context.getSRPIdentity();
+            return copy(context.getSRPIdentity());
         } else {
             return config.getDefaultSRPIdentity();
         }
@@ -508,7 +509,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getSRPServerSalt() {
         if (context.getSRPServerSalt() != null) {
-            return context.getSRPServerSalt();
+            return copy(context.getSRPServerSalt());
         } else {
             return config.getDefaultSRPServerSalt();
         }
@@ -640,7 +641,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getCertificateRequestContext() {
         if (context.getCertificateRequestContext() != null) {
-            return context.getCertificateRequestContext();
+            return copy(context.getCertificateRequestContext());
         } else {
             return config.getDefaultCertificateRequestContext();
         }
@@ -649,7 +650,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getServerHandshakeTrafficSecret() {
         if (context.getServerHandshakeTrafficSecret() != null) {
-            return context.getServerHandshakeTrafficSecret();
+            return copy(context.getServerHandshakeTrafficSecret());
         } else {
             return config.getDefaultServerHandshakeTrafficSecret();
         }
@@ -658,7 +659,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getClientHandshakeTrafficSecret() {
         if (context.getClientHandshakeTrafficSecret() != null) {
-            return context.getClientHandshakeTrafficSecret();
+            return copy(context.getClientHandshakeTrafficSecret());
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
@@ -667,7 +668,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getClientApplicationTrafficSecret() {
         if (context.getClientApplicationTrafficSecret() != null) {
-            return context.getClientApplicationTrafficSecret();
+            return copy(context.getClientApplicationTrafficSecret());
         } else {
             return config.getDefaultClientApplicationTrafficSecret();
         }
@@ -677,7 +678,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getServerApplicationTrafficSecret() {
         if (context.getServerApplicationTrafficSecret() != null) {
-            return context.getServerApplicationTrafficSecret();
+            return copy(context.getServerApplicationTrafficSecret());
         } else {
             return config.getDefaultServerApplicationTrafficSecret();
         }
@@ -742,7 +743,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getLastHandledApplicationMessageData() {
         if (context.getLastHandledApplicationMessageData() != null) {
-            return context.getLastHandledApplicationMessageData();
+            return copy(context.getLastHandledApplicationMessageData());
         } else {
             return config.getDefaultApplicationMessageData().getBytes();
         }
@@ -751,7 +752,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getPsk() {
         if (context.getPsk() != null) {
-            return context.getPsk();
+            return copy(context.getPsk());
         } else {
             return config.getPsk();
         }
@@ -798,7 +799,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getClientEarlyTrafficSecret() {
         if (context.getClientEarlyTrafficSecret() != null) {
-            return context.getClientEarlyTrafficSecret();
+            return copy(context.getClientEarlyTrafficSecret());
         } else {
             return config.getClientEarlyTrafficSecret();
         }
@@ -807,7 +808,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getEarlySecret() {
         if (context.getEarlySecret() != null) {
-            return context.getEarlySecret();
+            return copy(context.getEarlySecret());
         } else {
             return config.getEarlySecret();
         }
@@ -816,7 +817,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public byte[] getEarlyDataPsk() {
         if (context.getEarlyDataPsk() != null) {
-            return context.getEarlyDataPsk();
+            return copy(context.getEarlyDataPsk());
         } else {
             return config.getEarlyDataPsk();
         }
@@ -879,5 +880,18 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultServerDsaGenerator();
         }
+    }
+
+    @Override
+    public byte[] getHandshakeSecret() {
+        if (context.getHandshakeSecret() != null) {
+            return copy(context.getHandshakeSecret());
+        } else {
+            return config.getDefaultHandshakeSecret();
+        }
+    }
+
+    private byte[] copy(byte[] array) {
+        return Arrays.copyOf(array, array.length);
     }
 }

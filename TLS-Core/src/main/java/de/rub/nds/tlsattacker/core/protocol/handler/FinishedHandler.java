@@ -81,8 +81,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 .getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] saltMasterSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
-                    tlsContext.getHandshakeSecret(), HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
+            byte[] saltMasterSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
+                    .getChooser().getHandshakeSecret(), HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] masterSecret = HKDFunction.extract(hkdfAlgortihm, saltMasterSecret, new byte[macLength]);
             byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     masterSecret, HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
@@ -105,6 +105,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     public void adjustTlsContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                adjustApplicationTrafficSecrets();
                 setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             } else {
                 adjustApplicationTrafficSecrets();
