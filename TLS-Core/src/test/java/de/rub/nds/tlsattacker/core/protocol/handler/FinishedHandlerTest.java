@@ -278,10 +278,6 @@ public class FinishedHandlerTest {
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
-
-        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
-        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
-        assertArrayEquals(null, context.getMasterSecret());
     }
 
     @Test
@@ -305,10 +301,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
-
-        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
-        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
-        assertArrayEquals(null, context.getMasterSecret());
 
     }
 
