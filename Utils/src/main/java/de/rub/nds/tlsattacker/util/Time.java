@@ -24,4 +24,7 @@ public class Time {
 
         return sec;
     }
+
+    private Time() {
+    }
 }

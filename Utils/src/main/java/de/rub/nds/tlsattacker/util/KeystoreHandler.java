@@ -33,4 +33,7 @@ public class KeystoreHandler {
 
         return ks;
     }
+
+    private KeystoreHandler() {
+    }
 }

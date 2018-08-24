@@ -63,4 +63,7 @@ public class FileHelper {
         return bos.toString(StandardCharsets.UTF_8.name());
     }
 
+    private FileHelper() {
+    }
+
 }

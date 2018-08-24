@@ -20,8 +20,6 @@ import javax.crypto.Cipher;
  */
 public class UnlimitedStrengthEnabler {
 
-    private UnlimitedStrengthEnabler() {
-    }
 
     public static void enable() {
         try {
@@ -43,5 +41,7 @@ public class UnlimitedStrengthEnabler {
             System.out.println("It is not possible to use unrestricted policy with this JDK, "
                     + "consider reconfiguration: " + ex.getLocalizedMessage());
         }
+    }
+    private UnlimitedStrengthEnabler() {
     }
 }
