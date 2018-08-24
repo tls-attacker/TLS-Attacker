@@ -114,15 +114,11 @@ public class ResponseFingerprint {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + (this.receivedTransportHandlerException ? 1 : 0);
-        hash = 37 * hash + (this.encryptedAlert ? 1 : 0);
-        hash = 37 * hash + this.numberRecordsReceived;
-        hash = 37 * hash + this.numberOfMessageReceived;
-        hash = 37 * hash + Objects.hashCode(this.recordClasses);
-        hash = 37 * hash + Objects.hashCode(this.messageClasses);
-        hash = 37 * hash + Objects.hashCode(this.messageList);
-        hash = 37 * hash + Objects.hashCode(this.recordList);
-        hash = 37 * hash + Objects.hashCode(this.socketState);
+        hash = 53 * hash + (this.receivedTransportHandlerException ? 1 : 0);
+        hash = 53 * hash + (this.encryptedAlert ? 1 : 0);
+        hash = 53 * hash + this.numberRecordsReceived;
+        hash = 53 * hash + this.numberOfMessageReceived;
+        hash = 53 * hash + Objects.hashCode(this.socketState);
         return hash;
     }
 
@@ -148,18 +144,6 @@ public class ResponseFingerprint {
             return false;
         }
         if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
-            return false;
-        }
-        if (!Objects.equals(this.recordClasses, other.recordClasses)) {
-            return false;
-        }
-        if (!Objects.equals(this.messageClasses, other.messageClasses)) {
-            return false;
-        }
-        if (!Objects.equals(this.messageList, other.messageList)) {
-            return false;
-        }
-        if (!Objects.equals(this.recordList, other.recordList)) {
             return false;
         }
         if (this.socketState != other.socketState) {
