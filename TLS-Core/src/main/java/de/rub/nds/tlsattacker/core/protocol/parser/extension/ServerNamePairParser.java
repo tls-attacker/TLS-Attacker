@@ -27,6 +27,8 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
         parseServerNameType(pair);
         parseServerNameLength(pair);
         parseServerName(pair);
+        pair.setServerNameConfig(pair.getServerName().getValue());
+        pair.setServerNameTypeConfig(pair.getServerNameType().getValue());
         return pair;
     }
 
