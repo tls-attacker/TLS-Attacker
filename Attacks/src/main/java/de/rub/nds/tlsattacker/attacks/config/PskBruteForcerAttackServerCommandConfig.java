@@ -58,7 +58,6 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     @Parameter(names = "-pskIdentity", description = "Set the Psk Identity, that should be used")
     private String pskIdentity = "Client_identity";
 
-
     public PskBruteForcerAttackServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -72,6 +71,7 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
     }
+
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

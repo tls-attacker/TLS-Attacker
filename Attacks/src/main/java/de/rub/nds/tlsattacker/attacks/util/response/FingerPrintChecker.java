@@ -17,7 +17,6 @@ import org.bouncycastle.util.Arrays;
 
 public class FingerPrintChecker {
 
-
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
@@ -166,6 +165,7 @@ public class FingerPrintChecker {
         }
         return true;
     }
+
     private FingerPrintChecker() {
     }
 }

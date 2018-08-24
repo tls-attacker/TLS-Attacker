@@ -18,7 +18,6 @@ import org.apache.logging.log4j.LogManager;
 
 public class ConnectivityChecker {
 
-
     public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Attacker.class);
     private final Connection connection;
 

@@ -39,7 +39,6 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
-
     public PskBruteForcerAttackClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         serverDelegate = new ServerDelegate();
@@ -53,12 +52,13 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
             Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
         }
     }
+
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
         config.setQuickReceive(true);
         config.setEarlyStop(true);
-        
+
         return config;
     }
 
