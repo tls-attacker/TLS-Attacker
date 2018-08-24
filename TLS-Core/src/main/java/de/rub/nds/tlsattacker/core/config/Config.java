@@ -105,6 +105,8 @@ public class Config implements Serializable {
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
+    private byte[] defaultHandshakeSecret = new byte[32];
+
     private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;
 
     private NamedGroup preferedCertificateSignatureGroup = NamedGroup.SECP256R1;
@@ -291,9 +293,6 @@ public class Config implements Serializable {
      * Default ALPN announced protocols
      */
     private String[] alpnAnnouncedProtocols = new String[] { "h2" };
-
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] sessionId = new byte[0];
 
     /**
      * Default SRP Identifier
@@ -1155,7 +1154,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getSessionTicketKeyAES() {
-        return sessionTicketKeyAES;
+        return Arrays.copyOf(sessionTicketKeyAES, sessionTicketKeyAES.length);
     }
 
     public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
@@ -1163,7 +1162,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getSessionTicketKeyHMAC() {
-        return sessionTicketKeyHMAC;
+        return Arrays.copyOf(sessionTicketKeyHMAC, sessionTicketKeyHMAC.length);
     }
 
     public void setSessionTicketKeyHMAC(byte[] sessionTicketKeyHMAC) {
@@ -1171,7 +1170,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getSessionTicketKeyName() {
-        return sessionTicketKeyName;
+        return Arrays.copyOf(sessionTicketKeyName, sessionTicketKeyName.length);
     }
 
     public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
@@ -1211,7 +1210,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {
-        return defaultServerRenegotiationInfo;
+        return Arrays.copyOf(defaultServerRenegotiationInfo, defaultServerRenegotiationInfo.length);
     }
 
     public void setDefaultServerRenegotiationInfo(byte[] defaultServerRenegotiationInfo) {
@@ -1283,7 +1282,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientHandshakeTrafficSecret() {
-        return defaultClientHandshakeTrafficSecret;
+        return Arrays.copyOf(defaultClientHandshakeTrafficSecret, defaultClientHandshakeTrafficSecret.length);
     }
 
     public void setDefaultClientHandshakeTrafficSecret(byte[] defaultClientHandshakeTrafficSecret) {
@@ -1291,7 +1290,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerHandshakeTrafficSecret() {
-        return defaultServerHandshakeTrafficSecret;
+        return Arrays.copyOf(defaultServerHandshakeTrafficSecret, defaultServerHandshakeTrafficSecret.length);
     }
 
     public void setDefaultServerHandshakeTrafficSecret(byte[] defaultServerHandshakeTrafficSecret) {
@@ -1299,7 +1298,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultCertificateRequestContext() {
-        return defaultCertificateRequestContext;
+        return Arrays.copyOf(defaultCertificateRequestContext, defaultCertificateRequestContext.length);
     }
 
     public void setDefaultCertificateRequestContext(byte[] defaultCertificateRequestContext) {
@@ -1331,7 +1330,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultPSKKey() {
-        return defaultPSKKey;
+        return Arrays.copyOf(defaultPSKKey, defaultPSKKey.length);
     }
 
     public void setDefaultPSKKey(byte[] defaultPSKKey) {
@@ -1339,7 +1338,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultPSKIdentity() {
-        return defaultPSKIdentity;
+        return Arrays.copyOf(defaultPSKIdentity, defaultPSKIdentity.length);
     }
 
     public void setDefaultPSKIdentity(byte[] defaultPSKIdentity) {
@@ -1347,7 +1346,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultPSKIdentityHint() {
-        return defaultPSKIdentityHint;
+        return Arrays.copyOf(defaultPSKIdentityHint, defaultPSKIdentityHint.length);
     }
 
     public void setDefaultPSKIdentityHint(byte[] defaultPSKIdentityHint) {
@@ -1435,7 +1434,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultSRPServerSalt() {
-        return defaultSRPServerSalt;
+        return Arrays.copyOf(defaultSRPServerSalt, defaultSRPServerSalt.length);
     }
 
     public void setDefaultSRPServerSalt(byte[] defaultSRPServerSalt) {
@@ -1443,7 +1442,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultSRPIdentity() {
-        return defaultSRPIdentity;
+        return Arrays.copyOf(defaultSRPIdentity, defaultSRPIdentity.length);
     }
 
     public void setDefaultSRPIdentity(byte[] defaultSRPIdentity) {
@@ -1451,7 +1450,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultSRPPassword() {
-        return defaultSRPPassword;
+        return Arrays.copyOf(defaultSRPPassword, defaultSRPPassword.length);
     }
 
     public void setDefaultSRPPassword(byte[] defaultSRPPassword) {
@@ -1592,7 +1591,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultDtlsCookie() {
-        return defaultDtlsCookie;
+        return Arrays.copyOf(defaultDtlsCookie, defaultDtlsCookie.length);
     }
 
     public void setDefaultDtlsCookie(byte[] defaultDtlsCookie) {
@@ -1600,7 +1599,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientSessionId() {
-        return defaultClientSessionId;
+        return Arrays.copyOf(defaultClientSessionId, defaultClientSessionId.length);
     }
 
     public void setDefaultClientSessionId(byte[] defaultClientSessionId) {
@@ -1608,7 +1607,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerSessionId() {
-        return defaultServerSessionId;
+        return Arrays.copyOf(defaultServerSessionId, defaultServerSessionId.length);
     }
 
     public void setDefaultServerSessionId(byte[] defaultServerSessionId) {
@@ -1624,7 +1623,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerRandom() {
-        return defaultServerRandom;
+        return Arrays.copyOf(defaultServerRandom, defaultServerRandom.length);
     }
 
     public void setDefaultServerRandom(byte[] defaultServerRandom) {
@@ -1632,7 +1631,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientRandom() {
-        return defaultClientRandom;
+        return Arrays.copyOf(defaultClientRandom, defaultClientRandom.length);
     }
 
     public void setDefaultClientRandom(byte[] defaultClientRandom) {
@@ -1640,7 +1639,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultPreMasterSecret() {
-        return defaultPreMasterSecret;
+        return Arrays.copyOf(defaultPreMasterSecret, defaultPreMasterSecret.length);
     }
 
     public void setDefaultPreMasterSecret(byte[] defaultPreMasterSecret) {
@@ -1648,7 +1647,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultMasterSecret() {
-        return defaultMasterSecret;
+        return Arrays.copyOf(defaultMasterSecret, defaultMasterSecret.length);
     }
 
     public void setDefaultMasterSecret(byte[] defaultMasterSecret) {
@@ -1945,7 +1944,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultPaddingExtensionBytes() {
-        return defaultPaddingExtensionBytes;
+        return Arrays.copyOf(defaultPaddingExtensionBytes, defaultPaddingExtensionBytes.length);
     }
 
     public void setDefaultPaddingExtensionBytes(byte[] defaultPaddingExtensionBytes) {
@@ -2026,7 +2025,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDistinguishedNames() {
-        return distinguishedNames;
+        return Arrays.copyOf(distinguishedNames, distinguishedNames.length);
     }
 
     public void setDistinguishedNames(byte[] distinguishedNames) {
@@ -2304,7 +2303,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getTlsSessionTicket() {
-        return tlsSessionTicket;
+        return Arrays.copyOf(tlsSessionTicket, tlsSessionTicket.length);
     }
 
     public void setTlsSessionTicket(byte[] tlsSessionTicket) {
@@ -2312,7 +2311,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultSignedCertificateTimestamp() {
-        return defaultSignedCertificateTimestamp;
+        return Arrays.copyOf(defaultSignedCertificateTimestamp, defaultSignedCertificateTimestamp.length);
     }
 
     public void setDefaultSignedCertificateTimestamp(byte[] defaultSignedCertificateTimestamp) {
@@ -2328,7 +2327,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientRenegotiationInfo() {
-        return defaultClientRenegotiationInfo;
+        return Arrays.copyOf(defaultClientRenegotiationInfo, defaultClientRenegotiationInfo.length);
     }
 
     public void setDefaultClientRenegotiationInfo(byte[] defaultClientRenegotiationInfo) {
@@ -2405,7 +2404,8 @@ public class Config implements Serializable {
     }
 
     public byte[] getCertificateStatusRequestExtensionResponderIDList() {
-        return certificateStatusRequestExtensionResponderIDList;
+        return Arrays.copyOf(certificateStatusRequestExtensionResponderIDList,
+                certificateStatusRequestExtensionResponderIDList.length);
     }
 
     public void setCertificateStatusRequestExtensionResponderIDList(
@@ -2414,7 +2414,8 @@ public class Config implements Serializable {
     }
 
     public byte[] getCertificateStatusRequestExtensionRequestExtension() {
-        return certificateStatusRequestExtensionRequestExtension;
+        return Arrays.copyOf(certificateStatusRequestExtensionRequestExtension,
+                certificateStatusRequestExtensionRequestExtension.length);
     }
 
     public void setCertificateStatusRequestExtensionRequestExtension(
@@ -2422,16 +2423,8 @@ public class Config implements Serializable {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public byte[] getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(byte[] sessionId) {
-        this.sessionId = sessionId;
-    }
-
     public byte[] getSecureRemotePasswordExtensionIdentifier() {
-        return secureRemotePasswordExtensionIdentifier;
+        return Arrays.copyOf(secureRemotePasswordExtensionIdentifier, secureRemotePasswordExtensionIdentifier.length);
     }
 
     public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
@@ -2448,7 +2441,8 @@ public class Config implements Serializable {
     }
 
     public byte[] getSecureRealTimeTransportProtocolMasterKeyIdentifier() {
-        return secureRealTimeTransportProtocolMasterKeyIdentifier;
+        return Arrays.copyOf(secureRealTimeTransportProtocolMasterKeyIdentifier,
+                secureRealTimeTransportProtocolMasterKeyIdentifier.length);
     }
 
     public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(
@@ -2752,7 +2746,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientApplicationTrafficSecret() {
-        return defaultClientApplicationTrafficSecret;
+        return Arrays.copyOf(defaultClientApplicationTrafficSecret, defaultClientApplicationTrafficSecret.length);
     }
 
     public void setDefaultClientApplicationTrafficSecret(byte[] defaultClientApplicationTrafficSecret) {
@@ -2760,7 +2754,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerApplicationTrafficSecret() {
-        return defaultServerApplicationTrafficSecret;
+        return Arrays.copyOf(defaultServerApplicationTrafficSecret, defaultServerApplicationTrafficSecret.length);
     }
 
     public void setDefaultServerApplicationTrafficSecret(byte[] defaultServerApplicationTrafficSecret) {
@@ -2771,7 +2765,7 @@ public class Config implements Serializable {
      * @return the earlyData
      */
     public byte[] getEarlyData() {
-        return earlyData;
+        return Arrays.copyOf(earlyData, earlyData.length);
     }
 
     /**
@@ -2801,7 +2795,7 @@ public class Config implements Serializable {
      * @return the psk
      */
     public byte[] getPsk() {
-        return psk;
+        return Arrays.copyOf(psk, psk.length);
     }
 
     /**
@@ -2816,7 +2810,7 @@ public class Config implements Serializable {
      * @return the defaultSessionTicketAgeAdd
      */
     public byte[] getDefaultSessionTicketAgeAdd() {
-        return defaultSessionTicketAgeAdd;
+        return Arrays.copyOf(defaultSessionTicketAgeAdd, defaultSessionTicketAgeAdd.length);
     }
 
     /**
@@ -2831,7 +2825,7 @@ public class Config implements Serializable {
      * @return the defaultSessionTicketNonce
      */
     public byte[] getDefaultSessionTicketNonce() {
-        return defaultSessionTicketNonce;
+        return Arrays.copyOf(defaultSessionTicketNonce, defaultSessionTicketNonce.length);
     }
 
     /**
@@ -2846,7 +2840,7 @@ public class Config implements Serializable {
      * @return the defaultSessionTicketIdentity
      */
     public byte[] getDefaultSessionTicketIdentity() {
-        return defaultSessionTicketIdentity;
+        return Arrays.copyOf(defaultSessionTicketIdentity, defaultSessionTicketIdentity.length);
     }
 
     /**
@@ -2861,7 +2855,7 @@ public class Config implements Serializable {
      * @return the clientEarlyTrafficSecret
      */
     public byte[] getClientEarlyTrafficSecret() {
-        return clientEarlyTrafficSecret;
+        return Arrays.copyOf(clientEarlyTrafficSecret, clientEarlyTrafficSecret.length);
     }
 
     /**
@@ -2876,7 +2870,7 @@ public class Config implements Serializable {
      * @return the earlySecret
      */
     public byte[] getEarlySecret() {
-        return earlySecret;
+        return Arrays.copyOf(earlySecret, earlySecret.length);
     }
 
     /**
@@ -2906,7 +2900,7 @@ public class Config implements Serializable {
      * @return the earlyDataPsk
      */
     public byte[] getEarlyDataPsk() {
-        return earlyDataPsk;
+        return Arrays.copyOf(earlyDataPsk, earlyDataPsk.length);
     }
 
     /**
@@ -3123,4 +3117,13 @@ public class Config implements Serializable {
     public void setPreferredHashAlgorithm(HashAlgorithm preferredHashAlgorithm) {
         this.preferredHashAlgorithm = preferredHashAlgorithm;
     }
+
+    public byte[] getDefaultHandshakeSecret() {
+        return Arrays.copyOf(defaultHandshakeSecret, defaultHandshakeSecret.length);
+    }
+
+    public void setDefaultHandshakeSecret(byte[] defaultHandshakeSecret) {
+        this.defaultHandshakeSecret = defaultHandshakeSecret;
+    }
+
 }
