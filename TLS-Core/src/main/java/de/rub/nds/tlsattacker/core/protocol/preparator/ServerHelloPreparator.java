@@ -30,10 +30,9 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
         prepareRandom();
-        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
-            prepareSessionID();
-            prepareSessionIDLength();
-        }
+        prepareSessionID();
+        prepareSessionIDLength();
+
         prepareCipherSuite();
         if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareCompressionMethod();
@@ -81,7 +80,11 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        msg.setSessionId(chooser.getServerSessionId());
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            msg.setSessionId(new byte[0]);
+        } else {
+            msg.setSessionId(chooser.getServerSessionId());
+        }
         LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
