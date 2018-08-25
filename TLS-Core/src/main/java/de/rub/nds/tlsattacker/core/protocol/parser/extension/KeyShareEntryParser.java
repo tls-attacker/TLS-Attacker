@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
@@ -25,7 +26,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     public KeyShareEntry parse() {
         LOGGER.debug("Parsing KeyShareEntry");
         entry = new KeyShareEntry();
-        parseKeyShareType(entry);
+        parseKeyShareGroup(entry);
         if (getBytesLeft() > 0) {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
@@ -40,9 +41,11 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * @param msg
      *            Message to write in
      */
-    private void parseKeyShareType(KeyShareEntry pair) {
+    private void parseKeyShareGroup(KeyShareEntry pair) {
         pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
         LOGGER.debug("KeyShareType: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
+        pair.setGroupConfig(NamedGroup.getNamedGroup(entry.getGroup().getValue()));
+        LOGGER.debug("KeyShareTypeConfig: " + pair.getGroupConfig().name());
     }
 
     /**
