@@ -56,12 +56,12 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         DrownVulnerabilityType type = getDrownVulnerabilityType();
         switch (type) {
             case FULL:
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server is vulnerable to the full DROWN attack");
+                LOGGER.log(LogLevel.DIRECT, "Server is vulnerable to the full DROWN attack");
                 return true;
             case NONE:
                 return false;
             case SSL2:
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server supports SSL2, but not any weak ciphersuites, "
+                LOGGER.log(LogLevel.DIRECT, "Server supports SSL2, but not any weak ciphersuites, "
                         + "so is not vulnerable to DROWN");
                 return false;
             case UNKNOWN:

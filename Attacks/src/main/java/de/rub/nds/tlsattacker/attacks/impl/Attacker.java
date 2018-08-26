@@ -42,7 +42,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
         LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                LOGGER.log(LogLevel.DIRECT, "Cannot reach Server. Is the server online?");
                 return;
             }
         }
@@ -53,7 +53,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
         LOGGER.debug("Checking: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                LOGGER.log(LogLevel.DIRECT, "Cannot reach Server. Is the server online?");
                 return null;
             } else {
                 LOGGER.debug("Can connect to server. Running vulnerability scan");

@@ -80,9 +80,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+        LOGGER.log(LogLevel.DIRECT,
                 "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
+        LOGGER.log(LogLevel.DIRECT, "A server is considered secure if it always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
             LOGGER.debug("Testing: " + bbWorkflowType);
             errorType = isVulnerable(bbWorkflowType, pkcs1Vectors);
@@ -130,7 +130,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
         if (error != EqualityError.NONE) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a vulnerability with " + bbWorkflowType.getDescription());
+            LOGGER.log(LogLevel.DIRECT, "Found a vulnerability with " + bbWorkflowType.getDescription());
         }
         return error;
     }
@@ -140,8 +140,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint(), false);
             if (error != EqualityError.NONE) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an EqualityError!");
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                LOGGER.log(LogLevel.DIRECT, "Found an EqualityError!");
+                LOGGER.log(LogLevel.DIRECT,
                         EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
                 return error;
             }
@@ -216,7 +216,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, solution.toString(16));
+        LOGGER.log(LogLevel.DIRECT, solution.toString(16));
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {

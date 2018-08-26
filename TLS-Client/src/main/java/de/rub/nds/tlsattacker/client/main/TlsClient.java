@@ -48,9 +48,8 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.error("Encountered a ConfigurationException aborting. See debug for more info.");
-                LOGGER.debug(E);
+            } catch (Exception E) {
+                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
             LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());

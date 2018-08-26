@@ -54,7 +54,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         } else {
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Last handled application data: " + lastHandledApplicationData);
+        LOGGER.log(LogLevel.DIRECT, "Last handled application data: " + lastHandledApplicationData);
         setExecuted(true);
     }
 

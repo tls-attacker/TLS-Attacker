@@ -80,14 +80,13 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowExecutor.executeWorkflow();
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (definitely), Alert message found");
+            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (definitely), Alert message found");
             return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (definitely), Finished message found");
+            LOGGER.log(LogLevel.DIRECT, "Vulnerable (definitely), Finished message found");
             return EarlyFinishedVulnerabilityType.VULNERABLE;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Not vulnerable (probably), No Finished message found, yet also no alert");
+            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (probably), No Finished message found, yet also no alert");
             return EarlyFinishedVulnerabilityType.UNKNOWN;
         }
     }

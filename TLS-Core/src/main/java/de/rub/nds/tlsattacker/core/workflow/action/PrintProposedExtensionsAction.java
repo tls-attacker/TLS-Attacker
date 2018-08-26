@@ -30,7 +30,7 @@ public class PrintProposedExtensionsAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Proposed extensions: " + ctx.getProposedExtensions());
+        LOGGER.log(LogLevel.DIRECT, "Proposed extensions: " + ctx.getProposedExtensions());
     }
 
     @Override

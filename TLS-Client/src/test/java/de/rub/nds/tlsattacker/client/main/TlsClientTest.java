@@ -97,7 +97,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing RSA");
+            LOGGER.log(LogLevel.DIRECT, "Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
@@ -118,7 +118,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing EC");
+            LOGGER.log(LogLevel.DIRECT, "Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
@@ -137,7 +137,6 @@ public class TlsClientTest {
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
         timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
@@ -178,8 +177,8 @@ public class TlsClientTest {
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                        "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:" + result);
+                LOGGER.log(LogLevel.DIRECT, "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name()
+                        + " Succes:" + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
                         result, is(true));
             }
@@ -210,7 +209,6 @@ public class TlsClientTest {
 
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
         timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);

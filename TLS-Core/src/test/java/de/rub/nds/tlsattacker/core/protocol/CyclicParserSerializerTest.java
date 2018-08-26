@@ -38,18 +38,18 @@ public class CyclicParserSerializerTest {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.parser");
         Set<Class<? extends ProtocolMessageParser>> parserClasses = reflections
                 .getSubTypesOf(ProtocolMessageParser.class);
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "ProtocolMessageParser classes:" + parserClasses.size());
+        LOGGER.log(LogLevel.DIRECT, "ProtocolMessageParser classes:" + parserClasses.size());
         ProtocolMessageParser parser = null;
         ProtocolMessagePreparator preparator = null;
         ProtocolMessage message = null;
         ProtocolMessageSerializer serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Skipping:" + someParserClass.getSimpleName());
+                LOGGER.log(LogLevel.DIRECT, "Skipping:" + someParserClass.getSimpleName());
                 continue;
             }
             String testName = someParserClass.getSimpleName().replace("Parser", "");
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing:" + testName);
+            LOGGER.log(LogLevel.DIRECT, "Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version.isDTLS()) {
                     continue;
@@ -85,7 +85,7 @@ public class CyclicParserSerializerTest {
                     try {
                         preparator.prepare();
                     } catch (UnsupportedOperationException E) {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Preparator for " + testName + " is unsupported yet");
+                        LOGGER.log(LogLevel.DIRECT, "Preparator for " + testName + " is unsupported yet");
                         continue;
                     }
                     Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
@@ -107,7 +107,7 @@ public class CyclicParserSerializerTest {
                     try {
                         message = parser.parse();
                     } catch (UnsupportedOperationException E) {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "##########" + testName + " parsing is unsupported!");
+                        LOGGER.log(LogLevel.DIRECT, "##########" + testName + " parsing is unsupported!");
                         continue;
                     }
                     try {
@@ -118,8 +118,7 @@ public class CyclicParserSerializerTest {
                         fail("Could not create serializer instance for " + testName);
                     }
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " - " + version.name()
-                            + " works as expected!");
+                    LOGGER.log(LogLevel.DIRECT, "......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
                     fail("Could not execute " + testName + " - " + version.name());
                 }
@@ -129,9 +128,8 @@ public class CyclicParserSerializerTest {
                  * (NoSuchMethodException | SecurityException |
                  * InstantiationException | IllegalAccessException |
                  * IllegalArgumentException | InvocationTargetException ex) {
-                 * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                 * "Could not create instance for:" +
-                 * someParserClass.getName()); }
+                 * LOGGER.log(LogLevel.DIRECT, "Could not create instance for:"
+                 * + someParserClass.getName()); }
                  */
             }
         }
@@ -143,18 +141,18 @@ public class CyclicParserSerializerTest {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.parser");
         Set<Class<? extends ProtocolMessageParser>> parserClasses = reflections
                 .getSubTypesOf(ProtocolMessageParser.class);
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "ProtocolMessageParser classes:" + parserClasses.size());
+        LOGGER.log(LogLevel.DIRECT, "ProtocolMessageParser classes:" + parserClasses.size());
         ProtocolMessageParser parser = null;
         ProtocolMessagePreparator preparator = null;
         ProtocolMessage message = null;
         ProtocolMessageSerializer serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Skipping:" + someParserClass.getSimpleName());
+                LOGGER.log(LogLevel.DIRECT, "Skipping:" + someParserClass.getSimpleName());
                 continue;
             }
             String testName = someParserClass.getSimpleName().replace("Parser", "");
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing:" + testName);
+            LOGGER.log(LogLevel.DIRECT, "Testing:" + testName);
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version.isDTLS()) {
                     continue;
@@ -190,7 +188,7 @@ public class CyclicParserSerializerTest {
                     try {
                         preparator.prepare();
                     } catch (UnsupportedOperationException E) {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Preparator for " + testName + " is unsupported yet");
+                        LOGGER.log(LogLevel.DIRECT, "Preparator for " + testName + " is unsupported yet");
                         continue;
                     }
                     Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
@@ -212,7 +210,7 @@ public class CyclicParserSerializerTest {
                     try {
                         message = parser.parse();
                     } catch (UnsupportedOperationException E) {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "##########" + testName + " parsing is unsupported!");
+                        LOGGER.log(LogLevel.DIRECT, "##########" + testName + " parsing is unsupported!");
                         continue;
                     }
                     try {
@@ -223,8 +221,7 @@ public class CyclicParserSerializerTest {
                         fail("Could not create serializer instance for " + testName);
                     }
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " - " + version.name()
-                            + " works as expected!");
+                    LOGGER.log(LogLevel.DIRECT, "......." + testName + " - " + version.name() + " works as expected!");
                 } catch (ClassNotFoundException ex) {
                     fail("Could not execute " + testName + " - " + version.name());
                 }
@@ -234,16 +231,14 @@ public class CyclicParserSerializerTest {
                  * (NoSuchMethodException | SecurityException |
                  * InstantiationException | IllegalAccessException |
                  * IllegalArgumentException | InvocationTargetException ex) {
-                 * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                 * "Could not create instance for:" +
-                 * someParserClass.getName()); } /* try { parser =
+                 * LOGGER.log(LogLevel.DIRECT, "Could not create instance for:"
+                 * + someParserClass.getName()); } /* try { parser =
                  * someParserClass.getConstructor().newInstance(); } catch
                  * (NoSuchMethodException | SecurityException |
                  * InstantiationException | IllegalAccessException |
                  * IllegalArgumentException | InvocationTargetException ex) {
-                 * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                 * "Could not create instance for:" +
-                 * someParserClass.getName()); }
+                 * LOGGER.log(LogLevel.DIRECT, "Could not create instance for:"
+                 * + someParserClass.getName()); }
                  */
             }
         }

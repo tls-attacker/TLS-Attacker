@@ -67,7 +67,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
             sb.append("\n  LastServerVerifyData: ").append(toIndentedString(ctx.getLastServerVerifyData()));
         }
 
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, sb.append("\n").toString());
+        LOGGER.log(LogLevel.DIRECT, sb.append("\n").toString());
 
     }
 

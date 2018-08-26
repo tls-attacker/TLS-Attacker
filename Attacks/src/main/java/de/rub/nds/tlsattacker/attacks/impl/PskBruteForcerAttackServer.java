@@ -37,13 +37,13 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     @Override
     public void executeAttack() {
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Connecting to the Server to find a PSK ciphersuite he supports...");
+        LOGGER.log(LogLevel.DIRECT, "Connecting to the Server to find a PSK ciphersuite he supports...");
         CipherSuite suite = getSupportedPskCiphersuite();
         if (suite == null) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Stopping attack");
+            LOGGER.log(LogLevel.DIRECT, "Stopping attack");
         }
         LOGGER.log(
-                LogLevel.CONSOLE_OUTPUT,
+                LogLevel.DIRECT,
                 "The server supports "
                         + suite
                         + ". Trying to guess the PSK. This is an online Attack. Depending on the PSK this may take some time...");
@@ -55,7 +55,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         while (!result) {
             byte[] guessedPsk = guessProvider.getGuess();
             if (guessedPsk == null) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not find psk - attack stopped");
+                LOGGER.log(LogLevel.DIRECT, "Could not find psk - attack stopped");
                 break;
             }
             if (guessedPsk.length == 0) {
@@ -69,7 +69,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             if (result) {
                 long stopStime = System.currentTimeMillis();
                 LOGGER.log(
-                        LogLevel.CONSOLE_OUTPUT,
+                        LogLevel.DIRECT,
                         "Found the psk in "
                                 + String.format(
                                         "%d min, %d sec",
@@ -77,20 +77,20 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
                                         TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
                                                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopStime
                                                         - startTime))));
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Guessed " + counter + " times");
+                LOGGER.log(LogLevel.DIRECT, "Guessed " + counter + " times");
             }
         }
     }
 
     @Override
     public Boolean isVulnerable() {
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Connecting to the Server...");
+        LOGGER.log(LogLevel.DIRECT, "Connecting to the Server...");
         boolean supportsPsk = getSupportedPskCiphersuite() != null;
         if (supportsPsk) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Maybe vulnerable - server supports PSK");
+            LOGGER.log(LogLevel.DIRECT, "Maybe vulnerable - server supports PSK");
             return null;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable - server does not support PSK");
+            LOGGER.log(LogLevel.DIRECT, "Not Vulnerable - server does not support PSK");
             return false;
         }
     }
@@ -109,7 +109,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             return state.getTlsContext().getSelectedCipherSuite();
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+            LOGGER.log(LogLevel.DIRECT,
                     "Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
             LOGGER.debug("We tested for the following cipher suites:");
             for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCiphersuites()) {
@@ -131,7 +131,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         if (state.getWorkflowTrace().executedAsPlanned()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PSK " + ArrayConverter.bytesToHexString(pskGuess));
+            LOGGER.log(LogLevel.DIRECT, "PSK " + ArrayConverter.bytesToHexString(pskGuess));
             return true;
         } else {
             return false;

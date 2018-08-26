@@ -50,7 +50,7 @@ public class Main {
         try {
             commander.parse(args);
             if (config.isDebug()) {
-                Configurator.setRootLevel(org.apache.logging.log4j.Level.ALL);
+                Configurator.setRootLevel(org.apache.logging.log4j.Level.DEBUG);
             }
             // Cmd was parsable
             try {
@@ -78,11 +78,10 @@ public class Main {
                                 rsaPrivateKey = ((RSAPrivateKey) privateKey).getPrivateExponent();
                                 LOGGER.info("RSA privateKey:" + rsaPrivateKey.toString());
                             } else {
-                                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                                        "PrivateKey file does not look like an RSA private key!");
+                                LOGGER.log(LogLevel.DIRECT, "PrivateKey file does not look like an RSA private key!");
                             }
                         } catch (Exception E) {
-                            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not read private key");
+                            LOGGER.log(LogLevel.DIRECT, "Could not read private key");
                             E.printStackTrace();
                             return;
                         } finally {
@@ -93,7 +92,7 @@ public class Main {
                             reader.close();
                         }
                     } else {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PrivateKey file does not exist!");
+                        LOGGER.log(LogLevel.DIRECT, "PrivateKey file does not exist!");
                         return;
                     }
                 }

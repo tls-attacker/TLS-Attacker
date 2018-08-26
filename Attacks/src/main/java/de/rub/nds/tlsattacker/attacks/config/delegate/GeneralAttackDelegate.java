@@ -26,18 +26,7 @@ public class GeneralAttackDelegate extends GeneralDelegate {
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         if (isDebug()) {
-            setLogLevel(Level.DEBUG);
-        }
-        Configurator.setRootLevel(getLogLevel());
-        Configurator.setAllLevels("de.rub.nds.modifiablevariable", Level.FATAL);
-        if (getLogLevel() == Level.ALL) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ALL);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.transport", Level.DEBUG);
-        } else if (getLogLevel() == Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.DEBUG);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.transport", Level.DEBUG);
-        } else {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.OFF);
+            Configurator.setRootLevel(Level.DEBUG);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

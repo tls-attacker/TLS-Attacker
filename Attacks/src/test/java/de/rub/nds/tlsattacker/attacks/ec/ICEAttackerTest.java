@@ -33,7 +33,7 @@ public class ICEAttackerTest {
     @Test()
     @Category(SlowTests.class)
     public void testAttack() {
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting ICEAttacker test... this may take some time");
+        LOGGER.log(LogLevel.DIRECT, "Starting ICEAttacker test... this may take some time");
         TestECOracle oracle = new TestECOracle("secp256r1");
         ICEAttacker attacker = new ICEAttacker(oracle);
         attacker.attack();

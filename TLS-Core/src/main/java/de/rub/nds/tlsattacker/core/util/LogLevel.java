@@ -17,7 +17,7 @@ public class LogLevel {
      * evaluations. For example, to present a final result of an executed
      * attack.
      */
-    public static final Level CONSOLE_OUTPUT = Level.forName("CONSOLE", 150);
+    public static final Level DIRECT = Level.forName("Direct", 150);
 
     private LogLevel() {
     }

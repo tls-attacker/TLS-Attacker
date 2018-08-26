@@ -47,10 +47,6 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         addDelegate(serverDelegate);
         addDelegate(attackDelegate);
         addDelegate(ciphersuiteDelegate);
-
-        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
-        }
     }
 
     @Override

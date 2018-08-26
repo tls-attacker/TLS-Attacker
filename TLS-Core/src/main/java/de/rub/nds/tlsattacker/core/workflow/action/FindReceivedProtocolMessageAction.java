@@ -47,8 +47,8 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
         found = WorkflowTraceUtil.didReceiveMessage(protocolMessageType, state.getWorkflowTrace());
         if (found) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Found " + protocolMessageType.name() + " (" + protocolMessageType.getValue() + ")");
+            LOGGER.log(LogLevel.DIRECT, "Found " + protocolMessageType.name() + " (" + protocolMessageType.getValue()
+                    + ")");
         }
         setExecuted(Boolean.TRUE);
     }
