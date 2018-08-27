@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -29,6 +28,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,13 +84,13 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowExecutor.executeWorkflow();
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (definitely), Alert message found");
+            CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            LOGGER.log(LogLevel.DIRECT, "Vulnerable (definitely), Finished message found");
+            CONSOLE.info("Vulnerable (definitely), Finished message found");
             return EarlyFinishedVulnerabilityType.VULNERABLE;
         } else {
-            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (probably), No Finished message found, yet also no alert");
+            CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
             return EarlyFinishedVulnerabilityType.UNKNOWN;
         }
     }

@@ -28,10 +28,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
@@ -84,9 +84,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
-        LOGGER.log(LogLevel.DIRECT,
-                "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        LOGGER.log(LogLevel.DIRECT, "A server is considered secure if it always responds the same way.");
+        CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE.info("A server is considered secure if it always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
             LOGGER.debug("Testing: " + bbWorkflowType);
             errorType = isVulnerable(bbWorkflowType, pkcs1Vectors);
@@ -134,7 +133,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
         if (error != EqualityError.NONE) {
-            LOGGER.log(LogLevel.DIRECT, "Found a vulnerability with " + bbWorkflowType.getDescription());
+            CONSOLE.info("Found a vulnerability with " + bbWorkflowType.getDescription());
         }
         return error;
     }
@@ -144,9 +143,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint(), false);
             if (error != EqualityError.NONE) {
-                LOGGER.log(LogLevel.DIRECT, "Found an EqualityError!");
-                LOGGER.log(LogLevel.DIRECT,
-                        EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
+                CONSOLE.info("Found an EqualityError!");
+                CONSOLE.info(EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
                 return error;
             }
         }
@@ -220,7 +218,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
-        LOGGER.log(LogLevel.DIRECT, solution.toString(16));
+        CONSOLE.info(solution.toString(16));
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {

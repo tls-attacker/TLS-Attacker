@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -34,6 +33,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,13 +108,13 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowExecutor.executeWorkflow();
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (definitely), Alert message found");
+            CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            LOGGER.log(LogLevel.DIRECT, "Vulnerable (definitely), Finished message found");
+            CONSOLE.warn("Vulnerable (definitely), Finished message found");
             return true;
         } else {
-            LOGGER.log(LogLevel.DIRECT, "Not vulnerable (probably), No Finished message found, yet also no alert");
+            CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
             return false;
         }
     }

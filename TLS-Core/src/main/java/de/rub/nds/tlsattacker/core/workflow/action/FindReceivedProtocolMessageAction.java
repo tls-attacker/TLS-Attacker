@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +49,7 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
         found = WorkflowTraceUtil.didReceiveMessage(protocolMessageType, state.getWorkflowTrace());
         if (found) {
-            LOGGER.log(LogLevel.DIRECT, "Found " + protocolMessageType.name() + " (" + protocolMessageType.getValue()
-                    + ")");
+            LOGGER.info("Found " + protocolMessageType.name() + " (" + protocolMessageType.getValue() + ")");
         }
         setExecuted(Boolean.TRUE);
     }

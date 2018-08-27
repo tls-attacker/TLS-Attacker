@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Objects;
@@ -58,7 +58,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         } else {
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
-        LOGGER.log(LogLevel.DIRECT, "Last handled application data: " + lastHandledApplicationData);
+        CONSOLE.info("Last handled application data: " + lastHandledApplicationData);
         setExecuted(true);
     }
 

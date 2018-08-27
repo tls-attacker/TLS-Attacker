@@ -16,11 +16,11 @@ package de.rub.nds.tlsattacker.forensics.main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.forensics.analyzer.ForensicAnalyzer;
 import de.rub.nds.tlsattacker.forensics.config.TlsForensicsConfig;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -77,10 +77,10 @@ public class Main {
                                 rsaPrivateKey = ((RSAPrivateKey) privateKey).getPrivateExponent();
                                 LOGGER.info("RSA privateKey:" + rsaPrivateKey.toString());
                             } else {
-                                LOGGER.log(LogLevel.DIRECT, "PrivateKey file does not look like an RSA private key!");
+                                CONSOLE.info("PrivateKey file does not look like an RSA private key!");
                             }
                         } catch (Exception E) {
-                            LOGGER.log(LogLevel.DIRECT, "Could not read private key");
+                            CONSOLE.info("Could not read private key");
                             E.printStackTrace();
                             return;
                         } finally {
@@ -91,7 +91,7 @@ public class Main {
                             reader.close();
                         }
                     } else {
-                        LOGGER.log(LogLevel.DIRECT, "PrivateKey file does not exist!");
+                        CONSOLE.info("PrivateKey file does not exist!");
                         return;
                     }
                 }
@@ -103,12 +103,14 @@ public class Main {
             } catch (ConfigurationException E) {
                 LOGGER.info("Encountered an Exception. Aborting.");
                 LOGGER.debug(E);
+                E.printStackTrace();
             } catch (JAXBException | XMLStreamException | IOException ex1) {
                 ex.printStackTrace();
             }
         } catch (ParameterException E) {
             LOGGER.info("Could not parse provided parameters");
             LOGGER.debug(E);
+            E.printStackTrace();
             commander.usage();
             ex = E;
         }

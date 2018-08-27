@@ -27,10 +27,10 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -85,39 +85,37 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
             groupRecords = false;
         }
-        LOGGER.log(LogLevel.DIRECT,
-                "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        LOGGER.log(LogLevel.DIRECT, "A server is considered secure if it always responds the same way.");
+        CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError error;
 
         try {
             responseMap = createResponseMap();
             error = getEqualityError(responseMap);
             if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
-                LOGGER.log(LogLevel.DIRECT, "Found a candidate for a Socket difference performing rescan");
+                CONSOLE.info("Found a candidate for a Socket difference performing rescan");
                 HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
                 EqualityError errorTwo = getEqualityError(responseMapTwo);
                 if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
                     HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
                     EqualityError errorThree = getEqualityError(responseMapThree);
                     if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
-                        LOGGER.log(LogLevel.DIRECT,
-                                "Found an equality Error in a SocketState, performed to rescans and it still presisted");
-                        LOGGER.log(LogLevel.DIRECT, "The Server is very likely vulnerabble");
+                        CONSOLE.info("Found an equality Error in a SocketState, performed to rescans and it still presisted");
+                        CONSOLE.info("The Server is very likely vulnerabble");
                     } else {
-                        LOGGER.log(LogLevel.DIRECT, "Rescan revealed a false positive");
+                        CONSOLE.info("Rescan revealed a false positive");
                         return false;
                     }
                 } else {
-                    LOGGER.log(LogLevel.DIRECT, "Rescan revealed a false positive");
+                    CONSOLE.info("Rescan revealed a false positive");
                     return false;
                 }
             }
         } catch (AttackFailedException E) {
-            LOGGER.log(LogLevel.DIRECT, E.getMessage());
+            CONSOLE.info(E.getMessage());
             return null;
         }
-        LOGGER.log(LogLevel.DIRECT, EqualityErrorTranslator.translation(error, null, null));
+        CONSOLE.info(EqualityErrorTranslator.translation(error, null, null));
         if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
                 LOGGER.debug("----------------Map-----------------");
@@ -204,7 +202,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             for (int i = 1; i < list.size(); i++) {
                 EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
                 if (error != EqualityError.NONE) {
-                    LOGGER.log(LogLevel.DIRECT, "Found an equality Error: " + error);
+                    CONSOLE.info("Found an equality Error: " + error);
                     LOGGER.debug("Fingerprint1: " + fingerprint.toString());
                     LOGGER.debug("Fingerprint2: " + list.get(i).toString());
 

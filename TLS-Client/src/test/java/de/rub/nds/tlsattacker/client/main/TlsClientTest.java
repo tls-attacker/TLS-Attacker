@@ -30,13 +30,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -57,7 +57,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -97,7 +96,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(LogLevel.DIRECT, "Testing RSA");
+            CONSOLE.info("Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
@@ -118,7 +117,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(LogLevel.DIRECT, "Testing EC");
+            CONSOLE.info("Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
@@ -177,8 +176,8 @@ public class TlsClientTest {
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.log(LogLevel.DIRECT, "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name()
-                        + " Succes:" + result);
+                CONSOLE.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
+                        + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
                         result, is(true));
             }

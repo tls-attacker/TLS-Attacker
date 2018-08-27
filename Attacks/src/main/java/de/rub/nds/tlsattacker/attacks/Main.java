@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -176,7 +177,13 @@ public class Main {
             } else {
                 try {
                     Boolean result = attacker.checkVulnerability();
-                    LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
+                    if (result == Boolean.TRUE) {
+                        CONSOLE.error("Vulnerable:" + result.toString());
+                    } else if (result == Boolean.FALSE) {
+                        CONSOLE.info("Vulnerable:" + result.toString());
+                    } else {
+                        CONSOLE.warn("Vulnerable: Uncertain");
+                    }
                 } catch (UnsupportedOperationException E) {
                     LOGGER.info("The selected attacker is currently not implemented");
                 }

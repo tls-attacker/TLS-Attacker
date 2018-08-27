@@ -8,14 +8,14 @@
 			<PatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1}} - %msg%n%highlight{%throwable}"/>
         </Console>
         <Console name="Direct" target="SYSTEM_OUT">
-			<PatternLayout pattern="%msg%n"/>
+			<PatternLayout pattern="%highlight{%msg}%n"/>
         </Console>
     </Appenders>
     <Loggers>
-		<Logger name="DirectLogger" level="ALL">
+		<Logger name="DirectLogger" level="ALL" additivity="false">
 			<AppenderRef ref="Direct"/>
 		</Logger>
-        
+		
         <Logger name="de.rub.nds.tlsattacker.core.protocol.handler" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.message" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.parser" level="WARN"/>
@@ -36,7 +36,7 @@
         <Logger name="de.rub.nds.modifiablevariable" level="WARN"/>
         
         <Root level="INFO">
-            <AppenderRef ref="Info"/>
+			<AppenderRef ref="Console"/>
         </Root>
     </Loggers>
 </Configuration>

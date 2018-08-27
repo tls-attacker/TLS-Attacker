@@ -30,7 +30,7 @@ public class GeneralAttackDelegate extends GeneralDelegate {
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         if (isDebug()) {
-            Configurator.setRootLevel(Level.DEBUG);
+            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

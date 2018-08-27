@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -30,6 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -60,16 +60,15 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         DrownVulnerabilityType type = getDrownVulnerabilityType();
         switch (type) {
             case FULL:
-                LOGGER.log(LogLevel.DIRECT, "Server is vulnerable to the full DROWN attack");
+                CONSOLE.error("Server is vulnerable to the full DROWN attack");
                 return true;
             case NONE:
                 return false;
             case SSL2:
-                LOGGER.log(LogLevel.DIRECT, "Server supports SSL2, but not any weak ciphersuites, "
-                        + "so is not vulnerable to DROWN");
+                CONSOLE.warn("Server supports SSL2, but not any weak ciphersuites, " + "so is not vulnerable to DROWN");
                 return false;
             case UNKNOWN:
-                LOGGER.warn("Could not execute Workflow - something went wrong. Check the Debug output to be certain");
+                CONSOLE.info("Could not execute Workflow - something went wrong. Check the Debug output to be certain");
                 return null;
         }
         return null;
