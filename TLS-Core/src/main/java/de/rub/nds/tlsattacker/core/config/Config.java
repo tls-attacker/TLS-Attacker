@@ -1274,6 +1274,22 @@ public class Config implements Serializable {
         return defaultGost12Certificate;
     }
 
+    public void setDefaultServerGost01PrivateKey(BigInteger defaultServerGost01PrivateKey) {
+        this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
+    }
+
+    public void setDefaultServerGost01PublicKey(CustomECPoint defaultServerGost01PublicKey) {
+        this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
+    }
+
+    public void setDefaultServerGost12PrivateKey(BigInteger defaultServerGost12PrivateKey) {
+        this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
+    }
+
+    public void setDefaultServerGost12PublicKey(CustomECPoint defaultServerGost12PublicKey) {
+        this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
+    }
+
     public byte[] getDefaultClientHandshakeTrafficSecret() {
         return defaultClientHandshakeTrafficSecret;
     }
