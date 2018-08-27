@@ -31,6 +31,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
         }
+        entry.setGroupConfig(NamedGroup.getNamedGroup(entry.getGroup().getValue()));
         return entry;
     }
 
@@ -44,8 +45,6 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     private void parseKeyShareGroup(KeyShareEntry pair) {
         pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
         LOGGER.debug("KeyShareType: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
-        pair.setGroupConfig(NamedGroup.getNamedGroup(entry.getGroup().getValue()));
-        LOGGER.debug("KeyShareTypeConfig: " + pair.getGroupConfig().name());
     }
 
     /**

@@ -27,8 +27,8 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
         parseServerNameType(pair);
         parseServerNameLength(pair);
         parseServerName(pair);
-        parseServerNameConfig(pair);
-        parseServerNameTypeConfig(pair);
+        pair.setServerNameConfig(pair.getServerName().getValue());
+        pair.setServerNameTypeConfig(pair.getServerNameType().getValue());
         return pair;
     }
 
@@ -66,16 +66,6 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
     private void parseServerName(ServerNamePair pair) {
         pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));
         LOGGER.debug("ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
-    }
-    
-    private void parseServerNameConfig(ServerNamePair pair) {
-        pair.setServerNameConfig(pair.getServerName().getValue());
-        LOGGER.debug("ServerNameConfig: " + ArrayConverter.bytesToHexString(pair.getServerNameConfig()));
-    }
-    
-    private void parseServerNameTypeConfig(ServerNamePair pair) {
-        pair.setServerNameTypeConfig(pair.getServerNameType().getValue());
-        LOGGER.debug("ServerNameTypeConfig: " + pair.getServerNameTypeConfig());
     }
 
 }
