@@ -21,12 +21,12 @@ import org.apache.logging.log4j.Logger;
 
 public class ICEPointReader {
 
-    static Logger LOGGER = LogManager.getLogger(ICEPointReader.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Reads points for the attack on elliptic curves from a file specific for
      * this named curve
-     * 
+     *
      * @param namedCurve
      *            The NamedCurve as a String
      * @return the deserialized Points

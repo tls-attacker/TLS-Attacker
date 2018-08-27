@@ -24,8 +24,12 @@ import de.rub.nds.tlsattacker.util.MathHelper;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Config config;
 

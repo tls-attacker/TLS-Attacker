@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -24,8 +23,12 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordAEADCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * sequence Number length in byte

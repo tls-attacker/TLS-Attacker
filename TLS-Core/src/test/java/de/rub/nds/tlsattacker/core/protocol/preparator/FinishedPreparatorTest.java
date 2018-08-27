@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class FinishedPreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(FinishedPreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static void registerPreviousMessages(TlsContext context, String... handshakeMessageHex) {
         for (String hex : handshakeMessageHex) {

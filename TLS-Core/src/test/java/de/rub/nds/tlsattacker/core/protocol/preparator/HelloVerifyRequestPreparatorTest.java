@@ -20,7 +20,7 @@ import org.junit.Test;
 
 public class HelloVerifyRequestPreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(HelloVerifyRequestPreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext context;
     private HelloVerifyRequestPreparator preparator;

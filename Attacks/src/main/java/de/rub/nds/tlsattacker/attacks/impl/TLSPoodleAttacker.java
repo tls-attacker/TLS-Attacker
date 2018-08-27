@@ -29,12 +29,16 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
  * vulnerable to poodle.
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public TLSPoodleAttacker(TLSPoodleCommandConfig config, Config baseConfig) {
         super(config, baseConfig);

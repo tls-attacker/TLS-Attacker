@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordParser extends AbstractRecordParser<Record> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RecordParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);

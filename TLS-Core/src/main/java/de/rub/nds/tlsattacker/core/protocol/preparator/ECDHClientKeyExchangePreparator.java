@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -30,6 +32,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected byte[] serializedPoint;
     protected byte[] premasterSecret;

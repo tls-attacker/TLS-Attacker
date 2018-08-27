@@ -40,7 +40,8 @@ import org.junit.experimental.categories.Category;
  */
 public class CertificateFetcherTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcherTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final int SERVER_PORT = 4999;
 
     private static BasicTlsServer tlsServer;

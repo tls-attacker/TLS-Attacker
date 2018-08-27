@@ -35,7 +35,7 @@ import sun.security.ssl.SSLSocketImpl;
  */
 public class BasicTlsClient extends Thread {
 
-    private static final Logger LOGGER = LogManager.getLogger(BasicTlsClient.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final CipherSuite cipherSuite;
     private final ProtocolVersion tlsVersion;

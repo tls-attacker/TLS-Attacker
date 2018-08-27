@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PSKIdentityParser extends Parser<PSKIdentity> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PSKIdentityParser(int startposition, byte[] array) {
         super(startposition, array);

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Attacker<AttConfig extends AttackConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected AttConfig config;
 

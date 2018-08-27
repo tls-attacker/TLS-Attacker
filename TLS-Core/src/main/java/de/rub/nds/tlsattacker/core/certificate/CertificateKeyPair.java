@@ -52,7 +52,7 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateKeyPair implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CertificateKeyPair.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final CertificateKeyType certPublicKeyType;
 

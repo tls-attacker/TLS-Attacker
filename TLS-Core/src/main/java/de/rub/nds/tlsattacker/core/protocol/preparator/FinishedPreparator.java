@@ -24,8 +24,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] verifyData;
     private final FinishedMessage msg;

@@ -29,12 +29,16 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Heartbeat attack against a server and logs an error in case the
  * server responds with a valid heartbeat message.
  */
 public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HeartbleedAttacker(HeartbleedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);

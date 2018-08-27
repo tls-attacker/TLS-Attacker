@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
@@ -36,8 +35,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);

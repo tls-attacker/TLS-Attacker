@@ -72,7 +72,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Config.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The default Config file to load.

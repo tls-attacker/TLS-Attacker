@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedExtensionsMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EncryptedExtensionsParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version);

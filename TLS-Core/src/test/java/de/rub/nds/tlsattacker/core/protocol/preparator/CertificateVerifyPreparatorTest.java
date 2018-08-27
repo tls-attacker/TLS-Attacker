@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class CertificateVerifyPreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static byte[] repeatBytes(String hex, int count) {
         return ArrayConverter.hexStringToByteArray(StringUtils.repeat(hex, count));

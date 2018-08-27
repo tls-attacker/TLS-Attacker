@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A simple action to print the last handled application data to console. Per
@@ -22,6 +24,8 @@ import java.util.Objects;
  * string. An charset for simple encoding can be given to get readable output
  */
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String lastHandledApplicationData = null;
 
@@ -76,7 +80,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      *
      * @param stringEncoding
      *            The enconding that should be used
-     * 
+     *
      */
     public void setStringEncoding(String stringEncoding) {
         this.stringEncoding = stringEncoding;

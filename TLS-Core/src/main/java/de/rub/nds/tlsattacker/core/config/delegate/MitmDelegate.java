@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
  */
 public class MitmDelegate extends Delegate {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("Config");
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = "-accept", description = "A MiTM client can connect to this connection end."
             + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")

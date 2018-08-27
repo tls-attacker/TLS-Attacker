@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class ServerHelloPreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloPreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerHelloMessage message;
     private TlsContext context;

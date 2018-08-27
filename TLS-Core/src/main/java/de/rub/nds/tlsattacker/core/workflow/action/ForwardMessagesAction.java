@@ -77,7 +77,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardMessagesAction.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;

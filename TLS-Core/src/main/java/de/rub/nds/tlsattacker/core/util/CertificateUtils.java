@@ -53,7 +53,7 @@ import org.bouncycastle.crypto.util.PublicKeyFactory;
 
 public class CertificateUtils {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CertificateUtils.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static CustomPrivateKey parseCustomPrivateKey(PrivateKey key) {
         if (key instanceof RSAPrivateKey) {

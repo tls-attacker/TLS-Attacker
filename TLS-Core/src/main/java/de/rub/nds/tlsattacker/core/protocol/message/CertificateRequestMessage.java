@@ -22,9 +22,13 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
 public class CertificateRequestMessage extends HandshakeMessage {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger clientCertificateTypesCount;

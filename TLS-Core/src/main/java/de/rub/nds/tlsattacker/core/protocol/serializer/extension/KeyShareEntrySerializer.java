@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyShareEntrySerializer extends Serializer<KeyShareEntry> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final KeyShareEntry entry;
 

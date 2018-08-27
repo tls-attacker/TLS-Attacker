@@ -33,12 +33,15 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
 public class RealDirectMessageECOracle extends ECOracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Config config;
 

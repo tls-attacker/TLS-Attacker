@@ -20,8 +20,12 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReceiveTillAction extends MessageAction implements ReceivingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),

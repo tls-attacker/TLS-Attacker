@@ -15,9 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRe
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateStatusRequestExtensionHandler extends
         ExtensionHandler<CertificateStatusRequestExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CertificateStatusRequestExtensionHandler(TlsContext context) {
         super(context);

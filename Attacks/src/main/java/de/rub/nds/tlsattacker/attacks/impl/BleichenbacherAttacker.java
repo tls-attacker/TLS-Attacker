@@ -37,6 +37,8 @@ import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
@@ -44,6 +46,8 @@ import java.util.List;
  * it is very likely that it is possible to execute Bleichenbacher attacks.
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Config tlsConfig;
 

@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
 
 public class BasicTlsClientServerTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final int SERVER_PORT = 0;
     private final BadRandom random = new BadRandom(new Random(0), null);
 
@@ -45,7 +45,7 @@ public class BasicTlsClientServerTest {
 
     /**
      * Run a TLS handshake between BasicTlsClient and BasicTlsServer.
-     * 
+     *
      * @throws org.bouncycastle.operator.OperatorCreationException
      */
     @Test
@@ -88,14 +88,14 @@ public class BasicTlsClientServerTest {
 
     private Random Random(int i) {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 }

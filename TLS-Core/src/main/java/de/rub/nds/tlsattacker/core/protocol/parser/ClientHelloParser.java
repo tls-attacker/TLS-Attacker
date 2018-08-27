@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class

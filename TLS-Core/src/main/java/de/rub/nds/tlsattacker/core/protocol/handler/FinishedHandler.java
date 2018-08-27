@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
@@ -30,8 +29,12 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public FinishedHandler(TlsContext context) {
         super(context);

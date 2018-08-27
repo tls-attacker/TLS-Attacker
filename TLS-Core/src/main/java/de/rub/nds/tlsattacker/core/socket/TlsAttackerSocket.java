@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TlsAttackerSocket {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TlsAttackerSocket.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final State state;
 

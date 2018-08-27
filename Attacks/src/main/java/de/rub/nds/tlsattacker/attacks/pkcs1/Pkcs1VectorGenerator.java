@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Pkcs1VectorGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger(Pkcs1VectorGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Generates different encrypted PKCS1 vectors

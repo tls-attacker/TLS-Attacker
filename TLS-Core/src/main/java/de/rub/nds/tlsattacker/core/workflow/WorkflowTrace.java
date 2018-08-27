@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Copy a workflow trace.

@@ -20,7 +20,7 @@ import org.junit.Test;
 
 public class CipherSuiteTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CipherSuiteTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CipherSuiteTest() {
     }

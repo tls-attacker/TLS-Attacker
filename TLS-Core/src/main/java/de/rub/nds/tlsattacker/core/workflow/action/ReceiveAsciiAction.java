@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReceiveAsciiAction extends MessageAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ReceiveAsciiAction() {
         super();

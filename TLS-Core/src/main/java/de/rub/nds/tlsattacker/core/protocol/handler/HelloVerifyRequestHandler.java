@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVerifyRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
         super(tlsContext);

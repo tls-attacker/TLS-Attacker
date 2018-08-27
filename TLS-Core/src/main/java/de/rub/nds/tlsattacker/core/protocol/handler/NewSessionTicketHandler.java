@@ -27,8 +27,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import javax.crypto.Mac;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewSessionTicketHandler(TlsContext context) {
         super(context);

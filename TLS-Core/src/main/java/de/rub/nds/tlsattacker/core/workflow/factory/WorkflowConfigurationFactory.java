@@ -95,7 +95,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class WorkflowConfigurationFactory {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowConfigurationFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
     RunningModeType mode;
@@ -606,10 +606,10 @@ public class WorkflowConfigurationFactory {
 
     /**
      * A simple synchronizing proxy for RSA KE.
-     * 
+     *
      * Synchronizes the secrets between all parties and forwards first round of
      * exchanged application data messages.
-     * 
+     *
      * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
      * extensions) will brake it. So per default, all extensions are removed and
      * all cipher suites except RSA suites are removed, too.

@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<MaxFragmentLengthExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final MaxFragmentLengthExtensionMessage message;
 

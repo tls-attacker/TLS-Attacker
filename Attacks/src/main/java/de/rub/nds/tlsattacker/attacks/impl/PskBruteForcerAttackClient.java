@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProvider;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderFactory;
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -51,8 +50,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private GuessProvider guessProvider;
 

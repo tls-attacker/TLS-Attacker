@@ -28,7 +28,7 @@ public enum SrtpProtectionProfiles {
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
 
-    public static Logger LOGGER = LogManager.getLogger(SrtpProtectionProfiles.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private SrtpProtectionProfiles(byte[] value) {
         this.srtpProtectionProfiles = value;

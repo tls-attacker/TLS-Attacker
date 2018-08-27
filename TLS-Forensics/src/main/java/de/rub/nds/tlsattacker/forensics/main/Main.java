@@ -28,11 +28,10 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -41,7 +40,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class Main {
 
-    protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         TlsForensicsConfig config = new TlsForensicsConfig();
@@ -105,7 +104,7 @@ public class Main {
                 LOGGER.info("Encountered an Exception. Aborting.");
                 LOGGER.debug(E);
             } catch (JAXBException | XMLStreamException | IOException ex1) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex1);
+                ex.printStackTrace();
             }
         } catch (ParameterException E) {
             LOGGER.info("Could not parse provided parameters");

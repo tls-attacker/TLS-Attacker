@@ -18,8 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.suppData.SupplementalDataEnt
 import de.rub.nds.tlsattacker.core.protocol.parser.suppData.SupplementalDataEntryParser;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SupplementalDataParser extends HandshakeMessageParser<SupplementalDataMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class

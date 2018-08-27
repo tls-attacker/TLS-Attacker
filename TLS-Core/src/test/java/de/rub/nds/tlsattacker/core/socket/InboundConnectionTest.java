@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class InboundConnectionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(InboundConnectionTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private StringWriter writer;
     private JAXBContext context;
@@ -83,7 +83,7 @@ public class InboundConnectionTest {
     /**
      * Verify that the ServerConnectionEnd includes manually set values in
      * serialization output.
-     * 
+     *
      * @throws Exception
      */
     @Test

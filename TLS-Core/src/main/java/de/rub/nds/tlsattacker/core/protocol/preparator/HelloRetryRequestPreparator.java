@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<HelloRetryRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final HelloRetryRequestMessage msg;
 

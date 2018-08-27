@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());

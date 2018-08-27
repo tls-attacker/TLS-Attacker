@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 public class StaticTicketCrypto {
 
-    private static final Logger LOGGER = LogManager.getLogger(StaticTicketCrypto.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
             throws CryptoException {

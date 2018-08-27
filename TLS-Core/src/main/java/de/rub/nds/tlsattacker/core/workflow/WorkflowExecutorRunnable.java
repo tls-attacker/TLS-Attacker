@@ -19,12 +19,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Spawn a new workflow trace for incoming connection.
- * 
+ *
  * Experimental. Really just a starting point (it works, though ;)
  */
 public class WorkflowExecutorRunnable implements Runnable {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowExecutorRunnable.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private final Socket socket;
     private final State globalState;
 

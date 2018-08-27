@@ -24,8 +24,12 @@ import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final NewSessionTicketMessage msg;
 

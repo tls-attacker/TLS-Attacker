@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

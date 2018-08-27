@@ -24,12 +24,16 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
  *            The HandshakeMessage that should be prepared
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private HandshakeMessageSerializer serializer;
     private final HandshakeMessage msg;
@@ -113,9 +117,9 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
                 if (extensionMessage instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                               // fix
-                                                                               // design
-                                                                               // flaw
+                    // fix
+                    // design
+                    // flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),

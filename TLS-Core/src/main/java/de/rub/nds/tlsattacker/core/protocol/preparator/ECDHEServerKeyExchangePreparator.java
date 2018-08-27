@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
@@ -27,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -36,6 +37,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage> extends
         ServerKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final T msg;
     protected ECPublicKeyParameters pubEcParams;

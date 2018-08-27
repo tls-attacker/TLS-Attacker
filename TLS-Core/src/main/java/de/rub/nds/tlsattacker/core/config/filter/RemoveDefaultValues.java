@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class RemoveDefaultValues implements ConfigDisplayFilter {
 
-    static final Logger LOGGER = LogManager.getLogger(RemoveDefaultValues.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void applyFilter(Config config) {

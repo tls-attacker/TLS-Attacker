@@ -12,15 +12,19 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Manger algorithm according to
  * https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code
  * written by Tibor Jager
- * 
+ *
  * @version 0.1
  */
 public class Manger extends Pkcs1Attack {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Interval result;
 

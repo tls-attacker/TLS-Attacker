@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SignatureCalculator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SignatureCalculator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] generateSignature(SignatureAndHashAlgorithm algorithm, Chooser chooser, byte[] toBeSigned)
             throws CryptoException {

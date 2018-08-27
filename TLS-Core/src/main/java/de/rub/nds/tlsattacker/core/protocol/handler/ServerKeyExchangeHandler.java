@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Message>
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

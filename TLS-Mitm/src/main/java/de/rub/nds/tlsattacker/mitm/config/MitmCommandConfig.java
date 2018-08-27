@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
@@ -34,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 public class MitmCommandConfig extends TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(MitmCommandConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String COMMAND = "mitm";
 

@@ -25,7 +25,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateByteChooser {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CertificateByteChooser.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final static String RESOURCE_PATH = "certs/";
 

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BasicTlsServer extends Thread {
 
-    private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String[] cipherSuites = null;
     private final int port;

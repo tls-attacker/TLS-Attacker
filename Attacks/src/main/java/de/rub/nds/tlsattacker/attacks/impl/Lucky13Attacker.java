@@ -35,11 +35,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Lucky13 attack test
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Map<Integer, List<Long>> results;
 

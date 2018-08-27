@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MessageDigestCollector {
 
-    private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollector.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ByteArrayOutputStream stream;
 
@@ -54,7 +54,7 @@ public class MessageDigestCollector {
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
             if (null == algorithm) {
                 hash1 = MessageDigest.getInstance(algorithm.getJavaName());
-            } else
+            } else {
                 switch (algorithm) {
                     case SSL_DIGEST:
                         throw new RuntimeException("Unsupported DigestAlgorithm SSL_DIGEST");
@@ -66,6 +66,7 @@ public class MessageDigestCollector {
                         hash1 = MessageDigest.getInstance(algorithm.getJavaName());
                         break;
                 }
+            }
             hash1.update(stream.toByteArray());
             byte[] digest = hash1.digest();
             if (hash2 != null) {

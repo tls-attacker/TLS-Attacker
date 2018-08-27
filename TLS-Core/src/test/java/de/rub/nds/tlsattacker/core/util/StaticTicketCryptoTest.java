@@ -20,7 +20,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class StaticTicketCryptoTest {
-    private static final Logger LOGGER = LogManager.getLogger(StaticTicketCryptoTest.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public StaticTicketCryptoTest() {
     }

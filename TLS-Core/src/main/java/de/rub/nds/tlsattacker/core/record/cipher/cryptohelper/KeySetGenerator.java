@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 
 public class KeySetGenerator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
@@ -55,7 +55,7 @@ public class KeySetGenerator {
         byte[] serverSecret = new byte[0];
         if (null == keySetType) {
             throw new CryptoException("Unknown KeySetType:" + keySetType.name());
-        } else
+        } else {
             switch (keySetType) {
                 case HANDSHAKE_TRAFFIC_SECRETS:
                     clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
@@ -76,6 +76,7 @@ public class KeySetGenerator {
                 default:
                     throw new CryptoException("Unknown KeySetType:" + keySetType.name());
             }
+        }
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         KeySet keySet = new KeySet(keySetType);

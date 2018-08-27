@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for Hello Messages
@@ -22,6 +24,8 @@ import java.util.Arrays;
  *            Type of the HelloMessage to parse
  */
 public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class

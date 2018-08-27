@@ -17,8 +17,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordEncryptor extends Encryptor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 

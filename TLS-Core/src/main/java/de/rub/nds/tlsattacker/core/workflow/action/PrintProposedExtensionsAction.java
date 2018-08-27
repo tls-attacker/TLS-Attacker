@@ -12,13 +12,16 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Print the extensions proposed by the client in ClientHello.
  */
 public class PrintProposedExtensionsAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PrintProposedExtensionsAction() {
     }

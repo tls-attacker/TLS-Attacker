@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 
 public class WorkflowTraceSerializer {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * context initialization is expensive, we need to do that only once

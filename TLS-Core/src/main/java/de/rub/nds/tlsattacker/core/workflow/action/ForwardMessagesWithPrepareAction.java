@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardMessagesWithPrepareAction.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ForwardMessagesWithPrepareAction() {
         withPrepare = true;

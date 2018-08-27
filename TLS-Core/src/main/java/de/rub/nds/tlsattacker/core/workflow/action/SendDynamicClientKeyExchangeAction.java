@@ -24,8 +24,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SendDynamicClientKeyExchangeAction extends MessageAction implements SendingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendDynamicClientKeyExchangeAction() {
         super();

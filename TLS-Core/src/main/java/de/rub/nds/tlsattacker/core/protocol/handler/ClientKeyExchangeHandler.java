@@ -25,6 +25,8 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Message>
@@ -32,6 +34,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

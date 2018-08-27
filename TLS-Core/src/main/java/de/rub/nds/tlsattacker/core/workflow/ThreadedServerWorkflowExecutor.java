@@ -25,12 +25,12 @@ import org.apache.logging.log4j.Logger;
 /**
  * Execute a workflow trace for each new connection/socket that connects to the
  * server.
- * 
+ *
  * Highly experimental. Just a starting point.
  */
 public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(ThreadedServerWorkflowExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
     private Socket socket;

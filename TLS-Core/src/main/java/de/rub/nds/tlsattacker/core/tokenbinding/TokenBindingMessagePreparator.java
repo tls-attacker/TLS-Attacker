@@ -32,6 +32,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
@@ -39,6 +41,8 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TokenBindingMessage message;
 

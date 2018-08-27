@@ -28,7 +28,8 @@ import org.junit.Test;
 
 public class CertificateMessagePreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final ProtocolVersion[] PROTOCOLS = { ProtocolVersion.SSL3, ProtocolVersion.TLS10,
             ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
 

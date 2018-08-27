@@ -28,7 +28,7 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class KeyShareCalculator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(KeyShareCalculator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static CustomECPoint createClassicEcPublicKey(NamedGroup group, BigInteger privateKey) {
         if (!group.isStandardCurve()) {

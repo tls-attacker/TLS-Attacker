@@ -36,7 +36,7 @@ import org.junit.rules.ExpectedException;
 
 public class WorkflowTraceUtilTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() {

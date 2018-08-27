@@ -20,7 +20,7 @@ public class Pkcs1Attack {
     /**
      * Initialize the log4j LOGGER.
      */
-    static Logger LOGGER = LogManager.getLogger(Pkcs1Attack.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Pkcs1Oracle oracle;
     protected final byte[] encryptedMsg;

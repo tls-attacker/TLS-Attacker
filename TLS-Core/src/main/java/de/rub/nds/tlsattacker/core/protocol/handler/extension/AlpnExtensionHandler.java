@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public AlpnExtensionHandler(TlsContext context) {
         super(context);

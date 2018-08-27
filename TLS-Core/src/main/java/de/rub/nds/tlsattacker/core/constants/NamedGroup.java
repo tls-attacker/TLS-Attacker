@@ -93,7 +93,7 @@ public enum NamedGroup {
     GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE"),
     NONE(new byte[] { (byte) 0, (byte) 0 }, "");
 
-    protected static final Logger LOGGER = LogManager.getLogger(NamedGroup.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final int LENGTH = 2;
 

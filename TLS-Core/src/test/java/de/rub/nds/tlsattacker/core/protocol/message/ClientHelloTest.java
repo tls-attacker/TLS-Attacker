@@ -40,7 +40,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ClientHelloTest {
-    private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() {
@@ -80,7 +81,7 @@ public class ClientHelloTest {
 
     /**
      * TODO: refactor this test, proper test name, make code readable...
-     * 
+     *
      * @throws JAXBException
      */
     @Test
@@ -106,7 +107,7 @@ public class ClientHelloTest {
 
     /**
      * TODO: give test a proper name
-     * 
+     *
      * @throws JAXBException
      */
     @Test

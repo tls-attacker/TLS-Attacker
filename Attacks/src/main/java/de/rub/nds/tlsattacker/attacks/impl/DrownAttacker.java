@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -33,11 +32,16 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static void md5Update(MD5Digest md5, byte[] bytes) {
         md5.update(bytes, 0, bytes.length);
     }

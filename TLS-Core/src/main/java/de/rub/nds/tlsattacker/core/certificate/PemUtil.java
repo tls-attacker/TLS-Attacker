@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,8 +21,6 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -39,7 +36,7 @@ import org.bouncycastle.util.io.pem.PemWriter;
 
 public class PemUtil {
 
-    protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(PemUtil.class.getName());
+    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
     public static void writePublicKey(PublicKey key, File targetFile) {
         PemObject pemObject = new PemObject("PublicKey", key.getEncoded());

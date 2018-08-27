@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TLSDelegateConfig.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
     private final GeneralDelegate generalDelegate;

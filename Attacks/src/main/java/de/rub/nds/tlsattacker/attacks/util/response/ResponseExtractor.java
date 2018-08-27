@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -21,8 +20,12 @@ import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ResponseExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
         boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();

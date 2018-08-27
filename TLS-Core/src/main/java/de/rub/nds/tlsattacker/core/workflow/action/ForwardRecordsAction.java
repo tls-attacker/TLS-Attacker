@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ForwardRecordsAction extends TlsAction implements ReceivingAction, SendingAction {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardRecordsAction.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;

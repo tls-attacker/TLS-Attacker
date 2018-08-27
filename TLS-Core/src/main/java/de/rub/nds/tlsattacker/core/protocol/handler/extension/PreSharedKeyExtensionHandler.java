@@ -23,11 +23,15 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PreSharedKeyExtensionHandler(TlsContext context) {
         super(context);

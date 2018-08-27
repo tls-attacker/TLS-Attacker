@@ -29,8 +29,12 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);

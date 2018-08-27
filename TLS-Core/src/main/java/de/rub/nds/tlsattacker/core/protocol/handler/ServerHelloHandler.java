@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
@@ -47,6 +46,8 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -54,6 +55,8 @@ import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);

@@ -38,9 +38,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger premasterSecret;
 

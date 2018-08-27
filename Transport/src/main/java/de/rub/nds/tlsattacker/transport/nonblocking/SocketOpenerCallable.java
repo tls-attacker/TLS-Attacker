@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SocketOpenerCallable implements Callable<Socket> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SocketOpenerCallable.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final String host;
     private final int port;

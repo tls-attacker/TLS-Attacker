@@ -11,16 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ByteArrayOutputStream outputStream;
     private final PskEcDhClientKeyExchangeMessage msg;

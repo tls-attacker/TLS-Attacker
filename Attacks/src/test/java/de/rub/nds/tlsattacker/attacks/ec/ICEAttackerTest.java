@@ -22,7 +22,7 @@ import org.junit.experimental.categories.Category;
 
 public class ICEAttackerTest {
 
-    static Logger LOGGER = LogManager.getLogger(ICEAttackerTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ICEAttackerTest() {
     }

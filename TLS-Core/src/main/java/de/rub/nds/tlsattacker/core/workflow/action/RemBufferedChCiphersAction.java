@@ -22,26 +22,30 @@ import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Remove cipher from cipher suite list of a buffered ClientHello message.
- * 
+ *
  * <p>
  * This allows changing a ClientHello message in transit, i.e. in MiTM workflows
  * that want to remove proposed cipher suites.
- * 
+ *
  * <p>
  * This action assumes that the first message in the message buffer is a
  * ClientHello.
- * 
+ *
  * <p>
  * Note: This action is currently needed because fresh (ClientHello) messages
  * cannot be fully prepared from context, but partially rely on config values.
  * Thus preventing us to modify values in context and re-creating a CH for
  * forwarding.
- * 
+ *
  */
 public class RemBufferedChCiphersAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElements(value = { @XmlElement(type = CipherSuite.class, name = "suite") })
     private List<CipherSuite> removeCiphers = new ArrayList<>();

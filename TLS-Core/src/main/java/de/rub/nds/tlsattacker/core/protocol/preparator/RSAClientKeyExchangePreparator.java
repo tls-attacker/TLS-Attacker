@@ -18,9 +18,13 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected byte[] padding;
     protected byte[] premasterSecret;

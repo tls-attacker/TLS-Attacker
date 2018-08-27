@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     // Loosely based on sysexits.h
     public static final int EX_OK = 0;

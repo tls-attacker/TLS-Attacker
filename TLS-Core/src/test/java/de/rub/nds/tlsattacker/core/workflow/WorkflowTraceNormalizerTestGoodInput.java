@@ -45,7 +45,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestGoodInput {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizerTestGoodInput.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-positive";
 
     /**
@@ -115,7 +115,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
     /**
      * Loads a test vector from file. Have a look at the test vectors to see the
      * required format.
-     * 
+     *
      * @param testVectorPath
      */
     private void loadTestVector(File testVectorPath) {

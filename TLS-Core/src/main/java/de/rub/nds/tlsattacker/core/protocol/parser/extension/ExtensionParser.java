@@ -12,12 +12,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
  *            The ExtensionMessage that should be parsed
  */
 public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

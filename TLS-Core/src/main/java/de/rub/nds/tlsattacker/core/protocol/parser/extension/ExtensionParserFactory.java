@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ExtensionParserFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(ExtensionParserFactory.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
             HandshakeMessageType handshakeMessageType) {

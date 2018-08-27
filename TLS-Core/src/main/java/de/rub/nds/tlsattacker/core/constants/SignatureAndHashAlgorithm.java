@@ -61,7 +61,7 @@ public enum SignatureAndHashAlgorithm {
     RSA_PSS_PSS_SHA384(0x080a),
     RSA_PSS_PSS_SHA512(0x080b);
 
-    protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();

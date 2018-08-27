@@ -71,7 +71,7 @@ import org.junit.rules.ErrorCollector;
 
 public class TlsClientTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int TIMEOUT = 2000;
 

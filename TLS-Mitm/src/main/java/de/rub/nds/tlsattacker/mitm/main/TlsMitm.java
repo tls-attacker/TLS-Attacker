@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.mitm.main;
 
 import com.beust.jcommander.JCommander;
@@ -25,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TlsMitm implements Runnable {
 
-    public static final Logger LOGGER = LogManager.getLogger(TlsMitm.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String[] args;
 

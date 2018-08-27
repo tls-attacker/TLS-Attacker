@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CipherWrapper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CipherWrapper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static EncryptionCipher getEncryptionCipher(CipherAlgorithm cipherAlg) {
         if (cipherAlg.getJavaName() != null) {

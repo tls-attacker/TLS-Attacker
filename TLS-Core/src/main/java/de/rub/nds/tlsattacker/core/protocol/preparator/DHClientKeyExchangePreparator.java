@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
 public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected BigInteger clientPublicKey;
     protected byte[] premasterSecret;

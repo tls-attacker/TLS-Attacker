@@ -43,7 +43,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestBadInput {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizerTestBadInput.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final String TEST_VECTOR_DIR = "/worklfow_trace_serialization_tests-negative";
 
     /**
@@ -93,7 +94,7 @@ public class WorkflowTraceNormalizerTestBadInput {
     /**
      * Test that attempts to normalize bad workflow traces throws proper
      * exceptions.
-     * 
+     *
      * TODO: This could be more fine grained. I.e. split the test into multiple
      * sub tests that test a particular category of bad inputs. This would
      * enable testing the more detailed exception messages.
@@ -112,7 +113,7 @@ public class WorkflowTraceNormalizerTestBadInput {
     /**
      * Loads a test vector from file. Have a look at the test vectors to see the
      * required format.
-     * 
+     *
      * @param testVectorPath
      */
     private void loadTestVector(File testVectorPath) {

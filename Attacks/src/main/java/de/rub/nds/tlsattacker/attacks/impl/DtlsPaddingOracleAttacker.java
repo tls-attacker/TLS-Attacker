@@ -40,12 +40,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Tests if the subject can be used as a padding oracle by sending messages with
  * invalid MACs or invalid paddings.
  */
 public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext tlsContext;
 

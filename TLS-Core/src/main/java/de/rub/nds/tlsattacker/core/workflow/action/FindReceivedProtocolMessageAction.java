@@ -14,18 +14,21 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Check if a protocol message of given type was received.
- * 
+ *
  * Checks all protocol message that were received during workflow execution so
  * far. Result is stored in "found" field. Prints "Found Type.name (Type.value)"
  * for the first message found and quits. Prints nothing if no message of given
  * type was received.
  */
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ProtocolMessageType protocolMessageType;
     private Boolean found = false;

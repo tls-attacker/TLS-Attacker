@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ReceiveMessageHelper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ReceiveMessageHelper() {
     }

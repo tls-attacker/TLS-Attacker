@@ -49,7 +49,8 @@ import org.junit.experimental.categories.Category;
 
 public class FindReceivedProtocolMessageActionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(FindReceivedProtocolMessageActionTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final int SERVER_PORT = 48385;
 
     @BeforeClass
@@ -75,7 +76,7 @@ public class FindReceivedProtocolMessageActionTest {
 
     /**
      * Test of execute method, of class FindReceivedProtocolMessageAction.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

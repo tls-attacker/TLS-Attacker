@@ -15,10 +15,12 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectivityChecker {
 
-    public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final Connection connection;
 
     public ConnectivityChecker(Connection connection) {

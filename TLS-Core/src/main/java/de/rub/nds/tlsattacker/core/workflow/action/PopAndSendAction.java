@@ -18,8 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PopAndSendAction extends MessageAction implements SendingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Pop and send message with this index in message buffer.

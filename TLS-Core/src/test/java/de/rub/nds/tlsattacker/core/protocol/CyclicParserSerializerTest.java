@@ -31,7 +31,7 @@ import org.reflections.Reflections;
 
 public class CyclicParserSerializerTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CyclicParserSerializerTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
     public void testParserSerializerPairs() {

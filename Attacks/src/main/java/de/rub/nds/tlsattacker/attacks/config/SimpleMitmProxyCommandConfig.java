@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 public class SimpleMitmProxyCommandConfig extends AttackConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SimpleMitmProxyCommandConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static final String ATTACK_COMMAND = "simple_mitm_proxy";
 
     @ParametersDelegate

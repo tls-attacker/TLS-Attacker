@@ -16,8 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<KeyShareEntry> entryList;
 

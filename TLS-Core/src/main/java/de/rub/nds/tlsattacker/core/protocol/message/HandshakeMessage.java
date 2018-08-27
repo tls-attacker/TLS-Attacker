@@ -61,8 +61,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class HandshakeMessage extends ProtocolMessage {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlTransient
     protected boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;

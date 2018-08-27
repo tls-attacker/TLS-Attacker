@@ -25,8 +25,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordStreamCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * mac for verification of incoming messages

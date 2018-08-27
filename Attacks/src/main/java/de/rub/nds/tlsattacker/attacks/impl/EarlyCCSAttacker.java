@@ -34,8 +34,12 @@ import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public enum TargetVersion {
         OPENSSL_1_0_0,

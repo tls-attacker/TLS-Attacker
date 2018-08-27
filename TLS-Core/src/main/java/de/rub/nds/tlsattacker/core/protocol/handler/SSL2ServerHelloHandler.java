@@ -22,8 +22,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ServerHelloHandler(TlsContext context) {
         super(context);

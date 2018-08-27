@@ -33,7 +33,8 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TlsAction implements Serializable, Aliasable {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TlsAction.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;
@@ -81,7 +82,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Add default values from given defaultAction and initialize empty fields.
-     * 
+     *
      * @param defaultAction
      *            Not needed / not evaluated
      */
@@ -97,7 +98,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Filter empty fields and default values given in defaultAction.
-     * 
+     *
      * @param defaultAction
      *            Not needed / not evaluated
      */
@@ -112,12 +113,16 @@ public abstract class TlsAction implements Serializable, Aliasable {
     @Override
     public boolean containsAllAliases(Collection<String> aliases) {
         return getAllAliases().containsAll(aliases);
-    };
+    }
+
+    ;
 
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
-    };
+    }
+
+    ;
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
@@ -130,7 +135,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Check that the Action got executed as planned.
-     * 
+     *
      * @return True if the Action executed as planned
      */
     public abstract boolean executedAsPlanned();

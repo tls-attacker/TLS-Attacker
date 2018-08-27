@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class RSAClientKeyExchangePreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(RSAClientKeyExchangePreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext context;
     private RSAClientKeyExchangePreparator preparator;

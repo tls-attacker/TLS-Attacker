@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ICEAttacker {
 
-    private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ServerType server;
 
@@ -137,7 +137,6 @@ public class ICEAttacker {
                 // } else {
                 // System.out.println("real result: " + square);
                 // }
-
                 BigInteger prodModuli = computeModuliProduct(moduli);
                 if (prodModuli.bitLength() > (computer.getCurve().getKeyBits() * 2 + 4)) {
                     /**
@@ -175,7 +174,7 @@ public class ICEAttacker {
     /**
      * Creates recursively all possible combinations of equations and tries to
      * compute the server private key with CRT.
-     * 
+     *
      * @param usedOracleEquations
      *            The used oracle equations
      * @param congs
@@ -211,7 +210,7 @@ public class ICEAttacker {
 
     /**
      * Computes CRT from a given combination of congs and modulis
-     * 
+     *
      * @param usedOracleEquations
      *            The used oracle equations
      * @param congs
@@ -240,7 +239,7 @@ public class ICEAttacker {
 
     /**
      * Uses the oracle to get a congruence for a specific point
-     * 
+     *
      * @param point
      *            A Point
      * @return The Congruence

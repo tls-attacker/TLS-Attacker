@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChangeClientRandomAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;

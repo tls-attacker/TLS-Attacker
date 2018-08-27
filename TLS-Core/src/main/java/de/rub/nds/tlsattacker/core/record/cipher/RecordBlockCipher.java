@@ -26,8 +26,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class RecordBlockCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * indicates if explicit IV values should be used (as in TLS 1.1 and higher)

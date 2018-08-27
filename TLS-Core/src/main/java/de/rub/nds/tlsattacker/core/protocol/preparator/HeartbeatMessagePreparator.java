@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final HeartbeatMessage msg;
 

@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * checks the message and its PKCS#1 conformity according to the oracle type
-     * 
+     *
      * @param msg
      * @return
      */
@@ -94,7 +99,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     /**
      * Returns true if and only if the message contains a 0x00 byte in the
      * decrypted text (except of the first 8 bytes)
-     * 
+     *
      * @param msg
      * @return
      */
@@ -112,7 +117,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     /**
      * Returns true if and only if the message contains no 0x00 byte in the
      * first 8 bytes of the decrypted text
-     * 
+     *
      * @param msg
      * @return
      */
@@ -129,7 +134,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     /**
      * Returns true if and only if the message contains the 0x00 byte on the
      * correct position in the plaintext.
-     * 
+     *
      * @param msg
      * @return
      */
@@ -143,7 +148,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 
     /**
      * JSSE bug Plaintext oracle, for testing purposes:
-     * 
+     *
      * Example for 256/512 byte long RSA key: The oracle returns true if:
      * <ul>
      * <li>first two bytes are equal to 0x00 0x02</li>
@@ -151,7 +156,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * <li>the following (l-48-80) bytes contain at least one 0x00 byte, where l
      * is the message/key length</li>
      * </ul>
-     * 
+     *
      * @param msg
      * @return
      */
@@ -187,7 +192,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     /**
      * Presents an XML Encryption oracle. This oracle checks, if the wrapped key
      * has a correct size. It must be either 16, 24, or 32 bytes long.
-     * 
+     *
      * @param msg
      * @return
      */
@@ -203,7 +208,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 
     /**
      * checks if the message contains byte b in the area between <from,to>
-     * 
+     *
      * @param b
      * @param msg
      * @param from
@@ -224,7 +229,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     /**
      * Checks, if 0x00 is defined on a good position and if before this 0x00
      * byte is no other 0x00
-     * 
+     *
      * @param keySize
      *            the length of the key included in the PKCS1 message
      * @param msg

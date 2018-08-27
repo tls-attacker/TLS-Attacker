@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class RecordCipherFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
         try {

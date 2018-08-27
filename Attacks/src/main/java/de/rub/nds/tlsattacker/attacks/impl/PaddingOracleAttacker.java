@@ -36,12 +36,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
  * server is vulnerable to poodle.
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Config tlsConfig;
 

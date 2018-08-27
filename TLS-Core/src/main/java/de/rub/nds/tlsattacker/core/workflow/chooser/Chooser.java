@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Chooser {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext context;
 

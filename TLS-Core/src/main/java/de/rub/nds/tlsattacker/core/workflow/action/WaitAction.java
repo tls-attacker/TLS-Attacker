@@ -13,10 +13,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WaitAction extends TlsAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Default waiting time in milliseconds
@@ -44,7 +46,7 @@ public class WaitAction extends TlsAction {
             Thread.sleep(time);
             success = true;
         } catch (InterruptedException ex) {
-            Logger.getLogger(WaitAction.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
             success = false;
         }
         this.setExecuted(success);

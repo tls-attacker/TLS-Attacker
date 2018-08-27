@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * todo print configured records
  */
 public class SendAction extends MessageAction implements SendingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendAction() {
         super();
