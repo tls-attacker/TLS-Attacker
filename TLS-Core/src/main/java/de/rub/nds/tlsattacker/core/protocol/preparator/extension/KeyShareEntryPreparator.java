@@ -38,7 +38,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     }
 
     private void prepareKeyShare() {
-        if (entry.getPrivateKey()==null) {
+        if (entry.getPrivateKey() == null) {
             entry.setPrivateKey(chooser.getClientEcPrivateKey());
         }
         if (entry.getGroupConfig().isStandardCurve()) {
