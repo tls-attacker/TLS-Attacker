@@ -106,12 +106,12 @@ public class RSAClientKeyExchangePreparatorTest {
         context.setClientRsaModulus(CertificateUtils.extractRSAModulus(cert));
         String preMasterSecret = "1a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
         String keyEx = " 100000801a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
-        System.err.println(keyEx.length());
+        LOGGER.debug(keyEx.length());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
         context.setClientRandom(ArrayConverter
                 .hexStringToByteArray("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800"));
-        System.err.println("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800".length());
+        LOGGER.debug("405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800".length());
         context.setServerRandom(ArrayConverter
                 .hexStringToByteArray("a63cd22a46e4fc22b1f03d579c5f0e43cadfda01ef615fd52a9cdbaed3f6c6c2"));
         // context.setRsaModulus(CertificateUtils.extractRSAModulus(cert));

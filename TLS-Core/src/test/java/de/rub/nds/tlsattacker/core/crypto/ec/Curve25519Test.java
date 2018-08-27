@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +19,8 @@ import org.junit.Test;
  * Test cases from: https://tools.ietf.org/html/rfc7748#section-6.1
  */
 public class Curve25519Test {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     public Curve25519Test() {
     }
@@ -46,7 +50,7 @@ public class Curve25519Test {
         Curve25519.clamp(privateB);
 
         Curve25519.curve(sharedSecretA, privateA, publicB);
-        System.out.println("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
+        LOGGER.debug("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
         Curve25519.curve(sharedSecretB, privateB, publicA);
 
         assertArrayEquals(result, sharedSecretA);
@@ -69,12 +73,12 @@ public class Curve25519Test {
         byte[] sharedSecretB = new byte[32];
 
         Curve25519.keygen(publicA, null, privateA);
-        System.out.println("Public A: " + ArrayConverter.bytesToHexString(publicA));
+        LOGGER.debug("Public A: " + ArrayConverter.bytesToHexString(publicA));
         Curve25519.keygen(publicB, null, privateB);
-        System.out.println("Public B: " + ArrayConverter.bytesToHexString(publicB));
+        LOGGER.debug("Public B: " + ArrayConverter.bytesToHexString(publicB));
 
         Curve25519.curve(sharedSecretA, privateA, publicB);
-        System.out.println("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
+        LOGGER.debug("Aus A: " + ArrayConverter.bytesToHexString(sharedSecretA));
         Curve25519.curve(sharedSecretB, privateB, publicA);
 
         assertArrayEquals(result, sharedSecretA);

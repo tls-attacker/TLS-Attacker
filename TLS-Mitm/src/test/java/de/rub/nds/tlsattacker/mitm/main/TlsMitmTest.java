@@ -122,7 +122,7 @@ public class TlsMitmTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException | InterruptedException | OperatorCreationException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail();
         }
     }

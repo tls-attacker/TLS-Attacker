@@ -129,7 +129,7 @@ public class BasicTlsServer extends Thread {
                 serverSocket.close();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.error(ex);
         }
     }
 

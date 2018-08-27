@@ -162,7 +162,7 @@ public class BasicTlsClient extends Thread {
                 }
             } }, new BadRandom());
         } catch (NoSuchAlgorithmException | KeyManagementException E) {
-            E.printStackTrace();
+            LOGGER.warn(E);
         }
 
         return allowAllContext;

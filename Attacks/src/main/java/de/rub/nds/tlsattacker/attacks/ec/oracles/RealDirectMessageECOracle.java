@@ -106,7 +106,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException e) {
             valid = false;
-            e.printStackTrace();
+            LOGGER.warn(e);
         } finally {
             numberOfQueries++;
         }

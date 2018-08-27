@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.certificate;
 
 import java.security.Security;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,6 +24,8 @@ import org.junit.Test;
  * @author robert
  */
 public class CertificateByteChooserTest {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() {
@@ -50,10 +54,10 @@ public class CertificateByteChooserTest {
     public void testGetCertificateKeyPairList() {
         List<CertificateKeyPair> certificateKeyPairList = chooser.getCertificateKeyPairList();
         for (CertificateKeyPair pair : certificateKeyPairList) {
-            System.out.println("-------------------------");
-            System.out.println("Pk type:" + pair.getCertPublicKeyType());
-            System.out.println("Cert signature type: " + pair.getCertSignatureType());
-            System.out.println("PublickeyGroup: " + pair.getPublicKeyGroup());
+            LOGGER.debug("-------------------------");
+            LOGGER.debug("Pk type:" + pair.getCertPublicKeyType());
+            LOGGER.debug("Cert signature type: " + pair.getCertSignatureType());
+            LOGGER.debug("PublickeyGroup: " + pair.getPublicKeyGroup());
         }
     }
 

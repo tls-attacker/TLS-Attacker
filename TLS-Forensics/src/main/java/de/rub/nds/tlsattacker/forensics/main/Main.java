@@ -81,7 +81,7 @@ public class Main {
                             }
                         } catch (Exception E) {
                             CONSOLE.info("Could not read private key");
-                            E.printStackTrace();
+                            LOGGER.warn(E);
                             return;
                         } finally {
                             if (parser != null) {
@@ -102,15 +102,14 @@ public class Main {
                 LOGGER.info(realWorkflowTrace.toString());
             } catch (ConfigurationException E) {
                 LOGGER.info("Encountered an Exception. Aborting.");
-                LOGGER.debug(E);
-                E.printStackTrace();
+                LOGGER.warn(E);
             } catch (JAXBException | XMLStreamException | IOException ex1) {
-                ex.printStackTrace();
+                LOGGER.warn(ex1);
             }
         } catch (ParameterException E) {
             LOGGER.info("Could not parse provided parameters");
             LOGGER.debug(E);
-            E.printStackTrace();
+            LOGGER.warn(E);
             commander.usage();
             ex = E;
         }

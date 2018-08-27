@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -16,15 +18,17 @@ import org.junit.Test;
  */
 public class SignatureAndHashAlgorithmTest {
 
+    private final static Logger LOGGER = LogManager.getLogger();
+
     public SignatureAndHashAlgorithmTest() {
     }
 
     @Test
     public void testPrintAlgos() {
         for (SignatureAndHashAlgorithm algo : SignatureAndHashAlgorithm.values()) {
-            System.out.println("---");
-            System.out.println("Original Value:" + algo.name());
-            System.out.println("HashAlgo:" + algo.getHashAlgorithm());
+            LOGGER.debug("---");
+            LOGGER.debug("Original Value:" + algo.name());
+            LOGGER.debug("HashAlgo:" + algo.getHashAlgorithm());
         }
     }
 }

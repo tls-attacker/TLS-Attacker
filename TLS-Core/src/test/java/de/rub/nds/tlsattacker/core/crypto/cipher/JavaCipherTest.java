@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,6 +26,8 @@ import org.junit.Test;
  * @author robert
  */
 public class JavaCipherTest {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() {
@@ -60,7 +64,7 @@ public class JavaCipherTest {
             try {
                 cipher.encrypt(key, plaintext);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex);
             }
         }
     }

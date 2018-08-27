@@ -37,8 +37,6 @@ public class NewSessionTicketMessageTest {
         sb.append("\n  TicketLifeTimeHint: ").append("null");
         sb.append("\n  TicketLength: ").append("null");
         sb.append("\n  Ticket: ").append(new SessionTicket().toString());
-        System.out.println(message.toString());
-        System.out.println();
 
         assertEquals(message.toString(), sb.toString());
     }

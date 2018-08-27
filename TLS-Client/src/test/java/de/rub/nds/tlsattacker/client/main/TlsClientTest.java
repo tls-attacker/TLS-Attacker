@@ -102,7 +102,7 @@ public class TlsClientTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail();
         }
     }
@@ -123,7 +123,7 @@ public class TlsClientTest {
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
                 | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
                 | SignatureException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail(); // Todo
         }
     }
