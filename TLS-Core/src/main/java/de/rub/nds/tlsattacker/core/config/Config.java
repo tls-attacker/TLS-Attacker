@@ -1274,6 +1274,22 @@ public class Config implements Serializable {
         return defaultGost12Certificate;
     }
 
+    public void setDefaultServerGost01PrivateKey(BigInteger defaultServerGost01PrivateKey) {
+        this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
+    }
+
+    public void setDefaultServerGost01PublicKey(CustomECPoint defaultServerGost01PublicKey) {
+        this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
+    }
+
+    public void setDefaultServerGost12PrivateKey(BigInteger defaultServerGost12PrivateKey) {
+        this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
+    }
+
+    public void setDefaultServerGost12PublicKey(CustomECPoint defaultServerGost12PublicKey) {
+        this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
+    }
+
     public byte[] getDefaultClientHandshakeTrafficSecret() {
         return defaultClientHandshakeTrafficSecret;
     }
@@ -1585,6 +1601,38 @@ public class Config implements Serializable {
 
     public String getDefaultGost01Curve() {
         return defaultGost01Curve;
+    }
+
+    public void setDefaultGost01Certificate(byte[] defaultGost01Certificate) {
+        this.defaultGost01Certificate = defaultGost01Certificate;
+    }
+
+    public void setDefaultGost12Certificate(byte[] defaultGost12Certificate) {
+        this.defaultGost12Certificate = defaultGost12Certificate;
+    }
+
+    public void setDefaultClientGost01PrivateKey(BigInteger defaultClientGost01PrivateKey) {
+        this.defaultClientGost01PrivateKey = defaultClientGost01PrivateKey;
+    }
+
+    public void setDefaultClientGost01PublicKey(CustomECPoint defaultClientGost01PublicKey) {
+        this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
+    }
+
+    public void setDefaultGost01Curve(String defaultGost01Curve) {
+        this.defaultGost01Curve = defaultGost01Curve;
+    }
+
+    public void setDefaultClientGost12PrivateKey(BigInteger defaultClientGost12PrivateKey) {
+        this.defaultClientGost12PrivateKey = defaultClientGost12PrivateKey;
+    }
+
+    public void setDefaultClientGost12PublicKey(CustomECPoint defaultClientGost12PublicKey) {
+        this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
+    }
+
+    public void setDefaultGost12Curve(String defaultGost12Curve) {
+        this.defaultGost12Curve = defaultGost12Curve;
     }
 
     public BigInteger getDefaultClientGostEc12PrivateKey() {
