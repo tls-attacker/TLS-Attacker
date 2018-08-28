@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -551,7 +552,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getServerGost01Curve() {
+    public GOSTCurve getServerGost01Curve() {
         if (context.getServerGost01Curve() != null) {
             return context.getServerGost01Curve();
         } else {
@@ -578,7 +579,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getClientGost01Curve() {
+    public GOSTCurve getClientGost01Curve() {
         if (context.getClientGost01Curve() != null) {
             return context.getClientGost01Curve();
         } else {
@@ -605,7 +606,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getServerGost12Curve() {
+    public GOSTCurve getServerGost12Curve() {
         if (context.getServerGost12Curve() != null) {
             return context.getServerGost12Curve();
         } else {
@@ -632,7 +633,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getClientGost12Curve() {
+    public GOSTCurve getClientGost12Curve() {
         if (context.getClientGost12Curve() != null) {
             return context.getClientGost12Curve();
         } else {

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
@@ -25,7 +26,7 @@ public class GOST01ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     }
 
     @Override
-    protected String getServerCurve() {
+    protected GOSTCurve getServerCurve() {
         return chooser.getServerGost01Curve();
     }
 

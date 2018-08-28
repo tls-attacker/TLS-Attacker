@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -36,17 +37,17 @@ public class GOSTUtils {
 
     private static final Logger LOGGER = LogManager.getLogger(GOSTUtils.class.getName());
 
-    public static BCECGOST3410PrivateKey generate01PrivateKey(String curveName, BigInteger s) {
-        return (BCECGOST3410PrivateKey) generateEcPrivateKey(curveName, s, "ECGOST3410");
+    public static BCECGOST3410PrivateKey generate01PrivateKey(GOSTCurve curve, BigInteger s) {
+        return (BCECGOST3410PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410");
     }
 
-    public static BCECGOST3410_2012PrivateKey generate12PrivateKey(String curveName, BigInteger s) {
-        return (BCECGOST3410_2012PrivateKey) generateEcPrivateKey(curveName, s, "ECGOST3410-2012");
+    public static BCECGOST3410_2012PrivateKey generate12PrivateKey(GOSTCurve curve, BigInteger s) {
+        return (BCECGOST3410_2012PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410-2012");
     }
 
-    private static PrivateKey generateEcPrivateKey(String curveName, BigInteger s, String keyFactoryAlg) {
+    private static PrivateKey generateEcPrivateKey(GOSTCurve curve, BigInteger s, String keyFactoryAlg) {
         try {
-            ECParameterSpec ecParameterSpec = getEcParameterSpec(curveName);
+            ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPrivateKeySpec privateKeySpec = new ECPrivateKeySpec(s, ecParameterSpec);
             return KeyFactory.getInstance(keyFactoryAlg).generatePrivate(privateKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -55,17 +56,17 @@ public class GOSTUtils {
         }
     }
 
-    public static BCECGOST3410PublicKey generate01PublicKey(String curveName, CustomECPoint point) {
-        return (BCECGOST3410PublicKey) generateEcPublicKey(curveName, point, "ECGOST3410");
+    public static BCECGOST3410PublicKey generate01PublicKey(GOSTCurve curve, CustomECPoint point) {
+        return (BCECGOST3410PublicKey) generateEcPublicKey(curve, point, "ECGOST3410");
     }
 
-    public static BCECGOST3410_2012PublicKey generate12PublicKey(String curveName, CustomECPoint point) {
-        return (BCECGOST3410_2012PublicKey) generateEcPublicKey(curveName, point, "ECGOST3410-2012");
+    public static BCECGOST3410_2012PublicKey generate12PublicKey(GOSTCurve curve, CustomECPoint point) {
+        return (BCECGOST3410_2012PublicKey) generateEcPublicKey(curve, point, "ECGOST3410-2012");
     }
 
-    private static PublicKey generateEcPublicKey(String curveName, CustomECPoint point, String keyFactoryAlg) {
+    private static PublicKey generateEcPublicKey(GOSTCurve curve, CustomECPoint point, String keyFactoryAlg) {
         try {
-            ECParameterSpec ecParameterSpec = getEcParameterSpec(curveName);
+            ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPoint ecPoint = new ECPoint(point.getX(), point.getY());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
             return KeyFactory.getInstance(keyFactoryAlg).generatePublic(privateKeySpec);
@@ -75,7 +76,8 @@ public class GOSTUtils {
         }
     }
 
-    public static ECNamedCurveSpec getEcParameterSpec(String curveName) {
+    public static ECNamedCurveSpec getEcParameterSpec(GOSTCurve curve) {
+        String curveName = curve.getJavaName();
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
         return new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
     }

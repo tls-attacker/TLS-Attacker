@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -56,7 +57,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -65,10 +65,6 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public class TlsContext {
 
@@ -399,25 +395,25 @@ public class TlsContext {
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
 
-    private String serverGost01Curve;
+    private GOSTCurve serverGost01Curve;
 
     private CustomECPoint serverGostEc01PublicKey;
 
     private BigInteger serverGostEc01PrivateKey;
 
-    private String clientGost01Curve;
+    private GOSTCurve clientGost01Curve;
 
     private CustomECPoint clientGostEc01PublicKey;
 
     private BigInteger clientGostEc01PrivateKey;
 
-    private String serverGost12Curve;
+    private GOSTCurve serverGost12Curve;
 
     private CustomECPoint serverGostEc12PublicKey;
 
     private BigInteger serverGostEc12PrivateKey;
 
-    private String clientGost12Curve;
+    private GOSTCurve clientGost12Curve;
 
     private CustomECPoint clientGostEc12PublicKey;
 
@@ -965,11 +961,11 @@ public class TlsContext {
         this.serverDhPrivateKey = serverDhPrivateKey;
     }
 
-    public String getServerGost01Curve() {
+    public GOSTCurve getServerGost01Curve() {
         return serverGost01Curve;
     }
 
-    public void setServerGost01Curve(String serverGost01Curve) {
+    public void setServerGost01Curve(GOSTCurve serverGost01Curve) {
         this.serverGost01Curve = serverGost01Curve;
     }
 
@@ -989,11 +985,11 @@ public class TlsContext {
         this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
     }
 
-    public String getClientGost01Curve() {
+    public GOSTCurve getClientGost01Curve() {
         return clientGost01Curve;
     }
 
-    public void setClientGost01Curve(String clientGost01Curve) {
+    public void setClientGost01Curve(GOSTCurve clientGost01Curve) {
         this.clientGost01Curve = clientGost01Curve;
     }
 
@@ -1013,11 +1009,11 @@ public class TlsContext {
         this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
     }
 
-    public String getServerGost12Curve() {
+    public GOSTCurve getServerGost12Curve() {
         return serverGost12Curve;
     }
 
-    public void setServerGost12Curve(String serverGost12Curve) {
+    public void setServerGost12Curve(GOSTCurve serverGost12Curve) {
         this.serverGost12Curve = serverGost12Curve;
     }
 
@@ -1037,11 +1033,11 @@ public class TlsContext {
         this.serverGostEc12PrivateKey = serverGostEc12PrivateKey;
     }
 
-    public String getClientGost12Curve() {
+    public GOSTCurve getClientGost12Curve() {
         return clientGost12Curve;
     }
 
-    public void setClientGost12Curve(String clientGost12Curve) {
+    public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
         this.clientGost12Curve = clientGost12Curve;
     }
 

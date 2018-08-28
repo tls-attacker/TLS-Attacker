@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
@@ -16,7 +17,6 @@ import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 
 public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePreparator {
@@ -26,7 +26,7 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     }
 
     @Override
-    protected String getServerCurve() {
+    protected GOSTCurve getServerCurve() {
         return chooser.getServerGost12Curve();
     }
 

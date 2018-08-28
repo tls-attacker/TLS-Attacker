@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -35,10 +36,6 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public abstract class Chooser {
 
@@ -145,25 +142,25 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
-    public abstract String getServerGost01Curve();
+    public abstract GOSTCurve getServerGost01Curve();
 
     public abstract CustomECPoint getServerGost01PublicKey();
 
     public abstract BigInteger getServerGost01PrivateKey();
 
-    public abstract String getClientGost01Curve();
+    public abstract GOSTCurve getClientGost01Curve();
 
     public abstract CustomECPoint getClientGost01PublicKey();
 
     public abstract BigInteger getClientGost01PrivateKey();
 
-    public abstract String getServerGost12Curve();
+    public abstract GOSTCurve getServerGost12Curve();
 
     public abstract CustomECPoint getServerGost12PublicKey();
 
     public abstract BigInteger getServerGost12PrivateKey();
 
-    public abstract String getClientGost12Curve();
+    public abstract GOSTCurve getClientGost12Curve();
 
     public abstract CustomECPoint getClientGost12PublicKey();
 

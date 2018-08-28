@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -682,7 +683,7 @@ public class Config implements Serializable {
 
     private CustomECPoint defaultServerGost01PublicKey = defaultClientGost01PublicKey;
 
-    private String defaultGost01Curve = "GostR3410-2001-CryptoPro-XchB";
+    private GOSTCurve defaultGost01Curve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
     private BigInteger defaultClientGost12PrivateKey = new BigInteger(
             "12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324");
@@ -697,7 +698,7 @@ public class Config implements Serializable {
 
     private CustomECPoint defaultServerGost12PublicKey = defaultClientGost12PublicKey;
 
-    private String defaultGost12Curve = "Tc26-Gost-3410-12-512-paramSetA";
+    private GOSTCurve defaultGost12Curve = GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
 
     private String defaultApplicationMessageData = "Test";
 
@@ -1599,7 +1600,7 @@ public class Config implements Serializable {
         return defaultServerGost01PublicKey;
     }
 
-    public String getDefaultGost01Curve() {
+    public GOSTCurve getDefaultGost01Curve() {
         return defaultGost01Curve;
     }
 
@@ -1619,7 +1620,7 @@ public class Config implements Serializable {
         this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
     }
 
-    public void setDefaultGost01Curve(String defaultGost01Curve) {
+    public void setDefaultGost01Curve(GOSTCurve defaultGost01Curve) {
         this.defaultGost01Curve = defaultGost01Curve;
     }
 
@@ -1631,7 +1632,7 @@ public class Config implements Serializable {
         this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
     }
 
-    public void setDefaultGost12Curve(String defaultGost12Curve) {
+    public void setDefaultGost12Curve(GOSTCurve defaultGost12Curve) {
         this.defaultGost12Curve = defaultGost12Curve;
     }
 
@@ -1651,7 +1652,7 @@ public class Config implements Serializable {
         return defaultServerGost12PublicKey;
     }
 
-    public String getDefaultGost12Curve() {
+    public GOSTCurve getDefaultGost12Curve() {
         return defaultGost12Curve;
     }
 

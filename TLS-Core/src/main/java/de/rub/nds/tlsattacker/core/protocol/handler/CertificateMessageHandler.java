@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
@@ -134,10 +135,10 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         LOGGER.debug("Adjusting GOST 2001 ECPublicKey");
         CustomECPoint ecPoint = toCustomECPoint(publicKey.getQ());
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientGost01Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setClientGost01Curve(GOSTCurve.fromNamedSpec(((ECNamedCurveSpec) publicKey.getParams())));
             tlsContext.setClientGostEc01PublicKey(ecPoint);
         } else {
-            tlsContext.setServerGost01Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setServerGost01Curve(GOSTCurve.fromNamedSpec(((ECNamedCurveSpec) publicKey.getParams())));
             tlsContext.setServerGostEc01PublicKey(ecPoint);
         }
     }
@@ -146,11 +147,10 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         LOGGER.debug("Adjusting GOST 2012 ECPublicKey");
         CustomECPoint ecPoint = toCustomECPoint(publicKey.getQ());
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientGost12Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
+            tlsContext.setClientGost12Curve(GOSTCurve.fromNamedSpec(((ECNamedCurveSpec) publicKey.getParams())));
             tlsContext.setClientGostEc12PublicKey(ecPoint);
         } else {
-            tlsContext.setServerGost12Curve(((ECNamedCurveSpec) publicKey.getParams()).getName());
-
+            tlsContext.setServerGost12Curve(GOSTCurve.fromNamedSpec(((ECNamedCurveSpec) publicKey.getParams())));
             tlsContext.setServerGostEc12PublicKey(ecPoint);
         }
     }

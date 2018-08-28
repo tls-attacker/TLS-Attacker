@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -49,8 +50,8 @@ public class GOSTClientKeyExchangePreparatorTest {
 
         BCECGOST3410_2012PublicKey publicKey = (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter().getPublicKey(cert
                 .getSubjectPublicKeyInfo());
-        String curveName = ((ECNamedCurveSpec) publicKey.getParams()).getName();
-        tlsContext.setServerGost12Curve(curveName);
+        GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
+        tlsContext.setServerGost12Curve(curve);
         ECPoint q = publicKey.getQ();
         CustomECPoint ecPoint = new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
 
