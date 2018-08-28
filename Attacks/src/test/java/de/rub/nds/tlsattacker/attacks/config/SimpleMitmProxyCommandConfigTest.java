@@ -58,7 +58,6 @@ public class SimpleMitmProxyCommandConfigTest {
     // assertEquals(config.getDefaultServerRSAPublicKey(),
     // new BigInteger(1, ArrayConverter.hexStringToByteArray("010001")));
     // }
-
     @Test
     public void testLoadPrivateKeyRsaWithPassword() {
     }

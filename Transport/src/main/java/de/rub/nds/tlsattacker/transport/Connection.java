@@ -76,7 +76,7 @@ public abstract class Connection {
     /**
      * Get the connection end type of the connection end. This must be
      * implemented by all children.
-     * 
+     *
      * @return the connection end type of the connection end.
      */
     public abstract ConnectionEndType getLocalConnectionEndType();

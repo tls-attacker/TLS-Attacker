@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 /**
  * Simulate module execution and record all console output. Allows building
  * simple integration tests based on expected command line output.
- * 
+ *
  * Temporarily redirects System.{out,err}.
  *
  */

@@ -1,5 +1,5 @@
 /**
-/**
+ * /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
  * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
+
     private long measurement = 0;
     private boolean prependEarlyReadData = false;
     private int earlyReadData = 0;

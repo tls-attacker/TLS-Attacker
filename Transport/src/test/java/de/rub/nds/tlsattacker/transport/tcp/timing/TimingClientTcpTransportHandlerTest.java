@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TimingClientTcpTransportHandlerTest {
+
     private TimingClientTcpTransportHandler handler;
 
     @Before
