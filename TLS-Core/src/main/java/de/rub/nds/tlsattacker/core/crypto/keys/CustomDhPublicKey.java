@@ -83,15 +83,6 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     @Override
     public byte[] getEncoded() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
     }
 
     @Override

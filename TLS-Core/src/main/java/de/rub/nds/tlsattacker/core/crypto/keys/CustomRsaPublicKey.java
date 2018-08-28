@@ -71,15 +71,6 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @Override
     public byte[] getEncoded() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
     }
 
     @Override

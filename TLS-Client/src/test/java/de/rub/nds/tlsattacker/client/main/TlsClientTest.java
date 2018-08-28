@@ -196,7 +196,7 @@ public class TlsClientTest {
         } catch (WorkflowExecutionException E) {
             LOGGER.error(E);
             fail();
-            
+
         }
 
         String workflowString = state.getWorkflowTrace().toString();
