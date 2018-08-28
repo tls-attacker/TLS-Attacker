@@ -126,17 +126,6 @@ public class ICEAttacker {
                 LOGGER.info("Successfully found: x = +/- " + cong + " mod " + point.getOrder());
                 LOGGER.info("Using equation: x^2 =   " + squareCong + " mod " + point.getOrder());
 
-                // BigInteger x = new BigInteger(
-                // "81621876370632603442940437509300704111441085977373560521586039023365897398922");
-                // BigInteger real =
-                // x.mod(BigInteger.valueOf(point.getOrder()));
-                // BigInteger square =
-                // real.pow(2).mod(BigInteger.valueOf(point.getOrder()));
-                // if (square.compareTo(squareCong) != 0) {
-                // System.out.println("-------------- real result: " + square);
-                // } else {
-                // System.out.println("real result: " + square);
-                // }
                 BigInteger prodModuli = computeModuliProduct(moduli);
                 if (prodModuli.bitLength() > (computer.getCurve().getKeyBits() * 2 + 4)) {
                     /**
