@@ -51,7 +51,7 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_NAME_LIST = 2;
     /**
-     * KeyShareType length in the KeySahreExtension
+     * KeyShareGroup length in the KeySahreExtension
      */
     public static final int KEY_SHARE_GROUP = 2;
     /**
