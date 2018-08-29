@@ -23,13 +23,19 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
+import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class CertificateUtils {
 
@@ -156,4 +162,42 @@ public class CertificateUtils {
             return null;
         }
     }
+
+    public static BCECGOST3410PublicKey extract01PublicKey(Certificate cert) throws IOException {
+        SubjectPublicKeyInfo publicKey = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        return (BCECGOST3410PublicKey) new JcaPEMKeyConverter().getPublicKey(publicKey);
+    }
+
+    public static BCECGOST3410_2012PublicKey extract12PublicKey(Certificate cert) throws IOException {
+        SubjectPublicKeyInfo publicKey = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        return (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter().getPublicKey(publicKey);
+    }
+
+    public static boolean hasGOSTParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
+        SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        return keyInfo.getAlgorithm().getAlgorithm().equals(CryptoProObjectIdentifiers.gostR3410_94);
+    }
+
+    public static boolean hasGost01EcParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
+        SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        ASN1ObjectIdentifier alg = keyInfo.getAlgorithm().getAlgorithm();
+        return alg.equals(CryptoProObjectIdentifiers.gostR3410_2001);
+    }
+
+    public static boolean hasGost12EcParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
+        SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        ASN1ObjectIdentifier alg = keyInfo.getAlgorithm().getAlgorithm();
+        return alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
+                || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
+    }
+
 }

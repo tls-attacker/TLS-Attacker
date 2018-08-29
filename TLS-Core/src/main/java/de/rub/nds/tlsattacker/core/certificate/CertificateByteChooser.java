@@ -26,7 +26,9 @@ public class CertificateByteChooser {
         byte[] rsaCert = config.getDefaultRsaCertificate();
         byte[] ecCert = config.getDefaultEcCertificate();
         byte[] dsaCert = config.getDefaultDsaCertificate();
-        return chooseCertificateType(suite, rsaCert, ecCert, dsaCert);
+        byte[] gost01Cert = config.getDefaultGost01Certificate();
+        byte[] gost12Cert = config.getDefaultGost12Certificate();
+        return chooseCertificateType(suite, rsaCert, ecCert, dsaCert, gost01Cert, gost12Cert);
     }
 
     public static byte[] chooseCertificateType(TlsContext context) {
@@ -34,14 +36,11 @@ public class CertificateByteChooser {
     }
 
     public static byte[] chooseCertificateType(Chooser chooser) {
-        CipherSuite suite = chooser.getSelectedCipherSuite();
-        byte[] rsaCert = chooser.getConfig().getDefaultRsaCertificate();
-        byte[] ecCert = chooser.getConfig().getDefaultEcCertificate();
-        byte[] dsaCert = chooser.getConfig().getDefaultDsaCertificate();
-        return chooseCertificateType(suite, rsaCert, ecCert, dsaCert);
+        return chooseCertificateType(chooser.getConfig());
     }
 
-    private static byte[] chooseCertificateType(CipherSuite selectedSuite, byte[] rsaCert, byte[] ecCert, byte[] dsaCert) {
+    private static byte[] chooseCertificateType(CipherSuite selectedSuite, byte[] rsaCert, byte[] ecCert,
+            byte[] dsaCert, byte[] gost01Cert, byte[] gost12Cert) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(selectedSuite);
         if (keyExchangeAlgorithm == null) {
             LOGGER.warn("KeyExchangeAlgorithm in Ciphersuite is not specified. Choosing RSA...");
@@ -65,6 +64,10 @@ public class CertificateByteChooser {
             case DH_DSS:
             case SRP_SHA_DSS:
                 return dsaCert;
+            case VKO_GOST01:
+                return gost01Cert;
+            case VKO_GOST12:
+                return gost12Cert;
         }
         LOGGER.warn("Could not choose correct Certificate base on KeyExchangeAlgorithm. Selecting RSA Certificate");
         return rsaCert;

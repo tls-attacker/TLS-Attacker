@@ -55,14 +55,15 @@ public class JavaCipherTest {
         Random r = new Random(0);
         for (CipherAlgorithm algo : CipherAlgorithm.values()) {
 
-            JavaCipher cipher = new JavaCipher(algo);
             byte[] key = new byte[algo.getKeySize()];
             r.nextBytes(key);
+            JavaCipher cipher = new JavaCipher(algo, key);
+
             byte[] plaintext = new byte[algo.getBlocksize()];
             r.nextBytes(plaintext);
 
             try {
-                cipher.encrypt(key, plaintext);
+                cipher.encrypt(plaintext);
                 System.out.println(algo.name() + " worked!");
             } catch (Exception ex) {
                 System.out.println(algo.name() + " did not work!");

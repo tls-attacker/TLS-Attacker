@@ -9,13 +9,10 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -42,9 +39,9 @@ public class RecordAEADCipher extends RecordCipher {
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
-        decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+        encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
+        decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
     }
 
     @Override
@@ -80,16 +77,13 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
         byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                 sequenceNumberByte);
         byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
-        byte[] cipherText = encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType), encryptIV,
-                GCM_TAG_LENGTH * 8, request.getPlainText());
+        byte[] cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
@@ -102,21 +96,18 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private EncryptionResult encryptTLS12(EncryptionRequest request) throws CryptoException {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), RecordByteLength.SEQUENCE_NUMBER);
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-        byte[] ciphertext = encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType), iv, GCM_TAG_LENGTH * 8,
-                request.getAdditionalAuthenticatedData(), request.getPlainText());
+        byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+                request.getPlainText());
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
 
     private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
@@ -126,12 +117,10 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
-        return decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIV, GCM_TAG_LENGTH * 8,
-                decryptionRequest.getCipherText());
+        return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
     }
 
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
             LOGGER.warn("Could not DecryptCipherText. Too short. Returning undecrypted Ciphertext");
             return decryptionRequest.getCipherText();
@@ -145,8 +134,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), iv, GCM_TAG_LENGTH * 8,
-                decryptionRequest.getAdditionalAuthenticatedData(), data);
+        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override

@@ -27,12 +27,10 @@ public class NullCipherTest {
 
     @Before
     public void setUp() {
-
-        byte[] bKey = strKey.getBytes();
-        byte[] bMessage = strMessage.getBytes();
-        byte[] bIV = strIV.getBytes();
-        byte[] bAuth = strAuth.getBytes();
-
+        bKey = strKey.getBytes();
+        bMessage = strMessage.getBytes();
+        bIV = strIV.getBytes();
+        bAuth = strAuth.getBytes();
     }
 
     // Encryption Tests
@@ -50,7 +48,7 @@ public class NullCipherTest {
     public void testEncryptionWithIv() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bEncrypted = cipher.encrypt(bKey, bIV, bMessage);
+        byte[] bEncrypted = cipher.encrypt(bIV, bMessage);
 
         assertArrayEquals(bMessage, bEncrypted);
     }
@@ -59,7 +57,7 @@ public class NullCipherTest {
     public void testEncryptionWithIvWithTagLength() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bEncrypted = cipher.encrypt(bKey, bIV, iTag, bMessage);
+        byte[] bEncrypted = cipher.encrypt(bIV, iTag, bMessage);
 
         assertArrayEquals(bMessage, bEncrypted);
     }
@@ -68,7 +66,7 @@ public class NullCipherTest {
     public void testEncryptionWithIvWithTagLengthWithAdditionAuthenticatedData() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bEncrypted = cipher.encrypt(bKey, bIV, iTag, bAuth, bMessage);
+        byte[] bEncrypted = cipher.encrypt(bIV, iTag, bAuth, bMessage);
 
         assertArrayEquals(bMessage, bEncrypted);
     }
@@ -88,7 +86,7 @@ public class NullCipherTest {
     public void testDecryptionWithIv() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bDecrypted = cipher.decrypt(bKey, bIV, bMessage);
+        byte[] bDecrypted = cipher.decrypt(bIV, bMessage);
 
         assertArrayEquals(bMessage, bDecrypted);
     }
@@ -97,7 +95,7 @@ public class NullCipherTest {
     public void testDecryptionWithIvWithTagLength() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bDecrypted = cipher.decrypt(bKey, bIV, iTag, bMessage);
+        byte[] bDecrypted = cipher.decrypt(bIV, iTag, bMessage);
 
         assertArrayEquals(bMessage, bDecrypted);
     }
@@ -106,7 +104,7 @@ public class NullCipherTest {
     public void testDecryptionWithIvWithTagLengthWithAdditionAuthenticatedData() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bDecrypted = cipher.decrypt(bKey, bIV, iTag, bAuth, bMessage);
+        byte[] bDecrypted = cipher.decrypt(bIV, iTag, bAuth, bMessage);
 
         assertArrayEquals(bMessage, bDecrypted);
     }
@@ -117,9 +115,9 @@ public class NullCipherTest {
     public void testEncryptionWithSetIvWithDecryption() throws CryptoException {
         NullCipher cipher = new NullCipher();
 
-        byte[] bEncrypted = cipher.encrypt(bKey, bIV, iTag, bAuth, bMessage);
+        byte[] bEncrypted = cipher.encrypt(bIV, iTag, bAuth, bMessage);
         cipher.setIv(bAuth);
-        byte[] bDecrypted = cipher.decrypt(bKey, bIV, iTag, bAuth, bEncrypted);
+        byte[] bDecrypted = cipher.decrypt(bIV, iTag, bAuth, bEncrypted);
 
         assertArrayEquals(bMessage, bDecrypted);
     }

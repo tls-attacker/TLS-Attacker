@@ -8,7 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.util.GOSTUtils;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +21,14 @@ public class CipherWrapper {
 
     protected static final Logger LOGGER = LogManager.getLogger(CipherWrapper.class.getName());
 
-    public static EncryptionCipher getEncryptionCipher(CipherAlgorithm cipherAlg) {
-        if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg);
+    public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
+            KeySet keySet) {
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+            return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
+                    keySet.getWriteIv(connectionEndType));
+        } else if (cipherAlg.getJavaName() != null) {
+            return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -27,9 +37,14 @@ public class CipherWrapper {
         }
     }
 
-    public static DecryptionCipher getDecryptionCipher(CipherAlgorithm cipherAlg) {
-        if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg);
+    public static DecryptionCipher getDecryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
+            KeySet keySet) {
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+            return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
+                    keySet.getReadIv(connectionEndType));
+        } else if (cipherAlg.getJavaName() != null) {
+            return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {

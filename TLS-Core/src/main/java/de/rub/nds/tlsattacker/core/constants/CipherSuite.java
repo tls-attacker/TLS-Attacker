@@ -426,7 +426,9 @@ public enum CipherSuite {
     GREASE_12(0xCACA),
     GREASE_13(0xDADA),
     GREASE_14(0xEAEA),
-    GREASE_15(0xFAFA);
+    GREASE_15(0xFAFA),
+    TLS_GOSTR341112_256_WITH_28147_CNT_IMIT(0xFF85),
+    TLS_GOSTR341112_256_WITH_NULL_GOSTR3411(0xFF87);
 
     private int value;
 
@@ -561,7 +563,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "CNT_INIT", "GOSTR3411" };
+            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -569,7 +571,7 @@ public enum CipherSuite {
             }
             return false;
         }
-        return (this.name().contains("_CBC") || this.name().contains("RC4"));
+        return (this.name().contains("_CBC") || this.name().contains("RC4") || this.name().contains("CNT"));
     }
 
     public boolean isSCSV() {
@@ -588,8 +590,20 @@ public enum CipherSuite {
         return (this.name().contains("_OCB"));
     }
 
+    public boolean isSteamCipherWithIV() {
+        return this.name().contains("28147_CNT");
+    }
+
     public boolean usesSHA384() {
         return this.name().endsWith("SHA384");
+    }
+
+    public boolean usesGOSTR3411() {
+        return this.name().startsWith("TLS_GOSTR3410");
+    }
+
+    public boolean usesGOSTR34112012() {
+        return this.name().startsWith("TLS_GOSTR3411");
     }
 
     /**
@@ -921,6 +935,10 @@ public enum CipherSuite {
         list.add(TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384);
         list.add(TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256);
         list.add(TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_GOSTR341001_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341001_WITH_NULL_GOSTR3411);
+        list.add(TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341112_256_WITH_NULL_GOSTR3411);
         return list;
     }
 

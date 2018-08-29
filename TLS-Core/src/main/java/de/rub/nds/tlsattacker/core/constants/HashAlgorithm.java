@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 public enum HashAlgorithm {
 
     NONE(""),
@@ -20,7 +16,10 @@ public enum HashAlgorithm {
     SHA224("SHA-224"),
     SHA256("SHA-256"),
     SHA384("SHA-384"),
-    SHA512("SHA-512");
+    SHA512("SHA-512"),
+    GOSTR3411("GOST3411"),
+    GOSTR34112012_256("GOST3411-2012-256"),
+    GOSTR34112012_512("GOST3411-2012-512");
 
     private final String javaName;
 

@@ -11,8 +11,9 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
@@ -21,11 +22,8 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 public final class RecordBlockCipher extends RecordCipher {
 
@@ -36,30 +34,25 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * mac for verification of incoming messages
      */
-    private Mac readMac;
+    private WrappedMac readMac;
     /**
      * mac object for macing outgoing messages
      */
-    private Mac writeMac;
+    private WrappedMac writeMac;
 
     public RecordBlockCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         if (version.usesExplicitIv()) {
             useExplicitIv = true;
         }
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
 
         try {
-            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
-            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
-                    cipherSuite);
-            readMac = Mac.getInstance(macAlg.getJavaName());
-            writeMac = Mac.getInstance(macAlg.getJavaName());
-            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
-        } catch (NoSuchAlgorithmException | InvalidKeyException E) {
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
+            readMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
+        } catch (NoSuchAlgorithmException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
         }
     }
@@ -69,12 +62,9 @@ public final class RecordBlockCipher extends RecordCipher {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
         byte[] result;
         if (connectionEndType == context.getChooser().getConnectionEndType()) {
-            writeMac.update(data);
-            result = writeMac.doFinal();
-
+            result = writeMac.calculateMac(data);
         } else {
-            readMac.update(data);
-            result = readMac.doFinal();
+            result = readMac.calculateMac(data);
         }
         LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
@@ -90,8 +80,7 @@ public final class RecordBlockCipher extends RecordCipher {
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
         try {
-            byte[] ciphertext = encryptCipher.encrypt(getKeySet().getWriteKey(context.getTalkingConnectionEndType()),
-                    request.getInitialisationVector(), request.getPlainText());
+            byte[] ciphertext = encryptCipher.encrypt(request.getInitialisationVector(), request.getPlainText());
             if (!useExplicitIv) {
                 encryptCipher.setIv(extractNextEncryptIv(ciphertext));
             }
@@ -123,19 +112,16 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
                 return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
             }
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
                 byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-                plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv, Arrays
-                        .copyOfRange(decryptionRequest.getCipherText(), decryptCipher.getBlocksize(),
-                                decryptionRequest.getCipherText().length));
+                plaintext = decryptCipher.decrypt(decryptIv, Arrays.copyOfRange(decryptionRequest.getCipherText(),
+                        decryptCipher.getBlocksize(), decryptionRequest.getCipherText().length));
                 usedIv = decryptCipher.getIv();
             } else {
                 byte[] decryptIv = getDecryptionIV();
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-                plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv,
-                        decryptionRequest.getCipherText());
+                plaintext = decryptCipher.decrypt(decryptIv, decryptionRequest.getCipherText());
                 usedIv = decryptCipher.getIv();
                 // Set next IV
             }
