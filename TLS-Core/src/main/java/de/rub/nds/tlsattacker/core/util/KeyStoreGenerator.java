@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,6 +35,9 @@ import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -60,6 +64,22 @@ public class KeyStoreGenerator {
         keyPairGenerator.initialize(bits, random);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
+    }
+
+    public static KeyPair createGost01KeyPair(String curve, BadRandom random) throws NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException {
+        ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curve);
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410");
+        keyPairGenerator.initialize(spec, random);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    public static KeyPair createGost12KeyPair(String curve, BadRandom random) throws NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException {
+        ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curve);
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
+        keyPairGenerator.initialize(spec, random);
+        return keyPairGenerator.generateKeyPair();
     }
 
     public static KeyStore createKeyStore(KeyPair keyPair, BadRandom random) throws CertificateException, IOException,
@@ -114,6 +134,16 @@ public class KeyStoreGenerator {
                 return "SHA256withECDSA";
             case "DH":
                 return "SHA256withDSA";
+            case "ECGOST3410":
+                return "GOST3411WITHECGOST3410";
+            case "ECGOST3410-2012":
+                BigInteger x = ((BCECGOST3410_2012PublicKey) keyPair.getPublic()).getQ().getAffineXCoord()
+                        .toBigInteger();
+                if (x.bitLength() > 256) {
+                    return "GOST3411-2012-512WITHGOST3410-2012-512";
+                } else {
+                    return "GOST3411-2012-256WITHGOST3410-2012-256";
+                }
             default:
                 throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
                         + " not supported");

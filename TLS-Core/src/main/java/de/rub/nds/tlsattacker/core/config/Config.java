@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -52,7 +53,12 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
@@ -706,6 +712,34 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("1e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a"));
 
+    private BigInteger defaultClientGost01PrivateKey = new BigInteger(
+            "26785099399492638393392560259033438651994544664321975859026404506460241468938");
+
+    private BigInteger defaultServerGost01PrivateKey = defaultClientGost01PrivateKey;
+
+    private CustomECPoint defaultClientGost01PublicKey = new CustomECPoint(new BigInteger(
+            "22747378382093562937677152450590993403550984164767919046558575083163178129198"), new BigInteger(
+            "45951448325373922676609101796150321769091242179379405625463804456279006527922"));
+
+    private CustomECPoint defaultServerGost01PublicKey = defaultClientGost01PublicKey;
+
+    private GOSTCurve defaultGost01Curve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
+
+    private BigInteger defaultClientGost12PrivateKey = new BigInteger(
+            "12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324");
+
+    private BigInteger defaultServerGost12PrivateKey = defaultClientGost12PrivateKey;
+
+    private CustomECPoint defaultClientGost12PublicKey = new CustomECPoint(
+            new BigInteger(
+                    "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
+            new BigInteger(
+                    "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"));
+
+    private CustomECPoint defaultServerGost12PublicKey = defaultClientGost12PublicKey;
+
+    private GOSTCurve defaultGost12Curve = GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
+
     private String defaultApplicationMessageData = "Test";
 
     /**
@@ -1120,7 +1154,7 @@ public class Config implements Serializable {
         try {
             defaultExplicitCertificateKeyPair = new CertificateKeyPair(cert, key);
         } catch (IOException ex) {
-            throw new ConfigurationException("Could not create default config");
+            throw new ConfigurationException("Could not create default config", ex);
         }
     }
 
@@ -1280,6 +1314,22 @@ public class Config implements Serializable {
 
     public void setDefaultTokenBindingType(TokenBindingType defaultTokenBindingType) {
         this.defaultTokenBindingType = defaultTokenBindingType;
+    }
+
+    public void setDefaultServerGost01PrivateKey(BigInteger defaultServerGost01PrivateKey) {
+        this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
+    }
+
+    public void setDefaultServerGost01PublicKey(CustomECPoint defaultServerGost01PublicKey) {
+        this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
+    }
+
+    public void setDefaultServerGost12PrivateKey(BigInteger defaultServerGost12PrivateKey) {
+        this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
+    }
+
+    public void setDefaultServerGost12PublicKey(CustomECPoint defaultServerGost12PublicKey) {
+        this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
     }
 
     public byte[] getDefaultClientHandshakeTrafficSecret() {
@@ -1573,6 +1623,70 @@ public class Config implements Serializable {
 
     public void setDefaultServerDhPrivateKey(BigInteger defaultServerDhPrivateKey) {
         this.defaultServerDhPrivateKey = defaultServerDhPrivateKey;
+    }
+
+    public BigInteger getDefaultClientGost01PrivateKey() {
+        return defaultClientGost01PrivateKey;
+    }
+
+    public CustomECPoint getDefaultClientGost01PublicKey() {
+        return defaultClientGost01PublicKey;
+    }
+
+    public BigInteger getDefaultServerGost01PrivateKey() {
+        return defaultServerGost01PrivateKey;
+    }
+
+    public CustomECPoint getDefaultServerGost01PublicKey() {
+        return defaultServerGost01PublicKey;
+    }
+
+    public GOSTCurve getDefaultGost01Curve() {
+        return defaultGost01Curve;
+    }
+
+    public void setDefaultClientGost01PrivateKey(BigInteger defaultClientGost01PrivateKey) {
+        this.defaultClientGost01PrivateKey = defaultClientGost01PrivateKey;
+    }
+
+    public void setDefaultClientGost01PublicKey(CustomECPoint defaultClientGost01PublicKey) {
+        this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
+    }
+
+    public void setDefaultGost01Curve(GOSTCurve defaultGost01Curve) {
+        this.defaultGost01Curve = defaultGost01Curve;
+    }
+
+    public void setDefaultClientGost12PrivateKey(BigInteger defaultClientGost12PrivateKey) {
+        this.defaultClientGost12PrivateKey = defaultClientGost12PrivateKey;
+    }
+
+    public void setDefaultClientGost12PublicKey(CustomECPoint defaultClientGost12PublicKey) {
+        this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
+    }
+
+    public void setDefaultGost12Curve(GOSTCurve defaultGost12Curve) {
+        this.defaultGost12Curve = defaultGost12Curve;
+    }
+
+    public BigInteger getDefaultClientGostEc12PrivateKey() {
+        return defaultClientGost12PrivateKey;
+    }
+
+    public CustomECPoint getDefaultClientGostEc12PublicKey() {
+        return defaultClientGost12PublicKey;
+    }
+
+    public BigInteger getDefaultServerGostEc12PrivateKey() {
+        return defaultServerGost12PrivateKey;
+    }
+
+    public CustomECPoint getDefaultServerGost12EcPublicKey() {
+        return defaultServerGost12PublicKey;
+    }
+
+    public GOSTCurve getDefaultGost12Curve() {
+        return defaultGost12Curve;
     }
 
     public BigInteger getDefaultServerDsaPrivateKey() {

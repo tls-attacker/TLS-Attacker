@@ -12,6 +12,8 @@ public enum PublicKeyAlgorithm {
 
     RSA,
     EC,
-    DH
+    DH,
+    GOST01,
+    GOST12
 
 }

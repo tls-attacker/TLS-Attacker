@@ -176,6 +176,37 @@ public class RecordEncryptorTest {
     }
 
     @Test
+    public void testEncryptTLS10GOST() throws NoSuchAlgorithmException, CryptoException {
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("0DA8674196F2496C4EE1E4779DE04990BE3CE4655252F1961E707B61178436131369D11E7DA84C05374535B95550DD0F"));
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("52E78F4F6AA0FE312217AEF691AD763932945E8CEDD7F96E3C336B0866A66698"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("52E78F4F4E131F8CABAFD5D7C9C62A5EDF62CADB4D033131FE9B83DE9D459EFD"));
+
+        Record record = new Record();
+        record.prepareComputations();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        record.getComputations().setSequenceNumber(BigInteger.ZERO);
+
+        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C07E0B66F9A775545F6590C2E"));
+
+        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        encryptor = new RecordEncryptor(recordCipher, context);
+        encryptor.encrypt(record);
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("356A2FAF42836E90EDB6CD0CB0DE813D505C0EAF"), record
+                .getProtocolMessageBytes().getValue());
+    }
+
+    @Test
     public void testEncryptTLS12Stream() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);

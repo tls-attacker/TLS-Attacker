@@ -30,8 +30,8 @@ public enum KeyExchangeAlgorithm {
     ECDHE_ECDSA,
     ECDHE_RSA,
     ECDHE_PSK,
-    GOSTR341001,
-    GOSTR341094,
+    VKO_GOST01,
+    VKO_GOST12,
     FORTEZZA_KEA,
     ECMQV_ECDSA,
     ECMQV_ECNRA,
@@ -67,10 +67,12 @@ public enum KeyExchangeAlgorithm {
             case PSK:
             case SRP_SHA:
                 return CertificateKeyType.NONE;
+            case VKO_GOST01:
+                return CertificateKeyType.GOST01;
+            case VKO_GOST12:
+                return CertificateKeyType.GOST12;
             case ECMQV_ECNRA:
             case FORTEZZA_KEA:
-            case GOSTR341001:
-            case GOSTR341094:
             case KRB5:
 
             default:

@@ -25,6 +25,8 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
 
 public class SignatureCalculator {
 
@@ -41,6 +43,11 @@ public class SignatureCalculator {
                 return generateECDSASignature(chooser, toBeSigned, algorithm);
             case RSA:
                 return generateRSASignature(chooser, toBeSigned, algorithm);
+            case GOSTR34102001:
+                return generateGost01Signature(chooser, toBeSigned, algorithm);
+            case GOSTR34102012_256:
+            case GOSTR34102012_512:
+                return generateGost12Signature(chooser, toBeSigned, algorithm);
             default:
                 throw new UnsupportedOperationException("Unknown SignatureAlgorithm:"
                         + algorithm.getSignatureAlgorithm().name());
@@ -103,4 +110,17 @@ public class SignatureCalculator {
 
     private SignatureCalculator() {
     }
+
+    private static byte[] generateGost01Signature(Chooser chooser, byte[] toBeSigned,
+            SignatureAndHashAlgorithm algorithm) throws CryptoException {
+        BCECGOST3410PrivateKey privateKey = KeyGenerator.getGost01PrivateKey(chooser);
+        return generateSignature(privateKey, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+    }
+
+    private static byte[] generateGost12Signature(Chooser chooser, byte[] toBeSigned,
+            SignatureAndHashAlgorithm algorithm) throws CryptoException {
+        BCECGOST3410_2012PrivateKey privateKey = KeyGenerator.getGost12PrivateKey(chooser);
+        return generateSignature(privateKey, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+    }
+
 }

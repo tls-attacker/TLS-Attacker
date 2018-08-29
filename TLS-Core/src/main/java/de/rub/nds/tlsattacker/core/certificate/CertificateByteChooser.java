@@ -147,18 +147,9 @@ public class CertificateByteChooser {
         CertificateKeyType prefereredSignatureCertSignatureType = chooser.getConfig()
                 .getPreferedCertificateSignatureType();
         switch (keyExchangeAlgorithm) {
-            case DH_DSS:
-                if (prefereredSignatureCertSignatureType != CertificateKeyType.DSS) {
-                    LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
-                    prefereredSignatureCertSignatureType = CertificateKeyType.DSS;
-
-                }
-                break;
             case DH_RSA:
                 if (prefereredSignatureCertSignatureType != CertificateKeyType.RSA) {
                     LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
-                    prefereredSignatureCertSignatureType = CertificateKeyType.RSA;
-
                 }
                 prefereredSignatureCertSignatureType = CertificateKeyType.RSA;
                 break;
@@ -168,8 +159,39 @@ public class CertificateByteChooser {
             case CECPQ1_ECDSA:
                 if (prefereredSignatureCertSignatureType != CertificateKeyType.ECDSA) {
                     LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
-                    prefereredSignatureCertSignatureType = CertificateKeyType.ECDSA;
                 }
+                break;
+            case DHE_RSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+            case PSK_RSA:
+                if (prefereredSignatureCertSignatureType != CertificateKeyType.RSA) {
+                    LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
+                }
+                prefereredSignatureCertSignatureType = CertificateKeyType.RSA;
+                break;
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                if (prefereredSignatureCertSignatureType != CertificateKeyType.DSS) {
+                    LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
+                }
+                prefereredSignatureCertSignatureType = CertificateKeyType.DSS;
+                break;
+            case VKO_GOST01:
+                if (prefereredSignatureCertSignatureType != CertificateKeyType.GOST01) {
+                    LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
+                }
+                prefereredSignatureCertSignatureType = CertificateKeyType.GOST01;
+                break;
+            case VKO_GOST12:
+                if (prefereredSignatureCertSignatureType != CertificateKeyType.GOST01) {
+                    LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
+                }
+                prefereredSignatureCertSignatureType = CertificateKeyType.GOST12;
+                break;
         }
         CertificateKeyPair nextBestChoice = null;
         for (CertificateKeyPair pair : keyPairList) {

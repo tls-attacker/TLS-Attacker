@@ -113,6 +113,9 @@
     <supportedSignatureAndHashAlgorithms>ECDSA_SHA256</supportedSignatureAndHashAlgorithms>
     <supportedSignatureAndHashAlgorithms>ECDSA_SHA384</supportedSignatureAndHashAlgorithms>
     <supportedSignatureAndHashAlgorithms>ECDSA_SHA512</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</supportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>
@@ -407,6 +410,10 @@
     <defaultClientSupportedCiphersuites>TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_GOSTR341001_WITH_28147_CNT_IMIT</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_GOSTR341001_WITH_NULL_GOSTR3411</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_GOSTR341112_256_WITH_28147_CNT_IMIT</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_GOSTR341112_256_WITH_NULL_GOSTR3411</defaultClientSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultServerSupportedCiphersuites>
@@ -701,6 +708,10 @@
     <defaultServerSupportedCiphersuites>TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_GOSTR341001_WITH_28147_CNT_IMIT</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_GOSTR341001_WITH_NULL_GOSTR3411</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_GOSTR341112_256_WITH_28147_CNT_IMIT</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_GOSTR341112_256_WITH_NULL_GOSTR3411</defaultServerSupportedCiphersuites>
     <defaultClientNamedGroups>SECP192R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP256R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP384R1</defaultClientNamedGroups>
@@ -884,6 +895,28 @@
     <defaultClientDsaPrimeP>103762434782353225595002894081807407014187688733673311947450778244925293312291591134897604551073250458920045074926807890365825426304331485566654359578076303761783788483941945686699818381138948165074939275951191050919627774479777205148188961897350898153505641319398399960018680675522231459536432704754423325993</defaultClientDsaPrimeP>
     <defaultClientDsaPrimeQ>982993287306748666467861051104610563630662463513</defaultClientDsaPrimeQ>
     <defaultClientDsaGenerator>21421212867724501975905226127022865528375644556991918298792168491044893205475917815726464626096142237176298719952494196748883671780773077648714622956354561574510275029603293605546980513892434774055530975659322905043123391590352859803443279573014425015000718729175564791706867828592875147024227011024976469082</defaultClientDsaGenerator>
+    <defaultClientGost01PrivateKey>26785099399492638393392560259033438651994544664321975859026404506460241468938</defaultClientGost01PrivateKey>
+    <defaultServerGost01PrivateKey>26785099399492638393392560259033438651994544664321975859026404506460241468938</defaultServerGost01PrivateKey>
+    <defaultClientGost01PublicKey>
+        <x>22747378382093562937677152450590993403550984164767919046558575083163178129198</x>
+        <y>45951448325373922676609101796150321769091242179379405625463804456279006527922</y>
+    </defaultClientGost01PublicKey>
+    <defaultServerGost01PublicKey>
+        <x>22747378382093562937677152450590993403550984164767919046558575083163178129198</x>
+        <y>45951448325373922676609101796150321769091242179379405625463804456279006527922</y>
+    </defaultServerGost01PublicKey>
+    <defaultGost01Curve>GostR3410_2001_CryptoPro_XchB</defaultGost01Curve>
+    <defaultClientGost12PrivateKey>12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324</defaultClientGost12PrivateKey>
+    <defaultServerGost12PrivateKey>12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324</defaultServerGost12PrivateKey>
+    <defaultClientGost12PublicKey>
+        <x>10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673</x>
+        <y>4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410</y>
+    </defaultClientGost12PublicKey>
+    <defaultServerGost12PublicKey>
+        <x>10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673</x>
+        <y>4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410</y>
+    </defaultServerGost12PublicKey>
+    <defaultGost12Curve>Tc26_Gost_3410_12_512_paramSetA</defaultGost12Curve>
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
     <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
     <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
@@ -924,6 +957,9 @@
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
     <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>

@@ -10,8 +10,10 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import java.security.Security;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertArrayEquals;
@@ -107,11 +109,9 @@ public class MessageDigestCollectorTest {
         digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8);
         digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8);
         digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8);
-        digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT);
-        digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT);
+
+        Security.addProvider(new BouncyCastleProvider());
         digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT);
-        digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_GOSTR341094_WITH_NULL_GOSTR3411);
-        digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_GOSTR341094_WITH_NULL_GOSTR3411);
         digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341094_WITH_NULL_GOSTR3411);
     }
 

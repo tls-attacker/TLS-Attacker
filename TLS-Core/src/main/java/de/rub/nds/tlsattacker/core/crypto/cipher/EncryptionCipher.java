@@ -18,13 +18,13 @@ public interface EncryptionCipher {
 
     public int getBlocksize();
 
-    public byte[] encrypt(byte[] key, byte[] someBytes) throws CryptoException;
+    public byte[] encrypt(byte[] someBytes) throws CryptoException;
 
-    public byte[] encrypt(byte[] key, byte[] iv, byte[] someBytes) throws CryptoException;
+    public byte[] encrypt(byte[] iv, byte[] someBytes) throws CryptoException;
 
-    public byte[] encrypt(byte[] key, byte[] iv, int tagLength, byte[] someBytes) throws CryptoException;
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException;
 
-    public byte[] encrypt(byte[] key, byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException;
 
     public byte[] getIv();

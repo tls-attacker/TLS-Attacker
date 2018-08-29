@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -413,6 +414,30 @@ public class TlsContext {
     private List<KeyShareStoreEntry> clientKeyShareStoreEntryList;
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
+
+    private GOSTCurve serverGost01Curve;
+
+    private CustomECPoint serverGostEc01PublicKey;
+
+    private BigInteger serverGostEc01PrivateKey;
+
+    private GOSTCurve clientGost01Curve;
+
+    private CustomECPoint clientGostEc01PublicKey;
+
+    private BigInteger clientGostEc01PrivateKey;
+
+    private GOSTCurve serverGost12Curve;
+
+    private CustomECPoint serverGostEc12PublicKey;
+
+    private BigInteger serverGostEc12PrivateKey;
+
+    private GOSTCurve clientGost12Curve;
+
+    private CustomECPoint clientGostEc12PublicKey;
+
+    private BigInteger clientGostEc12PrivateKey;
 
     /**
      * the currently used type of keySet by the client
@@ -954,6 +979,102 @@ public class TlsContext {
 
     public void setServerDhPrivateKey(BigInteger serverDhPrivateKey) {
         this.serverDhPrivateKey = serverDhPrivateKey;
+    }
+
+    public GOSTCurve getServerGost01Curve() {
+        return serverGost01Curve;
+    }
+
+    public void setServerGost01Curve(GOSTCurve serverGost01Curve) {
+        this.serverGost01Curve = serverGost01Curve;
+    }
+
+    public CustomECPoint getServerGostEc01PublicKey() {
+        return serverGostEc01PublicKey;
+    }
+
+    public void setServerGostEc01PublicKey(CustomECPoint serverGostEc01PublicKey) {
+        this.serverGostEc01PublicKey = serverGostEc01PublicKey;
+    }
+
+    public BigInteger getServerGostEc01PrivateKey() {
+        return serverGostEc01PrivateKey;
+    }
+
+    public void setServerGostEc01PrivateKey(BigInteger serverGostEc01PrivateKey) {
+        this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
+    }
+
+    public GOSTCurve getClientGost01Curve() {
+        return clientGost01Curve;
+    }
+
+    public void setClientGost01Curve(GOSTCurve clientGost01Curve) {
+        this.clientGost01Curve = clientGost01Curve;
+    }
+
+    public CustomECPoint getClientGostEc01PublicKey() {
+        return clientGostEc01PublicKey;
+    }
+
+    public void setClientGostEc01PublicKey(CustomECPoint clientGostEc01PublicKey) {
+        this.clientGostEc01PublicKey = clientGostEc01PublicKey;
+    }
+
+    public BigInteger getClientGostEc01PrivateKey() {
+        return clientGostEc01PrivateKey;
+    }
+
+    public void setClientGostEc01PrivateKey(BigInteger clientGostEc01PrivateKey) {
+        this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
+    }
+
+    public GOSTCurve getServerGost12Curve() {
+        return serverGost12Curve;
+    }
+
+    public void setServerGost12Curve(GOSTCurve serverGost12Curve) {
+        this.serverGost12Curve = serverGost12Curve;
+    }
+
+    public CustomECPoint getServerGostEc12PublicKey() {
+        return serverGostEc12PublicKey;
+    }
+
+    public void setServerGostEc12PublicKey(CustomECPoint serverGostEc12PublicKey) {
+        this.serverGostEc12PublicKey = serverGostEc12PublicKey;
+    }
+
+    public BigInteger getServerGostEc12PrivateKey() {
+        return serverGostEc12PrivateKey;
+    }
+
+    public void setServerGostEc12PrivateKey(BigInteger serverGostEc12PrivateKey) {
+        this.serverGostEc12PrivateKey = serverGostEc12PrivateKey;
+    }
+
+    public GOSTCurve getClientGost12Curve() {
+        return clientGost12Curve;
+    }
+
+    public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
+        this.clientGost12Curve = clientGost12Curve;
+    }
+
+    public CustomECPoint getClientGostEc12PublicKey() {
+        return clientGostEc12PublicKey;
+    }
+
+    public void setClientGostEc12PublicKey(CustomECPoint clientGostEc12PublicKey) {
+        this.clientGostEc12PublicKey = clientGostEc12PublicKey;
+    }
+
+    public BigInteger getClientGostEc12PrivateKey() {
+        return clientGostEc12PrivateKey;
+    }
+
+    public void setClientGostEc12PrivateKey(BigInteger clientGostEc12PrivateKey) {
+        this.clientGostEc12PrivateKey = clientGostEc12PrivateKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {

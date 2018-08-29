@@ -98,7 +98,7 @@ public class KeySetGenerator {
         return keySet;
     }
 
-    private static KeySet getTlsKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
+    private static KeySet getTlsKeySet(TlsContext context) throws CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = context.getChooser().getMasterSecret();
@@ -168,7 +168,7 @@ public class KeySetGenerator {
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException, CryptoException {
+            throws CryptoException {
         switch (AlgorithmResolver.getCipherType(cipherSuite)) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
@@ -181,22 +181,15 @@ public class KeySetGenerator {
         }
     }
 
-    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws CryptoException {
-        try {
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            boolean useExplicitIv = protocolVersion.usesExplicitIv();
-            int keySize = cipherAlg.getKeySize();
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
-            Mac mac = Mac.getInstance(macAlg.getJavaName());
-            int secretSetSize = 2 * keySize + 2 * mac.getMacLength();
-            if (!useExplicitIv) {
-                secretSetSize += (2 * cipherAlg.getBlocksize());
-            }
-            return secretSetSize;
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not calculate SecretSetSize", ex);
+    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        int keySize = cipherAlg.getKeySize();
+        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
+        int secretSetSize = (2 * keySize) + (2 * macAlg.getKeySize());
+        if (!protocolVersion.usesExplicitIv()) {
+            secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }
+        return secretSetSize;
     }
 
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -210,13 +203,13 @@ public class KeySetGenerator {
         return secretSetSize;
     }
 
-    private static int getStreamSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException {
+    private static int getStreamSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        int keySize = cipherAlg.getKeySize();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
-        Mac mac = Mac.getInstance(macAlg.getJavaName());
-        int secretSetSize = (2 * keySize) + mac.getMacLength() + mac.getMacLength();
+        int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
+        if (cipherSuite.isSteamCipherWithIV()) {
+            secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
+        }
         return secretSetSize;
     }
 
