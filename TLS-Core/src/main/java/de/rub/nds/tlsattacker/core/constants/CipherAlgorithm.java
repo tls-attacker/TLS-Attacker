@@ -36,7 +36,7 @@ public enum CipherAlgorithm {
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_128_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
     ARIA_256_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
-    GOST_28147(0, 0, 0, 0), // TODO
+    GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0);// TODO
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {

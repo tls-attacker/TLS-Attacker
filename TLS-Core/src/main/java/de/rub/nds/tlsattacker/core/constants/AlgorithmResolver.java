@@ -40,7 +40,11 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
         }
-        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+        if (cipherSuite.usesGOSTR3411()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
+        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
         } else if (cipherSuite.usesSHA384()) {
@@ -74,7 +78,11 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
         }
-        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+        if (cipherSuite.usesGOSTR3411()) {
+            result = DigestAlgorithm.GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = DigestAlgorithm.GOSTR34112012_256;
+        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
         } else if (cipherSuite.usesSHA384()) {
@@ -132,9 +140,9 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_SRP_SHA")) {
             return KeyExchangeAlgorithm.SRP_SHA;
         } else if (cipher.startsWith("TLS_GOSTR341001_")) {
-            return KeyExchangeAlgorithm.GOSTR341001;
-        } else if (cipher.startsWith("TLS_GOSTR341094_")) {
-            return KeyExchangeAlgorithm.GOSTR341094;
+            return KeyExchangeAlgorithm.VKO_GOST01;
+        } else if (cipher.startsWith("TLS_GOSTR341112_")) {
+            return KeyExchangeAlgorithm.VKO_GOST12;
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1_ECDSA;
         } else if (cipher.contains("SSL_FORTEZZA_KEA")) {
@@ -176,7 +184,12 @@ public class AlgorithmResolver {
             result.add(PublicKeyAlgorithm.EC);
         } else if (cipher.contains("DSS")) {
             result.add(PublicKeyAlgorithm.DH);
+        } else if (cipher.contains("GOSTR341112")) {
+            result.add(PublicKeyAlgorithm.GOST12);
+        } else if (cipher.contains("GOSTR341001")) {
+            result.add(PublicKeyAlgorithm.GOST01);
         }
+
         if (cipher.contains("_ECDH_")) {
             result.add(PublicKeyAlgorithm.EC);
         } else if (cipher.contains("_DH_")) {
@@ -234,7 +247,7 @@ public class AlgorithmResolver {
         } else if (cipher.contains("ARIA_256_GCM")) {
             return CipherAlgorithm.ARIA_256_GCM;
         } else if (cipher.contains("28147_CNT")) {
-            return CipherAlgorithm.GOST_28147;
+            return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
@@ -266,10 +279,10 @@ public class AlgorithmResolver {
         if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA") || cs.contains("GOST") || cs.contains("WITH_SEED")
-                || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
+                || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA")
+                || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA") || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
@@ -306,10 +319,12 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.HMAC_SHA512;
             } else if (cipher.endsWith("NULL")) {
                 result = MacAlgorithm.NULL;
-            } else if (cipher.contains("CNT_IMIT")) {
+            } else if (cipher.endsWith("IMIT")) {
                 result = MacAlgorithm.IMIT_GOST28147;
-            } else if (cipher.contains("GOSTR3411")) {
+            } else if (cipherSuite.usesGOSTR3411()) {
                 result = MacAlgorithm.HMAC_GOSTR3411;
+            } else if (cipherSuite.usesGOSTR34112012()) {
+                result = MacAlgorithm.HMAC_GOSTR3411_2012_256;
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV

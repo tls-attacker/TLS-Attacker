@@ -25,18 +25,14 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
 
     private final CipherAlgorithm algorithm;
 
-    private byte[] iv = null;
+    private byte[] iv;
+    private byte[] key;
 
     private Cipher cipher = null;
 
-    public JavaCipher(CipherAlgorithm algorithm, byte[] iv) {
+    public JavaCipher(CipherAlgorithm algorithm, byte[] key) {
         this.algorithm = algorithm;
-        this.iv = iv;
-    }
-
-    public JavaCipher(CipherAlgorithm algorithm) {
-        this.algorithm = algorithm;
-        iv = null;
+        this.key = key;
     }
 
     @Override
@@ -45,7 +41,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] key, byte[] iv, byte[] someBytes) throws CryptoException {
+    public byte[] encrypt(byte[] iv, byte[] someBytes) throws CryptoException {
         IvParameterSpec encryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -61,7 +57,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] key, byte[] someBytes) throws CryptoException {
+    public byte[] encrypt(byte[] someBytes) throws CryptoException {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -76,7 +72,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] key, byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -91,7 +87,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] key, byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
@@ -118,7 +114,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] key, byte[] iv, byte[] someBytes) throws CryptoException {
+    public byte[] decrypt(byte[] iv, byte[] someBytes) throws CryptoException {
         IvParameterSpec decryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -133,7 +129,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] key, byte[] someBytes) throws CryptoException {
+    public byte[] decrypt(byte[] someBytes) throws CryptoException {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -148,7 +144,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] key, byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -163,7 +159,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] key, byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
