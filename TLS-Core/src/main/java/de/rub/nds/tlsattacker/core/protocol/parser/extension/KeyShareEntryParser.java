@@ -43,7 +43,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      *            Message to write in
      */
     private void parseKeyShareGroup(KeyShareEntry pair) {
-        pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
+        pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
         LOGGER.debug("KeyShareGroup: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
     }
 
