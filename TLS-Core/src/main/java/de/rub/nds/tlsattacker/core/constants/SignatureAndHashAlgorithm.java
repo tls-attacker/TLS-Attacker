@@ -142,6 +142,16 @@ public enum SignatureAndHashAlgorithm {
         return sigHashAlgo;
     }
 
+    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(SignatureAlgorithm signatureAlgo,
+            HashAlgorithm hashAlgo) {
+        for (SignatureAndHashAlgorithm algo : values()) {
+            if (algo.getHashAlgorithm() == hashAlgo && algo.getSignatureAlgorithm() == signatureAlgo) {
+                return algo;
+            }
+        }
+        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported");
+    }
+
     public byte[] getByteValue() {
         return ArrayConverter.intToBytes(value, 2);
     }

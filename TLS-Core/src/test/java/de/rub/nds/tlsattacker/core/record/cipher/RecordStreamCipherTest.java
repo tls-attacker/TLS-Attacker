@@ -50,7 +50,7 @@ public class RecordStreamCipherTest {
         AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
             if (!suite.isGrease() && !suite.isSCSV() && !suite.name().contains("WITH_NULL_NULL")
-                    && !suite.name().contains("CHACHA20_POLY1305")
+                    && !suite.name().contains("CHACHA20_POLY1305") && !suite.name().contains("RABBIT")
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA") && !suite.name().contains("ARIA")) {
                 System.out.println(suite);
