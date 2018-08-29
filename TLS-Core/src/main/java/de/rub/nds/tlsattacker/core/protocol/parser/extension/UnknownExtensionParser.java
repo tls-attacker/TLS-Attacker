@@ -28,7 +28,7 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
                 message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
                 LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
             }
-            message.setDataConfig(message.getExtensionData().getOriginalValue());
+            message.setDataConfig(message.getExtensionData().getValue());
         }
     }
 
@@ -37,8 +37,8 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         if (hasExtensionData(message)) {
             parseExtensionData(message);
         }
-        message.setTypeConfig(message.getExtensionType().getOriginalValue());
-        message.setLengthConfig(message.getExtensionLength().getOriginalValue());
+        message.setTypeConfig(message.getExtensionType().getValue());
+        message.setLengthConfig(message.getExtensionLength().getValue());
     }
 
     @Override

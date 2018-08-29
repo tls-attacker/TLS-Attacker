@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.util.List;
 import org.bouncycastle.math.ec.ECPoint;
@@ -39,7 +40,12 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void prepareKeyShare() {
         if (entry.getPrivateKey() == null) {
-            entry.setPrivateKey(chooser.getClientEcPrivateKey());
+            if (chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)) {
+                entry.setPrivateKey(chooser.getClientEcPrivateKey());
+            }
+            if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
+                entry.setPrivateKey(chooser.getServerEcPrivateKey());
+            }
         }
         if (entry.getGroupConfig().isStandardCurve()) {
             ECPoint ecPublicKey = KeyShareCalculator
