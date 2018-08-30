@@ -45,7 +45,7 @@ public class CertificateByteChooser {
         loadKeys();
     }
 
-    private List<String> getResourceFiles(String path) throws IOException {
+    private List<String> getResourceFiles() throws IOException {
         List<String> filenames = new ArrayList<>();
         filenames.add("ec_rsa_sect163r1_cert.pem");
         filenames.add("ec_secp224k1_cert.pem");
@@ -105,13 +105,27 @@ public class CertificateByteChooser {
         filenames.add("ec_sect193r1_cert.pem");
         filenames.add("ec_secp256r1_cert.pem");
         filenames.add("ec_rsa_secp256r1_cert.pem");
-        filenames.add("ec_rsa_cert_secp256r1.pem");
+        // filenames.add("gost01_0_cert.pem");
+        filenames.add("gost01_A_cert.pem");
+        filenames.add("gost01_B_cert.pem");
+        filenames.add("gost01_C_cert.pem");
+        filenames.add("gost01_XA_cert.pem");
+        filenames.add("gost01_XB_cert.pem");
+        // filenames.add("gost12_256_0_cert.pem");
+        filenames.add("gost12_256_A_cert.pem");
+        filenames.add("gost12_256_B_cert.pem");
+        filenames.add("gost12_256_C_cert.pem");
+        filenames.add("gost12_512_A_cert.pem");
+        filenames.add("gost12_512_B_cert.pem");
+        filenames.add("gost12_256_XA_cert.pem");
+        filenames.add("gost12_256_XB_cert.pem");
+
         return filenames;
     }
 
     private void loadKeys() {
         try {
-            for (String file : getResourceFiles(RESOURCE_PATH)) {
+            for (String file : getResourceFiles()) {
                 if (file.endsWith("cert.pem")) {
                     try {
                         Certificate readCertificate = PemUtil.readCertificate(this.getClass().getClassLoader()
@@ -160,6 +174,7 @@ public class CertificateByteChooser {
                 if (prefereredSignatureCertSignatureType != CertificateKeyType.ECDSA) {
                     LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
                 }
+                prefereredSignatureCertSignatureType = CertificateKeyType.ECDSA;
                 break;
             case DHE_RSA:
             case ECDH_RSA:

@@ -91,7 +91,9 @@ public enum NamedGroup {
     GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE"),
     GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }, "GREASE"),
     GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE"),
-    NONE(new byte[] { (byte) 0, (byte) 0 }, "");
+    NONE(new byte[] { (byte) 0, (byte) 0 }, ""),
+    GOST3410(new byte[] { 0, 0 }, ""),
+    GOST3410_2012(new byte[] { 0, 0 }, "");
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -245,5 +247,9 @@ public enum NamedGroup {
 
     public boolean isTls13() {
         return tls13Groups.contains(this);
+    }
+
+    public boolean isGost() {
+        return name().contains("GOST");
     }
 }
