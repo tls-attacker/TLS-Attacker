@@ -65,7 +65,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+            record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
