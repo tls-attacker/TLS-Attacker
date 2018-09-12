@@ -38,6 +38,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
@@ -70,24 +70,16 @@ public class CertificateKeyPair implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private final byte[] certificateBytes;
 
-    @XmlElements(value = {
-        @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey")
-        ,
-            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey")
-        ,
-            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey")
-        ,
-            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey")})
+    @XmlElements(value = { @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),
+            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
+            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
+            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey") })
     private final CustomPublicKey publicKey;
 
-    @XmlElements(value = {
-        @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey")
-        ,
-            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey")
-        ,
-            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey")
-        ,
-            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey")})
+    @XmlElements(value = { @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey"),
+            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
+            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
+            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey") })
     private final CustomPrivateKey privateKey;
 
     private final NamedGroup signatureGroup;
@@ -126,6 +118,27 @@ public class CertificateKeyPair implements Serializable {
         cert.encode(stream);
         this.certificateBytes = stream.toByteArray();
         this.privateKey = CertificateUtils.parseCustomPrivateKey(key);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils.parsePublicKey(cert));
+        this.publicKeyGroup = getPublicNamedGroup(cert);
+        this.signatureGroup = getSignatureNamedGroup(cert);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(cert);
+        } else {
+            gostCurve = null;
+        }
+    }
+
+    public CertificateKeyPair(Certificate cert) {
+        this.certPublicKeyType = getPublicKeyType(cert);
+        this.certSignatureType = getSignatureType(cert);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            cert.encode(stream);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        this.certificateBytes = stream.toByteArray();
+        this.privateKey = null;
         this.publicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils.parsePublicKey(cert));
         this.publicKeyGroup = getPublicNamedGroup(cert);
         this.signatureGroup = getSignatureNamedGroup(cert);
@@ -323,7 +336,9 @@ public class CertificateKeyPair implements Serializable {
 
     public void adjustInConfig(Config config, ConnectionEndType connectionEnd) {
         publicKey.adjustInConfig(config, connectionEnd);
-        privateKey.adjustInConfig(config, connectionEnd);
+        if (privateKey != null) {
+            privateKey.adjustInConfig(config, connectionEnd);
+        }
         config.setDefaultExplicitCertificateKeyPair(this);
         if (gostCurve != null) {
             config.setDefaultGost01Curve(gostCurve);
@@ -333,7 +348,9 @@ public class CertificateKeyPair implements Serializable {
 
     public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
         publicKey.adjustInContext(context, connectionEnd);
-        privateKey.adjustInContext(context, connectionEnd);
+        if (privateKey != null) {
+            privateKey.adjustInContext(context, connectionEnd);
+        }
         context.setSelectedGroup(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection

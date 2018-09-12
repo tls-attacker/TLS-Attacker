@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
@@ -99,7 +100,14 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         if (message.getCertificateKeyPair() != null) {
             LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+        } else if (cert != null) {
+            LOGGER.debug("No CertificatekeyPair found, creating new one");
+            CertificateKeyPair pair = new CertificateKeyPair(cert);
+            message.setCertificateKeyPair(pair);
+            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+
         }
+
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
         }
