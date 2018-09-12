@@ -209,40 +209,6 @@ public class CertificateKeyPair implements Serializable {
         return null;
     }
 
-    private GOSTCurve mapCurve(String algorithm) {
-        switch (algorithm) {
-            case "1.2.643.2.2.35.1":
-                return GOSTCurve.GostR3410_2001_CryptoPro_A;
-            case "1.2.643.2.2.35.2":
-                return GOSTCurve.GostR3410_2001_CryptoPro_B;
-            case "1.2.643.2.2.35.3":
-                return GOSTCurve.GostR3410_2001_CryptoPro_C;
-            case "1.2.643.2.2.36.0":
-                return GOSTCurve.GostR3410_2001_CryptoPro_XchA;
-            case "1.2.643.2.2.36.1":
-                return GOSTCurve.GostR3410_2001_CryptoPro_XchB;
-            case "1.2.643.7.1.1.1.2":
-                return GOSTCurve.Tc26_Gost_3410_12_256_paramSetA;
-            case "1.2.643.7.1.2.1.2.1":
-                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
-            case "1.2.643.7.1.2.1.2.2":
-                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetB;
-            case "1.2.643.7.1.1.1.5":
-                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetC;
-            case "1.2.840.113549.1.1.1": // RSA
-            case "1.2.840.10045.2.1": // EC
-            case "1.2.840.10040.4.1": // DSA
-            case "1.2.840.113549.1.3.1": // DH
-                return null;
-            case "1.2.643.7.1.1.1.1": // GOST 2012 genereal
-
-                break;
-            case "1.2.643.2.2.19": // GOST 2001 general
-                break;
-        }
-        return null;
-    }
-
     private CertificateKeyType getSignatureType(Certificate cert) {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
