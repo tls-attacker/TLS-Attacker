@@ -17,9 +17,13 @@ import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger privateKey;
     private final BigInteger modulus;
@@ -64,9 +68,10 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DH private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDhPrivateKey(privateKey);
@@ -77,13 +82,14 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDhPrivateKey(privateKey);
@@ -94,6 +100,7 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

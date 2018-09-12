@@ -18,9 +18,13 @@ import java.security.spec.DSAParameterSpec;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger privateKey;
 
@@ -69,9 +73,10 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DSA private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDsaPrivateKey(privateKey);
@@ -88,13 +93,14 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDsaPrivateKey(privateKey);
@@ -111,6 +117,7 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

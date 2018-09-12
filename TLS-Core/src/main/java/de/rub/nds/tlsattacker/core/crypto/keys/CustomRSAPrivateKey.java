@@ -16,9 +16,13 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger modulus;
     private final BigInteger privateExponent;
@@ -60,9 +64,10 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting RSA private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientRSAPrivateKey(privateExponent);
@@ -75,13 +80,14 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientRSAPrivateKey(privateExponent);
@@ -94,6 +100,7 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

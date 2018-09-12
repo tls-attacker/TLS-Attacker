@@ -24,9 +24,13 @@ import java.security.spec.InvalidParameterSpecException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger x;
 
@@ -48,9 +52,10 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting EC public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientEcPublicKey(new CustomECPoint(x, y));
@@ -63,6 +68,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
@@ -101,7 +107,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientEcPublicKey(new CustomECPoint(x, y));
@@ -114,6 +120,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
