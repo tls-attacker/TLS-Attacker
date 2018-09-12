@@ -66,24 +66,16 @@ public class CertificateKeyPair implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private final byte[] certificateBytes;
 
-    @XmlElements(value = {
-        @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey")
-        ,
-            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey")
-        ,
-            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey")
-        ,
-            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey")})
+    @XmlElements(value = { @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),
+            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
+            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
+            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey") })
     private final CustomPublicKey publicKey;
 
-    @XmlElements(value = {
-        @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey")
-        ,
-            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey")
-        ,
-            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey")
-        ,
-            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey")})
+    @XmlElements(value = { @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey"),
+            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
+            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
+            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey") })
     private final CustomPrivateKey privateKey;
 
     private final NamedGroup signatureGroup;
@@ -192,7 +184,7 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.643.7.1.2.1.2.2":
                 return GOSTCurve.Tc26_Gost_3410_12_512_paramSetB;
             case "1.2.643.7.1.1.1.5":
-                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetC;                
+                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetC;
         }
         return null;
     }
@@ -340,8 +332,7 @@ public class CertificateKeyPair implements Serializable {
             context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
                     signatureAlgorithm, context.getConfig().getPreferredHashAlgorithm()));
         }
-        if(context.getSelectedGroup().name().contains("GOST"))
-        {
+        if (context.getSelectedGroup().name().contains("GOST")) {
             System.out.println(context.getSelectedGroup());
         }
         context.setClientGost01Curve(gostCurve);

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import org.apache.logging.log4j.LogManager;
@@ -29,11 +30,12 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     public KeyShareEntry parse() {
         LOGGER.debug("Parsing KeyShareEntry");
         entry = new KeyShareEntry();
-        parseKeyShareType(entry);
+        parseKeyShareGroup(entry);
         if (getBytesLeft() > 0) {
             parseKeyShareLength(entry);
             parseKeyShare(entry);
         }
+        entry.setGroupConfig(NamedGroup.getNamedGroup(entry.getGroup().getValue()));
         return entry;
     }
 
@@ -44,9 +46,9 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * @param msg
      *            Message to write in
      */
-    private void parseKeyShareType(KeyShareEntry pair) {
-        pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
-        LOGGER.debug("KeyShareType: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
+    private void parseKeyShareGroup(KeyShareEntry pair) {
+        pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
+        LOGGER.debug("KeyShareGroup: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
     }
 
     /**

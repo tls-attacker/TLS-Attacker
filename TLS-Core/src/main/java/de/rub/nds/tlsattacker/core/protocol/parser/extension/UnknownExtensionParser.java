@@ -24,12 +24,15 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
     protected void parseExtensionData(UnknownExtensionMessage message) {
         if (getBytesLeft() == 0) {
             // No bytes left for extension data
-        } else if (getBytesLeft() < message.getExtensionLength().getValue()) {
-            message.setExtensionData(parseByteArrayField(getBytesLeft()));
-            LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
         } else {
-            message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
-            LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+            if (getBytesLeft() < message.getExtensionLength().getValue()) {
+                message.setExtensionData(parseByteArrayField(getBytesLeft()));
+                LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+            } else {
+                message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
+                LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+            }
+            message.setDataConfig(message.getExtensionData().getValue());
         }
     }
 
@@ -38,6 +41,8 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         if (hasExtensionData(message)) {
             parseExtensionData(message);
         }
+        message.setTypeConfig(message.getExtensionType().getValue());
+        message.setLengthConfig(message.getExtensionLength().getValue());
     }
 
     @Override

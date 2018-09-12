@@ -191,6 +191,20 @@ public class HKDFunction {
         return expand(hkdfAlgortihm, prk, info, outLen);
     }
 
+    static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, byte[] hexStringToByteArray, String tls13_derived,
+            byte[] hexStringToByteArray0) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
     private HKDFunction() {
     }
 }

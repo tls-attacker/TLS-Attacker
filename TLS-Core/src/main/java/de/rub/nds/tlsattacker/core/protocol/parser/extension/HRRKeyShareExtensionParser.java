@@ -41,7 +41,7 @@ public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExten
      *            Message to write in
      */
     private void parseSelectedGroup(HRRKeyShareExtensionMessage msg) {
-        msg.setSelectedGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
+        msg.setSelectedGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
         LOGGER.debug("SelectedGroup: " + ArrayConverter.bytesToHexString(msg.getSelectedGroup().getValue()));
     }
 }

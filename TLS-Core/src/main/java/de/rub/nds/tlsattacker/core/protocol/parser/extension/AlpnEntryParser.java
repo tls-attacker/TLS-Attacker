@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.parser.extension.alpn;
+package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
@@ -23,6 +23,7 @@ public class AlpnEntryParser extends Parser<AlpnEntry> {
         AlpnEntry entry = new AlpnEntry();
         entry.setAlpnEntryLength(parseIntField(ExtensionByteLength.ALPN_ENTRY_LENGTH));
         entry.setAlpnEntryBytes(parseByteArrayField(entry.getAlpnEntryLength().getValue()));
+        entry.setAlpnEntryConfig(entry.getAlpnEntryBytes().getValue());
         return entry;
     }
 

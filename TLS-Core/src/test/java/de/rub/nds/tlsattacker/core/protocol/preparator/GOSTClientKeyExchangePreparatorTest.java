@@ -52,6 +52,7 @@ public class GOSTClientKeyExchangePreparatorTest {
                 .getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         tlsContext.setServerGost12Curve(curve);
+        System.out.println("Curve:" +curve.name());
         ECPoint q = publicKey.getQ();
         CustomECPoint ecPoint = new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
 

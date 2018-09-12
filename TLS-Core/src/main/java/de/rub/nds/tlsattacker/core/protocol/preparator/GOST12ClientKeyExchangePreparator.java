@@ -63,22 +63,22 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
 
     @Override
     protected BigInteger getClientPrivateKey() {
-        return chooser.getClientGost12PrivateKey();
+        return chooser.getClientEcPrivateKey();
     }
 
     @Override
     protected CustomECPoint getClientPublicKey() {
-        return chooser.getClientGost12PublicKey();
+        return chooser.getClientEcPublicKey();
     }
 
     @Override
     protected BigInteger getServerPrivateKey() {
-        return chooser.getServerGost12PrivateKey();
+        return chooser.getServerEcPrivateKey();
     }
 
     @Override
     protected CustomECPoint getServerPublicKey() {
-        return chooser.getServerGost12PublicKey();
+        return chooser.getServerEcPublicKey();
     }
 
 }

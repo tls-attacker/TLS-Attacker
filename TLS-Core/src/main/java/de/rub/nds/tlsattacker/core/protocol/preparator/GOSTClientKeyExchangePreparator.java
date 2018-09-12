@@ -100,9 +100,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                 } else {
                     prepareEphemeralKey();
                 }
-
                 prepareKek(msg.getComputations().getPrivateKey().getValue(), generatePublicKey(getServerPublicKey()));
-
                 prepareEncryptionParams();
                 prepareCek();
                 prepareKeyBlob();
