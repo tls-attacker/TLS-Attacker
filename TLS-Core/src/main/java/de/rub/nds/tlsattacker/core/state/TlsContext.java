@@ -1037,44 +1037,12 @@ public class TlsContext {
         this.serverGost12Curve = serverGost12Curve;
     }
 
-    public CustomECPoint getServerGostEc12PublicKey() {
-        return serverGostEc12PublicKey;
-    }
-
-    public void setServerGostEc12PublicKey(CustomECPoint serverGostEc12PublicKey) {
-        this.serverGostEc12PublicKey = serverGostEc12PublicKey;
-    }
-
-    public BigInteger getServerGostEc12PrivateKey() {
-        return serverGostEc12PrivateKey;
-    }
-
-    public void setServerGostEc12PrivateKey(BigInteger serverGostEc12PrivateKey) {
-        this.serverGostEc12PrivateKey = serverGostEc12PrivateKey;
-    }
-
     public GOSTCurve getClientGost12Curve() {
         return clientGost12Curve;
     }
 
     public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
         this.clientGost12Curve = clientGost12Curve;
-    }
-
-    public CustomECPoint getClientGostEc12PublicKey() {
-        return clientGostEc12PublicKey;
-    }
-
-    public void setClientGostEc12PublicKey(CustomECPoint clientGostEc12PublicKey) {
-        this.clientGostEc12PublicKey = clientGostEc12PublicKey;
-    }
-
-    public BigInteger getClientGostEc12PrivateKey() {
-        return clientGostEc12PrivateKey;
-    }
-
-    public void setClientGostEc12PrivateKey(BigInteger clientGostEc12PrivateKey) {
-        this.clientGostEc12PrivateKey = clientGostEc12PrivateKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {

@@ -332,9 +332,6 @@ public class CertificateKeyPair implements Serializable {
             context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
                     signatureAlgorithm, context.getConfig().getPreferredHashAlgorithm()));
         }
-        if (context.getSelectedGroup().name().contains("GOST")) {
-            System.out.println(context.getSelectedGroup());
-        }
         context.setClientGost01Curve(gostCurve);
         context.setClientGost12Curve(gostCurve);
         context.setServerGost01Curve(gostCurve);

@@ -93,14 +93,14 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
             if (clientMode) {
                 preparePms();
-
                 if (chooser.getContext().getClientCertificate() != null && areParamSpecsEqual()) {
                     LOGGER.debug("Using private key belonging to the used client certificate.");
-                    msg.getComputations().setPrivateKey(getClientPrivateKey());
+                    msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
                 } else {
                     prepareEphemeralKey();
                 }
-                prepareKek(msg.getComputations().getPrivateKey().getValue(), generatePublicKey(getServerPublicKey()));
+                prepareKek(msg.getComputations().getPrivateKey().getValue(),
+                        generatePublicKey(chooser.getServerEcPublicKey()));
                 prepareEncryptionParams();
                 prepareCek();
                 prepareKeyBlob();
@@ -120,10 +120,10 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                 if (ephemeralKey != null) {
                     publicKey = new JcaPEMKeyConverter().getPublicKey(ephemeralKey);
                 } else {
-                    publicKey = generatePublicKey(getClientPublicKey());
+                    publicKey = generatePublicKey(chooser.getClientEcPublicKey());
                 }
 
-                prepareKek(getServerPrivateKey(), publicKey);
+                prepareKek(chooser.getServerEcPrivateKey(), publicKey);
 
                 byte[] wrapped = ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(), keyBlob
                         .getSessionEncryptedKey().getMacKey());
@@ -185,8 +185,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     private void prepareEphemeralKey() throws GeneralSecurityException {
         if (areParamSpecsEqual()) {
             LOGGER.debug("Using key from context.");
-            msg.getComputations().setPrivateKey(getClientPrivateKey());
-            msg.getComputations().setClientPublicKey(getClientPublicKey());
+            msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+            msg.getComputations().setClientPublicKey(chooser.getClientEcPublicKey());
         } else {
             KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(getKeyPairGeneratorAlgorithm());
             ECNamedCurveSpec params = GOSTUtils.getEcParameterSpec(getServerCurve());
@@ -294,13 +294,4 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     protected abstract PrivateKey generatePrivateKey(BigInteger s);
 
     protected abstract PublicKey generatePublicKey(CustomECPoint point);
-
-    protected abstract BigInteger getClientPrivateKey();
-
-    protected abstract CustomECPoint getClientPublicKey();
-
-    protected abstract BigInteger getServerPrivateKey();
-
-    protected abstract CustomECPoint getServerPublicKey();
-
 }

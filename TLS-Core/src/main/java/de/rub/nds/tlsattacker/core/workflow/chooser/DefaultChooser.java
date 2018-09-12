@@ -562,47 +562,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public CustomECPoint getServerGost01PublicKey() {
-        if (context.getServerGostEc01PublicKey() != null) {
-            return context.getServerGostEc01PublicKey();
-        } else {
-            return config.getDefaultServerGost01PublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getServerGost01PrivateKey() {
-        if (context.getServerGostEc01PrivateKey() != null) {
-            return context.getServerGostEc01PrivateKey();
-        } else {
-            return config.getDefaultServerGost01PrivateKey();
-        }
-    }
-
-    @Override
     public GOSTCurve getClientGost01Curve() {
         if (context.getClientGost01Curve() != null) {
             return context.getClientGost01Curve();
         } else {
             return config.getDefaultGost01Curve();
-        }
-    }
-
-    @Override
-    public CustomECPoint getClientGost01PublicKey() {
-        if (context.getClientGostEc01PublicKey() != null) {
-            return context.getClientGostEc01PublicKey();
-        } else {
-            return config.getDefaultClientGost01PublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getClientGost01PrivateKey() {
-        if (context.getClientGostEc01PrivateKey() != null) {
-            return context.getClientGostEc01PrivateKey();
-        } else {
-            return config.getDefaultClientGost01PrivateKey();
         }
     }
 
@@ -616,47 +580,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public CustomECPoint getServerGost12PublicKey() {
-        if (context.getServerGostEc12PublicKey() != null) {
-            return context.getServerGostEc12PublicKey();
-        } else {
-            return config.getDefaultServerGost12EcPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getServerGost12PrivateKey() {
-        if (context.getServerGostEc12PrivateKey() != null) {
-            return context.getServerGostEc12PrivateKey();
-        } else {
-            return config.getDefaultServerGostEc12PrivateKey();
-        }
-    }
-
-    @Override
     public GOSTCurve getClientGost12Curve() {
         if (context.getClientGost12Curve() != null) {
             return context.getClientGost12Curve();
         } else {
             return config.getDefaultGost12Curve();
-        }
-    }
-
-    @Override
-    public CustomECPoint getClientGost12PublicKey() {
-        if (context.getClientGostEc12PublicKey() != null) {
-            return context.getClientGostEc12PublicKey();
-        } else {
-            return config.getDefaultClientGostEc12PublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getClientGost12PrivateKey() {
-        if (context.getClientGostEc12PrivateKey() != null) {
-            return context.getClientGostEc12PrivateKey();
-        } else {
-            return config.getDefaultClientGostEc12PrivateKey();
         }
     }
 

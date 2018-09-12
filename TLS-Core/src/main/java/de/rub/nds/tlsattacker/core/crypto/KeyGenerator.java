@@ -51,17 +51,17 @@ public class KeyGenerator {
 
     public static BCECGOST3410PrivateKey getGost01PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate01PrivateKey(chooser.getClientGost01Curve(), chooser.getClientGost01PrivateKey());
+            return GOSTUtils.generate01PrivateKey(chooser.getClientGost01Curve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate01PrivateKey(chooser.getServerGost01Curve(), chooser.getServerGost01PrivateKey());
+            return GOSTUtils.generate01PrivateKey(chooser.getServerGost01Curve(), chooser.getServerEcPrivateKey());
         }
     }
 
     public static BCECGOST3410_2012PrivateKey getGost12PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate12PrivateKey(chooser.getClientGost12Curve(), chooser.getClientGost12PrivateKey());
+            return GOSTUtils.generate12PrivateKey(chooser.getClientGost12Curve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate12PrivateKey(chooser.getServerGost12Curve(), chooser.getServerGost12PrivateKey());
+            return GOSTUtils.generate12PrivateKey(chooser.getServerGost12Curve(), chooser.getServerEcPrivateKey());
         }
     }
 
