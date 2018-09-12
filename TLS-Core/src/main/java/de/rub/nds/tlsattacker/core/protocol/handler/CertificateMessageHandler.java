@@ -86,17 +86,6 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
         }
-        if (cert != null) {
-            if (cert.getLength() == 0) {
-                LOGGER.warn("Received empty Certificate Message");
-            } else {
-                CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils
-                        .parsePublicKey(cert));
-                customPublicKey.adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
-            }
-        } else {
-            LOGGER.warn("Not adjusting Certificate public key - unparseable Certificate");
-        }
         if (message.getCertificateKeyPair() != null) {
             LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
@@ -106,6 +95,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             message.setCertificateKeyPair(pair);
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
 
+        } else {
+            LOGGER.debug("Ceritificate not parseable - no adjustments");
         }
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
