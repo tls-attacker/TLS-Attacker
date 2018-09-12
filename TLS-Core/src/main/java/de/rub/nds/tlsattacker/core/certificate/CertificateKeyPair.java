@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -44,6 +45,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
@@ -66,16 +70,24 @@ public class CertificateKeyPair implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private final byte[] certificateBytes;
 
-    @XmlElements(value = { @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),
-            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
-            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
-            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey") })
+    @XmlElements(value = {
+        @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey")
+        ,
+            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey")
+        ,
+            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey")
+        ,
+            @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey")})
     private final CustomPublicKey publicKey;
 
-    @XmlElements(value = { @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey"),
-            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
-            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
-            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey") })
+    @XmlElements(value = {
+        @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey")
+        ,
+            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey")
+        ,
+            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey")
+        ,
+            @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey")})
     private final CustomPrivateKey privateKey;
 
     private final NamedGroup signatureGroup;
@@ -117,7 +129,11 @@ public class CertificateKeyPair implements Serializable {
         this.publicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils.parsePublicKey(cert));
         this.publicKeyGroup = getPublicNamedGroup(cert);
         this.signatureGroup = getSignatureNamedGroup(cert);
-        gostCurve = getGostCurve(cert);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(cert);
+        } else {
+            gostCurve = null;
+        }
     }
 
     public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
@@ -130,7 +146,11 @@ public class CertificateKeyPair implements Serializable {
         certificateBytes = certificate.getCertificateAt(0).getEncoded();
         signatureGroup = getSignatureNamedGroup(certificate);
         publicKeyGroup = getPublicNamedGroup(certificate);
-        gostCurve = getGostCurve(certificate);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(certificate);
+        } else {
+            gostCurve = null;
+        }
     }
 
     private CertificateKeyType getPublicKeyType(Certificate cert) {
@@ -165,8 +185,8 @@ public class CertificateKeyPair implements Serializable {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
-        AlgorithmIdentifier algorithm = cert.getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm();
-        switch (algorithm.getAlgorithm().getId()) {
+        switch (((ASN1ObjectIdentifier) ((ASN1Sequence) cert.getCertificateAt(0).getSubjectPublicKeyInfo()
+                .getAlgorithm().getParameters()).getObjectAt(0)).getId()) {
             case "1.2.643.2.2.35.1":
                 return GOSTCurve.GostR3410_2001_CryptoPro_A;
             case "1.2.643.2.2.35.2":
@@ -185,6 +205,40 @@ public class CertificateKeyPair implements Serializable {
                 return GOSTCurve.Tc26_Gost_3410_12_512_paramSetB;
             case "1.2.643.7.1.1.1.5":
                 return GOSTCurve.Tc26_Gost_3410_12_512_paramSetC;
+        }
+        return null;
+    }
+
+    private GOSTCurve mapCurve(String algorithm) {
+        switch (algorithm) {
+            case "1.2.643.2.2.35.1":
+                return GOSTCurve.GostR3410_2001_CryptoPro_A;
+            case "1.2.643.2.2.35.2":
+                return GOSTCurve.GostR3410_2001_CryptoPro_B;
+            case "1.2.643.2.2.35.3":
+                return GOSTCurve.GostR3410_2001_CryptoPro_C;
+            case "1.2.643.2.2.36.0":
+                return GOSTCurve.GostR3410_2001_CryptoPro_XchA;
+            case "1.2.643.2.2.36.1":
+                return GOSTCurve.GostR3410_2001_CryptoPro_XchB;
+            case "1.2.643.7.1.1.1.2":
+                return GOSTCurve.Tc26_Gost_3410_12_256_paramSetA;
+            case "1.2.643.7.1.2.1.2.1":
+                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
+            case "1.2.643.7.1.2.1.2.2":
+                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetB;
+            case "1.2.643.7.1.1.1.5":
+                return GOSTCurve.Tc26_Gost_3410_12_512_paramSetC;
+            case "1.2.840.113549.1.1.1": // RSA
+            case "1.2.840.10045.2.1": // EC
+            case "1.2.840.10040.4.1": // DSA
+            case "1.2.840.113549.1.3.1": // DH
+                return null;
+            case "1.2.643.7.1.1.1.1": // GOST 2012 genereal
+
+                break;
+            case "1.2.643.2.2.19": // GOST 2001 general
+                break;
         }
         return null;
     }
@@ -318,6 +372,7 @@ public class CertificateKeyPair implements Serializable {
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;
+            HashAlgorithm hashAlgorithm = context.getConfig().getPreferredHashAlgorithm();
             switch (certPublicKeyType) {
                 case ECDSA:
                     signatureAlgorithm = SignatureAlgorithm.ECDSA;
@@ -328,15 +383,39 @@ public class CertificateKeyPair implements Serializable {
                 case DSS:
                     signatureAlgorithm = SignatureAlgorithm.DSA;
                     break;
+                case GOST01:
+                    signatureAlgorithm = SignatureAlgorithm.GOSTR34102001;
+                    hashAlgorithm = HashAlgorithm.GOSTR3411;
+                    if (connectionEnd == ConnectionEndType.CLIENT) {
+                        context.setClientGost01Curve(gostCurve);
+                        LOGGER.debug("Adjusting client gost 01 curve:" + gostCurve);
+                    } else {
+                        context.setServerGost01Curve(gostCurve);
+                        LOGGER.debug("Adjusting server gost 01 curve:" + gostCurve);
+                    }
+                    break;
+                case GOST12:
+                    if (gostCurve == GOSTCurve.Tc26_Gost_3410_12_256_paramSetA) {
+                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
+                        hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
+                    } else {
+                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_512;
+                        hashAlgorithm = HashAlgorithm.GOSTR34112012_512;
+                    }
+                    if (connectionEnd == ConnectionEndType.CLIENT) {
+                        context.setClientGost12Curve(gostCurve);
+                        LOGGER.debug("Adjusting client gost 12 curve:" + gostCurve);
+                    } else {
+                        context.setServerGost12Curve(gostCurve);
+                        LOGGER.debug("Adjusting server gost 12 curve:" + gostCurve);
+                    }
+                    break;
             }
-            context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
-                    signatureAlgorithm, context.getConfig().getPreferredHashAlgorithm()));
+            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
+                    signatureAlgorithm, hashAlgorithm);
+            LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
+            context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
         }
-        context.setClientGost01Curve(gostCurve);
-        context.setClientGost12Curve(gostCurve);
-        context.setServerGost01Curve(gostCurve);
-        context.setServerGost12Curve(gostCurve);
-
     }
 
     @Override

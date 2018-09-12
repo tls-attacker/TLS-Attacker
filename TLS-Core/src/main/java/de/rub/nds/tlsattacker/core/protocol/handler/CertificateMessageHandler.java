@@ -97,6 +97,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.warn("Not adjusting Certificate public key - unparseable Certificate");
         }
         if (message.getCertificateKeyPair() != null) {
+            LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
@@ -112,8 +113,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         } catch (Exception E) {
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
-            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false), E);
+            LOGGER.warn(
+                    "Could not parse Certificate bytes into Certificate object:"
+                            + ArrayConverter.bytesToHexString(bytesToParse, false), E);
             LOGGER.debug(E);
             return null;
         }
