@@ -102,10 +102,10 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
         config.setEarlyStop(true);
+        config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);

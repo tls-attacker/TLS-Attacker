@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
+import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -55,8 +56,17 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private EqualityError errorType;
 
+    private final ParallelExecutor executor;
+
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
+        executor = new ParallelExecutor(1, 3);
+    }
+
+    public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig,
+            ParallelExecutor executor) {
+        super(bleichenbacherConfig, baseConfig);
+        this.executor = executor;
     }
 
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
@@ -163,10 +173,23 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
             List<Pkcs1Vector> pkcs1Vectors) {
         List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
+        List<State> stateList = new LinkedList<>();
+        List<StateVectorPair> stateVectorPairList = new LinkedList<StateVectorPair>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
-            ResponseFingerprint fingerprint = getFingerprint(bbWorkflowType, pkcs1Vector.getEncryptedValue());
-            if (fingerprint != null) {
-                bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, pkcs1Vector));
+            WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
+                    pkcs1Vector.getEncryptedValue());
+            State state = new State(tlsConfig, trace);
+            stateList.add(state);
+            stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
+        }
+        executor.bulkExecute(stateList);
+        for (StateVectorPair stateVectorPair : stateVectorPairList) {
+            if (stateVectorPair.getState().getWorkflowTrace().allActionsExecuted()) {
+                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
+                clearConnections(stateVectorPair.getState());
+                bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
+            } else {
+                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
         }
         return bleichenbacherVectorMap;

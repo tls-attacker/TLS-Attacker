@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -57,27 +58,24 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private ProtocolVersion testedVersion;
 
+    private final ParallelExecutor executor;
+
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
         tlsConfig = getTlsConfig();
+        executor = new ParallelExecutor(1, 3);
+    }
+
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig,
+            ParallelExecutor executor) {
+        super(paddingOracleConfig, baseConfig);
+        tlsConfig = getTlsConfig();
+        this.executor = executor;
     }
 
     @Override
     public void executeAttack() {
         throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public State executeTlsFlow(WorkflowTrace trace) {
-        tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
-        tlsConfig.setEarlyStop(true);
-        tlsConfig.setStopActionsAfterFatal(true);
-        tlsConfig.setQuickReceive(true);
-        tlsConfig.setWorkflowExecutorShouldClose(false);
-        State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
-        workflowExecutor.executeWorkflow();
-        return state;
     }
 
     @Override
@@ -124,6 +122,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 }
             }
         }
+
         return error != EqualityError.NONE;
     }
 
@@ -150,26 +149,14 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
         boolean first = true;
         HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
+        List<State> stateList = new LinkedList<>();
         for (WorkflowTrace trace : traceList) {
-            State state;
-            try {
-                state = executeTlsFlow(trace);
-                testedSuite = state.getTlsContext().getSelectedCipherSuite();
-                testedVersion = state.getTlsContext().getSelectedProtocolVersion();
-            } catch (WorkflowExecutionException | ConfigurationException E) {
-                LOGGER.warn(E);
-                LOGGER.warn("TLS-Attacker failed execute a Handshake. Reexecuting");
-                try {
-                    trace.reset();
-                    state = executeTlsFlow(trace);
-                } catch (WorkflowExecutionException | ConfigurationException Ex) {
-                    LOGGER.warn(Ex);
-                    LOGGER.warn("Could not execute Handshake with the Server");
-                    throw new AttackFailedException(
-                            "Could not execute Handshake with the Server. Maybe it does not support CBC. You will probably need to debug this");
-                }
-
-            }
+            stateList.add(new State(tlsConfig, trace));
+        }
+        executor.bulkExecute(stateList);
+        for (State state : stateList) {
+            testedSuite = state.getTlsContext().getSelectedCipherSuite();
+            testedVersion = state.getTlsContext().getSelectedProtocolVersion();
             if (state.getWorkflowTrace().allActionsExecuted()) {
                 ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
                 clearConnections(state);

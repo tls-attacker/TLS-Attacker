@@ -96,6 +96,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);
+        config.setWorkflowExecutorShouldClose(false);
+
         return config;
     }
 
