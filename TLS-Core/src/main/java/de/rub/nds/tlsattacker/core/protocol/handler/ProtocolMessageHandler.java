@@ -105,13 +105,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
-        if (parsedMessage instanceof HandshakeMessage) {
-            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-            }
-        }
         try {
             prepareAfterParse(parsedMessage);
+            if (parsedMessage instanceof HandshakeMessage) {
+                if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                    tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                }
+            }
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
