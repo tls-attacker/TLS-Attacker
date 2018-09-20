@@ -22,14 +22,10 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
@@ -59,6 +55,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private ProtocolVersion testedVersion;
 
     private final ParallelExecutor executor;
+
+    private boolean shakyScans = false;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
@@ -90,22 +88,24 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         try {
             responseMap = createResponseMap();
             error = getEqualityError(responseMap);
-            if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
-                CONSOLE.info("Found a candidate for a Socket difference performing rescan");
+            if (error != EqualityError.NONE) {
+                CONSOLE.info("Found a side channel. Rescanning to confirm.");
                 HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
                 EqualityError errorTwo = getEqualityError(responseMapTwo);
                 if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
                     HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
                     EqualityError errorThree = getEqualityError(responseMapThree);
                     if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
-                        CONSOLE.info("Found an equality Error in a SocketState, performed to rescans and it still presisted");
+                        CONSOLE.info("Found an equality Error.");
                         CONSOLE.info("The Server is very likely vulnerabble");
                     } else {
                         CONSOLE.info("Rescan revealed a false positive");
+                        shakyScans = true;
                         return false;
                     }
                 } else {
                     CONSOLE.info("Rescan revealed a false positive");
+                    shakyScans = true;
                     return false;
                 }
             }
@@ -218,5 +218,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public ProtocolVersion getTestedVersion() {
         return testedVersion;
+    }
+
+    public boolean isShakyScans() {
+        return shakyScans;
     }
 }

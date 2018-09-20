@@ -56,6 +56,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private EqualityError errorType;
 
+    private boolean shakyScans = false;
+
     private final ParallelExecutor executor;
 
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
@@ -102,9 +104,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             if (errorType != EqualityError.NONE) {
                 vulnerableType = bbWorkflowType;
                 return true;
+
             }
         }
-
         return false;
     }
 
@@ -116,8 +118,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         printBleichenbacherVectormap(bleichenbacherVectorMap);
         EqualityError error = getEqualityError(bleichenbacherVectorMap);
-        if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
-            LOGGER.debug("Found a Socket related side channel. Rescanning to confirm.");
+        if (error != EqualityError.NONE) {
+            CONSOLE.info("Found a side channel. Rescanning to confirm.");
             // Socket Equality Errors can be caused by problems on on the
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
@@ -135,10 +137,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                         thirdBleichenbacherVectorMap, error3);
                 if (!mapTwo.looksIdentical(mapThree)) {
                     LOGGER.debug("The third scan prove this vulnerability to be non existent");
+                    shakyScans = true;
                     error = EqualityError.NONE;
                 }
             } else {
                 LOGGER.debug("The second scan prove this vulnerability to be non existent");
+                shakyScans = true;
                 error = EqualityError.NONE;
             }
         }
@@ -269,4 +273,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return errorType;
     }
 
+    public boolean isShakyScans() {
+        return shakyScans;
+    }
 }
