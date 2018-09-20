@@ -186,17 +186,31 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        executor.bulkExecute(stateList);
-        for (StateVectorPair stateVectorPair : stateVectorPairList) {
-            if (stateVectorPair.getState().getWorkflowTrace().allActionsExecuted()) {
-                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
-                bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
-            } else {
-                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+        if (executor.getSize() > 1) {
+            executor.bulkExecute(stateList);
+            for (StateVectorPair stateVectorPair : stateVectorPairList) {
+                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
             }
-            clearConnections(stateVectorPair.getState());
+        } else {
+            for (StateVectorPair stateVectorPair : stateVectorPairList) {
+                executor.bulkExecute(stateVectorPair.getState());
+                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
+            }
         }
+
         return bleichenbacherVectorMap;
+    }
+
+    private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
+            List<VectorFingerprintPair> bleichenbacherVectorMap) {
+        if (stateVectorPair.getState().getWorkflowTrace().allActionsExecuted()) {
+            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
+            bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
+        } else {
+            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+        }
+        clearConnections(stateVectorPair.getState());
+
     }
 
     private ResponseFingerprint getFingerprint(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
