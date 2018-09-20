@@ -15,8 +15,10 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -47,7 +49,11 @@ public class CertificateFetcher {
                 WorkflowExecutorType.DEFAULT, state);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException E) {
+
+            if (!state.getTlsContext().getTransportHandler().isClosed()) {
+                state.getTlsContext().getTransportHandler().closeConnection();
+            }
+        } catch (IOException | WorkflowExecutionException E) {
             LOGGER.warn("Could not fetch ServerCertificate");
             LOGGER.debug(E);
         }
