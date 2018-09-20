@@ -17,7 +17,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,11 +30,14 @@ public class ParallelExecutor {
 
     private final ExecutorService executorService;
 
+    private final int size;
+
     private final int reexecutions;
 
     public ParallelExecutor(int size, int reexecutions) {
         executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>());
         this.reexecutions = reexecutions;
+        this.size = size;
         if (reexecutions < 0) {
             throw new IllegalArgumentException("Reexecutions is below zero");
         }
@@ -59,6 +61,10 @@ public class ParallelExecutor {
             }
         }
         return;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     private class StateThreadExecutor implements Runnable {
