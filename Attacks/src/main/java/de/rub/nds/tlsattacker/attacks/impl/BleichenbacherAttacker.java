@@ -190,11 +190,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (StateVectorPair stateVectorPair : stateVectorPairList) {
             if (stateVectorPair.getState().getWorkflowTrace().allActionsExecuted()) {
                 ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
-                clearConnections(stateVectorPair.getState());
                 bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
             } else {
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
+            clearConnections(stateVectorPair.getState());
         }
         return bleichenbacherVectorMap;
     }
@@ -206,6 +206,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             clearConnections(state);
             return fingerprint;
         } else {
+            clearConnections(state);
             LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
@@ -255,10 +256,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     public BleichenbacherWorkflowType getVulnerableType() {
         return vulnerableType;
-    }
-
-    private ResponseFingerprint extractInvalidFingerprint() {
-        return null;
     }
 
     private void clearConnections(State state) {
