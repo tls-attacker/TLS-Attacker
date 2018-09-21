@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -61,6 +63,10 @@ public class ParallelExecutor {
             }
         }
         return;
+    }
+
+    public void bulkExecute(State... states) {
+        this.bulkExecute(new ArrayList<>(Arrays.asList(states)));
     }
 
     public int getSize() {
