@@ -3,7 +3,7 @@
 Simple MiTM forwarding proxy, forwards only raw records without parsing.
 
 Example with annotated log:
-openssl s_server -www -accept 4488 -cipher AES128-SHA
+openssl s_server -www -accept 4444 -cipher AES128-SHA
 java -jar apps/TLS-Mitm.jar -workflow_input resources/examples/simple_record_forwarding_proxy.xml
 firefox https://localhost:2222
 
@@ -27,45 +27,45 @@ firefox https://localhost:2222
 01:12:23.827 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 1 records to client2mitm
 -->
 <workflowTrace>
-    <OutboundConnection>
-        <alias>mitm2server</alias>
-        <port>4488</port>
-        <hostname>localhost</hostname>
-        <timeout>100</timeout>
-    </OutboundConnection>
-    <InboundConnection>
-        <alias>client2mitm</alias>
-        <port>2222</port>
-        <timeout>100</timeout>
-    </InboundConnection>
+  <InboundConnection>
+      <alias>client2mitm</alias>
+      <port>2222</port>
+      <timeout>100</timeout>
+  </InboundConnection>
+  <OutboundConnection>
+      <alias>mitm2server</alias>
+      <port>4444</port>
+      <hostname>localhost</hostname>
+      <timeout>100</timeout>
+  </OutboundConnection>    
 <!-- CH-->
 <ForwardRecords>
-  <receiveFromAlias>client2mitm</receiveFromAlias>
-  <forwardToAlias>mitm2server</forwardToAlias>
+  <from>client2mitm</from>
+  <to>mitm2server</to>
 </ForwardRecords>
 <!-- SH, Cert, SHD-->
 <ForwardRecords>
-  <receiveFromAlias>mitm2server</receiveFromAlias>
-  <forwardToAlias>client2mitm</forwardToAlias>
+  <from>mitm2server</from>
+  <to>client2mitm</to>
 </ForwardRecords>
 <!-- CKE, CCS, Fin -->
 <ForwardRecords>
-  <receiveFromAlias>client2mitm</receiveFromAlias>
-  <forwardToAlias>mitm2server</forwardToAlias>
+  <from>client2mitm</from>
+  <to>mitm2server</to>
 </ForwardRecords>
 <!-- CCS, Fin -->
 <ForwardRecords>
-  <receiveFromAlias>mitm2server</receiveFromAlias>
-  <forwardToAlias>client2mitm</forwardToAlias>
+  <from>mitm2server</from>
+  <to>client2mitm</to>
 </ForwardRecords>
 <!-- App -->
 <ForwardRecords>
-  <receiveFromAlias>client2mitm</receiveFromAlias>
-  <forwardToAlias>mitm2server</forwardToAlias>
+  <from>client2mitm</from>
+  <to>mitm2server</to>
 </ForwardRecords>
 <!-- App -->
 <ForwardRecords>
-  <receiveFromAlias>mitm2server</receiveFromAlias>
-  <forwardToAlias>client2mitm</forwardToAlias>
+  <from>mitm2server</from>
+  <to>client2mitm</to>
 </ForwardRecords>
 </workflowTrace>

@@ -12,6 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract Serializer for HandshakeMessages
@@ -20,6 +22,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
  *            Type of the HandshakeMessages to serialize
  */
 public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The message that should be serialized
@@ -96,7 +100,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
 
     /**
      * Checks if the message has an ExtensionsLength field
-     * 
+     *
      * @return True if the message has an ExtensionLength field
      */
     protected boolean hasExtensionLengthField() {
@@ -113,7 +117,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
 
     /**
      * Checks if the message has Extensions
-     * 
+     *
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions() {

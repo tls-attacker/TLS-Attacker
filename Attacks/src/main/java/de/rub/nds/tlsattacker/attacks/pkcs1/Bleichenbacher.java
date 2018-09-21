@@ -13,11 +13,15 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Bleichenbacher algorithm.
  */
 public class Bleichenbacher extends Pkcs1Attack {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected BigInteger s0;
     protected BigInteger si;
@@ -40,7 +44,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         int i = 0;
         boolean solutionFound = false;
 
-        LOGGER.debug("Step 1: Blinding");
+        LOGGER.info("Step 1: Blinding");
         if (this.msgIsPKCS) {
             LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
             LOGGER.info("Testing the validity of the original message");

@@ -28,6 +28,10 @@ public class AlgorithmResolverTest {
     public void testGetPRFAlgorithm() {
         // Some protocol versions should always return tls_legacy
         for (CipherSuite suite : CipherSuite.values()) {
+            if (suite.name().contains("GOST")) {
+                continue;
+            }
+
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS11, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
@@ -45,27 +49,30 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
-
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL2() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetDigestUnsupportedProtocolVersionSSL2() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetDigestUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     /**
@@ -74,6 +81,10 @@ public class AlgorithmResolverTest {
     @Test
     public void testGetDigestAlgorithm() {
         for (CipherSuite suite : CipherSuite.values()) {
+            if (suite.name().contains("GOST")) {
+                continue;
+            }
+
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS10, suite) == DigestAlgorithm.LEGACY);
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS11, suite) == DigestAlgorithm.LEGACY);
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS10, suite) == DigestAlgorithm.LEGACY);
@@ -92,7 +103,10 @@ public class AlgorithmResolverTest {
                 CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
-
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR34112012_256);
     }
 
     /**
@@ -118,14 +132,14 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.ECDH_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_anon_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == KeyExchangeAlgorithm.GOSTR341001);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == KeyExchangeAlgorithm.VKO_GOST01);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5) == KeyExchangeAlgorithm.KRB5);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_KRB5_WITH_DES_CBC_SHA) == KeyExchangeAlgorithm.KRB5);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_NULL_WITH_NULL_NULL) == KeyExchangeAlgorithm.NULL);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_PSK_DHE_WITH_AES_128_CCM_8) == KeyExchangeAlgorithm.DHE_PSK);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_PSK_WITH_AES_128_CCM) == KeyExchangeAlgorithm.PSK);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5) == KeyExchangeAlgorithm.RSA);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.RSA_PSK);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.PSK_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256) == KeyExchangeAlgorithm.RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA_DSS);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA_RSA);
@@ -138,17 +152,17 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256) == null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeUnknown() {
-        AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeReno() {
         AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeFallback() {
         AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -158,11 +172,11 @@ public class AlgorithmResolverTest {
         // Checks that we can retrieve all ciphersuites key exchange algorithms
         // and
         // that none throws an unsupported operation exception
-        // Only IllegalArgmumentExceptions are allowed here
+        // Only UnsupportedOperationException are allowed here
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getKeyExchangeAlgorithm(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
@@ -202,7 +216,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_128_GCM_SHA256) == CipherAlgorithm.ARIA_128_GCM);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherAlgorithm.ARIA_256_CBC);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherAlgorithm.ARIA_256_GCM);
-        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherAlgorithm.GOST_28147);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherAlgorithm.GOST_28147_CNT);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
     }
 
@@ -212,22 +226,22 @@ public class AlgorithmResolverTest {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipher(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherUnknown() {
-        AlgorithmResolver.getCipher(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherReno() {
         AlgorithmResolver.getCipher(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherFallback() {
         AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -239,22 +253,22 @@ public class AlgorithmResolverTest {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipherType(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeUnknown() {
-        AlgorithmResolver.getCipherType(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getCipherType(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeReno() {
         AlgorithmResolver.getCipherType(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeFallback() {
         AlgorithmResolver.getCipherType(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -287,7 +301,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_128_GCM_SHA256) == CipherType.AEAD);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherType.BLOCK);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherType.AEAD);
-        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.BLOCK); // ?
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.STREAM);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.STREAM);
     }
 
@@ -296,7 +310,12 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetMacAlgorithm() {
-
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT), MacAlgorithm.IMIT_GOST28147);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
     }
 
     // Test get Mac algorithm for all ciphersuites
@@ -306,23 +325,23 @@ public class AlgorithmResolverTest {
             try {
                 AlgorithmResolver.getMacAlgorithm(ProtocolVersion.SSL3, suite);
                 AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
 
             }
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACUnknown() {
-        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACReno() {
         AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACFallback() {
         AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
     }

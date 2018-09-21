@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ResetConnectionAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ResetConnectionAction() {
     }
@@ -30,9 +34,12 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Resetting SecureRenegotaiton");
+        tlsContext.setLastClientVerifyData(new byte[0]);
+        tlsContext.setLastServerVerifyData(new byte[0]);
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
-        LOGGER.info("Resettin ActiveKeySets");
+        LOGGER.info("Resetting ActiveKeySets");
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
         tlsContext.setReadSequenceNumber(0);

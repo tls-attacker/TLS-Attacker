@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SrtpExtensionHandler(TlsContext context) {
         super(context);

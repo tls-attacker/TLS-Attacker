@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * todo print configured records
  */
 public class SendAction extends MessageAction implements SendingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendAction() {
         super();
@@ -74,6 +78,7 @@ public class SendAction extends MessageAction implements SendingAction {
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
+            tlsContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
             setExecuted(false);
         }
@@ -81,13 +86,19 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Send Action:\n");
+        StringBuilder sb;
+        if (isExecuted()) {
+            sb = new StringBuilder("Send Action:\n");
+        } else {
+            sb = new StringBuilder("Send Action: (not executed)\n");
+        }
         sb.append("\tMessages:");
         if (messages != null) {
             for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
+            sb.append("\n");
         } else {
             sb.append("null (no messages set)");
         }
@@ -146,7 +157,7 @@ public class SendAction extends MessageAction implements SendingAction {
                     LOGGER.debug(ex);
                 }
                 if (mv != null) {
-                    if (mv.getModification() != null) {
+                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
                         mv.setOriginalValue(null);
                     } else {
                         try {

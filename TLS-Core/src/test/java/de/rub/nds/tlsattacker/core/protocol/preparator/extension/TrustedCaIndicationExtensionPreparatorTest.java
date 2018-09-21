@@ -39,7 +39,7 @@ public class TrustedCaIndicationExtensionPreparatorTest {
 
         preparator.prepare();
 
-        assertEquals(authoritiesLength, (int) msg.getTrustedAuthoritiesLength().getValue());
+        assertEquals(authoritiesLength, (long) msg.getTrustedAuthoritiesLength().getValue());
         assertTrustedAuthorityList(trustedAuthorities, msg.getTrustedAuthorities());
     }
 

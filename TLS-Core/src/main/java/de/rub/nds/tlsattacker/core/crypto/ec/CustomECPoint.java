@@ -14,6 +14,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class CustomECPoint implements Serializable {
+    public static byte[] toUnsignedByteArray(BigInteger value) {
+        byte[] signedValue = value.toByteArray();
+        if (signedValue[0] != 0x00) {
+            return value.toByteArray();
+        }
+        return Arrays.copyOfRange(signedValue, 1, signedValue.length);
+    }
+
+    public static BigInteger fromUnsignedByteArray(byte[] value) {
+        byte[] signedValue = new byte[value.length + 1];
+        System.arraycopy(value, 0, signedValue, 1, value.length);
+        return new BigInteger(signedValue);
+    }
 
     private BigInteger x;
 
@@ -79,23 +92,11 @@ public class CustomECPoint implements Serializable {
         if (!Objects.equals(this.x, other.x)) {
             return false;
         }
-        if (!Objects.equals(this.y, other.y)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.y, other.y);
     }
 
-    public static byte[] toUnsignedByteArray(BigInteger value) {
-        byte[] signedValue = value.toByteArray();
-        if (signedValue[0] != 0x00) {
-            return value.toByteArray();
-        }
-        return Arrays.copyOfRange(signedValue, 1, signedValue.length);
-    }
-
-    public static BigInteger fromUnsignedByteArray(byte[] value) {
-        byte[] signedValue = new byte[value.length + 1];
-        System.arraycopy(value, 0, signedValue, 1, value.length);
-        return new BigInteger(signedValue);
+    @Override
+    public String toString() {
+        return "CustomECPoint{" + "x=" + x + ", y=" + y + '}';
     }
 }

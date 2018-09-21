@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;

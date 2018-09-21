@@ -16,7 +16,7 @@ public class ICEPointReaderTest {
 
     /**
      * Test of readPoints method, of class ICEPointReader.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

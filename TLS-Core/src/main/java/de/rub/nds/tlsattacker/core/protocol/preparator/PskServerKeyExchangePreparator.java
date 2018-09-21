@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<PskServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PskServerKeyExchangeMessage msg;
 
@@ -28,12 +31,12 @@ public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         msg.setIdentityHint(chooser.getPSKIdentityHint());
         msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
         msg.prepareComputations();
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
-    private void prepareClientRandom(PskServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+    private void prepareClientServerRandom(PskServerKeyExchangeMessage msg) {
+        msg.getComputations().setClientServerRandom(chooser.getClientRandom());
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 }

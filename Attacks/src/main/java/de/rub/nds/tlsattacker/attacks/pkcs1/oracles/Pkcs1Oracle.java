@@ -24,7 +24,7 @@ public abstract class Pkcs1Oracle {
     /**
      * logger
      */
-    static Logger LOGGER = LogManager.getLogger(Pkcs1Oracle.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /*
      * number of queries issued to oracle

@@ -17,21 +17,20 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
-import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReceiveAction extends MessageAction implements ReceivingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -41,6 +40,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
@@ -51,11 +51,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
             @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+            @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
+            @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
@@ -200,16 +202,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (messages == null || expectedMessages.size() > messages.size())
-                return false;
-        } else {
-            if (messages.size() != expectedMessages.size())
-                return false;
+        if (messages == null) {
+            return false;
         }
-        for (int i = 0; i < expectedMessages.size(); i++)
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass()))
+
+        if (checkOnlyExpected != null && checkOnlyExpected) {
+            if (expectedMessages.size() > messages.size()) {
                 return false;
+            }
+        } else {
+            if (messages.size() != expectedMessages.size()) {
+                return false;
+            }
+        }
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -317,6 +328,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
+
         }
     }
 

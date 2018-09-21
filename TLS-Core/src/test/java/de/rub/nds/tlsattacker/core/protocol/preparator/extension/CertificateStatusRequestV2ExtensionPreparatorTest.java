@@ -48,7 +48,7 @@ public class CertificateStatusRequestV2ExtensionPreparatorTest {
         preparator.prepare();
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(list, msg.getStatusRequestList());
-        assertEquals(listLength, (int) msg.getStatusRequestListLength().getValue());
+        assertEquals(listLength, (long) msg.getStatusRequestListLength().getValue());
 
     }
 }

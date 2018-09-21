@@ -55,13 +55,9 @@ public class HKDFunction {
 
     public static final String RESUMPTION = "resumption";
 
-    public HKDFunction() {
-
-    }
-
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDFAlgorithm
      * @param salt
@@ -69,8 +65,9 @@ public class HKDFunction {
      * @param ikm
      *            The IKM
      * @return The HKDF-Extracted ouput
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] extract(HKDFAlgorithm hkdfAlgortihm, byte[] salt, byte[] ikm) {
+    public static byte[] extract(HKDFAlgorithm hkdfAlgortihm, byte[] salt, byte[] ikm) throws CryptoException {
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
             if (salt == null || salt.length == 0) {
@@ -88,7 +85,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algoirhtm
      * @param prk
@@ -98,8 +95,10 @@ public class HKDFunction {
      * @param outLen
      *            The output Length
      * @return The expanded bytes
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] expand(HKDFAlgorithm hkdfAlgortihm, byte[] prk, byte[] info, int outLen) {
+    public static byte[] expand(HKDFAlgorithm hkdfAlgortihm, byte[] prk, byte[] info, int outLen)
+            throws CryptoException {
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
             SecretKeySpec keySpec = new SecretKeySpec(prk, hkdfAlgortihm.getMacAlgorithm().getJavaName());
@@ -116,6 +115,9 @@ public class HKDFunction {
                     mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
                 }
                 ti = mac.doFinal();
+                if (ti.length == 0) {
+                    throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
+                }
                 stream.write(ti);
                 i++;
             }
@@ -140,7 +142,7 @@ public class HKDFunction {
 
     /**
      * Computes Derive-Secret output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algorithm
      * @param hashAlgorithm
@@ -152,9 +154,10 @@ public class HKDFunction {
      * @param toHash
      *            The data to hash
      * @return The derivedSecret
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] deriveSecret(HKDFAlgorithm hkdfAlgortihm, String hashAlgorithm, byte[] prk, String labelIn,
-            byte[] toHash) {
+            byte[] toHash) throws CryptoException {
         try {
             MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
             hashFunction.update(toHash);
@@ -168,7 +171,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algorithm
      * @param prk
@@ -180,10 +183,28 @@ public class HKDFunction {
      * @param outLen
      *            The output length
      * @return The expaneded Label bytes
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expandLabel(HKDFAlgorithm hkdfAlgortihm, byte[] prk, String labelIn, byte[] hashValue,
-            int outLen) {
+            int outLen) throws CryptoException {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgortihm, prk, info, outLen);
+    }
+
+    static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, byte[] hexStringToByteArray, String tls13_derived,
+            byte[] hexStringToByteArray0) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    private HKDFunction() {
     }
 }

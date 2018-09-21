@@ -10,16 +10,17 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ServerCertificateDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SimpleMitmProxyCommandConfig extends AttackConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SimpleMitmProxyCommandConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static final String ATTACK_COMMAND = "simple_mitm_proxy";
 
     @ParametersDelegate
@@ -29,16 +30,16 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
-    private ServerCertificateDelegate serverCertificateDelegate;
+    private CertificateDelegate certificateDelegate;
 
     public SimpleMitmProxyCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         mitmDelegate = new MitmDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
-        serverCertificateDelegate = new ServerCertificateDelegate();
+        certificateDelegate = new CertificateDelegate();
         addDelegate(mitmDelegate);
         addDelegate(ciphersuiteDelegate);
-        addDelegate(serverCertificateDelegate);
+        addDelegate(certificateDelegate);
     }
 
     /*

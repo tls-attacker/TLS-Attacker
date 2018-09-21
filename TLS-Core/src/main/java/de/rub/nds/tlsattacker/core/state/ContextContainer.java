@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ContextContainer {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ContextContainer.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Set<String> knownAliases = new HashSet<>();
 
@@ -56,7 +56,7 @@ public class ContextContainer {
      * @return the only known TLS context
      * @throws ConfigurationException
      *             if there is more than one TLS context in the container
-     * 
+     *
      */
     public TlsContext getTlsContext() {
         if (tlsContexts.isEmpty()) {
@@ -71,10 +71,11 @@ public class ContextContainer {
     /**
      * Get TLS context with the given alias.
      *
+     * @param alias
      * @return the context with the given connection end alias
      * @throws ConfigurationException
      *             if there is no TLS context with the given alias
-     * 
+     *
      */
     public TlsContext getTlsContext(String alias) {
         TlsContext ctx = tlsContexts.get(alias);
@@ -159,7 +160,7 @@ public class ContextContainer {
      * </p>
      * The TlsContext can only be replaced if the connection of both the new and
      * the old TlsContext equal.
-     * 
+     *
      * @param newTlsContext
      *            the new TlsContext, not null
      * @throws ConfigurationException

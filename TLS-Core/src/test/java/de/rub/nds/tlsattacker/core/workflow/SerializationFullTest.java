@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -33,7 +32,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -77,7 +75,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class SerializationFullTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SerializationFullTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -91,7 +89,7 @@ public class SerializationFullTest {
         config.setAddHeartbeatExtension(true);
         config.setAddMaxFragmentLengthExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddKeyShareExtension(true);
         config.setAddPaddingExtension(true);
@@ -117,7 +115,6 @@ public class SerializationFullTest {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
-        messages.add(new ArbitraryMessage());
         messages.add(new CertificateMessage());
         messages.add(new CertificateRequestMessage());
         messages.add(new CertificateVerifyMessage());
@@ -132,7 +129,6 @@ public class SerializationFullTest {
         messages.add(new HelloRequestMessage());
         messages.add(new HelloVerifyRequestMessage());
         messages.add(new RSAClientKeyExchangeMessage());
-        messages.add(new RetransmitMessage());
         messages.add(new SSL2ClientHelloMessage());
         messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());

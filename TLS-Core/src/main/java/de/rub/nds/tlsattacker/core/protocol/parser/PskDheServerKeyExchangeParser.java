@@ -10,11 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<PskDheServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ProtocolVersion version;
 
@@ -31,7 +35,7 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      *            Version of the Protocol
      */
     public PskDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, version);
+        super(pointer, array, version, KeyExchangeAlgorithm.DHE_PSK);
         this.version = version;
     }
 

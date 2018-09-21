@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -34,6 +35,8 @@ public class Cve20162107CommandConfig extends AttackConfig {
     private CiphersuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public Cve20162107CommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -44,9 +47,11 @@ public class Cve20162107CommandConfig extends AttackConfig {
         clientDelegate = new ClientDelegate();
         cipherSuiteDelegate = new CiphersuiteDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(cipherSuiteDelegate);
         addDelegate(hostnameExtensionDelegate);
+        addDelegate(starttlsDelegate);
 
     }
 
@@ -66,6 +71,9 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
@@ -83,6 +91,7 @@ public class Cve20162107CommandConfig extends AttackConfig {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
+
         }
         return config;
     }

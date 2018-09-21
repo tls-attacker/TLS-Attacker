@@ -9,8 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ExtendedMasterSecretExtensionSerializer extends ExtensionSerializer<ExtendedMasterSecretExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ExtendedMasterSecretExtensionSerializer(ExtendedMasterSecretExtensionMessage message) {
         super(message);

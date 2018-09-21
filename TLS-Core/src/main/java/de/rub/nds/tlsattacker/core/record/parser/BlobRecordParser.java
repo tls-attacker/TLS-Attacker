@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.record.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public BlobRecordParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
@@ -23,6 +27,7 @@ public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
         LOGGER.debug("Parsing BlobRecord");
         BlobRecord record = new BlobRecord();
         parseProtocolMessageBytes(record);
+        record.setCompleteRecordBytes(getAlreadyParsed());
         return record;
     }
 

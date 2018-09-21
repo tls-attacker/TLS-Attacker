@@ -43,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(Lucky13Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Map<Integer, List<Long>> results;
 
@@ -51,8 +51,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     private TimingClientTcpTransportHandler transportHandler;
 
-    public Lucky13Attacker(Lucky13CommandConfig config) {
-        super(config, false);
+    public Lucky13Attacker(Lucky13CommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
         results = new HashMap<>();
     }
 
@@ -75,14 +75,14 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     }
 
     public void executeAttackRound(Record record) throws IOException {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
 
         transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getDefaultClientConnection());
         transportHandler.initialize();
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
         WorkflowTrace trace = factory.createWorkflowTrace(tlsConfig.getWorkflowTraceType(),
-                tlsConfig.getDefaulRunningMode());
+                tlsConfig.getDefaultRunningMode());
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
@@ -126,7 +126,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
+        r.getComputations().setPlainRecordBytes(plainData);
         return r;
     }
 

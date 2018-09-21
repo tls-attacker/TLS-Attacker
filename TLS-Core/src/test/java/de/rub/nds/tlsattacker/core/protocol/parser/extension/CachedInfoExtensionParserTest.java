@@ -28,6 +28,23 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class CachedInfoExtensionParserTest {
 
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ExtensionType.CACHED_INFO, ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
+                        Arrays.asList(new CachedObject((byte) 1, null, null), new CachedObject((byte) 2, null, null)),
+                        ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
+                {
+                        ExtensionType.CACHED_INFO,
+                        ConnectionEndType.CLIENT,
+                        13,
+                        ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
+                        Arrays.asList(
+                                new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
+                                new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
+                        ArrayConverter.hexStringToByteArray("0019000f000d01060102030405060203070809"), 15 } });
+    }
+
     private final ExtensionType type;
     private final ConnectionEndType connectionEndType;
     private final int cachedInfoLength;
@@ -47,27 +64,6 @@ public class CachedInfoExtensionParserTest {
         this.extensionLength = extensionLength;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                {
-                        ExtensionType.CACHED_INFO,
-                        ConnectionEndType.SERVER,
-                        2,
-                        new byte[] { 0x01, 0x02 },
-                        Arrays.asList(new CachedObject((byte) 1, (Integer) null, null), new CachedObject((byte) 2,
-                                (Integer) null, null)), ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
-                {
-                        ExtensionType.CACHED_INFO,
-                        ConnectionEndType.CLIENT,
-                        13,
-                        ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
-                        Arrays.asList(
-                                new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
-                                new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
-                        ArrayConverter.hexStringToByteArray("0019000f000d01060102030405060203070809"), 15 } });
-    }
-
     @Test
     public void testParse() {
         TlsContext context = new TlsContext();
@@ -76,9 +72,9 @@ public class CachedInfoExtensionParserTest {
         CachedInfoExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertArrayEquals(cachedInfoBytes, msg.getCachedInfoBytes().getValue());
-        assertEquals(cachedInfoLength, (int) msg.getCachedInfoLength().getValue());
+        assertEquals(cachedInfoLength, (long) msg.getCachedInfoLength().getValue());
         assertCachedObjectList(cachedObjectList, msg.getCachedInfo());
     }
 

@@ -8,22 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.experimental.categories.Category;
 
 public class KeySetGeneratorTest {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     public KeySetGeneratorTest() {
     }
@@ -38,7 +39,7 @@ public class KeySetGeneratorTest {
      * be generated without throwing an exception
      */
     @Test
-    @Category(IntegrationTests.class)
+    // @Category(IntegrationTests.class)
     public void testGenerateKeySet() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {
@@ -53,8 +54,9 @@ public class KeySetGeneratorTest {
                     context.setSelectedCipherSuite(suite);
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
-                } catch (NoSuchAlgorithmException ex) {
-                    fail(ex.toString());
+                } catch (NoSuchAlgorithmException | CryptoException ex) {
+                    LOGGER.error(ex);
+                    fail();
                 }
             }
         }

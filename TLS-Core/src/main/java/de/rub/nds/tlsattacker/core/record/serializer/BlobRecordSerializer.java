@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.record.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BlobRecordSerializer extends AbstractRecordSerializer<BlobRecord> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final BlobRecord record;
 

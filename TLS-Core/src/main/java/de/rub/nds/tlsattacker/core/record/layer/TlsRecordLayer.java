@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.parser.special.CleanRecordByteSeperator;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -30,8 +30,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TlsRecordLayer extends RecordLayer {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext tlsContext;
 
@@ -62,6 +66,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 throw new ParserException("Could not parse provided Data as Record", E);
@@ -81,6 +88,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing Records");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
@@ -89,6 +99,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
+                if (dataPointer == blobParser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing BlobRecords");
+                }
                 dataPointer = blobParser.getPointer();
             }
         }
@@ -115,7 +128,9 @@ public class TlsRecordLayer extends RecordLayer {
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
-                stream.write(serializer.serialize());
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
                 throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }
@@ -146,6 +161,30 @@ public class TlsRecordLayer extends RecordLayer {
     public void decryptRecord(AbstractRecord record) {
         if (record instanceof Record) {
             try {
+                if (tlsContext.isTls13SoftDecryption()
+                        && tlsContext.getTalkingConnectionEndType() != tlsContext.getConnection()
+                                .getLocalConnectionEndType()) {
+                    if (null == ((Record) record).getContentMessageType()) {
+                        LOGGER.debug("Deactivating soft decryption since we received a non alert record");
+                        tlsContext.setTls13SoftDecryption(false);
+                    } else {
+                        switch (((Record) record).getContentMessageType()) {
+                            case ALERT:
+                                LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
+                                setRecordCipher(new RecordNullCipher(tlsContext));
+                                updateDecryptionCipher();
+                                break;
+                            case CHANGE_CIPHER_SPEC:
+                                LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
+                                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+                                return;
+                            default:
+                                LOGGER.debug("Deactivating soft decryption since we received a non alert record");
+                                tlsContext.setTls13SoftDecryption(false);
+                                break;
+                        }
+                    }
+                }
                 decryptor.decrypt(record);
             } catch (CryptoException E) {
                 record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());

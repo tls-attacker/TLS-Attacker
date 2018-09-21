@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ApplicationMessageTest {
 
@@ -34,11 +32,19 @@ public class ApplicationMessageTest {
      */
     @Test
     public void testToString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("ApplicationMessage:");
+        sb.append("\n  Data: ").append("null");
+
+        assertEquals(sb.toString(), message.toString());
+
         byte[] data = { 123 };
         message.setData(data);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("APPLICATION\n  Data:").append(ArrayConverter.bytesToHexString(data));
+        sb.setLength(0);
+        sb.append("ApplicationMessage:");
+        sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
 
         assertEquals(sb.toString(), message.toString());
     }

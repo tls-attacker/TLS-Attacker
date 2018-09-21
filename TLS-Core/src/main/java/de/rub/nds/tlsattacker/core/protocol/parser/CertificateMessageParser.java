@@ -12,16 +12,22 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class
@@ -120,6 +126,9 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             CertificatePairParser parser = new CertificatePairParser(position, msg.getCertificatesListBytes()
                     .getValue());
             pairList.add(parser.parse());
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing CertificatePairs");
+            }
             position = parser.getPointer();
         }
         msg.setCertificatesList(pairList);
@@ -132,6 +141,9 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
                 ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
                         pointer, msg.getHandshakeMessageType());
                 extensionMessages.add(parser.parse());
+                if (pointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing CertificateExtensions");
+                }
                 pointer = parser.getPointer();
             }
             entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));

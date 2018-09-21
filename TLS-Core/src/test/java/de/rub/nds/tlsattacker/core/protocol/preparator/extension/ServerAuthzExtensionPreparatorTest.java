@@ -41,7 +41,7 @@ public class ServerAuthzExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SERVER_AUTHZ.getValue(), msg.getExtensionType().getValue());
-        assertEquals(authzFormatListLength, (int) msg.getAuthzFormatListLength().getValue());
+        assertEquals(authzFormatListLength, (long) msg.getAuthzFormatListLength().getValue());
         assertArrayEquals(authzFormatListAsBytes, msg.getAuthzFormatList().getValue());
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <Send>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>
+                    <EllipticCurves/>
+                    <RenegotiationInfoExtension/>
+                </extensions>
+            </ClientHello>
+        </messages>
+    </Send>
+    <Receive>
+        <expectedMessages>
+            <ServerHello>
+                <extensions>
+                    <ECPointFormat/>
+                    <RenegotiationInfoExtension/>
+                </extensions>
+            </ServerHello>
+            <Certificate/>
+            <ServerHelloDone/>
+        </expectedMessages>
+    </Receive>
+    <Send>
+        <messages>
+            <RSAClientKeyExchange/>
+            <ChangeCipherSpec/>
+        </messages>
+    </Send>
+    <Receive>
+        <expectedMessages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </expectedMessages>
+    </Receive>
+</workflowTrace>

@@ -9,5 +9,6 @@
 package de.rub.nds.tlsattacker.transport;
 
 public interface TimeableTransportHandler {
+
     public abstract long getLastMeasurement();
 }

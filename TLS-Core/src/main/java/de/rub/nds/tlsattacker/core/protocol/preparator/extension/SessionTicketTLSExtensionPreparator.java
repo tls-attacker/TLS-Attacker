@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<SessionTicketTLSExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SessionTicketTLSExtensionMessage message;
 
@@ -29,7 +33,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
      */
     @Override
     public void prepareExtensionContent() {
-        message.setTicket(chooser.getConfig().getTLSSessionTicket());
+        message.setTicket(chooser.getConfig().getTlsSessionTicket());
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
                 + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
     }

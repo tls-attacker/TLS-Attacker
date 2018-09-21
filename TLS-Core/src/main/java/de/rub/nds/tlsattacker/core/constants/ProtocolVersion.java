@@ -25,8 +25,21 @@ public enum ProtocolVersion {
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
     TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
     TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
+    TLS13_DRAFT14(new byte[] { (byte) 0x7F, (byte) 0x0E }),
+    TLS13_DRAFT15(new byte[] { (byte) 0x7F, (byte) 0x0F }),
+    TLS13_DRAFT16(new byte[] { (byte) 0x7F, (byte) 0x10 }),
+    TLS13_DRAFT17(new byte[] { (byte) 0x7F, (byte) 0x11 }),
+    TLS13_DRAFT18(new byte[] { (byte) 0x7F, (byte) 0x12 }),
+    TLS13_DRAFT19(new byte[] { (byte) 0x7F, (byte) 0x13 }),
     TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
     TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
+    TLS13_DRAFT22(new byte[] { (byte) 0x7F, (byte) 0x16 }),
+    TLS13_DRAFT23(new byte[] { (byte) 0x7F, (byte) 0x17 }),
+    TLS13_DRAFT24(new byte[] { (byte) 0x7F, (byte) 0x18 }),
+    TLS13_DRAFT25(new byte[] { (byte) 0x7F, (byte) 0x19 }),
+    TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x1A }),
+    TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
+    TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
@@ -153,7 +166,7 @@ public enum ProtocolVersion {
      * @return True if protocolVersion is TLS.13 or a Draft of TLS 1.3
      */
     public boolean isTLS13() {
-        return this == TLS13 || this == TLS13_DRAFT20 || this == TLS13_DRAFT21;
+        return this == TLS13 || this.getMajor() == 0x7F;
     }
 
     /**

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -26,7 +27,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -56,7 +57,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -70,11 +70,11 @@ import org.junit.rules.ErrorCollector;
 
 public class TlsClientTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int TIMEOUT = 2000;
 
-    private BadRandom random = new BadRandom(new Random(0), null);
+    private final BadRandom random = new BadRandom(new Random(0), null);
 
     @Rule
     public ErrorCollector collector = new ErrorCollector();
@@ -96,13 +96,13 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(Level.INFO, "Testing RSA");
+            CONSOLE.info("Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail();
         }
     }
@@ -117,13 +117,13 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(Level.INFO, "Testing EC");
+            CONSOLE.info("Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
                 | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
                 | SignatureException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail(); // Todo
         }
     }
@@ -136,7 +136,6 @@ public class TlsClientTest {
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
         timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
@@ -163,6 +162,9 @@ public class TlsClientTest {
     private void testProtocolCompatibility(List<String> serverList, Config config, PublicKeyAlgorithm algorithm) {
         LOGGER.info(config.getHighestProtocolVersion());
         for (CipherSuite cs : CipherSuite.getImplemented()) {
+            if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
+                continue;
+            }
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
             final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());
@@ -174,7 +176,7 @@ public class TlsClientTest {
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
+                CONSOLE.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
                         + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
                         result, is(true));
@@ -192,7 +194,9 @@ public class TlsClientTest {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
-            E.printStackTrace();
+            LOGGER.error(E);
+            fail();
+
         }
 
         String workflowString = state.getWorkflowTrace().toString();
@@ -207,7 +211,6 @@ public class TlsClientTest {
 
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
         timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
@@ -238,5 +241,4 @@ public class TlsClientTest {
 
         return trace.executedAsPlanned();
     }
-
 }

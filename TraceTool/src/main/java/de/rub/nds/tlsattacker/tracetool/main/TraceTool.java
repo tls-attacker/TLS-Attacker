@@ -2,7 +2,7 @@
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
  * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- * 
+ *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * TraceTool allows inspection and modification of TLS-Attacker workflow traces.
- * 
+ *
  * The tools works on TLS-Attackers XML formatted workflow traces and can
  * <ul>
  * <li>Generate trace templates for common workflows (in XML)</li>
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TraceTool {
 
-    public static final Logger LOGGER = LogManager.getLogger(TraceTool.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String[] args;
 

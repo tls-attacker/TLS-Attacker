@@ -14,14 +14,12 @@ public class EncryptionRequest {
 
     private final byte[] initialisationVector;
 
-    public EncryptionRequest(byte[] plainText, byte[] initialisationVector) {
+    private final byte[] additionalAuthenticatedData;
+
+    public EncryptionRequest(byte[] plainText, byte[] initialisationVector, byte[] additionalAuthenticatedData) {
         this.plainText = plainText;
         this.initialisationVector = initialisationVector;
-    }
-
-    public EncryptionRequest(byte[] plainText) {
-        this.plainText = plainText;
-        this.initialisationVector = null;
+        this.additionalAuthenticatedData = additionalAuthenticatedData;
     }
 
     public byte[] getPlainText() {
@@ -30,5 +28,9 @@ public class EncryptionRequest {
 
     public byte[] getInitialisationVector() {
         return initialisationVector;
+    }
+
+    public byte[] getAdditionalAuthenticatedData() {
+        return additionalAuthenticatedData;
     }
 }

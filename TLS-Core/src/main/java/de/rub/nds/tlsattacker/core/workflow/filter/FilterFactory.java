@@ -13,7 +13,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FilterFactory {
-    protected static final Logger LOGGER = LogManager.getLogger(FilterFactory.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static Filter createWorkflowTraceFilter(FilterType type, Config config) {
         switch (type) {

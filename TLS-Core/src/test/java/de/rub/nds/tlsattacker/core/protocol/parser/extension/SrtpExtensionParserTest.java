@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +22,14 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SrtpExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 0, 4,
+                        ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
+                { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 0, 4,
+                        ArrayConverter.hexStringToByteArray("00010006"), 0, new byte[0] } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -47,15 +54,6 @@ public class SrtpExtensionParserTest {
         this.srtpMki = srtpMki;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 0, 4,
-                        ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
-                { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 0, 4,
-                        ArrayConverter.hexStringToByteArray("00010006"), 0, null } });
-    }
-
     @Before
     public void setUp() {
         parser = new SrtpExtensionParser(startParsing, expectedBytes);
@@ -66,18 +64,10 @@ public class SrtpExtensionParserTest {
         SrtpExtensionMessage msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
-
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertArrayEquals(srtpProtectionProfiles, msg.getSrtpProtectionProfiles().getValue());
-        assertEquals(srtpProtectionProfilesLength, (int) msg.getSrtpProtectionProfilesLength().getValue());
-
-        assertEquals(srtpMkiLength, (int) msg.getSrtpMkiLength().getValue());
-
-        if (srtpMki != null) {
-            assertArrayEquals(srtpMki, msg.getSrtpMki().getValue());
-
-        } else {
-            assertNull(msg.getSrtpMki());
-        }
+        assertEquals(srtpProtectionProfilesLength, (long) msg.getSrtpProtectionProfilesLength().getValue());
+        assertEquals(srtpMkiLength, (long) msg.getSrtpMkiLength().getValue());
+        assertArrayEquals(srtpMki, msg.getSrtpMki().getValue());
     }
 }

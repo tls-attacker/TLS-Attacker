@@ -1,12 +1,10 @@
 Test custom connection in workflow trace
 
 # Given this config:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
 </config>
 
 # And this input trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
@@ -15,7 +13,6 @@ Test custom connection in workflow trace
 </workflowTrace>
 
 # We expect this normalized trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
@@ -27,7 +24,6 @@ Test custom connection in workflow trace
 </workflowTrace>
 
 # And this after default filter application:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>

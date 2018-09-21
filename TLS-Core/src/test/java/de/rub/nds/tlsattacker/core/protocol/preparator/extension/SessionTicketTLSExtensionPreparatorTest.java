@@ -41,7 +41,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.getConfig().setTLSSessionTicket(ticket);
+        context.getConfig().setTlsSessionTicket(ticket);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());

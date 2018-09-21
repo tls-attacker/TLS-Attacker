@@ -49,7 +49,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext tlsContext;
 
@@ -66,9 +66,9 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private WorkflowTrace trace;
     private final Config tlsConfig;
 
-    public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
-        super(config, false);
-        tlsConfig = config.createConfig();
+    public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
+        tlsConfig = getTlsConfig();
     }
 
     @Override
@@ -229,7 +229,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
         for (int i = 0; i < n; i++) {
             record = new Record();
-            record.setPadding(modifiedPaddingArray);
+            record.getComputations().setPadding(modifiedPaddingArray);
             records.add(record);
             train[i] = recordLayer.prepareRecords(messageData, ProtocolMessageType.APPLICATION_DATA, records);
             records.remove(0);
@@ -253,8 +253,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         apMessage.setData(applicationMessageContent);
 
         Record record = new Record();
-        record.setMac(modifiedMacArray);
-        record.setPadding(modifiedPaddingArray);
+        record.getComputations().setMac(modifiedMacArray);
+        record.getComputations().setPadding(modifiedPaddingArray);
         records.add(record);
         byte[] recordBytes = recordLayer.prepareRecords(applicationMessageContent,
                 ProtocolMessageType.APPLICATION_DATA, records);
@@ -284,7 +284,6 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
                     ProtocolMessageType.ALERT, records));
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 

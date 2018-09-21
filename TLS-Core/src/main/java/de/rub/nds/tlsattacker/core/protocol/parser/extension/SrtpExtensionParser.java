@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SrtpExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -33,6 +37,7 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
             LOGGER.debug("Parsed the srtp mki " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
         } else {
             LOGGER.debug("Parsed no srtp mki");
+            msg.setSrtpMki(new byte[0]);
         }
 
     }

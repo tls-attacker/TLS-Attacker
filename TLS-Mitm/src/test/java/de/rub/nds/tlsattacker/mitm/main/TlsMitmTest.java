@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.mitm.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -43,9 +42,10 @@ import org.junit.experimental.categories.Category;
 
 public class TlsMitmTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsMitmTest.class);
-    private static final int SERVER_PORT = 44888;
-    private static final int MITM_PORT = 44891;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final int SERVER_PORT = 0;
+    private static final int MITM_PORT = 8877;
     private BadRandom random = new BadRandom(new Random(0), null);
 
     public TlsMitmTest() {
@@ -83,18 +83,18 @@ public class TlsMitmTest {
 
             CipherSuite cipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
             // String mitmParams = server.getPort()..
-            String mitmParams[] = new String[6];
-            mitmParams[0] = "-connect";
-            mitmParams[1] = "localhost:" + SERVER_PORT;
-            mitmParams[2] = "-accept";
-            mitmParams[3] = Integer.toString(MITM_PORT);
-            mitmParams[4] = "-cipher";
-            mitmParams[5] = cipherSuite.name();
 
             LOGGER.info("Starting test server");
             serverThread.start();
             while (!serverThread.isInitialized())
                 ;
+            String mitmParams[] = new String[6];
+            mitmParams[0] = "-connect";
+            mitmParams[1] = "localhost:" + serverThread.getPort();
+            mitmParams[2] = "-accept";
+            mitmParams[3] = Integer.toString(MITM_PORT);
+            mitmParams[4] = "-cipher";
+            mitmParams[5] = cipherSuite.name();
 
             LOGGER.info("Starting mitm");
             TlsMitm mitm = new TlsMitm(mitmParams);
@@ -122,7 +122,7 @@ public class TlsMitmTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException | InterruptedException | OperatorCreationException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail();
         }
     }

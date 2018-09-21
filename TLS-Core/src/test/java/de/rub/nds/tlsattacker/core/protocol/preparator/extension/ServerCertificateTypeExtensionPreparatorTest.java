@@ -44,9 +44,9 @@ public class ServerCertificateTypeExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SERVER_CERTIFICATE_TYPE.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
         assertArrayEquals(CertificateType.toByteArray(certList), msg.getCertificateTypes().getValue());
-        assertEquals(cerListLength, (int) msg.getCertificateTypesLength().getValue());
+        assertEquals(cerListLength, (long) msg.getCertificateTypesLength().getValue());
     }
 
 }

@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A simple action to print the last handled application data to console. Per
@@ -22,6 +24,8 @@ import java.util.Objects;
  * string. An charset for simple encoding can be given to get readable output
  */
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String lastHandledApplicationData = null;
 
@@ -54,7 +58,8 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         } else {
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Last handled application data: " + lastHandledApplicationData);
+        CONSOLE.info("Last handled application data: " + lastHandledApplicationData);
+        setExecuted(true);
     }
 
     public String getLastHandledApplicationData() {
@@ -75,7 +80,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      *
      * @param stringEncoding
      *            The enconding that should be used
-     * 
+     *
      */
     public void setStringEncoding(String stringEncoding) {
         this.stringEncoding = stringEncoding;
@@ -83,11 +88,12 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     @Override
     public boolean executedAsPlanned() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return isExecuted();
     }
 
     @Override
     public void reset() {
+        setExecuted(false);
         lastHandledApplicationData = null;
     }
 
@@ -114,9 +120,6 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         if (!Objects.equals(this.lastHandledApplicationData, other.lastHandledApplicationData)) {
             return false;
         }
-        if (!Objects.equals(this.stringEncoding, other.stringEncoding)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.stringEncoding, other.stringEncoding);
     }
 }

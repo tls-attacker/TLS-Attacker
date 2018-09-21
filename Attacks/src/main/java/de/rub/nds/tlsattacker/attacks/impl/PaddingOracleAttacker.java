@@ -8,32 +8,31 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
+import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
+import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGeneratorFactory;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.util.LinkedHashSet;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,16 +42,33 @@ import org.apache.logging.log4j.Logger;
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    private final List<ProtocolMessage> lastMessages;
     private final Config tlsConfig;
-    private State state;
 
-    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
-        super(paddingOracleConfig, false);
-        tlsConfig = paddingOracleConfig.createConfig();
-        lastMessages = new LinkedList<>();
+    private boolean groupRecords = true;
+
+    private HashMap<Integer, List<ResponseFingerprint>> responseMap;
+
+    private CipherSuite testedSuite;
+
+    private ProtocolVersion testedVersion;
+
+    private final ParallelExecutor executor;
+
+    private boolean shakyScans = false;
+
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
+        super(paddingOracleConfig, baseConfig);
+        tlsConfig = getTlsConfig();
+        executor = new ParallelExecutor(1, 3);
+    }
+
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig,
+            ParallelExecutor executor) {
+        super(paddingOracleConfig, baseConfig);
+        tlsConfig = getTlsConfig();
+        this.executor = executor;
     }
 
     @Override
@@ -60,145 +76,151 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public void executeAttackRound(Record record) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        SendAction sendAction = new SendAction(applicationMessage);
-        sendAction.setRecords(new LinkedList<AbstractRecord>());
-        sendAction.getRecords().add(record);
-        trace.addTlsAction(sendAction);
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ReceiveAction(alertMessage));
-
-        state = new State(tlsConfig, trace);
-
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
-
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow.");
-            LOGGER.debug(ex);
-        }
-        lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
-    }
-
-    private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
-        List<Record> records = new LinkedList<>();
-        for (int i = 0; i < 64; i++) {
-            byte[] padding = createPaddingBytes(i);
-            int messageSize = blocksize - (padding.length % blocksize);
-            byte[] message = new byte[messageSize];
-            byte[] plain = ArrayConverter.concatenate(message, padding);
-            if (plain.length > macSize) {
-                Record r = createRecordWithPlainData(plain);
-                records.add(r);
-            }
-        }
-        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
-        if (plain.length > macSize) {
-            Record r = createRecordWithPlainData(plain);
-            records.add(r);
-        }
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
-        if (plain.length > macSize) {
-            Record r = createRecordWithPlainData(plain);
-            records.add(r);
-        }
-        return records;
-    }
-
-    private Record createRecordWithPlainData(byte[] plain) {
-        Record r = new Record(tlsConfig);
-        ModifiableByteArray plainData = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-        plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
-        return r;
-    }
-
-    private List<Record> createRecordsWithModifiedPadding() {
-        List<Record> records = new LinkedList<>();
-
-        Record r = new Record();
-        ModifiableByteArray padding = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
-        padding.setModification(modifier);
-        r.setPadding(padding);
-        records.add(r);
-
-        return records;
-    }
-
-    private List<Record> createRecordsWithModifiedMac() {
-        List<Record> records = new LinkedList<>();
-
-        Record r = new Record();
-        ModifiableByteArray mac = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
-        mac.setModification(modifier);
-        r.setMac(mac);
-        records.add(r);
-
-        return records;
-    }
-
-    private byte[] createPaddingBytes(int padding) {
-        byte[] paddingBytes = new byte[padding + 1];
-        for (int i = 0; i < paddingBytes.length; i++) {
-            paddingBytes[i] = (byte) padding;
-        }
-        return paddingBytes;
-    }
-
     @Override
     public Boolean isVulnerable() {
-        int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
-                tlsConfig.getDefaultSelectedCipherSuite()).getSize();
-        int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
-                .getNonceBytesFromHandshake();
-        List<Record> records = new LinkedList<>();
-        records.addAll(createRecordsWithPlainData(blockSize, macSize));
-        records.addAll(createRecordsWithModifiedMac());
-        records.addAll(createRecordsWithModifiedPadding());
-        for (Record record : records) {
-            executeAttackRound(record);
+        if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
+            groupRecords = false;
         }
-        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
-        LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");
+        CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE.info("A server is considered secure if it always responds the same way.");
+        EqualityError error;
 
-        LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
-        for (int i = 0; i < lastMessages.size(); i++) {
-            ProtocolMessage pm = lastMessages.get(i);
-            pmSet.add(pm);
-            Record r = records.get(i);
-            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-            if (r.getPlainRecordBytes() != null) {
-                LOGGER.debug("Plain record bytes of the modified record: ");
-                LOGGER.debug(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
-                LOGGER.debug("Last protocol message in the protocol flow");
+        try {
+            responseMap = createResponseMap();
+            error = getEqualityError(responseMap);
+            if (error != EqualityError.NONE) {
+                CONSOLE.info("Found a side channel. Rescanning to confirm.");
+                HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
+                EqualityError errorTwo = getEqualityError(responseMapTwo);
+                if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
+                    HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
+                    EqualityError errorThree = getEqualityError(responseMapThree);
+                    if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
+                        CONSOLE.info("Found an equality Error.");
+                        CONSOLE.info("The Server is very likely vulnerabble");
+                    } else {
+                        CONSOLE.info("Rescan revealed a false positive");
+                        shakyScans = true;
+                        return false;
+                    }
+                } else {
+                    CONSOLE.info("Rescan revealed a false positive");
+                    shakyScans = true;
+                    return false;
+                }
             }
-            LOGGER.debug(pm.toString());
+        } catch (AttackFailedException E) {
+            CONSOLE.info(E.getMessage());
+            return null;
         }
-        List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
+        CONSOLE.info(EqualityErrorTranslator.translation(error, null, null));
+        if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
+            for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
+                LOGGER.debug("----------------Map-----------------");
+                for (ResponseFingerprint fingerprint : fingerprintList) {
+                    LOGGER.debug(fingerprint.toString());
+                }
+            }
+        }
 
-        if (pmSet.size() == 1) {
-            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getDefaultClientConnection()
-                    .getHostname(), pmSetList);
-            return false;
-        } else {
-            LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig
-                    .getDefaultClientConnection().getHostname(), pmSetList);
-            return true;
+        return error != EqualityError.NONE;
+    }
+
+    public boolean lookEqual(HashMap<Integer, List<ResponseFingerprint>> responseMapOne,
+            HashMap<Integer, List<ResponseFingerprint>> responseMapTwo) {
+        for (Integer key : responseMapOne.keySet()) {
+            List<ResponseFingerprint> listOne = responseMapOne.get(key);
+            List<ResponseFingerprint> listTwo = responseMapTwo.get(key);
+            if (listOne.size() != listTwo.size()) {
+                throw new PaddingOracleUnstableException(
+                        "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+            }
+            for (int i = 0; i < listOne.size(); i++) {
+                if (FingerPrintChecker.checkEquality(listOne.get(i), listTwo.get(i), false) != EqualityError.NONE) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
+        PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
+        List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
+        boolean first = true;
+        HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
+        List<State> stateList = new LinkedList<>();
+        for (WorkflowTrace trace : traceList) {
+            stateList.add(new State(tlsConfig, trace));
+        }
+        executor.bulkExecute(stateList);
+        for (State state : stateList) {
+            testedSuite = state.getTlsContext().getSelectedCipherSuite();
+            testedVersion = state.getTlsContext().getSelectedProtocolVersion();
+            if (state.getWorkflowTrace().allActionsExecuted()) {
+                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+                clearConnections(state);
+                int length = getLastRecordLength(state);
+                if (!groupRecords) {
+                    length = 0;
+                }
+                List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
+                if (responseFingerprintList == null) {
+                    responseFingerprintList = new LinkedList<>();
+                    responseMap.put(length, responseFingerprintList);
+                }
+                responseFingerprintList.add(fingerprint);
+            } else {
+                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            }
+        }
+        return responseMap;
+    }
+
+    private int getLastRecordLength(State state) {
+        AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
+                .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
+        return ((Record) lastRecord).getLength().getValue();
+    }
+
+    public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
+        for (List<ResponseFingerprint> list : responseMap.values()) {
+            ResponseFingerprint fingerprint = list.get(0);
+            for (int i = 1; i < list.size(); i++) {
+                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
+                if (error != EqualityError.NONE) {
+                    CONSOLE.info("Found an equality Error: " + error);
+                    LOGGER.debug("Fingerprint1: " + fingerprint.toString());
+                    LOGGER.debug("Fingerprint2: " + list.get(i).toString());
+
+                    return error;
+                }
+            }
+        }
+        return EqualityError.NONE;
+    }
+
+    private void clearConnections(State state) {
+        try {
+            state.getTlsContext().getTransportHandler().closeConnection();
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
         }
     }
 
+    public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
+        return responseMap;
+    }
+
+    public CipherSuite getTestedSuite() {
+        return testedSuite;
+    }
+
+    public ProtocolVersion getTestedVersion() {
+        return testedVersion;
+    }
+
+    public boolean isShakyScans() {
+        return shakyScans;
+    }
 }

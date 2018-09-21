@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ServerTCPNonBlockingTransportHandlerTest {
 
@@ -105,13 +105,11 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
             assertTrue(handler.isInitialized());
         } catch (IOException ex) {
-            ex.printStackTrace();
             fail("Encountered Exception");
         } finally {
             try {
                 handler.closeConnection();
             } catch (IOException ex) {
-                ex.printStackTrace();
             }
         }
     }

@@ -10,60 +10,56 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 
 public class ECDHClientComputations extends KeyExchangeComputations {
 
-    private ModifiableBigInteger serverPublicKeyX;
+    // This is the public key used for the computation
+    private ModifiableBigInteger publicKeyX;
 
-    private ModifiableBigInteger serverPublicKeyY;
+    private ModifiableBigInteger publicKeyY;
 
-    private ModifiableBigInteger clientPrivateKey;
+    private ModifiableBigInteger computedPublicKeyX;
 
-    private CustomECPoint clientPublicKey;
+    private ModifiableBigInteger computedPublicKeyY;
 
-    public CustomECPoint getClientPublicKey() {
-        return clientPublicKey;
+    public CustomECPoint getPublicKey() {
+        return new CustomECPoint(publicKeyX.getValue(), publicKeyY.getValue());
     }
 
-    public void setClientPublicKey(CustomECPoint clientPublicKey) {
-        this.clientPublicKey = clientPublicKey;
+    public void setPublicKey(BigInteger x, BigInteger y) {
+        this.publicKeyX = ModifiableVariableFactory.safelySetValue(this.publicKeyX, x);
+        this.publicKeyY = ModifiableVariableFactory.safelySetValue(this.publicKeyY, y);
     }
 
-    public ModifiableBigInteger getServerPublicKeyX() {
-        return serverPublicKeyX;
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultClientEcPrivateKey(getPrivateKey().getValue());
     }
 
-    public void setServerPublicKeyX(ModifiableBigInteger serverPublicKeyX) {
-        this.serverPublicKeyX = serverPublicKeyX;
+    public ModifiableBigInteger getComputedPublicKeyX() {
+        return computedPublicKeyX;
     }
 
-    public void setServerPublicKeyX(BigInteger serverPublicKeyX) {
-        this.serverPublicKeyX = ModifiableVariableFactory.safelySetValue(this.serverPublicKeyX, serverPublicKeyX);
+    public void setComputedPublicKeyX(ModifiableBigInteger computedPublicKeyX) {
+        this.computedPublicKeyX = computedPublicKeyX;
     }
 
-    public ModifiableBigInteger getServerPublicKeyY() {
-        return serverPublicKeyY;
+    public void setComputedPublicKeyX(BigInteger computedPublicKeyX) {
+        this.computedPublicKeyX = ModifiableVariableFactory.safelySetValue(this.computedPublicKeyX, computedPublicKeyX);
     }
 
-    public void setServerPublicKeyY(ModifiableBigInteger serverPublicKeyY) {
-        this.serverPublicKeyY = serverPublicKeyY;
+    public ModifiableBigInteger getComputedPublicKeyY() {
+        return computedPublicKeyY;
     }
 
-    public void setServerPublicKeyY(BigInteger serverPublicKeyY) {
-        this.serverPublicKeyY = ModifiableVariableFactory.safelySetValue(this.serverPublicKeyY, serverPublicKeyY);
+    public void setComputedPublicKeyY(BigInteger computedPublicKeyY) {
+        this.computedPublicKeyY = ModifiableVariableFactory.safelySetValue(this.computedPublicKeyY, computedPublicKeyY);
     }
 
-    public ModifiableBigInteger getClientPrivateKey() {
-        return clientPrivateKey;
-    }
-
-    public void setClientPrivateKey(ModifiableBigInteger clientPrivateKey) {
-        this.clientPrivateKey = clientPrivateKey;
-    }
-
-    public void setClientPrivateKey(BigInteger clientPrivateKey) {
-        this.clientPrivateKey = ModifiableVariableFactory.safelySetValue(this.clientPrivateKey, clientPrivateKey);
+    public void setComputedPublicKeyY(ModifiableBigInteger computedPublicKeyY) {
+        this.computedPublicKeyY = computedPublicKeyY;
     }
 }

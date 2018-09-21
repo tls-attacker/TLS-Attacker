@@ -8,60 +8,32 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 public enum SignatureAlgorithm {
 
-    ANONYMOUS((byte) 0),
-    RSA((byte) 1),
-    DSA((byte) 2),
-    ECDSA((byte) 3),
-    RSA_PSS((byte) 8);
+    ANONYMOUS,
+    RSA,
+    DSA,
+    ECDSA,
+    RSA_PSS_RSAE,
+    RSA_PSS_PSS,
+    ED25519,
+    ED448,
+    GOSTR34102001("ECGOST3410"),
+    GOSTR34102012_256("ECGOST3410-2012-256"),
+    GOSTR34102012_512("ECGOST3410-2012-512");
 
-    private byte value;
+    private final String javaName;
 
-    private static final Map<Byte, SignatureAlgorithm> MAP;
-
-    private SignatureAlgorithm(byte value) {
-        this.value = value;
+    SignatureAlgorithm() {
+        this(null);
     }
 
-    static {
-        MAP = new HashMap<>();
-        for (SignatureAlgorithm cm : SignatureAlgorithm.values()) {
-            MAP.put(cm.value, cm);
-        }
-    }
-
-    public static SignatureAlgorithm getSignatureAlgorithm(byte value) {
-        return MAP.get(value);
-    }
-
-    public byte getValue() {
-        return value;
-    }
-
-    public byte[] getArrayValue() {
-        return new byte[] { value };
-    }
-
-    public static SignatureAlgorithm getRandom(Random random) {
-        SignatureAlgorithm c = null;
-        while (c == null) {
-            Object[] o = MAP.values().toArray();
-            c = (SignatureAlgorithm) o[random.nextInt(o.length)];
-        }
-        return c;
+    SignatureAlgorithm(String javaName) {
+        this.javaName = javaName;
     }
 
     public String getJavaName() {
-        if (value == 0) {
-            return "";
-        }
-        return toString();
+        return javaName != null ? javaName : toString();
     }
+
 }

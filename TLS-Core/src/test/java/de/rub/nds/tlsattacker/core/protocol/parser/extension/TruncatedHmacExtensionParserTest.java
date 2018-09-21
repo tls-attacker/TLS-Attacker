@@ -33,6 +33,6 @@ public class TruncatedHmacExtensionParserTest {
         message = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
     }
 }

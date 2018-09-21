@@ -9,10 +9,15 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import org.junit.After;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class HKDFunctionTest {
@@ -28,9 +33,11 @@ public class HKDFunctionTest {
     /**
      * Test of extract and expand method, of class HKDFunction. Test cases from:
      * https://tools.ietf.org/html/rfc5869#appendix-A
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testExtractAndExpand() {
+    public void testExtractAndExpand() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] ikm = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         byte[] salt = ArrayConverter.hexStringToByteArray("000102030405060708090a0b0c");
@@ -77,9 +84,11 @@ public class HKDFunctionTest {
 
     /**
      * Test of extract method, of class HKDFunction
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testExtractNoSalt() {
+    public void testExtractNoSalt() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] salt = new byte[0];
         byte[] ikm = ArrayConverter
@@ -93,9 +102,11 @@ public class HKDFunctionTest {
 
     /**
      * Test of extract method, of class HKDFunction
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testExtractWithSalt() {
+    public void testExtractWithSalt() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] salt = ArrayConverter
                 .hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
@@ -110,9 +121,11 @@ public class HKDFunctionTest {
 
     /**
      * Test of deriveSecret method, of class HKDFunction
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDeriveSecret() {
+    public void testDeriveSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         String hashAlgorithm = DigestAlgorithm.SHA256.getJavaName();
         byte[] prk = ArrayConverter
@@ -128,9 +141,11 @@ public class HKDFunctionTest {
 
     /**
      * Test of expandLabel method, of class HKDFunction
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testExpandLabel() {
+    public void testExpandLabel() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] prk = ArrayConverter
                 .hexStringToByteArray("E056D47C7DB9C04BBECE6AC9525163DE72B7D25B6B0899366F8FA741A5C01709");
@@ -141,5 +156,38 @@ public class HKDFunctionTest {
         byte[] result = HKDFunction.expandLabel(hkdfAlgorithm, prk, labelIn, hashValue, outLen);
         byte[] resultCorrect = ArrayConverter.hexStringToByteArray("04C5DA6EC39FC1653E085FA83E51C6AF");
         assertArrayEquals(result, resultCorrect);
+    }
+
+    @Test
+    public void testExtractHandshake() throws CryptoException {
+        byte[] expand = HKDFunction
+                .extract(
+                        HKDFAlgorithm.TLS_HKDF_SHA256,
+                        ArrayConverter
+                                .hexStringToByteArray("6f2615a108c702c5678f54fc9dbab69716c076189c48250cebeac3576c3611ba"),
+                        ArrayConverter
+                                .hexStringToByteArray("8151d1464c1b55533623b9c2246a6a0e6e7e185063e14afdaff0b6e1c61a8642"));
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("5b4f965df03c682c46e6ee86c311636615a1d2bbb24345c25205953c879e8d06"),
+                expand);
+    }
+
+    @Test
+    public void testExtractEarly() throws CryptoException {
+        byte[] expand = HKDFunction
+                .extract(HKDFAlgorithm.TLS_HKDF_SHA256, ArrayConverter.hexStringToByteArray(""), ArrayConverter
+                        .hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000"));
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a"),
+                expand);
+    }
+
+    @Test
+    public void testExpand() throws CryptoException {
+        byte[] expand = HKDFunction
+                .expand(HKDFAlgorithm.TLS_HKDF_SHA256, ArrayConverter
+                        .hexStringToByteArray("3b7a839c239ef2bf0b7305a0e0c4e5a8c6c69330a753b308f5e3a83aa2ef6979"),
+                        ArrayConverter.hexStringToByteArray("001009746c733133206b657900"), 16);
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("c66cb1aec519df44c91e10995511ac8b"), expand);
     }
 }

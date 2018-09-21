@@ -19,6 +19,12 @@ public class ServerTcpTransportHandler extends TransportHandler {
     private ServerSocket serverSocket;
     private Socket socket;
     private final int port;
+    /**
+     * If true, don't create a new ServerSocket and just use the given socket.
+     * Useful for spawning server TransportHandler from an externally managed
+     * ServerSocket.
+     */
+    private boolean externalServerSocket = false;
 
     public ServerTcpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
@@ -29,6 +35,13 @@ public class ServerTcpTransportHandler extends TransportHandler {
         super(timeout, ConnectionEndType.SERVER);
         this.port = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
+    }
+
+    public ServerTcpTransportHandler(long timeout, Socket socket) throws IOException {
+        super(timeout, ConnectionEndType.SERVER);
+        this.port = socket.getLocalPort();
+        this.socket = socket;
+        externalServerSocket = true;
     }
 
     public void closeServerSocket() throws IOException {
@@ -44,17 +57,19 @@ public class ServerTcpTransportHandler extends TransportHandler {
         }
         if (serverSocket != null) {
             serverSocket.close();
-        } else {
+        } else if (!externalServerSocket) {
             throw new IOException("TransportHandler not initialised");
         }
     }
 
     @Override
     public void initialize() throws IOException {
-        if (serverSocket == null || serverSocket.isClosed()) {
-            serverSocket = new ServerSocket(port);
+        if (!externalServerSocket) {
+            if (serverSocket == null || serverSocket.isClosed()) {
+                serverSocket = new ServerSocket(port);
+            }
+            socket = serverSocket.accept();
         }
-        socket = serverSocket.accept();
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
 
@@ -62,11 +77,17 @@ public class ServerTcpTransportHandler extends TransportHandler {
     public boolean isClosed() throws IOException {
         if (isInitialized()) {
             if (socket != null && (socket.isClosed() || socket.isInputShutdown())) {
-                if (serverSocket.isClosed()) {
+                if (externalServerSocket) {
+                    return true;
+                } else if (serverSocket.isClosed()) {
                     return true;
                 }
-            } else if (socket == null && serverSocket.isClosed()) {
-                return true;
+            } else if (socket == null) {
+                if (externalServerSocket) {
+                    return true;
+                } else if (serverSocket.isClosed()) {
+                    return true;
+                }
             }
             return false;
         } else {

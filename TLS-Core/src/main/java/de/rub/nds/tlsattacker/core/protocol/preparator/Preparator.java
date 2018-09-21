@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Preparator<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Preparator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Chooser chooser;
     private final T object;

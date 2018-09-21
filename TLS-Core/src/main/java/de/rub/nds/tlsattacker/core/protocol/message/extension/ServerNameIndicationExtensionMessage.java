@@ -76,7 +76,9 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (serverNameList != null) {
             for (ServerNamePair pair : serverNameList) {
-                holders.addAll(pair.getAllModifiableVariableHolders());
+                if (pair != null) {
+                    holders.addAll(pair.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;

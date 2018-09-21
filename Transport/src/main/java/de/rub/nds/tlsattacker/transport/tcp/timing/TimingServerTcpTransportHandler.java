@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler implements TimeableTransportHandler {
@@ -22,14 +21,14 @@ public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler i
     @Override
     public long getLastMeasurement() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 }

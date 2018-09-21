@@ -14,10 +14,15 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<SupportedVersionsExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SupportedVersionsExtensionMessage msg;
 
@@ -31,7 +36,9 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing SupportedVersionsExtensionMessage");
         prepareProtocolVersions(msg);
-        prepareProtocolVersionsLength(msg);
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            prepareProtocolVersionsLength(msg);
+        }
     }
 
     private void prepareProtocolVersions(SupportedVersionsExtensionMessage msg) {

@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CertificateMessageTest {
     CertificateMessage message;
@@ -34,22 +31,23 @@ public class CertificateMessageTest {
      */
     @Test
     public void testToString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("CertificateMessage:");
+        sb.append("\n  Certificates Length: ").append("null");
+        sb.append("\n  Certificate:\n").append("null");
+        assertEquals(sb.toString(), message.toString());
+
         byte testBytes = 120;
         byte[] testArray = { 120 };
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("CertificateMessage:").append("\n  Certificates Length: ").append(testBytes)
-                .append("\n  Certificate:\n").append(ArrayConverter.bytesToHexString(testArray));
+        sb.setLength(0);
+        sb.append("CertificateMessage:");
+        sb.append("\n  Certificates Length: ").append(testBytes);
+        sb.append("\n  Certificate:\n").append(ArrayConverter.bytesToHexString(testArray));
 
         message.setCertificatesListLength(testBytes);
         message.setCertificatesListBytes(testArray);
         assertEquals(sb.toString(), message.toString());
-
-        StringBuilder sb2 = new StringBuilder();
-        sb2.append("CertificateMessage:").append("\n  Certificates Length: ").append("null")
-                .append("\n  Certificate:\n").append("null");
-        message.setCertificatesListLength(null);
-        message.setCertificatesListBytes((ModifiableByteArray) null);
-        assertEquals(sb2.toString(), message.toString());
     }
 }

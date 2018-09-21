@@ -18,8 +18,12 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ClientHelloMessage msg;
 
@@ -32,7 +36,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
-        prepareRandom(chooser.getConfig().getHighestProtocolVersion());
+        prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
         prepareCompressions(msg);

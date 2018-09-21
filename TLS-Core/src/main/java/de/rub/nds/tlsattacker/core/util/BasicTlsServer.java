@@ -19,7 +19,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.logging.Level;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -31,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BasicTlsServer extends Thread {
 
-    private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private String[] cipherSuites = null;
     private final int port;
@@ -130,7 +129,7 @@ public class BasicTlsServer extends Thread {
                 serverSocket.close();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.error(ex);
         }
     }
 

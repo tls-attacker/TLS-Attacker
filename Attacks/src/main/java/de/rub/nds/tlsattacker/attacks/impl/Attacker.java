@@ -13,39 +13,81 @@ package de.rub.nds.tlsattacker.attacks.impl;
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
+import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
+import de.rub.nds.tlsattacker.core.config.Config;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <Config>
- *            The AttackConfig
+ * @param <AttConfig>
  */
-public abstract class Attacker<Config extends AttackConfig> {
+public abstract class Attacker<AttConfig extends AttackConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    protected Config config;
+    protected AttConfig config;
 
-    protected final boolean saveToScan;
+    private final Config baseConfig;
 
-    public Attacker(Config config, boolean saveToScan) {
+    public Attacker(AttConfig config, Config baseConfig) {
         this.config = config;
-        this.saveToScan = saveToScan;
+        this.baseConfig = baseConfig;
+    }
+
+    public void attack() {
+        LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
+        if (!config.isSkipConnectionCheck()) {
+            if (!canConnect()) {
+                CONSOLE.warn("Cannot reach Server. Is the server online?");
+                return;
+            }
+        }
+        executeAttack();
+    }
+
+    public Boolean checkVulnerability() {
+        LOGGER.debug("Checking: " + this.getClass().getSimpleName());
+        if (!config.isSkipConnectionCheck()) {
+            if (!canConnect()) {
+                CONSOLE.warn("Cannot reach Server. Is the server online?");
+                return null;
+            } else {
+                LOGGER.debug("Can connect to server. Running vulnerability scan");
+            }
+        }
+        return isVulnerable();
     }
 
     /**
      * Executes a given attack.
      */
-    public abstract void executeAttack();
+    protected abstract void executeAttack();
 
-    public abstract Boolean isVulnerable();
+    protected abstract Boolean isVulnerable();
 
-    public Config getConfig() {
+    public AttConfig getConfig() {
         return config;
+    }
+
+    public Config getTlsConfig() {
+        if (config.hasDifferntConfig()) {
+            return config.createConfig();
+        } else {
+            return config.createConfig(baseConfig);
+        }
+    }
+
+    public Config getBaseConfig() {
+        return baseConfig.createCopy();
+    }
+
+    protected Boolean canConnect() {
+        Config tlsConfig = config.createConfig();
+        ConnectivityChecker checker = new ConnectivityChecker(tlsConfig.getDefaultClientConnection());
+        return checker.isConnectable();
     }
 }
