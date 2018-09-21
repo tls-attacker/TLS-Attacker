@@ -38,7 +38,6 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -181,11 +180,8 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.840.10040.4.1":
                 return CertificateKeyType.DSS;
             case "1.2.643.2.2.19":
-            case "1.2.643.2.2.3":
                 return CertificateKeyType.GOST01;
             case "1.2.643.7.1.1.1.1":
-            case "1.2.643.7.1.1.3.2":
-            case "1.2.643.7.1.1.3.3":
             case "1.2.643.7.1.1.1.2":
                 return CertificateKeyType.GOST12;
             default:
@@ -234,13 +230,10 @@ public class CertificateKeyPair implements Serializable {
                 return CertificateKeyType.ECDSA;
             case "2.16.840.1.101.3.4.3.2":
                 return CertificateKeyType.DSS;
-            case "1.2.643.2.2.19":
             case "1.2.643.2.2.3":
                 return CertificateKeyType.GOST01;
-            case "1.2.643.7.1.1.1.1":
             case "1.2.643.7.1.1.3.2":
             case "1.2.643.7.1.1.3.3":
-            case "1.2.643.7.1.1.1.2":
                 return CertificateKeyType.GOST12;
             default:
                 LOGGER.warn("Unknown algorithm ID: " + algorithm.getAlgorithm().getId() + " using \"NONE\"");
@@ -378,12 +371,12 @@ public class CertificateKeyPair implements Serializable {
                     }
                     break;
                 case GOST12:
-                    if (gostCurve == GOSTCurve.Tc26_Gost_3410_12_256_paramSetA) {
-                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
-                        hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
-                    } else {
+                    if (gostCurve.is512bit2012()) {
                         signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_512;
                         hashAlgorithm = HashAlgorithm.GOSTR34112012_512;
+                    } else {
+                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
+                        hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
                     }
                     if (connectionEnd == ConnectionEndType.CLIENT) {
                         context.setClientGost12Curve(gostCurve);
