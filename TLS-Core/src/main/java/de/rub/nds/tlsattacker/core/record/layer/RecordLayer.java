@@ -18,12 +18,12 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class RecordLayer {
 
-    protected static final Logger LOGGER = LogManager.getLogger(RecordLayer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Tries to parse rawBytes into AbstractRecords. If this is not possible a
      * Parser Exception is thrown
-     * 
+     *
      * @param rawBytes
      *            Bytes to parse
      * @return List of parsed records
@@ -33,7 +33,7 @@ public abstract class RecordLayer {
     /**
      * Tries to parse rawBytes into AbstractRecords. Exceptions which might
      * occur are handled.
-     * 
+     *
      * @param rawBytes
      *            Bytes to parse
      * @return List of parsed records

@@ -8,17 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import org.bouncycastle.util.Arrays;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ProtocolVersion version;
 
@@ -105,7 +107,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
-        LOGGER.debug("P: " + msg.getModulus().getValue());
+        LOGGER.debug("P: " + Arrays.toString(msg.getModulus().getValue()));
     }
 
     /**
@@ -127,7 +129,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
-        LOGGER.debug("G: " + msg.getGenerator().getValue());
+        LOGGER.debug("G: " + Arrays.toString(msg.getGenerator().getValue()));
     }
 
     /**

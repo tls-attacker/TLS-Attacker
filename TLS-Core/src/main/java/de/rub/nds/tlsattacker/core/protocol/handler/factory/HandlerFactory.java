@@ -93,7 +93,7 @@ import org.apache.logging.log4j.Logger;
 
 public class HandlerFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
@@ -284,7 +284,7 @@ public class HandlerFactory {
                 return new PskDhClientKeyExchangeHandler(context);
             case ECDHE_PSK:
                 return new PskEcDhClientKeyExchangeHandler(context);
-            case RSA_PSK:
+            case PSK_RSA:
                 return new PskRsaClientKeyExchangeHandler(context);
             case PSK:
                 return new PskClientKeyExchangeHandler(context);

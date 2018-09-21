@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CipherWrapper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CipherWrapper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
             KeySet keySet) {
@@ -51,6 +51,9 @@ public class CipherWrapper {
             LOGGER.warn("Cipher:" + cipherAlg + " is not supported - Using NullCipher!");
             return new NullCipher();
         }
+    }
+
+    private CipherWrapper() {
     }
 
 }

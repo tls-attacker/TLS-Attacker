@@ -16,9 +16,13 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHas
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SignatureAndHashAlgorithmsExtensionPreparator extends
         ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SignatureAndHashAlgorithmsExtensionMessage msg;
 

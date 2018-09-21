@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProvider;
 import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderFactory;
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -35,7 +34,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -46,18 +44,23 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private GuessProvider guessProvider;
 
-    public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config) {
-        super(config);
+    public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -69,15 +72,14 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             Record encryptedRecord = getEncryptedRecordFormClient(state);
             if (encryptedRecord != null) {
                 boolean result = false;
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                        "Got a client connection - starting to guess the PSK. Depending on the Key this may take some time...");
+                CONSOLE.info("Got a client connection - starting to guess the PSK. Depending on the Key this may take some time...");
                 long startTime = System.currentTimeMillis();
                 int counter = 0;
                 while (!result) {
                     byte[] guess = guessProvider.getGuess();
                     counter++;
                     if (guess == null) {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not find psk - attack stopped");
+                        CONSOLE.info("Could not find psk - attack stopped");
                         return;
                     } else {
                         if (LOGGER.isDebugEnabled()) {
@@ -89,25 +91,20 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
                         if (result) {
                             long stopStime = System.currentTimeMillis();
-                            LOGGER.log(
-                                    LogLevel.CONSOLE_OUTPUT,
-                                    "Found the psk in "
-                                            + String.format(
-                                                    "%d min, %d sec",
-                                                    TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime),
-                                                    TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
-                                                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-                                                                    .toMinutes(stopStime - startTime))));
-                            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Guessed " + counter + " times");
+                            CONSOLE.info("Found the psk in "
+                                    + String.format(
+                                            "%d min, %d sec",
+                                            TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime),
+                                            TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
+                                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+                                                            .toMinutes(stopStime - startTime))));
+                            CONSOLE.info("Guessed " + counter + " times");
                         }
                     } catch (NoSuchAlgorithmException ex) {
                         LOGGER.debug(ex);
                         LOGGER.warn("This Algorithm is not implemented yet!");
                         break;
-                    } catch (Exception c) {
-                        // TODO should be exchanged with
-                        // CryptoException with TLS-Attacker
-                        // 2.5
+                    } catch (CryptoException c) {
                         LOGGER.trace("Decryption failed", c);
                     }
                 }
@@ -120,9 +117,9 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     }
 
     private State executeHandshakeWithClient() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Started TLS-Server - waiting for a client to connect...");
+        CONSOLE.info("Started TLS-Server - waiting for a client to connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
             CipherSuite suite = choosePskCipherSuite(state.getTlsContext().getClientSupportedCiphersuites());
@@ -147,10 +144,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             LOGGER.debug("Could not find encrypted record");
             return null;
         } else {
-            LOGGER.log(
-                    LogLevel.CONSOLE_OUTPUT,
-                    "Client uses the default PSK: "
-                            + ArrayConverter.bytesToHexString(state.getConfig().getDefaultPSKKey()));
+            CONSOLE.info("Client uses the default PSK: "
+                    + ArrayConverter.bytesToHexString(state.getConfig().getDefaultPSKKey()));
             return null;
         }
     }
@@ -166,23 +161,22 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Started TLS-Server - waiting for a client to Connect...");
+        Config tlsConfig = getTlsConfig();
+        CONSOLE.info("Started TLS-Server - waiting for a client to Connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         TlsContext tlsContext = state.getTlsContext();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
             for (CipherSuite cipherSuite : tlsContext.getClientSupportedCiphersuites()) {
                 if (cipherSuite.isPsk()) {
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                            "The Client uses Psk. If he uses a weak Password he is vulnerable.");
+                    CONSOLE.info("The Client uses Psk. If he uses a weak Password he is vulnerable.");
                     return null;
                 }
             }
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "The Client is not supporting Psk.");
+            CONSOLE.info("The Client is not supporting Psk.");
             return false;
 
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Did not receive a ClientHello Message - check the Debug output!");
+            CONSOLE.info("Did not receive a ClientHello Message - check the Debug output!");
             return false;
         }
     }
@@ -240,7 +234,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         LOGGER.debug("Received Data " + ArrayConverter.bytesToHexString(receivedVrfyData));
         LOGGER.debug("Control Data " + ArrayConverter.bytesToHexString(controlValue));
         if (Arrays.equals(receivedVrfyData, controlValue)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found PSK: " + ArrayConverter.bytesToHexString(guessedPsk));
+            CONSOLE.info("Found PSK: " + ArrayConverter.bytesToHexString(guessedPsk));
             return true;
         } else {
             return false;

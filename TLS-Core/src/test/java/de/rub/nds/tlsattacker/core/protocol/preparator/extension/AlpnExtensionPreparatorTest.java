@@ -46,7 +46,7 @@ public class AlpnExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.ALPN.getValue(), msg.getExtensionType().getValue());
-        assertEquals(ALPNExtensionLength, (int) msg.getAlpnExtensionLength().getValue());
+        assertEquals(ALPNExtensionLength, (long) msg.getAlpnExtensionLength().getValue());
         assertArrayEquals(protocolsWithLength, msg.getAlpnAnnouncedProtocols().getValue());
     }
 

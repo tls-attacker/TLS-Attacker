@@ -27,14 +27,14 @@ import org.junit.experimental.categories.Category;
 
 public class PrintLastHandledApplicationDataActionTest {
 
-    public PrintLastHandledApplicationDataActionTest() {
-    }
-
     private State state;
     private TlsContext ctx;
     private PrintLastHandledApplicationDataAction action;
-    private String expectedAppDataEncodedString = "GET /theTestData";
-    private String expectedAppDataHexString = "\n47 45 54 20 2F 74 68 65  54 65 73 74 44 61 74 61";
+    private final String expectedAppDataEncodedString = "GET /theTestData";
+    private final String expectedAppDataHexString = "\n47 45 54 20 2F 74 68 65  54 65 73 74 44 61 74 61";
+
+    public PrintLastHandledApplicationDataActionTest() {
+    }
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,

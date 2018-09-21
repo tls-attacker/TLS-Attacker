@@ -11,15 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ByteArrayOutputStream outputStream;
     private final PskEcDhClientKeyExchangeMessage msg;
@@ -44,7 +48,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             outputStream.write(ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
             LOGGER.debug("PremasterSecret: dhValue Length: " + premasterSecret.length);
             outputStream.write(premasterSecret);
-            LOGGER.debug("PremasterSecret: dhValue" + premasterSecret);
+            LOGGER.debug("PremasterSecret: dhValue" + Arrays.toString(premasterSecret));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -53,7 +57,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PSK PremasterSecret: " + tempPremasterSecret);
+        LOGGER.debug("PSK PremasterSecret: " + Arrays.toString(tempPremasterSecret));
         return tempPremasterSecret;
     }
 }

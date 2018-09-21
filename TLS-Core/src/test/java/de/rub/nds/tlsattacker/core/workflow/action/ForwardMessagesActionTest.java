@@ -52,7 +52,7 @@ import org.junit.rules.ExpectedException;
 
 public class ForwardMessagesActionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardMessagesActionTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();

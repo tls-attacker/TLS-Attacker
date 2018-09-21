@@ -52,15 +52,21 @@ public class GOSTClientKeyExchangePreparatorTest {
                 .getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         tlsContext.setServerGost12Curve(curve);
+        tlsContext
+                .setClientEcPublicKey(new CustomECPoint(
+                        new BigInteger(
+                                "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
+                        new BigInteger(
+                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410")));
         ECPoint q = publicKey.getQ();
         CustomECPoint ecPoint = new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
 
-        tlsContext.setServerGostEc12PublicKey(ecPoint);
+        tlsContext.setServerEcPublicKey(ecPoint);
 
         BigInteger s = new BigInteger(
                 "9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C",
                 16);
-        tlsContext.setClientGostEc12PrivateKey(s);
+        tlsContext.setClientEcPrivateKey(s);
 
         GOSTClientKeyExchangeMessage message = new GOSTClientKeyExchangeMessage(tlsContext.getConfig());
         GOSTClientKeyExchangePreparator preparator = new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(),

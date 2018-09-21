@@ -10,19 +10,18 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.LogLevelConverter;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class GeneralDelegate extends Delegate {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
     private boolean help;
@@ -32,9 +31,6 @@ public class GeneralDelegate extends Delegate {
 
     @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
     private boolean quiet;
-
-    @Parameter(names = "-loglevel", description = "Set Log4j log level.", converter = LogLevelConverter.class)
-    private Level logLevel = Level.INFO;
 
     public GeneralDelegate() {
     }
@@ -63,25 +59,11 @@ public class GeneralDelegate extends Delegate {
         this.quiet = quiet;
     }
 
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public void setLogLevel(Level logLevel) {
-        this.logLevel = logLevel;
-    }
-
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         if (isDebug()) {
-            logLevel = Level.DEBUG;
-        }
-        Configurator.setRootLevel(getLogLevel());
-        if (getLogLevel() != Level.ALL && getLogLevel() != Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.protocol.parser", Level.INFO);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.protocol.serializer", Level.INFO);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.record", Level.INFO);
+            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

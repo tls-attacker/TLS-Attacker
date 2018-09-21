@@ -154,11 +154,9 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
         Config config = Config.createConfig();
-        config.setDefaultRsaCertificate(null);
-        config.setDefaultDsaCertificate(null);
-        config.setDefaultEcCertificate(null);
+        config.setDefaultExplicitCertificateKeyPair(null);
         delegate.applyDelegate(config);
-        assertNotNull("Ceritifcate could not be loaded", config.getDefaultRsaCertificate());
+        assertNotNull("Ceritifcate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
     }
 
     @Test
@@ -172,7 +170,7 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
         Config config = Config.createConfig();
-        config.setDefaultRsaCertificate(null);
+        config.setDefaultExplicitCertificateKeyPair(null);
 
         exception.expect(ParameterException.class);
         exception.expectMessage("The following parameters are required for loading a keystore:");

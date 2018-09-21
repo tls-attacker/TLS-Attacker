@@ -17,8 +17,12 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateVerifyPreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private SignatureAndHashAlgorithm algorithm;
     private byte[] signature;

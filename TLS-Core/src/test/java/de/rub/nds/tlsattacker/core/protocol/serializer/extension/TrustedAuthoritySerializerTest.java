@@ -21,6 +21,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TrustedAuthoritySerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return TrustedAuthorityParserTest.generateData();
+    }
 
     private final TrustedCaIndicationIdentifierType identifier;
     private final byte[] hash;
@@ -37,11 +41,6 @@ public class TrustedAuthoritySerializerTest {
         this.distNameLength = distNameLength;
         this.distName = distName;
         this.parserBytes = parserBytes;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TrustedAuthorityParserTest.generateData();
     }
 
     @Test

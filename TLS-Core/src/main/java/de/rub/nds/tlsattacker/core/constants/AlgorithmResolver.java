@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class AlgorithmResolver {
 
-    private static final Logger LOGGER = LogManager.getLogger(AlgorithmResolver.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Returns a PRF algorithm based on the protocol version and the cipher
@@ -102,7 +102,7 @@ public class AlgorithmResolver {
         if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA;
         } else if (cipher.contains("TLS_RSA_PSK_")) {
-            return KeyExchangeAlgorithm.RSA_PSK;
+            return KeyExchangeAlgorithm.PSK_RSA;
         } else if (cipher.startsWith("TLS_DH_DSS_")) {
             return KeyExchangeAlgorithm.DH_DSS;
         } else if (cipher.startsWith("TLS_DH_RSA_")) {

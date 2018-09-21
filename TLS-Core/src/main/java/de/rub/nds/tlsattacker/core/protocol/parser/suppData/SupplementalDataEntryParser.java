@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.suppData.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SupplementalDataEntryParser(int startposition, byte[] array) {
         super(startposition, array);

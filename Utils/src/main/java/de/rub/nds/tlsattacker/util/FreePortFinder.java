@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.util;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This small Helper tries to find an empty server port. Sometimes staring a
@@ -26,13 +24,17 @@ public class FreePortFinder {
      */
     public static int getPossiblyFreePort() {
         try {
-            ServerSocket socket = new ServerSocket(0);
-            int port = socket.getLocalPort();
-            socket.close();
+            int port;
+            try (ServerSocket socket = new ServerSocket(0)) {
+                port = socket.getLocalPort();
+            }
             return port;
         } catch (IOException ex) {
             throw new RuntimeException("Could not find a free Port");
         }
 
+    }
+
+    private FreePortFinder() {
     }
 }

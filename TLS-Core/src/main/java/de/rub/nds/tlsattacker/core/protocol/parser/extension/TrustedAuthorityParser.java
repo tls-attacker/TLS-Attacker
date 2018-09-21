@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public TrustedAuthorityParser(int startposition, byte[] array) {
         super(startposition, array);

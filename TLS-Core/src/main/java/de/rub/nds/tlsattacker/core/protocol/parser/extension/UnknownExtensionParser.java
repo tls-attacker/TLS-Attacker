@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public UnknownExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

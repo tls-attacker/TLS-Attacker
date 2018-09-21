@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SendMessageHelper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendMessageHelper() {
     }

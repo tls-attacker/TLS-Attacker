@@ -19,17 +19,20 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
-    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {
-        super(config);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         List<SignatureAndHashAlgorithm> algorithmList = new LinkedList<>();
         for (int i = 0; i < 33; i++) {
@@ -45,16 +48,7 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
 
     @Override
     public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

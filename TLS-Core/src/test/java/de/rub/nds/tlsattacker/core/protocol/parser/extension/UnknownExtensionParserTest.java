@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class UnknownExtensionParserTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {

@@ -66,4 +66,7 @@ public class DefaultNormalizeFilter {
         normalizeAndFilter(filteredTrace, config);
         return filteredTrace;
     }
+
+    private DefaultNormalizeFilter() {
+    }
 }

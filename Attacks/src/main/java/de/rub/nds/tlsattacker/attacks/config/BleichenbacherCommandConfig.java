@@ -82,7 +82,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             for (CipherSuite suite : CipherSuite.getImplemented()) {
                 if (AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA
-                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA_PSK) {
+                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.PSK_RSA) {
                     cipherSuites.add(suite);
                 }
             }
@@ -90,10 +90,14 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);
+        config.setWorkflowExecutorShouldClose(false);
+
         return config;
     }
 
@@ -111,7 +115,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     }
 
     public enum Type {
-
         FULL,
         FAST
     }

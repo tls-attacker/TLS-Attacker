@@ -24,8 +24,12 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class RecordBlockCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * indicates if explicit IV values should be used (as in TLS 1.1 and higher)
@@ -88,7 +92,7 @@ public final class RecordBlockCipher extends RecordCipher {
             return new EncryptionResult(encryptCipher.getIv(), ciphertext, useExplicitIv);
 
         } catch (CryptoException ex) {
-            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", ex);
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.", ex);
             return new EncryptionResult(request.getPlainText());
         }
     }
@@ -117,12 +121,12 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
                 plaintext = decryptCipher.decrypt(decryptIv, Arrays.copyOfRange(decryptionRequest.getCipherText(),
                         decryptCipher.getBlocksize(), decryptionRequest.getCipherText().length));
-                usedIv = decryptCipher.getIv();
+                usedIv = decryptIv;
             } else {
                 byte[] decryptIv = getDecryptionIV();
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
                 plaintext = decryptCipher.decrypt(decryptIv, decryptionRequest.getCipherText());
-                usedIv = decryptCipher.getIv();
+                usedIv = decryptIv;
                 // Set next IV
             }
 

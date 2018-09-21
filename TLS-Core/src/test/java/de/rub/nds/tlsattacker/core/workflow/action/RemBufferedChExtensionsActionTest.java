@@ -50,6 +50,9 @@ public class RemBufferedChExtensionsActionTest {
     private int actualLength;
     private int actualMsgLength;
 
+    public RemBufferedChExtensionsActionTest() {
+    }
+
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
@@ -81,9 +84,6 @@ public class RemBufferedChExtensionsActionTest {
         expectedMsgLength = ch.getLength().getValue();
         ctx.getMessageBuffer().add(ch);
         remove = new ArrayList<>();
-    }
-
-    public RemBufferedChExtensionsActionTest() {
     }
 
     private List<ExtensionType> typesFromMessageList(List<ExtensionMessage> extMsgs) {

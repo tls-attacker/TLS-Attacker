@@ -139,7 +139,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_PSK_DHE_WITH_AES_128_CCM_8) == KeyExchangeAlgorithm.DHE_PSK);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_PSK_WITH_AES_128_CCM) == KeyExchangeAlgorithm.PSK);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5) == KeyExchangeAlgorithm.RSA);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.RSA_PSK);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.PSK_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256) == KeyExchangeAlgorithm.RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA_DSS);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA_RSA);

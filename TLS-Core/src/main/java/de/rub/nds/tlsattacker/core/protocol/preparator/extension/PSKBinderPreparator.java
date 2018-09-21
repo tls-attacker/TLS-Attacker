@@ -14,11 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PSKBinderPreparator extends Preparator<PSKBinder> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PSKBinder pskBinder;
 
@@ -41,7 +43,7 @@ public class PSKBinderPreparator extends Preparator<PSKBinder> {
             pskBinder.setBinderEntry(new byte[macLen]);
             pskBinder.setBinderEntryLength(pskBinder.getBinderEntry().getValue().length);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(PSKBinderPreparator.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.warn(ex);
         }
     }
 

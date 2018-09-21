@@ -64,10 +64,7 @@ public class KeyShareStoreEntry {
         if (this.group != other.group) {
             return false;
         }
-        if (!Arrays.equals(this.publicKey, other.publicKey)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.publicKey, other.publicKey);
     }
 
 }

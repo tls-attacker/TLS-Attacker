@@ -16,8 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionP
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HeartbeatExtensionHandler(TlsContext context) {
         super(context);

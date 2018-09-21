@@ -373,6 +373,26 @@ public class TlsContext {
 
     private BigInteger clientRSAPrivateKey;
 
+    private BigInteger clientDsaPrivateKey;
+
+    private BigInteger serverDsaPrivateKey;
+
+    private BigInteger serverDsaPrimeP;
+
+    private BigInteger serverDsaPrimeQ;
+
+    private BigInteger serverDsaGenerator;
+
+    private BigInteger serverDsaPublicKey;
+
+    private BigInteger clientDsaPublicKey;
+
+    private BigInteger clientDsaPrimeP;
+
+    private BigInteger clientDsaPrimeQ;
+
+    private BigInteger clientDsaGenerator;
+
     private List<NamedGroup> clientNamedGroupsList;
 
     private List<NamedGroup> serverNamedGroupsList;
@@ -1017,44 +1037,12 @@ public class TlsContext {
         this.serverGost12Curve = serverGost12Curve;
     }
 
-    public CustomECPoint getServerGostEc12PublicKey() {
-        return serverGostEc12PublicKey;
-    }
-
-    public void setServerGostEc12PublicKey(CustomECPoint serverGostEc12PublicKey) {
-        this.serverGostEc12PublicKey = serverGostEc12PublicKey;
-    }
-
-    public BigInteger getServerGostEc12PrivateKey() {
-        return serverGostEc12PrivateKey;
-    }
-
-    public void setServerGostEc12PrivateKey(BigInteger serverGostEc12PrivateKey) {
-        this.serverGostEc12PrivateKey = serverGostEc12PrivateKey;
-    }
-
     public GOSTCurve getClientGost12Curve() {
         return clientGost12Curve;
     }
 
     public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
         this.clientGost12Curve = clientGost12Curve;
-    }
-
-    public CustomECPoint getClientGostEc12PublicKey() {
-        return clientGostEc12PublicKey;
-    }
-
-    public void setClientGostEc12PublicKey(CustomECPoint clientGostEc12PublicKey) {
-        this.clientGostEc12PublicKey = clientGostEc12PublicKey;
-    }
-
-    public BigInteger getClientGostEc12PrivateKey() {
-        return clientGostEc12PrivateKey;
-    }
-
-    public void setClientGostEc12PrivateKey(BigInteger clientGostEc12PrivateKey) {
-        this.clientGostEc12PrivateKey = clientGostEc12PrivateKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
@@ -1174,14 +1162,6 @@ public class TlsContext {
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
         this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
-    }
-
-    public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
-        return selectedSigHashAlgorithm;
-    }
-
-    public void setSelectedSigHashAlgorithm(SignatureAndHashAlgorithm selectedSigHashAlgorithm) {
-        this.selectedSigHashAlgorithm = selectedSigHashAlgorithm;
     }
 
     public MaxFragmentLength getMaxFragmentLength() {
@@ -2112,4 +2092,85 @@ public class TlsContext {
     public void setClientDhModulus(BigInteger clientDhModulus) {
         this.clientDhModulus = clientDhModulus;
     }
+
+    public BigInteger getClientDsaPrivateKey() {
+        return clientDsaPrivateKey;
+    }
+
+    public void setClientDsaPrivateKey(BigInteger clientDsaPrivateKey) {
+        this.clientDsaPrivateKey = clientDsaPrivateKey;
+    }
+
+    public BigInteger getServerDsaPrivateKey() {
+        return serverDsaPrivateKey;
+    }
+
+    public void setServerDsaPrivateKey(BigInteger serverDsaPrivateKey) {
+        this.serverDsaPrivateKey = serverDsaPrivateKey;
+    }
+
+    public BigInteger getServerDsaPrimeP() {
+        return serverDsaPrimeP;
+    }
+
+    public void setServerDsaPrimeP(BigInteger serverDsaPrimeP) {
+        this.serverDsaPrimeP = serverDsaPrimeP;
+    }
+
+    public BigInteger getServerDsaPrimeQ() {
+        return serverDsaPrimeQ;
+    }
+
+    public void setServerDsaPrimeQ(BigInteger serverDsaPrimeQ) {
+        this.serverDsaPrimeQ = serverDsaPrimeQ;
+    }
+
+    public BigInteger getServerDsaGenerator() {
+        return serverDsaGenerator;
+    }
+
+    public void setServerDsaGenerator(BigInteger serverDsaGenerator) {
+        this.serverDsaGenerator = serverDsaGenerator;
+    }
+
+    public BigInteger getServerDsaPublicKey() {
+        return serverDsaPublicKey;
+    }
+
+    public void setServerDsaPublicKey(BigInteger serverDsaPublicKey) {
+        this.serverDsaPublicKey = serverDsaPublicKey;
+    }
+
+    public BigInteger getClientDsaPublicKey() {
+        return clientDsaPublicKey;
+    }
+
+    public void setClientDsaPublicKey(BigInteger clientDsaPublicKey) {
+        this.clientDsaPublicKey = clientDsaPublicKey;
+    }
+
+    public BigInteger getClientDsaPrimeP() {
+        return clientDsaPrimeP;
+    }
+
+    public void setClientDsaPrimeP(BigInteger clientDsaPrimeP) {
+        this.clientDsaPrimeP = clientDsaPrimeP;
+    }
+
+    public BigInteger getClientDsaPrimeQ() {
+        return clientDsaPrimeQ;
+    }
+
+    public void setClientDsaPrimeQ(BigInteger clientDsaPrimeQ) {
+        this.clientDsaPrimeQ = clientDsaPrimeQ;
+    }
+
+    public BigInteger getClientDsaGenerator() {
+        return clientDsaGenerator;
+    }
+
+    public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
+        this.clientDsaGenerator = clientDsaGenerator;
+    }
+
 }

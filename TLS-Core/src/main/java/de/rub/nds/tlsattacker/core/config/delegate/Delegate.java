@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Delegate {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Delegate.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public abstract void applyDelegate(Config config) throws ConfigurationException;
 }

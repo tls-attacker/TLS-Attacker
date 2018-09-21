@@ -15,6 +15,7 @@ public enum ConnectionEndType {
 
     CLIENT,
     SERVER;
+
     public ConnectionEndType getPeer() {
         if (this == CLIENT) {
             return SERVER;

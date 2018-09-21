@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Chooser {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext context;
 
@@ -144,27 +144,11 @@ public abstract class Chooser {
 
     public abstract GOSTCurve getServerGost01Curve();
 
-    public abstract CustomECPoint getServerGost01PublicKey();
-
-    public abstract BigInteger getServerGost01PrivateKey();
-
     public abstract GOSTCurve getClientGost01Curve();
-
-    public abstract CustomECPoint getClientGost01PublicKey();
-
-    public abstract BigInteger getClientGost01PrivateKey();
 
     public abstract GOSTCurve getServerGost12Curve();
 
-    public abstract CustomECPoint getServerGost12PublicKey();
-
-    public abstract BigInteger getServerGost12PrivateKey();
-
     public abstract GOSTCurve getClientGost12Curve();
-
-    public abstract CustomECPoint getClientGost12PublicKey();
-
-    public abstract BigInteger getClientGost12PrivateKey();
 
     public abstract BigInteger getSRPModulus();
 
@@ -265,4 +249,14 @@ public abstract class Chooser {
     public abstract List<KeyShareStoreEntry> getClientKeyShares();
 
     public abstract KeyShareStoreEntry getServerKeyShare();
+
+    public abstract BigInteger getDsaServerPublicKey();
+
+    public abstract BigInteger getDsaPrimeP();
+
+    public abstract BigInteger getDsaPrimeQ();
+
+    public abstract BigInteger getDsaGenerator();
+
+    public abstract byte[] getHandshakeSecret();
 }

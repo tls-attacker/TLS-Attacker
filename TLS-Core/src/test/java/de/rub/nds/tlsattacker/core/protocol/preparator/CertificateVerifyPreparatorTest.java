@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -33,7 +31,15 @@ import org.junit.Test;
 
 public class CertificateVerifyPreparatorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static byte[] repeatBytes(String hex, int count) {
+        return ArrayConverter.hexStringToByteArray(StringUtils.repeat(hex, count));
+    }
+
+    private static byte[] concat(byte[]... bytes) {
+        return ArrayConverter.concatenate(bytes);
+    }
 
     private CertificateVerifyMessage message;
     private TlsContext context;
@@ -146,11 +152,4 @@ public class CertificateVerifyPreparatorTest {
         preparator.prepare();
     }
 
-    private static byte[] repeatBytes(String hex, int count) {
-        return ArrayConverter.hexStringToByteArray(StringUtils.repeat(hex, count));
-    }
-
-    private static byte[] concat(byte[]... bytes) {
-        return ArrayConverter.concatenate(bytes);
-    }
 }

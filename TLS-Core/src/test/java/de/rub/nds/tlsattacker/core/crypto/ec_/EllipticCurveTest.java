@@ -8,17 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.math.BigInteger;
+import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
-
-import java.math.BigInteger;
-import java.util.Random;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 
 /**
  * Testing EllipticCurve, CurveFactory, ElllipticCurveOverFp and
@@ -46,7 +43,6 @@ public class EllipticCurveTest {
         int counter = 0;
 
         for (NamedGroup name : NamedGroup.values()) {
-            System.out.println("Testing elliptic curve: " + name);
 
             try {
                 EllipticCurve curve = CurveFactory.getCurve(name);
@@ -61,14 +57,13 @@ public class EllipticCurveTest {
 
                 counter++;
             } catch (UnsupportedOperationException e) {
-                System.out.println("\t" + name + " is not implemented.");
             }
         }
 
-        if (counter != implemented)
+        if (counter != implemented) {
             fail();
+        }
 
-        System.out.println("All elliptic curves work as expected.");
     }
 
     private void testCurveParameters(EllipticCurve curve, Point basePoint) {

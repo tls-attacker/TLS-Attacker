@@ -25,12 +25,12 @@ import org.apache.logging.log4j.Logger;
 /**
  * Execute a workflow trace for each new connection/socket that connects to the
  * server.
- * 
+ *
  * Highly experimental. Just a starting point.
  */
-public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
+public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(ThreadedServerWorkflowExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
     private Socket socket;
@@ -160,8 +160,8 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    System.err.println("Pool did not terminate");
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                }
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted

@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -65,6 +66,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -94,7 +96,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class WorkflowConfigurationFactory {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowConfigurationFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
     RunningModeType mode;
@@ -436,6 +438,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
         trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
@@ -580,11 +583,11 @@ public class WorkflowConfigurationFactory {
             if (action.isMessageAction()) {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
-                        List<ExtensionMessage> extensions = ((ClientHelloMessage) msg).getExtensions();
+                        List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
                         for (int x = 0; x < extensions.size(); x++) {
                             if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
                                     || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((ClientHelloMessage) msg).getExtensions().remove(extensions.get(x));
+                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
                                 x--;
                             }
                         }
@@ -604,10 +607,10 @@ public class WorkflowConfigurationFactory {
 
     /**
      * A simple synchronizing proxy for RSA KE.
-     * 
+     *
      * Synchronizes the secrets between all parties and forwards first round of
      * exchanged application data messages.
-     * 
+     *
      * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
      * extensions) will brake it. So per default, all extensions are removed and
      * all cipher suites except RSA suites are removed, too.
@@ -728,7 +731,7 @@ public class WorkflowConfigurationFactory {
                     return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
                     return new PskEcDhClientKeyExchangeMessage(config);
-                case RSA_PSK:
+                case PSK_RSA:
                     return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:

@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bouncycastle.util.Arrays;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 public enum SSL2CipherSuite {
     SSL_CK_RC4_128_WITH_MD5(0x010080),
@@ -72,10 +70,7 @@ public enum SSL2CipherSuite {
     }
 
     public boolean isWeak() {
-        if (this == SSL_CK_DES_64_CBC_WITH_MD5 || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
-                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5) {
-            return true;
-        }
-        return false;
+        return this == SSL_CK_DES_64_CBC_WITH_MD5 || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
+                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
     }
 }

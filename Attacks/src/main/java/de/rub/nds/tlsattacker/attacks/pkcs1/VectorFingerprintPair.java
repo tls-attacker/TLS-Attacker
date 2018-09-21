@@ -66,10 +66,7 @@ public class VectorFingerprintPair {
         if (!Objects.equals(this.fingerprint, other.fingerprint)) {
             return false;
         }
-        if (!Objects.equals(this.vector, other.vector)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.vector, other.vector);
     }
 
 }

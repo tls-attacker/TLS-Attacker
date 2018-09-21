@@ -26,12 +26,13 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class KeySetGenerator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
@@ -52,21 +53,29 @@ public class KeySetGenerator {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
-        if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS) {
-            clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
-            serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
-            clientSecret = context.getChooser().getClientApplicationTrafficSecret();
-            serverSecret = context.getChooser().getServerApplicationTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            cipherSuite = context.getChooser().getEarlyDataCipherSuite();
-            clientSecret = context.getChooser().getClientEarlyTrafficSecret();
-            serverSecret = context.getChooser().getClientEarlyTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.NONE) {
-            LOGGER.warn("KeySet is NONE! , returning empty KeySet");
-            return new KeySet(keySetType);
-        } else {
+        if (null == keySetType) {
             throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+        } else {
+            switch (keySetType) {
+                case HANDSHAKE_TRAFFIC_SECRETS:
+                    clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
+                    serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
+                    break;
+                case APPLICATION_TRAFFIC_SECRETS:
+                    clientSecret = context.getChooser().getClientApplicationTrafficSecret();
+                    serverSecret = context.getChooser().getServerApplicationTrafficSecret();
+                    break;
+                case EARLY_TRAFFIC_SECRETS:
+                    cipherSuite = context.getChooser().getEarlyDataCipherSuite();
+                    clientSecret = context.getChooser().getClientEarlyTrafficSecret();
+                    serverSecret = context.getChooser().getClientEarlyTrafficSecret();
+                    break;
+                case NONE:
+                    LOGGER.warn("KeySet is NONE! , returning empty KeySet");
+                    return new KeySet(keySetType);
+                default:
+                    throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+            }
         }
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
@@ -84,6 +93,8 @@ public class KeySetGenerator {
         keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
                 RecordAEADCipher.GCM_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
+        keySet.setServerWriteMacSecret(new byte[0]);
+        keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;
     }
 
@@ -202,4 +213,6 @@ public class KeySetGenerator {
         return secretSetSize;
     }
 
+    private KeySetGenerator() {
+    }
 }

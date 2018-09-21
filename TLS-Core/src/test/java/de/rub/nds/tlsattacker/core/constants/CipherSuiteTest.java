@@ -20,7 +20,7 @@ import org.junit.Test;
 
 public class CipherSuiteTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CipherSuiteTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CipherSuiteTest() {
     }
@@ -61,7 +61,6 @@ public class CipherSuiteTest {
     public void testUnimplemented() {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
-
         }
         LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
         LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());

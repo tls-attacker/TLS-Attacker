@@ -67,7 +67,6 @@ public class ECComputerTest {
         try {
             p1_dbl = ecc.dbl(p1);
         } catch (DivisionException e) {
-            System.out.println("DivisionException thrown in ECComputerTest.dblTest");
             assertTrue(false);
         }
         assertTrue(p1_dbl.equals(p2));
@@ -89,8 +88,6 @@ public class ECComputerTest {
         BigInteger y1 = new BigInteger("07192B95FFC8DA78631011ED6B24CDD573F977A11E794811", 16);
         Point p1 = new Point(x1, y1);
 
-        System.out.println("P set: \n" + p1.toString());
-
         // set p1 to infinity
         p1.setInfinity(true);
 
@@ -99,7 +96,6 @@ public class ECComputerTest {
         try {
             p1_dbl = ecc.dbl(p1, true);
         } catch (DivisionException e) {
-            System.out.println("DivisionException thrown in ECComputerTest.dblInfTest");
             assertTrue(false);
         }
         // Print Values
@@ -111,7 +107,6 @@ public class ECComputerTest {
         try {
             p1_dbl = ecc.dbl(p1, true); // double
         } catch (DivisionException e) {
-            System.out.println("DivisionException thrown in ECComputerTest.dblInfTest");
             assertTrue(false);
         }
         // Print Values
@@ -153,7 +148,6 @@ public class ECComputerTest {
         try {
             p5_add = ecc.add(p2, p3);
         } catch (DivisionException e) {
-            System.out.println("DivisionException thrown in ECComputerTest.addTest");
             assertTrue(false);
         }
         assertTrue(p5_add.equals(p5));
@@ -209,7 +203,6 @@ public class ECComputerTest {
             p2.setX(p3.getX());
             assertTrue(ecc.add(p2, p3, true).isInfinity());
         } catch (DivisionException e) {
-            System.out.println("DivisionException thrown in ECComputerTest.addInfTest");
             assertTrue(false);
         }
         // if addTest() passed and this test passed until here, method

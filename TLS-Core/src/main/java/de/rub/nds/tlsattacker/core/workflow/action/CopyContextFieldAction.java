@@ -99,10 +99,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
         if (!Objects.equals(this.srcConnectionAlias, other.srcConnectionAlias)) {
             return false;
         }
-        if (!Objects.equals(this.dstConnectionAlias, other.dstConnectionAlias)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.dstConnectionAlias, other.dstConnectionAlias);
     }
 
     @Override

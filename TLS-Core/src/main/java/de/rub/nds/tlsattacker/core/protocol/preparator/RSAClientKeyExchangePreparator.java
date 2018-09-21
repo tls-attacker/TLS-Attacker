@@ -18,9 +18,13 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected byte[] padding;
     protected byte[] premasterSecret;
@@ -104,7 +108,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
+        BigInteger serverPrivateKey = chooser.getServerRSAPrivateKey();
         if (chooser.getServerRsaModulus().equals(BigInteger.ZERO)) {
             LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];
@@ -149,7 +153,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             // decrypt premasterSecret
             byte[] paddedPremasterSecret = decryptPremasterSecret();
             LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
-            if (randomByteLength < paddedPremasterSecret.length) {
+            if (randomByteLength < paddedPremasterSecret.length && randomByteLength > 0) {
                 premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength,
                         paddedPremasterSecret.length);
                 premasterSecret = manipulatePremasterSecret(premasterSecret);

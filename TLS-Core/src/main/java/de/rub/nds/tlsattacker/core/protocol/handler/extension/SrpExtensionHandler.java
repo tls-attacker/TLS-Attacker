@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SrpExtensionHandler(TlsContext context) {
         super(context);

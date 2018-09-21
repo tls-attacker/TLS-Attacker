@@ -35,11 +35,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreSharedKeyExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;

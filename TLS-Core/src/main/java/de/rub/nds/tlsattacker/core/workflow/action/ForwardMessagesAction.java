@@ -78,7 +78,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardMessagesAction.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;
@@ -505,10 +505,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (!checkMessageListsEquals(this.messages, other.messages)) {
             return false;
         }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.records, other.records);
     }
 
     @Override

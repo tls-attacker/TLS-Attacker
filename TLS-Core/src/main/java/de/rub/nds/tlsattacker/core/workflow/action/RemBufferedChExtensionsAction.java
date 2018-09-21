@@ -23,25 +23,29 @@ import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Remove extensions from extension list of a buffered ClientHello message.
  * <p>
  * This allows changing a ClientHello message in transit, i.e. in MiTM workflows
  * that want to remove proposed extensions.
- * 
+ *
  * <p>
  * This action assumes that the first message in the message buffer is a
  * ClientHello.
- * 
+ *
  * <p>
  * Note: This action is currently needed because fresh (ClientHello) messages
  * cannot be fully prepared from context, but partially rely on config values.
  * Thus preventing us to modify values in context and re-creating a CH for
  * forwarding.
- * 
+ *
  */
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElements(value = { @XmlElement(type = ExtensionType.class, name = "type") })
     private List<ExtensionType> removeExtensions = new ArrayList<>();

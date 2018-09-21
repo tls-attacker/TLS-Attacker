@@ -8,14 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -31,6 +23,12 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.junit.After;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FinishedHandlerTest {
 
@@ -278,10 +276,6 @@ public class FinishedHandlerTest {
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
-
-        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
-        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
-        assertArrayEquals(null, context.getMasterSecret());
     }
 
     @Test
@@ -305,10 +299,6 @@ public class FinishedHandlerTest {
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
-
-        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
-        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
-        assertArrayEquals(null, context.getMasterSecret());
 
     }
 

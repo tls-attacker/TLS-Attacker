@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class UnlimitedStrengthTest {
 
-    final Logger LOGGER = LogManager.getLogger(UnlimitedStrengthTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
     public void testAES256() throws Exception {

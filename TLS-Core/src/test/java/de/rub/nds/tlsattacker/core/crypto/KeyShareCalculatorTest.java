@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -55,7 +54,6 @@ public class KeyShareCalculatorTest {
         somePrivateKeyList.add(new BigInteger(256, new Random(0)));
         for (BigInteger bigInt : somePrivateKeyList) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
-                System.out.println("Testing: " + group + " - privKey: " + bigInt.toString());
                 if (group.isStandardCurve()) {
                     KeyShareCalculator.createClassicEcPublicKey(group, bigInt);
                 } else {

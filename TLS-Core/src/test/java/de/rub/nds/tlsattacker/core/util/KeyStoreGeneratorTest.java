@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class KeyStoreGeneratorTest {
 
-    private BadRandom random = new BadRandom(new Random(0), null);
+    private final BadRandom random = new BadRandom(new Random(0), null);
 
     /**
      * Test of createRSAKeyPair method, of class KeyStoreGenerator.

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.File;
@@ -42,9 +43,9 @@ public class XmlSerialisationTest {
             WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.read(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 
-            assertTrue("Message failed: " + message.getClass().getName(), ((SendAction) newWorkflowTrace
+            assertTrue("Message failed: " + message.getClass().getName(), ((MessageAction) newWorkflowTrace
                     .getTlsActions().get(0)).getMessages().size() == 1);
-            assertTrue("Message failed: " + message.getClass().getName(), ((SendAction) newWorkflowTrace
+            assertTrue("Message failed: " + message.getClass().getName(), ((MessageAction) newWorkflowTrace
                     .getTlsActions().get(0)).getMessages().get(0).getClass().equals(message.getClass()));
             assertTrue("Message failed: " + message.getClass().getName(), ((ReceiveAction) newWorkflowTrace
                     .getTlsActions().get(1)).getExpectedMessages().size() == 1);
@@ -67,10 +68,10 @@ public class XmlSerialisationTest {
             WorkflowTrace newWorkflowTrace = WorkflowTraceSerializer.read(new FileInputStream(f));
             assertTrue(newWorkflowTrace.getTlsActions().size() == 2);
 
-            assertTrue("Extension failed: " + extension.getClass().getName(), ((SendAction) newWorkflowTrace
+            assertTrue("Extension failed: " + extension.getClass().getName(), ((MessageAction) newWorkflowTrace
                     .getTlsActions().get(0)).getMessages().size() == 1);
-            HandshakeMessage handshakeMessage = (HandshakeMessage) (((SendAction) newWorkflowTrace.getTlsActions().get(
-                    0)).getMessages().get(0));
+            HandshakeMessage handshakeMessage = (HandshakeMessage) (((MessageAction) newWorkflowTrace.getTlsActions()
+                    .get(0)).getMessages().get(0));
             assertNotNull(handshakeMessage);
             assertTrue("Extension failed: " + extension.getClass().getName(), handshakeMessage.getExtensions().get(0)
                     .getClass().equals(extension.getClass()));

@@ -16,12 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndic
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import org.junit.Before;
-import org.junit.Test;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ServerNameIndicationExtensionPreparatorTest {
 
@@ -57,7 +57,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
 
         assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02 }, serverprep.getObject().getServerNameListBytes()
                 .getValue());
-        assertEquals(5, (int) serverprep.getObject().getServerNameListLength().getOriginalValue());
+        assertEquals(5, (long) serverprep.getObject().getServerNameListLength().getOriginalValue());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
 
         assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02, 0x02, 0x00, 0x04, 0x03, 0x04, 0x05, 0x06 },
                 serverprep.getObject().getServerNameListBytes().getValue());
-        assertEquals(12, (int) serverprep.getObject().getServerNameListLength().getOriginalValue());
+        assertEquals(12, (long) serverprep.getObject().getServerNameListLength().getOriginalValue());
     }
 
 }

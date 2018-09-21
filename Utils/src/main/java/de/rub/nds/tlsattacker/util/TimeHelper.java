@@ -22,4 +22,7 @@ public class TimeHelper {
         TimeHelper.provider = provider;
     }
 
+    private TimeHelper() {
+    }
+
 }

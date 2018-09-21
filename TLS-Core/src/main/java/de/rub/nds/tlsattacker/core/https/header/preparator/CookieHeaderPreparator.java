@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CookieHeaderPreparator extends Preparator<CookieHeader> {
 
-    private CookieHeader header;
+    private final CookieHeader header;
 
     public CookieHeaderPreparator(Chooser chooser, CookieHeader header) {
         super(chooser, header);

@@ -12,11 +12,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
-import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PrintSecretsAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PrintSecretsAction() {
     }
@@ -67,7 +70,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
             sb.append("\n  LastServerVerifyData: ").append(toIndentedString(ctx.getLastServerVerifyData()));
         }
 
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, sb.append("\n").toString());
+        CONSOLE.info(sb.append("\n").toString());
 
     }
 

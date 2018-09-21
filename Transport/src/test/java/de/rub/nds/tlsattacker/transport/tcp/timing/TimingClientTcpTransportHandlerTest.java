@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TimingClientTcpTransportHandlerTest {
+
     private TimingClientTcpTransportHandler handler;
 
     @Before
@@ -57,7 +58,6 @@ public class TimingClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }
@@ -90,7 +90,6 @@ public class TimingClientTcpTransportHandlerTest {
                 try {
                     serverSocketChannel.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
         }

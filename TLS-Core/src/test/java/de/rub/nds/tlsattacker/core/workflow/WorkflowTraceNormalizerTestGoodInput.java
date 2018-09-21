@@ -45,8 +45,25 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestGoodInput {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizerTestGoodInput.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-positive";
+
+    /**
+     * Run each test with a file from TEST_VECTOR_DIR as parameter.
+     *
+     * @return
+     */
+    @Parameters
+    public static Collection<Object[]> data() {
+        File testVectorDir = new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
+
+        Collection<Object[]> testVectors = new ArrayList<>();
+        for (File tv : testVectorDir.listFiles()) {
+            testVectors.add(new Object[] { tv });
+        }
+
+        return testVectors;
+    }
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -75,28 +92,10 @@ public class WorkflowTraceNormalizerTestGoodInput {
         expectedFilteredXml = null;
     }
 
-    /**
-     * Run each test with a file from TEST_VECTOR_DIR as parameter.
-     * 
-     * @return
-     */
-    @Parameters
-    public static Collection<Object[]> data() {
-        File testVectorDir = new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
-
-        Collection<Object[]> testVectors = new ArrayList<>();
-        for (File tv : testVectorDir.listFiles()) {
-            testVectors.add(new Object[] { tv });
-        }
-
-        return testVectors;
-    }
-
     @Test
     public void normalizingGoodInputsSucceeds() throws IOException, JAXBException {
         String fullTvName = testVector.getName();
         String tvName = fullTvName.substring(fullTvName.lastIndexOf("/") + 1);
-        System.out.println("...." + tvName);
         loadTestVector(testVector);
         origTrace = WorkflowTrace.copy(trace);
 
@@ -116,7 +115,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
     /**
      * Loads a test vector from file. Have a look at the test vectors to see the
      * required format.
-     * 
+     *
      * @param testVectorPath
      */
     private void loadTestVector(File testVectorPath) {
@@ -148,7 +147,6 @@ public class WorkflowTraceNormalizerTestGoodInput {
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);
-            return;
         }
 
     }

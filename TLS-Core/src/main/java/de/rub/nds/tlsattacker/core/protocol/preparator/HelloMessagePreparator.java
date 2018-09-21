@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
@@ -22,6 +24,8 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final HelloMessage msg;
 

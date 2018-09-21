@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 public class ExpiresHeaderPreparator extends Preparator<ExpiresHeader> {
 
-    private ExpiresHeader header;
+    private final ExpiresHeader header;
 
     public ExpiresHeaderPreparator(Chooser chooser, ExpiresHeader header) {
         super(chooser, header);

@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.mitm.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -43,7 +42,8 @@ import org.junit.experimental.categories.Category;
 
 public class TlsMitmTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsMitmTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final int SERVER_PORT = 0;
     private static final int MITM_PORT = 8877;
     private BadRandom random = new BadRandom(new Random(0), null);
@@ -122,7 +122,7 @@ public class TlsMitmTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException | InterruptedException | OperatorCreationException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
             fail();
         }
     }

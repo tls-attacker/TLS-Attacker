@@ -17,9 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class TokenCalculator {
 
-    private TokenCalculator() {
-    }
-
     public static byte[] calculateEKM(Chooser chooser, int length) throws CryptoException {
         byte[] masterSecret = chooser.getMasterSecret();
         String label = TokenBindingLabel.TOKEN_LABEL;
@@ -27,6 +24,9 @@ public class TokenCalculator {
         PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                 chooser.getSelectedCipherSuite());
         return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
+    }
+
+    private TokenCalculator() {
     }
 
 }

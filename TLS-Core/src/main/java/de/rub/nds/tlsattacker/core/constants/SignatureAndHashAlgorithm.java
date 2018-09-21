@@ -64,7 +64,7 @@ public enum SignatureAndHashAlgorithm {
     GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
     GOSTR34102012_512_GOSTR34112012_512(0xEFEF);
 
-    protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
@@ -149,7 +149,8 @@ public enum SignatureAndHashAlgorithm {
                 return algo;
             }
         }
-        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported");
+        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
+                + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {

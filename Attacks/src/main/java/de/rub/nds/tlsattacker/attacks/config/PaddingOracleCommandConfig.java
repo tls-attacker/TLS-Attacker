@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
+import de.rub.nds.tlsattacker.attacks.constants.PaddingVectorGeneratorType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -17,7 +19,9 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,8 +30,11 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "padding_oracle";
 
-    @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
-    private Integer blockSize = 16;
+    @Parameter(names = "-recordEngine", description = "The record generator used for the PaddingOracle")
+    private PaddingRecordGeneratorType recordGeneratorType = PaddingRecordGeneratorType.SHORT;
+
+    @Parameter(names = "-vectorEngine", description = "The vector generator used for the PaddingOracle")
+    private PaddingVectorGeneratorType vectorGeneratorType = PaddingVectorGeneratorType.CLASSIC;
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -54,12 +61,20 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
-    public Integer getBlockSize() {
-        return blockSize;
+    public PaddingRecordGeneratorType getRecordGeneratorType() {
+        return recordGeneratorType;
     }
 
-    public void setBlockSize(Integer blockSize) {
-        this.blockSize = blockSize;
+    public void setRecordGeneratorType(PaddingRecordGeneratorType recordGeneratorType) {
+        this.recordGeneratorType = recordGeneratorType;
+    }
+
+    public PaddingVectorGeneratorType getVectorGeneratorType() {
+        return vectorGeneratorType;
+    }
+
+    public void setVectorGeneratorType(PaddingVectorGeneratorType vectorGeneratorType) {
+        this.vectorGeneratorType = vectorGeneratorType;
     }
 
     @Override
@@ -83,8 +98,25 @@ public class PaddingOracleCommandConfig extends AttackConfig {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
         }
-        // config.setQuickReceive(true);
-        // config.setEarlyStop(true);
+        config.setQuickReceive(true);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        config.setWorkflowExecutorShouldClose(false);
+        boolean containsEc = false;
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
+                containsEc = true;
+                break;
+            }
+        }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
+
         return config;
     }
 }

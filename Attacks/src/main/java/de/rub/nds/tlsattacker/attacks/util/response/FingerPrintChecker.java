@@ -17,19 +17,16 @@ import org.bouncycastle.util.Arrays;
 
 public class FingerPrintChecker {
 
-    private FingerPrintChecker() {
-    }
-
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
             return EqualityError.SOCKET_EXCEPTION;
         }
-        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
-            return EqualityError.ENCRYPTED_ALERT;
-        }
         if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
             return EqualityError.RECORD_COUNT;
+        }
+        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+            return EqualityError.ENCRYPTED_ALERT;
         }
         if (!checkRecordClassEquality(fingerprint1.getRecordClasses(), fingerprint2.getRecordClasses())) {
             return EqualityError.RECORD_CLASS;
@@ -68,7 +65,6 @@ public class FingerPrintChecker {
             List<Class<AbstractRecord>> recordClassList2) {
         for (int i = 0; i < recordClassList1.size(); i++) {
             if (recordClassList1.get(i).equals(recordClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -80,7 +76,6 @@ public class FingerPrintChecker {
             List<Class<ProtocolMessage>> messageClassList2) {
         for (int i = 0; i < messageClassList1.size(); i++) {
             if (messageClassList1.get(i).equals(messageClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -169,5 +164,8 @@ public class FingerPrintChecker {
             }
         }
         return true;
+    }
+
+    private FingerPrintChecker() {
     }
 }

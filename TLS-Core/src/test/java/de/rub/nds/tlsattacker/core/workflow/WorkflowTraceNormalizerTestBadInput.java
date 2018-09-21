@@ -43,8 +43,26 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestBadInput {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizerTestBadInput.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final String TEST_VECTOR_DIR = "/worklfow_trace_serialization_tests-negative";
+
+    /**
+     * Run each test with a file from TEST_VECTOR_DIR as parameter.
+     *
+     * @return
+     */
+    @Parameters
+    public static Collection<Object[]> data() {
+        File testVectorDir = new File(WorkflowTraceNormalizerTestBadInput.class.getResource(TEST_VECTOR_DIR).getFile());
+
+        Collection<Object[]> testVectors = new ArrayList<>();
+        for (File tv : testVectorDir.listFiles()) {
+            testVectors.add(new Object[] { tv });
+        }
+
+        return testVectors;
+    }
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -74,26 +92,9 @@ public class WorkflowTraceNormalizerTestBadInput {
     }
 
     /**
-     * Run each test with a file from TEST_VECTOR_DIR as parameter.
-     * 
-     * @return
-     */
-    @Parameters
-    public static Collection<Object[]> data() {
-        File testVectorDir = new File(WorkflowTraceNormalizerTestBadInput.class.getResource(TEST_VECTOR_DIR).getFile());
-
-        Collection<Object[]> testVectors = new ArrayList<>();
-        for (File tv : testVectorDir.listFiles()) {
-            testVectors.add(new Object[] { tv });
-        }
-
-        return testVectors;
-    }
-
-    /**
      * Test that attempts to normalize bad workflow traces throws proper
      * exceptions.
-     * 
+     *
      * TODO: This could be more fine grained. I.e. split the test into multiple
      * sub tests that test a particular category of bad inputs. This would
      * enable testing the more detailed exception messages.
@@ -102,7 +103,6 @@ public class WorkflowTraceNormalizerTestBadInput {
     public void normalizingBadInputsFails() {
         String fullTvName = testVector.getName();
         String tvName = fullTvName.substring(fullTvName.lastIndexOf("/") + 1);
-        System.out.println("...." + tvName);
         loadTestVector(testVector);
 
         exception.expect(ConfigurationException.class);
@@ -113,7 +113,7 @@ public class WorkflowTraceNormalizerTestBadInput {
     /**
      * Loads a test vector from file. Have a look at the test vectors to see the
      * required format.
-     * 
+     *
      * @param testVectorPath
      */
     private void loadTestVector(File testVectorPath) {
@@ -141,7 +141,6 @@ public class WorkflowTraceNormalizerTestBadInput {
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);
-            return;
         }
 
     }

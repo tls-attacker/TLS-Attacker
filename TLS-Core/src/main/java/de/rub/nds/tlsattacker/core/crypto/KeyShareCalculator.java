@@ -28,7 +28,7 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class KeyShareCalculator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(KeyShareCalculator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static CustomECPoint createClassicEcPublicKey(NamedGroup group, BigInteger privateKey) {
         if (!group.isStandardCurve()) {
@@ -37,7 +37,7 @@ public class KeyShareCalculator {
         }
         ECDomainParameters ecDomainParameters = generateEcParameters(group);
         ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint.normalize();
+        ecPoint = ecPoint.normalize();
         if (ecPoint.isInfinity()) {
             // TODO ???
             return new CustomECPoint(BigInteger.ZERO, BigInteger.ZERO);
@@ -52,7 +52,7 @@ public class KeyShareCalculator {
         }
         ECDomainParameters ecDomainParameters = generateEcParameters(group);
         ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint.normalize();
+        ecPoint = ecPoint.normalize();
         return ecPoint;
     }
 
@@ -73,6 +73,16 @@ public class KeyShareCalculator {
         byte[] publicKey = new byte[32];
         Curve25519.keygen(publicKey, null, privateKeyBytes);
         return publicKey;
+    }
+
+    protected static ECDomainParameters generateEcParameters(NamedGroup group) {
+        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
+        try {
+            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
+        } catch (IOException ex) {
+            throw new PreparationException("Failed to generate EC domain parameters", ex);
+        }
     }
 
     private byte[] computeSharedSecret(KeyShareEntry keyShare) {
@@ -118,16 +128,6 @@ public class KeyShareCalculator {
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroupConfig()
                         + " is unsupported");
-        }
-    }
-
-    protected static ECDomainParameters generateEcParameters(NamedGroup group) {
-        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
     }
 

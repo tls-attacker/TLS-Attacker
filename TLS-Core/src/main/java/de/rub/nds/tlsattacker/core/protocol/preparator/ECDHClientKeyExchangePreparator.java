@@ -19,8 +19,11 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -29,6 +32,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected byte[] serializedPoint;
     protected byte[] premasterSecret;
@@ -51,7 +56,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
                 namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { namedGroup },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
@@ -107,15 +112,22 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (clientMode) {
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
-            msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
-            msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
+                msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
+                msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            } else {
+                LOGGER.warn("Could not compute correct public key. Using empty one instead");
+                msg.getComputations().setComputedPublicKeyX(BigInteger.ZERO);
+                msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
+            }
         }
-        setComputationPublicKey(msg, clientMode);
 
+        setComputationPublicKey(msg, clientMode);
         LOGGER.debug("PublicKey used:" + msg.getComputations().getPublicKey().toString());
-        LOGGER.debug("PrivateKey used:" + chooser.getServerEcPrivateKey());
+        LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
                 msg.getComputations().getPublicKey().getY());
+        publicKey = publicKey.normalize();
         premasterSecret = computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams),
                 new ECPrivateKeyParameters(msg.getComputations().getPrivateKey().getValue(), ecParams));
         preparePremasterSecret(msg);
@@ -164,8 +176,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             try {
                 ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, ecParams,
                         serializedPoint);
-                msg.getComputations().setPublicKey(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
-                        clientPublicKey.getQ().getRawYCoord().toBigInteger());
+                ECPoint q = clientPublicKey.getQ();
+                q = q.normalize();
+                msg.getComputations().setPublicKey(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
             } catch (IOException ex) {
                 throw new PreparationException("Could not deserialize EC Point: "
                         + ArrayConverter.bytesToHexString(serializedPoint), ex);

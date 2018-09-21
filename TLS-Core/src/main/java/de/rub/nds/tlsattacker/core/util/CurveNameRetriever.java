@@ -24,4 +24,7 @@ public class CurveNameRetriever {
         }
         return null;
     }
+
+    private CurveNameRetriever() {
+    }
 }

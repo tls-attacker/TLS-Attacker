@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensio
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public UserMappingExtensionHandler(TlsContext context) {
         super(context);

@@ -18,12 +18,16 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the SupportedVersions extensions, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.1
  */
 public class SupportedVersionsExtensionHandler extends ExtensionHandler<SupportedVersionsExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SupportedVersionsExtensionHandler(TlsContext context) {
         super(context);

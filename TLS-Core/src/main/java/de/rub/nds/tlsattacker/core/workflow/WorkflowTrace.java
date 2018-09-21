@@ -42,7 +42,41 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /**
+     * Copy a workflow trace.
+     *
+     * TODO: This should be replaced by a better copy method. Using
+     * serialization is slow and needs some additional "tweaks", i.e. we have to
+     * manually restore important fields marked as XmlTransient. This problem
+     * arises because the classes are configured for nice JAXB output, and not
+     * for copying/storing full objects.
+     *
+     * @param orig
+     *            the original WorkflowTrace object to copy
+     * @return a copy of the original WorkflowTrace
+     */
+    public static WorkflowTrace copy(WorkflowTrace orig) {
+        WorkflowTrace copy = null;
+
+        List<TlsAction> origActions = orig.getTlsActions();
+
+        try {
+            String origTraceStr = WorkflowTraceSerializer.write(orig);
+            InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+            copy = WorkflowTraceSerializer.read(is);
+        } catch (JAXBException | IOException | XMLStreamException ex) {
+            throw new ConfigurationException("Could not copy workflow trace: " + ex);
+        }
+
+        List<TlsAction> copiedActions = copy.getTlsActions();
+        for (int i = 0; i < origActions.size(); i++) {
+            copiedActions.get(i).setSingleConnectionWorkflow(origActions.get(i).isSingleConnectionWorkflow());
+        }
+
+        return copy;
+    }
 
     @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
             @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
@@ -79,6 +113,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
             @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecords"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+            @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
             @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
             @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
             @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
@@ -94,8 +129,11 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RemBufferedChExtensionsAction.class, name = "RemBufferedChExtensions"),
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait"),
+            @XmlElement(type = SendAction.class, name = "Send"),
+            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
+            @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
+            @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
             @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
@@ -359,40 +397,6 @@ public class WorkflowTrace implements Serializable {
 
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
-    }
-
-    /**
-     * Copy a workflow trace.
-     *
-     * TODO: This should be replaced by a better copy method. Using
-     * serialization is slow and needs some additional "tweaks", i.e. we have to
-     * manually restore important fields marked as XmlTransient. This problem
-     * arises because the classes are configured for nice JAXB output, and not
-     * for copying/storing full objects.
-     *
-     * @param orig
-     *            the original WorkflowTrace object to copy
-     * @return a copy of the original WorkflowTrace
-     */
-    public static WorkflowTrace copy(WorkflowTrace orig) {
-        WorkflowTrace copy = null;
-
-        List<TlsAction> origActions = orig.getTlsActions();
-
-        try {
-            String origTraceStr = WorkflowTraceSerializer.write(orig);
-            InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
-            copy = WorkflowTraceSerializer.read(is);
-        } catch (JAXBException | IOException | XMLStreamException ex) {
-            throw new ConfigurationException("Could not copy workflow trace: " + ex);
-        }
-
-        List<TlsAction> copiedActions = copy.getTlsActions();
-        for (int i = 0; i < origActions.size(); i++) {
-            copiedActions.get(i).setSingleConnectionWorkflow(origActions.get(i).isSingleConnectionWorkflow());
-        }
-
-        return copy;
     }
 
 }

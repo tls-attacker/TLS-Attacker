@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTicketMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewSessionTicketParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.NEW_SESSION_TICKET, version);

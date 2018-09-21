@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -22,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -31,17 +29,25 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.util.Arrays;
 import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
 
-    public DrownAttacker(DrownCommandConfig config) {
-        super(config);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static void md5Update(MD5Digest md5, byte[] bytes) {
+        md5.update(bytes, 0, bytes.length);
+    }
+
+    public DrownAttacker(DrownCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -54,23 +60,22 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         DrownVulnerabilityType type = getDrownVulnerabilityType();
         switch (type) {
             case FULL:
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server is vulnerable to the full DROWN attack");
+                CONSOLE.error("Server is vulnerable to the full DROWN attack");
                 return true;
             case NONE:
                 return false;
             case SSL2:
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server supports SSL2, but not any weak ciphersuites, "
-                        + "so is not vulnerable to DROWN");
+                CONSOLE.warn("Server supports SSL2, but not any weak ciphersuites, " + "so is not vulnerable to DROWN");
                 return false;
             case UNKNOWN:
-                LOGGER.warn("Could not execute Workflow - something went wrong. Check the Debug output to be certain");
+                CONSOLE.info("Could not execute Workflow - something went wrong. Check the Debug output to be certain");
                 return null;
         }
         return null;
     }
 
     public DrownVulnerabilityType getDrownVulnerabilityType() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new SSL2ClientMasterKeyMessage()));
@@ -123,11 +128,7 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         byte[] decrypted = new byte[len];
         rc4.processBytes(encrypted, 0, len, decrypted, 0);
 
-        if (Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), context.getClientRandom())) {
-            return true;
-        } else {
-            return false;
-        }
+        return Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), context.getClientRandom());
     }
 
     private byte[] getMD5Output(TlsContext tlsContext) {
@@ -143,7 +144,4 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         return md5Output;
     }
 
-    private static void md5Update(MD5Digest md5, byte[] bytes) {
-        md5.update(bytes, 0, bytes.length);
-    }
 }

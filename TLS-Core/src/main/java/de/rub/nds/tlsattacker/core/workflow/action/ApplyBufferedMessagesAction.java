@@ -15,14 +15,18 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Apply buffered message to the given context.
- * 
+ *
  * Call adjustContext() for each message in the context. Does not remove the
  * messages from buffer after execution.
  */
 public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ApplyBufferedMessagesAction() {
     }
@@ -39,7 +43,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         List<ProtocolMessage> messages = ctx.getMessageBuffer();
-        if (messages.size() == 0) {
+        if (messages.isEmpty()) {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
             for (ProtocolMessage msg : messages) {

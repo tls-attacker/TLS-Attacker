@@ -32,7 +32,7 @@ public class GeneralDelegateTest {
 
     @After
     public void tearDown() {
-        this.delegate.setLogLevel(Level.OFF);
+        this.delegate.setDebug(false);
         delegate.applyDelegate(Config.createConfig());
     }
 
@@ -106,27 +106,6 @@ public class GeneralDelegateTest {
         assertFalse(delegate.isQuiet());
         delegate.setQuiet(true);
         assertTrue(delegate.isQuiet());
-    }
-
-    /**
-     * Test of getLogLevel method, of class GeneralDelegate.
-     */
-    @Test
-    public void testGetLogLevel() {
-        args = new String[2];
-        args[0] = "-loglevel";
-        args[1] = "info";
-        jcommander.parse(args);
-        assertTrue(delegate.getLogLevel().equals(Level.INFO));
-    }
-
-    /**
-     * Test of setLogLevel method, of class GeneralDelegate.
-     */
-    @Test
-    public void testSetLogLevel() {
-        delegate.setLogLevel(Level.FATAL);
-        assertTrue(delegate.getLogLevel() == Level.FATAL);
     }
 
     /**

@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class MessageDigestCollectorTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollectorTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() throws Exception {

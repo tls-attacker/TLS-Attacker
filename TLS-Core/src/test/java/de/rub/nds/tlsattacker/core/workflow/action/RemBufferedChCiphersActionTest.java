@@ -32,9 +32,6 @@ import org.junit.experimental.categories.Category;
 
 public class RemBufferedChCiphersActionTest {
 
-    public RemBufferedChCiphersActionTest() {
-    }
-
     private State state;
     private TlsContext ctx;
     private WorkflowTrace trace;
@@ -51,6 +48,9 @@ public class RemBufferedChCiphersActionTest {
     private byte[] actualBytes;
     private int actualLength;
     private int actualMsgLength;
+
+    public RemBufferedChCiphersActionTest() {
+    }
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,

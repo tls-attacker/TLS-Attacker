@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for ProtocolMessages
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
  *            Type of the HandshakeMessages to parse
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ProtocolVersion version;
 

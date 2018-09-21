@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import static org.junit.Assert.*;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -37,17 +37,17 @@ public class InboundConnection extends AliasedConnection {
         super(alias, port, hostname);
     }
 
-    @Override
-    public ConnectionEndType getLocalConnectionEndType() {
-        return LOCAL_CONNECTION_END_TYPE;
-    }
-
     public InboundConnection(InboundConnection other) {
         this.alias = other.alias;
         this.hostname = other.hostname;
         this.port = other.port;
         this.timeout = other.timeout;
         this.transportHandlerType = other.transportHandlerType;
+    }
+
+    @Override
+    public ConnectionEndType getLocalConnectionEndType() {
+        return LOCAL_CONNECTION_END_TYPE;
     }
 
     @Override

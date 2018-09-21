@@ -19,6 +19,8 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -38,6 +40,8 @@ public class ECDHClientKeyExchangePreparatorTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
+
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
         preparator = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
@@ -60,6 +64,7 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
+        context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         context.setSelectedGroup(NamedGroup.SECP192R1);
         context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
                 "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(

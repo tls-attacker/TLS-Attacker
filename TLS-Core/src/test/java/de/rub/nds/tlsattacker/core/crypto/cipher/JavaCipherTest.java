@@ -9,19 +9,17 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -29,8 +27,7 @@ import static org.junit.Assert.*;
  */
 public class JavaCipherTest {
 
-    public JavaCipherTest() {
-    }
+    private final static Logger LOGGER = LogManager.getLogger();
 
     @BeforeClass
     public static void setUpClass() {
@@ -38,6 +35,9 @@ public class JavaCipherTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public JavaCipherTest() {
     }
 
     @Before
@@ -63,11 +63,9 @@ public class JavaCipherTest {
             r.nextBytes(plaintext);
 
             try {
-                cipher.encrypt(plaintext);
-                System.out.println(algo.name() + " worked!");
+                cipher.encrypt(key, plaintext);
             } catch (Exception ex) {
-                System.out.println(algo.name() + " did not work!");
-                ex.printStackTrace();
+                LOGGER.error(ex);
             }
         }
     }

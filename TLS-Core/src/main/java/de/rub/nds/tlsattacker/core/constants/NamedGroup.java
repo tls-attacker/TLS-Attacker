@@ -91,9 +91,11 @@ public enum NamedGroup {
     GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE"),
     GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }, "GREASE"),
     GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE"),
-    NONE(new byte[] { (byte) 0, (byte) 0 }, "");
+    NONE(new byte[] { (byte) 0, (byte) 0 }, ""),
+    GOST3410(new byte[] { 0, 0 }, ""),
+    GOST3410_2012(new byte[] { 0, 0 }, "");
 
-    protected static final Logger LOGGER = LogManager.getLogger(NamedGroup.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final int LENGTH = 2;
 
@@ -103,7 +105,7 @@ public enum NamedGroup {
 
     private static final Map<Integer, NamedGroup> MAP;
 
-    private static Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
+    private static final Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
             FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName) {
@@ -116,6 +118,18 @@ public enum NamedGroup {
         for (NamedGroup c : NamedGroup.values()) {
             MAP.put(valueToInt(c.value), c);
         }
+    }
+
+    public static NamedGroup fromJavaName(String name) {
+        if (name.equals("prime256v1")) {
+            return SECP256R1;
+        }
+        for (NamedGroup group : values()) {
+            if (group.getJavaName().equals(name)) {
+                return group;
+            }
+        }
+        return null;
     }
 
     public String getJavaName() {
@@ -233,5 +247,9 @@ public enum NamedGroup {
 
     public boolean isTls13() {
         return tls13Groups.contains(this);
+    }
+
+    public boolean isGost() {
+        return name().contains("GOST");
     }
 }

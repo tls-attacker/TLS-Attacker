@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.util.List;
+import java.util.Objects;
 
 public class ResponseFingerprint {
 
@@ -86,10 +87,66 @@ public class ResponseFingerprint {
 
     @Override
     public String toString() {
-        return "ResponseFingerprint{" + "receivedTransportHandlerException=" + receivedTransportHandlerException
-                + ", encryptedAlert=" + encryptedAlert + ", numberRecordsReceived=" + numberRecordsReceived
-                + ", numberOfMessageReceived=" + numberOfMessageReceived + ", recordClasses=" + recordClasses
-                + ", messageClasses=" + messageClasses + ", messageList=" + messageList + ", recordList=" + recordList
-                + ", socketState=" + socketState + '}';
+        StringBuilder recordClasses = new StringBuilder();
+        for (Class<AbstractRecord> someClass : this.recordClasses) {
+            recordClasses.append(someClass.getSimpleName()).append(",");
+        }
+        StringBuilder messageClasses = new StringBuilder();
+        for (Class<ProtocolMessage> someClass : this.messageClasses) {
+            messageClasses.append(someClass.getSimpleName()).append(",");
+        }
+        StringBuilder messages = new StringBuilder();
+        for (ProtocolMessage someMessage : this.messageList) {
+            messages.append(someMessage.toCompactString()).append(",");
+        }
+        StringBuilder records = new StringBuilder();
+        for (AbstractRecord someRecord : this.getRecordList()) {
+            records.append(someRecord.toString()).append(",");
+        }
+
+        return "ResponseFingerprint[" + "Exception=" + receivedTransportHandlerException + ", Encrypted="
+                + encryptedAlert + ", #Records=" + numberRecordsReceived + ", #Messages=" + numberOfMessageReceived
+                + ", RecordClasses=[" + recordClasses.toString() + "], MessageClasses=[" + messageClasses.toString()
+                + "], Messages=[" + messages.toString() + "], Reccords=[" + records.toString() + "], NetworkState="
+                + socketState + ']';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.receivedTransportHandlerException ? 1 : 0);
+        hash = 53 * hash + (this.encryptedAlert ? 1 : 0);
+        hash = 53 * hash + this.numberRecordsReceived;
+        hash = 53 * hash + this.numberOfMessageReceived;
+        hash = 53 * hash + Objects.hashCode(this.socketState);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ResponseFingerprint other = (ResponseFingerprint) obj;
+        if (this.receivedTransportHandlerException != other.receivedTransportHandlerException) {
+            return false;
+        }
+        if (this.encryptedAlert != other.encryptedAlert) {
+            return false;
+        }
+        if (this.numberRecordsReceived != other.numberRecordsReceived) {
+            return false;
+        }
+        if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
+            return false;
+        }
+        return this.socketState == other.socketState;
+    }
+
 }
