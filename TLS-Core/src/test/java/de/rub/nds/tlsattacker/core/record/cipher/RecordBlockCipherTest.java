@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -49,7 +51,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testConstructors() throws NoSuchAlgorithmException {
+    public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
         List<AliasedConnection> mixedConnections = new ArrayList<>();
         mixedConnections.add(new InboundConnection());
@@ -58,9 +60,8 @@ public class RecordBlockCipherTest {
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
         for (CipherSuite suite : CipherSuite.getImplemented()) {
-            if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
-                    && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
-                    && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
+            if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
+                    && !suite.name().contains("FORTEZZA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
@@ -96,7 +97,7 @@ public class RecordBlockCipherTest {
 
     @SuppressWarnings("unused")
     @Test
-    public void test() throws NoSuchAlgorithmException {
+    public void test() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(new byte[] { 0 });
@@ -108,11 +109,12 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of calculateMac method, of class RecordBlockCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testCalculateMac() throws NoSuchAlgorithmException {
+    public void testCalculateMac() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -125,7 +127,7 @@ public class RecordBlockCipherTest {
         byte[] data = ArrayConverter.hexStringToByteArray("000000000000000016030100101400000CCE92FBEC9131F48A63FED31F");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] mac = cipher.calculateMac(data);
+        byte[] mac = cipher.calculateMac(data, context.getChooser().getConnectionEndType());
         byte[] correctMac = ArrayConverter.hexStringToByteArray("71573F726479AA9108FB86A4FA16BC1D5CB57530");
         assertArrayEquals(mac, correctMac);
 
@@ -133,11 +135,12 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of encrypt method, of class RecordBlockCipher, for TLS10.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testEncryptTls10() throws NoSuchAlgorithmException {
+    public void testEncryptTls10() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -151,14 +154,13 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV()))
+        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV(), null))
                 .getCompleteEncryptedCipherText();
         byte[] correctCiphertext = ArrayConverter
                 .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E23");
         assertArrayEquals(correctCiphertext, ciphertext);
         data = ArrayConverter.hexStringToByteArray("54657374EDE63C0E2BDAB2875D35FFC30ED4C327F7B54CCB0707070707070707");
-        System.out.println(ArrayConverter.bytesToHexString(cipher.getEncryptionIV()));
-        ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV()))
+        ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV(), null))
                 .getCompleteEncryptedCipherText();
         correctCiphertext = ArrayConverter
                 .hexStringToByteArray("7829006A6B93FA6348E1074E58CCEFA9EBBEA3202ABA82F9A2B7BC26D187AF08");
@@ -169,9 +171,10 @@ public class RecordBlockCipherTest {
      * Test of encrypt method, of class RecordBlockCipher, for TLS12.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testEncryptTls12() throws NoSuchAlgorithmException {
+    public void testEncryptTls12() throws NoSuchAlgorithmException, CryptoException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
@@ -186,7 +189,7 @@ public class RecordBlockCipherTest {
         byte[] data = ArrayConverter
                 .hexStringToByteArray("1400000C085BE7DCDCC455020E3B578A9812C4AAD8FDCA97E7B389632B6DD1F3D61A3878413B995C942EA842CE8B2E4B0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F");
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        EncryptionResult encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv));
+        EncryptionResult encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv, null));
 
         byte[] correctCiphertext = ArrayConverter
                 .hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BB7556D6BBB782F6B13EF212326DEE109ED896514DD83AB9DDB7C9B8ACB79E738E0A928C05217E90DC98D6F3E326C2751A0B12C06E2C3D852E72075098F3387E1");
@@ -196,7 +199,7 @@ public class RecordBlockCipherTest {
         data = ArrayConverter.hexStringToByteArray("54657374EDE63C0E2BDAB2875D35FFC30ED4C327F7B54CCB0707070707070707");
         correctCiphertext = ArrayConverter
                 .hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BE55651CF88774ED9990F91F4BD25C30881331F16DC8FBD609F0E7714CD4678EF");
-        encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv));
+        encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv, null));
         assertArrayEquals(correctCiphertext, encryptionResult.getCompleteEncryptedCipherText());
         assertArrayEquals(iv, encryptionResult.getInitialisationVector());
     }
@@ -205,9 +208,10 @@ public class RecordBlockCipherTest {
      * Test of decrypt method, of class RecordBlockCipher, for TLS10.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDecrypt10() throws NoSuchAlgorithmException {
+    public void testDecrypt10() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -221,7 +225,7 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("BCD644DF7E82BF0097E1B0C16CDD53199733EE70629FA82DAC7B0B4F6100B602ACBA3B8EA6A7741B");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] plaintext = cipher.decrypt(data);
+        byte[] plaintext = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
         byte[] correctPlaintext = ArrayConverter
                 .hexStringToByteArray("1400000CC84350158844FE559EC327B77F44B9791ECB11453B7FC40ED27C35DDDC7C250603030303");
         assertArrayEquals(plaintext, correctPlaintext);
@@ -231,9 +235,10 @@ public class RecordBlockCipherTest {
      * Test of decrypt method, of class RecordBlockCipher, for TLS12.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDecrypt12() throws NoSuchAlgorithmException {
+    public void testDecrypt12() throws NoSuchAlgorithmException, CryptoException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
@@ -248,7 +253,7 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("45DCB1853201C59037AFF4DFE3F442B7CDB4DB1348894AE76E251F4491A6F5F859B2DE12879C6D86D4BDC83CAB854E33EF5CC51B25942E64EC6730AB1DDB5806E900B7B0C32D9BFF59C0F01334C0F673");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] plaintext = cipher.decrypt(data);
+        byte[] plaintext = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
         byte[] correctPlaintext = ArrayConverter
                 .hexStringToByteArray("7F1F9E3AA2EAD435ED42143C54D81FEDAC85A400AF369CABFA1B77EBB3647B534FB8447306D14FE610F897EBE455A43ED47140370DB20BF3181067641D20E425");
         assertArrayEquals(plaintext, correctPlaintext);

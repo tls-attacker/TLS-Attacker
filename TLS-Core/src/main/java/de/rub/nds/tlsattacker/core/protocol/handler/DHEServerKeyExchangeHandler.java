@@ -8,14 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -23,7 +28,8 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
 
     @Override
     public DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
     }
 
     @Override
@@ -50,13 +56,13 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
      * @param context
      */
     private void adjustDhGenerator(DHEServerKeyExchangeMessage message) {
-        tlsContext.setDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + tlsContext.getDhGenerator());
+        tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());
     }
 
     private void adjustDhModulus(DHEServerKeyExchangeMessage message) {
-        tlsContext.setDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + tlsContext.getDhModulus());
+        tlsContext.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("Dh Modulus: " + tlsContext.getServerDhModulus());
     }
 
     private void adjustServerPublicKey(DHEServerKeyExchangeMessage message) {

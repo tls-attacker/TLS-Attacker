@@ -36,7 +36,7 @@ public class UserMappingExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertEquals(hintType.getValue(), (byte) message.getUserMappingType().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertEquals(hintType.getValue(), (long) message.getUserMappingType().getValue());
     }
 }

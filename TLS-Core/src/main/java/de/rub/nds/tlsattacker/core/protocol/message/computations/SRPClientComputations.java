@@ -12,15 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.math.BigInteger;
 
 public class SRPClientComputations extends KeyExchangeComputations {
-
-    /**
-     * server's private key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger privateKey;
 
     /**
      * server's private key
@@ -37,34 +32,17 @@ public class SRPClientComputations extends KeyExchangeComputations {
     /**
      * dh generator used for computations
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger generator;
 
     /**
      * SRP salt
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray salt;
 
     private ModifiableByteArray srpIdentity;
     private ModifiableByteArray srpPassword;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray serverRandom;
-
     public SRPClientComputations() {
-    }
-
-    public ModifiableBigInteger getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ModifiableBigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableBigInteger getServerPublicKey() {
@@ -139,15 +117,8 @@ public class SRPClientComputations extends KeyExchangeComputations {
         this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
     }
 
-    public ModifiableByteArray getServerRandom() {
-        return serverRandom;
-    }
-
-    public void setServerRandom(ModifiableByteArray serverRandom) {
-        this.serverRandom = serverRandom;
-    }
-
-    public void setServerRandom(byte[] serverRandom) {
-        this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, serverRandom);
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultSRPPassword(srpPassword.getValue());
     }
 }

@@ -18,8 +18,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,19 +27,22 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Attacker<AttConfig extends AttackConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected AttConfig config;
 
-    public Attacker(AttConfig config) {
+    private final Config baseConfig;
+
+    public Attacker(AttConfig config, Config baseConfig) {
         this.config = config;
+        this.baseConfig = baseConfig;
     }
 
     public void attack() {
-        LOGGER.debug("Attackign with: " + this.getClass().getSimpleName());
+        LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                CONSOLE.warn("Cannot reach Server. Is the server online?");
                 return;
             }
         }
@@ -51,8 +53,10 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
         LOGGER.debug("Checking: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                CONSOLE.warn("Cannot reach Server. Is the server online?");
                 return null;
+            } else {
+                LOGGER.debug("Can connect to server. Running vulnerability scan");
             }
         }
         return isVulnerable();
@@ -67,6 +71,18 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
 
     public AttConfig getConfig() {
         return config;
+    }
+
+    public Config getTlsConfig() {
+        if (config.hasDifferntConfig()) {
+            return config.createConfig();
+        } else {
+            return config.createConfig(baseConfig);
+        }
+    }
+
+    public Config getBaseConfig() {
+        return baseConfig.createCopy();
     }
 
     protected Boolean canConnect() {

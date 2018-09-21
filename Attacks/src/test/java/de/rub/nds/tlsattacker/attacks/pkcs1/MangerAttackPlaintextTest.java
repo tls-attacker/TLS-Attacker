@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class MangerAttackPlaintextTest {
 
-    static Logger LOGGER = LogManager.getLogger(MangerAttackPlaintextTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
 

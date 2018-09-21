@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -17,14 +18,14 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Decryptor extends RecordCryptoUnit {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Decryptor.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public Decryptor(RecordCipher cipher) {
         super(cipher);
 
     }
 
-    public void decrypt(AbstractRecord object) {
+    public void decrypt(AbstractRecord object) throws CryptoException {
         if (object instanceof BlobRecord) {
             decrypt((BlobRecord) object);
         } else if (object instanceof Record) {
@@ -34,7 +35,7 @@ public abstract class Decryptor extends RecordCryptoUnit {
         }
     }
 
-    public abstract void decrypt(Record object);
+    public abstract void decrypt(Record object) throws CryptoException;
 
-    public abstract void decrypt(BlobRecord object);
+    public abstract void decrypt(BlobRecord object) throws CryptoException;
 }

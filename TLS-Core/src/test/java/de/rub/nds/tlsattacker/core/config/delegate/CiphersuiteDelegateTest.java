@@ -81,7 +81,7 @@ public class CiphersuiteDelegateTest {
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly",
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
         Config config = Config.createConfig();
-        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         config.setDefaultClientSupportedCiphersuites(new CipherSuite[0]);
         delegate.applyDelegate(config);
         assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config

@@ -69,10 +69,7 @@ public class SNIEntry implements Serializable {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (this.type != other.type) {
-            return false;
-        }
-        return true;
+        return this.type == other.type;
     }
 
 }

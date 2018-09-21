@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The cleanrecordbytes should be set when the record preparator received the
  * record
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Record record;
     private final Encryptor encryptor;
@@ -35,6 +39,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     @Override
     public void prepare() {
         LOGGER.debug("Preparing Record");
+        record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
@@ -60,7 +65,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+            record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
@@ -68,8 +73,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
+        record.getComputations().setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
+        LOGGER.debug("SequenceNumber: " + record.getComputations().getSequenceNumber().getValue());
     }
 
     private void prepareLength(Record record) {
@@ -78,7 +83,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void preparePaddingLength(Record record) {
-        record.setPaddingLength(chooser.getConfig().getPaddingLength());
-        LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+        record.getComputations().setPaddingLength(chooser.getConfig().getPaddingLength());
+        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
     }
 }

@@ -29,6 +29,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Heartbeat attack against a server and logs an error in case the
@@ -36,8 +38,10 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
  */
 public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
-    public HeartbleedAttacker(HeartbleedCommandConfig config) {
-        super(config);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public HeartbleedAttacker(HeartbleedCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         HeartbeatMessage message = new HeartbeatMessage(tlsConfig);

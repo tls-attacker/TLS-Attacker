@@ -14,27 +14,26 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
-import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
+import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";
 
-    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedCurveConverter.class)
-    private NamedCurve namedCurve = NamedCurve.SECP256R1;
+    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
+    private NamedGroup namedGroup = NamedGroup.SECP256R1;
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     private int additionalEquations = 3;
@@ -81,6 +80,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
 
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
+
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -88,11 +90,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public BigInteger getPremasterSecret() {
@@ -119,12 +123,12 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         this.publicPointBaseY = publicPointBaseY;
     }
 
-    public NamedCurve getNamedCurve() {
-        return namedCurve;
+    public NamedGroup getNamedGroup() {
+        return namedGroup;
     }
 
-    public void setNamedCurve(NamedCurve namedCurve) {
-        this.namedCurve = namedCurve;
+    public void setNamedCurve(NamedGroup namedGroup) {
+        this.namedGroup = namedGroup;
     }
 
     public int getCurveFieldSize() {
@@ -206,10 +210,12 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setEarlyStop(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddRenegotiationInfoExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
-        List<NamedCurve> namedCurves = new LinkedList<>();
-        namedCurves.add(namedCurve);
-        config.setNamedCurves(namedCurves);
+        List<NamedGroup> namedCurves = new LinkedList<>();
+        namedCurves.add(namedGroup);
+        config.setDefaultClientNamedGroups(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
     }

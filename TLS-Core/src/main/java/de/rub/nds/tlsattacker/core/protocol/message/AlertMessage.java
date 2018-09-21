@@ -92,7 +92,7 @@ public class AlertMessage extends ProtocolMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("AlertMessage:");
-        sb.append("\nALERT message:\n  Level: ");
+        sb.append("\n  Level: ");
         if (level != null) {
             if (AlertLevel.getAlertLevel(level.getValue()) == AlertLevel.UNDEFINED) {
                 sb.append(level.getValue());
@@ -118,25 +118,24 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("AlertMessage:");
-        sb.append("ALERT (");
+        String levelString;
+        String descriptionString;
         if (level != null && level.getValue() != null) {
-            sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
+            levelString = AlertLevel.getAlertLevel(level.getValue()).name();
         } else {
-            sb.append("null");
+            levelString = "null";
         }
-        sb.append(", ");
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
-                sb.append(desc.toString());
+                descriptionString = desc.name();
             } else {
-                sb.append(description.getValue());
+                descriptionString = "" + description.getValue();
             }
         } else {
-            sb.append("null");
+            descriptionString = "null";
         }
-        sb.append(")");
+        sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
     }
 

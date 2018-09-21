@@ -16,9 +16,11 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 
 public class HeartbleedCommandConfig extends AttackConfig {
 
@@ -35,6 +37,8 @@ public class HeartbleedCommandConfig extends AttackConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -42,10 +46,12 @@ public class HeartbleedCommandConfig extends AttackConfig {
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public Integer getPayloadLength() {
@@ -65,8 +71,24 @@ public class HeartbleedCommandConfig extends AttackConfig {
     public Config createConfig() {
         Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);
-        config.setWorkflowTraceType(WorkflowTraceType.FULL);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        boolean containsEc = false;
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
+                containsEc = true;
+                break;
+            }
+        }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
 }

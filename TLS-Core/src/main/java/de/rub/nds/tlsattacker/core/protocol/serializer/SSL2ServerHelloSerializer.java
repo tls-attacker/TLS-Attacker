@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
+public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SSL2ServerHelloMessage message;
 

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
 public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
+
     private final TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message,
@@ -27,13 +28,12 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
     public void prepareExtensionContent() {
 
         message.setTokenbindingVersion(chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
-        message.setParameterListLength(chooser.getConfig().getDefaultTokenBindingKeyParameters().size());
-
         ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
         for (TokenBindingKeyParameters kp : chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
             tokenbindingKeyParameters.write(kp.getValue());
         }
         message.setTokenbindingKeyParameters(tokenbindingKeyParameters.toByteArray());
+        message.setParameterListLength(message.getTokenbindingKeyParameters().getValue().length);
     }
 
 }

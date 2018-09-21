@@ -50,7 +50,7 @@ import org.apache.logging.log4j.Logger;
  * They are always automatically created based on the connections defined in the
  * workflow trace.
  * </p>
- * 
+ *
  * <p>
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
@@ -59,7 +59,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class State {
 
-    protected static final Logger LOGGER = LogManager.getLogger(State.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ContextContainer contextContainer = new ContextContainer();
     private Config config = null;
@@ -79,14 +79,14 @@ public class State {
 
     public State(Config config) {
         this.config = config;
-        runningMode = config.getDefaulRunningMode();
+        runningMode = config.getDefaultRunningMode();
         this.workflowTrace = loadWorkflowTrace();
         initState();
     }
 
     public State(Config config, WorkflowTrace workflowTrace) {
         this.config = config;
-        runningMode = config.getDefaulRunningMode();
+        runningMode = config.getDefaultRunningMode();
         this.workflowTrace = workflowTrace;
         initState();
     }
@@ -151,7 +151,7 @@ public class State {
     /**
      * Replace existing TlsContext with new TlsContext. This can only be done if
      * existingTlsContext.connection equals newTlsContext.connection.
-     * 
+     *
      * @param newTlsContext
      *            The new TlsContext to replace the old with
      */
@@ -163,13 +163,13 @@ public class State {
      * Use this convenience method when working with a single context only. It
      * should be used only if there is exactly one context defined in the state.
      * This would typically be the default context as defined in the config.
-     * 
+     *
      * Note: Be careful when changing the context. I.e. if you change it's
      * connection, the state can get out of sync.
-     * 
+     *
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
-     * 
+     *
      * @return the only context known to the state
      */
     public TlsContext getTlsContext() {
@@ -179,17 +179,17 @@ public class State {
     /**
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
-     * 
+     *
      * Note: Be careful when changing the context. I.e. if you change it's
      * connection, the state can get out of sync.
-     * 
+     *
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
-     * 
-     * 
+     *
+     *
      * @param alias
      *            The Alias for which the TLSContext should be returned
-     * 
+     *
      * @return the context with the given connection end alias
      */
     public TlsContext getTlsContext(String alias) {
@@ -221,8 +221,17 @@ public class State {
     }
 
     /**
+     * Get state's (normalized) workflow trace.
+     *
+     * @return a copy of the state's (normalized) workflow trace
+     */
+    public WorkflowTrace getWorkflowTraceCopy() {
+        return WorkflowTrace.copy(workflowTrace);
+    }
+
+    /**
      * Get a filtered copy of the state's workflow trace.
-     * 
+     *
      * @return a filtered copy of the input workflow trace
      */
     public WorkflowTrace getFilteredTraceCopy() {
@@ -232,7 +241,7 @@ public class State {
     /**
      * Return a filtered copy of the given workflow trace. This method does not
      * modify the input trace.
-     * 
+     *
      * @param trace
      *            The workflow trace that should be filtered
      * @return A filtered copy of the input workflow trace
@@ -245,7 +254,7 @@ public class State {
 
     /**
      * Apply filters to trace in place.
-     * 
+     *
      * @param trace
      *            The workflow trace that should be filtered
      */

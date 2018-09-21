@@ -8,8 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -29,7 +28,10 @@ public enum TokenBindingVersion {
     DRAFT_12(new byte[] { (byte) 0, (byte) 0xC }),
     DRAFT_13(new byte[] { (byte) 0, (byte) 0xD }),
     DRAFT_14(new byte[] { (byte) 0, (byte) 0xE }),
-    DRAFT_15(new byte[] { (byte) 0, (byte) 0xF });
+    DRAFT_15(new byte[] { (byte) 0, (byte) 0xF }),
+    DRAFT_16(new byte[] { (byte) 0, (byte) 0x10 }),
+    DRAFT_17(new byte[] { (byte) 0, (byte) 0x11 }),
+    DRAFT_18(new byte[] { (byte) 0, (byte) 0x12 });
 
     private final byte[] tokenBindingVersion;
     public static final int LENGTH = 2;
@@ -39,7 +41,7 @@ public enum TokenBindingVersion {
     static {
         MAP = new HashMap<>();
         for (TokenBindingVersion c : TokenBindingVersion.values()) {
-            MAP.put(valueToInt(c.tokenBindingVersion), c);
+            MAP.put(ArrayConverter.bytesToInt(c.tokenBindingVersion), c);
         }
     }
 
@@ -52,12 +54,8 @@ public enum TokenBindingVersion {
     }
 
     public static TokenBindingVersion getExtensionType(byte[] value) {
-        TokenBindingVersion type = MAP.get(valueToInt(value));
+        TokenBindingVersion type = MAP.get(ArrayConverter.bytesToInt(value));
         return type;
-    }
-
-    private static int valueToInt(byte[] value) {
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
     public byte getMajor() {

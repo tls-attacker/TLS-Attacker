@@ -33,10 +33,12 @@ import org.apache.logging.log4j.Logger;
 
 public class ForwardRecordsAction extends TlsAction implements ReceivingAction, SendingAction {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardRecordsAction.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    private String receiveFromAlias = null;
-    private String forwardToAlias = null;
+    @XmlElement(name = "from")
+    protected String receiveFromAlias = null;
+    @XmlElement(name = "to")
+    protected String forwardToAlias = null;
 
     @XmlTransient
     private Boolean executedAsPlanned = null;
@@ -66,19 +68,13 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
 
     /**
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
-     * 
-     * @param receiveFromAlias
-     *            The Alias of the Connection from which to receive
-     * @param forwardToAlias
-     *            The Alias of the Conntection to which to send
-     * @param receiveMessageHelper
-     *            The messageHelper to use
      */
     protected ForwardRecordsAction(String receiveFromAlias, String forwardToAlias,
             ReceiveMessageHelper receiveMessageHelper) {
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
         this.receiveMessageHelper = receiveMessageHelper;
+        sendMessageHelper = new SendMessageHelper();
     }
 
     public void setReceiveFromAlias(String receiveFromAlias) {
@@ -189,10 +185,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
         if (!Objects.equals(this.receivedRecords, other.receivedRecords)) {
             return false;
         }
-        if (!Objects.equals(this.sendRecords, other.sendRecords)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sendRecords, other.sendRecords);
     }
 
     @Override
@@ -206,10 +199,12 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty receiveFromAlias");
+            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+                    + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty forwardToAlias");
+            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+                    + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 

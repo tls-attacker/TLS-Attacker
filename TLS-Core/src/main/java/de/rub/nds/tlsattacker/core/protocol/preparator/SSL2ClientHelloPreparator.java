@@ -9,14 +9,16 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
+public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SSL2ClientHelloMessage message;
 
@@ -89,7 +91,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
     }
 
     private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
-        message.setMessageLength(length ^ 0x8000);
+        message.setMessageLength(length);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 

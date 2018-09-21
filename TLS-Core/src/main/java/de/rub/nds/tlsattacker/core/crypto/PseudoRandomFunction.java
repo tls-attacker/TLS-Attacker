@@ -28,7 +28,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  */
 public class PseudoRandomFunction {
 
-    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * master secret label
@@ -55,6 +55,12 @@ public class PseudoRandomFunction {
      */
     public static final String EXTENDED_MASTER_SECRET_LABEL = "extended master secret";
 
+    public static final String CLIENT_WRITE_KEY_LABEL = "client write key";
+
+    public static final String SERVER_WRITE_KEY_LABEL = "server write key";
+
+    public static final String IV_BLOCK_LABEL = "IV block";
+
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      *
@@ -69,12 +75,16 @@ public class PseudoRandomFunction {
      * @param size
      *            The size
      * @return the Prf output
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
+            throws CryptoException {
 
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:
+            case TLS_PRF_GOSTR3411:
+            case TLS_PRF_GOSTR3411_2012_256:
                 return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
             case TLS_PRF_LEGACY:
                 // prf legacy is the prf computation function for older protocol
@@ -101,7 +111,8 @@ public class PseudoRandomFunction {
      *            The size
      * @return the Prf output
      */
-    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
+    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
+            throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;

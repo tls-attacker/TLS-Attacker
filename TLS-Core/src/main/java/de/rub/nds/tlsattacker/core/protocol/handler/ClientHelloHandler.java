@@ -19,8 +19,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
@@ -34,8 +35,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -69,8 +74,12 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                 && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-            adjustEarlyTrafficSecret();
-            setClientRecordCipherEarly();
+            try {
+                adjustEarlyTrafficSecret();
+                setClientRecordCipherEarly();
+            } catch (CryptoException ex) {
+                throw new AdjustmentException("Could not adjust", ex);
+            }
         }
     }
 
@@ -161,12 +170,16 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
-            adjustEarlyTrafficSecret();
-            setClientRecordCipherEarly();
+            try {
+                adjustEarlyTrafficSecret();
+                setClientRecordCipherEarly();
+            } catch (CryptoException ex) {
+                LOGGER.warn("Encountered an exception in adjust after Serialize", ex);
+            }
         }
     }
 
-    private void adjustEarlyTrafficSecret() {
+    private void adjustEarlyTrafficSecret() throws CryptoException {
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser()
                 .getEarlyDataCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext
@@ -181,7 +194,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
 
-    private void setClientRecordCipherEarly() {
+    private void setClientRecordCipherEarly() throws CryptoException {
         try {
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");

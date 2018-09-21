@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.state.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SessionTicketSerializer extends Serializer<SessionTicket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SessionTicket sessionTicket;
 

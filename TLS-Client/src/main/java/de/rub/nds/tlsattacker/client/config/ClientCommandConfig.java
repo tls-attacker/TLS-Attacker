@@ -15,15 +15,16 @@ import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
@@ -46,7 +47,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private EllipticCurveDelegate ellipticCurveDelegate;
+    private NamedGroupsDelegate ellipticCurveDelegate;
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
@@ -71,6 +72,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate
     private ListDelegate listDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -78,7 +81,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.hostnameExtensionDelegate = new HostnameExtensionDelegate();
-        this.ellipticCurveDelegate = new EllipticCurveDelegate();
+        this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.clientDelegate = new ClientDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
@@ -92,7 +95,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
-
+        this.starttlsDelegate = new StarttlsDelegate();
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -110,6 +113,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
         addDelegate(configOutputDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     @Override

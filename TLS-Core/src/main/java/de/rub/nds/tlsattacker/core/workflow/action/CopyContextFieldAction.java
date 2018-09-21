@@ -99,10 +99,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
         if (!Objects.equals(this.srcConnectionAlias, other.srcConnectionAlias)) {
             return false;
         }
-        if (!Objects.equals(this.dstConnectionAlias, other.dstConnectionAlias)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.dstConnectionAlias, other.dstConnectionAlias);
     }
 
     @Override
@@ -116,10 +113,12 @@ public abstract class CopyContextFieldAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((srcConnectionAlias == null) || (srcConnectionAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty receiveFromAlias");
+            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+                    + " with empty src alias (if using XML: add <from/>)");
         }
         if ((dstConnectionAlias == null) || (dstConnectionAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty forwardToAlias");
+            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
+                    + " with empty dst alias (if using XML: add <to/>)");
         }
     }
 }

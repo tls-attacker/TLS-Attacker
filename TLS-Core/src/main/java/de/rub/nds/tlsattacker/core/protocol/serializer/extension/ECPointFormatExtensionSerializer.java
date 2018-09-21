@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ECPointFormatExtensionSerializer extends ExtensionSerializer<ECPointFormatExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ECPointFormatExtensionMessage msg;
 

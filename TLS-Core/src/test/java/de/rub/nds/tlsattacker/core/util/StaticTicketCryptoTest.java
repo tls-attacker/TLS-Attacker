@@ -12,14 +12,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class StaticTicketCryptoTest {
-    private static final Logger LOGGER = LogManager.getLogger(StaticTicketCryptoTest.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public StaticTicketCryptoTest() {
     }
@@ -51,9 +53,11 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testEncDecAES_128_CBC() {
+    public void testEncDecAES_128_CBC() throws CryptoException {
         LOGGER.info("EncDec AES128 CBC with random 16 byte key/iv and 120 byte message.");
         byte[] plaintext = new byte[120];
         RandomHelper.getRandom().nextBytes(plaintext);
@@ -86,9 +90,11 @@ public class StaticTicketCryptoTest {
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testGenerateHMAC_SHA256() {
+    public void testGenerateHMAC_SHA256() throws CryptoException {
         LOGGER.info("Generate HMAC SHA256");
         byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
         byte[] key = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
@@ -102,9 +108,11 @@ public class StaticTicketCryptoTest {
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testVerifyHMAC_SHA256() {
+    public void testVerifyHMAC_SHA256() throws CryptoException {
         LOGGER.info("Verify HMAC SHA256");
         byte[] mac = ArrayConverter
                 .hexStringToByteArray("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
@@ -117,9 +125,11 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testGenVrfyHMAC_SHA256() {
+    public void testGenVrfyHMAC_SHA256() throws CryptoException {
         LOGGER.info("GenVrfy HMAC SHA256 with random 20 byte key and 120 byte message.");
         byte[] plaintext = new byte[120];
         byte[] key = new byte[20];

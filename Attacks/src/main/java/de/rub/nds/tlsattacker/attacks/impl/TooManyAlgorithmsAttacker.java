@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -21,23 +19,24 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
-    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {
-        super(config);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = config.createConfig();
-        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
+        Config tlsConfig = getTlsConfig();
+        tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         List<SignatureAndHashAlgorithm> algorithmList = new LinkedList<>();
-        Random random = new Random(0);
         for (int i = 0; i < 33; i++) {
-            algorithmList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(random), HashAlgorithm
-                    .getRandom(random)));
+            algorithmList.add(SignatureAndHashAlgorithm.DSA_MD5);
         }
         tlsConfig.setSupportedSignatureAndHashAlgorithms(algorithmList);
         WorkflowTrace trace = new WorkflowTrace();
@@ -49,16 +48,7 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
 
     @Override
     public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -54,10 +54,20 @@ public class OutboundConnection extends AliasedConnection {
     public String toString() {
         StringBuilder sb = new StringBuilder("OutboundConnection{");
         sb.append(" alias=").append(alias);
+        sb.append(" host=").append(hostname);
         sb.append(" port=").append(port);
         sb.append(" type=").append(transportHandlerType);
         sb.append(" timeout=").append(timeout);
         sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder("OutboundConnection[");
+        sb.append(alias);
+        sb.append(":").append(hostname);
+        sb.append(":").append(port).append("]");
         return sb.toString();
     }
 

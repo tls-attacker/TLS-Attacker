@@ -16,7 +16,7 @@ public enum KeyExchangeAlgorithm {
     DHE_PSK,
     DH_ANON,
     RSA,
-    RSA_PSK,
+    PSK_RSA,
     DH_DSS,
     DH_RSA,
     KRB5,
@@ -30,15 +30,61 @@ public enum KeyExchangeAlgorithm {
     ECDHE_ECDSA,
     ECDHE_RSA,
     ECDHE_PSK,
-    GOSTR341001,
-    GOSTR341094,
+    VKO_GOST01,
+    VKO_GOST12,
     FORTEZZA_KEA,
     ECMQV_ECDSA,
     ECMQV_ECNRA,
     ECDH_ECNRA,
     CECPQ1_ECDSA;
 
-    public static boolean isEC(KeyExchangeAlgorithm algorithm) {
-        return algorithm.name().contains("EC");
+    public CertificateKeyType getRequiredCertPublicKeyType() {
+        switch (this) {
+            case DHE_DSS:
+            case SRP_SHA_DSS:
+                return CertificateKeyType.DSS;
+            case ECDHE_RSA:
+            case PSK_RSA:
+            case RSA:
+            case DHE_RSA:
+            case SRP_SHA_RSA:
+                return CertificateKeyType.RSA;
+            case DH_DSS:
+            case DH_RSA:
+                return CertificateKeyType.DH;
+            case ECDH_ECNRA:
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+            case ECDH_RSA:
+                return CertificateKeyType.ECDSA;
+            case NULL:
+            case DHE_PSK:
+            case DH_ANON:
+            case ECDHE_PSK:
+            case ECDH_ANON:
+            case PSK:
+            case SRP_SHA:
+                return CertificateKeyType.NONE;
+            case VKO_GOST01:
+                return CertificateKeyType.GOST01;
+            case VKO_GOST12:
+                return CertificateKeyType.GOST12;
+            case ECMQV_ECNRA:
+            case FORTEZZA_KEA:
+            case KRB5:
+
+            default:
+                throw new UnsupportedOperationException("Currently unsupported");
+        }
+    }
+
+    public boolean isEC() {
+        return this.name().contains("EC");
+    }
+
+    public boolean isAnon() {
+        return this.name().contains("ANON");
     }
 }

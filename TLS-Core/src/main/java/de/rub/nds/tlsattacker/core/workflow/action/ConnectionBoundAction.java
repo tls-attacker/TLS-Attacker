@@ -138,10 +138,7 @@ public abstract class ConnectionBoundAction extends TlsAction {
             return false;
         }
         final ConnectionBoundAction other = (ConnectionBoundAction) obj;
-        if (!Objects.equals(this.connectionAlias, other.connectionAlias)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.connectionAlias, other.connectionAlias);
     }
 
 }

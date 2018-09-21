@@ -9,15 +9,18 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RenegotiationInfoExtensionHandler extends ExtensionHandler<RenegotiationInfoExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RenegotiationInfoExtensionHandler(TlsContext context) {
         super(context);
@@ -46,6 +49,8 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
         }
         if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
             context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+            LOGGER.debug("The context RenegotiationInfo was set to "
+                    + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1
@@ -53,8 +58,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
                 context.setSecureRenegotiation(true);
             }
         }
-        LOGGER.debug("The context RenegotiationInfo was set to "
-                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
+
     }
 
 }

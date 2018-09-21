@@ -9,14 +9,14 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
@@ -35,11 +35,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreSharedKeyExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;
@@ -64,12 +68,17 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     private void prepareLists() {
-        for (PSKIdentity pskIdentity : msg.getIdentities()) {
-            new PSKIdentityPreparator(chooser, pskIdentity).prepare();
+        if (msg.getIdentities() != null) {
+            for (PSKIdentity pskIdentity : msg.getIdentities()) {
+                new PSKIdentityPreparator(chooser, pskIdentity).prepare();
+            }
         }
-        for (PSKBinder pskBinder : msg.getBinders()) {
-            new PSKBinderPreparator(chooser, pskBinder).prepare();
+        if (msg.getBinders() != null) {
+            for (PSKBinder pskBinder : msg.getBinders()) {
+                new PSKBinderPreparator(chooser, pskBinder).prepare();
+            }
         }
+
     }
 
     private void prepareSelectedIdentity() {
@@ -141,6 +150,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
         List<PskSet> pskSets = chooser.getPskSets();
+        LOGGER.debug("Calculating Binders");
         for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
@@ -171,9 +181,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                 {
                     chooser.getContext().setEarlyDataPsk(psk);
                 }
-            } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
-                LOGGER.error("Error in binder calculation");
-                throw new WorkflowExecutionException(ex.toString());
+            } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
+                throw new PreparationException("Could not calculate Binders", ex);
             }
         }
     }

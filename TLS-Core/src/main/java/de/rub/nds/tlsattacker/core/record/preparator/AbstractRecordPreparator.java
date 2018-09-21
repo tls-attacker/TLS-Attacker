@@ -13,12 +13,16 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
  *            The AbstractRecord that should be prepared
  */
 public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends Preparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected ProtocolMessageType type;
 

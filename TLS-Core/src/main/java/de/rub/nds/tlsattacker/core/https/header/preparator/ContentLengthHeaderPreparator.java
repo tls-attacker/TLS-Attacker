@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ContentLengthHeaderPreparator extends Preparator<ContentLengthHeader> {
 
-    private ContentLengthHeader header;
+    private final ContentLengthHeader header;
 
     public ContentLengthHeaderPreparator(Chooser chooser, ContentLengthHeader header) {
         super(chooser, header);

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Serializer<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Serializer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The ByteArrayOutputStream with which the byte[] is constructed.
@@ -40,7 +40,7 @@ public abstract class Serializer<T> {
     /**
      * This method is responsible to write the appropriate bytes to the output
      * Stream This should be done by calling the different append methods.
-     * 
+     *
      * @return The already serialized Bytes
      */
     protected abstract byte[] serializeBytes();
@@ -67,7 +67,7 @@ public abstract class Serializer<T> {
 
     /**
      * Adds a byte to the final byte[].
-     * 
+     *
      * @param b
      *            Byte which should be added
      */
@@ -77,7 +77,7 @@ public abstract class Serializer<T> {
 
     /**
      * Adds a byte[] to the final byte[].
-     * 
+     *
      * @param bytes
      *            bytes that should be added
      */
@@ -96,7 +96,7 @@ public abstract class Serializer<T> {
 
     /**
      * Creates the final byte[]
-     * 
+     *
      * @return The final byte[]
      */
     public final byte[] serialize() {

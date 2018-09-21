@@ -44,14 +44,6 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm() == SignatureAlgorithm.ANONYMOUS);
     }
 
-    @Test
-    public void testAdjustInvalidTLSContext() {
-        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
-        msg.setSignatureAndHashAlgorithms(new byte[] { 99, 99 });
-        handler.adjustTLSContext(msg);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
-    }
-
     /**
      * Test of getParser method, of class
      * SignatureAndHashAlgorithmsExtensionHandler.

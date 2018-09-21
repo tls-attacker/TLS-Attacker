@@ -31,7 +31,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private final HandshakeMessageType type;
     private final int length;
     private final byte curveType;
-    private final byte[] namedCurve;
+    private final byte[] namedGroup;
     private final int pubKeyLength;
     private final byte[] pubKey;
     private final byte[] signatureAndHashAlgo;
@@ -40,13 +40,13 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private final ProtocolVersion version;
 
     public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
-            byte[] namedCurve, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
+            byte[] namedGroup, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
             byte[] signature, ProtocolVersion version) {
         this.expectedPart = message;
         this.type = type;
         this.length = length;
         this.curveType = curveType;
-        this.namedCurve = namedCurve;
+        this.namedGroup = namedGroup;
         this.pubKeyLength = pubKeyLength;
         this.pubKey = pubKey;
         this.signatureAndHashAlgo = signatureAndHashAlgo;
@@ -66,7 +66,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setCurveType(curveType);
         msg.setLength(length);
         msg.setType(type.getValue());
-        msg.setNamedCurve(namedCurve);
+        msg.setNamedGroup(namedGroup);
         msg.setPublicKey(pubKey);
         msg.setPublicKeyLength(pubKeyLength);
         if (signatureAndHashAlgo != null) {

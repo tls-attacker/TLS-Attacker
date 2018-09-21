@@ -10,16 +10,13 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
-import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -31,13 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.join;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 
-    @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate. In case TLS Client is used, the client sends ClientCertificate in the TLS handshake. Use keyword empty to enforce an empty ClientCertificate message.")
+    @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate")
     private String keystore = null;
 
     @Parameter(names = "-password", description = "Java Key Store (JKS) file password")
@@ -92,63 +87,29 @@ public class CertificateDelegate extends Delegate {
                     + join(mandatoryParameters.keySet()));
         }
         try {
+            ConnectionEndType type;
+            switch (config.getDefaultRunningMode()) {
+                case CLIENT:
+                    type = ConnectionEndType.CLIENT;
+                    break;
+                case MITM:
+                    throw new ConfigurationException("CertificateDelegate is not allowed for MitM running mode");
+                case SERVER:
+                    type = ConnectionEndType.SERVER;
+                    break;
+                default:
+                    throw new ConfigurationException("Unknown RunningMode");
+            }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
-            PrivateKey key = null;
-            try {
-                key = (PrivateKey) store.getKey(alias, password.toCharArray());
-            } catch (UnrecoverableKeyException ex) {
-                throw new ConfigurationException("Could not load private Key from Keystore", ex);
-            }
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            cert.encode(stream);
-            try {
-                if (CertificateUtils.hasDHParameters(cert)) {
-                    DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
-                    applyDHParameters(config, dhParameters);
-                    config.setDefaultDsaCertificate(stream.toByteArray()); // TODO
-                    LOGGER.warn("DH/DSA certificates not fully supported yet");
-                } else if (CertificateUtils.hasECParameters(cert)) {
-                    applyECParameters(config, CertificateUtils.extractECPublicKeyParameters(cert), CertificateUtils
-                            .ecPrivateKeyFromPrivateKey(key).getS());
-                    config.setDefaultEcCertificate(stream.toByteArray());
-                } else if (CertificateUtils.hasRSAParameters(cert)) {
-                    applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
-                            CertificateUtils.extractRSAPublicKey(cert),
-                            CertificateUtils.rsaPrivateKeyFromPrivateKey(key).getPrivateExponent());
-                    config.setDefaultRsaCertificate(stream.toByteArray());
-                }
-            } catch (IOException E) {
-                throw new ConfigurationException("Could not load private Key from Keystore", E);
-            }
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
+            PrivateKey privateKey = null;
+            privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
+            CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
+            pair.adjustInConfig(config, type);
+            config.setAutoSelectCertificate(false);
+        } catch (UnrecoverableKeyException | KeyStoreException | IOException | NoSuchAlgorithmException
+                | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
-    }
-
-    private void applyDHParameters(Config config, DHPublicKeyParameters dhParameters) {
-        config.setDefaultDhModulus(dhParameters.getParameters().getP());
-        config.setDefaultDhGenerator(dhParameters.getParameters().getG());
-        config.setDefaultClientDhPublicKey(dhParameters.getY());
-        config.setDefaultServerDhPublicKey(dhParameters.getY());
-    }
-
-    private void applyECParameters(Config config, ECPublicKeyParameters ecParameters, BigInteger privateKey) {
-        config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
-                .getCurve()));
-        CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
-                .getQ().getRawYCoord().toBigInteger());
-        config.setDefaultClientEcPublicKey(publicKey);
-        config.setDefaultServerEcPublicKey(publicKey);
-        config.setDefaultClientEcPrivateKey(privateKey);
-        config.setDefaultServerEcPrivateKey(privateKey);
-    }
-
-    private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey, BigInteger privateKey) {
-        config.setDefaultRSAModulus(modulus);
-        config.setDefaultClientRSAPublicKey(publicKey);
-        config.setDefaultServerRSAPublicKey(publicKey);
-        config.setDefaultClientRSAPrivateKey(privateKey);
-        config.setDefaultServerRSAPrivateKey(privateKey);
     }
 }

@@ -15,16 +15,13 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ConnectivityChecker {
 
-    private final Connection connection;
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Attacker.class);
+    private final Connection connection;
 
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;

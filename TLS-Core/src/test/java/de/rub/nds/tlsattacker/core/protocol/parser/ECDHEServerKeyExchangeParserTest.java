@@ -114,8 +114,8 @@ public class ECDHEServerKeyExchangeParserTest {
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(length == msg.getLength().getValue());
         assertTrue(type.getValue() == msg.getType().getValue());
-        assertTrue(curveType == msg.getCurveType().getValue());
-        assertArrayEquals(namedCurve, msg.getNamedCurve().getValue());
+        assertTrue(curveType == msg.getGroupType().getValue());
+        assertArrayEquals(namedCurve, msg.getNamedGroup().getValue());
         assertTrue(pubKeyLength == msg.getPublicKeyLength().getValue());
         assertArrayEquals(pubKey, msg.getPublicKey().getValue());
         byte[] tempSignatureAndHashAlgo = null;

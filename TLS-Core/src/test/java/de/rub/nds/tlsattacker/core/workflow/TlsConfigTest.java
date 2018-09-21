@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.security.Security;
-import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -31,14 +28,6 @@ public class TlsConfigTest {
     @Test
     public void testReadFromResource() {
         assertNotNull(Config.createConfig());
-    }
-
-    @Test
-    public void testDefaultCertificates() throws IOException {
-        Config config = Config.createConfig();
-        Certificate cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultRsaCertificate()));
-        cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultEcCertificate()));
-        cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultDsaCertificate()));
     }
 
 }

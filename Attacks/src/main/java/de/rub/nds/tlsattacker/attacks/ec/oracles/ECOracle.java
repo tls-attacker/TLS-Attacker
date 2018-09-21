@@ -19,20 +19,22 @@ public abstract class ECOracle {
     /**
      * logger
      */
-    static Logger LOGGER = LogManager.getLogger(ECOracle.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /*
      * number of queries issued to oracle
      */
     long numberOfQueries;
 
-    /** curve used by the oracle */
+    /**
+     * curve used by the oracle
+     */
     Curve curve;
 
     /**
      * Takes an ec point and a guessed secret and returns true, in case the
      * secret was guessed correctly.
-     * 
+     *
      * @param ecPoint
      *            The Point
      * @param guessedSecret
@@ -45,7 +47,7 @@ public abstract class ECOracle {
      * Sends the oracle a request with a guessed secret key resulting from the
      * attack. The oracle responds with true, in case the guessed key was
      * correct.
-     * 
+     *
      * @param guessedSecret
      *            The guessed Secret
      * @return True if the Solution is correct
