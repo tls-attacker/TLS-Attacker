@@ -8,19 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class KeySetGeneratorTest {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     public KeySetGeneratorTest() {
     }
@@ -51,7 +55,8 @@ public class KeySetGeneratorTest {
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
                 } catch (NoSuchAlgorithmException | CryptoException ex) {
-                    fail(ex.toString());
+                    LOGGER.error(ex);
+                    fail();
                 }
             }
         }

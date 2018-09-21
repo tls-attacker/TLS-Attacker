@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandle
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
@@ -92,7 +93,7 @@ import org.apache.logging.log4j.Logger;
 
 public class HandlerFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
@@ -204,6 +205,7 @@ public class HandlerFactory {
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:
                     return new HeartbeatExtensionHandler(context);
+                case KEY_SHARE_OLD:
                 case KEY_SHARE:
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
                         return new HrrKeyShareExtensionHandler(context);
@@ -282,7 +284,7 @@ public class HandlerFactory {
                 return new PskDhClientKeyExchangeHandler(context);
             case ECDHE_PSK:
                 return new PskEcDhClientKeyExchangeHandler(context);
-            case RSA_PSK:
+            case PSK_RSA:
                 return new PskRsaClientKeyExchangeHandler(context);
             case PSK:
                 return new PskClientKeyExchangeHandler(context);
@@ -290,6 +292,9 @@ public class HandlerFactory {
             case SRP_SHA_RSA:
             case SRP_SHA:
                 return new SrpClientKeyExchangeHandler(context);
+            case VKO_GOST01:
+            case VKO_GOST12:
+                return new GOSTClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
@@ -309,6 +314,7 @@ public class HandlerFactory {
             case ECDH_ECDSA:
             case ECDH_RSA:
             case ECDHE_RSA:
+            case ECDH_ANON:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

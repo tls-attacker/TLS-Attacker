@@ -9,8 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PaddingExtensionMessage message;
 

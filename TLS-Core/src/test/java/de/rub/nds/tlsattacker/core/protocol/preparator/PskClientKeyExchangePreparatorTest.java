@@ -48,10 +48,10 @@ public class PskClientKeyExchangePreparatorTest {
 
         // Tests
         assertArrayEquals(PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
-        assertNotNull(message.getComputations().getClientRandom());
+        assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientRandom()
+                        ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientServerRandom()
                         .getValue());
 
     }

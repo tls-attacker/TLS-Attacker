@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -19,8 +19,11 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -29,6 +32,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected byte[] serializedPoint;
     protected byte[] premasterSecret;
@@ -47,11 +52,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         prepareEcdhParams();
     }
 
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
+    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedCurve.getValue()));
+                namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedCurve[] { chooser.getSelectedCurve() },
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { namedGroup },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
@@ -89,34 +94,40 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        // TODO this is spooky
+    protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        prepareClientRandom(msg);
-        NamedCurve usedCurve = chooser.getSelectedCurve();
-        LOGGER.debug("Used Curve: " + usedCurve.name());
+        prepareClientServerRandom(msg);
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        LOGGER.debug("Used Group: " + usedGroup.name());
         setComputationPrivateKey(msg, clientMode);
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         if (clientMode) {
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
-            msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
-            msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
+                msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
+                msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            } else {
+                LOGGER.warn("Could not compute correct public key. Using empty one instead");
+                msg.getComputations().setComputedPublicKeyX(BigInteger.ZERO);
+                msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
+            }
         }
-        setComputationPublicKey(msg, clientMode);
 
+        setComputationPublicKey(msg, clientMode);
         LOGGER.debug("PublicKey used:" + msg.getComputations().getPublicKey().toString());
-        LOGGER.debug("PrivateKey used:" + chooser.getServerEcPrivateKey());
+        LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
                 msg.getComputations().getPublicKey().getY());
+        publicKey = publicKey.normalize();
         premasterSecret = computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams),
                 new ECPrivateKeyParameters(msg.getComputations().getPrivateKey().getValue(), ecParams));
         preparePremasterSecret(msg);
@@ -127,11 +138,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
         ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
 
-        NamedCurve usedCurve = chooser.getSelectedCurve();
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getComputedPublicKeyX().getValue(),
                 msg.getComputations().getComputedPublicKeyY().getValue());
-        assert (publicKey.isValid());
         try {
             serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, publicKey);
         } catch (IOException ex) {
@@ -160,14 +170,15 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             serializedPoint = msg.getPublicKey().getValue();
             List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-            NamedCurve usedCurve = chooser.getSelectedCurve();
-            ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+            NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+            ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
             short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
             try {
                 ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, ecParams,
                         serializedPoint);
-                msg.getComputations().setPublicKey(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
-                        clientPublicKey.getQ().getRawYCoord().toBigInteger());
+                ECPoint q = clientPublicKey.getQ();
+                q = q.normalize();
+                msg.getComputations().setPublicKey(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
             } catch (IOException ex) {
                 throw new PreparationException("Could not deserialize EC Point: "
                         + ArrayConverter.bytesToHexString(serializedPoint), ex);

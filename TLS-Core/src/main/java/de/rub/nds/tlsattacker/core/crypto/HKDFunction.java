@@ -55,10 +55,6 @@ public class HKDFunction {
 
     public static final String RESUMPTION = "resumption";
 
-    public HKDFunction() {
-
-    }
-
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
@@ -193,5 +189,22 @@ public class HKDFunction {
             int outLen) throws CryptoException {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgortihm, prk, info, outLen);
+    }
+
+    static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, byte[] hexStringToByteArray, String tls13_derived,
+            byte[] hexStringToByteArray0) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    private HKDFunction() {
     }
 }

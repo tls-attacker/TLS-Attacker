@@ -10,13 +10,16 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<SrpClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger clientPublicKey;
     private byte[] premasterSecret;
@@ -57,7 +60,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 .getValue(), msg.getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword()
                 .getValue());
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
@@ -174,7 +177,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         try {
             dig = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+            LOGGER.warn(ex);
         }
         dig.update(toHash);
         return dig.digest();
@@ -207,12 +210,12 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void prepareClientRandom(SrpClientKeyExchangeMessage msg) {
+    private void prepareClientServerRandom(SrpClientKeyExchangeMessage msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        random = msg.getComputations().getClientRandom().getValue();
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        random = msg.getComputations().getClientServerRandom().getValue();
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -225,7 +228,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                     privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
                     chooser.getSRPIdentity(), chooser.getSRPPassword());
             preparePremasterSecret(msg);
-            prepareClientRandom(msg);
+            prepareClientServerRandom(msg);
         }
     }
 

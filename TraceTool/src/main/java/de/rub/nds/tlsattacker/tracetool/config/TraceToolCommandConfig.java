@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TraceToolCommandConfig extends TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TraceToolCommandConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String COMMAND = "tracetool";
 

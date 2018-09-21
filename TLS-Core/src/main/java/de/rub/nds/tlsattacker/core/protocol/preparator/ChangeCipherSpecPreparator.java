@@ -10,11 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
-    private final ChangeCipherSpecMessage msg;
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final static byte CCS_PROTOCOL_TYPE = 1;
+    private final ChangeCipherSpecMessage msg;
 
     public ChangeCipherSpecPreparator(Chooser chooser, ChangeCipherSpecMessage message) {
         super(chooser, message);

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 
 public class PSKRSAPremasterComputations extends KeyExchangeComputations {
@@ -20,7 +19,6 @@ public class PSKRSAPremasterComputations extends KeyExchangeComputations {
     private ModifiableByteArray padding;
 
     private ModifiableByteArray encryptedPremasterSecret;
-    private ModifiableInteger encryptedPremasterSecretLength;
 
     private ModifiableByteArray psk;
 
@@ -52,19 +50,6 @@ public class PSKRSAPremasterComputations extends KeyExchangeComputations {
 
     public void setEncryptedPremasterSecret(byte[] value) {
         this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
-    }
-
-    public ModifiableInteger getEncryptedPremasterSecretLength() {
-        return encryptedPremasterSecretLength;
-    }
-
-    public void setEncryptedPremasterSecretLength(ModifiableInteger encryptedPremasterSecretLength) {
-        this.encryptedPremasterSecretLength = encryptedPremasterSecretLength;
-    }
-
-    public void setEncryptedPremasterSecretLength(int value) {
-        this.encryptedPremasterSecretLength = ModifiableVariableFactory.safelySetValue(
-                this.encryptedPremasterSecretLength, value);
     }
 
     public ModifiableByteArray getPadding() {

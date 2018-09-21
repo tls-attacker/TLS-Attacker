@@ -13,9 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSessionTicketMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final NewSessionTicketMessage msg;
 
@@ -45,8 +48,8 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
             writeTicketIdentity(msg);
             writeExtensions();
         } else {
-            writeTicketLength(msg);
-            writeTicket(msg);
+            throw new UnsupportedOperationException(
+                    "NewSessionTicket message is currently not supported for not TLS 1.3");
         }
 
         return getAlreadySerialized();

@@ -75,7 +75,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class SerializationFullTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SerializationFullTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -87,9 +87,9 @@ public class SerializationFullTest {
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);
-        config.setAddMaxFragmentLengthExtenstion(true);
+        config.setAddMaxFragmentLengthExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddKeyShareExtension(true);
         config.setAddPaddingExtension(true);

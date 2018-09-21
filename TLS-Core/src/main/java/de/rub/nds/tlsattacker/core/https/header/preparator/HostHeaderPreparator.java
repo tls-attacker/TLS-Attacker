@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class HostHeaderPreparator extends Preparator<HostHeader> {
 
-    private HostHeader header;
+    private final HostHeader header;
 
     public HostHeaderPreparator(Chooser chooser, HostHeader header) {
         super(chooser, header);

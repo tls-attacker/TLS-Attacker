@@ -31,12 +31,7 @@ import org.junit.Test;
 
 public class InboundConnectionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(InboundConnectionTest.class);
-
-    @XmlRootElement
-    @XmlAccessorType(XmlAccessType.FIELD)
-    private static class TestXmlRoot extends InboundConnection {
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private StringWriter writer;
     private JAXBContext context;
@@ -88,7 +83,7 @@ public class InboundConnectionTest {
     /**
      * Verify that the ServerConnectionEnd includes manually set values in
      * serialization output.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -287,4 +282,8 @@ public class InboundConnectionTest {
     // assertEquals(expected, actual);
     // assertNotSame(expected, actual);
     // }
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    private static class TestXmlRoot extends InboundConnection {
+    }
 }

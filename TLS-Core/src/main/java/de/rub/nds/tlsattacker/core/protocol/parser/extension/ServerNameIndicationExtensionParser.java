@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerNameIndicationExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<ServerNamePair> pairList;
 

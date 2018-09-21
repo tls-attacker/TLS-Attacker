@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class PskEcDheServerKeyExchangeMessageTest {
 
@@ -34,7 +34,7 @@ public class PskEcDheServerKeyExchangeMessageTest {
         StringBuilder sb = new StringBuilder();
         sb.append("PskEcDheServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ").append("null");
-        sb.append("\n  Named Curve: ").append("null");
+        sb.append("\n  Named Group: ").append("null");
         sb.append("\n  Public Key: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

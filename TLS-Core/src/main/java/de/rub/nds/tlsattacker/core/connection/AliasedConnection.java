@@ -75,6 +75,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
         }
     }
 
+    public abstract String toCompactString();
+
     @Override
     public String aliasesToString() {
         return alias;
@@ -112,6 +114,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
         return DEFAULT_CONNECTION_ALIAS;
     }
 
+    @Override
     public abstract ConnectionEndType getLocalConnectionEndType();
 
     @Override
@@ -127,10 +130,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
             return false;
         }
         final AliasedConnection other = (AliasedConnection) obj;
-        if (!Objects.equals(this.alias, other.alias)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.alias, other.alias);
     }
 
     public void normalize(AliasedConnection defaultCon) {

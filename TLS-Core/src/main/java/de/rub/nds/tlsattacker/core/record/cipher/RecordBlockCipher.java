@@ -11,7 +11,10 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -19,19 +22,14 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class RecordBlockCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * indicates if explicit IV values should be used (as in TLS 1.1 and higher)
@@ -40,51 +38,27 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * mac for verification of incoming messages
      */
-    private Mac readMac;
+    private WrappedMac readMac;
     /**
      * mac object for macing outgoing messages
      */
-    private Mac writeMac;
-    /**
-     * encryption IV
-     */
-    private IvParameterSpec encryptIv;
-    /**
-     * decryption IV
-     */
-    private IvParameterSpec decryptIv;
+    private WrappedMac writeMac;
 
     public RecordBlockCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         if (version.usesExplicitIv()) {
             useExplicitIv = true;
         }
-        initCipherAndMac();
-
-    }
-
-    private void initCipherAndMac() throws UnsupportedOperationException {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
 
         try {
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
-                    cipherSuite);
-            readMac = Mac.getInstance(macAlg.getJavaName());
-            writeMac = Mac.getInstance(macAlg.getJavaName());
-
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
-            if (getKeySet().getClientWriteIv() != null && getKeySet().getServerWriteIv() != null) {
-                encryptIv = new IvParameterSpec(getKeySet().getWriteIv(localConEndType));
-                decryptIv = new IvParameterSpec(getKeySet().getReadIv(localConEndType));
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException E) {
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
+            readMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
+        } catch (NoSuchAlgorithmException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
         }
-
     }
 
     @Override
@@ -92,12 +66,9 @@ public final class RecordBlockCipher extends RecordCipher {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
         byte[] result;
         if (connectionEndType == context.getChooser().getConnectionEndType()) {
-            writeMac.update(data);
-            result = writeMac.doFinal();
-
+            result = writeMac.calculateMac(data);
         } else {
-            readMac.update(data);
-            result = readMac.doFinal();
+            result = readMac.calculateMac(data);
         }
         LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
@@ -113,28 +84,21 @@ public final class RecordBlockCipher extends RecordCipher {
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
         try {
-            byte[] ciphertext;
-            encryptIv = new IvParameterSpec(request.getInitialisationVector());
-            encryptCipher.init(
-                    Cipher.ENCRYPT_MODE,
-                    new SecretKeySpec(getKeySet().getWriteKey(context.getTalkingConnectionEndType()), bulkCipherAlg
-                            .getJavaName()), encryptIv);
-            ciphertext = encryptCipher.update(request.getPlainText());
+            byte[] ciphertext = encryptCipher.encrypt(request.getInitialisationVector(), request.getPlainText());
             if (!useExplicitIv) {
-                setNextEncryptIv(ciphertext);
+                encryptCipher.setIv(extractNextEncryptIv(ciphertext));
             }
-            LOGGER.debug("encryptIv: " + ArrayConverter.bytesToHexString(encryptIv.getIV()));
-            return new EncryptionResult(encryptIv.getIV(), ciphertext, useExplicitIv);
+            LOGGER.debug("EncryptIv: " + ArrayConverter.bytesToHexString(encryptCipher.getIv()));
+            return new EncryptionResult(encryptCipher.getIv(), ciphertext, useExplicitIv);
 
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException ex) {
-            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", ex);
+        } catch (CryptoException ex) {
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.", ex);
             return new EncryptionResult(request.getPlainText());
         }
     }
 
-    private void setNextEncryptIv(byte[] ciphertext) {
-        encryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
-                ciphertext.length - encryptCipher.getBlockSize(), ciphertext.length));
+    private byte[] extractNextEncryptIv(byte[] ciphertext) {
+        return Arrays.copyOfRange(ciphertext, ciphertext.length - encryptCipher.getBlocksize(), ciphertext.length);
     }
 
     /**
@@ -148,44 +112,29 @@ public final class RecordBlockCipher extends RecordCipher {
         try {
             byte[] plaintext;
             byte[] usedIv;
-            if (decryptionRequest.getCipherText().length % decryptCipher.getBlockSize() != 0) {
+            if (decryptionRequest.getCipherText().length % decryptCipher.getBlocksize() != 0) {
                 LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
                 return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
             }
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
-                decryptIv = new IvParameterSpec(Arrays.copyOf(decryptionRequest.getCipherText(),
-                        decryptCipher.getBlockSize()));
-                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
-
-                decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
-                        bulkCipherAlg.getJavaName()), decryptIv);
-                plaintext = decryptCipher.doFinal(Arrays.copyOfRange(decryptionRequest.getCipherText(),
-                        decryptCipher.getBlockSize(), decryptionRequest.getCipherText().length));
-                usedIv = decryptIv.getIV();
+                byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
+                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
+                plaintext = decryptCipher.decrypt(decryptIv, Arrays.copyOfRange(decryptionRequest.getCipherText(),
+                        decryptCipher.getBlocksize(), decryptionRequest.getCipherText().length));
+                usedIv = decryptIv;
             } else {
-                decryptIv = new IvParameterSpec(getDecryptionIV());
-                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
-
-                decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
-                        bulkCipherAlg.getJavaName()), decryptIv);
-                plaintext = decryptCipher.doFinal(decryptionRequest.getCipherText());
-                usedIv = decryptIv.getIV();
+                byte[] decryptIv = getDecryptionIV();
+                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
+                plaintext = decryptCipher.decrypt(decryptIv, decryptionRequest.getCipherText());
+                usedIv = decryptIv;
                 // Set next IV
-                setNextDecryptIv(decryptionRequest.getCipherText());
             }
 
             return new DecryptionResult(usedIv, plaintext, useExplicitIv);
-        } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
-                | InvalidKeyException | UnsupportedOperationException ex) {
+        } catch (CryptoException | UnsupportedOperationException ex) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", ex);
             return new DecryptionResult(null, decryptionRequest.getCipherText(), useExplicitIv);
         }
-    }
-
-    private void setNextDecryptIv(byte[] ciphertext) {
-        decryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
-                ciphertext.length - decryptCipher.getBlockSize(), ciphertext.length));
     }
 
     @Override
@@ -205,7 +154,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
     @Override
     public int calculatePaddingLength(int dataLength) {
-        return encryptCipher.getBlockSize() - (dataLength % encryptCipher.getBlockSize());
+        return encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize());
     }
 
     @Override
@@ -231,7 +180,13 @@ public final class RecordBlockCipher extends RecordCipher {
             context.getRandom().nextBytes(iv);
             return iv;
         } else {
-            return encryptIv.getIV();
+            byte[] tempIv = encryptCipher.getIv();
+            if (tempIv == null) {
+                ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+                return getKeySet().getWriteIv(localConEndType);
+            } else {
+                return tempIv;
+            }
         }
     }
 
@@ -240,7 +195,13 @@ public final class RecordBlockCipher extends RecordCipher {
         if (useExplicitIv) {
             return new byte[0];
         } else {
-            return decryptIv.getIV();
+            byte[] tempIv = decryptCipher.getIv();
+            if (tempIv == null) {
+                ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+                return getKeySet().getReadIv(localConEndType);
+            } else {
+                return tempIv;
+            }
         }
     }
 }

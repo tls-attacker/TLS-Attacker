@@ -28,6 +28,8 @@ import java.security.spec.ECPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Random;
 import javax.crypto.KeyAgreement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is here only to test some results from our invalid curve paper,
@@ -35,6 +37,8 @@ import javax.crypto.KeyAgreement;
  * patched.
  */
 public class TestECSunOracle extends ECOracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ECComputer computer;
 

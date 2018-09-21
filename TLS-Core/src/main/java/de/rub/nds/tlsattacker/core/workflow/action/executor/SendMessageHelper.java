@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SendMessageHelper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendMessageHelper() {
     }
@@ -63,6 +63,8 @@ public class SendMessageHelper {
             }
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+            } else {
+                LOGGER.debug("Not adding message bytes for " + message.toCompactString() + " - goingToBeSent is false!");
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
 import java.security.spec.ECParameterSpec;
 import java.util.ArrayList;
@@ -24,21 +24,22 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class CustomECPrivateKeyTest {
-
-    @Parameter(0)
-    public NamedCurve curve;
-
-    @Rule
-    public ErrorCollector collector = new ErrorCollector();
-
     @Parameters
     public static Iterable<Object[]> createParameters() {
         List<Object[]> testValues = new ArrayList<>();
-        for (NamedCurve curve : NamedCurve.getImplemented()) {
-            testValues.add(new Object[] { curve });
+        for (NamedGroup curve : NamedGroup.getImplemented()) {
+            if (curve.isStandardCurve()) {
+                testValues.add(new Object[] { curve });
+            }
         }
         return testValues;
     }
+
+    @Parameter(0)
+    public NamedGroup curve;
+
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
 
     /**
      * Test of getParams method, of class CustomECPrivateKey.
@@ -47,7 +48,6 @@ public class CustomECPrivateKeyTest {
     public void testGetParams() {
         CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
         ECParameterSpec params = key.getParams();
-        System.out.println("Supported: " + curve.name());
         assertNotNull(params);
     }
 }

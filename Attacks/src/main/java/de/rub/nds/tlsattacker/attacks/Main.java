@@ -42,12 +42,13 @@ import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
@@ -62,18 +63,10 @@ public class Main {
         PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest = new PskBruteForcerAttackClientCommandConfig(
                 generalDelegate);
         jc.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
-        // DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest =
-        // new DtlsPaddingOracleAttackCommandConfig(
-        // generalDelegate);
-        // jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND,
-        // dtlsPaddingOracleAttackTest);
         InvalidCurveAttackConfig ellipticTest = new InvalidCurveAttackConfig(generalDelegate);
         jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
         jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
-        // Lucky13CommandConfig lucky13 = new
-        // Lucky13CommandConfig(generalDelegate);
-        // jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig(generalDelegate);
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
         TLSPoodleCommandConfig tlsPoodle = new TLSPoodleCommandConfig(generalDelegate);
@@ -92,10 +85,6 @@ public class Main {
         jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
         DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
         jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
-        // TokenBindingMitmCommandConfig tokenBindingMitm = new
-        // TokenBindingMitmCommandConfig(generalDelegate);
-        // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
-        // tokenBindingMitm);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -108,57 +97,49 @@ public class Main {
         Attacker<? extends TLSDelegateConfig> attacker = null;
         switch (jc.getParsedCommand()) {
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
-                attacker = new BleichenbacherAttacker(bleichenbacherTest);
+                attacker = new BleichenbacherAttacker(bleichenbacherTest, bleichenbacherTest.createConfig());
                 break;
             case InvalidCurveAttackConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttacker(ellipticTest);
+                attacker = new InvalidCurveAttacker(ellipticTest, ellipticTest.createConfig());
                 break;
             case HeartbleedCommandConfig.ATTACK_COMMAND:
-                attacker = new HeartbleedAttacker(heartbleed);
+                attacker = new HeartbleedAttacker(heartbleed, heartbleed.createConfig());
                 break;
-            // case Lucky13CommandConfig.ATTACK_COMMAND:
-            // attacker = new Lucky13Attacker(lucky13);
-            // break;
             case TLSPoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new TLSPoodleAttacker(tlsPoodle);
+                attacker = new TLSPoodleAttacker(tlsPoodle, tlsPoodle.createConfig());
                 break;
             case PaddingOracleCommandConfig.ATTACK_COMMAND:
-                attacker = new PaddingOracleAttacker(paddingOracle);
+                attacker = new PaddingOracleAttacker(paddingOracle, paddingOracle.createConfig());
                 break;
             case Cve20162107CommandConfig.ATTACK_COMMAND:
-                attacker = new Cve20162107Attacker(cve20162107);
+                attacker = new Cve20162107Attacker(cve20162107, cve20162107.createConfig());
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
-                attacker = new WinshockAttacker(winshock);
+                attacker = new WinshockAttacker(winshock, winshock.createConfig());
                 break;
             case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
-                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms);
+                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms, tooManyAlgorithms.createConfig());
                 break;
-            // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
-            // attacker = new
-            // DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
-            // break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
-                attacker = new EarlyCCSAttacker(earlyCCS);
+                attacker = new EarlyCCSAttacker(earlyCCS, earlyCCS.createConfig());
                 break;
             case PoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new PoodleAttacker(poodle);
+                attacker = new PoodleAttacker(poodle, poodle.createConfig());
                 break;
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
-                attacker = new SimpleMitmProxy(simpleMitmProxy);
+                attacker = new SimpleMitmProxy(simpleMitmProxy, simpleMitmProxy.createConfig());
                 break;
             case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
-                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest);
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
+                        pskBruteForcerAttackClientTest.createConfig());
                 break;
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
-                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
+                        pskBruteForcerAttackServerTest.createConfig());
                 break;
             case DrownCommandConfig.COMMAND:
-                attacker = new DrownAttacker(drownConfig);
+                attacker = new DrownAttacker(drownConfig, drownConfig.createConfig());
                 break;
-            // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
-            // attacker = new TokenBindingMitm(tokenBindingMitm);
-            // break;
             default:
                 throw new ConfigurationException("Command not found");
         }
@@ -174,7 +155,13 @@ public class Main {
             } else {
                 try {
                     Boolean result = attacker.checkVulnerability();
-                    LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
+                    if (result == Boolean.TRUE) {
+                        CONSOLE.error("Vulnerable:" + result.toString());
+                    } else if (result == Boolean.FALSE) {
+                        CONSOLE.info("Vulnerable:" + result.toString());
+                    } else {
+                        CONSOLE.warn("Vulnerable: Uncertain");
+                    }
                 } catch (UnsupportedOperationException E) {
                     LOGGER.info("The selected attacker is currently not implemented");
                 }
@@ -183,9 +170,6 @@ public class Main {
     }
 
     public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
-        if (config.getGeneralDelegate().isHelp()) {
-            return true;
-        }
-        return false;
+        return config.getGeneralDelegate().isHelp();
     }
 }

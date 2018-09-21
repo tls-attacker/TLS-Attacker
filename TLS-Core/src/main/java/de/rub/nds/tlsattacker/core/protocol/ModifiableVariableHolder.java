@@ -20,11 +20,11 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class ModifiableVariableHolder implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Lists all the modifiable variables declared in the class
-     * 
+     *
      * @return List of all modifiableVariables declared in this class
      */
     public List<Field> getAllModifiableVariableFields() {
@@ -33,7 +33,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
 
     /**
      * Returns a random field representing a modifiable variable from this class
-     * 
+     *
      * @param random
      *            The RandomNumber generator that should be used
      * @return A random ModifiableVariableField
@@ -47,7 +47,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance
-     * 
+     *
      * @return All ModifiableVariableHolders
      */
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
@@ -58,7 +58,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
 
     /**
      * Returns a random modifiable variable holder
-     * 
+     *
      * @param random
      *            The RandomNumberGenerator that should be used
      * @return A Random ModifiableVariableHolder

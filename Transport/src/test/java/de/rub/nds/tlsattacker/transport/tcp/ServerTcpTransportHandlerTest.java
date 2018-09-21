@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.nonblocking.SocketOpenerCallable;
+import de.rub.nds.tlsattacker.util.FreePortFinder;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +25,7 @@ public class ServerTcpTransportHandlerTest {
 
     @Before
     public void setUp() {
-        handler = new ServerTcpTransportHandler(100, 56855);
+        handler = new ServerTcpTransportHandler(100, FreePortFinder.getPossiblyFreePort());
     }
 
     @After
@@ -36,7 +37,7 @@ public class ServerTcpTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class ServerTcpTransportHandler.
-     * 
+     *
      * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
@@ -83,7 +84,7 @@ public class ServerTcpTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ServerTcpTransportHandler.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

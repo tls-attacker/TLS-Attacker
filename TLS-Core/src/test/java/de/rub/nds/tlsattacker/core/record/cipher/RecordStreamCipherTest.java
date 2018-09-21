@@ -49,10 +49,10 @@ public class RecordStreamCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
-            if (!suite.isSCSV() && !suite.name().contains("WITH_NULL") && !suite.name().contains("CHACHA20_POLY1305")
+            if (!suite.isGrease() && !suite.isSCSV() && !suite.name().contains("WITH_NULL_NULL")
+                    && !suite.name().contains("CHACHA20_POLY1305") && !suite.name().contains("RABBIT")
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
-                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
-                    && !suite.name().contains("ARIA")) {
+                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : connections) {
                     context.setConnection(con);

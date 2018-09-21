@@ -38,7 +38,8 @@ public class HRRKeyShareExtensionPreparatorTest {
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertArrayEquals(message.getSelectedGroup().getValue(), context.getConfig().getKeyShareType().getValue());
+        assertArrayEquals(message.getSelectedGroup().getValue(), context.getConfig().getDefaultSelectedNamedGroup()
+                .getValue());
     }
 
     @Test

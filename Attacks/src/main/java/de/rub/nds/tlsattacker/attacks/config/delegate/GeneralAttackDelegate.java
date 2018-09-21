@@ -14,10 +14,14 @@ import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class GeneralAttackDelegate extends GeneralDelegate {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public GeneralAttackDelegate() {
     }
@@ -26,18 +30,7 @@ public class GeneralAttackDelegate extends GeneralDelegate {
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         if (isDebug()) {
-            setLogLevel(Level.DEBUG);
-        }
-        Configurator.setRootLevel(getLogLevel());
-        Configurator.setAllLevels("de.rub.nds.modifiablevariable", Level.FATAL);
-        if (getLogLevel() == Level.ALL) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ALL);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.transport", Level.DEBUG);
-        } else if (getLogLevel() == Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.DEBUG);
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.transport", Level.DEBUG);
-        } else {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.OFF);
+            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

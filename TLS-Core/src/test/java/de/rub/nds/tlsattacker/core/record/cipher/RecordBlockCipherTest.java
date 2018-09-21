@@ -61,8 +61,7 @@ public class RecordBlockCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
-                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
-                    && !suite.name().contains("ARIA")) {
+                    && !suite.name().contains("FORTEZZA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
@@ -161,7 +160,6 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E23");
         assertArrayEquals(correctCiphertext, ciphertext);
         data = ArrayConverter.hexStringToByteArray("54657374EDE63C0E2BDAB2875D35FFC30ED4C327F7B54CCB0707070707070707");
-        System.out.println(ArrayConverter.bytesToHexString(cipher.getEncryptionIV()));
         ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV(), null))
                 .getCompleteEncryptedCipherText();
         correctCiphertext = ArrayConverter

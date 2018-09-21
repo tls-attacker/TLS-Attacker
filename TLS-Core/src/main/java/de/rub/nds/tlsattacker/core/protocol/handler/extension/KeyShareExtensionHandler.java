@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
@@ -27,6 +29,8 @@ import java.util.List;
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public KeyShareExtensionHandler(TlsContext context) {
         super(context);
@@ -49,22 +53,29 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
-        List<KSEntry> ksEntryList = new LinkedList<>();
-        for (KeySharePair pair : message.getKeyShareList()) {
-            NamedCurve type = NamedCurve.getNamedCurve(pair.getKeyShareType().getValue());
+        List<KeyShareStoreEntry> ksEntryList = new LinkedList<>();
+        for (KeyShareEntry pair : message.getKeyShareList()) {
+            NamedGroup type = NamedGroup.getNamedGroup(pair.getGroup().getValue());
             if (type != null) {
-                ksEntryList.add(new KSEntry(type, pair.getKeyShare().getValue()));
+                if (pair.getPublicKey() != null && pair.getPublicKey().getValue() != null) {
+                    ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
+                } else {
+                    LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
+                            + ArrayConverter.bytesToHexString(pair.getGroup()));
+                    context.setSelectedGroup(type);
+                }
             } else {
-                LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
+                LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
             }
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             // The server has only one key
             if (ksEntryList.size() > 0) {
-                context.setServerKSEntry(ksEntryList.get(0));
+                context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList
+                        .get(0).getPublicKey()));
             }
         } else {
-            context.setClientKeyShareEntryList(ksEntryList);
+            context.setClientKeyShareStoreEntryList(ksEntryList);
         }
     }
 }

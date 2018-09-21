@@ -44,6 +44,10 @@ public class CertificatePair extends ModifiableVariableHolder {
     public CertificatePair() {
     }
 
+    public CertificatePair(byte[] certificateConfig) {
+        this.certificateConfig = certificateConfig;
+    }
+
     public ModifiableByteArray getCertificate() {
         return certificate;
     }

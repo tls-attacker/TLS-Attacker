@@ -27,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ServerHelloParserTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameters
     public static Collection<Object[]> generateData() {

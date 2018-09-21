@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PskDheServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

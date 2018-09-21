@@ -28,7 +28,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  */
 public class PseudoRandomFunction {
 
-    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * master secret label
@@ -55,6 +55,12 @@ public class PseudoRandomFunction {
      */
     public static final String EXTENDED_MASTER_SECRET_LABEL = "extended master secret";
 
+    public static final String CLIENT_WRITE_KEY_LABEL = "client write key";
+
+    public static final String SERVER_WRITE_KEY_LABEL = "server write key";
+
+    public static final String IV_BLOCK_LABEL = "IV block";
+
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      *
@@ -77,6 +83,8 @@ public class PseudoRandomFunction {
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:
+            case TLS_PRF_GOSTR3411:
+            case TLS_PRF_GOSTR3411_2012_256:
                 return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
             case TLS_PRF_LEGACY:
                 // prf legacy is the prf computation function for older protocol

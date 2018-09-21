@@ -11,12 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] premasterSecret;
     private byte[] clientRandom;
@@ -35,7 +38,7 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.prepareComputations();
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     public byte[] generatePremasterSecret() {
@@ -62,12 +65,11 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void prepareClientRandom(PskClientKeyExchangeMessage msg) {
-        // TODO spooky
+    private void prepareClientServerRandom(PskClientKeyExchangeMessage msg) {
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(clientRandom);
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             msg.prepareComputations();
             premasterSecret = generatePremasterSecret();
             preparePremasterSecret(msg);
-            prepareClientRandom(msg);
+            prepareClientServerRandom(msg);
         }
     }
 }

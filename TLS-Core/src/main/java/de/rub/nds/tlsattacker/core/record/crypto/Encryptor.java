@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Encryptor extends RecordCryptoUnit {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Encryptor.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public Encryptor(RecordCipher cipher) {
         super(cipher);

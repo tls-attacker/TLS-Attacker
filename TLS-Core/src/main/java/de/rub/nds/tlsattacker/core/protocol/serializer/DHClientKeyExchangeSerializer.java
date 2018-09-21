@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeSerializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final T msg;
 
@@ -33,17 +37,13 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing DHClientKeyExchangeMessage");
-        if (!version.isSSL()) {
-            writeSerializedPublicKeyLength(msg);
-        }
-        writeSerializedPublicKey(msg);
-        return getAlreadySerialized();
+        return serializeDhParams();
     }
 
     protected byte[] serializeDhParams() {
-        if (!version.isSSL()) {
-            writeSerializedPublicKeyLength(msg);
-        }
+        // Contrary to what the SSLv3 RFC states, the message also includes the
+        // DH public key length
+        writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }

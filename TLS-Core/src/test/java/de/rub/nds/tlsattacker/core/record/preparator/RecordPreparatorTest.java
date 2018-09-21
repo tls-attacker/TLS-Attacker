@@ -23,6 +23,8 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -43,6 +45,7 @@ public class RecordPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         record = new Record();
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
@@ -69,7 +72,7 @@ public class RecordPreparatorTest {
         preparator.prepare();
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
-        assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS10.getValue());
+        assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
         assertTrue(record.getComputations().getPaddingLength().getValue() == 0);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());

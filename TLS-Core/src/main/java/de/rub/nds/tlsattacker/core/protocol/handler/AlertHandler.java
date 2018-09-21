@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public AlertHandler(TlsContext tlsContext) {
         super(tlsContext);

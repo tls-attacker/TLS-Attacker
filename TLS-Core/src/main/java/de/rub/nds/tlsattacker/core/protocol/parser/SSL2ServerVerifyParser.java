@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2ServerVerifyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ServerVerifyParser(byte[] message, int pointer, ProtocolVersion selectedProtocolVersion) {
         super(pointer, message, selectedProtocolVersion);

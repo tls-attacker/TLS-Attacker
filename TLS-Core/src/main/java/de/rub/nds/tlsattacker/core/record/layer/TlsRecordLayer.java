@@ -30,8 +30,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TlsRecordLayer extends RecordLayer {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext tlsContext;
 
@@ -160,13 +164,25 @@ public class TlsRecordLayer extends RecordLayer {
                 if (tlsContext.isTls13SoftDecryption()
                         && tlsContext.getTalkingConnectionEndType() != tlsContext.getConnection()
                                 .getLocalConnectionEndType()) {
-                    if (((Record) record).getContentMessageType() == ProtocolMessageType.ALERT) {
-                        LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
-                        setRecordCipher(new RecordNullCipher(tlsContext));
-                        updateDecryptionCipher();
-                    } else {
-                        LOGGER.debug("Deactivating soft decryption sicne we received a non alert record");
+                    if (null == ((Record) record).getContentMessageType()) {
+                        LOGGER.debug("Deactivating soft decryption since we received a non alert record");
                         tlsContext.setTls13SoftDecryption(false);
+                    } else {
+                        switch (((Record) record).getContentMessageType()) {
+                            case ALERT:
+                                LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
+                                setRecordCipher(new RecordNullCipher(tlsContext));
+                                updateDecryptionCipher();
+                                break;
+                            case CHANGE_CIPHER_SPEC:
+                                LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
+                                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+                                return;
+                            default:
+                                LOGGER.debug("Deactivating soft decryption since we received a non alert record");
+                                tlsContext.setTls13SoftDecryption(false);
+                                break;
+                        }
                     }
                 }
                 decryptor.decrypt(record);

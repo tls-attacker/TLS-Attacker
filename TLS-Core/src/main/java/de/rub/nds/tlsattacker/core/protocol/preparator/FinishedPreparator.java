@@ -24,8 +24,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] verifyData;
     private final FinishedMessage msg;
@@ -86,16 +90,17 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             byte[] handshakeMessageHash = chooser.getContext().getDigest()
                     .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
+
+            String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
-                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                        PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,
-                        HandshakeByteLength.VERIFY_DATA);
+                label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {
-                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                        PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash,
-                        HandshakeByteLength.VERIFY_DATA);
+                label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
+            byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
+                    HandshakeByteLength.VERIFY_DATA);
+            return res;
         }
     }
 

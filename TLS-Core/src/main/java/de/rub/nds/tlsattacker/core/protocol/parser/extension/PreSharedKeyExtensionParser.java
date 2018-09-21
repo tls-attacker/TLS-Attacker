@@ -15,11 +15,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PreSharedKeyExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

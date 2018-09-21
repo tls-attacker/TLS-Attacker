@@ -18,8 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSeriali
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CertificateRequestHandler(TlsContext tlsContext) {
         super(tlsContext);

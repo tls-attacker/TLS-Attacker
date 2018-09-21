@@ -23,6 +23,7 @@ public class AlertMessageTest {
 
     @Test
     public void testToString() {
+        byte testBytes = (byte) 199;
         StringBuilder sb = new StringBuilder();
         sb.append("AlertMessage:");
         sb.append("\n  Level: ").append("null");
@@ -30,7 +31,6 @@ public class AlertMessageTest {
 
         assertEquals(sb.toString(), message.toString());
 
-        byte testBytes = 120;
         message.setDescription(testBytes);
         message.setLevel(testBytes);
 

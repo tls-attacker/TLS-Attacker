@@ -9,15 +9,16 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
@@ -25,16 +26,17 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
-import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CertificateMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -84,67 +86,21 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
         }
-        if (cert != null) {
-            adjustPublicKeyParameters(cert);
+        if (message.getCertificateKeyPair() != null) {
+            LOGGER.debug("Found a certificate key pair. Adjusting in context");
+            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+        } else if (cert != null) {
+            LOGGER.debug("No CertificatekeyPair found, creating new one");
+            CertificateKeyPair pair = new CertificateKeyPair(cert);
+            message.setCertificateKeyPair(pair);
+            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+
+        } else {
+            LOGGER.debug("Ceritificate not parseable - no adjustments");
         }
+
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
-        }
-    }
-
-    private void adjustPublicKeyParameters(Certificate cert) {
-        try {
-            if (CertificateUtils.hasDHParameters(cert)) {
-                LOGGER.debug("Adjusting DH PublicKey");
-                DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
-                adjustDHParameters(dhParameters);
-            } else if (CertificateUtils.hasECParameters(cert)) {
-                LOGGER.debug("Adjusting EC PublicKey");
-                ECPublicKeyParameters ecParameters = CertificateUtils.extractECPublicKeyParameters(cert);
-                adjustECParameters(ecParameters);
-            } else if (CertificateUtils.hasRSAParameters(cert)) {
-                LOGGER.debug("Adjusting RSA PublicKey");
-                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                    tlsContext.setClientRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                    tlsContext.setClientRSAPrivateKey(tlsContext.getConfig().getDefaultClientRSAPrivateKey());
-                    tlsContext.setClientRsaModulus(CertificateUtils.extractRSAModulus(cert));
-                } else {
-                    tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                    tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
-                    tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
-                }
-            } else {
-                LOGGER.warn("Could not adjust Certificate publicKey. Ceritifcate does not seem to Contain a PublicKey");
-            }
-        } catch (IOException | IllegalArgumentException E) {
-            LOGGER.debug(E);
-            throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);
-        }
-    }
-
-    private void adjustDHParameters(DHPublicKeyParameters dhPublicKeyParameters) {
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientDhGenerator(dhPublicKeyParameters.getParameters().getG());
-            tlsContext.setClientDhModulus(dhPublicKeyParameters.getParameters().getP());
-            tlsContext.setClientDhPublicKey(dhPublicKeyParameters.getY());
-        } else {
-            tlsContext.setServerDhGenerator(dhPublicKeyParameters.getParameters().getG());
-            tlsContext.setServerDhModulus(dhPublicKeyParameters.getParameters().getP());
-            tlsContext.setServerDhPublicKey(dhPublicKeyParameters.getY());
-        }
-    }
-
-    private void adjustECParameters(ECPublicKeyParameters ecPublicKeyParameters) {
-        CustomECPoint publicKey = new CustomECPoint(ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger(),
-                ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientEcPublicKey(publicKey);
-            tlsContext.setEcCertificateCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
-                    .getParameters().getCurve()));
-        } else {
-            tlsContext.setServerEcPublicKey(publicKey);
-            tlsContext.setSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
-                    .getParameters().getCurve()));
         }
     }
 
@@ -156,8 +112,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         } catch (Exception E) {
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
-            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false));
+            LOGGER.warn(
+                    "Could not parse Certificate bytes into Certificate object:"
+                            + ArrayConverter.bytesToHexString(bytesToParse, false), E);
             LOGGER.debug(E);
             return null;
         }
@@ -170,9 +127,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     for (ExtensionMessage extension : entry.getExtensions()) {
                         HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
                         if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                                // fix
-                                                                                // design
-                                                                                // flaw
+                            // fix
+                            // design
+                            // flaw
                             handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                         }
                         ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

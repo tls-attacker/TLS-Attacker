@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, version);

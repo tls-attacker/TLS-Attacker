@@ -12,18 +12,23 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
 public class CertificateRequestMessage extends HandshakeMessage {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger clientCertificateTypesCount;
@@ -155,10 +160,16 @@ public class CertificateRequestMessage extends HandshakeMessage {
         }
         sb.append("\n  Signature Hash Algorithms: ");
         if (signatureHashAlgorithms != null && signatureHashAlgorithms.getValue() != null) {
-            for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i += 2) {
-                sb.append(HashAlgorithm.getHashAlgorithm(signatureHashAlgorithms.getValue()[i])).append("-");
-                sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(
-                        ", ");
+            try {
+                List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = SignatureAndHashAlgorithm
+                        .getSignatureAndHashAlgorithms(signatureHashAlgorithms.getValue());
+                for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithms) {
+                    sb.append(algo.name());
+                }
+            } catch (Exception E) {
+                LOGGER.debug(E);
+                LOGGER.debug("Signature and HashAlgorithms contain unparseable Algorithms:"
+                        + ArrayConverter.bytesToHexString(signatureHashAlgorithms));
             }
         } else {
             sb.append("null");

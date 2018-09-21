@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -34,8 +35,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Random;
 import java.util.logging.Logger;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -53,14 +52,15 @@ public class RecordedWorkflowTest {
     @Before
     public void setUp() {
         RandomHelper.setRandom(new Random(0));
-        Configurator.setRootLevel(Level.INFO);
         TimeHelper.setProvider(new FixedTimeProvider(1000));
         try {
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom());
             ks = KeyStoreGenerator.createKeyStore(k, new BadRandom());
 
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 4555);
-        } catch (Exception ex) {
+        } catch (IOException | InvalidKeyException | KeyManagementException | KeyStoreException
+                | NoSuchAlgorithmException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+                | CertificateException | OperatorCreationException ex) {
             Logger.getLogger(RecordedWorkflowTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         tlsServer.start();
@@ -105,8 +105,7 @@ public class RecordedWorkflowTest {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         try {
             executor.executeWorkflow();
-        } catch (Exception E) {
-            E.printStackTrace();
+        } catch (WorkflowExecutionException E) {
         }
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
         state = new State(c);
@@ -115,8 +114,7 @@ public class RecordedWorkflowTest {
         executor = new DefaultWorkflowExecutor(state);
         try {
             executor.executeWorkflow();
-        } catch (Exception E) {
-            E.printStackTrace();
+        } catch (WorkflowExecutionException E) {
         }
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }

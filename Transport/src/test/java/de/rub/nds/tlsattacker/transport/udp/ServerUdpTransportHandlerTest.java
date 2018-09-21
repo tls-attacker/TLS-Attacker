@@ -29,7 +29,7 @@ public class ServerUdpTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ServerUdpTransportHandler.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

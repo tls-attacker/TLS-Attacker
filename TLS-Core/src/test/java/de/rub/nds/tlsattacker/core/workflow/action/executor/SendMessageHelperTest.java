@@ -63,8 +63,6 @@ public class SendMessageHelperTest {
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
         helper.sendMessages(new LinkedList<ProtocolMessage>(), recordList, context);
-        System.out.println(ArrayConverter.bytesToHexString(((ByteArrayOutputStream) transportHandler.getOutputStream())
-                .toByteArray()));
         assertArrayEquals(new byte[] { 22, 03, 03, 0, 0 },
                 ((ByteArrayOutputStream) transportHandler.getOutputStream()).toByteArray());
 

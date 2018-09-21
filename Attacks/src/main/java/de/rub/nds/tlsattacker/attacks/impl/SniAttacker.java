@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  * Sends different server names in the SNI extension in the ClientHello
@@ -16,8 +17,8 @@ import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
-    public SniAttacker(SniTestCommandConfig config) {
-        super(config);
+    public SniAttacker(SniTestCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override

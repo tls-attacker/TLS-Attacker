@@ -10,21 +10,22 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PSKPremasterComputations extends KeyExchangeComputations {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ModifiableByteArray premasterSecret;
 
     private ModifiableByteArray psk;
-    private ModifiableInteger pskLength;
 
     public PSKPremasterComputations() {
     }
 
-    public PSKPremasterComputations(ModifiableInteger pskLength, ModifiableByteArray psk) {
-        this.pskLength = pskLength;
+    public PSKPremasterComputations(ModifiableByteArray psk) {
         this.psk = psk;
     }
 

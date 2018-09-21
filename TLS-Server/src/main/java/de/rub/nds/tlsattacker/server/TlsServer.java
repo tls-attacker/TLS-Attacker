@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TlsServer {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     // TODO rename method
     public void run(Config config) {

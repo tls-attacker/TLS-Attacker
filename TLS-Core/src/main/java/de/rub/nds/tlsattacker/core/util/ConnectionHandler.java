@@ -19,13 +19,13 @@ import org.apache.logging.log4j.Logger;
 
 public class ConnectionHandler implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger(ConnectionHandler.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Socket applicationSocket;
 
     /**
      * ConnectionHandler constructor
-     * 
+     *
      * @param socket
      *            - The socket of the connection
      */

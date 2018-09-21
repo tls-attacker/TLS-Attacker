@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ProtocolMessageHandler.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * tls context
@@ -69,21 +69,24 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             Preparator preparator = getPreparator(message);
             preparator.prepare();
             preparator.afterPrepare();
+            Serializer serializer = getSerializer(message);
+            byte[] completeMessage = serializer.serialize();
+            message.setCompleteResultingMessage(completeMessage);
+            if (message instanceof HandshakeMessage) {
+                if (((HandshakeMessage) message).getIncludeInDigest()) {
+                    tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+                }
+            }
         }
-
         try {
-            adjustTLSContext(message);
+            if (message.getAdjustContext()) {
+                adjustTLSContext(message);
+            } else {
+                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
+            }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
-        }
-        Serializer serializer = getSerializer(message);
-        byte[] completeMessage = serializer.serialize();
-        message.setCompleteResultingMessage(completeMessage);
-        if (message instanceof HandshakeMessage) {
-            if (((HandshakeMessage) message).getIncludeInDigest()) {
-                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
-            }
         }
         return message.getCompleteResultingMessage().getValue();
     }
@@ -102,13 +105,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
-        if (parsedMessage instanceof HandshakeMessage) {
-            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-            }
-        }
         try {
             prepareAfterParse(parsedMessage);
+            if (parsedMessage instanceof HandshakeMessage) {
+                if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                    tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                }
+            }
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");

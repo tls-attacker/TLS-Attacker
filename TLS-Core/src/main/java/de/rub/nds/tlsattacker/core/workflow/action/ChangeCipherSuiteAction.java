@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChangeCipherSuiteAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private CipherSuite newValue = null;
     private CipherSuite oldValue = null;
@@ -22,6 +26,11 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
     public ChangeCipherSuiteAction(CipherSuite newValue) {
         // TODO can be better implemented with generics?
         super();
+        this.newValue = newValue;
+    }
+
+    public ChangeCipherSuiteAction(String alias, CipherSuite newValue) {
+        super(alias);
         this.newValue = newValue;
     }
 

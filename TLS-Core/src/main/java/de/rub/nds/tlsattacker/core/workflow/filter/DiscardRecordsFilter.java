@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DiscardRecordsFilter extends Filter {
 
-    protected static final Logger LOGGER = LogManager.getLogger(DiscardRecordsFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DiscardRecordsFilter(Config config) {
         super(config);
@@ -28,7 +28,7 @@ public class DiscardRecordsFilter extends Filter {
 
     /**
      * Apply filter to trace.
-     * 
+     *
      * @param trace
      *            The workflow trace that should be filtered.
      */

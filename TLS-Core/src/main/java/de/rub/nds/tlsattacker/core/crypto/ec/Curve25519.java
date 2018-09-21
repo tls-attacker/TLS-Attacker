@@ -37,6 +37,20 @@ public class Curve25519 {
             (byte) 18, (byte) 88, (byte) 214, (byte) 156, (byte) 247, (byte) 162, (byte) 222, (byte) 249, (byte) 222,
             (byte) 20, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
             (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 16 };
+    /********************* radix 2^25.5 GF(2^255-19) math *********************/
+
+    private static final int P25 = 33554431; /* (1 << 25) - 1 */
+    private static final int P26 = 67108863; /* (1 << 26) - 1 */
+    /* smallest multiple of the order that's >= 2^255 */
+    private static final byte[] ORDER_TIMES_8 = { (byte) 104, (byte) 159, (byte) 174, (byte) 231, (byte) 210,
+            (byte) 24, (byte) 147, (byte) 192, (byte) 178, (byte) 230, (byte) 188, (byte) 23, (byte) 245, (byte) 206,
+            (byte) 247, (byte) 166, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
+            (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 128 };
+    /* constants 2Gy and 1/(2Gy) */
+    private static final long10 BASE_2Y = new long10(39999547, 18689728, 59995525, 1648697, 57546132, 24010086,
+            19059592, 5425144, 63499247, 16420658);
+    private static final long10 BASE_R2Y = new long10(5744, 8160848, 4790893, 13779497, 35730846, 12541209, 49101323,
+            30047407, 40071253, 6226132);
 
     public static final void clamp(byte[] k) {
         k[31] &= 0x7F;
@@ -63,37 +77,13 @@ public class Curve25519 {
         core(Z, null, k, P);
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-
-    /*
-     * sahn0: Using this class instead of long[10] to avoid bounds checks.
-     */
-    private static final class long10 {
-        public long10() {
-        }
-
-        public long10(long _0, long _1, long _2, long _3, long _4, long _5, long _6, long _7, long _8, long _9) {
-            this._0 = _0;
-            this._1 = _1;
-            this._2 = _2;
-            this._3 = _3;
-            this._4 = _4;
-            this._5 = _5;
-            this._6 = _6;
-            this._7 = _7;
-            this._8 = _8;
-            this._9 = _9;
-        }
-
-        public long _0, _1, _2, _3, _4, _5, _6, _7, _8, _9;
-    }
-
     /********************* radix 2^8 math *********************/
 
     private static final void cpy32(byte[] d, byte[] s) {
         int i;
-        for (i = 0; i < 32; i++)
+        for (i = 0; i < 32; i++) {
             d[i] = s[i];
+        }
     }
 
     /* p[m..n+m-1] = q[m..n+m-1] + z * x */
@@ -172,34 +162,33 @@ public class Curve25519 {
      */
     private static final byte[] egcd32(byte[] x, byte[] y, byte[] a, byte[] b) {
         int an, bn = 32, qn, i;
-        for (i = 0; i < 32; i++)
+        for (i = 0; i < 32; i++) {
             x[i] = y[i] = 0;
+        }
         x[0] = 1;
         an = numsize(a, 32);
-        if (an == 0)
+        if (an == 0) {
             return y; /* division by zero */
+        }
         byte[] temp = new byte[32];
         while (true) {
             qn = bn - an + 1;
             divmod(temp, b, bn, a, an);
             bn = numsize(b, bn);
-            if (bn == 0)
+            if (bn == 0) {
                 return x;
+            }
             mula32(y, x, temp, qn, -1);
 
             qn = an - bn + 1;
             divmod(temp, a, an, b, bn);
             an = numsize(a, an);
-            if (an == 0)
+            if (an == 0) {
                 return y;
+            }
             mula32(x, y, temp, qn, -1);
         }
     }
-
-    /********************* radix 2^25.5 GF(2^255-19) math *********************/
-
-    private static final int P25 = 33554431; /* (1 << 25) - 1 */
-    private static final int P26 = 67108863; /* (1 << 26) - 1 */
 
     /* Convert to internal format from little-endian byte format */
     private static final void unpack(long10 x, byte[] m) {
@@ -601,10 +590,11 @@ public class Curve25519 {
         int i, j;
 
         /* unpack the base */
-        if (Gx != null)
+        if (Gx != null) {
             unpack(dx, Gx);
-        else
+        } else {
             set(dx, 9);
+        }
 
         /* 0G = point-at-infinity */
         set(x[0], 1);
@@ -653,11 +643,12 @@ public class Curve25519 {
             sub(dx, dx, t1); /* dx = t2 (Px - Gx)^2 - Py^2 */
             dx._0 -= 39420360; /* dx = t2 (Px - Gx)^2 - Py^2 - Gy^2 */
             mul(t1, dx, BASE_R2Y); /* t1 = -Py */
-            if (is_negative(t1) != 0) /* sign is 1, so just copy */
+            if (is_negative(t1) != 0) { /* sign is 1, so just copy */
                 cpy32(s, k);
-            else
+            } else {
                 /* sign is -1, so negate */
                 mula_small(s, ORDER_TIMES_8, 0, k, 32, -1);
+            }
 
             /*
              * reduce s mod q (is this needed? do it just in case, it's fast
@@ -671,20 +662,39 @@ public class Curve25519 {
             byte[] temp3 = new byte[64];
             cpy32(temp1, ORDER);
             cpy32(s, egcd32(temp2, temp3, s, temp1));
-            if ((s[31] & 0x80) != 0)
+            if ((s[31] & 0x80) != 0) {
                 mula_small(s, s, 0, ORDER, 32, 1);
+            }
         }
     }
 
-    /* smallest multiple of the order that's >= 2^255 */
-    private static final byte[] ORDER_TIMES_8 = { (byte) 104, (byte) 159, (byte) 174, (byte) 231, (byte) 210,
-            (byte) 24, (byte) 147, (byte) 192, (byte) 178, (byte) 230, (byte) 188, (byte) 23, (byte) 245, (byte) 206,
-            (byte) 247, (byte) 166, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
-            (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 128 };
+    private static final class long10 {
 
-    /* constants 2Gy and 1/(2Gy) */
-    private static final long10 BASE_2Y = new long10(39999547, 18689728, 59995525, 1648697, 57546132, 24010086,
-            19059592, 5425144, 63499247, 16420658);
-    private static final long10 BASE_R2Y = new long10(5744, 8160848, 4790893, 13779497, 35730846, 12541209, 49101323,
-            30047407, 40071253, 6226132);
+        public long _0;
+        public long _1;
+        public long _2;
+        public long _3;
+        public long _4;
+        public long _5;
+        public long _6;
+        public long _7;
+        public long _8;
+        public long _9;
+
+        public long10() {
+        }
+
+        public long10(long _0, long _1, long _2, long _3, long _4, long _5, long _6, long _7, long _8, long _9) {
+            this._0 = _0;
+            this._1 = _1;
+            this._2 = _2;
+            this._3 = _3;
+            this._4 = _4;
+            this._5 = _5;
+            this._6 = _6;
+            this._7 = _7;
+            this._8 = _8;
+            this._9 = _9;
+        }
+    }
 }

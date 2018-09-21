@@ -22,6 +22,12 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SRPExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] { { ExtensionType.SRP,
+                new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 }, 5, 0, 4,
+                ArrayConverter.hexStringToByteArray("01020304") } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -42,13 +48,6 @@ public class SRPExtensionParserTest {
         this.srpIdentifier = srpIdentifier;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.SRP,
-                new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 }, 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("01020304") } });
-    }
-
     @Before
     public void setUp() {
         parser = new SRPExtensionParser(startParsing, extensionBytes);
@@ -60,9 +59,9 @@ public class SRPExtensionParserTest {
         message = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
-        assertEquals(srpIdentifierLength, (int) message.getSrpIdentifierLength().getValue());
+        assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
         assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());
 
     }

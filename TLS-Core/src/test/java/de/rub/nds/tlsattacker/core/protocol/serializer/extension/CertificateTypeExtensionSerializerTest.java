@@ -22,6 +22,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CertificateTypeExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return CertificateTypeExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -41,11 +45,6 @@ public class CertificateTypeExtensionSerializerTest {
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CertificateTypeExtensionParserTest.generateData();
     }
 
     @Before

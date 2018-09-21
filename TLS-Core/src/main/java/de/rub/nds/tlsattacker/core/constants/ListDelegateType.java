@@ -14,7 +14,7 @@ package de.rub.nds.tlsattacker.core.constants;
 public enum ListDelegateType {
     ciphers,
     filters,
-    curves,
+    groups,
     sign_hash_algos,
     workflow_trace_types
 }

@@ -22,6 +22,20 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CertificateStatusRequestExtensionParserTest {
+    /**
+     * Parameterized set up of the test vector.
+     *
+     * @return test vector (extensionType, extensionLength, extensionPayload,
+     *         expectedBytes)
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
+                        new byte[0], 0, new byte[0] },
+                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1,
+                        1, new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -49,21 +63,6 @@ public class CertificateStatusRequestExtensionParserTest {
         this.requestExtension = requestExtension;
     }
 
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
-                        new byte[0], 0, new byte[0] },
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1,
-                        1, new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
-    }
-
     @Before
     public void setUp() {
         parser = new CertificateStatusRequestExtensionParser(startParsing, expectedBytes);
@@ -74,14 +73,14 @@ public class CertificateStatusRequestExtensionParserTest {
         message = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
-        assertEquals(certificateStatusRequestType, (int) message.getCertificateStatusRequestType().getValue());
+        assertEquals(certificateStatusRequestType, (long) message.getCertificateStatusRequestType().getValue());
 
-        assertEquals(responderIDListLength, (int) message.getResponderIDListLength().getValue());
+        assertEquals(responderIDListLength, (long) message.getResponderIDListLength().getValue());
         assertArrayEquals(responderIDList, message.getResponderIDList().getValue());
 
-        assertEquals(requestExtensionLength, (int) message.getRequestExtensionLength().getValue());
+        assertEquals(requestExtensionLength, (long) message.getRequestExtensionLength().getValue());
         assertArrayEquals(requestExtension, message.getRequestExtension().getValue());
     }
 }

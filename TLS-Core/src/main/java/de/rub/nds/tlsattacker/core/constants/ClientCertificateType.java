@@ -22,7 +22,11 @@ public enum ClientCertificateType {
     DSS_FIXED_DH((byte) 4),
     RSA_EPHEMERAL_DH_RESERVED((byte) 5),
     DSS_EPHEMERAL_DH_RESERVED((byte) 6),
-    FORTEZZA_DMS_RESERVED((byte) 20);
+    FORTEZZA_DMS_RESERVED((byte) 20),
+    GOSTR34101994((byte) 21),
+    GOSTR34102001((byte) 22),
+    GOSTR34102012_256((byte) 238),
+    GOSTR34102012_512((byte) 239);
 
     /**
      * length of the ClientCertificateType in the TLS byte arrays

@@ -29,7 +29,7 @@ public class ExtensionByteLength {
      * Supported Elliptic Curves length field of the elliptic curve extension
      * message
      */
-    public static final int SUPPORTED_ELLIPTIC_CURVES = 2;
+    public static final int SUPPORTED_GROUPS = 2;
     /**
      * Heartbeat mode length in the heartbeat extension message
      */
@@ -51,9 +51,9 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_NAME_LIST = 2;
     /**
-     * KeyShareType length in the KeySahreExtension
+     * KeyShareGroup length in the KeySahreExtension
      */
-    public static final int KEY_SHARE_TYPE = 2;
+    public static final int KEY_SHARE_GROUP = 2;
     /**
      * KeyShare length in the KeySahreExtension
      */

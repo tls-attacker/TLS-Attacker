@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import java.math.BigInteger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final int EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES = 5;
     public static final int EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES = 11;

@@ -27,12 +27,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(config);
-        Exception ex = null;
         try {
             commander.parse(args);
             if (config.getGeneralDelegate().isHelp()) {
@@ -49,15 +48,13 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.error("Encountered a ConfigurationException aborting. See debug for more info.");
-                LOGGER.debug(E);
+            } catch (Exception E) {
+                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
             LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
             LOGGER.debug(E);
             commander.usage();
-            ex = E;
         }
     }
 

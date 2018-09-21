@@ -9,17 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -51,21 +53,23 @@ public class KeyShareExtensionHandlerTest {
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
-        List<KeySharePair> pairList = new LinkedList<>();
-        KeySharePair pair = new KeySharePair();
-        pair.setKeyShare(ArrayConverter
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
+        List<KeyShareEntry> pairList = new LinkedList<>();
+        KeyShareEntry pair = new KeyShareEntry(NamedGroup.ECDH_X25519,
+                new BigInteger(ArrayConverter
+                        .hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+        pair.setPublicKey(ArrayConverter
                 .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
-        pair.setKeyShareType(NamedCurve.ECDH_X25519.getValue());
+        pair.setGroup(NamedGroup.ECDH_X25519.getValue());
         pairList.add(pair);
         msg.setKeyShareList(pairList);
         handler.adjustTLSContext(msg);
-        assertNotNull(context.getServerKSEntry());
-        KSEntry entry = context.getServerKSEntry();
+        assertNotNull(context.getServerKeyShareStoreEntry());
+        KeyShareStoreEntry entry = context.getServerKeyShareStoreEntry();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
-                entry.getSerializedPublicKey());
-        assertTrue(entry.getGroup() == NamedCurve.ECDH_X25519);
+                entry.getPublicKey());
+        assertTrue(entry.getGroup() == NamedGroup.ECDH_X25519);
     }
 
     /**
@@ -81,7 +85,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new KeyShareExtensionMessage()) instanceof KeyShareExtensionPreparator);
+        assertTrue(handler.getPreparator(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE)) instanceof KeyShareExtensionPreparator);
     }
 
     /**
@@ -89,6 +93,6 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new KeyShareExtensionMessage()) instanceof KeyShareExtensionSerializer);
+        assertTrue(handler.getSerializer(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE)) instanceof KeyShareExtensionSerializer);
     }
 }

@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ExtensionParserFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(ExtensionParserFactory.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
             HandshakeMessageType handshakeMessageType) {
@@ -55,6 +55,7 @@ public class ExtensionParserFactory {
             case SUPPORTED_VERSIONS:
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
                 break;
+            case KEY_SHARE_OLD: // Extension was moved
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
                 break;

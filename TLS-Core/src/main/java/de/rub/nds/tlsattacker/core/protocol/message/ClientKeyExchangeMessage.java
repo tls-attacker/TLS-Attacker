@@ -64,5 +64,4 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
-
 }

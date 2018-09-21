@@ -22,7 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HeartbeatMessagePreparatorTest {
-    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext context;
     private HeartbeatMessage message;

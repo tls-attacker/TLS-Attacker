@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ReceiveMessageHelper.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ReceiveMessageHelper() {
     }
@@ -80,9 +81,37 @@ public class ReceiveMessageHelper {
         return new MessageActionResult(realRecords, messages);
     }
 
+    public MessageActionResult receiveMessagesTill(ProtocolMessage waitTillMessage, TlsContext context) {
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
+        List<AbstractRecord> realRecords = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        try {
+            byte[] receivedBytes;
+            boolean shouldContinue = true;
+            do {
+                receivedBytes = receiveByteArray(context);
+                MessageActionResult tempMessageActionResult = handleReceivedBytes(receivedBytes, context);
+                messages.addAll(tempMessageActionResult.getMessageList());
+                realRecords.addAll(tempMessageActionResult.getRecordList());
+                for (ProtocolMessage message : messages) {
+                    if (message.getClass().equals(waitTillMessage.getClass())) {
+                        LOGGER.debug("Received message we waited for");
+                        shouldContinue = false;
+                        break;
+                    }
+                }
+            } while (receivedBytes.length != 0 && shouldContinue);
+        } catch (IOException ex) {
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
+            LOGGER.debug(ex);
+            context.setReceivedTransportHandlerException(true);
+        }
+        return new MessageActionResult(realRecords, messages);
+    }
+
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
         List<ProtocolMessage> messages = new LinkedList<>();
-        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
+        List<AbstractRecord> records = new LinkedList<>();
         if (receivedBytes.length != 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
             List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
@@ -154,10 +183,7 @@ public class ReceiveMessageHelper {
         }
         boolean receivedAllExpectedMessages = receivedAllExpectedMessage(expectedMessages, receivedMessages, context
                 .getConfig().isEarlyStop());
-        if (receivedAllExpectedMessages) {
-            return false;
-        }
-        return true;
+        return !receivedAllExpectedMessages;
     }
 
     private List<ProtocolMessage> processRecordGroup(List<AbstractRecord> recordGroup, TlsContext context) {
@@ -194,7 +220,13 @@ public class ReceiveMessageHelper {
 
     public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
-        return handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(records), context);
+        // Due to TLS 1.3 Encrypted Type it might be necessary to look for
+        // new groups here
+        List<ProtocolMessage> messages = new LinkedList<>();
+        for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
+            messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(subgroup), context)));
+        }
+        return messages;
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
@@ -219,7 +251,11 @@ public class ReceiveMessageHelper {
 
                     }
                 } else {
-                    result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    if (cleanProtocolMessageBytes.length > 2) {
+                        result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    } else {
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    }
                 }
             } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage");
@@ -265,16 +301,12 @@ public class ReceiveMessageHelper {
 
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
-        try {
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             HttpsRequestHandler handler = new HttpsRequestHandler(context);
             return handler.parseMessage(protocolMessageBytes, pointer);
-        } catch (ParserException E) {
-            try {
-                HttpsResponseHandler handler = new HttpsResponseHandler(context);
-                return handler.parseMessage(protocolMessageBytes, pointer);
-            } catch (ParserException E2) {
-                throw new ParserException("Could not parse ApplicationData as HTTPS", E2);
-            }
+        } else {
+            HttpsResponseHandler handler = new HttpsResponseHandler(context);
+            return handler.parseMessage(protocolMessageBytes, pointer);
         }
     }
 

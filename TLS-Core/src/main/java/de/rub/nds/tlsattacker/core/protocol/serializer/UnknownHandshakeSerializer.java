@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UnknownHandshakeSerializer extends HandshakeMessageSerializer<UnknownHandshakeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final UnknownHandshakeMessage msg;
 

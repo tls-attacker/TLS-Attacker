@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -71,9 +71,9 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
         } else {
             sb.append("null");
         }
-        sb.append("\n  Named Curve: ");
-        if (namedCurve != null && namedCurve.getValue() != null) {
-            sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
+        sb.append("\n  Named Group: ");
+        if (namedGroup != null && namedGroup.getValue() != null) {
+            sb.append(NamedGroup.getNamedGroup(this.namedGroup.getValue()));
         } else {
             sb.append("null");
         }

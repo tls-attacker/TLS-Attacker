@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
@@ -14,7 +13,8 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 public class MitmCommandConfig extends TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(MitmCommandConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String COMMAND = "mitm";
 
@@ -43,7 +44,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private EllipticCurveDelegate ellipticCurveDelegate;
+    private NamedGroupsDelegate ellipticCurveDelegate;
     @ParametersDelegate
     private MitmDelegate mitmDelegate;
     @ParametersDelegate
@@ -68,13 +69,17 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     private ListDelegate listDelegate;
     @ParametersDelegate
     private ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
+    private ExecutorTypeDelegate executorTypeDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
-        this.ellipticCurveDelegate = new EllipticCurveDelegate();
+        this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
@@ -87,6 +92,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
+        this.executorTypeDelegate = new ExecutorTypeDelegate();
 
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -103,5 +110,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
         addDelegate(configOutputDelegate);
+        addDelegate(timeoutDelegate);
+        addDelegate(executorTypeDelegate);
     }
 }

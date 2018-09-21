@@ -1,5 +1,4 @@
 # Given this config:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <defaulRunningMode>CLIENT</defaulRunningMode>
     <defaultClientConnection>
@@ -19,12 +18,10 @@
 </config>
 
 # And this input trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
 </workflowTrace>
 
 # We expect this normalized trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>client</alias>
@@ -36,5 +33,4 @@
 </workflowTrace>
 
 # And this after default filter application:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace/>

@@ -83,7 +83,7 @@ public class ActionTestUtils {
                 logger.warn("The action under test does not follow naming convention. " + xmlName
                         + " does not end with string 'Action'");
             }
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <").append(xmlName).append("/>\n");
             sb.append("</workflowTrace>\n");
@@ -214,5 +214,8 @@ public class ActionTestUtils {
         actual.normalize();
 
         assertEquals(action, actual);
+    }
+
+    private ActionTestUtils() {
     }
 }

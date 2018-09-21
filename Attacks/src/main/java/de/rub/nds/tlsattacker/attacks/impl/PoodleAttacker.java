@@ -22,8 +22,8 @@ import java.util.List;
 
 public class PoodleAttacker extends Attacker {
 
-    public PoodleAttacker(PoodleCommandConfig config) {
-        super(config);
+    public PoodleAttacker(PoodleCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PoodleAttacker extends Attacker {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
         tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);

@@ -18,12 +18,16 @@ import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the EncryptedExtension messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EncryptedExtensionsHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -47,12 +51,14 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     @Override
     public void adjustTLSContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
+            LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
+                LOGGER.debug("Adjusting " + message.toCompactString());
                 HandshakeMessageType handshakeMessageType = HandshakeMessageType.ENCRYPTED_EXTENSIONS;
                 if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                        // fix
-                                                                        // design
-                                                                        // flawv
+                    // fix
+                    // design
+                    // flawv
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

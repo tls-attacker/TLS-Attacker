@@ -63,7 +63,7 @@ import org.junit.experimental.categories.Category;
 
 public class ParserSerializerStressTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ParserSerializerStressTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
     @Category(IntegrationTests.class)

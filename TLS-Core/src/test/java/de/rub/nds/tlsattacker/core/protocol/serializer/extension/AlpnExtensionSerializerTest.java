@@ -20,6 +20,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class AlpnExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return AlpnExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -38,11 +42,6 @@ public class AlpnExtensionSerializerTest {
         this.startParsing = startParsing;
         this.alpnExtensionLength = alpnExtensionLength;
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return AlpnExtensionParserTest.generateData();
     }
 
     @Before

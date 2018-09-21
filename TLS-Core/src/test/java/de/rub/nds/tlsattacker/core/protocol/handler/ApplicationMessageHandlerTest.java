@@ -22,9 +22,6 @@ import org.junit.Test;
 
 public class ApplicationMessageHandlerTest {
 
-    private ApplicationMessageHandler handler;
-    private TlsContext context;
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
@@ -32,6 +29,9 @@ public class ApplicationMessageHandlerTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
+
+    private ApplicationMessageHandler handler;
+    private TlsContext context;
 
     @Before
     public void setUp() {
