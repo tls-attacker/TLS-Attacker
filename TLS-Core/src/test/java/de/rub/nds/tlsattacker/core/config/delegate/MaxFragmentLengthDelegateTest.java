@@ -73,10 +73,10 @@ public class MaxFragmentLengthDelegateTest {
         args[0] = "-max_fragment_length";
         args[1] = "4";
         assertFalse(config.getMaxFragmentLength() == MaxFragmentLength.TWO_12);
-        assertFalse(config.isAddMaxFragmentLengthExtenstion());
+        assertFalse(config.isAddMaxFragmentLengthExtension());
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.isAddMaxFragmentLengthExtenstion());
+        assertTrue(config.isAddMaxFragmentLengthExtension());
         assertTrue(config.getMaxFragmentLength() == MaxFragmentLength.TWO_12);
     }
 

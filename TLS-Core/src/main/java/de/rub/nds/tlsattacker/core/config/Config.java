@@ -59,6 +59,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
@@ -101,8 +102,25 @@ public class Config implements Serializable {
             stream.close();
         } catch (IOException ex) {
             LOGGER.warn("Could not close resource Stream!", ex);
+            return ConfigIO.read(stream);
         }
         return config;
+    }
+
+    public static Config createEmptyConfig() {
+        Config c = new Config();
+        for (Field field : c.getClass().getDeclaredFields()) {
+            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()
+                    && !field.getName().contains("Extension")) {
+                field.setAccessible(true);
+                try {
+                    field.set(c, null);
+                } catch (IllegalAccessException e) {
+                    LOGGER.warn("Could not set field in Config!", e);
+                }
+            }
+        }
+        return c;
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -418,7 +436,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the MaxFragmentLength extension
      */
-    private Boolean addMaxFragmentLengthExtenstion = false;
+    private Boolean addMaxFragmentLengthExtension = false;
 
     /**
      * If we generate ClientHello with the ServerNameIndication extension
@@ -2321,12 +2339,12 @@ public class Config implements Serializable {
         this.addHeartbeatExtension = addHeartbeatExtension;
     }
 
-    public Boolean isAddMaxFragmentLengthExtenstion() {
-        return addMaxFragmentLengthExtenstion;
+    public boolean isAddMaxFragmentLengthExtension() {
+        return addMaxFragmentLengthExtension;
     }
 
-    public void setAddMaxFragmentLengthExtenstion(Boolean addMaxFragmentLengthExtenstion) {
-        this.addMaxFragmentLengthExtenstion = addMaxFragmentLengthExtenstion;
+    public void setAddMaxFragmentLengthExtension(boolean addMaxFragmentLengthExtenstion) {
+        this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtenstion;
     }
 
     public Boolean isAddServerNameIndicationExtension() {

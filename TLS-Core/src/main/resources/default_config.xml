@@ -786,7 +786,7 @@
     <addECPointFormatExtension>true</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
     <addHeartbeatExtension>false</addHeartbeatExtension>
-    <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
+    <addMaxFragmentLengthExtension>false</addMaxFragmentLengthExtension>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
     <addSignatureAndHashAlgorithmsExtension>true</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
