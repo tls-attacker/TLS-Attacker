@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.bool.BooleanExplicitValueModification;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -25,29 +24,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange
+ * message and adjusts the cryptographic material accordingly.
  *
- * @author robert
  */
 public class EarlyCcsAction extends TlsAction {
 
     private final Boolean targetOpenssl1_0_0;
 
     /**
+     * Constructor for the Action. If the target is Openssl 1.0.0 the boolean
+     * value should be set to true
      *
-     * @param adjustContext
+     * @param targetsOpenssl1_0_0 If the target is an openssl 1.0.0 server
      */
-    public EarlyCcsAction(Boolean adjustContext) {
-        this.targetOpenssl1_0_0 = adjustContext;
+    public EarlyCcsAction(Boolean targetsOpenssl1_0_0) {
+        this.targetOpenssl1_0_0 = targetsOpenssl1_0_0;
     }
 
     /**
+     * Sends a ClientKeyExchange message depending on the currently selected
+     * ciphersuite. Depening on the target version cryptographic material is
+     * adjusted.
      *
-     * @param state
-     * @throws WorkflowExecutionException
-     * @throws IOException
+     * @param state the State in which the action should be executed in
+     * @throws IOException If something goes wrong during the transmission of
+     * the ClientKeyExchange message
      */
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws IOException {
         Record r = new Record();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(AlgorithmResolver
@@ -74,11 +79,11 @@ public class EarlyCcsAction extends TlsAction {
     }
 
     /**
-     *
+     * Rests the executed state of the action
      */
     @Override
     public void reset() {
-        // nothing to do;
+        setExecuted(false);
     }
 
     @Override
