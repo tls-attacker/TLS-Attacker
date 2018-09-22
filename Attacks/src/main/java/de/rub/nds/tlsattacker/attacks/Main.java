@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandCo
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
@@ -36,7 +35,6 @@ import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
 import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -79,8 +77,6 @@ public class Main {
         jc.addCommand(TLSPoodleCommandConfig.ATTACK_COMMAND, tlsPoodle);
         Cve20162107CommandConfig cve20162107 = new Cve20162107CommandConfig(generalDelegate);
         jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
-        WinshockCommandConfig winshock = new WinshockCommandConfig(generalDelegate);
-        jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
         EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig(generalDelegate);
         jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
         PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
@@ -117,9 +113,6 @@ public class Main {
                 break;
             case Cve20162107CommandConfig.ATTACK_COMMAND:
                 attacker = new Cve20162107Attacker(cve20162107, cve20162107.createConfig());
-                break;
-            case WinshockCommandConfig.ATTACK_COMMAND:
-                attacker = new WinshockAttacker(winshock, winshock.createConfig());
                 break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
                 attacker = new EarlyCCSAttacker(earlyCCS, earlyCCS.createConfig());
