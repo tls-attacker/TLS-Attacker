@@ -17,8 +17,18 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class VeryShortRecordGenerator extends PaddingRecordGenerator {
 
+    /**
+     *
+     * @param suite
+     * @param version
+     * @return
+     */
     @Override
     public List<Record> getRecords(CipherSuite suite, ProtocolVersion version) {
         List<Record> recordList = new LinkedList<>();

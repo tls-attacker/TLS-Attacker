@@ -17,6 +17,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public SniAttacker(SniTestCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -26,6 +31,10 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Work in progress");

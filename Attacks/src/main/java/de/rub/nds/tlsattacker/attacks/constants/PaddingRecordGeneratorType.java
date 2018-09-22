@@ -8,9 +8,29 @@
  */
 package de.rub.nds.tlsattacker.attacks.constants;
 
+/**
+ *
+ * @author robert
+ */
 public enum PaddingRecordGeneratorType {
+
+    /**
+     *
+     */
     VERY_SHORT,
+
+    /**
+     *
+     */
     SHORT,
+
+    /**
+     *
+     */
     MEDIUM,
+
+    /**
+     *
+     */
     LONG
 }

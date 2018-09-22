@@ -39,6 +39,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
+/**
+ *
+ * @author robert
+ */
 public class RealDirectMessageECOracle extends ECOracle {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -51,6 +55,11 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
+    /**
+     *
+     * @param config
+     * @param curve
+     */
     public RealDirectMessageECOracle(Config config, Curve curve) {
         this.config = config;
         this.curve = curve;

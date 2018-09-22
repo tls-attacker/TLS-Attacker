@@ -66,6 +66,11 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private WorkflowTrace trace;
     private final Config tlsConfig;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
         tlsConfig = getTlsConfig();
@@ -316,6 +321,10 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not implemented yet");

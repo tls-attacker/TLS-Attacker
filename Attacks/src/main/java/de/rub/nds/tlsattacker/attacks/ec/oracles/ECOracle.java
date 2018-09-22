@@ -14,6 +14,10 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public abstract class ECOracle {
 
     /**
@@ -54,18 +58,34 @@ public abstract class ECOracle {
      */
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);
 
+    /**
+     *
+     * @return
+     */
     public long getNumberOfQueries() {
         return numberOfQueries;
     }
 
+    /**
+     *
+     * @param numberOfQueries
+     */
     public void setNumberOfQueries(long numberOfQueries) {
         this.numberOfQueries = numberOfQueries;
     }
 
+    /**
+     *
+     * @return
+     */
     public Curve getCurve() {
         return curve;
     }
 
+    /**
+     *
+     * @param curve
+     */
     public void setCurve(Curve curve) {
         this.curve = curve;
     }

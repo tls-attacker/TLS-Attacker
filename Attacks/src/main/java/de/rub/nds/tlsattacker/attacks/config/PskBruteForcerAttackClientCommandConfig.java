@@ -24,8 +24,15 @@ import java.io.InputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
+/**
+ *
+ * @author robert
+ */
 public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "pskbruteforcerclient";
 
     @ParametersDelegate
@@ -39,6 +46,10 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
+    /**
+     *
+     * @param delegate
+     */
     public PskBruteForcerAttackClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         serverDelegate = new ServerDelegate();
@@ -49,6 +60,10 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
@@ -58,15 +73,27 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         return config;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getGuessProviderInputFile() {
         return guessProviderInputFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public InputStream getGuessProviderInputStream() {
         if (this.guessProviderInputFile == null) {
             if (guessProviderType == GuessProviderType.WORDLIST) {
@@ -85,10 +112,18 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public GuessProviderType getGuessProviderType() {
         return guessProviderType;
     }
 
+    /**
+     *
+     * @param guessProviderType
+     */
     public void setGuessProviderType(GuessProviderType guessProviderType) {
         this.guessProviderType = guessProviderType;
     }

@@ -60,17 +60,34 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private final ParallelExecutor executor;
 
+    /**
+     *
+     * @param bleichenbacherConfig
+     * @param baseConfig
+     */
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
         executor = new ParallelExecutor(1, 3);
     }
 
+    /**
+     *
+     * @param bleichenbacherConfig
+     * @param baseConfig
+     * @param executor
+     */
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig,
             ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         this.executor = executor;
     }
 
+    /**
+     *
+     * @param type
+     * @param encryptedPMS
+     * @return
+     */
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, encryptedPMS);
         State state = new State(tlsConfig, trace);
@@ -81,6 +98,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return state;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         tlsConfig = getTlsConfig();
@@ -152,6 +173,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return error;
     }
 
+    /**
+     *
+     * @param bleichenbacherVectorMap
+     * @return
+     */
     public EqualityError getEqualityError(List<VectorFingerprintPair> bleichenbacherVectorMap) {
         ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
         for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
@@ -268,6 +294,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 .getEncryptedValue());
     }
 
+    /**
+     *
+     * @return
+     */
     public BleichenbacherWorkflowType getVulnerableType() {
         return vulnerableType;
     }
@@ -280,10 +310,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public EqualityError getErrorType() {
         return errorType;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isShakyScans() {
         return shakyScans;
     }

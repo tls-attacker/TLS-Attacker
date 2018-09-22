@@ -10,8 +10,18 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.util.Comparator;
 
+/**
+ *
+ * @author robert
+ */
 public class ICEPointCopmparator implements Comparator<ICEPoint> {
 
+    /**
+     *
+     * @param o1
+     * @param o2
+     * @return
+     */
     @Override
     public int compare(ICEPoint o1, ICEPoint o2) {
         return Integer.compare(o1.getOrder(), o2.getOrder());

@@ -38,6 +38,10 @@ import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 
+/**
+ *
+ * @author robert
+ */
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -46,6 +50,11 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         md5.update(bytes, 0, bytes.length);
     }
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public DrownAttacker(DrownCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -55,6 +64,10 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         DrownVulnerabilityType type = getDrownVulnerabilityType();
@@ -74,6 +87,10 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public DrownVulnerabilityType getDrownVulnerabilityType() {
         Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(

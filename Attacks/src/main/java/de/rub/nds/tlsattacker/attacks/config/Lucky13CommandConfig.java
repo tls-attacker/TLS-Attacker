@@ -21,8 +21,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class Lucky13CommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "lucky13";
 
     @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
@@ -49,6 +56,10 @@ public class Lucky13CommandConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public Lucky13CommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -61,51 +72,99 @@ public class Lucky13CommandConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getBlockSize() {
         return blockSize;
     }
 
+    /**
+     *
+     * @param blockSize
+     */
     public void setBlockSize(Integer blockSize) {
         this.blockSize = blockSize;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getMeasurements() {
         return measurements;
     }
 
+    /**
+     *
+     * @param measurements
+     */
     public void setMeasurements(Integer measurements) {
         this.measurements = measurements;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMonaFile() {
         return monaFile;
     }
 
+    /**
+     *
+     * @param monaFile
+     */
     public void setMonaFile(String monaFile) {
         this.monaFile = monaFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPaddings() {
         return paddings;
     }
 
+    /**
+     *
+     * @param paddings
+     */
     public void setPaddings(String paddings) {
         this.paddings = paddings;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getBlocks() {
         return blocks;
     }
 
+    /**
+     *
+     * @param blocks
+     */
     public void setBlocks(Integer blocks) {
         this.blocks = blocks;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

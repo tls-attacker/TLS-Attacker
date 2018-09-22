@@ -12,6 +12,10 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+/**
+ *
+ * @author robert
+ */
 public class ICEPointReaderTest {
 
     /**

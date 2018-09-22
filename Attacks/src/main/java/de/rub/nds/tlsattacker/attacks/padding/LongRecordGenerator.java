@@ -25,6 +25,12 @@ import java.util.List;
  */
 public class LongRecordGenerator extends PaddingRecordGenerator {
 
+    /**
+     *
+     * @param suite
+     * @param version
+     * @return
+     */
     @Override
     public List<Record> getRecords(CipherSuite suite, ProtocolVersion version) {
         List<Record> recordList = new LinkedList<>();

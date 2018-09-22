@@ -15,8 +15,15 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 
+/**
+ *
+ * @author robert
+ */
 public class TokenBindingMitmCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "token_binding_mitm";
 
     @Parameter(names = "-chrome", description = "Set this if using chrome. Allows to handle multiple requests.")
@@ -27,6 +34,10 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
     @ParametersDelegate
     private TimeoutDelegate timeoutDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public TokenBindingMitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         mitmDelegate = new MitmDelegate();
@@ -35,10 +46,18 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
         addDelegate(timeoutDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Boolean isChrome() {
         return chrome;
     }
 
+    /**
+     *
+     * @param chrome
+     */
     public void setChrome(Boolean chrome) {
         this.chrome = chrome;
     }
@@ -46,11 +65,21 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
     /*
      * Always execute attack.
      */
+
+    /**
+     *
+     * @return
+     */
+
     @Override
     public boolean isExecuteAttack() {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

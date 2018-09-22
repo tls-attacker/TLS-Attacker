@@ -42,12 +42,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
+/**
+ *
+ * @author robert
+ */
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger premasterSecret;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public InvalidCurveAttacker(InvalidCurveAttackConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -65,6 +74,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         LOGGER.info("Result found: {}", result);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         if (!AlgorithmResolver.getKeyExchangeAlgorithm(getTlsConfig().getDefaultSelectedCipherSuite()).isEC()) {

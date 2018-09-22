@@ -8,8 +8,16 @@
  */
 package de.rub.nds.tlsattacker.attacks.exception;
 
+/**
+ *
+ * @author robert
+ */
 public class PaddingOracleUnstableException extends RuntimeException {
 
+    /**
+     *
+     * @param string
+     */
     public PaddingOracleUnstableException(String string) {
         super(string);
     }

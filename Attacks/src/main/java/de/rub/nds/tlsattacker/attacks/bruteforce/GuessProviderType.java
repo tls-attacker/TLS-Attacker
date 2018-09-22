@@ -8,7 +8,19 @@
  */
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
+/**
+ *
+ * @author robert
+ */
 public enum GuessProviderType {
+
+    /**
+     *
+     */
     INCREMENTING,
+
+    /**
+     *
+     */
     WORDLIST
 }

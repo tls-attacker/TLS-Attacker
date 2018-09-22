@@ -19,13 +19,24 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+/**
+ *
+ * @author robert
+ */
 public class GeneralAttackDelegate extends GeneralDelegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     public GeneralAttackDelegate() {
     }
 
+    /**
+     *
+     * @param config
+     */
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());

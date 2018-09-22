@@ -15,6 +15,10 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class Pkcs1Attack {
 
     /**
@@ -22,14 +26,46 @@ public class Pkcs1Attack {
      */
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     protected final Pkcs1Oracle oracle;
+
+    /**
+     *
+     */
     protected final byte[] encryptedMsg;
+
+    /**
+     *
+     */
     protected final RSAPublicKey publicKey;
+
+    /**
+     *
+     */
     protected BigInteger c0;
+
+    /**
+     *
+     */
     protected final int blockSize;
+
+    /**
+     *
+     */
     protected BigInteger solution;
+
+    /**
+     *
+     */
     protected BigInteger bigB;
 
+    /**
+     *
+     * @param msg
+     * @param pkcsOracle
+     */
     public Pkcs1Attack(byte[] msg, Pkcs1Oracle pkcsOracle) {
         this.encryptedMsg = msg.clone();
         this.publicKey = (RSAPublicKey) pkcsOracle.getPublicKey();
@@ -76,17 +112,32 @@ public class Pkcs1Attack {
         return tmp.mod(publicKey.getModulus());
     }
 
+    /**
+     *
+     * @param message
+     * @param si
+     * @return
+     */
     protected boolean queryOracle(BigInteger message, BigInteger si) {
         byte[] msg = prepareMsg(message, si);
         LOGGER.info(ArrayConverter.bytesToHexString(msg));
         return oracle.checkPKCSConformity(msg);
     }
 
+    /**
+     *
+     * @param message
+     * @return
+     */
     protected boolean queryOracle(BigInteger message) {
         byte[] msg = ArrayConverter.bigIntegerToByteArray(message, blockSize, true);
         return oracle.checkPKCSConformity(msg);
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getSolution() {
         return solution;
     }

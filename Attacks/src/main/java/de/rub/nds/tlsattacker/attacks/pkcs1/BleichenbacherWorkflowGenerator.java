@@ -21,8 +21,19 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
+/**
+ *
+ * @author robert
+ */
 public class BleichenbacherWorkflowGenerator {
 
+    /**
+     *
+     * @param tlsConfig
+     * @param type
+     * @param encryptedPMS
+     * @return
+     */
     public static WorkflowTrace generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type, byte[] encryptedPMS) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);

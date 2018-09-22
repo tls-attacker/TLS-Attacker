@@ -22,10 +22,19 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -46,6 +55,10 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
         LOGGER.info("Executed attack");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not supported yet.");

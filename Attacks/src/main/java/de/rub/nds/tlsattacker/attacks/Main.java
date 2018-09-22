@@ -46,10 +46,18 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         JCommander jc = new JCommander(generalDelegate);
@@ -169,6 +177,12 @@ public class Main {
         }
     }
 
+    /**
+     *
+     * @param jc
+     * @param config
+     * @return
+     */
     public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
         return config.getGeneralDelegate().isHelp();
     }

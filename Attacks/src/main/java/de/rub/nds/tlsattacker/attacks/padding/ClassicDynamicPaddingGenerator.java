@@ -26,12 +26,25 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeA
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class ClassicDynamicPaddingGenerator extends PaddingVectorGenerator {
 
+    /**
+     *
+     * @param recordGeneratorType
+     */
     public ClassicDynamicPaddingGenerator(PaddingRecordGeneratorType recordGeneratorType) {
         super(recordGeneratorType);
     }
 
+    /**
+     *
+     * @param config
+     * @return
+     */
     @Override
     public List<WorkflowTrace> getPaddingOracleVectors(Config config) {
         List<WorkflowTrace> traceList = new LinkedList<>();

@@ -14,6 +14,10 @@ import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ *
+ * @author robert
+ */
 public class ResponseFingerprint {
 
     private final boolean receivedTransportHandlerException;
@@ -34,6 +38,18 @@ public class ResponseFingerprint {
 
     private final SocketState socketState;
 
+    /**
+     *
+     * @param receivedTransportHandlerException
+     * @param encryptedAlert
+     * @param numberRecordsReceived
+     * @param numberOfMessageReceived
+     * @param recordClasses
+     * @param messageClasses
+     * @param messageList
+     * @param recordList
+     * @param socketState
+     */
     public ResponseFingerprint(boolean receivedTransportHandlerException, boolean encryptedAlert,
             int numberRecordsReceived, int numberOfMessageReceived, List<Class<AbstractRecord>> recordClasses,
             List<Class<ProtocolMessage>> messageClasses, List<ProtocolMessage> messageList,
@@ -49,42 +65,82 @@ public class ResponseFingerprint {
         this.socketState = socketState;
     }
 
+    /**
+     *
+     * @return
+     */
     public SocketState getSocketState() {
         return socketState;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<AbstractRecord> getRecordList() {
         return recordList;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isReceivedTransportHandlerException() {
         return receivedTransportHandlerException;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isEncryptedAlert() {
         return encryptedAlert;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumberRecordsReceived() {
         return numberRecordsReceived;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumberOfMessageReceived() {
         return numberOfMessageReceived;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Class<AbstractRecord>> getRecordClasses() {
         return recordClasses;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Class<ProtocolMessage>> getMessageClasses() {
         return messageClasses;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ProtocolMessage> getMessageList() {
         return messageList;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder recordClasses = new StringBuilder();
@@ -111,6 +167,10 @@ public class ResponseFingerprint {
                 + socketState + ']';
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -122,6 +182,11 @@ public class ResponseFingerprint {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

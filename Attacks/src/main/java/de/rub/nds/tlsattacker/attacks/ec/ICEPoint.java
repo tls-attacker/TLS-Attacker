@@ -11,27 +11,52 @@ package de.rub.nds.tlsattacker.attacks.ec;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author robert
+ */
 public class ICEPoint extends Point {
 
     private int order;
 
+    /**
+     *
+     */
     public ICEPoint() {
 
     }
 
+    /**
+     *
+     * @param order
+     * @param x
+     * @param y
+     */
     public ICEPoint(int order, BigInteger x, BigInteger y) {
         super(x, y);
         this.order = order;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     *
+     * @param order
+     */
     public void setOrder(int order) {
         this.order = order;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

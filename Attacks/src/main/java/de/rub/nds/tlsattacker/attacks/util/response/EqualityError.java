@@ -8,20 +8,80 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
+/**
+ *
+ * @author robert
+ */
 public enum EqualityError {
+
+    /**
+     *
+     */
     NONE,
+
+    /**
+     *
+     */
     SOCKET_EXCEPTION,
+
+    /**
+     *
+     */
     SOCKET_STATE,
+
+    /**
+     *
+     */
     ALERT_COUNT,
+
+    /**
+     *
+     */
     MESSAGE_COUNT,
+
+    /**
+     *
+     */
     RECORD_COUNT,
+
+    /**
+     *
+     */
     RECORD_CLASS,
+
+    /**
+     *
+     */
     MESSAGE_CLASS,
+
+    /**
+     *
+     */
     ALERT_RECORD_CONTENT,
+
+    /**
+     *
+     */
     ALERT_MESSAGE_CONTENT,
+
+    /**
+     *
+     */
     ENCRYPTED_ALERT,
+
+    /**
+     *
+     */
     RECORD_CONTENT_TYPE,
+
+    /**
+     *
+     */
     RECORD_LENGTH,
+
+    /**
+     *
+     */
     RECORD_VERSION;
 
 }

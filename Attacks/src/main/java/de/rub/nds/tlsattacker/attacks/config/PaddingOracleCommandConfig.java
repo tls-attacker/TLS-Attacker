@@ -26,8 +26,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class PaddingOracleCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "padding_oracle";
 
     @Parameter(names = "-recordEngine", description = "The record generator used for the PaddingOracle")
@@ -47,6 +54,10 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public PaddingOracleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -61,27 +72,51 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public PaddingRecordGeneratorType getRecordGeneratorType() {
         return recordGeneratorType;
     }
 
+    /**
+     *
+     * @param recordGeneratorType
+     */
     public void setRecordGeneratorType(PaddingRecordGeneratorType recordGeneratorType) {
         this.recordGeneratorType = recordGeneratorType;
     }
 
+    /**
+     *
+     * @return
+     */
     public PaddingVectorGeneratorType getVectorGeneratorType() {
         return vectorGeneratorType;
     }
 
+    /**
+     *
+     * @param vectorGeneratorType
+     */
     public void setVectorGeneratorType(PaddingVectorGeneratorType vectorGeneratorType) {
         this.vectorGeneratorType = vectorGeneratorType;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

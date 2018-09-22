@@ -15,8 +15,15 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 
+/**
+ *
+ * @author robert
+ */
 public class TooManyAlgorithmsAttackConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "too_many_algorithms";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -27,6 +34,10 @@ public class TooManyAlgorithmsAttackConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public TooManyAlgorithmsAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -39,6 +50,10 @@ public class TooManyAlgorithmsAttackConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return true;

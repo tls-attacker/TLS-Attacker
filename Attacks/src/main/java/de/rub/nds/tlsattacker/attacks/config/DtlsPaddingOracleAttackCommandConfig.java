@@ -23,8 +23,15 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "dtls_potest";
 
     @Parameter(names = "-messagespertrain", description = "Number of messages per train")
@@ -51,6 +58,10 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public DtlsPaddingOracleAttackCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -63,51 +74,99 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMessagesPerTrain() {
         return messagesPerTrain;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTrainMessageSize() {
         return trainMessageSize;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNrOfRounds() {
         return nrOfRounds;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getResultFilePath() {
         return resultFilePath;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getMessageWaitNanos() {
         return messageWaitNanos;
     }
 
+    /**
+     *
+     * @param messagesPerTrain
+     */
     public void setMessagesPerTrain(int messagesPerTrain) {
         this.messagesPerTrain = messagesPerTrain;
     }
 
+    /**
+     *
+     * @param trainMessageSize
+     */
     public void setTrainMessageSize(int trainMessageSize) {
         this.trainMessageSize = trainMessageSize;
     }
 
+    /**
+     *
+     * @param nrOfRounds
+     */
     public void setNrOfRounds(int nrOfRounds) {
         this.nrOfRounds = nrOfRounds;
     }
 
+    /**
+     *
+     * @param resultFilePath
+     */
     public void setResultFilePath(String resultFilePath) {
         this.resultFilePath = resultFilePath;
     }
 
+    /**
+     *
+     * @param messageWaitNanos
+     */
     public void setMessageWaitNanos(long messageWaitNanos) {
         this.messageWaitNanos = messageWaitNanos;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

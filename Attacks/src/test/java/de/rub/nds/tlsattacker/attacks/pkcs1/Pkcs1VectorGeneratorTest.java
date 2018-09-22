@@ -14,6 +14,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ *
+ * @author robert
+ */
 public class Pkcs1VectorGeneratorTest {
 
     /**

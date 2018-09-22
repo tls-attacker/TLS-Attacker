@@ -10,8 +10,18 @@ package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 import java.io.InputStream;
 
+/**
+ *
+ * @author robert
+ */
 public class GuessProviderFactory {
 
+    /**
+     *
+     * @param type
+     * @param guessSource
+     * @return
+     */
     public static GuessProvider createGuessProvider(GuessProviderType type, InputStream guessSource) {
         switch (type) {
             case INCREMENTING:

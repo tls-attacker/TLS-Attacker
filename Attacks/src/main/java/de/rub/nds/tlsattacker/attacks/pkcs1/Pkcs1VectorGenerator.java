@@ -26,6 +26,10 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class Pkcs1VectorGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -59,6 +63,12 @@ public class Pkcs1VectorGenerator {
         }
     }
 
+    /**
+     *
+     * @param publicKey
+     * @param protocolVersion
+     * @return
+     */
     public static Pkcs1Vector generateCorrectPkcs1Vector(RSAPublicKey publicKey, ProtocolVersion protocolVersion) {
         Pkcs1Vector encryptedVector = getPlainCorrect(publicKey.getModulus().bitLength(), protocolVersion);
         try {

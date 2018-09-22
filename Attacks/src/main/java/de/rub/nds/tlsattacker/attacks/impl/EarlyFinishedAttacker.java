@@ -32,10 +32,19 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -45,6 +54,10 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         EarlyFinishedVulnerabilityType vulnerabilityType = getVulnerabilityType();
@@ -58,6 +71,10 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public EarlyFinishedVulnerabilityType getVulnerabilityType() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setFiltersKeepUserSettings(false);

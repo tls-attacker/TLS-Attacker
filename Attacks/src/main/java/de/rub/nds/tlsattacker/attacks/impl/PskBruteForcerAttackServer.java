@@ -28,12 +28,21 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackServerCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private GuessProvider guessProvider;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public PskBruteForcerAttackServer(PskBruteForcerAttackServerCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -81,6 +90,10 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info("Connecting to the Server...");

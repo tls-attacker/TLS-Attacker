@@ -11,38 +11,71 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import java.util.Objects;
 
+/**
+ *
+ * @author robert
+ */
 public class VectorFingerprintPair {
 
     private ResponseFingerprint fingerprint;
 
     private Pkcs1Vector vector;
 
+    /**
+     *
+     * @param fingerprint
+     * @param vector
+     */
     public VectorFingerprintPair(ResponseFingerprint fingerprint, Pkcs1Vector vector) {
         this.fingerprint = fingerprint;
         this.vector = vector;
     }
 
+    /**
+     *
+     * @return
+     */
     public ResponseFingerprint getFingerprint() {
         return fingerprint;
     }
 
+    /**
+     *
+     * @param fingerprint
+     */
     public void setFingerprint(ResponseFingerprint fingerprint) {
         this.fingerprint = fingerprint;
     }
 
+    /**
+     *
+     * @return
+     */
     public Pkcs1Vector getVector() {
         return vector;
     }
 
+    /**
+     *
+     * @param vector
+     */
     public void setVector(Pkcs1Vector vector) {
         this.vector = vector;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "PKCS#1 Vector: " + vector.getDescription() + " Fingerprint=" + fingerprint.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -51,6 +84,11 @@ public class VectorFingerprintPair {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

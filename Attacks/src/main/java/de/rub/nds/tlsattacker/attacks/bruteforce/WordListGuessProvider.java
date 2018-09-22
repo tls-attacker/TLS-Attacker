@@ -14,15 +14,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ *
+ * @author robert
+ */
 public class WordListGuessProvider extends GuessProvider {
 
     private final BufferedReader bufferedReader;
 
+    /**
+     *
+     * @param stream
+     */
     public WordListGuessProvider(InputStream stream) {
         super(GuessProviderType.WORDLIST);
         bufferedReader = new BufferedReader(new InputStreamReader(stream));
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public byte[] getGuess() {
         try {

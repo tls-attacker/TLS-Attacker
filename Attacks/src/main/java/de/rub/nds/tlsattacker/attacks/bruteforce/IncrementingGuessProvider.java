@@ -8,22 +8,37 @@
  */
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
+/**
+ *
+ * @author robert
+ */
 public class IncrementingGuessProvider extends GuessProvider {
 
     private byte[] lastGuess = null;
 
     private int size = 0;
 
+    /**
+     *
+     */
     public IncrementingGuessProvider() {
         super(GuessProviderType.INCREMENTING);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public byte[] getGuess() {
         byte[] guess = getIncrementedGuess();
         return guess;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getIncrementedGuess() {
         if (lastGuess == null) {
             lastGuess = new byte[size];
@@ -37,6 +52,12 @@ public class IncrementingGuessProvider extends GuessProvider {
         return lastGuess;
     }
 
+    /**
+     *
+     * @param array
+     * @param position
+     * @return
+     */
     public byte[] createdIncrementedAtPosition(byte[] array, int position) {
         if (array.length > position) {
             array[position] = (byte) (array[position] + 1);

@@ -52,6 +52,11 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private boolean vulnerable;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public Cve20162107Attacker(Cve20162107CommandConfig config, Config baseConfig) {
         super(config, baseConfig);
         lastMessages = new LinkedList<>();
@@ -158,6 +163,10 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         return r;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         List<ProtocolVersion> versions = config.getVersions();

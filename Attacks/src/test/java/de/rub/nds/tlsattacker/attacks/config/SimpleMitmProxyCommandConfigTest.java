@@ -12,31 +12,53 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import java.io.InputStream;
 import org.junit.Test;
 
+/**
+ *
+ * @author robert
+ */
 public class SimpleMitmProxyCommandConfigTest {
 
     private SimpleMitmProxyCommandConfig cmdConfig;
     private InputStream inputKeyStream;
 
+    /**
+     *
+     */
     public SimpleMitmProxyCommandConfigTest() {
         cmdConfig = new SimpleMitmProxyCommandConfig(new GeneralDelegate());
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadPrivateKeyRsaWithPassword() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadPrivateKeyEc() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadPrivateKeyEcWithPassword() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadPrivateKeyDh() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testLoadPrivateKeyDhWithPassword() {
     }

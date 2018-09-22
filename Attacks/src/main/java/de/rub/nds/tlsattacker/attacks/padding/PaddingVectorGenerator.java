@@ -13,10 +13,21 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public abstract class PaddingVectorGenerator {
 
+    /**
+     *
+     */
     protected final PaddingRecordGenerator recordGenerator;
 
+    /**
+     *
+     * @param type
+     */
     public PaddingVectorGenerator(PaddingRecordGeneratorType type) {
         switch (type) {
             case LONG:
@@ -37,6 +48,11 @@ public abstract class PaddingVectorGenerator {
 
     }
 
+    /**
+     *
+     * @param config
+     * @return
+     */
     public abstract List<WorkflowTrace> getPaddingOracleVectors(Config config);
 
 }

@@ -8,16 +8,32 @@
  */
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
+/**
+ *
+ * @author robert
+ */
 public abstract class GuessProvider {
 
     private final GuessProviderType type;
 
+    /**
+     *
+     * @param type
+     */
     public GuessProvider(GuessProviderType type) {
         this.type = type;
     }
 
+    /**
+     *
+     * @return
+     */
     public abstract byte[] getGuess();
 
+    /**
+     *
+     * @return
+     */
     public GuessProviderType getType() {
         return type;
     }

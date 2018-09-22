@@ -51,6 +51,11 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     private TimingClientTcpTransportHandler transportHandler;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public Lucky13Attacker(Lucky13CommandConfig config, Config baseConfig) {
         super(config, baseConfig);
         results = new HashMap<>();
@@ -74,6 +79,11 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
     }
 
+    /**
+     *
+     * @param record
+     * @throws IOException
+     */
     public void executeAttackRound(Record record) throws IOException {
         Config tlsConfig = getTlsConfig();
 
@@ -138,6 +148,10 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         return paddingBytes;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         String[] paddingStrings = config.getPaddings().split(",");

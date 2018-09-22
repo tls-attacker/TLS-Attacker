@@ -23,8 +23,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ * @author robert
+ */
 public class TLSPoodleCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "tls_poodle";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -37,6 +44,10 @@ public class TLSPoodleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public TLSPoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -51,11 +62,19 @@ public class TLSPoodleCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

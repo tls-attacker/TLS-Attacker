@@ -37,15 +37,35 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ * @author robert
+ */
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     public enum TargetVersion {
+
+        /**
+         *
+         */
         OPENSSL_1_0_0,
+
+        /**
+         *
+         */
         OPENSSL_1_0_1
     };
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public EarlyCCSAttacker(EarlyCCSCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -55,6 +75,10 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         EarlyCcsVulnerabilityType earlyCcsVulnerabilityType = getEarlyCcsVulnerabilityType();
@@ -70,6 +94,11 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         return null;
     }
 
+    /**
+     *
+     * @param targetVersion
+     * @return
+     */
     public boolean checkTargetVersion(TargetVersion targetVersion) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
@@ -119,6 +148,10 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public EarlyCcsVulnerabilityType getEarlyCcsVulnerabilityType() {
         if (checkTargetVersion(TargetVersion.OPENSSL_1_0_0)) {
             return EarlyCcsVulnerabilityType.VULN_NOT_EXPLOITABLE;

@@ -19,8 +19,15 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 
+/**
+ *
+ * @author robert
+ */
 public class EarlyCCSCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "early_ccs";
 
     @ParametersDelegate
@@ -32,6 +39,10 @@ public class EarlyCCSCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public EarlyCCSCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -44,11 +55,19 @@ public class EarlyCCSCommandConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

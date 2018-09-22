@@ -32,10 +32,20 @@ public class EarlyCcsAction extends TlsAction {
 
     private final Boolean targetOpenssl1_0_0;
 
+    /**
+     *
+     * @param adjustContext
+     */
     public EarlyCcsAction(Boolean adjustContext) {
         this.targetOpenssl1_0_0 = adjustContext;
     }
 
+    /**
+     *
+     * @param state
+     * @throws WorkflowExecutionException
+     * @throws IOException
+     */
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         Record r = new Record();
@@ -63,6 +73,9 @@ public class EarlyCcsAction extends TlsAction {
         setExecuted(true);
     }
 
+    /**
+     *
+     */
     @Override
     public void reset() {
         // nothing to do;

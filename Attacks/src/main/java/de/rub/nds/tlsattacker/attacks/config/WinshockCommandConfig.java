@@ -18,8 +18,15 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author robert
+ */
 public class WinshockCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "winshock";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -36,6 +43,10 @@ public class WinshockCommandConfig extends AttackConfig {
     @Parameter(names = "-signature", description = "Signature value in the CertificateVerify protocol message", converter = BigIntegerConverter.class, required = true)
     private BigInteger signature;
 
+    /**
+     *
+     * @param delegate
+     */
     public WinshockCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -48,22 +59,42 @@ public class WinshockCommandConfig extends AttackConfig {
         addDelegate(clientDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getSignatureLength() {
         return signatureLength;
     }
 
+    /**
+     *
+     * @param signatureLength
+     */
     public void setSignatureLength(Integer signatureLength) {
         this.signatureLength = signatureLength;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getSignature() {
         return signature;
     }
 
+    /**
+     *
+     * @param signature
+     */
     public void setSignature(BigInteger signature) {
         this.signature = signature;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return true;

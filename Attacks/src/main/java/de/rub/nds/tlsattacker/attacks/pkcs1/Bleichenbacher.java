@@ -23,11 +23,32 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     protected BigInteger s0;
+
+    /**
+     *
+     */
     protected BigInteger si;
+
+    /**
+     *
+     */
     protected Interval[] m;
+
+    /**
+     *
+     */
     protected final boolean msgIsPKCS;
 
+    /**
+     *
+     * @param msg
+     * @param pkcsOracle
+     * @param msgPKCScofnorm
+     */
     public Bleichenbacher(final byte[] msg, final Pkcs1Oracle pkcsOracle, final boolean msgPKCScofnorm) {
         super(msg, pkcsOracle);
         this.msgIsPKCS = msgPKCScofnorm;
@@ -40,6 +61,10 @@ public class Bleichenbacher extends Pkcs1Attack {
         bigB = BigInteger.ONE.shiftLeft(tmp);
     }
 
+    /**
+     *
+     * @throws OracleException
+     */
     public void attack() throws OracleException {
         int i = 0;
         boolean solutionFound = false;
@@ -74,6 +99,10 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    /**
+     *
+     * @throws OracleException
+     */
     protected void stepOne() throws OracleException {
         BigInteger n = publicKey.getModulus();
         BigInteger ciphered = new BigInteger(1, encryptedMsg);
@@ -98,6 +127,11 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug(" Found s0 : " + si);
     }
 
+    /**
+     *
+     * @param i
+     * @throws OracleException
+     */
     protected void stepTwo(final int i) throws OracleException {
         if (i == 1) {
             this.stepTwoA();
@@ -112,6 +146,10 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug(" Found s" + i + ": " + si);
     }
 
+    /**
+     *
+     * @throws OracleException
+     */
     protected void stepTwoA() throws OracleException {
         byte[] send;
         boolean pkcsConform;
@@ -152,6 +190,10 @@ public class Bleichenbacher extends Pkcs1Attack {
         } while (!pkcsConform);
     }
 
+    /**
+     *
+     * @throws OracleException
+     */
     protected void stepTwoC() throws OracleException {
         byte[] send;
         boolean pkcsConform;
@@ -284,6 +326,13 @@ public class Bleichenbacher extends Pkcs1Attack {
         return lowerBound;
     }
 
+    /**
+     *
+     * @param r
+     * @param modulus
+     * @param upperIntervalBound
+     * @return
+     */
     protected BigInteger step2cComputeLowerBound(final BigInteger r, final BigInteger modulus,
             final BigInteger upperIntervalBound) {
         BigInteger lowerBound = BigInteger.valueOf(2).multiply(bigB);
@@ -293,6 +342,13 @@ public class Bleichenbacher extends Pkcs1Attack {
         return lowerBound;
     }
 
+    /**
+     *
+     * @param r
+     * @param modulus
+     * @param lowerIntervalBound
+     * @return
+     */
     protected BigInteger step2cComputeUpperBound(final BigInteger r, final BigInteger modulus,
             final BigInteger lowerIntervalBound) {
         BigInteger upperBound = BigInteger.valueOf(3).multiply(bigB);

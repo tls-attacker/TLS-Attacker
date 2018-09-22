@@ -32,6 +32,11 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public WinshockAttacker(WinshockCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -61,6 +66,10 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
         workflowExecutor.executeWorkflow();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not implemented yet");
