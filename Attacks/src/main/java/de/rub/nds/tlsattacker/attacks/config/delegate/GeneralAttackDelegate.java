@@ -14,21 +14,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * A special GeneralDelegate which allows Attacks to add additional Parameters.
  */
 public class GeneralAttackDelegate extends GeneralDelegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     *
+     * Default Constructor
      */
     public GeneralAttackDelegate() {
     }
 
     /**
+     * Adjusts the Config according to the specified values.
      *
      * @param config
+     *            Config to adjust
      */
     @Override
     public void applyDelegate(Config config) {

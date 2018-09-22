@@ -40,7 +40,8 @@ public class AttackDelegate extends Delegate {
     /**
      * Sets executeAttack flag to the specified value
      * 
-     * @param executeAttack the value to set executeAttack to
+     * @param executeAttack
+     *            the value to set executeAttack to
      */
     public void setExecuteAttack(boolean executeAttack) {
         this.executeAttack = executeAttack;
@@ -49,8 +50,10 @@ public class AttackDelegate extends Delegate {
     /**
      * Does nothing
      * 
-     * @param config Ignored
-     * @throws ConfigurationException Never thrown
+     * @param config
+     *            Ignored
+     * @throws ConfigurationException
+     *             Never thrown
      */
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
