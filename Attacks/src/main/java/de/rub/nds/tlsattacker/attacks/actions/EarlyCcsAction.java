@@ -53,7 +53,6 @@ public class EarlyCcsAction extends TlsAction {
      */
     @Override
     public void execute(State state) throws IOException {
-        Record r = new Record();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(AlgorithmResolver
                 .getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
