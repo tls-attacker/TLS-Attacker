@@ -34,15 +34,17 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         // 3-byte header: RECORD-LENGTH = ((byte[0] & 0x3f) << 8)) | byte[1];
         // If most significant bit on first byte is set: 2-byte header.
         // O/w, 3-byte header.
-        byte[] first2Bytes = parseByteArrayField(2);
+        byte[] length;
         int mask;
-        if ((first2Bytes[0] & 0x80) == 0) {
+        if ((peek() & (byte) 0x80) != 0) {
+            length = parseByteArrayField(SSL2ByteLength.LENGTH);
             mask = 0x3f;
         } else {
+            length = parseByteArrayField(SSL2ByteLength.LONG_LENGTH);
             mask = 0x7f;
         }
-        int len = ((first2Bytes[0] & mask) << 8) | (first2Bytes[1] & 0xFF);
-        message.setMessageLength(len);
+        int intLength = ((length[0] & mask) << 8) | (length[1] & 0xFF);
+        message.setMessageLength(intLength);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 

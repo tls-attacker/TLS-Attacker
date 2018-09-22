@@ -30,6 +30,18 @@ public class ParserTest {
         middleParser = new ParserImpl(3, bytesToParse);
     }
 
+    @Test
+    public void testPeek() {
+        parser.parseByteArrayField(4);
+        assertEquals(4, parser.peek());
+    }
+
+    @Test(expected = ParserException.class)
+    public void testPeekFailure() {
+        parser.parseByteArrayField(9);
+        parser.peek();
+    }
+
     /**
      * Test of parseByteArrayField method, of class Parser.
      */
