@@ -9,18 +9,17 @@
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 /**
- *
- * @author robert
+ * A Type of GuessProvider.
  */
 public enum GuessProviderType {
 
     /**
-     *
+     * An IncrementingGuessProvider just tries all byte[] sequences in order
      */
     INCREMENTING,
-
     /**
-     *
+     * A WordListGuessProvider uses an InputSource to try all words from the
+     * InputSource
      */
     WORDLIST
 }
