@@ -15,16 +15,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- *
- * @author robert
+ * A GuessProvider based on a WordList. It reads bytes from the inpustream until
+ * a newline character is found. If the InputStream does not contain anymore
+ * lines. Null is returned.
  */
 public class WordListGuessProvider extends GuessProvider {
 
     private final BufferedReader bufferedReader;
 
     /**
+     * Constructor
      *
      * @param stream
+     *            An Inputstream to read Guesses from
      */
     public WordListGuessProvider(InputStream stream) {
         super(GuessProviderType.WORDLIST);
@@ -32,8 +35,11 @@ public class WordListGuessProvider extends GuessProvider {
     }
 
     /**
+     * Returns the next word from the inputstream. If no more words are in the
+     * in InputStream null is returned.
      *
-     * @return
+     * @return The next word from the inputstream. If no more words are in the
+     *         in InputStream null is returned.
      */
     @Override
     public byte[] getGuess() {
