@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandCo
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
@@ -37,7 +36,6 @@ import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
 import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.TooManyAlgorithmsAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -89,8 +87,6 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        TooManyAlgorithmsAttackConfig tooManyAlgorithms = new TooManyAlgorithmsAttackConfig(generalDelegate);
-        jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
         DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
         jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
         jc.parse(args);
@@ -124,9 +120,6 @@ public class Main {
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
                 attacker = new WinshockAttacker(winshock, winshock.createConfig());
-                break;
-            case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
-                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms, tooManyAlgorithms.createConfig());
                 break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
                 attacker = new EarlyCCSAttacker(earlyCCS, earlyCCS.createConfig());
