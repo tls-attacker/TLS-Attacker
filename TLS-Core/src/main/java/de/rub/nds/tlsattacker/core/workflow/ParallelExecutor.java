@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +39,16 @@ public class ParallelExecutor {
 
     public ParallelExecutor(int size, int reexecutions) {
         executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>());
+        this.reexecutions = reexecutions;
+        this.size = size;
+        if (reexecutions < 0) {
+            throw new IllegalArgumentException("Reexecutions is below zero");
+        }
+    }
+
+    public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
+        executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>(),
+                factory);
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {
