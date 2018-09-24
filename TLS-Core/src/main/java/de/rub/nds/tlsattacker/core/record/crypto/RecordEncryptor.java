@@ -59,7 +59,6 @@ public class RecordEncryptor extends Encryptor {
                     - (record.getCleanProtocolMessageBytes().getValue().length % AlgorithmResolver.getCipher(
                             cipherSuite).getBlocksize()) + recordCipher.getTagSize();
             record.setLength(length);
-            System.out.println(length);
         }
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
