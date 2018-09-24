@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -52,6 +53,14 @@ public class RecordEncryptor extends Encryptor {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
         record.getComputations().setNonMetaDataMaced(cleanBytes);
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            // TLS13 needs the record length before encrypting
+            int length = AlgorithmResolver.getCipher(cipherSuite).getBlocksize()
+                    - (record.getCleanProtocolMessageBytes().getValue().length % AlgorithmResolver.getCipher(
+                            cipherSuite).getBlocksize()) + recordCipher.getTagSize();
+            record.setLength(length);
+            System.out.println(length);
+        }
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
