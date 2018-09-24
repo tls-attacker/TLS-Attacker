@@ -24,7 +24,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class ClassicPaddingGenerator extends PaddingVectorGenerator {
 

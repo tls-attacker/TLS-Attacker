@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 
 /**
  *
- * @author robert
+ *
  */
 public class PaddingVectorGeneratorFactory {
 

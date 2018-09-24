@@ -17,7 +17,7 @@ import org.bouncycastle.util.Arrays;
 
 /**
  *
- * @author robert
+ *
  */
 public class FingerPrintChecker {
 

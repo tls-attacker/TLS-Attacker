@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 
 /**
  *
- * @author robert
  */
 public class EarlyFinishedCommandConfig extends AttackConfig {
 

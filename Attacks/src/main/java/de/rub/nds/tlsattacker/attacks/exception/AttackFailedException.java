@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.exception;
 
 /**
  *
- * @author robert
  */
 public class AttackFailedException extends RuntimeException {
 

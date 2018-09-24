@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 
 /**
  *
- * @author robert
  */
 public class DrownCommandConfig extends AttackConfig {
 

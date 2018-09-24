@@ -41,7 +41,7 @@ import org.bouncycastle.util.BigIntegers;
 
 /**
  *
- * @author robert
+ *
  */
 public class RealDirectMessageECOracle extends ECOracle {
 

@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class PoodleAttacker extends Attacker {
 

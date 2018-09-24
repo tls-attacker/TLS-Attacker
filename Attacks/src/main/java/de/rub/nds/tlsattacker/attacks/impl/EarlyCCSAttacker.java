@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
  */
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 

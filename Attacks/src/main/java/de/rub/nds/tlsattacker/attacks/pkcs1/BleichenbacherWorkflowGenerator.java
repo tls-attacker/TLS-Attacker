@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
- * @author robert
+ *
  */
 public class BleichenbacherWorkflowGenerator {
 

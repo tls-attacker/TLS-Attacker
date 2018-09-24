@@ -23,7 +23,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class FinishedPaddingGenerator extends PaddingVectorGenerator {
 

@@ -27,7 +27,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class ClassicCloseNotifyVectorGenerator extends PaddingVectorGenerator {
 

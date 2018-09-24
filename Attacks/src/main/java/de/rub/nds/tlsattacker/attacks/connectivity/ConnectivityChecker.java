@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.connectivity;
 
-import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -19,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
  */
 public class ConnectivityChecker {
 

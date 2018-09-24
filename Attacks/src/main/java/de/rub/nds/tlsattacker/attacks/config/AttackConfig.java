@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 
 /**
  *
- * @author robert
  */
 public abstract class AttackConfig extends TLSDelegateConfig {
 

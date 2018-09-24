@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
  *
- * @author robert
+ *
  */
 public class GeneralParser extends Parser {
 

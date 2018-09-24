@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
+ *
  */
 public class Pkcs1Attack {
 

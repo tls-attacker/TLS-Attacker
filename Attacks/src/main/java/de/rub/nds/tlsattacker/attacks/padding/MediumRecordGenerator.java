@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  *
- * @author robert
+ *
  */
 public class MediumRecordGenerator extends PaddingRecordGenerator {
 

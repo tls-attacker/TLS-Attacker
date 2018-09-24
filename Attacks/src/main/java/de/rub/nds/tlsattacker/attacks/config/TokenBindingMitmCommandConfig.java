@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 
 /**
  *
- * @author robert
  */
 public class TokenBindingMitmCommandConfig extends AttackConfig {
 

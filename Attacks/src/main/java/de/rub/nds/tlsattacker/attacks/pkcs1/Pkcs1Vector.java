@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 /**
  *
- * @author robert
+ *
  */
 public class Pkcs1Vector {
 

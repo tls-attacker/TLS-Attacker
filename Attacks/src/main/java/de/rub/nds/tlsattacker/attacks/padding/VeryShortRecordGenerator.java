@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  *
- * @author robert
+ *
  */
 public class VeryShortRecordGenerator extends PaddingRecordGenerator {
 

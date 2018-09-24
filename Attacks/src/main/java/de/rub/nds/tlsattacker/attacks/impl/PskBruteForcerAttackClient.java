@@ -55,7 +55,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
  */
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
 

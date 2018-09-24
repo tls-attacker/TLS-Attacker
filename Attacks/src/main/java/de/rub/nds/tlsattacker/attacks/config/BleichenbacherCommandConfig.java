@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class BleichenbacherCommandConfig extends AttackConfig {
 

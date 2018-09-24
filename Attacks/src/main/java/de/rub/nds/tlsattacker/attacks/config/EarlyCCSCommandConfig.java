@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 
 /**
  *
- * @author robert
  */
 public class EarlyCCSCommandConfig extends AttackConfig {
 

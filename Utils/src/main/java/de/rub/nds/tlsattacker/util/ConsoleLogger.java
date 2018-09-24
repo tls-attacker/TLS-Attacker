@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
+ *
  */
 public class ConsoleLogger {
     public static final Logger CONSOLE = LogManager.getLogger("DirectLogger");

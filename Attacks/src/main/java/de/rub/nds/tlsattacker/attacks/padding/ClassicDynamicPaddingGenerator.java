@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class ClassicDynamicPaddingGenerator extends PaddingVectorGenerator {
 

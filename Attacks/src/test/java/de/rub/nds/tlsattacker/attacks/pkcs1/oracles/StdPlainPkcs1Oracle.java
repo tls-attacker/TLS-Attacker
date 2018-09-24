@@ -13,7 +13,7 @@ import java.security.interfaces.RSAPublicKey;
 
 /**
  *
- * @author robert
+ *
  */
 public class StdPlainPkcs1Oracle extends TestPkcs1Oracle {
 

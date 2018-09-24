@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  *
- * @author robert
+ *
  */
 public class VectorFingerprintPair {
 

@@ -29,7 +29,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
 

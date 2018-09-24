@@ -30,7 +30,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class InvalidCurveAttackConfig extends AttackConfig {
 

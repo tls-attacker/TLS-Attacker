@@ -13,7 +13,6 @@ import java.math.BigInteger;
 
 /**
  *
- * @author robert
  */
 public class ICEPoint extends Point {
 

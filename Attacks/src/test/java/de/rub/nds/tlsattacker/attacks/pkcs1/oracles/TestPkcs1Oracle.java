@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
+ *
  */
 public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 
 /**
  *
- * @author robert
  */
 public class StateVectorPair {
 

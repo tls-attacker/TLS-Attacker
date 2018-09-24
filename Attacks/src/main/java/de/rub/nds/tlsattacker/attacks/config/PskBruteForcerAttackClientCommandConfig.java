@@ -21,12 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  *
- * @author robert
  */
 public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
 

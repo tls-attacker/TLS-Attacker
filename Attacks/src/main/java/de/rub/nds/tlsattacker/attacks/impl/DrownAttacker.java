@@ -40,7 +40,6 @@ import org.bouncycastle.crypto.params.KeyParameter;
 
 /**
  *
- * @author robert
  */
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
 

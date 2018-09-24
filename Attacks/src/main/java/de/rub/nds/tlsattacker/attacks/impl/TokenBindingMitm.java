@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author robert
  */
 public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 

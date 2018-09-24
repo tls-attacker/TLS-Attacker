@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 /**
  *
- * @author robert
+ *
  */
 public class EqualityErrorTranslator {
 

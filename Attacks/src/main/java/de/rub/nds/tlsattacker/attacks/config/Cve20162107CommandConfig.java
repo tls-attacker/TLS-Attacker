@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class Cve20162107CommandConfig extends AttackConfig {
 

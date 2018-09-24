@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author robert
+ *
  */
 public class ICEPointCopmparator implements Comparator<ICEPoint> {
 

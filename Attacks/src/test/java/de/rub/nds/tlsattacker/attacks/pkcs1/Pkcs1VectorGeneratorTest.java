@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  *
- * @author robert
+ *
  */
 public class Pkcs1VectorGeneratorTest {
 

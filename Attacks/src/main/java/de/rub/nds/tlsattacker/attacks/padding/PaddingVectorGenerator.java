@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author robert
+ *
  */
 public abstract class PaddingVectorGenerator {
 
