@@ -108,7 +108,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     public void adjustTlsContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                adjustApplicationTrafficSecrets();
                 setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             } else {
                 adjustApplicationTrafficSecrets();
