@@ -23,7 +23,7 @@ public class GeneralDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = {"-h", "-help"}, help = true, description = "Prints usage for all the existing commands.")
+    @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
     private boolean help;
 
     @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
