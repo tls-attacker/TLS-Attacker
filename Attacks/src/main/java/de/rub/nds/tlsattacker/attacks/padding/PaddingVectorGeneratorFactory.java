@@ -10,8 +10,17 @@ package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 
+/**
+ *
+ *
+ */
 public class PaddingVectorGeneratorFactory {
 
+    /**
+     *
+     * @param config
+     * @return
+     */
     public static PaddingVectorGenerator getPaddingVectorGenerator(PaddingOracleCommandConfig config) {
         switch (config.getVectorGeneratorType()) {
             case CLASSIC:

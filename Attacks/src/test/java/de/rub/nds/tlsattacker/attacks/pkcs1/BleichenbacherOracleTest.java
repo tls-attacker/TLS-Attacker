@@ -21,6 +21,10 @@ import org.junit.Test;
  */
 public class BleichenbacherOracleTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testJSSEOracle() throws Exception {
 
@@ -47,6 +51,10 @@ public class BleichenbacherOracleTest {
         Assert.assertFalse(oracle.checkPKCSConformity(msg));
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testXMLENCOracle() throws Exception {
 

@@ -17,10 +17,16 @@ import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class SimpleMitmProxyCommandConfig extends AttackConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "simple_mitm_proxy";
 
     @ParametersDelegate
@@ -32,6 +38,10 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     @ParametersDelegate
     private CertificateDelegate certificateDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public SimpleMitmProxyCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         mitmDelegate = new MitmDelegate();
@@ -45,11 +55,21 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     /*
      * Always execute attack.
      */
+
+    /**
+     *
+     * @return
+     */
+
     @Override
     public boolean isExecuteAttack() {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

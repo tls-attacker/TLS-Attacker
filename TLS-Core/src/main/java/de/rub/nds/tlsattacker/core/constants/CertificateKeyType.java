@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.constants;
 
 /**
  *
- * @author robert
+ *
  */
 public enum CertificateKeyType {
     DH,

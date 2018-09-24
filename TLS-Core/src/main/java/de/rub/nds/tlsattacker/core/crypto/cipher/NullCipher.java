@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 /**
  *
- * @author robert
+ *
  */
 public class NullCipher implements EncryptionCipher, DecryptionCipher {
 

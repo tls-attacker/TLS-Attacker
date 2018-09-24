@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 
 /**
  *
- * @author robert
  */
 public class StateVectorPair {
 
@@ -21,23 +20,44 @@ public class StateVectorPair {
 
     private Pkcs1Vector vector;
 
+    /**
+     *
+     * @param state
+     * @param vector
+     */
     public StateVectorPair(State state, Pkcs1Vector vector) {
         this.state = state;
         this.vector = vector;
     }
 
+    /**
+     *
+     * @return
+     */
     public State getState() {
         return state;
     }
 
+    /**
+     *
+     * @param state
+     */
     public void setState(State state) {
         this.state = state;
     }
 
+    /**
+     *
+     * @return
+     */
     public Pkcs1Vector getVector() {
         return vector;
     }
 
+    /**
+     *
+     * @param vector
+     */
     public void setVector(Pkcs1Vector vector) {
         this.vector = vector;
     }

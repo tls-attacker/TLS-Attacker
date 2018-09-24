@@ -27,14 +27,22 @@ import java.util.List;
 
 /**
  *
- * @author robert
  */
 public class ClassicCloseNotifyVectorGenerator extends PaddingVectorGenerator {
 
+    /**
+     *
+     * @param recordGeneratorType
+     */
     public ClassicCloseNotifyVectorGenerator(PaddingRecordGeneratorType recordGeneratorType) {
         super(recordGeneratorType);
     }
 
+    /**
+     *
+     * @param config
+     * @return
+     */
     @Override
     public List<WorkflowTrace> getPaddingOracleVectors(Config config) {
         List<WorkflowTrace> traceList = new LinkedList<>();

@@ -12,7 +12,7 @@ import org.junit.Before;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+ * Merget <robert.merget@rub.de>
  */
 public class KeyShareEntryPreparatorTest {
 

@@ -28,12 +28,20 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ *
+ *
+ */
 public class MangerAttackPlaintextTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testMangerAttack() throws Exception {
 
@@ -77,6 +85,10 @@ public class MangerAttackPlaintextTest {
                 message, solution.toByteArray());
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     @Ignore
     public void testMangerAttackPerformance() throws Exception {
