@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -87,7 +88,15 @@ public class RecordAEADCipher extends RecordCipher {
                 sequenceNumberByte);
         byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
-        byte[] cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
+        byte[] cipherText;
+        if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
+                || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
+                || version == ProtocolVersion.TLS13_DRAFT28) {
+            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+                    request.getPlainText());
+        } else {
+            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
+        }
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
@@ -121,7 +130,14 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
-        return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
+        if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
+                || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
+                || version == ProtocolVersion.TLS13_DRAFT28) {
+            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8,
+                    decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
+        } else {
+            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
+        }
     }
 
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {

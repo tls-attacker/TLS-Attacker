@@ -56,7 +56,7 @@ public class RecordPreparatorTest {
      */
     @Test
     public void testPrepare() throws NoSuchAlgorithmException, CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.getConfig().setPaddingLength(0);
         context.setClientHandshakeTrafficSecret(ArrayConverter
