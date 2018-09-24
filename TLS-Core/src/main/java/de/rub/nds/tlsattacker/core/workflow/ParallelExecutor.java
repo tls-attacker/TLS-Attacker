@@ -46,11 +46,17 @@ public class ParallelExecutor {
     }
 
     public Future addTask(State state) {
+        if (executorService.isShutdown()) {
+            throw new RuntimeException("Cannot add Tasks to already shutdown executor");
+        }
         Future<?> submit = executorService.submit(new StateThreadExecutor(state, reexecutions));
         return submit;
     }
 
     public void bulkExecute(List<State> stateList) {
+        if (executorService.isShutdown()) {
+            throw new RuntimeException("Cannot add Tasks to already shutdown executor");
+        }
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addTask(state));
@@ -71,6 +77,10 @@ public class ParallelExecutor {
 
     public int getSize() {
         return size;
+    }
+
+    public void shutdown() {
+        executorService.shutdown();
     }
 
     private class StateThreadExecutor implements Runnable {
