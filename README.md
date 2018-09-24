@@ -272,6 +272,6 @@ TLS-Attacker was furthermore used in the following scientific papers and project
 - Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptotechnologie/Kryptobibliothek/kryptobibliothek_node.html
 - Yuan Xiao, Mengyuan Li, Sanchuan Chen, Yinqian Zhang. Stacco: Differentially Analyzing Side-Channel Traces for Detecting SSL/TLS Vulnerabilities in Secure Enclaves. CCS'17. http://web.cse.ohio-state.edu/~zhang.834/papers/ccs17a.pdf
 
-If you have any research ideas or need support by using TLS-Attacker (e.g. you want to include it in your test suite), feel free to contact http://www.hackmanit.de/.
+If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky ) or at https://www.hackmanit.de/.
 
 If TLS-Attacker helps you to find a bug in a TLS implementation, please acknowledge this tool. Thank you!
