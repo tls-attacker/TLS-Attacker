@@ -84,9 +84,9 @@ public class ActionTestUtils {
                         + " does not end with string 'Action'");
             }
             StringBuilder sb = new StringBuilder("");
-            sb.append("<workflowTrace>\n");
-            sb.append("    <").append(xmlName).append("/>\n");
-            sb.append("</workflowTrace>\n");
+            sb.append("<workflowTrace>").append(System.lineSeparator());
+            sb.append("    <").append(xmlName).append("/>").append(System.lineSeparator());
+            sb.append("</workflowTrace>").append(System.lineSeparator());
             String expected = sb.toString();
 
             Config config = Config.createConfig();
