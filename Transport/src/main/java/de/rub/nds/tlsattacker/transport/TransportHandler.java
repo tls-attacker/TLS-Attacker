@@ -42,10 +42,19 @@ public abstract class TransportHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis() + timeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
-            while (inStream.available() != 0) {
-                int read = inStream.read();
-                stream.write(read);
+            if (inStream.available() != 0) {
+                while (inStream.available() != 0) {
+                    int read = inStream.read();
+                    stream.write(read);
+                }
+            } else {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException("Got Interrupted while waiting for Data");
+                }
             }
+
         }
         return stream.toByteArray();
     }
