@@ -86,7 +86,16 @@ public class Config implements Serializable {
      */
     private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
 
+    private static final ConfigCache DEFAULT_CONFIG_CACHE;
+
+    static {
+        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
+    }
+
     public static Config createConfig() {
+        if (DEFAULT_CONFIG_CACHE != null) {
+            return DEFAULT_CONFIG_CACHE.getCachedCopy();
+        }
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
 
