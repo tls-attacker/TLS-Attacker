@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -150,20 +151,25 @@ public class ForwardMessagesActionTest {
         try {
             action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
             trace.addTlsAction(action);
-            StringBuilder sb = new StringBuilder("");
-            sb.append("<workflowTrace>\n");
-            sb.append("    <OutboundConnection>\n");
-            sb.append("        <alias>ctx1</alias>\n");
-            sb.append("    </OutboundConnection>\n");
-            sb.append("    <InboundConnection>\n");
-            sb.append("        <alias>ctx2</alias>\n");
-            sb.append("    </InboundConnection>\n");
-            sb.append("    <ForwardMessages>\n");
-            sb.append("        <from>ctx1</from>\n");
-            sb.append("        <to>ctx2</to>\n");
-            sb.append("    </ForwardMessages>\n");
-            sb.append("</workflowTrace>\n");
-            String expected = sb.toString();
+
+            // used PrintWriter and not StringBuilder as it offers
+            // OS-independent functionality for printing new lines
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            pw.println("<workflowTrace>");
+            pw.println("    <OutboundConnection>");
+            pw.println("        <alias>ctx1</alias>");
+            pw.println("    </OutboundConnection>");
+            pw.println("    <InboundConnection>");
+            pw.println("        <alias>ctx2</alias>");
+            pw.println("    </InboundConnection>");
+            pw.println("    <ForwardMessages>");
+            pw.println("        <from>ctx1</from>");
+            pw.println("        <to>ctx2</to>");
+            pw.println("    </ForwardMessages>");
+            pw.println("</workflowTrace>");
+            pw.close();
+            String expected = sw.toString();
 
             Filter filter = new DefaultFilter(config);
             filter.applyFilter(trace);
