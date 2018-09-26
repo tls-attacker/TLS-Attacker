@@ -2,10 +2,7 @@ language: java
 
 sudo: false
 
-before_install:
-  - chmod +x mvnw
-
-script: ./mvnw clean package -Dmaven.javadoc.skip=true
+script: mvn clean package -Dmaven.javadoc.skip=true
 
 jdk:
   - oraclejdk8
