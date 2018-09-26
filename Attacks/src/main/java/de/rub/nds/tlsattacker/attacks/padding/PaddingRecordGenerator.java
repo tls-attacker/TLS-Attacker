@@ -13,10 +13,25 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.List;
 
+/**
+ *
+ *
+ */
 public abstract class PaddingRecordGenerator {
 
+    /**
+     *
+     * @param suite
+     * @param version
+     * @return
+     */
     public abstract List<Record> getRecords(CipherSuite suite, ProtocolVersion version);
 
+    /**
+     *
+     * @param padding
+     * @return
+     */
     protected final byte[] createPaddingBytes(int padding) {
         byte[] paddingBytes = new byte[padding + 1];
         for (int i = 0; i < paddingBytes.length; i++) {

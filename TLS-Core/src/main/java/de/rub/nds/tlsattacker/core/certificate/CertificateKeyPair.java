@@ -223,12 +223,20 @@ public class CertificateKeyPair implements Serializable {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
         AlgorithmIdentifier algorithm = cert.getCertificateAt(0).getSignatureAlgorithm();
+        if (algorithm.getAlgorithm().getId().startsWith("1.2.840.113549.1.1.")) {
+            return CertificateKeyType.RSA;
+        }
         switch (algorithm.getAlgorithm().getId()) {
-            case "1.2.840.113549.1.1.11":
-                return CertificateKeyType.RSA;
+            case "1.2.840.10045.4.3.1":
             case "1.2.840.10045.4.3.2":
+            case "1.2.840.10045.4.3.3":
                 return CertificateKeyType.ECDSA;
+            case "2.16.840.1.101.3.4.3.1":
             case "2.16.840.1.101.3.4.3.2":
+            case "2.16.840.1.101.3.4.3.13":
+            case "2.16.840.1.101.3.4.3.14":
+            case "2.16.840.1.101.3.4.3.15":
+            case "2.16.840.1.101.3.4.3.16":
                 return CertificateKeyType.DSS;
             case "1.2.643.2.2.3":
                 return CertificateKeyType.GOST01;

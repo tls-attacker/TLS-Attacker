@@ -104,7 +104,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
-        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        CipherSuite suite = null;
+        if (message.getSelectedCipherSuite() != null) {
+            suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        }
+
         if (suite != null) {
             tlsContext.setSelectedCipherSuite(suite);
             LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
@@ -119,15 +123,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
+
+        CompressionMethod method = null;
         if (message.getSelectedCompressionMethod() != null) {
-            CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
-                    .getValue());
-            if (method != null) {
-                tlsContext.setSelectedCompressionMethod(method);
-                LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
-            } else {
-                LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
-            }
+            method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod().getValue());
+        }
+
+        if (method != null) {
+            tlsContext.setSelectedCompressionMethod(method);
+            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
         } else {
             LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
@@ -137,11 +141,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         byte[] sessionID = message.getSessionId().getValue();
         tlsContext.setServerSessionId(sessionID);
         LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
-
     }
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        ProtocolVersion version = null;
+
+        if (message.getProtocolVersion() != null) {
+            version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        }
+
         if (version != null) {
             tlsContext.setSelectedProtocolVersion(version);
             LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());

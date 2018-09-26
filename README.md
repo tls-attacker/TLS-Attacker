@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v2.2-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v2.6-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -9,20 +9,26 @@ TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able t
 **Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights.*
 
 ## Compiling and Running
-In order to compile and use TLS-Attacker, you need to have Java installed. Run the maven command from the TLS-Attacker directory:
+In order to compile and use TLS-Attacker, you need to have Java and Maven installed. On Ubuntu you can install Maven by running:
+```bash
+$ sudo apt-get install maven
+```
+TLS-Attacker currently needs Java JDK 8 to run. If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
 ```bash
 $ cd TLS-Attacker
-$ ./mvnw clean package
+$ mvn clean install
 ```
 Alternatively, if you are in hurry, you can skip the tests by using:
 ```bash
-$ ./mvnw clean package -DskipTests=true
+$ mvn clean install -DskipTests=true
 ```
+The resulting jar files are placed in the "apps" folder.
 
 TLS-Attacker ships with demo applications which provide you easy access to TLS-Attacker functionality.
 
 You can run TLS-Attacker as a client with the following command:
 ```bash
+$ cd apps
 $ java -jar TLS-Client.jar -connect [host:port]
 ```
 or as a server with:
@@ -53,20 +59,20 @@ You can find more information about these modules in the Wiki.
 
 ## Features
 Currently, the following features are supported:
-- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346), 1.2 (RFC-5246), and 1.3 (draft-ietf-tls-tls13-21)
-- DTLS 1.2 (RFC-6347)(Currently under development)
-- SSL 2 (Client/Server Hello)
-- (EC)DH and RSA key exchange algorithms
-- CBC, AEAD and Streamciphers
-- TLS client and server
+- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346), 1.2 (RFC-5246), and 1.3 (RFC 8446)
+- SSL 2 (Partially supported)
+- (EC)DH(E), RSA, PSK, SRP, GOST and ANON key exchange algorithms
+- CBC, AEAD and Streamciphers (AES, CAMELLIA, DES, 3DES, IDEA, RC2, ARIA, GOST_28147_CNT_IMIT, RC4, SEED, NULL)
+- ~300 Ciphersuites, ~30 Extensions
+- Client and Server
 - HTTPS
-- MitM (experimental)
+- Workflows with more than two parties
 - Lots of extensions
 - Tokenbinding (EC) and Tokenbinding over HTTP
 - Sockets
-- PSK (All modes)
-- SRP
 - TLS 1.3 0-RTT
+- STARTTLS
+- ...
 
 ## Usage
 Here we present some very simple examples on using TLS-Attacker.
@@ -105,9 +111,9 @@ DefaultWorkflowExecutor executor = new
 DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
-TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a List of Actions which are then executed one after the other.
-Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the Framework does not stop here and implements alot of different other Actions
-which can be used to execute even more Arbitrary message flows. A list of currently implemented Actions with explanations can be found in the Wiki.
+TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other.
+Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not stop here and implements alot of different other actions
+which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
 
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
 ```xml
@@ -157,7 +163,7 @@ Given this XML structure is located in workflow.xml, you would just need to exec
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
 ## Modifiable Variables
-TLS-Attacker uses the concept of Modifiable variables to allow runtime Modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/RUB-NDS/ModifiableVariable. 
+TLS-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/RUB-NDS/ModifiableVariable. 
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
@@ -225,16 +231,16 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
     </Receive>
 </workflowTrace>
 ```
-As you can see, we explicitly increased the payload length of the Heartbeat message by 20000.
-If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid Heartbeat response.
+As you can see, we explicitly increased the payload length of the heartbeat message by 20000.
+If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid heartbeat response.
 
-Further examples on attacks and further explanations on TLS-Attacker can be found in the Wiki.
+Further examples on attacks and further explanations on TLS-Attacker can be found in the wiki.
 
 ## Advanced Features
-Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
+Some actions require context, or configuration to be executed correctly. For example, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
 put into the message, e.g., which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
 Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the context is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, TLS-Attacker fills
-this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the github wiki.
+this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
 
 ## Acknowledgements
 The following people have contributed code to the TLS-Attacker project:
@@ -250,6 +256,7 @@ The following people have contributed code to the TLS-Attacker project:
 - Felix Kleine-Wilde: SSL 3 Support
 - Marcel Maehren: 0-RTT Support
 - Asli Yardim: STARTTLS
+- Tim Reisach: GOST
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
@@ -265,6 +272,6 @@ TLS-Attacker was furthermore used in the following scientific papers and project
 - Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptotechnologie/Kryptobibliothek/kryptobibliothek_node.html
 - Yuan Xiao, Mengyuan Li, Sanchuan Chen, Yinqian Zhang. Stacco: Differentially Analyzing Side-Channel Traces for Detecting SSL/TLS Vulnerabilities in Secure Enclaves. CCS'17. http://web.cse.ohio-state.edu/~zhang.834/papers/ccs17a.pdf
 
-If you have any research ideas or need support by using TLS-Attacker (e.g. you want to include it in your test suite), feel free to contact http://www.hackmanit.de/.
+If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky ) or at https://www.hackmanit.de/.
 
 If TLS-Attacker helps you to find a bug in a TLS implementation, please acknowledge this tool. Thank you!

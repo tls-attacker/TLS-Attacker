@@ -58,12 +58,23 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean shakyScans = false;
 
+    /**
+     *
+     * @param paddingOracleConfig
+     * @param baseConfig
+     */
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
         tlsConfig = getTlsConfig();
         executor = new ParallelExecutor(1, 3);
     }
 
+    /**
+     *
+     * @param paddingOracleConfig
+     * @param baseConfig
+     * @param executor
+     */
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig,
             ParallelExecutor executor) {
         super(paddingOracleConfig, baseConfig);
@@ -76,6 +87,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
@@ -126,6 +141,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         return error != EqualityError.NONE;
     }
 
+    /**
+     *
+     * @param responseMapOne
+     * @param responseMapTwo
+     * @return
+     */
     public boolean lookEqual(HashMap<Integer, List<ResponseFingerprint>> responseMapOne,
             HashMap<Integer, List<ResponseFingerprint>> responseMapTwo) {
         for (Integer key : responseMapOne.keySet()) {
@@ -144,6 +165,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
         PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
         List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
@@ -183,6 +208,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         return ((Record) lastRecord).getLength().getValue();
     }
 
+    /**
+     *
+     * @param responseMap
+     * @return
+     */
     public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
         for (List<ResponseFingerprint> list : responseMap.values()) {
             ResponseFingerprint fingerprint = list.get(0);
@@ -208,18 +238,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
         return responseMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public CipherSuite getTestedSuite() {
         return testedSuite;
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolVersion getTestedVersion() {
         return testedVersion;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isShakyScans() {
         return shakyScans;
     }

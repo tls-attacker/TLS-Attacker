@@ -20,10 +20,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+/**
+ *
+ *
+ */
 public class ICEAttackerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     */
     public ICEAttackerTest() {
     }
 

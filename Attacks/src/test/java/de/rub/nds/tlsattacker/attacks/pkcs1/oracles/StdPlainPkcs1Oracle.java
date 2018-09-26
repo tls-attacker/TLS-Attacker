@@ -11,6 +11,10 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 
+/**
+ *
+ *
+ */
 public class StdPlainPkcs1Oracle extends TestPkcs1Oracle {
 
     public StdPlainPkcs1Oracle(final PublicKey pubKey, final TestPkcs1Oracle.OracleType oracleType, final int blockSize) {
@@ -20,6 +24,11 @@ public class StdPlainPkcs1Oracle extends TestPkcs1Oracle {
         this.blockSize = blockSize;
     }
 
+    /**
+     *
+     * @param msg
+     * @return
+     */
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
         numberOfQueries++;
