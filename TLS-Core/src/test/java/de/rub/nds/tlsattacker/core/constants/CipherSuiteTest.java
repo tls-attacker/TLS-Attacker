@@ -20,7 +20,7 @@ import org.junit.Test;
 
 public class CipherSuiteTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(CipherSuiteTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CipherSuiteTest() {
     }
@@ -62,6 +62,33 @@ public class CipherSuiteTest {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
         }
+        LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
+        LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());
+    }
+
+    @Test
+    public void implementedListContainsNoDuplicates() {
+        for (CipherSuite suite : CipherSuite.getImplemented()) {
+            int counter = 0;
+            for (CipherSuite tempCipherSuite : CipherSuite.getImplemented()) {
+                if (suite == tempCipherSuite) {
+                    counter++;
+                }
+            }
+            if (counter != 1) {
+                fail("" + suite + " is a duplicate in the getImplemented Ciphersuite list");
+            }
+        }
+    }
+
+    @Test
+    public void testIsUsingMac() {
+        assertTrue(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.isUsingMac());
+        assertTrue(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT.isUsingMac());
+        assertTrue(CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411.isUsingMac());
+        assertTrue(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT.isUsingMac());
+
+        assertFalse(CipherSuite.TLS_AES_256_GCM_SHA384.isUsingMac());
     }
 
 }

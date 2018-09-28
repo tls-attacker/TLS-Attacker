@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport.socket;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public enum SocketState {
     CLOSED,
     UP,

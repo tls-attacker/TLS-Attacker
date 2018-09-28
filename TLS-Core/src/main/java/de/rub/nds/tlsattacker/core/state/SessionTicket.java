@@ -97,7 +97,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
         sb.append("\n    KeyName: ");
         if (keyName != null) {
             sb.append(ArrayConverter.bytesToHexString(keyName.getValue()));
@@ -121,6 +121,10 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
             sb.append(ArrayConverter.bytesToHexString(mac.getValue()));
         } else {
             sb.append("null");
+        }
+        if (identity != null) {
+            sb.append("\n    Identity: ");
+            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
         }
         return sb.toString();
     }

@@ -17,8 +17,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn.AlpnEntryS
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final AlpnExtensionMessage msg;
 

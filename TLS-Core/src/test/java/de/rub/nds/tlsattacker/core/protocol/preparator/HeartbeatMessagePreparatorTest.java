@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -23,7 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HeartbeatMessagePreparatorTest {
-    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private TlsContext context;
     private HeartbeatMessage message;

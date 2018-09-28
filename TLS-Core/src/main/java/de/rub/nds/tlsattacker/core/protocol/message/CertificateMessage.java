@@ -14,20 +14,18 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.bouncycastle.crypto.tls.Certificate;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 public class CertificateMessage extends HandshakeMessage {
@@ -58,6 +56,10 @@ public class CertificateMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     private List<CertificateEntry> certificatesListAsEntry;
 
+    @XmlTransient
+    // TODO should this be transient?
+    private CertificateKeyPair certificateKeyPair;
+
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
         certificatesList = new LinkedList<>();
@@ -65,25 +67,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
-        certificatesList = new LinkedList<>();
-        try {
-            Certificate cert = getCertificate(tlsConfig);
-            for (org.bouncycastle.asn1.x509.Certificate singleCert : cert.getCertificateList()) {
-                CertificatePair pair = new CertificatePair();
-                pair.setCertificateConfig(singleCert.getEncoded());
-                certificatesList.add(pair);
-            }
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
-            LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
-            CertificatePair pair = new CertificatePair();
-            pair.setCertificateConfig(CertificateByteChooser.chooseCertificateType(tlsConfig));
-            certificatesList.add(pair);
-        }
-    }
-
-    private Certificate getCertificate(Config config) throws IOException {
-        return Certificate.parse(new ByteArrayInputStream(CertificateByteChooser.chooseCertificateType(config)));
     }
 
     public ModifiableInteger getCertificatesListLength() {
@@ -168,18 +151,26 @@ public class CertificateMessage extends HandshakeMessage {
         return requestContextLength.getValue() > 0;
     }
 
+    public CertificateKeyPair getCertificateKeyPair() {
+        return certificateKeyPair;
+    }
+
+    public void setCertificateKeyPair(CertificateKeyPair certificateKeyPair) {
+        this.certificateKeyPair = certificateKeyPair;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("CertificateMessage:");
         sb.append("\n  Certificates Length: ");
-        if (certificatesListLength != null) {
+        if (certificatesListLength != null && certificatesListLength.getValue() != null) {
             sb.append(certificatesListLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Certificate:\n");
-        if (certificatesListBytes != null) {
+        if (certificatesListBytes != null && certificatesListBytes.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(certificatesListBytes.getValue()));
         } else {
             sb.append("null");
@@ -189,6 +180,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new CertificateHandler(context);
+        return new CertificateMessageHandler(context);
     }
 }

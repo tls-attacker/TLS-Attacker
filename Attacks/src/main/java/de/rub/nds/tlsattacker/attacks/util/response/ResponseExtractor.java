@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -21,16 +20,25 @@ import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class ResponseExtractor {
 
-    private ResponseExtractor() {
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ResponseFingerprint getFingerprint(State state) {
-        TlsContext context = state.getTlsContext();
-        ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
-        boolean receivedTransportHandlerException = context.isReceivedTransportHandlerException();
+    /**
+     *
+     * @param state
+     * @param action
+     * @return
+     */
+    public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
+        boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();
         boolean receivedAnEncryptedAlert = didReceiveEncryptedAlert(action);
         int numberRecordsReceived = action.getReceivedRecords().size();
         int numberOfMessageReceived = action.getReceivedMessages().size();
@@ -42,6 +50,17 @@ public class ResponseExtractor {
         return new ResponseFingerprint(receivedTransportHandlerException, receivedAnEncryptedAlert,
                 numberRecordsReceived, numberOfMessageReceived, recordClasses, messageClasses, messageList, recordList,
                 socketState);
+    }
+
+    /**
+     *
+     * @param state
+     * @return
+     */
+    public static ResponseFingerprint getFingerprint(State state) {
+        TlsContext context = state.getTlsContext();
+        ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
+        return getFingerprint(state, action);
     }
 
     private static SocketState extractSocketState(State state) {
@@ -93,5 +112,8 @@ public class ResponseExtractor {
             }
         }
         return false;
+    }
+
+    private ResponseExtractor() {
     }
 }

@@ -10,9 +10,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 public class TokenBindingLength {
 
-    private TokenBindingLength() {
-    }
-
     public final static int TOKENBINDINGS = 2;
 
     public final static int KEY_PARAMETER = 1;
@@ -30,4 +27,7 @@ public class TokenBindingLength {
     public final static int SIGNATURE = 2;
 
     public final static int EXTENSIONS = 2;
+
+    private TokenBindingLength() {
+    }
 }

@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSerializer<PskRsaClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final PskRsaClientKeyExchangeMessage msg;
 
     /**

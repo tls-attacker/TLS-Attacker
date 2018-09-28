@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
@@ -25,10 +24,18 @@ import de.rub.nds.tlsattacker.util.MathHelper;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
-    private final AttackConfig attackConfig;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final Config config;
 
     private final ResponseFingerprint validResponseContent;
 
@@ -36,22 +43,29 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     private final BleichenbacherWorkflowType type;
 
-    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, AttackConfig config,
-            ResponseFingerprint validResponseContent, ResponseFingerprint invalidResponseContent,
-            BleichenbacherWorkflowType type) {
+    /**
+     *
+     * @param pubKey
+     * @param config
+     * @param validResponseContent
+     * @param invalidResponseContent
+     * @param type
+     */
+    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config, ResponseFingerprint validResponseContent,
+            ResponseFingerprint invalidResponseContent, BleichenbacherWorkflowType type) {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
-        this.attackConfig = config;
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.type = type;
+        this.config = config;
     }
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        Config tlsConfig = attackConfig.createConfig();
+        Config tlsConfig = config;
         tlsConfig.setWorkflowExecutorShouldClose(false);
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, msg);
         State state = new State(tlsConfig, trace);

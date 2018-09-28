@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessage> extends
         ServerKeyExchangeSerializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final T msg;
 

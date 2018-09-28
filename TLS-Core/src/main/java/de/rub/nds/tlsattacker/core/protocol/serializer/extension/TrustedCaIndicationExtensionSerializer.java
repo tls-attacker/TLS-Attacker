@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 
 public class TrustedCaIndicationExtensionSerializer extends ExtensionSerializer<TrustedCaIndicationExtensionMessage> {
 
-    private TrustedCaIndicationExtensionMessage msg;
+    private final TrustedCaIndicationExtensionMessage msg;
 
     public TrustedCaIndicationExtensionSerializer(TrustedCaIndicationExtensionMessage message) {
         super(message);

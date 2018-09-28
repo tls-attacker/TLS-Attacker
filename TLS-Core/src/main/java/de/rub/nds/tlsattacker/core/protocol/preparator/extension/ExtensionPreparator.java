@@ -13,12 +13,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
  *            The ExtensionMessage that should be prepared
  */
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ExtensionMessage msg;
     private byte[] content;

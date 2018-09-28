@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.https.header.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import org.junit.Test;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -21,9 +21,9 @@ import org.junit.runners.Parameterized;
 public class HttpsHeaderParserTest {
 
     @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("486f73743a207275622e636f6d0A"), 0,
-                "Host", "rub.com" } });
+    public static Collection<Object[]> generateData() throws UnsupportedEncodingException {
+        byte[] msg = "Host: rub.com\r\n".getBytes("ASCII");
+        return Arrays.asList(new Object[][] { { msg, 0, "Host", "rub.com" } });
     }
 
     private final byte[] message;
@@ -43,11 +43,11 @@ public class HttpsHeaderParserTest {
      */
     @Test
     public void testParse() {
-        HttpsHeaderParser parser = new HttpsHeaderParser(0, message);
+        HttpsHeaderParser parser = new HttpsHeaderParser(start, message);
         HttpsHeader header = parser.parse();
 
-        assertTrue(headerName.equals(header.getHeaderName().getValue()));
-        assertTrue(headerValue.equals(header.getHeaderValue().getValue()));
+        assertEquals(headerName, header.getHeaderName().getValue());
+        assertEquals(headerValue, header.getHeaderValue().getValue());
     }
 
 }

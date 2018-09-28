@@ -14,7 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 public class ECComputer {
 
-    static Logger LOGGER = LogManager.getLogger(ECComputer.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static BigInteger TWO = BigInteger.valueOf(2);
     private static BigInteger THREE = BigInteger.valueOf(3);
     /**

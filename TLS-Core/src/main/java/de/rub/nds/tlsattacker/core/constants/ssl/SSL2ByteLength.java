@@ -14,6 +14,8 @@ package de.rub.nds.tlsattacker.core.constants.ssl;
 public class SSL2ByteLength {
     public static final int LENGTH = 2;
 
+    public static final int LONG_LENGTH = 3;
+
     public static final int MESSAGE_TYPE = 1;
 
     public static final int VERSION = 2;
@@ -29,6 +31,12 @@ public class SSL2ByteLength {
     public static final int CERTIFICATE_TYPE = 1;
 
     public static final int CERTIFICATE_LENGTH = 2;
+
+    public static final int CIPHERKIND_LENGTH = 3;
+
+    public static final int CLEAR_KEY_LENGTH = 2;
+
+    public static final int ENCRYPTED_KEY_LENGTH = 2;
 
     private SSL2ByteLength() {
     }

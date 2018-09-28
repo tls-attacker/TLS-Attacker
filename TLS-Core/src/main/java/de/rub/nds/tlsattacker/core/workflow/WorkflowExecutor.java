@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class WorkflowExecutor {
 
-    protected static final Logger LOGGER = LogManager.getLogger(WorkflowExecutor.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final WorkflowExecutorType type;
 

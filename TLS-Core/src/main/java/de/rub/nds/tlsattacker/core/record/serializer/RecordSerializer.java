@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.record.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordSerializer extends AbstractRecordSerializer<Record> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Record record;
 

@@ -17,10 +17,10 @@ import org.apache.logging.log4j.Logger;
 
 public class SocketOpenerCallable implements Callable<Socket> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SocketOpenerCallable.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
     public SocketOpenerCallable(String host, int port) {
         this.host = host;

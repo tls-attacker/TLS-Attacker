@@ -22,6 +22,17 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CachedObjectParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ConnectionEndType.SERVER, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
+                { ConnectionEndType.SERVER, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
+                { ConnectionEndType.CLIENT, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                        new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
+                { ConnectionEndType.CLIENT, CachedInfoType.CERT_REQ, 6,
+                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                        new byte[] { 0x02, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } } });
+    }
 
     private final ConnectionEndType speakingEndType;
     private final CachedInfoType infoType;
@@ -38,24 +49,12 @@ public class CachedObjectParserTest {
         this.cachedObjectBytes = cachedObjectBytes;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ConnectionEndType.SERVER, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
-                { ConnectionEndType.SERVER, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
-                { ConnectionEndType.CLIENT, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
-                        new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
-                { ConnectionEndType.CLIENT, CachedInfoType.CERT_REQ, 6,
-                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
-                        new byte[] { 0x02, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } } });
-    }
-
     @Test
     public void parse() {
         CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, speakingEndType);
         CachedObject cachedObject = parser.parse();
 
-        assertEquals(infoType.getValue(), (byte) cachedObject.getCachedInformationType().getValue());
+        assertEquals(infoType.getValue(), (long) cachedObject.getCachedInformationType().getValue());
 
         if (hashLength != null) {
             assertEquals(hashLength, cachedObject.getHashValueLength().getValue());

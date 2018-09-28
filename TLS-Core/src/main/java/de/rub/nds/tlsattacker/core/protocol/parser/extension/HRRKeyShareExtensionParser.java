@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HRRKeyShareExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -37,7 +41,7 @@ public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExten
      *            Message to write in
      */
     private void parseSelectedGroup(HRRKeyShareExtensionMessage msg) {
-        msg.setSelectedGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_TYPE));
+        msg.setSelectedGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
         LOGGER.debug("SelectedGroup: " + ArrayConverter.bytesToHexString(msg.getSelectedGroup().getValue()));
     }
 }

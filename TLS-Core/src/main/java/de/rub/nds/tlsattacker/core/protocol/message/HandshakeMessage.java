@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
@@ -60,8 +61,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class HandshakeMessage extends ProtocolMessage {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlTransient
     protected boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;
@@ -118,7 +123,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = EarlyDataExtensionMessage.class, name = "EarlyDataExtension"),
             @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
-            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension") })
+            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
+            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -227,16 +233,29 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         return handshakeMessageType;
     }
 
+    public void setIncludeInDigest(ModifiableBoolean includeInDigest) {
+        this.includeInDigest = includeInDigest;
+    }
+
     public void setIncludeInDigest(boolean includeInDigest) {
         this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
 
+    public ModifiableBoolean getIncludeInDigestModifiableBoolean() {
+        return this.includeInDigest;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("HandshakeMessage:");
+        sb.append("\n  Type: ");
         if (type != null && type.getValue() != null) {
-            sb.append("\n  Type: ").append(type.getValue());
+            sb.append(type.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Length: ");
         if (length != null && length.getValue() != null) {
             sb.append("\n  Length: ").append(length.getValue());
         }

@@ -61,7 +61,7 @@ public class TokenBindingExtensionParserTest {
         message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
-        assertEquals(parameterLength, (int) message.getParameterListLength().getValue());
+        assertEquals(parameterLength, (long) message.getParameterListLength().getValue());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
         assertTrue(extensionLength == message.getExtensionLength().getValue());
     }

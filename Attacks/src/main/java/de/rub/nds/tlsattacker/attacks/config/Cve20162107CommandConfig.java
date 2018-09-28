@@ -15,16 +15,22 @@ import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class Cve20162107CommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "cve20162107";
     @Parameter(names = "-versions", description = "Protocol versions to test")
     private List<ProtocolVersion> versions;
@@ -35,7 +41,13 @@ public class Cve20162107CommandConfig extends AttackConfig {
     private CiphersuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public Cve20162107CommandConfig(GeneralDelegate delegate) {
         super(delegate);
         versions = new LinkedList<>();
@@ -45,28 +57,49 @@ public class Cve20162107CommandConfig extends AttackConfig {
         clientDelegate = new ClientDelegate();
         cipherSuiteDelegate = new CiphersuiteDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(cipherSuiteDelegate);
         addDelegate(hostnameExtensionDelegate);
+        addDelegate(starttlsDelegate);
 
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ProtocolVersion> getVersions() {
         return Collections.unmodifiableList(versions);
     }
 
+    /**
+     *
+     * @param versions
+     */
     public void setVersions(List<ProtocolVersion> versions) {
         this.versions = versions;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
@@ -84,6 +117,7 @@ public class Cve20162107CommandConfig extends AttackConfig {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
+
         }
         return config;
     }

@@ -12,20 +12,32 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Manger algorithm according to
  * https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code
  * written by Tibor Jager
- * 
+ *
  * @version 0.1
  */
 public class Manger extends Pkcs1Attack {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /**
+     *
+     */
     protected Interval result;
 
     private volatile boolean interrupted = false;
 
+    /**
+     *
+     * @param msg
+     * @param pkcsOracle
+     */
     public Manger(byte[] msg, Pkcs1Oracle pkcsOracle) {
         super(msg, pkcsOracle);
         // b computation
@@ -36,6 +48,10 @@ public class Manger extends Pkcs1Attack {
         LOGGER.debug("b: {}", ArrayConverter.bytesToHexString(bigB.toByteArray()));
     }
 
+    /**
+     *
+     * @throws OracleException
+     */
     public void attack() throws OracleException {
         BigInteger cc;
 
@@ -124,10 +140,18 @@ public class Manger extends Pkcs1Attack {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isInterrupted() {
         return interrupted;
     }
 
+    /**
+     *
+     * @param interrupted
+     */
     public void setInterrupted(boolean interrupted) {
         this.interrupted = interrupted;
     }

@@ -9,15 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SignedCertificateTimestampExtensionSerializer extends
         ExtensionSerializer<SignedCertificateTimestampExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SignedCertificateTimestampExtensionMessage message;
 
     /**
      * Constructor
-     * 
+     *
      * @param message
      *            A SignedCertificateTimestampExtensionMessage
      */
@@ -28,7 +32,7 @@ public class SignedCertificateTimestampExtensionSerializer extends
 
     /**
      * Serializes the extension
-     * 
+     *
      * @return Serialized extension
      */
     @Override

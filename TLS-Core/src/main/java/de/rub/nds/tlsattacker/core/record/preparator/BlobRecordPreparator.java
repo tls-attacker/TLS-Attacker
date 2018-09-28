@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BlobRecordPreparator extends AbstractRecordPreparator {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final BlobRecord record;
     private final Encryptor encryptor;

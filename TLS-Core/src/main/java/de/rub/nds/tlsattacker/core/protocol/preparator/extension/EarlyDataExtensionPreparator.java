@@ -11,11 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EarlyDataExtensionPreparator(Chooser chooser, EarlyDataExtensionMessage message,
             ExtensionSerializer<EarlyDataExtensionMessage> serializer) {

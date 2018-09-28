@@ -9,15 +9,12 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -30,14 +27,9 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.Base64;
-import java.util.Random;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
@@ -48,6 +40,8 @@ import org.junit.Test;
 
 public class TokenbindingMessagePreparatorTest {
 
+    private final static Logger LOGGER = LogManager.getLogger();
+
     private TlsContext context;
 
     private Config config;
@@ -56,7 +50,7 @@ public class TokenbindingMessagePreparatorTest {
 
     private TokenBindingMessage message;
 
-    private TokenbindingMessagePreparator preparator;
+    private TokenBindingMessagePreparator preparator;
 
     @Before
     public void setUp() {
@@ -64,9 +58,8 @@ public class TokenbindingMessagePreparatorTest {
         context = new TlsContext(config);
         chooser = context.getChooser();
         message = new TokenBindingMessage();
-        preparator = new TokenbindingMessagePreparator(chooser, message);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA256));
+        preparator = new TokenBindingMessagePreparator(chooser, message);
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.ECDSA_SHA256);
         context.setClientRandom(ArrayConverter
                 .hexStringToByteArray("772EF595D8B1885E8F5DA5B0595B9E324E04571D5392BF99A046F00A1D331AEB"));
         context.setServerRandom(ArrayConverter
@@ -80,14 +73,13 @@ public class TokenbindingMessagePreparatorTest {
 
     /**
      * Test of prepareProtocolMessageContents method, of class
-     * TokenbindingMessagePreparator.
-     * 
+     * TokenBindingMessagePreparator.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {
         preparator.prepare();
-        Configurator.setRootLevel(Level.ALL);
         Serializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
         TokenBindingMessageParser selfParser = new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12);
@@ -99,50 +91,48 @@ public class TokenbindingMessagePreparatorTest {
         TokenBindingMessage parsedMessage = parser.parse();
         byte[] xBytes = new byte[32];
         System.arraycopy(parsedMessage.getPoint().getValue(), 0, xBytes, 0, 32);
-        System.out.println("X:" + ArrayConverter.bytesToHexString(xBytes));
+        LOGGER.debug("X:" + ArrayConverter.bytesToHexString(xBytes));
         byte[] yBytes = new byte[32];
         System.arraycopy(parsedMessage.getPoint().getValue(), 32, yBytes, 0, 32);
-        System.out.println("Y:" + ArrayConverter.bytesToHexString(yBytes));
+        LOGGER.debug("Y:" + ArrayConverter.bytesToHexString(yBytes));
         BigInteger intX = new BigInteger(xBytes);
-        System.out.println("intx: " + intX);
+        LOGGER.debug("intx: " + intX);
 
         ASN1Integer x = new ASN1Integer(xBytes);
-        System.out.println("xasn1:" + x.getPositiveValue());
+        LOGGER.debug("xasn1:" + x.getPositiveValue());
         ASN1Integer y = new ASN1Integer(yBytes);
         ECDomainParameters generateEcParameters = generateEcParameters();
         ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(generateEcParameters.getCurve()
                 .createPoint(x.getPositiveValue(), y.getPositiveValue()), generateEcParameters);
-        System.out.println("RAW X:" + ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger());
-        System.out.println("RAW Y:" + ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        System.out.println("Valid: " + ecPublicKeyParameters.getQ().isValid());
+        LOGGER.debug("RAW X:" + ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger());
+        LOGGER.debug("RAW Y:" + ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
+        LOGGER.debug("Valid: " + ecPublicKeyParameters.getQ().isValid());
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, ecPublicKeyParameters);
 
         byte[] signedContent = ArrayConverter
                 .hexStringToByteArray("0002A5F86D4EA32D7B305774F6EA56DB444F4D70D777ABF77B810561935F3A96B9C2");// Correct
-                                                                                                              // ekm
-                                                                                                              // with
-                                                                                                              // blablub
+        // ekm
+        // with
+        // blablub
         // ours byte[] signedContent =
         // ArrayConverter.hexStringToByteArray("00022054736C9903E145286A925F9F2C064603D3211BCF0D81EDB6FEB6E9ACCAB4B7");
         byte[] rBytes = new byte[32];
         System.arraycopy(parsedMessage.getSignature().getValue(), 0, rBytes, 0, 32);
         byte[] sBytes = new byte[32];
         System.arraycopy(parsedMessage.getSignature().getValue(), 32, sBytes, 0, 32);
-        System.out.println("r:" + ArrayConverter.bytesToHexString(rBytes));
-        System.out.println("s:" + ArrayConverter.bytesToHexString(sBytes));
-        System.out.println("r:" + new ASN1Integer(rBytes).getPositiveValue());
-        System.out.println("s:" + new ASN1Integer(sBytes).getPositiveValue());
-        System.out.println(signer.verifySignature(signedContent, new ASN1Integer(rBytes).getPositiveValue(),
-                new ASN1Integer(sBytes).getPositiveValue()));
+        LOGGER.debug("r:" + ArrayConverter.bytesToHexString(rBytes));
+        LOGGER.debug("s:" + ArrayConverter.bytesToHexString(sBytes));
+        LOGGER.debug("r:" + new ASN1Integer(rBytes).getPositiveValue());
+        LOGGER.debug("s:" + new ASN1Integer(sBytes).getPositiveValue());
         // decodeASN1(parsedMessage.getSignature().getValue());
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedCurve[] curves = new NamedCurve[] { NamedCurve.SECP256R1 };
+        NamedGroup[] curves = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedCurve.SECP256R1.getValue()));
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);

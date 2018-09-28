@@ -15,9 +15,9 @@ import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class AcceptorCallableTest {
 
@@ -40,25 +40,5 @@ public class AcceptorCallableTest {
     @After
     public void shutDown() throws IOException {
         socket.close();
-    }
-
-    /**
-     * Test of run method, of class AcceptorCallableTest.
-     * 
-     * @throws java.util.concurrent.ExecutionException
-     * @throws java.lang.InterruptedException
-     */
-    @Test
-    public void testRun() throws IOException, InterruptedException, ExecutionException {
-        t.start();
-        Socket clientSocket = new Socket();
-        clientSocket.connect(new InetSocketAddress("localhost", socket.getLocalPort()));
-        try {
-            Thread.currentThread().sleep(10);
-        } catch (InterruptedException ex) {
-        }
-        assertFalse(t.isAlive());
-        assertTrue(task.isDone());
-        assertNotNull(task.get());
     }
 }

@@ -10,13 +10,17 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+ *
  */
 public class EqualityErrorTranslator {
 
-    private EqualityErrorTranslator() {
-    }
-
+    /**
+     *
+     * @param error
+     * @param fingerprint1
+     * @param fingerprint2
+     * @return
+     */
     public static String translation(EqualityError error, ResponseFingerprint fingerprint1,
             ResponseFingerprint fingerprint2) {
         StringBuilder builder = new StringBuilder();
@@ -61,11 +65,14 @@ public class EqualityErrorTranslator {
                 builder.append("The server seems to ocassionally respond with a socket exception.");
                 break;
             case SOCKET_STATE:
-                builder.append("The server seems to ocassionally move the TCP socket in different states. Note that this difference is prone to false-positives if the network is unreliable.");
+                builder.append("The server seems to ocassionally move the TCP socket in different states.");
                 break;
             default:
                 builder.append(error.toString());
         }
         return builder.toString();
+    }
+
+    private EqualityErrorTranslator() {
     }
 }

@@ -38,7 +38,7 @@ public class SRPExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());
-        assertEquals(srpIdentifierLength, (int) message.getSrpIdentifierLength().getValue());
+        assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
 
     }
 

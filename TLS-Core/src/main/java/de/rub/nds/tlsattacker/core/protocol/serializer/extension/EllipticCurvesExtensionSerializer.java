@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<EllipticCurvesExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final EllipticCurvesExtensionMessage msg;
 
@@ -24,18 +28,18 @@ public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<Ellip
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing EllipticCurvesExtensionMessage");
-        writeSupportedCurvesLength(msg);
-        writeSupportedCurves(msg);
+        writeSupportedGroupsLength(msg);
+        writeSupportedGroups(msg);
         return getAlreadySerialized();
     }
 
-    private void writeSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        appendInt(msg.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES);
-        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    private void writeSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
+        appendInt(msg.getSupportedGroupsLength().getValue(), ExtensionByteLength.SUPPORTED_GROUPS);
+        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
     }
 
-    private void writeSupportedCurves(EllipticCurvesExtensionMessage msg) {
-        appendBytes(msg.getSupportedCurves().getValue());
-        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
+    private void writeSupportedGroups(EllipticCurvesExtensionMessage msg) {
+        appendBytes(msg.getSupportedGroups().getValue());
+        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
     }
 }

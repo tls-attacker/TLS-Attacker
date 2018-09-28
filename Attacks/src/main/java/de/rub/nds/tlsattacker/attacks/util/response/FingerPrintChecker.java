@@ -15,21 +15,29 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
 
+/**
+ *
+ *
+ */
 public class FingerPrintChecker {
 
-    private FingerPrintChecker() {
-    }
-
+    /**
+     *
+     * @param fingerprint1
+     * @param fingerprint2
+     * @param canDecryptAlerts
+     * @return
+     */
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
             return EqualityError.SOCKET_EXCEPTION;
         }
-        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
-            return EqualityError.ENCRYPTED_ALERT;
-        }
         if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
             return EqualityError.RECORD_COUNT;
+        }
+        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+            return EqualityError.ENCRYPTED_ALERT;
         }
         if (!checkRecordClassEquality(fingerprint1.getRecordClasses(), fingerprint2.getRecordClasses())) {
             return EqualityError.RECORD_CLASS;
@@ -43,20 +51,19 @@ public class FingerPrintChecker {
         if (!checkRecordContentTypeEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
             return EqualityError.RECORD_CONTENT_TYPE;
         }
-        if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.ALERT_RECORD_CONTENT;
-        }
-        if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.ALERT_MESSAGE_CONTENT;
-        }
-        // If it contains an encrypted alert it is very likely that we cannot
-        // just compare the protocolmessages
-        // We should focus on the record layer instead
-        if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
-            return EqualityError.MESSAGE_COUNT;
-        }
-        if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
-            return EqualityError.MESSAGE_CLASS;
+        if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
+            if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
+                return EqualityError.ALERT_RECORD_CONTENT;
+            }
+            if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
+                return EqualityError.ALERT_MESSAGE_CONTENT;
+            }
+            if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
+                return EqualityError.MESSAGE_COUNT;
+            }
+            if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
+                return EqualityError.MESSAGE_CLASS;
+            }
         }
         if (!checkSocketState(fingerprint1, fingerprint2)) {
             return EqualityError.SOCKET_STATE;
@@ -69,7 +76,6 @@ public class FingerPrintChecker {
             List<Class<AbstractRecord>> recordClassList2) {
         for (int i = 0; i < recordClassList1.size(); i++) {
             if (recordClassList1.get(i).equals(recordClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -81,7 +87,6 @@ public class FingerPrintChecker {
             List<Class<ProtocolMessage>> messageClassList2) {
         for (int i = 0; i < messageClassList1.size(); i++) {
             if (messageClassList1.get(i).equals(messageClassList2.get(i))) {
-                continue;
             } else {
                 return false;
             }
@@ -170,5 +175,8 @@ public class FingerPrintChecker {
             }
         }
         return true;
+    }
+
+    private FingerPrintChecker() {
     }
 }

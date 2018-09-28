@@ -12,13 +12,16 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<DtlsHandshakeMessageFragment> {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     public DtlsHandshakeMessageFragmentParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.UNKNOWN, version);

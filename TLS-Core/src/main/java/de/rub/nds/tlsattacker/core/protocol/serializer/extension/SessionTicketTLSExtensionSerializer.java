@@ -9,14 +9,18 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<SessionTicketTLSExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SessionTicketTLSExtensionMessage message;
 
     /**
      * Default constructor
-     * 
+     *
      * @param message
      *            A SessionTicketTLSExtensionMessage
      */
@@ -27,7 +31,7 @@ public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<Ses
 
     /**
      * Serializes the content of a SessionTicketTLSExtensionMessage
-     * 
+     *
      * @return The serialized bytes of the message
      */
     @Override

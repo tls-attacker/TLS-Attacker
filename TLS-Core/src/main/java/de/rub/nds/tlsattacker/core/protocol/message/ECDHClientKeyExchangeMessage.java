@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -20,23 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    /**
-     * EC public key x coordinate
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableBigInteger publicKeyBaseX;
-    /**
-     * EC public key y coordinate
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableBigInteger publicKeyBaseY;
     /**
      * EC point format of the encoded EC point
      */
@@ -62,30 +50,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public ECDHClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
-    }
-
-    public ModifiableBigInteger getPublicKeyBaseX() {
-        return publicKeyBaseX;
-    }
-
-    public void setPublicKeyBaseX(ModifiableBigInteger publicKeyBaseX) {
-        this.publicKeyBaseX = publicKeyBaseX;
-    }
-
-    public void setPublicKeyBaseX(BigInteger ecPointBaseX) {
-        this.publicKeyBaseX = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseX, ecPointBaseX);
-    }
-
-    public ModifiableBigInteger getPublicKeyBaseY() {
-        return publicKeyBaseY;
-    }
-
-    public void setPublicKeyBaseY(ModifiableBigInteger publicKeyBaseY) {
-        this.publicKeyBaseY = publicKeyBaseY;
-    }
-
-    public void setPublicKeyBaseY(BigInteger ecPointBaseY) {
-        this.publicKeyBaseY = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseY, ecPointBaseY);
     }
 
     public ModifiableByte getEcPointFormat() {
@@ -127,8 +91,9 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toString() {
-        String sb = super.toString();
-        return sb;
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDHClientKeyExchangeMessage:");
+        return sb.toString();
     }
 
     @Override

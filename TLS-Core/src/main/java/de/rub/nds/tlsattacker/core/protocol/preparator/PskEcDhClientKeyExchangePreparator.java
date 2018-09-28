@@ -9,15 +9,21 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ByteArrayOutputStream outputStream;
     private final PskEcDhClientKeyExchangeMessage msg;
@@ -32,18 +38,17 @@ public class PskEcDhClientKeyExchangePreparator extends
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
         super.prepareHandshakeMessageContents();
-        premasterSecret = generatePremasterSecret(premasterSecret);
-        preparePremasterSecret(msg);
     }
 
-    private byte[] generatePremasterSecret(byte[] ecdhValue) {
-
+    @Override
+    protected byte[] computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+        byte[] premasterSecret = super.computePremasterSecret(publicKey, privateKey);
         outputStream = new ByteArrayOutputStream();
         try {
-            outputStream.write(ArrayConverter.intToBytes(ecdhValue.length, HandshakeByteLength.PSK_LENGTH));
-            LOGGER.debug("PremasterSecret: dhValue Length: " + ecdhValue.length);
-            outputStream.write(ecdhValue);
-            LOGGER.debug("PremasterSecret: dhValue" + ecdhValue);
+            outputStream.write(ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
+            LOGGER.debug("PremasterSecret: dhValue Length: " + premasterSecret.length);
+            outputStream.write(premasterSecret);
+            LOGGER.debug("PremasterSecret: dhValue" + Arrays.toString(premasterSecret));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -52,14 +57,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PremasterSecret: " + tempPremasterSecret);
+        LOGGER.debug("PSK PremasterSecret: " + Arrays.toString(tempPremasterSecret));
         return tempPremasterSecret;
-    }
-
-    @Override
-    public void prepareAfterParse() {
-        super.prepareAfterParse();
-        premasterSecret = generatePremasterSecret(premasterSecret);
-        preparePremasterSecret(msg);
     }
 }

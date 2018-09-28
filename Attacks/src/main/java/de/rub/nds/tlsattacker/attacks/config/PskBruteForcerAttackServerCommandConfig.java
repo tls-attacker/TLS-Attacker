@@ -8,61 +8,66 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import com.beust.jcommander.ParametersDelegate;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
+import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
+/**
+ *
+ */
 public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
+
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "pskbruteforcerserver";
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
+
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
+
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+
     @ParametersDelegate
     private AttackDelegate attackDelegate;
-    @Parameter(names = "-usePskTable", description = "Enables the use of the PskTable")
-    private boolean usePskTable = false;
-    @Parameter(names = "-useDheDowngrade", description = "Use the EdhPsk to Psk Downgrade")
-    private boolean useDheDowngrade = false;
-    @Parameter(names = "-useEcDheDowngrade", description = "Use the EcEdhPsk to Psk Downgrade")
-    private boolean useEcDheDowngrade = false;
 
-    @Override
-    public Config createConfig() {
-        Config config = super.createConfig();
-        if (ciphersuiteDelegate.getCipherSuites() == null) {
-            List<CipherSuite> cipherSuites = new LinkedList<>();
-            if (this.useDheDowngrade) {
-                cipherSuites.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-            } else if (this.useEcDheDowngrade) {
-                cipherSuites.add(CipherSuite.TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA);
-            } else {
-                cipherSuites.add(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-            }
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
-        }
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
-        return config;
-    }
+    @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
+    private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
 
+    @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
+    private String guessProviderInputFile = null;
+
+    @Parameter(names = "-clientIdentity", description = "Set a Client Identity")
+    private String clientIdentity;
+
+    @Parameter(names = "-pskIdentity", description = "Set the Psk Identity, that should be used")
+    private String pskIdentity = "Client_identity";
+
+    /**
+     *
+     * @param delegate
+     */
     public PskBruteForcerAttackServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -77,20 +82,96 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
         addDelegate(attackDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
+            List<CipherSuite> cipherSuiteList = new LinkedList<>();
+            for (CipherSuite cipherSuite : CipherSuite.getImplemented()) {
+                if (cipherSuite.isPsk()) {
+                    cipherSuiteList.add(cipherSuite);
+                }
+            }
+            config.setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        }
+        config.setQuickReceive(true);
+        config.setEarlyStop(true);
+        config.setStopActionsAfterFatal(true);
+        return config;
+    }
+
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
     }
 
-    public boolean getUsePskTable() {
-        return usePskTable;
+    /**
+     *
+     * @return
+     */
+    public String getClientIdentity() {
+        return clientIdentity;
     }
 
-    public boolean getDheDowngrade() {
-        return useDheDowngrade;
+    /**
+     *
+     * @return
+     */
+    public String getPskIdentity() {
+        return pskIdentity;
     }
 
-    public boolean getEcDheDowngrade() {
-        return useEcDheDowngrade;
+    /**
+     *
+     * @return
+     */
+    public String getGuessProviderInputFile() {
+        return guessProviderInputFile;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public InputStream getGuessProviderInputStream() {
+        if (this.guessProviderInputFile == null) {
+            if (guessProviderType == GuessProviderType.WORDLIST) {
+                return (PskBruteForcerAttackClientCommandConfig.class.getClassLoader()
+                        .getResourceAsStream("psk_common_passwords.txt"));
+            } else {
+                return System.in;
+            }
+        } else {
+            File file = new File(getGuessProviderInputFile());
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException ex) {
+                throw new WordlistNotFoundException("Wordlist not found: " + file.getAbsolutePath(), ex);
+            }
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public GuessProviderType getGuessProviderType() {
+        return guessProviderType;
+    }
+
+    /**
+     *
+     * @param guessProviderType
+     */
+    public void setGuessProviderType(GuessProviderType guessProviderType) {
+        this.guessProviderType = guessProviderType;
     }
 }

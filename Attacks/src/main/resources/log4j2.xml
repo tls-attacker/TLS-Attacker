@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1} - %msg%n%throwable}"/>
+        </Console>
+        <Console name="Info" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1}} - %msg%n%highlight{%throwable}"/>
+        </Console>
+        <Console name="Direct" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%msg}%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="DirectLogger" level="ALL" additivity="false">
+            <AppenderRef ref="Direct"/>
+        </Logger>
+		
+        <Logger name="de.rub.nds.tlsattacker.core.protocol.handler" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.protocol.message" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.protocol.parser" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.protocol.preparator" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.protocol.serializer" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.cipher" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.compressor" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.crypto" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.layer" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.parser" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.preparator" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.record.serializer" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.workflow" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.workflow.action" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.config" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.state" level="WARN"/>
+        <Logger name="de.rub.nds.tlsattacker.core.constants" level="WARN"/>
+        <Logger name="de.rub.nds.modifiablevariable" level="WARN"/>
+        
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

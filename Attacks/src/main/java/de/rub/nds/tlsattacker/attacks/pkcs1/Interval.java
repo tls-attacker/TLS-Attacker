@@ -12,14 +12,26 @@ import java.math.BigInteger;
 
 /**
  * M interval as mentioned in the Bleichenbacher paper.
- * 
+ *
  * @version 0.1 May 24, 2012
  */
 public class Interval {
 
+    /**
+     *
+     */
     public BigInteger lower;
+
+    /**
+     *
+     */
     public BigInteger upper;
 
+    /**
+     *
+     * @param a
+     * @param b
+     */
     public Interval(BigInteger a, BigInteger b) {
         this.lower = a;
         this.upper = b;

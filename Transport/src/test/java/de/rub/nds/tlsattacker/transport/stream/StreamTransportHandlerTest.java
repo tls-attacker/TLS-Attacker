@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class StreamTransportHandlerTest {
 
@@ -33,7 +33,7 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
-     * 
+     *
      * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
@@ -43,7 +43,7 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of initialize method, of class StreamTransportHandler.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

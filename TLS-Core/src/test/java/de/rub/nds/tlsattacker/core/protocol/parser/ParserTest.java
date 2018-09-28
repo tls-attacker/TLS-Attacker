@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -29,6 +28,18 @@ public class ParserTest {
         byte[] bytesToParse = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         parser = new ParserImpl(0, bytesToParse);
         middleParser = new ParserImpl(3, bytesToParse);
+    }
+
+    @Test
+    public void testPeek() {
+        parser.parseByteArrayField(4);
+        assertEquals(4, parser.peek());
+    }
+
+    @Test(expected = ParserException.class)
+    public void testPeekFailure() {
+        parser.parseByteArrayField(9);
+        parser.peek();
     }
 
     /**

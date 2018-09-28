@@ -11,13 +11,16 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSerializer<DtlsHandshakeMessageFragment> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final DtlsHandshakeMessageFragment fragment;
 

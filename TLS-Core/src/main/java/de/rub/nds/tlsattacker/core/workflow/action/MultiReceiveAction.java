@@ -55,8 +55,9 @@ public class MultiReceiveAction extends GenericReceiveAction {
                 break;
             }
         }
-        if (selectedAction.earlyCleanShutdown != null)
+        if (selectedAction.earlyCleanShutdown != null) {
             state.getTlsContext().setEarlyCleanShutdown(selectedAction.earlyCleanShutdown);
+        }
         selectedAction.setReceivedMessages(super.getReceivedMessages());
         selectedAction.setReceivedRecords(super.getReceivedRecords());
         selectedAction.setExecuted(super.isExecuted());
@@ -68,16 +69,18 @@ public class MultiReceiveAction extends GenericReceiveAction {
 
     private boolean compareExpectedActionsWithReceivedActions(ReceiveAction actionCandidate) {
         List<ProtocolMessage> expectedMessagesCandidate = actionCandidate.getExpectedMessages();
-        if (expectedMessagesCandidate.size() != super.getReceivedMessages().size())
+        if (expectedMessagesCandidate.size() != super.getReceivedMessages().size()) {
             return false;
+        }
         for (int i = 0; i < expectedMessagesCandidate.size(); i++) {
             ProtocolMessage expectedMessageCandidate = expectedMessagesCandidate.get(i);
             ProtocolMessage receivedMessage = getReceivedMessages().get(i);
-            if (expectedMessageCandidate.getClass().equals(receivedMessage.getClass()))
+            if (expectedMessageCandidate.getClass().equals(receivedMessage.getClass())) {
                 return false;
-            // could contain different AlertMessages
-            else if (expectedMessageCandidate instanceof AlertMessage && receivedMessage instanceof AlertMessage)
+                // could contain different AlertMessages
+            } else if (expectedMessageCandidate instanceof AlertMessage && receivedMessage instanceof AlertMessage) {
                 return Objects.equals(expectedMessageCandidate, receivedMessage);
+            }
         }
         return true;
     }

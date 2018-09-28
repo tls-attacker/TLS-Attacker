@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class SSL2ServerHelloParser extends ProtocolMessageParser {
+public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SSL2ServerHelloParser(byte[] message, int pointer, ProtocolVersion selectedProtocolVersion) {
         super(pointer, message, selectedProtocolVersion);
@@ -35,28 +39,6 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
         parseCipherSuites(message);
         parseSessionID(message);
         return message;
-    }
-
-    /**
-     * Reads the next bytes as the MessageLength and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    private void parseMessageLength(SSL2ServerHelloMessage message) {
-        message.setMessageLength(parseIntField(SSL2ByteLength.LENGTH));
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the Type and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    private void parseType(SSL2ServerHelloMessage message) {
-        message.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));
-        LOGGER.debug("Type: " + message.getType().getValue());
     }
 
     /**

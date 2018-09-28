@@ -49,12 +49,9 @@ import org.junit.experimental.categories.Category;
 
 public class FindReceivedProtocolMessageActionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(FindReceivedProtocolMessageActionTest.class);
-    private static final int SERVER_PORT = 48385;
-    private BadRandom random = new BadRandom(new Random(0), null);
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public FindReceivedProtocolMessageActionTest() {
-    }
+    private static final int SERVER_PORT = 48385;
 
     @BeforeClass
     public static void setUpClass() {
@@ -62,6 +59,11 @@ public class FindReceivedProtocolMessageActionTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    private final BadRandom random = new BadRandom(new Random(0), null);
+
+    public FindReceivedProtocolMessageActionTest() {
     }
 
     @Before
@@ -74,6 +76,8 @@ public class FindReceivedProtocolMessageActionTest {
 
     /**
      * Test of execute method, of class FindReceivedProtocolMessageAction.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     @Category(IntegrationTests.class)
@@ -112,7 +116,6 @@ public class FindReceivedProtocolMessageActionTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException ex) {
-            ex.printStackTrace();
             fail();
         }
 

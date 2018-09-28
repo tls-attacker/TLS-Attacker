@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
@@ -29,6 +30,7 @@ import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -49,19 +51,21 @@ public class RecordEncryptorTest {
         Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         record = new Record();
+        record.prepareComputations();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.setSequenceNumber(BigInteger.ZERO);
+        record.getComputations().setSequenceNumber(BigInteger.ZERO);
     }
 
     /**
      * Test of the encrypt method for TLS 1.3, of class RecordEncryptor.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testEncryptTLS13() throws NoSuchAlgorithmException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+    public void testEncryptTLS13() throws NoSuchAlgorithmException, CryptoException {
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
@@ -71,7 +75,7 @@ public class RecordEncryptorTest {
         context.setConnection(new InboundConnection());
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-        record.setPaddingLength(0);
+        record.getComputations().setPaddingLength(0);
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
@@ -81,7 +85,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12Block() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12Block() throws NoSuchAlgorithmException, CryptoException {
         Random random = new TestRandomData(
                 ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259C948E1D0B39BB9560CD5409B6ECAFEDB"));//
         // explicit
@@ -101,24 +105,24 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CB692015BE123B8364314FE1C"), record
-                .getNonMetaDataMaced().getValue());
+                .getComputations().getNonMetaDataMaced().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("BD527A01EDCA68BF5A7918C190942A9AECA971CA"), record
-                .getMac().getValue());
+                .getComputations().getMac().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CB692015BE123B8364314FE1CBD527A01EDCA68BF5A7918C190942A9AECA971CA"),
-                record.getUnpaddedRecordBytes().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getPadding()
-                .getValue());
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
+                .getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CB692015BE123B8364314FE1CBD527A01EDCA68BF5A7918C190942A9AECA971CA0B0B0B0B0B0B0B0B0B0B0B0B"),
-                record.getPlainRecordBytes().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(12 == record.getPaddingLength().getValue());
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(12 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -126,7 +130,84 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12Stream() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12Camellia() throws NoSuchAlgorithmException, CryptoException {
+        context.setRandom(new TestRandomData(ArrayConverter
+                .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E34ED3256F1B380C692B962DF892180C5A")));
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("EC28993D8B3F3D81D626C3B419C34547373C5EA49C4A727790C59892AACFF4FEF0945725996013C65581110889D019DE"));
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("DA5BA97EAC47D864C1041B542885F0CD20F05F7F3E0929FBE38D2A72497D5A53"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
+
+        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"));
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+
+        recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        encryptor = new RecordEncryptor(recordCipher, context);
+        encryptor.encrypt(record);
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
+                .getComputations().getNonMetaDataMaced().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
+                .getComputations().getMac().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD"),
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
+                .getPadding().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD0B0B0B0B0B0B0B0B0B0B0B0B"),
+                record.getComputations().getPlainRecordBytes().getValue());
+
+        assertNull(record.getComputations().getInitialisationVector());
+        assertEquals(12, (long) record.getComputations().getPaddingLength().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"),
+                record.getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLS10GOST() throws NoSuchAlgorithmException, CryptoException {
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("0DA8674196F2496C4EE1E4779DE04990BE3CE4655252F1961E707B61178436131369D11E7DA84C05374535B95550DD0F"));
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("52E78F4F6AA0FE312217AEF691AD763932945E8CEDD7F96E3C336B0866A66698"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("52E78F4F4E131F8CABAFD5D7C9C62A5EDF62CADB4D033131FE9B83DE9D459EFD"));
+
+        Record record = new Record();
+        record.prepareComputations();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        record.getComputations().setSequenceNumber(BigInteger.ZERO);
+
+        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C07E0B66F9A775545F6590C2E"));
+
+        recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
+        encryptor = new RecordEncryptor(recordCipher, context);
+        encryptor.encrypt(record);
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("356A2FAF42836E90EDB6CD0CB0DE813D505C0EAF"), record
+                .getProtocolMessageBytes().getValue());
+    }
+
+    @Test
+    public void testEncryptTLS12Stream() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.setMasterSecret(ArrayConverter
@@ -141,23 +222,23 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381"), record
-                .getNonMetaDataMaced().getValue());
+                .getComputations().getNonMetaDataMaced().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("CE4D3A05054892056A014B28E3AF613105583FAA"), record
-                .getMac().getValue());
+                .getComputations().getMac().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381CE4D3A05054892056A014B28E3AF613105583FAA"),
-                record.getUnpaddedRecordBytes().getValue());
-        assertArrayEquals(new byte[0], record.getPadding().getValue());
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(new byte[0], record.getComputations().getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381CE4D3A05054892056A014B28E3AF613105583FAA"),
-                record.getPlainRecordBytes().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(0 == record.getPaddingLength().getValue());
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(0 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -165,7 +246,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12AEAD() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12AEAD() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setMasterSecret(ArrayConverter
@@ -180,20 +261,20 @@ public class RecordEncryptorTest {
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
-                .getNonMetaDataMaced().getValue());
-        assertArrayEquals(new byte[0], record.getMac().getValue());
+                .getComputations().getNonMetaDataMaced().getValue());
+        assertArrayEquals(new byte[0], record.getComputations().getMac().getValue());
         // assertArrayEquals(new byte[0], record
         // .get().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
-                .getUnpaddedRecordBytes().getValue());
-        assertArrayEquals(new byte[0], record.getPadding().getValue());
+                .getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(new byte[0], record.getComputations().getPadding().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
-                .getPlainRecordBytes().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(0 == record.getPaddingLength().getValue());
+                .getComputations().getPlainRecordBytes().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(0 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -202,7 +283,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS10Block() throws NoSuchAlgorithmException {
+    public void testEncryptTLS10Block() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setMasterSecret(ArrayConverter
@@ -217,24 +298,24 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2"), record
-                .getNonMetaDataMaced().getValue());
+                .getComputations().getNonMetaDataMaced().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("F4CA3F8A11CE20E1D9BE67BE9B49C2E9305035D0"), record
-                .getMac().getValue());
+                .getComputations().getMac().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2F4CA3F8A11CE20E1D9BE67BE9B49C2E9305035D0"),
-                record.getUnpaddedRecordBytes().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getPadding()
-                .getValue());
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
+                .getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2F4CA3F8A11CE20E1D9BE67BE9B49C2E9305035D00B0B0B0B0B0B0B0B0B0B0B0B"),
-                record.getPlainRecordBytes().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(12 == record.getPaddingLength().getValue());
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(12 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -242,7 +323,7 @@ public class RecordEncryptorTest {
     }
 
     // @Test
-    public void testEncryptTLS10Stream() throws NoSuchAlgorithmException {
+    public void testEncryptTLS10Stream() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.setMasterSecret(ArrayConverter
@@ -257,24 +338,24 @@ public class RecordEncryptorTest {
         recordCipher = new RecordStreamCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2"), record
-                .getNonMetaDataMaced().getValue());
+                .getComputations().getNonMetaDataMaced().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("4BD82D0657D876744D05455125FF0BE1F7FA293D"), record
-                .getMac().getValue());
+                .getComputations().getMac().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000C5BD2239FEE954F5C5CC2A66D4BD82D0657D876744D05455125FF0BE1F7FA293D"),
-                record.getUnpaddedRecordBytes().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getPadding()
-                .getValue());
+                record.getComputations().getUnpaddedRecordBytes().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
+                .getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000C5BD2239FEE954F5C5CC2A66D4BD82D0657D876744D05455125FF0BE1F7FA293D"),
-                record.getPlainRecordBytes().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(12 == record.getPaddingLength().getValue());
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(12 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -283,7 +364,7 @@ public class RecordEncryptorTest {
     }
 
     // @Test
-    public void testEncryptTLS12BlockEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12BlockEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
@@ -299,15 +380,15 @@ public class RecordEncryptorTest {
         recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030030"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030030"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("1400000C4F93658C9C52CE070BA2684A0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F"),
-                record.getNonMetaDataMaced().getValue());
+                record.getComputations().getNonMetaDataMaced().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("9857CAD82F7B968E9512D7B584752F11B968C812"), record
-                .getMac().getValue());
-        assertNull(record.getInitialisationVector());
-        assertTrue(12 == record.getPaddingLength().getValue());
+                .getComputations().getMac().getValue());
+        assertNull(record.getComputations().getInitialisationVector());
+        assertTrue(12 == record.getComputations().getPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter
@@ -316,7 +397,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12StreamEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12StreamEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
@@ -330,7 +411,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12AEADEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12AEADEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);

@@ -14,5 +14,4 @@ package de.rub.nds.tlsattacker.core.dtls;
  */
 public class FragmentManager {
 
-    
 }

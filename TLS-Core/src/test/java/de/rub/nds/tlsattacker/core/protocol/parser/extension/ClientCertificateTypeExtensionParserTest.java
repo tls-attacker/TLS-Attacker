@@ -25,6 +25,16 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ClientCertificateTypeExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] {
+                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
+                        Arrays.asList(CertificateType.X509), false },
+                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
+                        Arrays.asList(CertificateType.X509), true },
+                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 0,
+                        2, Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -48,17 +58,6 @@ public class ClientCertificateTypeExtensionParserTest {
         this.isClientState = isClientState;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
-                        Arrays.asList(CertificateType.X509), false },
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
-                        Arrays.asList(CertificateType.X509), true },
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00130003020100"), 3, 0,
-                        2, Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
-    }
-
     @Before
     public void setUp() {
         parser = new ClientCertificateTypeExtensionParser(startParsing, expectedBytes);
@@ -69,7 +68,7 @@ public class ClientCertificateTypeExtensionParserTest {
         msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
 
         if (certificateTypesLength != null) {
             assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());

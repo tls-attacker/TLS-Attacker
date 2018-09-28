@@ -24,25 +24,45 @@ public abstract class Pkcs1Oracle {
     /**
      * logger
      */
-    static Logger LOGGER = LogManager.getLogger(Pkcs1Oracle.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /*
      * number of queries issued to oracle
      */
+
+    /**
+     *
+     */
+
     protected long numberOfQueries;
     /*
      * block size of the encryption algorithm
      */
+
+    /**
+     *
+     */
+
     protected int blockSize;
     /*
      * public key of the oracle
      */
+
+    /**
+     *
+     */
+
     protected RSAPublicKey publicKey;
     /*
      * a boolean value indicating if the oracle is a plaintext oracle (oracle
      * used for testing purposes) or a real oracle needing to decrypt each
      * ciphertext.
      */
+
+    /**
+     *
+     */
+
     protected boolean isPlaintextOracle = false;
     /**
      * oracle type according to the Crypto'12 paper
@@ -104,6 +124,9 @@ public abstract class Pkcs1Oracle {
         return oracleType;
     }
 
+    /**
+     *
+     */
     public void resetNumberOfQueries() {
         this.numberOfQueries = 0;
     }
@@ -126,14 +149,49 @@ public abstract class Pkcs1Oracle {
      */
     public enum OracleType {
 
+        /**
+         *
+         */
         TTT,
+
+        /**
+         *
+         */
         TFT,
+
+        /**
+         *
+         */
         FTT,
+
+        /**
+         *
+         */
         FFT,
+
+        /**
+         *
+         */
         FFF,
+
+        /**
+         *
+         */
         JSSE,
+
+        /**
+         *
+         */
         XMLENC,
+
+        /**
+         *
+         */
         BigIP,
+
+        /**
+         *
+         */
         MANGER_0x00
     }
 }

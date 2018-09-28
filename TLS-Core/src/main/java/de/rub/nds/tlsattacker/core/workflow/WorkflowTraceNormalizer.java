@@ -27,15 +27,15 @@ import org.apache.logging.log4j.Logger;
  */
 public class WorkflowTraceNormalizer {
 
-    protected static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizer.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public void normalize(WorkflowTrace trace, Config config) {
-        normalize(trace, config, config.getDefaulRunningMode());
+        normalize(trace, config, config.getDefaultRunningMode());
     }
 
     /**
      * Merge in default values from Config if necessary.
-     * 
+     *
      * @param trace
      *            The trace that should be normalized
      * @param config
@@ -138,11 +138,11 @@ public class WorkflowTraceNormalizer {
      * trace contains one or more Connections and zero or more TlsActions which
      * refer to defined Connections only (i.e. the alias must match a known
      * connection alias).
-     * 
+     *
      * TODO: There could be a AliasedConnection.assertProperlyPrepared() method
      * that we can call here. This would be a "self test" of the Connection
      * object to check that all values are set and in expected range.
-     * 
+     *
      * @param trace
      *            The WorkflowTrace to check
      */

@@ -9,16 +9,15 @@
 package de.rub.nds.tlsattacker.core.config.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RemoveDefaultValues implements ConfigDisplayFilter {
 
-    static final Logger LOGGER = LogManager.getLogger(RemoveDefaultValues.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void applyFilter(Config config) {
@@ -30,7 +29,7 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
                     try {
                         Object defaultValue = field.get(defaultConfig);
                         Object configValue = field.get(config);
-                        if (configValue != null)
+                        if (configValue != null) {
                             if (field.getType().isArray()) {
                                 if (Array.getLength(defaultValue) == Array.getLength(configValue)) {
                                     boolean equal = true;
@@ -40,13 +39,16 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
                                             break;
                                         }
                                     }
-                                    if (equal)
+                                    if (equal) {
                                         field.set(config, null);
+                                    }
                                 }
                             } else {
-                                if (defaultValue.equals(configValue))
+                                if (defaultValue.equals(configValue)) {
                                     field.set(config, null);
+                                }
                             }
+                        }
                     } catch (IllegalAccessException e) {
                         LOGGER.warn("Could not remove field in Config!", e);
                     }

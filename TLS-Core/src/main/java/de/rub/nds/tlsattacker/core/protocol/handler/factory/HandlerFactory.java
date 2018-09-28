@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
@@ -28,28 +28,29 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
@@ -64,8 +65,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExte
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
@@ -92,12 +93,12 @@ import org.apache.logging.log4j.Logger;
 
 public class HandlerFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
         if (protocolType == null) {
-            return new UnknownHandshakeMessageHandler(context);
+            return new UnknownHandshakeHandler(context);
         }
         try {
             switch (protocolType) {
@@ -109,16 +110,16 @@ public class HandlerFactory {
                 case ALERT:
                     return new AlertHandler(context);
                 case APPLICATION_DATA:
-                    return new ApplicationHandler(context);
+                    return new ApplicationMessageHandler(context);
                 case HEARTBEAT:
-                    return new HeartbeatHandler(context);
+                    return new HeartbeatMessageHandler(context);
                 default:
-                    return new UnknownMessageHandler(context);
+                    return new UnknownHandler(context);
             }
         } catch (UnsupportedOperationException E) {
             // Could not get the correct handler, getting an
             // unknownMessageHandler instead(always successful)
-            return new UnknownHandshakeMessageHandler(context);
+            return new UnknownHandshakeHandler(context);
         }
     }
 
@@ -126,7 +127,7 @@ public class HandlerFactory {
         try {
             switch (type) {
                 case CERTIFICATE:
-                    return new CertificateHandler(context);
+                    return new CertificateMessageHandler(context);
                 case CERTIFICATE_REQUEST:
                     return new CertificateRequestHandler(context);
                 case CERTIFICATE_VERIFY:
@@ -156,12 +157,12 @@ public class HandlerFactory {
                 case SERVER_KEY_EXCHANGE:
                     return getServerKeyExchangeHandler(context);
                 case UNKNOWN:
-                    return new UnknownHandshakeMessageHandler(context);
+                    return new UnknownHandshakeHandler(context);
             }
         } catch (UnsupportedOperationException E) {
             LOGGER.debug("Could not retrieve correct Handler, returning UnknownHandshakeHandler", E);
         }
-        return new UnknownHandshakeMessageHandler(context);
+        return new UnknownHandshakeHandler(context);
     }
 
     /**
@@ -204,6 +205,7 @@ public class HandlerFactory {
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:
                     return new HeartbeatExtensionHandler(context);
+                case KEY_SHARE_OLD:
                 case KEY_SHARE:
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
                         return new HrrKeyShareExtensionHandler(context);
@@ -282,7 +284,7 @@ public class HandlerFactory {
                 return new PskDhClientKeyExchangeHandler(context);
             case ECDHE_PSK:
                 return new PskEcDhClientKeyExchangeHandler(context);
-            case RSA_PSK:
+            case PSK_RSA:
                 return new PskRsaClientKeyExchangeHandler(context);
             case PSK:
                 return new PskClientKeyExchangeHandler(context);
@@ -290,6 +292,9 @@ public class HandlerFactory {
             case SRP_SHA_RSA:
             case SRP_SHA:
                 return new SrpClientKeyExchangeHandler(context);
+            case VKO_GOST01:
+            case VKO_GOST12:
+                return new GOSTClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
@@ -309,6 +314,7 @@ public class HandlerFactory {
             case ECDH_ECDSA:
             case ECDH_RSA:
             case ECDHE_RSA:
+            case ECDH_ANON:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

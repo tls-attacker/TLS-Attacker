@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class FileHelper {
 
-    private static final Logger LOGGER = LogManager.getLogger(FileHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void deleteFolder(File folder) {
         File[] files = folder.listFiles();
@@ -61,6 +61,9 @@ public class FileHelper {
             result = bis.read();
         }
         return bos.toString(StandardCharsets.UTF_8.name());
+    }
+
+    private FileHelper() {
     }
 
 }

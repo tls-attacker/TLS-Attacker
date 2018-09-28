@@ -45,14 +45,14 @@ public class CachedInfoExtensionPreparatorTest {
 
         preparator.prepare();
 
-        assertEquals(cachedObjectClientLength, (int) msg.getCachedInfoLength().getValue());
+        assertEquals(cachedObjectClientLength, (long) msg.getCachedInfoLength().getValue());
         assertCachedObjectList(cachedObjectsClient, msg.getCachedInfo());
 
         msg.setCachedInfo(cachedObjectsServer);
 
         preparator.prepare();
 
-        assertEquals(cachedObjectServerLength, (int) msg.getCachedInfoLength().getValue());
+        assertEquals(cachedObjectServerLength, (long) msg.getCachedInfoLength().getValue());
         assertCachedObjectList(cachedObjectsServer, msg.getCachedInfo());
 
     }

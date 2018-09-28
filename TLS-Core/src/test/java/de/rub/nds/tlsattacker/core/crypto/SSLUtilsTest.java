@@ -8,18 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 
 public class SSLUtilsTest {
 

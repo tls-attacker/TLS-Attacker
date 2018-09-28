@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -30,15 +31,20 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactoryConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 public class WorkflowTraceSerializer {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * context initialization is expensive, we need to do that only once
@@ -107,8 +113,15 @@ public class WorkflowTraceSerializer {
         context = getJAXBContext();
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        m.marshal(workflowTrace, outputStream);
+        try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
+            m.marshal(workflowTrace, tempStream);
+            try {
+                outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
+            } catch (TransformerException | XPathExpressionException | XPathFactoryConfigurationException
+                    | ParserConfigurationException | SAXException ex) {
+                throw new RuntimeException("Could not format XML");
+            }
+        }
         outputStream.close();
     }
 

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Serializer<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Serializer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The ByteArrayOutputStream with which the byte[] is constructed.

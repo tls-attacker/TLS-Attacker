@@ -33,12 +33,19 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
+/**
+ *
+ *
+ */
 public class RealDirectMessageECOracle extends ECOracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Config config;
 
@@ -48,6 +55,11 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
+    /**
+     *
+     * @param config
+     * @param curve
+     */
     public RealDirectMessageECOracle(Config config, Curve curve) {
         this.config = config;
         this.curve = curve;
@@ -75,12 +87,12 @@ public class RealDirectMessageECOracle extends ECOracle {
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX()));
-        message.setPublicKeyBaseX(x);
+        message.getComputations().setComputedPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY()));
-        message.setPublicKeyBaseY(y);
+        message.getComputations().setComputedPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
@@ -103,7 +115,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException e) {
             valid = false;
-            e.printStackTrace();
+            LOGGER.warn(e);
         } finally {
             numberOfQueries++;
         }
@@ -154,8 +166,8 @@ public class RealDirectMessageECOracle extends ECOracle {
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates
-        BigInteger x = message.getPublicKeyBaseX().getValue();
-        BigInteger y = message.getPublicKeyBaseY().getValue();
+        BigInteger x = message.getComputations().getComputedPublicKeyX().getValue();
+        BigInteger y = message.getComputations().getComputedPublicKeyY().getValue();
         checkPoint = new Point(x, y);
         checkPMS = message.getComputations().getPremasterSecret().getValue();
     }

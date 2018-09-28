@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Connection {
+public abstract class Connection implements Serializable {
 
     protected Integer port = null;
     protected String hostname = null;
@@ -76,7 +77,7 @@ public abstract class Connection {
     /**
      * Get the connection end type of the connection end. This must be
      * implemented by all children.
-     * 
+     *
      * @return the connection end type of the connection end.
      */
     public abstract ConnectionEndType getLocalConnectionEndType();
@@ -112,9 +113,6 @@ public abstract class Connection {
         if (!Objects.equals(this.timeout, other.timeout)) {
             return false;
         }
-        if (!Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType());
     }
 }

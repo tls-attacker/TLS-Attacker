@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,7 +41,8 @@ public class FragmentedMessage {
             type = fragment.getType().getValue();
         } else {
             if (type != fragment.getType().getValue()) {
-                LOGGER.warn("Found an unffiting fragment! Type before:" + type + " inserted type:" + fragment.getType().getValue());
+                LOGGER.warn("Found an unffiting fragment! Type before:" + type + " inserted type:"
+                        + fragment.getType().getValue());
             }
         }
         fragmentData.add(fragment);
@@ -61,7 +62,7 @@ public class FragmentedMessage {
         message.setType(type);
         message.setLength(reconstructedContent.length);
         message.setDataConfig(ArrayUtils.toPrimitive(byteBuffer, (byte) 0));
-        UnknownHandshakeMessageSerializer serializer = new UnknownHandshakeMessageSerializer(message, null);
+        UnknownHandshakeSerializer serializer = new UnknownHandshakeSerializer(message, null);
         return serializer.serialize();
     }
 

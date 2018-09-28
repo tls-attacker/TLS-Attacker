@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -34,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -80,7 +77,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientSupportedPointFormats().size() == 8);
         assertTrue(chooser.getClientSupportedPointFormats().size() == 8);
         context.setClientPointFormatsList(new LinkedList<ECPointFormat>());
-        assertTrue(chooser.getClientSupportedPointFormats().size() == 0);
+        assertTrue(chooser.getClientSupportedPointFormats().isEmpty());
     }
 
     /**
@@ -88,32 +85,27 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedSigHashAlgorithm() {
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
-                HashAlgorithm.NONE));
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), new SignatureAndHashAlgorithm(
-                SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
-                HashAlgorithm.NONE));
-        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.DSA_SHA1);
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.DSA_SHA1);
     }
 
     /**
-     * Test of getClientSupportedNamedCurves method, of class DefaultChooser.
+     * Test of getClientSupportedNamedGroups method, of class DefaultChooser.
      */
     @Test
     public void testGetClientSupportedNamedCurves() {
-        List<NamedCurve> curveList = new LinkedList<>();
-        curveList.add(NamedCurve.BRAINPOOLP256R1);
-        curveList.add(NamedCurve.ECDH_X448);
-        curveList.add(NamedCurve.SECP160K1);
-        config.setDefaultClientNamedCurves(curveList);
-        assertTrue(config.getDefaultClientNamedCurves().size() == 3);
-        assertTrue(chooser.getClientSupportedNamedCurves().size() == 3);
-        context.setClientNamedCurvesList(new LinkedList<NamedCurve>());
-        assertTrue(chooser.getClientSupportedNamedCurves().size() == 0);
+        List<NamedGroup> curveList = new LinkedList<>();
+        curveList.add(NamedGroup.BRAINPOOLP256R1);
+        curveList.add(NamedGroup.ECDH_X448);
+        curveList.add(NamedGroup.SECP160K1);
+        config.setDefaultClientNamedGroups(curveList);
+        assertTrue(config.getDefaultClientNamedGroups().size() == 3);
+        assertTrue(chooser.getClientSupportedNamedGroups().size() == 3);
+        context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
+        assertTrue(chooser.getClientSupportedNamedGroups().isEmpty());
 
     }
 
@@ -135,7 +127,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultServerSupportedPointFormats().size() == 8);
         assertTrue(chooser.getServerSupportedPointFormats().size() == 8);
         context.setServerPointFormatsList(new LinkedList<ECPointFormat>());
-        assertTrue(chooser.getServerSupportedPointFormats().size() == 0);
+        assertTrue(chooser.getServerSupportedPointFormats().isEmpty());
     }
 
     /**
@@ -145,12 +137,12 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(SignatureAndHashAlgorithm.getRandom(random));
+        algoList.add(SignatureAndHashAlgorithm.DSA_MD5);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
         context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
-        assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 0);
+        assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
     /**
@@ -164,7 +156,7 @@ public class DefaultChooserTest {
         assertTrue(config.getDefaultClientSNIEntryList().size() == 1);
         assertTrue(chooser.getClientSNIEntryList().size() == 1);
         context.setClientSNIEntryList(new LinkedList<SNIEntry>());
-        assertTrue(context.getClientSNIEntryList().size() == 0);
+        assertTrue(context.getClientSNIEntryList().isEmpty());
     }
 
     /**
@@ -210,7 +202,7 @@ public class DefaultChooserTest {
         assertTrue(config.getClientCertificateTypes().size() == 7);
         assertTrue(chooser.getClientCertificateTypes().size() == 7);
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
-        assertTrue(chooser.getClientCertificateTypes().size() == 0);
+        assertTrue(chooser.getClientCertificateTypes().isEmpty());
 
     }
 
@@ -293,14 +285,10 @@ public class DefaultChooserTest {
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
         LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms2 = new LinkedList<>();
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA1));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.MD5));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA224));
-        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
-                HashAlgorithm.SHA512));
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_MD5);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA1);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA256);
+        serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA384);
         config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms);
         assertEquals(serverSupportedSignatureAndHashAlgorithms,
                 config.getDefaultServerSupportedSignatureAndHashAlgorithms());
@@ -436,7 +424,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultClientSessionId());
         assertArrayEquals(sessionID, chooser.getClientSessionId());
         context.setClientSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getClientSessionId());
     }
 
     /**
@@ -449,7 +437,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultServerSessionId());
         assertArrayEquals(sessionID, chooser.getServerSessionId());
         context.setServerSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getServerSessionId());
     }
 
     /**
@@ -653,16 +641,16 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getSelectedCurve method, of class DefaultChooser.
+     * Test of getSelectedNamedGroup method, of class DefaultChooser.
      */
     @Test
     public void testGetSelectedCurve() {
-        context.setSelectedCurve(null);
-        config.setDefaultSelectedCurve(NamedCurve.FFDHE2048);
-        assertEquals(NamedCurve.FFDHE2048, config.getDefaultSelectedCurve());
-        assertEquals(NamedCurve.FFDHE2048, chooser.getSelectedCurve());
-        context.setSelectedCurve(NamedCurve.SECT163R1);
-        assertEquals(NamedCurve.SECT163R1, chooser.getSelectedCurve());
+        context.setSelectedGroup(null);
+        config.setDefaultSelectedNamedGroup(NamedGroup.FFDHE2048);
+        assertEquals(NamedGroup.FFDHE2048, config.getDefaultSelectedNamedGroup());
+        assertEquals(NamedGroup.FFDHE2048, chooser.getSelectedNamedGroup());
+        context.setSelectedGroup(NamedGroup.SECT163R1);
+        assertEquals(NamedGroup.SECT163R1, chooser.getSelectedNamedGroup());
     }
 
     /**

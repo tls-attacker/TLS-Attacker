@@ -26,9 +26,13 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class Pkcs1VectorGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger(Pkcs1VectorGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Generates different encrypted PKCS1 vectors
@@ -59,6 +63,12 @@ public class Pkcs1VectorGenerator {
         }
     }
 
+    /**
+     *
+     * @param publicKey
+     * @param protocolVersion
+     * @return
+     */
     public static Pkcs1Vector generateCorrectPkcs1Vector(RSAPublicKey publicKey, ProtocolVersion protocolVersion) {
         Pkcs1Vector encryptedVector = getPlainCorrect(publicKey.getModulus().bitLength(), protocolVersion);
         try {
@@ -113,8 +123,10 @@ public class Pkcs1VectorGenerator {
                 publicKeyByteLength, keyBytes, 0)));
         pkcs1Vectors.add(new Pkcs1Vector("0x00 on the next to last position (|PMS| = 1)", getEK_SymmetricKeyOfSize(
                 publicKeyByteLength, keyBytes, 1)));
-        pkcs1Vectors.add(new Pkcs1Vector("0x00 on the 9th position from the rigth (|PMS| = 8)",
-                getEK_SymmetricKeyOfSize(publicKeyByteLength, keyBytes, 8)));
+        pkcs1Vectors.add(new Pkcs1Vector("Correctly formatted PKCS#1 message, (|PMS| = 47)", getPaddedKey(
+                publicKeyByteLength, Arrays.copyOf(keyBytes, HandshakeByteLength.PREMASTER_SECRET - 1))));
+        pkcs1Vectors.add(new Pkcs1Vector("Correctly formatted PKCS#1 message, (|PMS| = 49)", getPaddedKey(
+                publicKeyByteLength, Arrays.copyOf(keyBytes, HandshakeByteLength.PREMASTER_SECRET + 1))));
 
         if (type == BleichenbacherCommandConfig.Type.FULL) {
             List<Pkcs1Vector> additionalVectors = getEK_DifferentPositionsOf0x00(publicKeyByteLength, keyBytes);

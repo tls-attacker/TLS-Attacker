@@ -20,9 +20,13 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SignatureAndHashAlgorithmsExtensionHandler(TlsContext context) {
         super(context);

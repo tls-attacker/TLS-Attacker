@@ -13,15 +13,16 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class RecordAEADCipherTest {
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
         this.context = new TlsContext();
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
@@ -47,16 +48,18 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the encrypt method, of class RecordAEADCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testEncrypt() throws NoSuchAlgorithmException {
+    public void testEncrypt() throws NoSuchAlgorithmException, CryptoException {
         context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
-        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(plaintext)).getCompleteEncryptedCipherText();
+        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(plaintext, null, null))
+                .getCompleteEncryptedCipherText();
         byte[] ciphertext_correct = ArrayConverter
                 .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         assertArrayEquals(ciphertext, ciphertext_correct);
@@ -64,22 +67,23 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the decrypt method, of class RecordAEADCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDecrypt() throws NoSuchAlgorithmException {
+    public void testDecrypt() throws NoSuchAlgorithmException, CryptoException {
         context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new OutboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
-        byte[] plaintext = cipher.decrypt(ciphertext);
+        byte[] plaintext = cipher.decrypt(new DecryptionRequest(null, ciphertext)).getDecryptedCipherText();
         byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");
         assertArrayEquals(plaintext, plaintext_correct);
     }
 
     @Test
-    public void testInit() throws NoSuchAlgorithmException {
+    public void testInit() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setHandshakeSecret(ArrayConverter
@@ -99,7 +103,7 @@ public class RecordAEADCipherTest {
                 .getClientWriteKey());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("7DD498D9EA924142CD3BF45CD8A1B4B9"), cipher.getKeySet()
                 .getServerWriteKey());
-        assertNull(cipher.getKeySet().getClientWriteMacSecret());
-        assertNull(cipher.getKeySet().getServerWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getClientWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getServerWriteMacSecret());
     }
 }

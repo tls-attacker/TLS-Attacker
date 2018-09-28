@@ -23,6 +23,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TrustedCaIndicationExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return TrustedCaIndicationExtensionParserTest.generateData();
+    }
 
     private final ExtensionType type;
     private final byte[] extensionBytes;
@@ -39,11 +43,6 @@ public class TrustedCaIndicationExtensionSerializerTest {
         this.extensionLength = extensionLength;
         this.trustedAuthoritiesList = trustedAuthoritiesList;
         this.trustedAuthoritiesLength = trustedAuthoritiesLength;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TrustedCaIndicationExtensionParserTest.generateData();
     }
 
     @Test

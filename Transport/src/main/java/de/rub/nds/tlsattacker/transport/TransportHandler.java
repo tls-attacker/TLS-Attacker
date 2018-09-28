@@ -12,13 +12,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected long timeout;
 
@@ -43,10 +42,19 @@ public abstract class TransportHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis() + timeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
-            while (inStream.available() != 0) {
-                int read = inStream.read();
-                stream.write(read);
+            if (inStream.available() != 0) {
+                while (inStream.available() != 0) {
+                    int read = inStream.read();
+                    stream.write(read);
+                }
+            } else {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException("Got Interrupted while waiting for Data");
+                }
             }
+
         }
         return stream.toByteArray();
     }

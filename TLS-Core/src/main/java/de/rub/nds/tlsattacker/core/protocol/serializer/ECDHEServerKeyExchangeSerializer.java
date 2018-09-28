@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMessage> extends
         ServerKeyExchangeSerializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final T msg;
 
@@ -35,7 +39,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ECDHEServerKeyExchangeMessage");
         writeCurveType(msg);
-        writeNamedCurve(msg);
+        writeNamedGroup(msg);
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
@@ -48,7 +52,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
 
     protected byte[] serializeEcDheParams() {
         writeCurveType(msg);
-        writeNamedCurve(msg);
+        writeNamedGroup(msg);
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
@@ -59,17 +63,17 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
      * byte[]
      */
     private void writeCurveType(T msg) {
-        appendByte(msg.getCurveType().getValue());
-        LOGGER.debug("CurveType: " + msg.getCurveType().getValue());
+        appendByte(msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
     }
 
     /**
      * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final
      * byte[]
      */
-    private void writeNamedCurve(T msg) {
-        appendBytes(msg.getNamedCurve().getValue());
-        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
+    private void writeNamedGroup(T msg) {
+        appendBytes(msg.getNamedGroup().getValue());
+        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }
 
     /**

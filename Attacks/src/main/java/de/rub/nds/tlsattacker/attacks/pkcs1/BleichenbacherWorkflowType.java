@@ -8,11 +8,30 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+/**
+ *
+ *
+ */
 public enum BleichenbacherWorkflowType {
 
+    /**
+     *
+     */
     CKE_CCS_FIN("Complete TLS protocol flow with CCS and Finished messages"),
+
+    /**
+     *
+     */
     CKE("TLS protocol flow with missing CCS and Finished messages"),
+
+    /**
+     *
+     */
     CKE_CCS("TLS protocol flow with missing Finished message"),
+
+    /**
+     *
+     */
     CKE_FIN("TLS protocol flow with missing CCS message");
 
     String description;
@@ -21,6 +40,10 @@ public enum BleichenbacherWorkflowType {
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescription() {
         return description;
     }
