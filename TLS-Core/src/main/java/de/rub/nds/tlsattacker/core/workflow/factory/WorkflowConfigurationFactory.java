@@ -99,7 +99,7 @@ public class WorkflowConfigurationFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
-    RunningModeType mode;
+    private RunningModeType mode;
 
     public WorkflowConfigurationFactory(Config config) {
         this.config = config;
