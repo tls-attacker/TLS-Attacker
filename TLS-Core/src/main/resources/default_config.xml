@@ -781,7 +781,7 @@
     <serverAuthzExtensionDataFormat>SAML_ASSERTION_URL</serverAuthzExtensionDataFormat>
     <clientCertificateTypeExtensionMessageState>true</clientCertificateTypeExtensionMessageState>
     <cachedInfoExtensionIsClientState>true</cachedInfoExtensionIsClientState>
-    <workflowTraceType>HANDSHAKE</workflowTraceType>
+    <workflowTraceType>DYNAMIC_HS</workflowTraceType>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addECPointFormatExtension>true</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
