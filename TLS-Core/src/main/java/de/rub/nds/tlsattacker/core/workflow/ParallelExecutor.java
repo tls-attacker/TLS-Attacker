@@ -120,7 +120,8 @@ public class ParallelExecutor {
             }
             if (hasError) {
                 LOGGER.error("Could not executre Workflow.", exception);
-                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions", exception);
+                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions",
+                        exception);
             }
         }
 
