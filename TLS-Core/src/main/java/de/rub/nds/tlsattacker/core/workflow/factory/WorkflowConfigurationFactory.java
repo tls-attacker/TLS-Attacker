@@ -78,11 +78,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -140,6 +142,8 @@ public class WorkflowConfigurationFactory {
                 return createFalseStartWorkflow();
             case RSA_SYNC_PROXY:
                 return createSyncProxyWorkflow();
+            case DYNAMIC_HS:
+                return createDynamicHandshakeWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -851,5 +855,20 @@ public class WorkflowConfigurationFactory {
             }
         }
         return workflowTrace;
+    }
+
+    private WorkflowTrace createDynamicHandshakeWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+        trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+        trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        return trace;
     }
 }

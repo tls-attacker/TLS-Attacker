@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 public enum WorkflowTraceType {
     FULL,
     HANDSHAKE,
+    DYNAMIC_HS,
     HELLO,
     SHORT_HELLO,
     RESUMPTION,
