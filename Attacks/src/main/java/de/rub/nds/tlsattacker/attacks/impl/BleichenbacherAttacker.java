@@ -60,6 +60,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private final ParallelExecutor executor;
 
+    private List<VectorFingerprintPair> fingerprintPairList;
+
     /**
      *
      * @param bleichenbacherConfig
@@ -68,6 +70,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
         executor = new ParallelExecutor(1, 3);
+        this.tlsConfig = getTlsConfig();
     }
 
     /**
@@ -80,6 +83,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         this.executor = executor;
+        this.tlsConfig = getTlsConfig();
     }
 
     /**
@@ -131,14 +135,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return false;
     }
 
-    private EqualityError isVulnerable(BleichenbacherWorkflowType bbWorkflowType, List<Pkcs1Vector> pkcs1Vectors) {
-        List<VectorFingerprintPair> bleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType, pkcs1Vectors);
-        if (bleichenbacherVectorMap.isEmpty()) {
+    public EqualityError isVulnerable(BleichenbacherWorkflowType bbWorkflowType, List<Pkcs1Vector> pkcs1Vectors) {
+        fingerprintPairList = getBleichenbacherMap(bbWorkflowType, pkcs1Vectors);
+        if (fingerprintPairList.isEmpty()) {
             LOGGER.warn("Could not extract Fingerprints");
             return null;
         }
-        printBleichenbacherVectormap(bleichenbacherVectorMap);
-        EqualityError error = getEqualityError(bleichenbacherVectorMap);
+        printBleichenbacherVectormap(fingerprintPairList);
+        EqualityError error = getEqualityError(fingerprintPairList);
         if (error != EqualityError.NONE) {
             CONSOLE.info("Found a side channel. Rescanning to confirm.");
             // Socket Equality Errors can be caused by problems on on the
@@ -147,7 +151,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType,
                     pkcs1Vectors);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
-            BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(bleichenbacherVectorMap, error);
+            BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
             BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
                     error2);
             if (mapOne.looksIdentical(mapTwo)) {
@@ -204,7 +208,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             List<Pkcs1Vector> pkcs1Vectors) {
         List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
-        List<StateVectorPair> stateVectorPairList = new LinkedList<StateVectorPair>();
+        List<StateVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
             WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
                     pkcs1Vector.getEncryptedValue());
@@ -324,5 +328,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      */
     public boolean isShakyScans() {
         return shakyScans;
+    }
+
+    public List<VectorFingerprintPair> getFingerprintPairList() {
+        return fingerprintPairList;
     }
 }
