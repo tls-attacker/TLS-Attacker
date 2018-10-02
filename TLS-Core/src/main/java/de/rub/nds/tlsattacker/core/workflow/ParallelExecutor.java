@@ -106,7 +106,7 @@ public class ParallelExecutor {
 
         @Override
         public void run() {
-
+            Exception exception = null;
             for (int i = 0; i < reexecutions + 1; i++) {
                 WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
                 try {
@@ -115,10 +115,13 @@ public class ParallelExecutor {
                 } catch (Exception E) {
                     LOGGER.debug("Encountered an exception during the execution", E);
                     hasError = true;
+                    exception = E;
                 }
             }
             if (hasError) {
-                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions");
+                LOGGER.error("Could not executre Workflow.", exception);
+                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions",
+                        exception);
             }
         }
 
