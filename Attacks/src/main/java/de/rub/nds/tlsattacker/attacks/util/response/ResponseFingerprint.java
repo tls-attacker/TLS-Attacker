@@ -157,7 +157,7 @@ public class ResponseFingerprint {
         }
         StringBuilder records = new StringBuilder();
         for (AbstractRecord someRecord : this.getRecordList()) {
-            records.append(someRecord.toString()).append(",");
+            records.append(someRecord.getClass().getSimpleName()).append(",");
         }
 
         return "ResponseFingerprint[" + "Exception=" + receivedTransportHandlerException + ", Encrypted="
