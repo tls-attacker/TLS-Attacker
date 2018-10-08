@@ -112,14 +112,16 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                 GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
                 if (!Arrays
                         .equals(keyBlob.getTransportParameters().getUkm(), msg.getComputations().getUkm().getValue())) {
-                    throw new CryptoException("Client UKM != Server UKM");
+                    LOGGER.warn("Client UKM != Server UKM");
                 }
 
                 SubjectPublicKeyInfo ephemeralKey = keyBlob.getTransportParameters().getEphemeralPublicKey();
                 PublicKey publicKey;
                 if (ephemeralKey != null) {
+                    LOGGER.debug("Ephemeral key is empty");
                     publicKey = new JcaPEMKeyConverter().getPublicKey(ephemeralKey);
                 } else {
+                    LOGGER.debug("Ephemeral key is not empty");
                     publicKey = generatePublicKey(chooser.getClientEcPublicKey());
                 }
 
@@ -132,7 +134,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                 byte[] pms = wrap(false, wrapped, sBoxName);
                 msg.getComputations().setPremasterSecret(pms);
             }
-        } catch (CryptoException | GeneralSecurityException | IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new WorkflowExecutionException("Could not prepare the key agreement!", e);
         }
     }

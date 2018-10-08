@@ -22,13 +22,10 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
@@ -57,9 +54,32 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private ProtocolVersion testedVersion;
 
+    private final ParallelExecutor executor;
+
+    private boolean shakyScans = false;
+
+    /**
+     *
+     * @param paddingOracleConfig
+     * @param baseConfig
+     */
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
         tlsConfig = getTlsConfig();
+        executor = new ParallelExecutor(1, 3);
+    }
+
+    /**
+     *
+     * @param paddingOracleConfig
+     * @param baseConfig
+     * @param executor
+     */
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig,
+            ParallelExecutor executor) {
+        super(paddingOracleConfig, baseConfig);
+        tlsConfig = getTlsConfig();
+        this.executor = executor;
     }
 
     @Override
@@ -67,19 +87,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public State executeTlsFlow(WorkflowTrace trace) {
-        tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
-        tlsConfig.setEarlyStop(true);
-        tlsConfig.setStopActionsAfterFatal(true);
-        tlsConfig.setQuickReceive(true);
-        tlsConfig.setWorkflowExecutorShouldClose(false);
-        State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
-        workflowExecutor.executeWorkflow();
-        return state;
-    }
-
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
@@ -92,22 +103,24 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         try {
             responseMap = createResponseMap();
             error = getEqualityError(responseMap);
-            if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
-                CONSOLE.info("Found a candidate for a Socket difference performing rescan");
+            if (error != EqualityError.NONE) {
+                CONSOLE.info("Found a side channel. Rescanning to confirm.");
                 HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
                 EqualityError errorTwo = getEqualityError(responseMapTwo);
                 if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
                     HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
                     EqualityError errorThree = getEqualityError(responseMapThree);
                     if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
-                        CONSOLE.info("Found an equality Error in a SocketState, performed to rescans and it still presisted");
+                        CONSOLE.info("Found an equality Error.");
                         CONSOLE.info("The Server is very likely vulnerabble");
                     } else {
                         CONSOLE.info("Rescan revealed a false positive");
+                        shakyScans = true;
                         return false;
                     }
                 } else {
                     CONSOLE.info("Rescan revealed a false positive");
+                    shakyScans = true;
                     return false;
                 }
             }
@@ -124,9 +137,16 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 }
             }
         }
+
         return error != EqualityError.NONE;
     }
 
+    /**
+     *
+     * @param responseMapOne
+     * @param responseMapTwo
+     * @return
+     */
     public boolean lookEqual(HashMap<Integer, List<ResponseFingerprint>> responseMapOne,
             HashMap<Integer, List<ResponseFingerprint>> responseMapTwo) {
         for (Integer key : responseMapOne.keySet()) {
@@ -145,31 +165,23 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
         PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
         List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
         boolean first = true;
         HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
+        List<State> stateList = new LinkedList<>();
         for (WorkflowTrace trace : traceList) {
-            State state;
-            try {
-                state = executeTlsFlow(trace);
-                testedSuite = state.getTlsContext().getSelectedCipherSuite();
-                testedVersion = state.getTlsContext().getSelectedProtocolVersion();
-            } catch (WorkflowExecutionException | ConfigurationException E) {
-                LOGGER.warn(E);
-                LOGGER.warn("TLS-Attacker failed execute a Handshake. Reexecuting");
-                try {
-                    trace.reset();
-                    state = executeTlsFlow(trace);
-                } catch (WorkflowExecutionException | ConfigurationException Ex) {
-                    LOGGER.warn(Ex);
-                    LOGGER.warn("Could not execute Handshake with the Server");
-                    throw new AttackFailedException(
-                            "Could not execute Handshake with the Server. Maybe it does not support CBC. You will probably need to debug this");
-                }
-
-            }
+            stateList.add(new State(tlsConfig, trace));
+        }
+        executor.bulkExecute(stateList);
+        for (State state : stateList) {
+            testedSuite = state.getTlsContext().getSelectedCipherSuite();
+            testedVersion = state.getTlsContext().getSelectedProtocolVersion();
             if (state.getWorkflowTrace().allActionsExecuted()) {
                 ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
                 clearConnections(state);
@@ -196,6 +208,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         return ((Record) lastRecord).getLength().getValue();
     }
 
+    /**
+     *
+     * @param responseMap
+     * @return
+     */
     public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
         for (List<ResponseFingerprint> list : responseMap.values()) {
             ResponseFingerprint fingerprint = list.get(0);
@@ -221,15 +238,35 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
         return responseMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public CipherSuite getTestedSuite() {
         return testedSuite;
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolVersion getTestedVersion() {
         return testedVersion;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isShakyScans() {
+        return shakyScans;
     }
 }

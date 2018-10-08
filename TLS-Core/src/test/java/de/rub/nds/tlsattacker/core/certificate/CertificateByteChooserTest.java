@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  *
- * @author robert
+ *
  */
 public class CertificateByteChooserTest {
 

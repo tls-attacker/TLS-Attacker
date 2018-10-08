@@ -40,6 +40,11 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public TLSPoodleAttacker(TLSPoodleCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -49,6 +54,10 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();

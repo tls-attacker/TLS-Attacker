@@ -18,9 +18,13 @@ import java.security.spec.DSAParameterSpec;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger p;
     private final BigInteger q;
@@ -44,6 +48,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else

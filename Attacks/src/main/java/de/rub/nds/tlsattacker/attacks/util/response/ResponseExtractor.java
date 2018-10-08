@@ -23,10 +23,20 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class ResponseExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param state
+     * @param action
+     * @return
+     */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
         boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();
         boolean receivedAnEncryptedAlert = didReceiveEncryptedAlert(action);
@@ -42,6 +52,11 @@ public class ResponseExtractor {
                 socketState);
     }
 
+    /**
+     *
+     * @param state
+     * @return
+     */
     public static ResponseFingerprint getFingerprint(State state) {
         TlsContext context = state.getTlsContext();
         ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();

@@ -18,7 +18,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+ * Merget <robert.merget@rub.de>
  */
 public class KeyShareCalculatorTest {
 

@@ -41,25 +41,4 @@ public class AcceptorCallableTest {
     public void shutDown() throws IOException {
         socket.close();
     }
-
-    /**
-     * Test of run method, of class AcceptorCallableTest.
-     *
-     * @throws java.io.IOException
-     * @throws java.util.concurrent.ExecutionException
-     * @throws java.lang.InterruptedException
-     */
-    @Test
-    public void testRun() throws IOException, InterruptedException, ExecutionException {
-        t.start();
-        Socket clientSocket = new Socket();
-        clientSocket.connect(new InetSocketAddress("localhost", socket.getLocalPort()));
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException ex) {
-        }
-        assertFalse(t.isAlive());
-        assertTrue(task.isDone());
-        assertNotNull(task.get());
-    }
 }

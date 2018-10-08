@@ -147,6 +147,19 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Returns the byte at the current pointer position
+     *
+     * @return byte at the current pointer position
+     */
+    protected byte peek() {
+        if (pointer < array.length) {
+            return array[pointer];
+        } else {
+            throw new ParserException("Cannot peek, would peek over the end ot the array");
+        }
+    }
+
+    /**
      * Returns the current position of the pointer in the array
      *
      * @return Current position of the pointer in the array

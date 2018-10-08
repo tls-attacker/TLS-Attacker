@@ -55,7 +55,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class CertificateUtils {
@@ -84,16 +83,20 @@ public class CertificateUtils {
 
     public static CustomPublicKey parseCustomPublicKey(PublicKey key) {
         if (key instanceof RSAPublicKey) {
+            LOGGER.trace("Found an RSA PublicKey");
             RSAPublicKey pubKey = (RSAPublicKey) key;
             return new CustomRsaPublicKey(pubKey.getPublicExponent(), pubKey.getModulus());
         } else if (key instanceof DSAPublicKey) {
+            LOGGER.trace("Found a DSA PublicKey");
             DSAPublicKey pubKey = (DSAPublicKey) key;
             return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(), pubKey.getParams()
                     .getG(), pubKey.getY());
         } else if (key instanceof DHPublicKey) {
+            LOGGER.trace("Found a DH PublicKey");
             DHPublicKey pubKey = (DHPublicKey) key;
             return new CustomDhPublicKey(pubKey.getParams().getP(), pubKey.getParams().getG(), pubKey.getY());
         } else if (key instanceof ECPublicKey) {
+            LOGGER.trace("Found an EC PublicKey");
             ECPublicKey pubKey = (ECPublicKey) key;
             return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), NamedGroup.NONE);
         } else {

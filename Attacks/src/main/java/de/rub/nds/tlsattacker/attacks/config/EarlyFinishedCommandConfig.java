@@ -16,8 +16,14 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 
+/**
+ *
+ */
 public class EarlyFinishedCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "early_finished";
 
     @ParametersDelegate
@@ -29,6 +35,10 @@ public class EarlyFinishedCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public EarlyFinishedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -41,11 +51,19 @@ public class EarlyFinishedCommandConfig extends AttackConfig {
         addDelegate(protocolVersionDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

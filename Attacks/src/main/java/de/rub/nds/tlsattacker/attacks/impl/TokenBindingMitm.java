@@ -23,10 +23,18 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public TokenBindingMitm(TokenBindingMitmCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
 
@@ -54,6 +62,10 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         exec.executeWorkflow();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not supported yet.");

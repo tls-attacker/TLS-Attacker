@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
@@ -33,10 +33,6 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-import org.bouncycastle.math.ec.ECPoint;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -90,18 +86,19 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
         }
-        if (cert != null) {
-            if (cert.getLength() == 0) {
-                LOGGER.warn("Received empty Certificate Message");
-            } else {
-                CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils
-                        .parsePublicKey(cert));
-                customPublicKey.adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
-            }
-        }
         if (message.getCertificateKeyPair() != null) {
+            LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+        } else if (cert != null) {
+            LOGGER.debug("No CertificatekeyPair found, creating new one");
+            CertificateKeyPair pair = new CertificateKeyPair(cert);
+            message.setCertificateKeyPair(pair);
+            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+
+        } else {
+            LOGGER.debug("Ceritificate not parseable - no adjustments");
         }
+
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
         }
@@ -115,8 +112,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         } catch (Exception E) {
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
-            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false));
+            LOGGER.warn(
+                    "Could not parse Certificate bytes into Certificate object:"
+                            + ArrayConverter.bytesToHexString(bytesToParse, false), E);
             LOGGER.debug(E);
             return null;
         }

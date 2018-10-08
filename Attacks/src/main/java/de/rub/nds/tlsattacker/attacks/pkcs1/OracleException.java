@@ -13,14 +13,26 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
  */
 public class OracleException extends RuntimeException {
 
+    /**
+     *
+     */
     public OracleException() {
 
     }
 
+    /**
+     *
+     * @param message
+     */
     public OracleException(String message) {
         super(message);
     }
 
+    /**
+     *
+     * @param message
+     * @param t
+     */
     public OracleException(String message, Throwable t) {
         super(message, t);
     }

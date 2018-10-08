@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -300,16 +301,12 @@ public class ReceiveMessageHelper {
 
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
-        try {
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             HttpsRequestHandler handler = new HttpsRequestHandler(context);
             return handler.parseMessage(protocolMessageBytes, pointer);
-        } catch (ParserException E) {
-            try {
-                HttpsResponseHandler handler = new HttpsResponseHandler(context);
-                return handler.parseMessage(protocolMessageBytes, pointer);
-            } catch (ParserException E2) {
-                throw new ParserException("Could not parse ApplicationData as HTTPS", E2);
-            }
+        } else {
+            HttpsResponseHandler handler = new HttpsResponseHandler(context);
+            return handler.parseMessage(protocolMessageBytes, pointer);
         }
     }
 

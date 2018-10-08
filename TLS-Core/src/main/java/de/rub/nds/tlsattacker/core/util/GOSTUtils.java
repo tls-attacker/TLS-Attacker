@@ -38,10 +38,12 @@ public class GOSTUtils {
     private static final Logger LOGGER = LogManager.getLogger(GOSTUtils.class.getName());
 
     public static BCECGOST3410PrivateKey generate01PrivateKey(GOSTCurve curve, BigInteger s) {
+        LOGGER.debug("Generating GOST01 private key for " + curve.name());
         return (BCECGOST3410PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410");
     }
 
     public static BCECGOST3410_2012PrivateKey generate12PrivateKey(GOSTCurve curve, BigInteger s) {
+        LOGGER.debug("Generating GOST12 private key for " + curve.name());
         return (BCECGOST3410_2012PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410-2012");
     }
 
@@ -57,10 +59,12 @@ public class GOSTUtils {
     }
 
     public static BCECGOST3410PublicKey generate01PublicKey(GOSTCurve curve, CustomECPoint point) {
+        LOGGER.debug("Generating GOST01 public key for " + curve.name());
         return (BCECGOST3410PublicKey) generateEcPublicKey(curve, point, "ECGOST3410");
     }
 
     public static BCECGOST3410_2012PublicKey generate12PublicKey(GOSTCurve curve, CustomECPoint point) {
+        LOGGER.debug("Generating GOST12 public key for " + curve.name());
         return (BCECGOST3410_2012PublicKey) generateEcPublicKey(curve, point, "ECGOST3410-2012");
     }
 

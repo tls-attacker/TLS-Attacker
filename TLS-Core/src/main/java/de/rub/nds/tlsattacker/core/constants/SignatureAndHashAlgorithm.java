@@ -149,7 +149,8 @@ public enum SignatureAndHashAlgorithm {
                 return algo;
             }
         }
-        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported");
+        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
+                + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {

@@ -17,9 +17,13 @@ import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger modulus;
 
@@ -41,9 +45,10 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DH public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDhGenerator(generator);
@@ -58,6 +63,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
@@ -89,7 +95,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDhGenerator(generator);
@@ -104,6 +110,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

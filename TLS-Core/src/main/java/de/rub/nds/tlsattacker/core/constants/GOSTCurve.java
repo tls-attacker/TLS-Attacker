@@ -38,6 +38,10 @@ public enum GOSTCurve {
         return name().replace('_', '-');
     }
 
+    public boolean is512bit2012() {
+        return name().contains("3410_12_512");
+    }
+
     public static GOSTCurve fromNamedSpec(ECNamedCurveSpec spec) {
         return fromString(spec.getName());
     }

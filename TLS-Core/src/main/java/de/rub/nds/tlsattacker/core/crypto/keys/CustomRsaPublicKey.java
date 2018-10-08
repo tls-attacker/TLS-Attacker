@@ -16,9 +16,13 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final BigInteger publicExponent;
 
@@ -36,9 +40,10 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting RSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientRSAPublicKey(publicExponent);
@@ -51,6 +56,7 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
@@ -82,7 +88,7 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientRSAPublicKey(publicExponent);
@@ -95,6 +101,7 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

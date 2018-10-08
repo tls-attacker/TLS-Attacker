@@ -164,7 +164,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
                 List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = SignatureAndHashAlgorithm
                         .getSignatureAndHashAlgorithms(signatureHashAlgorithms.getValue());
                 for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithms) {
-                    sb.append(sb.append(algo.name()));
+                    sb.append(algo.name());
                 }
             } catch (Exception E) {
                 LOGGER.debug(E);

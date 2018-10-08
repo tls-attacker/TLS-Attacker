@@ -27,6 +27,10 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -39,6 +43,14 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     private final BleichenbacherWorkflowType type;
 
+    /**
+     *
+     * @param pubKey
+     * @param config
+     * @param validResponseContent
+     * @param invalidResponseContent
+     * @param type
+     */
     public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config, ResponseFingerprint validResponseContent,
             ResponseFingerprint invalidResponseContent, BleichenbacherWorkflowType type) {
         this.publicKey = (RSAPublicKey) pubKey;

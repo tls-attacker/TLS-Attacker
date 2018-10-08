@@ -21,6 +21,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class ICEAttacker {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -41,14 +44,29 @@ public class ICEAttacker {
 
     private BigInteger result;
 
+    /**
+     *
+     * @param oracle
+     */
     public ICEAttacker(ECOracle oracle) {
         this(oracle, ServerType.NORMAL);
     }
 
+    /**
+     *
+     * @param oracle
+     * @param server
+     */
     public ICEAttacker(ECOracle oracle, ServerType server) {
         this(oracle, server, 0);
     }
 
+    /**
+     *
+     * @param oracle
+     * @param server
+     * @param oracleAdditionalEquations
+     */
     public ICEAttacker(ECOracle oracle, ServerType server, int oracleAdditionalEquations) {
         this.oracle = oracle;
         this.computer = new ECComputer();
@@ -57,6 +75,9 @@ public class ICEAttacker {
         this.oracleAdditionalEquations = oracleAdditionalEquations;
     }
 
+    /**
+     *
+     */
     public void attack() {
         long currentTime = System.currentTimeMillis();
         switch (server) {
@@ -251,6 +272,10 @@ public class ICEAttacker {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getResult() {
         return result;
     }
@@ -263,9 +288,19 @@ public class ICEAttacker {
         return prodModuli;
     }
 
+    /**
+     *
+     */
     public enum ServerType {
 
+        /**
+         *
+         */
         NORMAL,
+
+        /**
+         *
+         */
         ORACLE
     }
 }

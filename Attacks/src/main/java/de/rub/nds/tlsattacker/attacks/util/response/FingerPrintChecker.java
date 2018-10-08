@@ -15,8 +15,19 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
 
+/**
+ *
+ *
+ */
 public class FingerPrintChecker {
 
+    /**
+     *
+     * @param fingerprint1
+     * @param fingerprint2
+     * @param canDecryptAlerts
+     * @return
+     */
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {

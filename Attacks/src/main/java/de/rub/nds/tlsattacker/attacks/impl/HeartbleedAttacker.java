@@ -40,6 +40,11 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public HeartbleedAttacker(HeartbleedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -49,6 +54,10 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();

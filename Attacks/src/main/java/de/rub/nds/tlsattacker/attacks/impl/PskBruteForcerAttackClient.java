@@ -53,12 +53,20 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private GuessProvider guessProvider;
 
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
     public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -159,6 +167,10 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();

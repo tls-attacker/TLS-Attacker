@@ -42,6 +42,10 @@ public class TestECSunOracle extends ECOracle {
 
     private final ECComputer computer;
 
+    /**
+     *
+     * @param namedCurve
+     */
     public TestECSunOracle(String namedCurve) {
         curve = CurveFactory.getNamedCurve(namedCurve);
         BigInteger privateKey = new BigInteger(curve.getKeyBits() - 20, new Random());
@@ -75,6 +79,10 @@ public class TestECSunOracle extends ECOracle {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ECComputer getComputer() {
         return computer;
     }

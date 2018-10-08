@@ -22,8 +22,14 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class PoodleCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "poodle";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -34,6 +40,10 @@ public class PoodleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private CiphersuiteDelegate cipherSuiteDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public PoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -46,11 +56,19 @@ public class PoodleCommandConfig extends AttackConfig {
         addDelegate(cipherSuiteDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

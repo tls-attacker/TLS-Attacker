@@ -38,7 +38,7 @@ public class RecordAEADCipherTest {
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
         this.context = new TlsContext();
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));

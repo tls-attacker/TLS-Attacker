@@ -21,12 +21,24 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class FinishedResumptionPaddingGenerator extends PaddingVectorGenerator {
 
+    /**
+     *
+     * @param type
+     */
     public FinishedResumptionPaddingGenerator(PaddingRecordGeneratorType type) {
         super(type);
     }
 
+    /**
+     *
+     * @param config
+     * @return
+     */
     @Override
     public List<WorkflowTrace> getPaddingOracleVectors(Config config) {
         List<WorkflowTrace> traceList = new LinkedList<>();

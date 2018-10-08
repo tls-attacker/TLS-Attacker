@@ -22,8 +22,14 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 
+/**
+ *
+ */
 public class HeartbleedCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "heartbleed";
 
     @Parameter(names = "-payload_length", description = "Payload length sent in the client heartbeat message")
@@ -40,6 +46,10 @@ public class HeartbleedCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -54,19 +64,35 @@ public class HeartbleedCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getPayloadLength() {
         return payloadLength;
     }
 
+    /**
+     *
+     * @param payloadLength
+     */
     public void setPayloadLength(Integer payloadLength) {
         this.payloadLength = payloadLength;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
