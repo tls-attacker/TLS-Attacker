@@ -84,7 +84,8 @@ public final class RecordBlockCipher extends RecordCipher {
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
         try {
-            byte[] ciphertext = encryptCipher.encrypt(request.getInitialisationVector(), request.getPlainText());
+            byte[] expandedPlaintext = this.expandToBlocksize(request.getPlainText());
+            byte[] ciphertext = encryptCipher.encrypt(request.getInitialisationVector(), expandedPlaintext);
             if (!useExplicitIv) {
                 encryptCipher.setIv(extractNextEncryptIv(ciphertext));
             }
@@ -99,6 +100,17 @@ public final class RecordBlockCipher extends RecordCipher {
 
     private byte[] extractNextEncryptIv(byte[] ciphertext) {
         return Arrays.copyOfRange(ciphertext, ciphertext.length - encryptCipher.getBlocksize(), ciphertext.length);
+    }
+
+    private byte[] expandToBlocksize(byte[] plaintext) {
+        byte[] expandedPlaintext = plaintext;
+        int blocksize = this.encryptCipher.getBlocksize();
+        if(plaintext != null && blocksize > 0 && (plaintext.length % blocksize) != 0) {
+            int numberOfBlocks = (plaintext.length / blocksize) + 1;
+            expandedPlaintext = new byte[numberOfBlocks * blocksize];
+            System.arraycopy(plaintext, 0, expandedPlaintext, 0, plaintext.length);
+        }
+        return expandedPlaintext;
     }
 
     /**
