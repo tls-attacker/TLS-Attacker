@@ -105,7 +105,7 @@ public final class RecordBlockCipher extends RecordCipher {
     private byte[] expandToBlocksize(byte[] plaintext) {
         byte[] expandedPlaintext = plaintext;
         int blocksize = this.encryptCipher.getBlocksize();
-        if(plaintext != null && blocksize > 0 && (plaintext.length % blocksize) != 0) {
+        if (plaintext != null && blocksize > 0 && (plaintext.length % blocksize) != 0) {
             int numberOfBlocks = (plaintext.length / blocksize) + 1;
             expandedPlaintext = new byte[numberOfBlocks * blocksize];
             System.arraycopy(plaintext, 0, expandedPlaintext, 0, plaintext.length);
