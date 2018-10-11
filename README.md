@@ -79,8 +79,8 @@ Here we present some very simple examples on using TLS-Attacker.
 
 First, you need to start a TLS server (*please do not use public servers*). For example, you can use an OpenSSL test server:
 ```
-$ cd TLS-Attacker/resources
-$ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem
+$ cd TLS-Attacker/TLS-Core/src/main/resources/
+$ openssl s_server -key rsa1024_key.pem -cert rsa1024_cert.pem
 ```
 This command starts a TLS server on a port 4433 (please run the keygen.sh script if not done before).
 
@@ -97,6 +97,7 @@ $ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_
 
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
+$ cd TLS-Attacker/apps
 $ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```
 
