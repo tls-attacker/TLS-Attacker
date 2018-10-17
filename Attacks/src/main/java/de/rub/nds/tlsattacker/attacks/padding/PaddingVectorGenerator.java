@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding;
 
-import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.util.List;
 
 /**
@@ -21,38 +21,22 @@ public abstract class PaddingVectorGenerator {
 
     /**
      *
-     */
-    protected final PaddingRecordGenerator recordGenerator;
-
-    /**
-     *
-     * @param type
-     */
-    public PaddingVectorGenerator(PaddingRecordGeneratorType type) {
-        switch (type) {
-            case LONG:
-                recordGenerator = new LongRecordGenerator();
-                break;
-            case MEDIUM:
-                recordGenerator = new MediumRecordGenerator();
-                break;
-            case SHORT:
-                recordGenerator = new ShortRecordGenerator();
-                break;
-            case VERY_SHORT:
-                recordGenerator = new VeryShortRecordGenerator();
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown RecordGenerator Type");
-        }
-
-    }
-
-    /**
-     *
-     * @param config
+     * @param suite
+     * @param version
      * @return
      */
-    public abstract List<WorkflowTrace> getPaddingOracleVectors(Config config);
+    public abstract List<PaddingVector> getVectors(CipherSuite suite, ProtocolVersion version);
 
+    /**
+     *
+     * @param padding
+     * @return
+     */
+    protected final byte[] createPaddingBytes(int padding) {
+        byte[] paddingBytes = new byte[padding + 1];
+        for (int i = 0; i < paddingBytes.length; i++) {
+            paddingBytes[i] = (byte) padding;
+        }
+        return paddingBytes;
+    }
 }

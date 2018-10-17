@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
-import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGeneratorFactory;
+import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.StatePaddingOracleVectorPair;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
@@ -48,7 +52,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean groupRecords = true;
 
-    private HashMap<Integer, List<ResponseFingerprint>> responseMap;
+    private HashMap<Integer, List<VectorResponse>> responseMap;
 
     private CipherSuite testedSuite;
 
@@ -105,10 +109,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             error = getEqualityError(responseMap);
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found a side channel. Rescanning to confirm.");
-                HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
+                HashMap<Integer, List<VectorResponse>> responseMapTwo = createResponseMap();
                 EqualityError errorTwo = getEqualityError(responseMapTwo);
                 if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
-                    HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
+                    HashMap<Integer, List<VectorResponse>> responseMapThree = createResponseMap();
                     EqualityError errorThree = getEqualityError(responseMapThree);
                     if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
                         CONSOLE.info("Found an equality Error.");
@@ -130,10 +134,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         CONSOLE.info(EqualityErrorTranslator.translation(error, null, null));
         if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
-            for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
+            for (List<VectorResponse> fingerprintList : responseMap.values()) {
                 LOGGER.debug("----------------Map-----------------");
-                for (ResponseFingerprint fingerprint : fingerprintList) {
-                    LOGGER.debug(fingerprint.toString());
+                for (VectorResponse vectorResponse : fingerprintList) {
+                    LOGGER.debug(vectorResponse.toString());
                 }
             }
         }
@@ -147,17 +151,39 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      * @param responseMapTwo
      * @return
      */
-    public boolean lookEqual(HashMap<Integer, List<ResponseFingerprint>> responseMapOne,
-            HashMap<Integer, List<ResponseFingerprint>> responseMapTwo) {
+    public boolean lookEqual(HashMap<Integer, List<VectorResponse>> responseMapOne,
+            HashMap<Integer, List<VectorResponse>> responseMapTwo) {
+        if (responseMapOne.size() != responseMapTwo.size()) {
+            throw new PaddingOracleUnstableException(
+                    "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+        }
+        if (responseMapOne.keySet().size() != responseMapTwo.keySet().size()) {
+            throw new PaddingOracleUnstableException(
+                    "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+        }
         for (Integer key : responseMapOne.keySet()) {
-            List<ResponseFingerprint> listOne = responseMapOne.get(key);
-            List<ResponseFingerprint> listTwo = responseMapTwo.get(key);
+            List<VectorResponse> listOne = responseMapOne.get(key);
+            List<VectorResponse> listTwo = responseMapTwo.get(key);
             if (listOne.size() != listTwo.size()) {
                 throw new PaddingOracleUnstableException(
                         "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
             }
-            for (int i = 0; i < listOne.size(); i++) {
-                if (FingerPrintChecker.checkEquality(listOne.get(i), listTwo.get(i), false) != EqualityError.NONE) {
+            for (VectorResponse vectorResponseOne : listOne) {
+
+                // Find equivalent
+                VectorResponse equivalentVector = null;
+                for (VectorResponse vectorResponseTwo : listTwo) {
+                    if (vectorResponseOne.getPaddingVector().equals(vectorResponseTwo.getPaddingVector())) {
+                        equivalentVector = vectorResponseTwo;
+                        break;
+                    }
+                }
+                if (equivalentVector == null) {
+                    throw new PaddingOracleUnstableException("Could not find equivalent Vector - something went wrong");
+                }
+
+                if (FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
+                        equivalentVector.getFingerprint(), false) != EqualityError.NONE) {
                     return false;
                 }
             }
@@ -169,32 +195,36 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      *
      * @return
      */
-    public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
-        PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
-        List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
-        boolean first = true;
-        HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
+    public HashMap<Integer, List<VectorResponse>> createResponseMap() {
+
+        PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
+        PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
         List<State> stateList = new LinkedList<>();
-        for (WorkflowTrace trace : traceList) {
-            stateList.add(new State(tlsConfig, trace));
+        List<StatePaddingOracleVectorPair> stateVectorPairList = new LinkedList<>();
+        for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
+                tlsConfig.getDefaultHighestClientProtocolVersion())) {
+            State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
+            stateList.add(state);
+            stateVectorPairList.add(new StatePaddingOracleVectorPair(state, vector));
         }
+        HashMap<Integer, List<VectorResponse>> responseMap = new HashMap<>();
         executor.bulkExecute(stateList);
-        for (State state : stateList) {
-            testedSuite = state.getTlsContext().getSelectedCipherSuite();
-            testedVersion = state.getTlsContext().getSelectedProtocolVersion();
-            if (state.getWorkflowTrace().allActionsExecuted()) {
-                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
-                clearConnections(state);
-                int length = getLastRecordLength(state);
+        for (StatePaddingOracleVectorPair pair : stateVectorPairList) {
+            testedSuite = pair.getState().getTlsContext().getSelectedCipherSuite();
+            testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
+            if (pair.getState().getWorkflowTrace().allActionsExecuted()) {
+                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(pair.getState());
+                clearConnections(pair.getState());
+                int length = getLastRecordLength(pair.getState());
                 if (!groupRecords) {
                     length = 0;
                 }
-                List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
+                List<VectorResponse> responseFingerprintList = responseMap.get(length);
                 if (responseFingerprintList == null) {
                     responseFingerprintList = new LinkedList<>();
                     responseMap.put(length, responseFingerprintList);
                 }
-                responseFingerprintList.add(fingerprint);
+                responseFingerprintList.add(new VectorResponse(pair.getVector(), fingerprint));
             } else {
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
@@ -213,11 +243,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      * @param responseMap
      * @return
      */
-    public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
-        for (List<ResponseFingerprint> list : responseMap.values()) {
-            ResponseFingerprint fingerprint = list.get(0);
+    public EqualityError getEqualityError(HashMap<Integer, List<VectorResponse>> responseMap) {
+        for (List<VectorResponse> list : responseMap.values()) {
+            ResponseFingerprint fingerprint = list.get(0).getFingerprint();
             for (int i = 1; i < list.size(); i++) {
-                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
+                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i).getFingerprint(), true);
                 if (error != EqualityError.NONE) {
                     CONSOLE.info("Found an equality Error: " + error);
                     LOGGER.debug("Fingerprint1: " + fingerprint.toString());
@@ -242,7 +272,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      *
      * @return
      */
-    public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
+    public HashMap<Integer, List<VectorResponse>> getResponseMap() {
         return responseMap;
     }
 

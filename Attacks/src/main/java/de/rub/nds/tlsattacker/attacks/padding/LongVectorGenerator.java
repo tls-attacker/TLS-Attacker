@@ -8,14 +8,17 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding;
 
+import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.padding.vector.CleanAndPaddingVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedMacVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PlainPaddingVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ import java.util.List;
  *
  *
  */
-public class LongRecordGenerator extends PaddingRecordGenerator {
+public class LongVectorGenerator extends PaddingVectorGenerator {
 
     /**
      *
@@ -32,12 +35,12 @@ public class LongRecordGenerator extends PaddingRecordGenerator {
      * @return
      */
     @Override
-    public List<Record> getRecords(CipherSuite suite, ProtocolVersion version) {
-        List<Record> recordList = new LinkedList<>();
-        recordList.addAll(getMacFlippedRecords(suite, version));
-        recordList.addAll(getPaddingFlippedRecords(suite, version));
-        recordList.addAll(getPlainRecords(suite, version));
-        return recordList;
+    public List<PaddingVector> getVectors(CipherSuite suite, ProtocolVersion version) {
+        List<PaddingVector> vectorList = new LinkedList<>();
+        vectorList.addAll(getMacFlippedVectors(suite, version));
+        vectorList.addAll(getPaddingFlippedVectors(suite, version));
+        vectorList.addAll(getPlainVectors(suite, version));
+        return vectorList;
     }
 
     /**
@@ -72,8 +75,8 @@ public class LongRecordGenerator extends PaddingRecordGenerator {
         return map;
     }
 
-    private List<Record> getPaddingFlippedRecords(CipherSuite suite, ProtocolVersion version) {
-        List<Record> recordList = new LinkedList<>();
+    private List<PaddingVector> getPaddingFlippedVectors(CipherSuite suite, ProtocolVersion version) {
+        List<PaddingVector> vectorList = new LinkedList<>();
         int blockSize = AlgorithmResolver.getCipher(suite).getBlocksize();
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         for (int paddingLength = 0; paddingLength < 256; paddingLength++) {
@@ -81,53 +84,38 @@ public class LongRecordGenerator extends PaddingRecordGenerator {
             byte[] message = new byte[messageSize];
             byte[][] paddings = getModifiedPaddings(paddingLength);
             for (byte[] padding : paddings) {
-                Record r = new Record();
-                r.prepareComputations();
-                ModifiableByteArray modPadding = new ModifiableByteArray();
-                modPadding.setModification(new ByteArrayExplicitValueModification(padding));
-                r.getComputations().setPadding(modPadding);
-                ModifiableByteArray modMessage = new ModifiableByteArray();
-                modMessage.setModification(new ByteArrayExplicitValueModification(message));
-                r.setCleanProtocolMessageBytes(message);
-                recordList.add(r);
+                VariableModification paddingModification = new ByteArrayExplicitValueModification(padding);
+                VariableModification messageModification = new ByteArrayExplicitValueModification(message);
+                vectorList.add(new CleanAndPaddingVector(paddingModification, messageModification));
             }
         }
-        return recordList;
+        return vectorList;
     }
 
-    private List<Record> getMacFlippedRecords(CipherSuite suite, ProtocolVersion version) {
-        List<Record> recordList = new LinkedList<>();
+    private List<PaddingVector> getMacFlippedVectors(CipherSuite suite, ProtocolVersion version) {
+        List<PaddingVector> recordList = new LinkedList<>();
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         List<ByteArrayXorModification> allBitFlipModifications = getAllBitFlipModifications(macSize);
         for (ByteArrayXorModification modification : allBitFlipModifications) {
-            Record r = new Record();
-            r.prepareComputations();
-            ModifiableByteArray modMac = new ModifiableByteArray();
-            modMac.setModification(modification);
-            r.getComputations().setMac(modMac);
-            recordList.add(r);
+            recordList.add(new ModifiedMacVector(modification));
         }
         return recordList;
     }
 
-    private List<Record> getPlainRecords(CipherSuite suite, ProtocolVersion version) {
-        List<Record> recordList = new LinkedList<>();
+    private List<PaddingVector> getPlainVectors(CipherSuite suite, ProtocolVersion version) {
+        List<PaddingVector> vectorList = new LinkedList<>();
         int blockSize = AlgorithmResolver.getCipher(suite).getBlocksize();
         for (int paddingLength = 0; paddingLength < 256; paddingLength++) {
             int messageSize = blockSize - (paddingLength % blockSize);
             byte[] message = new byte[messageSize];
             byte[][] paddings = getModifiedPaddings(paddingLength);
             for (byte[] padding : paddings) {
-                Record r = new Record();
-                r.prepareComputations();
                 byte[] plain = ArrayConverter.concatenate(message, padding);
-                ModifiableByteArray modPlain = new ModifiableByteArray();
-                modPlain.setModification(new ByteArrayExplicitValueModification(plain));
-                r.getComputations().setPlainRecordBytes(modPlain);
-                recordList.add(r);
+                VariableModification plainModification = new ByteArrayExplicitValueModification(plain);
+                vectorList.add(new PlainPaddingVector(plainModification));
             }
         }
-        return recordList;
+        return vectorList;
     }
 
     /**

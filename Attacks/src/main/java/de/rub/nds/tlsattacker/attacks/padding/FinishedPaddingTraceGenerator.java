@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -24,13 +25,13 @@ import java.util.List;
 /**
  *
  */
-public class FinishedPaddingGenerator extends PaddingVectorGenerator {
+public class FinishedPaddingTraceGenerator extends PaddingTraceGenerator {
 
     /**
      *
      * @param type
      */
-    public FinishedPaddingGenerator(PaddingRecordGeneratorType type) {
+    public FinishedPaddingTraceGenerator(PaddingRecordGeneratorType type) {
         super(type);
     }
 
@@ -40,23 +41,17 @@ public class FinishedPaddingGenerator extends PaddingVectorGenerator {
      * @return
      */
     @Override
-    public List<WorkflowTrace> getPaddingOracleVectors(Config config) {
-        List<WorkflowTrace> traceList = new LinkedList<>();
-        for (Record record : recordGenerator.getRecords(config.getDefaultSelectedCipherSuite(),
-                config.getDefaultSelectedProtocolVersion())) {
-            WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(
-                    WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-            trace.removeTlsAction(trace.getTlsActions().size() - 1);
-            SendAction sendAction = (SendAction) trace.getLastSendingAction();
-            LinkedList<AbstractRecord> recordList = new LinkedList<>();
-            recordList.add(new Record(config));
-            recordList.add(new Record(config));
-            recordList.add(record);
-            sendAction.setRecords(recordList);
-            trace.addTlsAction(new GenericReceiveAction());
-            traceList.add(trace);
-        }
-        return traceList;
+    public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
+        trace.removeTlsAction(trace.getTlsActions().size() - 1);
+        SendAction sendAction = (SendAction) trace.getLastSendingAction();
+        LinkedList<AbstractRecord> recordList = new LinkedList<>();
+        recordList.add(new Record(config));
+        recordList.add(new Record(config));
+        recordList.add(vector.createRecord());
+        sendAction.setRecords(recordList);
+        trace.addTlsAction(new GenericReceiveAction());
+        return trace;
     }
-
 }
