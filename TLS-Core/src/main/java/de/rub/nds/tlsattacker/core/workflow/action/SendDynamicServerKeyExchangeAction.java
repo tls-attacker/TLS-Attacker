@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -52,7 +51,7 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         ServerKeyExchangeMessage msg = new WorkflowConfigurationFactory(state.getConfig())
                 .createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser()
                         .getSelectedCipherSuite()));
-        if (msg!=null) {
+        if (msg != null) {
             messages.add(msg);
         }
         String sending = getReadableString(messages);

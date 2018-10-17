@@ -796,7 +796,7 @@ public class WorkflowConfigurationFactory {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ServerKeyExchangeMessage message = createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         System.out.println(cs);
-        if (message!=null) {
+        if (message != null) {
             messages.add(message);
         }
     }
