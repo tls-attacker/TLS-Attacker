@@ -62,4 +62,10 @@ public class ModifiedPaddingVector extends PaddingVector {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ModifiedPaddingVector{" + "modification=" + modification + '}';
+    }
+
 }

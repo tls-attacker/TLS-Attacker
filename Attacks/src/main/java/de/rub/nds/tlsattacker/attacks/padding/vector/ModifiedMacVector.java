@@ -62,4 +62,9 @@ public class ModifiedMacVector extends PaddingVector {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ModifiedMacVector{" + "modification=" + modification + '}';
+    }
 }

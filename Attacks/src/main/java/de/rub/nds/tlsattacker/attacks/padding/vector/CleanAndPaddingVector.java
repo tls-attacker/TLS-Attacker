@@ -76,4 +76,9 @@ public class CleanAndPaddingVector extends PaddingVector {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "CleanAndPaddingVector{" + "paddingModification=" + paddingModification + ", cleanModification="
+                + cleanModification + '}';
+    }
 }

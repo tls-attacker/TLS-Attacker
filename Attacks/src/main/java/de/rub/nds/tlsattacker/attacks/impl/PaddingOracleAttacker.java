@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.util.HashMap;
@@ -179,7 +178,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     }
                 }
                 if (equivalentVector == null) {
-                    throw new PaddingOracleUnstableException("Could not find equivalent Vector - something went wrong");
+                    throw new PaddingOracleUnstableException(
+                            "Could not find equivalent Vector - something went wrong. "
+                                    + vectorResponseOne.getPaddingVector().toString());
                 }
 
                 if (FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),

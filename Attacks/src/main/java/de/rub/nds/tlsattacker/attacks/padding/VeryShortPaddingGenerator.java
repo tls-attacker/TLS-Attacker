@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedMacVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedPaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PlainPaddingVector;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;

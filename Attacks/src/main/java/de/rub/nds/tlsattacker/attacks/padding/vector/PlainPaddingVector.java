@@ -63,4 +63,8 @@ public class PlainPaddingVector extends PaddingVector {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "PlainPaddingVector{" + "modification=" + modification + '}';
+    }
 }
