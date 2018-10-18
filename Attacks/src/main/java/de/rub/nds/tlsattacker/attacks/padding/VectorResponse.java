@@ -29,4 +29,9 @@ public class VectorResponse {
     public ResponseFingerprint getFingerprint() {
         return fingerprint;
     }
+
+    @Override
+    public String toString() {
+        return "VectorResponse{" + "fingerprint=" + fingerprint + ", paddingVector=" + paddingVector + '}';
+    }
 }
