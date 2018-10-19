@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
@@ -16,4 +18,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 public abstract class PaddingVector {
 
     public abstract Record createRecord();
+
+    public abstract int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength);
+
 }

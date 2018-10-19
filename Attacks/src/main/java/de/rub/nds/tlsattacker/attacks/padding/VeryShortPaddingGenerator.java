@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding;
 
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
 import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedMacVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedPaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
@@ -57,7 +59,8 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
     }
 
     private PaddingVector createVectorWithPlainData(byte[] plain) {
-        return new PlainPaddingVector(ByteArrayModificationFactory.explicitValue(plain));
+        return new PlainPaddingVector(
+                (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 
     private List<PaddingVector> createVectorWithModifiedPadding() {
@@ -68,7 +71,8 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
 
     private List<PaddingVector> createVectorWithModifiedMac() {
         List<PaddingVector> vectors = new LinkedList<>();
-        vectors.add(new ModifiedMacVector(ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0)));
+        vectors.add(new ModifiedMacVector((ByteArrayXorModification) ByteArrayModificationFactory.xor(new byte[] { 1,
+                1, 1 }, 0)));
         return vectors;
     }
 }

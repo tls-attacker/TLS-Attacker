@@ -111,7 +111,7 @@ public class LongVectorGenerator extends PaddingVectorGenerator {
             byte[][] paddings = getModifiedPaddings(paddingLength);
             for (byte[] padding : paddings) {
                 byte[] plain = ArrayConverter.concatenate(message, padding);
-                VariableModification plainModification = new ByteArrayExplicitValueModification(plain);
+                ByteArrayExplicitValueModification plainModification = new ByteArrayExplicitValueModification(plain);
                 vectorList.add(new PlainPaddingVector(plainModification));
             }
         }

@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.attacks.padding.vector;
 
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Objects;
 
@@ -80,5 +83,20 @@ public class CleanAndPaddingVector extends PaddingVector {
     public String toString() {
         return "CleanAndPaddingVector{" + "paddingModification=" + paddingModification + ", cleanModification="
                 + cleanModification + '}';
+    }
+
+    @Override
+    public int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength) {
+        Record r = createRecord();
+        r.setCleanProtocolMessageBytes(new byte[appDataLength]);
+        int completeLength = r.getCleanProtocolMessageBytes().getValue().length;
+        if (testedVersion == ProtocolVersion.TLS11 || testedVersion == testedVersion.TLS12) {
+            completeLength += AlgorithmResolver.getCipher(testedSuite).getBlocksize();
+        }
+        completeLength += AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
+        int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
+                - (appDataLength % AlgorithmResolver.getCipher(testedSuite).getBlocksize());
+        completeLength += paddingLength;
+        return completeLength;
     }
 }

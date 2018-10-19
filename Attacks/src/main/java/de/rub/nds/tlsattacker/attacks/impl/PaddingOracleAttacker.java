@@ -33,8 +33,10 @@ import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +53,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean groupRecords = true;
 
-    private HashMap<Integer, List<VectorResponse>> responseMap;
+    private List<VectorResponse> vectorResponseList;
 
     private CipherSuite testedSuite;
 
@@ -104,16 +106,16 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         EqualityError error;
 
         try {
-            responseMap = createResponseMap();
-            error = getEqualityError(responseMap);
+            vectorResponseList = createVectorResponseList();
+            error = getEqualityError(vectorResponseList);
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found a side channel. Rescanning to confirm.");
-                HashMap<Integer, List<VectorResponse>> responseMapTwo = createResponseMap();
+                List<VectorResponse> responseMapTwo = createVectorResponseList();
                 EqualityError errorTwo = getEqualityError(responseMapTwo);
-                if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
-                    HashMap<Integer, List<VectorResponse>> responseMapThree = createResponseMap();
+                if (error == errorTwo && lookEqual(vectorResponseList, responseMapTwo)) {
+                    List<VectorResponse> responseMapThree = createVectorResponseList();
                     EqualityError errorThree = getEqualityError(responseMapThree);
-                    if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
+                    if (error == errorThree && lookEqual(vectorResponseList, responseMapThree)) {
                         CONSOLE.info("Found an equality Error.");
                         CONSOLE.info("The Server is very likely vulnerabble");
                     } else {
@@ -133,11 +135,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         CONSOLE.info(EqualityErrorTranslator.translation(error, null, null));
         if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
-            for (List<VectorResponse> fingerprintList : responseMap.values()) {
-                LOGGER.debug("----------------Map-----------------");
-                for (VectorResponse vectorResponse : fingerprintList) {
-                    LOGGER.debug(vectorResponse.toString());
-                }
+            LOGGER.debug("-------------(Not Grouped)-----------------");
+            for (VectorResponse vectorResponse : vectorResponseList) {
+                LOGGER.debug(vectorResponse.toString());
             }
         }
 
@@ -146,47 +146,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     /**
      *
-     * @param responseMapOne
-     * @param responseMapTwo
+     * @param responseVectorListOne
+     * @param responseVectorListTwo
      * @return
      */
-    public boolean lookEqual(HashMap<Integer, List<VectorResponse>> responseMapOne,
-            HashMap<Integer, List<VectorResponse>> responseMapTwo) {
-        if (responseMapOne.size() != responseMapTwo.size()) {
+    public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
+        if (responseVectorListOne.size() != responseVectorListTwo.size()) {
             throw new PaddingOracleUnstableException(
                     "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
         }
-        if (responseMapOne.keySet().size() != responseMapTwo.keySet().size()) {
-            throw new PaddingOracleUnstableException(
-                    "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
-        }
-        for (Integer key : responseMapOne.keySet()) {
-            List<VectorResponse> listOne = responseMapOne.get(key);
-            List<VectorResponse> listTwo = responseMapTwo.get(key);
-            if (listOne.size() != listTwo.size()) {
-                throw new PaddingOracleUnstableException(
-                        "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+
+        for (VectorResponse vectorResponseOne : responseVectorListOne) {
+
+            // Find equivalent
+            VectorResponse equivalentVector = null;
+            for (VectorResponse vectorResponseTwo : responseVectorListTwo) {
+                if (vectorResponseOne.getPaddingVector().equals(vectorResponseTwo.getPaddingVector())) {
+                    equivalentVector = vectorResponseTwo;
+                    break;
+                }
             }
-            for (VectorResponse vectorResponseOne : listOne) {
+            if (equivalentVector == null) {
+                throw new PaddingOracleUnstableException("Could not find equivalent Vector - something went wrong. "
+                        + vectorResponseOne.getPaddingVector().toString());
+            }
 
-                // Find equivalent
-                VectorResponse equivalentVector = null;
-                for (VectorResponse vectorResponseTwo : listTwo) {
-                    if (vectorResponseOne.getPaddingVector().equals(vectorResponseTwo.getPaddingVector())) {
-                        equivalentVector = vectorResponseTwo;
-                        break;
-                    }
-                }
-                if (equivalentVector == null) {
-                    throw new PaddingOracleUnstableException(
-                            "Could not find equivalent Vector - something went wrong. "
-                                    + vectorResponseOne.getPaddingVector().toString());
-                }
-
-                if (FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
-                        equivalentVector.getFingerprint(), false) != EqualityError.NONE) {
-                    return false;
-                }
+            if (FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(), equivalentVector.getFingerprint(),
+                    false) != EqualityError.NONE) {
+                return false;
             }
         }
         return true;
@@ -196,7 +183,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      *
      * @return
      */
-    public HashMap<Integer, List<VectorResponse>> createResponseMap() {
+    public List<VectorResponse> createVectorResponseList() {
 
         PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
         PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
@@ -208,53 +195,54 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             stateList.add(state);
             stateVectorPairList.add(new StatePaddingOracleVectorPair(state, vector));
         }
-        HashMap<Integer, List<VectorResponse>> responseMap = new HashMap<>();
+        List<VectorResponse> tempResponseVectorList = new LinkedList<>();
         executor.bulkExecute(stateList);
         for (StatePaddingOracleVectorPair pair : stateVectorPairList) {
-            testedSuite = pair.getState().getTlsContext().getSelectedCipherSuite();
-            testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
+            ResponseFingerprint fingerprint = null;
             if (pair.getState().getWorkflowTrace().allActionsExecuted()) {
-                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(pair.getState());
+                testedSuite = pair.getState().getTlsContext().getSelectedCipherSuite();
+                testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
+                if (testedSuite == null || testedVersion == null) {
+                    // Did not receive ClientHello?!
+                }
+                fingerprint = ResponseExtractor.getFingerprint(pair.getState());
                 clearConnections(pair.getState());
-                int length = getLastRecordLength(pair.getState());
-                if (!groupRecords) {
-                    length = 0;
-                }
-                List<VectorResponse> responseFingerprintList = responseMap.get(length);
-                if (responseFingerprintList == null) {
-                    responseFingerprintList = new LinkedList<>();
-                    responseMap.put(length, responseFingerprintList);
-                }
-                responseFingerprintList.add(new VectorResponse(pair.getVector(), fingerprint));
+                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
+                        testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
             } else {
+                shakyScans = true;
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
         }
-        return responseMap;
-    }
-
-    private int getLastRecordLength(State state) {
-        AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
-                .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
-        return ((Record) lastRecord).getLength().getValue();
+        return tempResponseVectorList;
     }
 
     /**
      *
-     * @param responseMap
+     * @param responseVectorList
      * @return
      */
-    public EqualityError getEqualityError(HashMap<Integer, List<VectorResponse>> responseMap) {
-        for (List<VectorResponse> list : responseMap.values()) {
-            ResponseFingerprint fingerprint = list.get(0).getFingerprint();
-            for (int i = 1; i < list.size(); i++) {
-                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i).getFingerprint(), true);
-                if (error != EqualityError.NONE) {
-                    CONSOLE.info("Found an equality Error: " + error);
-                    LOGGER.debug("Fingerprint1: " + fingerprint.toString());
-                    LOGGER.debug("Fingerprint2: " + list.get(i).toString());
-
-                    return error;
+    public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
+        // TODO this comparision does too many equivalnce tests but is a easier
+        // to read?
+        for (VectorResponse responseOne : responseVectorList) {
+            for (VectorResponse responseTwo : responseVectorList) {
+                boolean shouldCompare = true;
+                if (responseOne.getLength() == null || responseTwo.getLength() == null) {
+                    shouldCompare = false;
+                }
+                if (groupRecords && shouldCompare) {
+                    shouldCompare &= (responseOne.getLength() == responseTwo.getLength());
+                }
+                if (shouldCompare) {
+                    EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
+                            responseTwo.getFingerprint(), true);
+                    if (error != EqualityError.NONE) {
+                        CONSOLE.info("Found an equality Error: " + error);
+                        LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
+                        LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
+                        return error;
+                    }
                 }
             }
         }
@@ -273,8 +261,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      *
      * @return
      */
-    public HashMap<Integer, List<VectorResponse>> getResponseMap() {
-        return responseMap;
+    public List<VectorResponse> getResponseMap() {
+        return vectorResponseList;
     }
 
     /**
