@@ -77,9 +77,7 @@ public class PlainPaddingVector extends PaddingVector {
         Record r = createRecord();
         r.getComputations().setPlainRecordBytes(new byte[appDataLength]);
         int size = r.getComputations().getPlainRecordBytes().getValue().length;
-        if (testedVersion == ProtocolVersion.TLS11 || testedVersion == testedVersion.TLS12) {
-            size += AlgorithmResolver.getCipher(testedSuite).getBlocksize();
-        }
+
         return size;
     }
 }

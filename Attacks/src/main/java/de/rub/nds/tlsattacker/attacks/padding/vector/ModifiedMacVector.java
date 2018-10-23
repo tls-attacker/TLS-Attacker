@@ -75,12 +75,10 @@ public class ModifiedMacVector extends PaddingVector {
     @Override
     public int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength) {
         int completeLength = appDataLength;
-        if (testedVersion == ProtocolVersion.TLS11 || testedVersion == testedVersion.TLS12) {
-            completeLength += AlgorithmResolver.getCipher(testedSuite).getBlocksize();
-        }
+
         completeLength += AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
         int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
-                - (appDataLength % AlgorithmResolver.getCipher(testedSuite).getBlocksize());
+                - (completeLength % AlgorithmResolver.getCipher(testedSuite).getBlocksize());
         completeLength += paddingLength;
         return completeLength;
     }

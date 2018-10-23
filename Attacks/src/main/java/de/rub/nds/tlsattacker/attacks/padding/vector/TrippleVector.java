@@ -19,14 +19,17 @@ import java.util.Objects;
 /**
  *
  */
-public class CleanAndPaddingVector extends PaddingVector {
+public class TrippleVector extends PaddingVector {
 
-    private final VariableModification paddingModification;
     private final VariableModification cleanModification;
+    private final VariableModification macModification;
+    private final VariableModification paddingModification;
 
-    public CleanAndPaddingVector(VariableModification paddingModification, VariableModification cleanModification) {
-        this.paddingModification = paddingModification;
+    public TrippleVector(VariableModification cleanModification, VariableModification macModification,
+            VariableModification paddingModification) {
         this.cleanModification = cleanModification;
+        this.macModification = macModification;
+        this.paddingModification = paddingModification;
     }
 
     public VariableModification getPaddingModification() {
@@ -47,6 +50,9 @@ public class CleanAndPaddingVector extends PaddingVector {
         byteArray = new ModifiableByteArray();
         byteArray.setModification(cleanModification);
         r.setCleanProtocolMessageBytes(byteArray);
+        byteArray = new ModifiableByteArray();
+        byteArray.setModification(macModification);
+        r.getComputations().setMac(byteArray);
         return r;
     }
 
@@ -69,7 +75,7 @@ public class CleanAndPaddingVector extends PaddingVector {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CleanAndPaddingVector other = (CleanAndPaddingVector) obj;
+        final TrippleVector other = (TrippleVector) obj;
         if (!Objects.equals(this.paddingModification, other.paddingModification)) {
             return false;
         }
@@ -81,8 +87,8 @@ public class CleanAndPaddingVector extends PaddingVector {
 
     @Override
     public String toString() {
-        return "CleanAndPaddingVector{" + "paddingModification=" + paddingModification + ", cleanModification="
-                + cleanModification + '}';
+        return "TrippleVector{" + "cleanModification=" + cleanModification + ", macModification=" + macModification
+                + ", paddingModification=" + paddingModification + '}';
     }
 
     @Override
@@ -90,11 +96,15 @@ public class CleanAndPaddingVector extends PaddingVector {
         Record r = createRecord();
         r.setCleanProtocolMessageBytes(new byte[appDataLength]);
         int completeLength = r.getCleanProtocolMessageBytes().getValue().length;
-        completeLength += AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
+        int macLength = AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
+
+        r.getComputations().setMac(new byte[macLength]);
+        completeLength += r.getComputations().getMac().getValue().length;
         int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
                 - (completeLength % AlgorithmResolver.getCipher(testedSuite).getBlocksize());
+        r.getComputations().setPadding(new byte[paddingLength]);
+        paddingLength = r.getComputations().getPadding().getValue().length;
         completeLength += paddingLength;
-
         return completeLength;
     }
 }
