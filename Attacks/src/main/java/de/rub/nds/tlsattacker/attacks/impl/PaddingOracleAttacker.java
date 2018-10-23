@@ -26,17 +26,12 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -231,10 +226,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 if (responseOne.getLength() == null || responseTwo.getLength() == null) {
                     shouldCompare = false;
                 }
-                if (groupRecords && shouldCompare) {
-                    shouldCompare &= (responseOne.getLength() == responseTwo.getLength());
-                }
-                if (shouldCompare) {
+                if (shouldCompare || !groupRecords) {
                     EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
                             responseTwo.getFingerprint(), true);
                     if (error != EqualityError.NONE) {
