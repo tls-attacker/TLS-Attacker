@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,7 +19,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
-public abstract class AliasedConnection extends Connection implements Aliasable, Serializable {
+public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;

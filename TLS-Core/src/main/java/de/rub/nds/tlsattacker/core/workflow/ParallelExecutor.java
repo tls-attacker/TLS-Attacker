@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
@@ -45,12 +46,28 @@ public class ParallelExecutor {
         }
     }
 
+    public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
+        executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>(),
+                factory);
+        this.reexecutions = reexecutions;
+        this.size = size;
+        if (reexecutions < 0) {
+            throw new IllegalArgumentException("Reexecutions is below zero");
+        }
+    }
+
     public Future addTask(State state) {
+        if (executorService.isShutdown()) {
+            throw new RuntimeException("Cannot add Tasks to already shutdown executor");
+        }
         Future<?> submit = executorService.submit(new StateThreadExecutor(state, reexecutions));
         return submit;
     }
 
     public void bulkExecute(List<State> stateList) {
+        if (executorService.isShutdown()) {
+            throw new RuntimeException("Cannot add Tasks to already shutdown executor");
+        }
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addTask(state));
@@ -73,6 +90,10 @@ public class ParallelExecutor {
         return size;
     }
 
+    public void shutdown() {
+        executorService.shutdown();
+    }
+
     private class StateThreadExecutor implements Runnable {
 
         private final State state;
@@ -85,19 +106,27 @@ public class ParallelExecutor {
 
         @Override
         public void run() {
-
+            Exception exception = null;
+            long sleepTime = 0;
             for (int i = 0; i < reexecutions + 1; i++) {
                 WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
                 try {
+                    if (sleepTime > 0) {
+                        Thread.sleep(sleepTime);
+                    }
                     executor.executeWorkflow();
                     break;
                 } catch (Exception E) {
                     LOGGER.debug("Encountered an exception during the execution", E);
                     hasError = true;
+                    sleepTime += 1000;
+                    exception = E;
                 }
             }
             if (hasError) {
-                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions");
+                LOGGER.error("Could not executre Workflow.", exception);
+                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions",
+                        exception);
             }
         }
 
