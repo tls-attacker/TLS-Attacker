@@ -210,13 +210,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
         }
-        System.out.println("Record Responses");
-        for (VectorResponse vectorResponse : tempResponseVectorList) {
-            System.out.println(vectorResponse.toString());
-            for (AbstractRecord r : vectorResponse.getFingerprint().getRecordList()) {
-                System.out.println(r);
-            }
-        }
         return tempResponseVectorList;
     }
 
