@@ -151,21 +151,21 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         // invalid mac
         byte[] padding = createPaddingBytes(paddingValue);
         vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                new ByteArrayXorModification(new byte[]{0x01}, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[0] ^= 0x80; // flip first padding byte highest bit
         vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                new ByteArrayXorModification(new byte[]{0x01}, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[paddingValue / 2] ^= 0x8; // flip middle padding byte
         // middle bit
         vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                new ByteArrayXorModification(new byte[]{0x01}, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[padding.length - 1] ^= 0x01; // flip last padding lowest first
         // bit
         vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                new ByteArrayXorModification(new byte[]{0x01}, 0), new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }
 
