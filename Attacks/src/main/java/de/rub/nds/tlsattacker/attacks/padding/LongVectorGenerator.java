@@ -86,7 +86,7 @@ public class LongVectorGenerator extends PaddingVectorGenerator {
             for (byte[] padding : paddings) {
                 VariableModification paddingModification = new ByteArrayExplicitValueModification(padding);
                 VariableModification messageModification = new ByteArrayExplicitValueModification(message);
-                vectorList.add(new CleanAndPaddingVector(paddingModification, messageModification));
+                vectorList.add(new CleanAndPaddingVector("FlippedPadding " + ArrayConverter.bytesToHexString(padding) + "-" + paddingLength, paddingModification, messageModification));
             }
         }
         return vectorList;
@@ -97,7 +97,7 @@ public class LongVectorGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         List<ByteArrayXorModification> allBitFlipModifications = getAllBitFlipModifications(macSize);
         for (ByteArrayXorModification modification : allBitFlipModifications) {
-            recordList.add(new ModifiedMacVector(modification));
+            recordList.add(new ModifiedMacVector("MacFlipped " + modification.getStartPosition() + "-" + ArrayConverter.bytesToHexString(modification.getXor()), modification));
         }
         return recordList;
     }
@@ -112,7 +112,7 @@ public class LongVectorGenerator extends PaddingVectorGenerator {
             for (byte[] padding : paddings) {
                 byte[] plain = ArrayConverter.concatenate(message, padding);
                 ByteArrayExplicitValueModification plainModification = new ByteArrayExplicitValueModification(plain);
-                vectorList.add(new PlainPaddingVector(plainModification));
+                vectorList.add(new PlainPaddingVector("Plain "+ paddingLength+"-"+ArrayConverter.bytesToHexString(plain),plainModification));
             }
         }
         return vectorList;
@@ -130,7 +130,7 @@ public class LongVectorGenerator extends PaddingVectorGenerator {
         List<ByteArrayXorModification> modificationList = new LinkedList<>();
         for (int i = 0; i < targetLength; i++) {
             for (int j = 0; j < 8; j++) {
-                modificationList.add(new ByteArrayXorModification(new byte[] { bitflipArray[j] }, i));
+                modificationList.add(new ByteArrayXorModification(new byte[]{bitflipArray[j]}, i));
             }
         }
         return modificationList;

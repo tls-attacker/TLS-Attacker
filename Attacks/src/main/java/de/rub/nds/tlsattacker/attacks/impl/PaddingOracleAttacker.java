@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -207,6 +208,13 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             } else {
                 shakyScans = true;
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            }
+        }
+        System.out.println("Record Responses");
+        for (VectorResponse vectorResponse : tempResponseVectorList) {
+            System.out.println(vectorResponse.toString());
+            for (AbstractRecord r : vectorResponse.getFingerprint().getRecordList()) {
+                System.out.println(r);
             }
         }
         return tempResponseVectorList;

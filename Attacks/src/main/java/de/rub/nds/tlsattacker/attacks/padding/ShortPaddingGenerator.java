@@ -81,22 +81,23 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         byte[] padding = createPaddingBytes(64 - macSize + 1 - 1);
-        vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]),
+        vectorList.add(new TrippleVector("MissingMacByte-ValidPadding", new ByteArrayExplicitValueModification(new byte[0]),
                 new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(64 - macSize + 1 - 1);
         padding[0] ^= 0x80; // flip first padding byte last bit
-        vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]),
+        vectorList.add(new TrippleVector("MissingMacByte-Padding[" + 0 + "]LastBit", new ByteArrayExplicitValueModification(new byte[0]),
                 new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(64 - macSize + 1 - 1);
         padding[(64 - macSize + 1) / 2] ^= 0x8; // flip middle padding byte
         // middle bit
-        vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]),
+        vectorList.add(new TrippleVector("MissingMacByte-Padding[" + ((64 - macSize + 1) / 2) + "]MiddleBit", new ByteArrayExplicitValueModification(new byte[0]),
                 new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(64 - macSize + 1 - 1);
         padding[(64 - macSize + 1 - 1)] ^= 0x01; // flip last padding byte first
         // bit
-        vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]),
-                new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
+        vectorList.add(new TrippleVector("MissingMacByte-Padding[" + ((64 - macSize + 1 - 1) / 2) + "]FirstBit", new ByteArrayExplicitValueModification(new byte[0]),
+                new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding))
+        );
         return vectorList;
     }
 
@@ -104,15 +105,15 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(63);
         vectorList.add(createVectorWithPlainData(plain));
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, };
+        plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255,};
         vectorList.add(createVectorWithPlainData(plain));
         return vectorList;
     }
@@ -122,9 +123,6 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         // valid mac
         byte[] padding = createPaddingBytes(64 - macSize - 1);
-        vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]), null,
-                new ByteArrayExplicitValueModification(padding)));
-        padding = createPaddingBytes(64 - macSize - 1);
         padding[0] ^= 0x80; // flip first padding byte last bit
         vectorList.add(new TrippleVector(new ByteArrayExplicitValueModification(new byte[0]), null,
                 new ByteArrayExplicitValueModification(padding)));
@@ -202,12 +200,12 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
 
     private List<VariableModification> createFlippedModifications(int byteLength) {
         List<VariableModification> modificationList = new LinkedList<>();
-        modificationList.add(new ByteArrayXorModification(new byte[] { 0x01 }, byteLength - 1)); // Last
+        modificationList.add(new ByteArrayXorModification(new byte[]{0x01}, byteLength - 1)); // Last
         // Byte
         // /
         // first
         // bit
-        modificationList.add(new ByteArrayXorModification(new byte[] { 0x08 }, byteLength / 2)); // Some
+        modificationList.add(new ByteArrayXorModification(new byte[]{0x08}, byteLength / 2)); // Some
         // Byte
         // in
         // the
@@ -218,7 +216,7 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         // in
         // the
         // middle
-        modificationList.add(new ByteArrayXorModification(new byte[] { (byte) 0x80 }, 0)); // first
+        modificationList.add(new ByteArrayXorModification(new byte[]{(byte) 0x80}, 0)); // first
         // byte/
         // last
         // bit
@@ -237,18 +235,18 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
                 vectorList.add(vector);
             }
         }
-        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
+        byte[] plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255};
         if (plain.length > macSize) {
             PaddingVector vector = createVectorWithPlainData(plain);
             vectorList.add(vector);
         }
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
+        plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255};
         if (plain.length > macSize) {
             PaddingVector vector = createVectorWithPlainData(plain);
             vectorList.add(vector);
@@ -263,14 +261,14 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
 
     private List<PaddingVector> createVectorWithModifiedPadding() {
         List<PaddingVector> records = new LinkedList<>();
-        records.add(new ModifiedPaddingVector(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0)));
+        records.add(new ModifiedPaddingVector(ByteArrayModificationFactory.xor(new byte[]{1}, 0)));
         return records;
     }
 
     private List<PaddingVector> createVectorWithModifiedMac() {
         List<PaddingVector> vectors = new LinkedList<>();
-        vectors.add(new ModifiedMacVector((ByteArrayXorModification) ByteArrayModificationFactory.xor(new byte[] { 1,
-                1, 1 }, 0)));
+        vectors.add(new ModifiedMacVector((ByteArrayXorModification) ByteArrayModificationFactory.xor(new byte[]{1,
+            1, 1}, 0)));
         return vectors;
     }
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.padding;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedMacVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.ModifiedPaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
@@ -45,34 +46,34 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(63);
         vectorList.add(createVectorWithPlainData(plain));
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, };
+        plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255,};
         vectorList.add(createVectorWithPlainData(plain));
         return vectorList;
     }
 
     private PaddingVector createVectorWithPlainData(byte[] plain) {
-        return new PlainPaddingVector(
+        return new PlainPaddingVector("Plain " + ArrayConverter.bytesToHexString(plain),
                 (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 
     private List<PaddingVector> createVectorWithModifiedPadding() {
         List<PaddingVector> records = new LinkedList<>();
-        records.add(new ModifiedPaddingVector(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0)));
+        records.add(new ModifiedPaddingVector("ModifiedPadding", ByteArrayModificationFactory.xor(new byte[]{1}, 0)));
         return records;
     }
 
     private List<PaddingVector> createVectorWithModifiedMac() {
         List<PaddingVector> vectors = new LinkedList<>();
-        vectors.add(new ModifiedMacVector((ByteArrayXorModification) ByteArrayModificationFactory.xor(new byte[] { 1,
-                1, 1 }, 0)));
+        vectors.add(new ModifiedMacVector("ModifiedMac", (ByteArrayXorModification) ByteArrayModificationFactory.xor(new byte[]{1,
+            1, 1}, 0)));
         return vectors;
     }
 }

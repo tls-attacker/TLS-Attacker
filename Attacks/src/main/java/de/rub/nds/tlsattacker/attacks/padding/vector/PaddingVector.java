@@ -17,6 +17,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
  */
 public abstract class PaddingVector {
 
+    private String name;
+
+    public PaddingVector(String name) {
+        this.name = name;
+    }
+
     public abstract Record createRecord();
 
     public abstract int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength);

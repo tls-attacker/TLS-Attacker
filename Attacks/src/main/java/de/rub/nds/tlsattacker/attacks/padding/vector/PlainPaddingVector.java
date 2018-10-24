@@ -24,7 +24,8 @@ public class PlainPaddingVector extends PaddingVector {
 
     private final ByteArrayExplicitValueModification modification;
 
-    public PlainPaddingVector(ByteArrayExplicitValueModification modification) {
+    public PlainPaddingVector(String name, ByteArrayExplicitValueModification modification) {
+        super(name);
         this.modification = modification;
     }
 
