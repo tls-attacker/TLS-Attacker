@@ -199,7 +199,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 testedSuite = pair.getState().getTlsContext().getSelectedCipherSuite();
                 testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
-                    // Did not receive ClientHello?!
+                    // Did not receive ServerHello?!
                 }
                 fingerprint = ResponseExtractor.getFingerprint(pair.getState());
                 clearConnections(pair.getState());
