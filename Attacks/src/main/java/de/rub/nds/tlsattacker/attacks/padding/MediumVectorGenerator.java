@@ -72,7 +72,8 @@ public class MediumVectorGenerator extends PaddingVectorGenerator {
             for (byte[] padding : paddings) {
                 VariableModification paddingModification = new ByteArrayExplicitValueModification(padding);
                 VariableModification cleanModification = new ByteArrayExplicitValueModification(message);
-                vectorLsit.add(new CleanAndPaddingVector("FlippedPadding " + ArrayConverter.bytesToHexString(padding) + "-" + paddingLength, paddingModification, cleanModification));
+                vectorLsit.add(new CleanAndPaddingVector("FlippedPadding " + ArrayConverter.bytesToHexString(padding)
+                        + "-" + paddingLength, paddingModification, cleanModification));
             }
         }
         return vectorLsit;
@@ -83,7 +84,8 @@ public class MediumVectorGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         List<ByteArrayXorModification> allBitFlipModifications = getAllBitFlipModifications(macSize);
         for (ByteArrayXorModification modification : allBitFlipModifications) {
-            paddingVectorList.add(new ModifiedMacVector("MacFlipped " + modification.getStartPosition() + "-" + ArrayConverter.bytesToHexString(modification.getXor()), modification));
+            paddingVectorList.add(new ModifiedMacVector("MacFlipped " + modification.getStartPosition() + "-"
+                    + ArrayConverter.bytesToHexString(modification.getXor()), modification));
         }
         return paddingVectorList;
     }
@@ -97,7 +99,8 @@ public class MediumVectorGenerator extends PaddingVectorGenerator {
             byte[][] paddings = getModifiedPaddings(paddingLength);
             for (byte[] padding : paddings) {
                 byte[] plain = ArrayConverter.concatenate(message, padding);
-                vectorList.add(new PlainPaddingVector("Plain " + paddingLength + "-" + ArrayConverter.bytesToHexString(plain), new ByteArrayExplicitValueModification(plain)));
+                vectorList.add(new PlainPaddingVector("Plain " + paddingLength + "-"
+                        + ArrayConverter.bytesToHexString(plain), new ByteArrayExplicitValueModification(plain)));
             }
         }
         return vectorList;
@@ -113,7 +116,7 @@ public class MediumVectorGenerator extends PaddingVectorGenerator {
     private List<ByteArrayXorModification> getAllBitFlipModifications(int targetLength) {
         List<ByteArrayXorModification> modificationList = new LinkedList<>();
         for (int i = 0; i < targetLength; i++) {
-            modificationList.add(new ByteArrayXorModification(new byte[]{1}, i));
+            modificationList.add(new ByteArrayXorModification(new byte[] { 1 }, i));
         }
         return modificationList;
     }

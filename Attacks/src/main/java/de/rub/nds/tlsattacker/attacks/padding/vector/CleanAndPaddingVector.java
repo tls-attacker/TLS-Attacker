@@ -24,7 +24,8 @@ public class CleanAndPaddingVector extends PaddingVector {
     private final VariableModification paddingModification;
     private final VariableModification cleanModification;
 
-    public CleanAndPaddingVector(String name, VariableModification paddingModification, VariableModification cleanModification) {
+    public CleanAndPaddingVector(String name, VariableModification paddingModification,
+            VariableModification cleanModification) {
         super(name);
         this.paddingModification = paddingModification;
         this.cleanModification = cleanModification;

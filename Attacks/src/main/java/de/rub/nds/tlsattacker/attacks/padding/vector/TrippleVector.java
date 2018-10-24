@@ -41,6 +41,10 @@ public class TrippleVector extends PaddingVector {
         return cleanModification;
     }
 
+    public VariableModification getMacModification() {
+        return macModification;
+    }
+
     @Override
     public Record createRecord() {
         Record r = new Record();
