@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
@@ -212,7 +213,7 @@ public class ShortPaddingGeneratorTest {
      */
     @Test
     public void testCreateFlippedModifications() {
-        List<VariableModification> modifications = generator.createFlippedModifications(10);
+        List<ByteArrayXorModification> modifications = generator.createFlippedModifications(10);
         ModifiableByteArray array = new ModifiableByteArray();
         array.setOriginalValue(new byte[10]);
         byte[] expected = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
