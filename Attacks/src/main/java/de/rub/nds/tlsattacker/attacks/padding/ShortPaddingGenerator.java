@@ -156,24 +156,24 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         byte[] padding = createPaddingBytes(paddingValue);
         vectorList.add(new TrippleVector("ValPadInvMac-[0]-" + applicationLength + "-" + paddingValue,
                 new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                        new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                        new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[0] ^= 0x80; // flip first padding byte highest bit
         vectorList.add(new TrippleVector("InvPadInvMac-[0]-" + applicationLength + "-" + paddingValue,
                 new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                        new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                        new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[paddingValue / 2] ^= 0x8; // flip middle padding byte
         // middle bit
         vectorList.add(new TrippleVector("InvPadInvMac-[" + (paddingValue / 2) + "]-" + applicationLength + "-"
                 + paddingValue, new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                new ByteArrayXorModification(new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                new ByteArrayXorModification(new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[padding.length - 1] ^= 0x01; // flip last padding lowest first
         // bit
         vectorList.add(new TrippleVector("InvPadInvMac-[last]-" + applicationLength + "-" + paddingValue,
                 new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                        new byte[0x01], 0), new ByteArrayExplicitValueModification(padding)));
+                        new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }
 

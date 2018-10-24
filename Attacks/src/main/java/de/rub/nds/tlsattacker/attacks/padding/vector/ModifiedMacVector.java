@@ -70,7 +70,7 @@ public class ModifiedMacVector extends PaddingVector {
 
     @Override
     public String toString() {
-        return "ModifiedMacVector{" + "modification=" + modification + '}';
+        return "" + name + "{" + "modification=" + modification + '}';
     }
 
     @Override

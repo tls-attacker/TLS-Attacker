@@ -92,15 +92,18 @@ public class TrippleVector extends PaddingVector {
 
     @Override
     public String toString() {
-        return "TrippleVector{" + "cleanModification=" + cleanModification + ", macModification=" + macModification
+        return "" + name + "{" + "cleanModification=" + cleanModification + ", macModification=" + macModification
                 + ", paddingModification=" + paddingModification + '}';
     }
 
     @Override
     public int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength) {
+        System.out.println("Name:" + name);
+        System.out.println(this);
         Record r = createRecord();
         r.setCleanProtocolMessageBytes(new byte[appDataLength]);
         int completeLength = r.getCleanProtocolMessageBytes().getValue().length;
+        System.out.println("Clean Length:" + completeLength);
         int macLength = AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
 
         r.getComputations().setMac(new byte[macLength]);
@@ -110,6 +113,12 @@ public class TrippleVector extends PaddingVector {
         r.getComputations().setPadding(new byte[paddingLength]);
         paddingLength = r.getComputations().getPadding().getValue().length;
         completeLength += paddingLength;
+        System.out.println("Version: " + testedVersion);
+        System.out.println("Suite: " + testedSuite);
+        System.out.println("TestedAppLength: " + appDataLength);
+        System.out.println("MacLength:" + r.getComputations().getMac().getValue().length);
+        System.out.println("PaddingLength:" + paddingLength);
+        System.out.println("Calculated Length:" + completeLength);
         return completeLength;
     }
 }
