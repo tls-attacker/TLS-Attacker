@@ -49,6 +49,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         }
         if (chooser.getSelectedProtocolVersion().isDTLS()) {
             record.setEpoch(chooser.getContext().getEpoch());
+            record.setSequenceNumber(record.getComputations().getSequenceNumber().getValue());
         }
         encryptor.encrypt(record);
         prepareLength(record);
