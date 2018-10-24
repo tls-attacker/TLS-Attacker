@@ -76,7 +76,7 @@ public class ParallelExecutor {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {
-                throw new RuntimeException("Failed to execute tasks!");
+                throw new RuntimeException("Failed to execute tasks!", ex);
             }
         }
         return;
@@ -111,6 +111,7 @@ public class ParallelExecutor {
                 WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
                 try {
                     executor.executeWorkflow();
+                    hasError = false;
                     break;
                 } catch (Exception E) {
                     LOGGER.debug("Encountered an exception during the execution", E);

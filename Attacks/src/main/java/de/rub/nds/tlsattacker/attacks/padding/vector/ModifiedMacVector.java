@@ -24,7 +24,8 @@ public class ModifiedMacVector extends PaddingVector {
 
     private final ByteArrayXorModification modification;
 
-    public ModifiedMacVector(ByteArrayXorModification modification) {
+    public ModifiedMacVector(String name, ByteArrayXorModification modification) {
+        super(name);
         this.modification = modification;
     }
 
