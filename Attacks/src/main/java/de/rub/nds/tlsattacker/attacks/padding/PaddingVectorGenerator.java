@@ -28,6 +28,9 @@ public abstract class PaddingVectorGenerator {
     public abstract List<PaddingVector> getVectors(CipherSuite suite, ProtocolVersion version);
 
     /**
+     * Creates an array of (padding+1) padding bytes.
+     * 
+     * Example for padding 03: [03 03 03 03]
      *
      * @param padding
      * @return
