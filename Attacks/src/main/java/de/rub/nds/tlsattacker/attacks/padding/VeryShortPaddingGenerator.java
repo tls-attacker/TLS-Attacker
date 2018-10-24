@@ -45,35 +45,35 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
     private List<PaddingVector> createVectorWithPlainData() {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(63);
-        vectorList.add(createVectorWithPlainData(plain));
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, };
-        vectorList.add(createVectorWithPlainData(plain));
+        vectorList.add(createVectorWithPlainData("Plain 3F", plain));
+        plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255,};
+        vectorList.add(createVectorWithPlainData("Plain FF", plain));
         return vectorList;
     }
 
-    private PaddingVector createVectorWithPlainData(byte[] plain) {
-        return new PlainPaddingVector("Plain " + ArrayConverter.bytesToHexString(plain),
+    private PaddingVector createVectorWithPlainData(String name, byte[] plain) {
+        return new PlainPaddingVector(name,
                 (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 
     private List<PaddingVector> createVectorWithModifiedPadding() {
         List<PaddingVector> records = new LinkedList<>();
-        records.add(new ModifiedPaddingVector("ModifiedPadding", ByteArrayModificationFactory.xor(new byte[] { 1 }, 0)));
+        records.add(new ModifiedPaddingVector("ModifiedPadding", ByteArrayModificationFactory.xor(new byte[]{1}, 0)));
         return records;
     }
 
     private List<PaddingVector> createVectorWithModifiedMac() {
         List<PaddingVector> vectors = new LinkedList<>();
         vectors.add(new ModifiedMacVector("ModifiedMac", (ByteArrayXorModification) ByteArrayModificationFactory.xor(
-                new byte[] { 1, 1, 1 }, 0)));
+                new byte[]{1, 1, 1}, 0)));
         return vectors;
     }
 }

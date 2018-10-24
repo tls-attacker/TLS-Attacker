@@ -96,7 +96,7 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
     List<PaddingVector> createOnlyPaddingVectors(CipherSuite suite, ProtocolVersion version) {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - 1);
-        vectorList.add(createVectorWithPlainData(plain));
+        vectorList.add(createVectorWithPlainData("Plain FF", plain));
         plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
@@ -106,7 +106,7 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
-        vectorList.add(createVectorWithPlainData(plain));
+        vectorList.add(createVectorWithPlainData("Plain 3F", plain));
         return vectorList;
     }
 
@@ -188,8 +188,8 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         return modificationList;
     }
 
-    private PaddingVector createVectorWithPlainData(byte[] plain) {
-        return new PlainPaddingVector("Plain-" + ArrayConverter.bytesToHexString(plain),
+    private PaddingVector createVectorWithPlainData(String name, byte[] plain) {
+        return new PlainPaddingVector(name,
                 (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 }
