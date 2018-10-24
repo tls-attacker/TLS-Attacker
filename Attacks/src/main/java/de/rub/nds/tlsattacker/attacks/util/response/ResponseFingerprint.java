@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
@@ -143,6 +147,7 @@ public class ResponseFingerprint {
      */
     @Override
     public String toString() {
+
         StringBuilder recordClasses = new StringBuilder();
         for (Class<AbstractRecord> someClass : this.recordClasses) {
             recordClasses.append(someClass.getSimpleName()).append(",");
@@ -165,6 +170,74 @@ public class ResponseFingerprint {
                 + ", RecordClasses=[" + recordClasses.toString() + "], MessageClasses=[" + messageClasses.toString()
                 + "], Messages=[" + messages.toString() + "], Reccords=[" + records.toString() + "], NetworkState="
                 + socketState + ']';
+    }
+
+    public String toHumanReadable() {
+        StringBuilder resultString = new StringBuilder();
+        for (ProtocolMessage message : messageList) {
+            switch (message.getProtocolMessageType()) {
+                case ALERT:
+                    AlertMessage alert = (AlertMessage) message;
+                    AlertDescription alertDescription = AlertDescription.getAlertDescription(alert.getDescription().getValue());
+                    AlertLevel alertLevel = AlertLevel.getAlertLevel(alert.getLevel().getValue());
+                    if (alertDescription != null && alertLevel != null && alertLevel != AlertLevel.UNDEFINED) {
+                        if (alertLevel == AlertLevel.FATAL) {
+                            resultString.append("[").append(alertDescription.name()).append("]");
+                        } else {
+                            resultString.append("(").append(alertDescription.name()).append(")");
+                        }
+                    } else {
+                        resultString.append("{ALERT-").append(alert.getDescription().getValue()).append("-").append(alert.getLevel()).append("}");
+                    }
+                    break;
+                case APPLICATION_DATA:
+                    resultString.append("{APP}");
+                    break;
+                case CHANGE_CIPHER_SPEC:
+                    resultString.append("{CCS}");
+                    break;
+                case HANDSHAKE:
+                    if (message instanceof FinishedMessage) {
+                        resultString.append("{FIN}");
+                    } else {
+                        resultString.append("{" + message.toCompactString() + "}");
+                    }
+                    break;
+                case HEARTBEAT:
+                    resultString.append("{HEARTBEAT}");
+                    break;
+                case UNKNOWN:
+                    resultString.append("{UNKNOWN}");
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unknown ProtocolMessageType");
+            }
+            resultString.append(" ");
+        }
+        if (encryptedAlert) {
+            resultString.append(" ENC ");
+        }
+        switch (socketState) {
+            case CLOSED:
+                resultString.append("X");
+                break;
+            case DATA_AVAILABLE:
+                resultString.append("$$$");
+                break;
+            case IO_EXCEPTION:
+                resultString.append("§");
+                break;
+            case SOCKET_EXCEPTION:
+                resultString.append("@");
+                break;
+            case TIMEOUT:
+                resultString.append("T");
+                break;
+            case UP:
+                resultString.append("U");
+                break;
+        }
+        return resultString.toString();
     }
 
     /**
