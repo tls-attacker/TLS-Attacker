@@ -221,8 +221,9 @@ public class ShortPaddingGeneratorTest {
 
     private byte[] getPlainRecordBytesFromVector(PaddingVector vector) {
         Record r = vector.createRecord();
-        r.getComputations().setPlainRecordBytes(new byte[20]);
+        r.setCleanProtocolMessageBytes(new byte[20]);
         r.getComputations().setMac(new byte[20]);
+        r.getComputations().setPadding(new byte[20]);
         return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
                 .getValue(), r.getComputations().getPadding().getValue());
     }

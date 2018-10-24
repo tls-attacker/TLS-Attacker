@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.padding.vector;
 
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -98,27 +99,19 @@ public class TrippleVector extends PaddingVector {
 
     @Override
     public int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength) {
-        System.out.println("Name:" + name);
-        System.out.println(this);
         Record r = createRecord();
-        r.setCleanProtocolMessageBytes(new byte[appDataLength]);
-        int completeLength = r.getCleanProtocolMessageBytes().getValue().length;
-        System.out.println("Clean Length:" + completeLength);
         int macLength = AlgorithmResolver.getMacAlgorithm(testedVersion, testedSuite).getSize();
 
+        r.setCleanProtocolMessageBytes(new byte[appDataLength]);
         r.getComputations().setMac(new byte[macLength]);
-        completeLength += r.getComputations().getMac().getValue().length;
         int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
-                - (completeLength % AlgorithmResolver.getCipher(testedSuite).getBlocksize());
+                - ((r.getCleanProtocolMessageBytes().getValue().length + r.getComputations().getMac().getValue().length) % AlgorithmResolver
+                        .getCipher(testedSuite).getBlocksize());
+
         r.getComputations().setPadding(new byte[paddingLength]);
-        paddingLength = r.getComputations().getPadding().getValue().length;
-        completeLength += paddingLength;
-        System.out.println("Version: " + testedVersion);
-        System.out.println("Suite: " + testedSuite);
-        System.out.println("TestedAppLength: " + appDataLength);
-        System.out.println("MacLength:" + r.getComputations().getMac().getValue().length);
-        System.out.println("PaddingLength:" + paddingLength);
-        System.out.println("Calculated Length:" + completeLength);
-        return completeLength;
+        return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
+                .getValue(), r.getComputations().getPadding().getValue()).length;
+
     }
+
 }
