@@ -178,7 +178,8 @@ public class ResponseFingerprint {
             switch (message.getProtocolMessageType()) {
                 case ALERT:
                     AlertMessage alert = (AlertMessage) message;
-                    AlertDescription alertDescription = AlertDescription.getAlertDescription(alert.getDescription().getValue());
+                    AlertDescription alertDescription = AlertDescription.getAlertDescription(alert.getDescription()
+                            .getValue());
                     AlertLevel alertLevel = AlertLevel.getAlertLevel(alert.getLevel().getValue());
                     if (alertDescription != null && alertLevel != null && alertLevel != AlertLevel.UNDEFINED) {
                         if (alertLevel == AlertLevel.FATAL) {
@@ -187,7 +188,8 @@ public class ResponseFingerprint {
                             resultString.append("(").append(alertDescription.name()).append(")");
                         }
                     } else {
-                        resultString.append("{ALERT-").append(alert.getDescription().getValue()).append("-").append(alert.getLevel()).append("}");
+                        resultString.append("{ALERT-").append(alert.getDescription().getValue()).append("-")
+                                .append(alert.getLevel()).append("}");
                     }
                     break;
                 case APPLICATION_DATA:
