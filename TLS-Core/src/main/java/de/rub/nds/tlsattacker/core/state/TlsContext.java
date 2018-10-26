@@ -457,6 +457,10 @@ public class TlsContext {
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
+    /*
+     * sequence number used in DTLS for the handshake messages
+     */
+    private long messageSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -1231,6 +1235,18 @@ public class TlsContext {
 
     public void increaseReadSequenceNumber() {
         this.readSequenceNumber++;
+    }
+
+    public long getMessageSequenceNumber() {
+        return messageSequenceNumber;
+    }
+
+    public void setMessageSequenceNumber(long messageSequenceNumber) {
+        this.messageSequenceNumber = messageSequenceNumber;
+    }
+
+    public void increaseMessageSequenceNumber() {
+        this.messageSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

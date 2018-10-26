@@ -61,8 +61,8 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
     }
 
     private void prepareMessageSeq(DtlsHandshakeMessageFragment msg) {
-        // TODO this should be flight seq
-        msg.setMessageSeq((int) chooser.getContext().getWriteSequenceNumber());
+        msg.setMessageSeq((int) chooser.getContext().getMessageSequenceNumber());
+        // chooser.getContext().increaseMessageSequenceNumber();
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 }
