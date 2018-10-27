@@ -165,7 +165,7 @@ public class ShortPaddingGeneratorTest {
     public void testCreateClassicModifiedPadding() {
         List<PaddingVector> vectors = generator.createClassicModifiedPadding(
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
-        assertEquals(14, vectors.size());
+        assertEquals(18, vectors.size());
 
         byte[] plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(0));
         // System.out.println("Plain record bytes: " +
@@ -197,21 +197,23 @@ public class ShortPaddingGeneratorTest {
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
-        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(4));
+        // TODO Add intermidiate tests
+
+        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(6));
         expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
                 (byte) 0xAB, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
-        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(5));
+        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(7));
         expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x23, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
-        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(6));
+        plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(8));
         expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,
                 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B, 0x2B,

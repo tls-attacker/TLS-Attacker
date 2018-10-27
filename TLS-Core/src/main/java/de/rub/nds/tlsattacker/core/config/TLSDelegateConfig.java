@@ -84,5 +84,4 @@ public abstract class TLSDelegateConfig {
 
         return createConfig(config);
     }
-
 }
