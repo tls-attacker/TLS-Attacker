@@ -65,8 +65,8 @@ public abstract class TLSDelegateConfig {
         return baseConfig;
     }
 
-    public final boolean hasDifferntConfig() {
-        return defaultConfig == null;
+    public final boolean hasDifferentConfig() {
+        return defaultConfig != null;
     }
 
     public Config createConfig() {

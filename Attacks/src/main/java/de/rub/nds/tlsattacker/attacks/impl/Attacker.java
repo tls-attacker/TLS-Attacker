@@ -101,7 +101,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
      * @return
      */
     public Config getTlsConfig() {
-        if (config.hasDifferntConfig() || baseConfig != null) {
+        if (!config.hasDifferentConfig() && baseConfig == null) {
             return config.createConfig();
         } else {
             return config.createConfig(baseConfig);
