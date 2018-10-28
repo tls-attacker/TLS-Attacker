@@ -158,6 +158,17 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
                 new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
                         new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
+
+        padding = createPaddingBytes(paddingValue);
+        vectorList.add(new TrippleVector("ValPadInvMac-[" + (8) + "]-" + applicationLength + "-" + paddingValue,
+                new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
+                        new byte[] { 0x01 }, 8), new ByteArrayExplicitValueModification(padding)));
+        padding = createPaddingBytes(paddingValue);
+
+        vectorList.add(new TrippleVector("ValPadInvMac-[15]-" + applicationLength + "-" + paddingValue,
+                new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
+                        new byte[] { 0x01 }, 15), new ByteArrayExplicitValueModification(padding)));
+
         padding[0] ^= 0x80; // flip first padding byte highest bit
         vectorList.add(new TrippleVector("InvPadInvMac-[0]-" + applicationLength + "-" + paddingValue,
                 new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
