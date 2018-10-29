@@ -73,6 +73,7 @@ public class SendMessageHelper {
                                 .getHandshakeMessageType();
                         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(handshakeMessageType,
                                 protocolMessageBytes);
+                        fragment.setIncludeInDigest(((HandshakeMessage) message).getIncludeInDigest());
                         byte[] preparedFragment = fragment.getHandler(context).prepareMessage(fragment);
                         messageBytesCollector.appendProtocolMessageBytes(preparedFragment);
                         fragmentMessages.add(fragment);

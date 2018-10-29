@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -187,18 +188,19 @@ public class WorkflowConfigurationFactory {
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
             clientHello = new ClientHelloMessage(config);
-            clientHello.setIncludeInDigest(false);
+            clientHello.setIncludeInDigest(Modifiable.explicit(false));
         } else {
             clientHello = new ClientHelloMessage(config);
         }
         messages.add(clientHello);
 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
+
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
 
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
-            helloVerifyRequestMessage.setIncludeInDigest(false);
+            helloVerifyRequestMessage.setIncludeInDigest(Modifiable.explicit(false));
             messages = new LinkedList<>();
 
             messages.add(helloVerifyRequestMessage);

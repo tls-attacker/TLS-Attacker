@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -112,8 +113,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         try {
             prepareAfterParse(parsedMessage);
             if (parsedMessage instanceof HandshakeMessage) {
+                // TODO For parsedMessage this will never be false...
                 if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                    tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                    // The first ClientHello and the HelloVerifyRequest messages
+                    // should not be included in the digest in DTLS
+                    if (!(parsedMessage instanceof HelloVerifyRequestMessage)) {
+                        tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                    }
                 }
             }
             adjustTLSContext(parsedMessage);
