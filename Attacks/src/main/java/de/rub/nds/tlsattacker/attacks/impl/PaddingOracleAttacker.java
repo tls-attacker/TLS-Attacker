@@ -49,6 +49,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private boolean groupRecords = true;
 
     private List<VectorResponse> vectorResponseList;
+    private List<VectorResponse> vectorResponseListTwo;
+    private List<VectorResponse> vectorResponseListThree;
 
     private CipherSuite testedSuite;
 
@@ -105,12 +107,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             error = getEqualityError(vectorResponseList);
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found a side channel. Rescanning to confirm.");
-                List<VectorResponse> responseMapTwo = createVectorResponseList();
-                EqualityError errorTwo = getEqualityError(responseMapTwo);
-                if (error == errorTwo && lookEqual(vectorResponseList, responseMapTwo)) {
-                    List<VectorResponse> responseMapThree = createVectorResponseList();
-                    EqualityError errorThree = getEqualityError(responseMapThree);
-                    if (error == errorThree && lookEqual(vectorResponseList, responseMapThree)) {
+                vectorResponseListTwo = createVectorResponseList();
+                EqualityError errorTwo = getEqualityError(vectorResponseListTwo);
+                if (error == errorTwo && lookEqual(vectorResponseList, vectorResponseListTwo)) {
+                    vectorResponseListThree = createVectorResponseList();
+                    EqualityError errorThree = getEqualityError(vectorResponseListThree);
+                    if (error == errorThree && lookEqual(vectorResponseList, vectorResponseListThree)) {
                         CONSOLE.info("Found an equality Error.");
                         CONSOLE.info("The Server is very likely vulnerabble");
                     } else {
@@ -146,13 +148,13 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      * @return
      */
     public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
+        boolean result = true;
         if (responseVectorListOne.size() != responseVectorListTwo.size()) {
             throw new PaddingOracleUnstableException(
                     "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
         }
 
         for (VectorResponse vectorResponseOne : responseVectorListOne) {
-
             // Find equivalent
             VectorResponse equivalentVector = null;
             for (VectorResponse vectorResponseTwo : responseVectorListTwo) {
@@ -162,16 +164,19 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 }
             }
             if (equivalentVector == null) {
-                throw new PaddingOracleUnstableException("Could not find equivalent Vector - something went wrong. "
-                        + vectorResponseOne.getPaddingVector().toString());
+                vectorResponseOne.setShaky(true);
+                result = false;
+                vectorResponseOne.setMissingEquivalent(true);
             }
 
-            if (FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(), equivalentVector.getFingerprint(),
-                    false) != EqualityError.NONE) {
-                return false;
+            EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
+                    equivalentVector.getFingerprint(), true);
+            if (error != EqualityError.NONE) {
+                result = false;
+                vectorResponseOne.setShaky(true);
             }
         }
-        return true;
+        return result;
     }
 
     /**
@@ -207,6 +212,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             } else {
                 shakyScans = true;
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+                VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
+                        tlsConfig.getDefaultApplicationMessageData().getBytes().length);
+                vectorResponse.setErrorDuringHandshake(true);
+                tempResponseVectorList.add(vectorResponse);
+
             }
         }
         return tempResponseVectorList;
@@ -253,8 +263,26 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      *
      * @return
      */
-    public List<VectorResponse> getResponseMap() {
+    public List<VectorResponse> getVectorResponseList() {
         return vectorResponseList;
+    }
+
+    /**
+     * The responseVector list of the first rescan
+     *
+     * @return
+     */
+    public List<VectorResponse> getVectorResponseListTwo() {
+        return vectorResponseListTwo;
+    }
+
+    /**
+     * The responseVector list of the second rescan
+     *
+     * @return
+     */
+    public List<VectorResponse> getVectorResponseListThree() {
+        return vectorResponseListThree;
     }
 
     /**

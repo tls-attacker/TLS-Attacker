@@ -25,6 +25,12 @@ public class VectorResponse {
 
     private final Integer length;
 
+    private boolean shaky = false;
+
+    private boolean missingEquivalent = false;
+
+    private boolean errorDuringHandshake = false;
+
     public VectorResponse(PaddingVector paddingVector, ResponseFingerprint fingerprint, ProtocolVersion version,
             CipherSuite suite, int appDataLength) {
         this.paddingVector = paddingVector;
@@ -36,6 +42,30 @@ public class VectorResponse {
         } else {
             length = null;
         }
+    }
+
+    public boolean isErrorDuringHandshake() {
+        return errorDuringHandshake;
+    }
+
+    public void setErrorDuringHandshake(boolean errorDuringHandshake) {
+        this.errorDuringHandshake = errorDuringHandshake;
+    }
+
+    public boolean isShaky() {
+        return shaky;
+    }
+
+    public void setShaky(boolean shaky) {
+        this.shaky = shaky;
+    }
+
+    public boolean isMissingEquivalent() {
+        return missingEquivalent;
+    }
+
+    public void setMissingEquivalent(boolean missingEquivalent) {
+        this.missingEquivalent = missingEquivalent;
     }
 
     public Integer getLength() {
