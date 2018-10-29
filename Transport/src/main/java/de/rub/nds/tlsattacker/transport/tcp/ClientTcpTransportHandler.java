@@ -48,7 +48,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(hostname, port), (int) timeout);
+        socket.connect(new InetSocketAddress(hostname, port), (int) (timeout*4));
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
