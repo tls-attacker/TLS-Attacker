@@ -8,12 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -22,8 +23,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Message>
