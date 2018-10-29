@@ -17,7 +17,8 @@ import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
-import de.rub.nds.tlsattacker.attacks.padding.vector.StatePaddingOracleVectorPair;
+import de.rub.nds.tlsattacker.attacks.padding.vector.FingerprintTaskVectorPair;
+import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -164,15 +166,23 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     break;
                 }
             }
+            if (vectorResponseOne.getFingerprint() == null) {
+                vectorResponseOne.setShaky(true);
+                vectorResponseOne.setErrorDuringHandshake(true);
+                result = false;
+                continue;
+            }
             if (equivalentVector == null) {
                 vectorResponseOne.setShaky(true);
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);
+                continue;
             }
             if (equivalentVector.getFingerprint() == null) {
                 equivalentVector.setShaky(true);
                 equivalentVector.setErrorDuringHandshake(true);
-                return false;
+                result = false;
+                continue;
             }
 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
@@ -193,27 +203,27 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
         PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
         PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
-        List<State> stateList = new LinkedList<>();
-        List<StatePaddingOracleVectorPair> stateVectorPairList = new LinkedList<>();
+        List<TlsTask> taskList = new LinkedList<>();
+        List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
         for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
                 tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
-            stateList.add(state);
-            stateVectorPairList.add(new StatePaddingOracleVectorPair(state, vector));
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 3);
+            taskList.add(fingerPrintTask);
+            stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
         List<VectorResponse> tempResponseVectorList = new LinkedList<>();
-        executor.bulkExecute(stateList);
-        for (StatePaddingOracleVectorPair pair : stateVectorPairList) {
+        executor.bulkExecuteTasks(taskList);
+        for (FingerprintTaskVectorPair pair : stateVectorPairList) {
             ResponseFingerprint fingerprint = null;
-            if (pair.getState().getWorkflowTrace().allActionsExecuted()) {
-                testedSuite = pair.getState().getTlsContext().getSelectedCipherSuite();
-                testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
+            if (pair.getFingerPrintTask().getState().getWorkflowTrace().allActionsExecuted()) {
+                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
+                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     // Did not receive ServerHello?!
                     errornousScans = true;
                 }
-                fingerprint = ResponseExtractor.getFingerprint(pair.getState());
-                clearConnections(pair.getState());
+                fingerprint = pair.getFingerPrintTask().getFingerprint();
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
                         testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
             } else {
@@ -256,14 +266,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             }
         }
         return EqualityError.NONE;
-    }
-
-    private void clearConnections(State state) {
-        try {
-            state.getTlsContext().getTransportHandler().closeConnection();
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
-        }
     }
 
     /**

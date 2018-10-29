@@ -8,24 +8,24 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
-import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 
 /**
  *
  */
-public class StatePaddingOracleVectorPair {
+public class FingerprintTaskVectorPair {
 
-    private final State state;
+    private final FingerPrintTask fingerPrintTask;
 
     private final PaddingVector vector;
 
-    public StatePaddingOracleVectorPair(State state, PaddingVector vector) {
-        this.state = state;
+    public FingerprintTaskVectorPair(FingerPrintTask fingerPrintTask, PaddingVector vector) {
+        this.fingerPrintTask = fingerPrintTask;
         this.vector = vector;
     }
 
-    public State getState() {
-        return state;
+    public FingerPrintTask getFingerPrintTask() {
+        return fingerPrintTask;
     }
 
     public PaddingVector getVector() {
