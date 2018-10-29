@@ -167,19 +167,21 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 }
             }
             if (vectorResponseOne.getFingerprint() == null) {
-                vectorResponseOne.setShaky(true);
+
+                LOGGER.error("First vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 vectorResponseOne.setErrorDuringHandshake(true);
                 result = false;
                 continue;
             }
             if (equivalentVector == null) {
-                vectorResponseOne.setShaky(true);
+
+                LOGGER.error("Equivalent Vector is null:" + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);
                 continue;
             }
             if (equivalentVector.getFingerprint() == null) {
-                equivalentVector.setShaky(true);
+                LOGGER.error("Equivalent Vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 equivalentVector.setErrorDuringHandshake(true);
                 result = false;
                 continue;
@@ -188,6 +190,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
                     equivalentVector.getFingerprint(), true);
             if (error != EqualityError.NONE) {
+                LOGGER.error("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setShaky(true);
             }
@@ -221,6 +224,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     // Did not receive ServerHello?!
+                    LOGGER.error("Could not find ServerHello" + testedSuite + " - " + testedVersion);
                     errornousScans = true;
                 }
                 fingerprint = pair.getFingerPrintTask().getFingerprint();
@@ -233,6 +237,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                         tlsConfig.getDefaultApplicationMessageData().getBytes().length);
                 vectorResponse.setErrorDuringHandshake(true);
                 tempResponseVectorList.add(vectorResponse);
+                LOGGER.error("Could not execute whole workflow" + testedSuite + " - " + testedVersion);
                 errornousScans = true;
             }
         }
