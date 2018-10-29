@@ -76,6 +76,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 if (((HandshakeMessage) message).getIncludeInDigest()) {
                     tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                 }
+
+                // Increase message counter for outgoing handshake messages for
+                // DTLS
+                tlsContext.increaseMessageSequenceNumber();
             }
         }
         try {
