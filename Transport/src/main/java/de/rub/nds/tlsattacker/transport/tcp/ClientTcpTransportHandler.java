@@ -24,17 +24,27 @@ public class ClientTcpTransportHandler extends TransportHandler {
     protected Socket socket;
     protected String hostname;
     protected int port;
+    protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
         super(connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
+        this.connectionTimeout = timeout * 4;
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
+        this.connectionTimeout = timeout * 4;
+    }
+
+    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
+        super(timeout, ConnectionEndType.CLIENT);
+        this.hostname = hostname;
+        this.port = port;
+        this.connectionTimeout = connectionTimeout;
     }
 
     @Override
@@ -48,7 +58,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(hostname, port), (int) (timeout*4));
+        socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
@@ -71,7 +81,8 @@ public class ClientTcpTransportHandler extends TransportHandler {
      * TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
-     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
+     * @throws
+     * de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
      */
     public SocketState getSocketState() throws InvalidTransportHandlerStateException {
         try {
