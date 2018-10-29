@@ -64,9 +64,10 @@ public class TrippleVector extends PaddingVector {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 11 * hash + Objects.hashCode(this.paddingModification);
-        hash = 11 * hash + Objects.hashCode(this.cleanModification);
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.cleanModification);
+        hash = 37 * hash + Objects.hashCode(this.macModification);
+        hash = 37 * hash + Objects.hashCode(this.paddingModification);
         return hash;
     }
 
@@ -82,10 +83,13 @@ public class TrippleVector extends PaddingVector {
             return false;
         }
         final TrippleVector other = (TrippleVector) obj;
-        if (!Objects.equals(this.paddingModification, other.paddingModification)) {
+        if (!Objects.equals(this.cleanModification, other.cleanModification)) {
             return false;
         }
-        if (!Objects.equals(this.cleanModification, other.cleanModification)) {
+        if (!Objects.equals(this.macModification, other.macModification)) {
+            return false;
+        }
+        if (!Objects.equals(this.paddingModification, other.paddingModification)) {
             return false;
         }
         return true;
