@@ -77,6 +77,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             message.setCompleteResultingMessage(completeMessage);
             if (message instanceof HandshakeMessage) {
                 if (((HandshakeMessage) message).getIncludeInDigest()) {
+                	LOGGER.debug("Digested " + message.toCompactString());
                     tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                 }
 
@@ -123,6 +124,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                             && (parsedMessage instanceof DtlsHandshakeMessageFragment)
                             && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
                                     .getValue())) {
+                    	LOGGER.debug("Digested " + parsedMessage);
                         tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
                     }
                 }

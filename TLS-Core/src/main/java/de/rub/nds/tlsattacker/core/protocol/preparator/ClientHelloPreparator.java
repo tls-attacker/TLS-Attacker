@@ -39,7 +39,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
-        if (chooser.getSelectedProtocolVersion().isDTLS()) {
+        if (isDTLS()) {
             msg.setCookie(chooser.getDtlsCookie());
             msg.setCookieLength((byte) (msg.getCookie().getValue().length));
         }
@@ -47,9 +47,15 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
-        if (hasHandshakeCookie()) {
-            prepareCookie(msg);
-            prepareCookieLength(msg);
+        if (isDTLS()) {
+        	// in the case of DTLS, we only include ClientHello in the digest if it has a non-empty cookie
+        	if (hasHandshakeCookie()) {
+	            prepareCookie(msg);
+	            prepareCookieLength(msg);
+	            msg.setIncludeInDigest(true);
+        	} else {
+        		msg.setIncludeInDigest(false);
+        	}
         }
         prepareExtensions();
         prepareExtensionLength();
@@ -66,6 +72,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
             }
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+    }
+    
+    private boolean isDTLS() {
+    	return chooser.getSelectedProtocolVersion().isDTLS();
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {

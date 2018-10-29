@@ -39,7 +39,7 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
             msg.setContent(new byte[0]);
         }
         LOGGER.debug("FragmentContent:" + ArrayConverter.bytesToHexString(msg.getContent().getValue()));
-        prepareFragmentLenth(msg);
+        prepareFragmentLength(msg);
         prepareMessageLength(msg.getContent().getValue().length);
     }
 
@@ -49,7 +49,7 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
         msg.setLength(msg.getContent().getValue().length);
     }
 
-    private void prepareFragmentLenth(DtlsHandshakeMessageFragment msg) {
+    private void prepareFragmentLength(DtlsHandshakeMessageFragment msg) {
         // todo do proper
         msg.setFragmentLength(msg.getContent().getValue().length);
         LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());

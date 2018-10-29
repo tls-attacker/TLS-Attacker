@@ -453,11 +453,13 @@ public class TlsContext {
      * sequence number used for the encryption
      */
     private long writeSequenceNumber = 0;
+    
     /**
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
-    /*
+    
+    /**
      * sequence number used in DTLS for the handshake messages
      */
     private long messageSequenceNumber = 0;
