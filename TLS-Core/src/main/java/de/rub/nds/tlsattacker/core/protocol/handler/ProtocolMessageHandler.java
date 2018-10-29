@@ -8,7 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -117,7 +120,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
                     // The first ClientHello and the HelloVerifyRequest messages
                     // should not be included in the digest in DTLS
-                    if (!(parsedMessage instanceof HelloVerifyRequestMessage)) {
+                    if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
+                            && (parsedMessage instanceof DtlsHandshakeMessageFragment)
+                            && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
+                                    .getValue())) {
                         tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
                     }
                 }
