@@ -59,6 +59,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private final ParallelExecutor executor;
 
     private boolean shakyScans = false;
+    private boolean errornousScans = false;
 
     /**
      *
@@ -168,6 +169,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);
             }
+            if (equivalentVector.getFingerprint() == null) {
+                equivalentVector.setShaky(true);
+                equivalentVector.setErrorDuringHandshake(true);
+                return false;
+            }
 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
                     equivalentVector.getFingerprint(), true);
@@ -204,19 +210,20 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 testedVersion = pair.getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     // Did not receive ServerHello?!
+                    errornousScans = true;
                 }
                 fingerprint = ResponseExtractor.getFingerprint(pair.getState());
                 clearConnections(pair.getState());
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
                         testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
             } else {
-                shakyScans = true;
+
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
                 VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
                         tlsConfig.getDefaultApplicationMessageData().getBytes().length);
                 vectorResponse.setErrorDuringHandshake(true);
                 tempResponseVectorList.add(vectorResponse);
-
+                errornousScans = true;
             }
         }
         return tempResponseVectorList;
@@ -307,5 +314,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      */
     public boolean isShakyScans() {
         return shakyScans;
+    }
+
+    public boolean isErrornousScans() {
+        return errornousScans;
     }
 }
