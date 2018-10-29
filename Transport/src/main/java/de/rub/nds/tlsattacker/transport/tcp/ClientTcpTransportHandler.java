@@ -81,8 +81,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
      * TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
-     * @throws
-     * de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
+     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
      */
     public SocketState getSocketState() throws InvalidTransportHandlerStateException {
         try {
