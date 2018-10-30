@@ -120,12 +120,17 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
                     // The first ClientHello and the HelloVerifyRequest messages
                     // should not be included in the digest in DTLS
-                    if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
-                            && (parsedMessage instanceof DtlsHandshakeMessageFragment)
-                            && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
-                                    .getValue())) {
-                    	LOGGER.debug("Digested " + parsedMessage);
-                        tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                    if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS() )
+                    {
+                        if ((parsedMessage instanceof DtlsHandshakeMessageFragment)
+                                && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
+                                        .getValue())) {
+                        	LOGGER.debug("Digested " + parsedMessage.toCompactString());
+                            tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                        }
+                    }
+                    else {
+                    	 tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
                     }
                 }
             }
