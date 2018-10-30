@@ -104,7 +104,8 @@ public class FingerPrintChecker {
             AbstractRecord abstractRecord1 = recordList1.get(i);
             AbstractRecord abstractRecord2 = recordList2.get(i);
             if (abstractRecord1 instanceof BlobRecord && abstractRecord2 instanceof BlobRecord) {
-                if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1.getCompleteRecordBytes().getValue())) {
+                if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1
+                        .getCompleteRecordBytes().getValue())) {
                     continue;
                 } else {
                     return false;
@@ -133,7 +134,8 @@ public class FingerPrintChecker {
             Record record1 = (Record) abstractRecord1;
             Record record2 = (Record) abstractRecord2;
             if (abstractRecord1 instanceof BlobRecord && abstractRecord2 instanceof BlobRecord) {
-                if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1.getCompleteRecordBytes().getValue())) {
+                if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1
+                        .getCompleteRecordBytes().getValue())) {
                     continue;
                 } else {
                     return false;

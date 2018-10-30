@@ -117,13 +117,15 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     EqualityError errorThree = getEqualityError(vectorResponseListThree);
                     if (error == errorThree && lookEqual(vectorResponseList, vectorResponseListThree)) {
                         CONSOLE.info("Found an equality Error.");
-                        CONSOLE.info("The Server is very likely vulnerabble");
+                        CONSOLE.info("The Server is very likely vulnerable");
                     } else {
+                        LOGGER.error("2ndRescan false positive");
                         CONSOLE.info("Rescan revealed a false positive");
                         shakyScans = true;
                         return false;
                     }
                 } else {
+                    LOGGER.error("Rescan false positive");
                     CONSOLE.info("Rescan revealed a false positive");
                     shakyScans = true;
                     return false;
