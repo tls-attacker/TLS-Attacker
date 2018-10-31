@@ -8,9 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -77,7 +81,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             message.setCompleteResultingMessage(completeMessage);
             if (message instanceof HandshakeMessage) {
                 if (((HandshakeMessage) message).getIncludeInDigest()) {
-                	LOGGER.debug("Digested " + message.toCompactString());
+                	LOGGER.error("Digested " + message.toCompactString());
                     tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                 }
 
@@ -122,11 +126,29 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                     // should not be included in the digest in DTLS
                     if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS() )
                     {
+                    	//TODO there must be a better way of adding messages to the digest.
                         if ((parsedMessage instanceof DtlsHandshakeMessageFragment)
                                 && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
                                         .getValue())) {
+                        	DtlsHandshakeMessageFragment dtlsFragment = (DtlsHandshakeMessageFragment) parsedMessage;
+                        	ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        	// if this is the first fragment of a message, then we also append its header, otherwise, we only append 
+                        	// its content
+                        	// this is in line with the DTLS RFC 
+                        	if (dtlsFragment.getFragmentOffset().getValue() == 0)
+                        	{
+                        		stream.write(dtlsFragment.getType().getValue());
+                        		stream.write(dtlsFragment.getLength().getByteArray(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
+                        		stream.write(dtlsFragment.getMessageSeq().getByteArray(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
+                        		stream.write(dtlsFragment.getFragmentOffset().getByteArray(HandshakeByteLength.DTLS_FRAGMENT_OFFSET));
+                        		stream.write(dtlsFragment.getLength().getByteArray(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
+                        	}
+                        	stream.write(dtlsFragment.getContent().getValue());
+                        	tlsContext.getDigest().append(
+                        			stream.toByteArray()
+                        			);
                         	LOGGER.debug("Digested " + parsedMessage.toCompactString());
-                            tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+//                            tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
                         }
                     }
                     else {
@@ -139,13 +161,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 prepareAfterParse(parsedMessage);
                 adjustTLSContext(parsedMessage);
             }
-        } catch (AdjustmentException | UnsupportedOperationException E) {
+        } catch (AdjustmentException | UnsupportedOperationException | IOException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
         return new ParserResult(parsedMessage, parser.getPointer());
     }
-
+    
     @Override
     public abstract ProtocolMessageParser getParser(byte[] message, int pointer);
 

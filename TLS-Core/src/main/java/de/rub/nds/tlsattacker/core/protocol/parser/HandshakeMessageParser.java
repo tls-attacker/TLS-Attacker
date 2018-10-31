@@ -147,16 +147,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @return True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(T message) {
-    	//TODO Had to comment out the DTLS case for the happy flow to finish successfully.
-//        if (version.isDTLS()) {
-//            return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
-//                    + HandshakeByteLength.MESSAGE_LENGTH_FIELD + HandshakeByteLength.DTLS_FRAGMENT_LENGTH
-//                    + HandshakeByteLength.DTLS_FRAGMENT_OFFSET + HandshakeByteLength.DTLS_MESSAGE_SEQUENCE > getPointer()
-//                    - getStartPoint();
-//        } else {
-            return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
+    	return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
                     + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
-//        }
     }
 
     /**
