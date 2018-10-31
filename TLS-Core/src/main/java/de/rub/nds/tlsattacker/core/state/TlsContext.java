@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
@@ -199,8 +200,11 @@ public class TlsContext {
      */
     private Certificate clientCertificate;
 
+    /** 
+     * Collects messages for computation of the Finished and CertificateVerify hashes
+     */
     private MessageDigestCollector digest;
-
+    
     private RecordLayer recordLayer;
 
     private TransportHandler transportHandler;
@@ -460,10 +464,21 @@ public class TlsContext {
     private long readSequenceNumber = 0;
     
     /**
-     * sequence number used in DTLS for the handshake messages
+     * sequence number used in DTLS for handshake messages
      */
     private long messageSequenceNumber = 0;
+    
     /**
+     * epoch used in DTLS records
+     */
+    private int epoch = 0;
+    
+    /**
+     * a fragment manager assembles DTLS fragments into corresponding messages. 
+     */
+    private FragmentManager fragmentManager;
+    
+	/**
      * supported protocol versions
      */
     private List<ProtocolVersion> clientSupportedProtocolVersions;
@@ -574,7 +589,6 @@ public class TlsContext {
      * one, if its protocolmessage type is alert
      */
     private boolean tls13SoftDecryption = false;
-    private int epoch = 0;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -622,6 +636,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        fragmentManager = new FragmentManager();
     }
 
     public Chooser getChooser() {
@@ -678,6 +693,10 @@ public class TlsContext {
     public void setEpoch(int epoch) {
         this.epoch = epoch;
     }
+    
+    public FragmentManager getFragmentManager() {
+		return fragmentManager;
+	}
 
     public Session getSession(byte[] sessionId) {
         for (Session session : sessionList) {
