@@ -108,7 +108,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         try {
             vectorResponseList = createVectorResponseList();
             error = getEqualityError(vectorResponseList);
-            if (error != EqualityError.NONE) {
+            if (error != EqualityError.NONE && error != null) {
                 CONSOLE.info("Found a side channel. Rescanning to confirm.");
                 vectorResponseListTwo = createVectorResponseList();
                 EqualityError errorTwo = getEqualityError(vectorResponseListTwo);
@@ -256,11 +256,20 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         // to read?
         for (VectorResponse responseOne : responseVectorList) {
             for (VectorResponse responseTwo : responseVectorList) {
+
                 boolean shouldCompare = true;
+                if (responseOne.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
+                if (responseTwo.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
                 if (responseOne.getLength() == null || responseTwo.getLength() == null) {
                     shouldCompare = false;
                 }
-                if (shouldCompare || !groupRecords) {
+                if (shouldCompare) {
                     EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
                             responseTwo.getFingerprint(), true);
                     if (error != EqualityError.NONE) {

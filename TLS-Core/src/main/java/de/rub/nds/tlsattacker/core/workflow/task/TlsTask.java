@@ -39,7 +39,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
             } catch (Exception E) {
                 LOGGER.debug("Encountered an exception during the execution", E);
                 hasError = true;
-                sleepTime += 5000;
+                sleepTime += 1000;
                 exception = E;
             }
         }
