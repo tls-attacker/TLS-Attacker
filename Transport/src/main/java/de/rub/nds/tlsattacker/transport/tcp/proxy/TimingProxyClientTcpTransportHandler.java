@@ -37,11 +37,14 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     public byte[] fetchData() throws IOException {
         byte[] data = super.fetchData();
         byte[] controlData = new byte[8];
-        int bytesRead = controlSocket.getInputStream().read(controlData);
-        if (bytesRead != 8) {
-            throw new IOException("Should return 64 bit unsigned int");
+        if (data.length > 0) {
+            int bytesRead = controlSocket.getInputStream().read(controlData);
+            if (bytesRead != 8) {
+                throw new IOException("Should return 64 bit unsigned int");
+            }
+            measurement = ByteBuffer.wrap(controlData).getLong();
+
         }
-        measurement = ByteBuffer.wrap(controlData).getLong();
         return data;
     }
 
