@@ -12,7 +12,11 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
+
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 /**
@@ -24,16 +28,26 @@ public class Lucky13CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "lucky13";
 
-    protected LinkedList<CipherSuite> cipherSuites;
+    protected List<CipherSuite> cipherSuites;
 
-    @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
-    Integer blockSize = 16;
+    protected static HashMap<CipherSuite, Integer> blockSizeForCiphersuite;
+    static
+    {
+        blockSizeForCiphersuite = new HashMap<>();
+        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, 16);
+        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA, 16);
+        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA, 8);
+        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, 8);
+    }
 
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
     Integer measurements = 100;
 
     @Parameter(names = "-mona_file", description = "File output for Mona timing lib. If set, the output is generated and written.")
     String monaFile;
+
+    @Parameter(names = "-mona_jar", description = "Location of the ReportingTool.jar file.")
+    String monaJar = "ReportingTool.jar";
 
     @Parameter(names = "-paddings", description = "Paddings to check for differences, column separated.")
     String paddings = "0,255";
@@ -73,12 +87,12 @@ public class Lucky13CommandConfig extends AttackConfig {
         cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
     }
 
-    public Integer getBlockSize() {
-        return blockSize;
+    public Integer getBlockSizeForCiphersuite(CipherSuite suite) {
+        return blockSizeForCiphersuite.get(suite);
     }
 
-    public void setBlockSize(Integer blockSize) {
-        this.blockSize = blockSize;
+    public List<CipherSuite> getCipherSuites() {
+        return cipherSuites;
     }
 
     public Integer getMeasurements() {
@@ -95,6 +109,14 @@ public class Lucky13CommandConfig extends AttackConfig {
 
     public void setMonaFile(String monaFile) {
         this.monaFile = monaFile;
+    }
+
+    public String getMonaJar() {
+        return monaJar;
+    }
+
+    public void setMonaJar(String monaJar) {
+        this.monaJar = monaJar;
     }
 
     public String getPaddings() {
@@ -129,6 +151,17 @@ public class Lucky13CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        if (ciphersuiteDelegate.getCipherSuites() == null){
+            /*
+            * No explicit ciphersuites are set.
+            * Use the default ciphersuites for this attack
+            * */
+            config.setDefaultServerSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
+        }else{
+            cipherSuites = ciphersuiteDelegate.getCipherSuites();
+        }
         return config;
     }
 

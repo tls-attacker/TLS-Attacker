@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -40,11 +38,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
@@ -146,30 +140,20 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
     }
 
-    private Record createRecordWithPadding(int p) {
+    private Record createRecordWithPadding(int p, CipherSuite suite) {
         byte[] padding = createPaddingBytes(p);
-        int recordLength = config.getBlockSize() * config.getBlocks();
+        int recordLength = config.getBlockSizeForCiphersuite(suite) * config.getBlocks();
         if (recordLength < padding.length) {
             throw new ConfigurationException("Padding too large");
         }
+        /* create a message with arbitrary bytes*/
         int messageSize = recordLength - padding.length;
         byte[] message = new byte[messageSize];
+        new Random().nextBytes(message);
         byte[] plain = ArrayConverter.concatenate(message, padding);
         return createRecordWithPlainData(plain);
     }
 
-    private Record OLDcreateRecordWithPlainData(byte[] plain) {
-        Record r = new Record();
-        ModifiableByteArray plainData = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-        plainData.setModification(modifier);
-        // TODO: test if plain record bytes are actually set accordingly
-        //r.setPlainRecordBytes(plainData);
-        //r.setCompleteRecordBytes(plainData);
-        //r.setProtocolMessageBytes(plainData);
-        r.setFragment(plainData);
-        return r;
-    }
 
     private Record createRecordWithPlainData(byte[] plain) {
         Record r = new Record();
@@ -191,55 +175,65 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     protected Boolean isVulnerable() {
-        String[] paddingStrings = config.getPaddings().split(",");
-        int[] paddings = new int[paddingStrings.length];
-        for (int i = 0; i < paddingStrings.length; i++) {
-            paddings[i] = Integer.parseInt(paddingStrings[i]);
-        }
-        for (int i = 0; i < config.getMeasurements(); i++) {
-            LOGGER.info("Starting round {}", i);
-            for (int p : paddings) {
-                Record record = createRecordWithPadding(p);
-                //record.setMeasuringTiming(true);
-                executeAttackRound(record);
-                LOGGER.info("Padding: {}, Measured {}",p,lastResult);
-                if (results.get(p) == null) {
-                    results.put(p, new LinkedList<Long>());
-                }
-                // remove the first 20% of measurements
-                if (i > config.getMeasurements() / 5) {
-                    results.get(p).add(lastResult);
+        Boolean vulnerable = false;
+        StringBuilder commands = new StringBuilder();
+        List<CipherSuite> suites = config.getCipherSuites();
+        for (CipherSuite suite : suites) {
+            LOGGER.info("Testing ciphersuite {}", suite);
+            tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+            tlsConfig.setDefaultServerSupportedCiphersuites(suite);
+            tlsConfig.setDefaultSelectedCipherSuite(suite);
+            String[] paddingStrings = config.getPaddings().split(",");
+            int[] paddings = new int[paddingStrings.length];
+            for (int i = 0; i < paddingStrings.length; i++) {
+                paddings[i] = Integer.parseInt(paddingStrings[i]);
+            }
+            for (int i = 0; i < config.getMeasurements(); i++) {
+                LOGGER.info("Starting round {}", i);
+                for (int p : paddings) {
+                    Record record = createRecordWithPadding(p, suite);
+                    //record.setMeasuringTiming(true);
+                    executeAttackRound(record);
+                    LOGGER.info("Padding: {}, Measured {}",p,lastResult);
+                    if (results.get(p) == null) {
+                        results.put(p, new LinkedList<Long>());
+                    }
+                    // remove the first 20% of measurements
+                    if (i > config.getMeasurements() / 5) {
+                        results.get(p).add(lastResult);
+                    }
                 }
             }
-        }
 
-        StringBuilder medians = new StringBuilder();
-        for (int padding : paddings) {
-            List<Long> rp = results.get(padding);
-            Collections.sort(rp);
-            LOGGER.info("Padding: {}", padding);
-            long median = rp.get(rp.size() / 2);
-            LOGGER.info("Median: {}", median);
-            medians.append(median).append(",");
-        }
-        LOGGER.info("Medians: {}", medians);
+            StringBuilder medians = new StringBuilder();
+            for (int padding : paddings) {
+                List<Long> rp = results.get(padding);
+                Collections.sort(rp);
+                LOGGER.info("Padding: {}", padding);
+                long median = rp.get(rp.size() / 2);
+                LOGGER.info("Median: {}", median);
+                medians.append(median).append(",");
+            }
+            LOGGER.info("Medians: {}", medians);
 
-        if (config.getMonaFile() != null) {
-            StringBuilder commands = new StringBuilder();
-            for (int i = 0; i < paddings.length - 1; i++) {
-                for (int j = i + 1; j < paddings.length; j++) {
-                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
-                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
-                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
-                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
-                    LOGGER.info("Run mona timing lib with: " + command);
-                    commands.append(command);
-                    commands.append(System.getProperty("line.separator"));
+            if (config.getMonaFile() != null) {
+                for (int i = 0; i < paddings.length - 1; i++) {
+                    for (int j = i + 1; j < paddings.length; j++) {
+                        String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
+                        String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
+                        createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
+                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName + " --name=lucky13-"
+                                + suite.name() + "-" + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                        LOGGER.info("Run mona timing lib with: " + command);
+                        commands.append(command);
+                        commands.append(System.getProperty("line.separator"));
+                    }
                 }
             }
-            LOGGER.info("All commands at once: \n{}", commands);
+            //vulnerable |= false;
         }
-        return false;
+        LOGGER.info("All commands at once: \n{}", commands);
+        LOGGER.warn("Vulnerability has to be tested using the mona timing lib.");
+        return vulnerable;
     }
 }
