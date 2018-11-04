@@ -14,8 +14,11 @@ import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import static org.junit.Assert.*;
+
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class TimingProxyClientTcpTransportHandlerTest {
 
@@ -26,7 +29,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
     }
 
     /**
-     * Test of closeConnection method, of class TimingProxyClientTcpTransportHandler.
+     * Test of closeConnection method, of class
+     * TimingProxyClientTcpTransportHandler.
      *
      * @throws java.io.IOException
      */
@@ -42,13 +46,15 @@ public class TimingProxyClientTcpTransportHandlerTest {
      * @throws java.io.IOException
      */
     @Test
+    @Category(IntegrationTests.class)
     public void testInitialize() throws IOException {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket().getLocalPort());
+            handler = new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
@@ -65,6 +71,7 @@ public class TimingProxyClientTcpTransportHandlerTest {
     }
 
     @Test
+    @Category(IntegrationTests.class)
     public void fullTest() throws IOException {
         ServerSocketChannel serverSocketChannel = null;
         Socket s = null;
@@ -72,7 +79,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket().getLocalPort());
+            handler = new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();

@@ -64,7 +64,8 @@ public class TransportHandlerFactory {
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new TimingProxyClientTcpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
-                    throw new UnsupportedOperationException("TCP_PROXY_TIMING for server sockets is currently not supported");
+                    throw new UnsupportedOperationException(
+                            "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {

@@ -10,5 +10,6 @@
 package de.rub.nds.tlsattacker.transport;
 
 public interface ProxyableTransportHandler {
-    public abstract void setProxy(String dataChanelHost, int dataChanelPort, String controlChanelHost, int controlChanelPort);
+    public abstract void setProxy(String dataChanelHost, int dataChanelPort, String controlChanelHost,
+            int controlChanelPort);
 }

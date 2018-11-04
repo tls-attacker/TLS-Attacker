@@ -22,7 +22,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
-public class TimingProxyClientTcpTransportHandler extends TransportHandler implements ProxyableTransportHandler, TimeableTransportHandler {
+public class TimingProxyClientTcpTransportHandler extends TransportHandler implements ProxyableTransportHandler,
+        TimeableTransportHandler {
     protected Socket dataSocket;
     protected Socket controlSocket;
     protected String hostname;
@@ -47,7 +48,6 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         }
         return data;
     }
-
 
     public TimingProxyClientTcpTransportHandler(Connection connection) {
         super(connection.getTimeout(), ConnectionEndType.CLIENT);
@@ -87,7 +87,6 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         controlSocket = new Socket();
         controlSocket.connect(new InetSocketAddress(proxyControlHostName, proxyControlPort), (int) timeout);
 
-
         dataSocket = new Socket();
         dataSocket.connect(new InetSocketAddress(proxyDataHostName, proxyDataPort), (int) timeout);
         if (!dataSocket.isConnected()) {
@@ -95,8 +94,8 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         }
 
         /* tell the proxy where the real server is */
-        controlSocket.getOutputStream().write((hostname+"\n").getBytes());
-        controlSocket.getOutputStream().write((Integer.toString(port)+"\n").getBytes());
+        controlSocket.getOutputStream().write((hostname + "\n").getBytes());
+        controlSocket.getOutputStream().write((Integer.toString(port) + "\n").getBytes());
         controlSocket.getOutputStream().flush();
 
         setStreams(dataSocket.getInputStream(), dataSocket.getOutputStream());
@@ -104,7 +103,8 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
 
     @Override
     public boolean isClosed() throws IOException {
-        return dataSocket.isClosed() || dataSocket.isInputShutdown() || controlSocket.isClosed() || controlSocket.isInputShutdown();
+        return dataSocket.isClosed() || dataSocket.isInputShutdown() || controlSocket.isClosed()
+                || controlSocket.isInputShutdown();
     }
 
     @Override

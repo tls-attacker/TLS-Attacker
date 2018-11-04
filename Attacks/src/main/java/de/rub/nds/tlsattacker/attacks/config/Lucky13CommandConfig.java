@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Malte Poll <malte.poll@rub.de>
  */
 public class Lucky13CommandConfig extends AttackConfig {
 
@@ -30,14 +28,13 @@ public class Lucky13CommandConfig extends AttackConfig {
 
     protected List<CipherSuite> cipherSuites;
 
-    protected static HashMap<CipherSuite, Integer> blockSizeForCiphersuite;
-    static
-    {
-        blockSizeForCiphersuite = new HashMap<>();
-        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, 16);
-        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA, 16);
-        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA, 8);
-        blockSizeForCiphersuite.put(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, 8);
+    protected static HashMap<CipherSuite, Integer> blockSizeForCipherSuite;
+    static {
+        blockSizeForCipherSuite = new HashMap<>();
+        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, 16);
+        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA, 16);
+        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA, 8);
+        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, 8);
     }
 
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
@@ -88,7 +85,7 @@ public class Lucky13CommandConfig extends AttackConfig {
     }
 
     public Integer getBlockSizeForCiphersuite(CipherSuite suite) {
-        return blockSizeForCiphersuite.get(suite);
+        return blockSizeForCipherSuite.get(suite);
     }
 
     public List<CipherSuite> getCipherSuites() {
@@ -151,15 +148,15 @@ public class Lucky13CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        if (ciphersuiteDelegate.getCipherSuites() == null){
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
             /*
-            * No explicit ciphersuites are set.
-            * Use the default ciphersuites for this attack
-            * */
+             * No explicit cipher suites are set. Use the default cipher suites
+             * for this attack
+             */
             config.setDefaultServerSupportedCiphersuites(cipherSuites);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
             config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
-        }else{
+        } else {
             cipherSuites = ciphersuiteDelegate.getCipherSuites();
         }
         return config;

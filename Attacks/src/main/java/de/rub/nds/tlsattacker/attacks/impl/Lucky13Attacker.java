@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,28 +18,20 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-//import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-//import de.rub.nds.tlsattacker.core.config.ConfigHandler;
-//import de.rub.nds.tlsattacker.core.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-//import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-//import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
@@ -47,9 +39,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Lucky13 attack test
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
- * @author Malte Poll (malte.poll@rub.de)
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
@@ -86,56 +75,44 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     }
 
     public void executeAttackRound(Record record) {
-        //TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        //TransportHandler transportHandler = new TimingProxyClientTcpTransportHandler();
-        //TlsContext tlsContext = configHandler.initializeTlsContext(config);
         tlsConfig.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP_PROXY_TIMING);
-        // TODO: test wether or not the correct TransportHandlerType will be chosen
         tlsConfig.setWorkflowExecutorShouldClose(true);
-        //TlsContext tlsContext = new TlsContext(tlsConfig);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.FULL, RunningModeType.CLIENT);
-        //WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
 
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<AbstractRecord> records = new LinkedList<>();
         records.add(record);
         sendAction.setRecords(records);
-        //applicationMessage.addRecord(record);
-        //trace.addTlsAction(sendAction);
 
         ReceiveAction action = new ReceiveAction();
 
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         alertMessage.setDescription(AlertDescription.BAD_RECORD_MAC.getValue());
         alertMessage.setLevel(AlertLevel.FATAL.getValue());
-        //ReceiveAction action = (ReceiveAction) (trace.getLastReceivingAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         trace.addTlsAction(action);
 
-        //trace.getProtocolMessages().add(applicationMessage);
-        //trace.getProtocolMessages().add(alertMessage);
-
-        //WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
         // TODO: think about when (and where) to set proxy settings
-        //transportHandler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
+        // transportHandler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        //tlsContexts.add(tlsContext);
-        //TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) workflowExecutor.getTransportHandler();
-        TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) state.getTlsContext().getTransportHandler();
+        TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) state
+                .getTlsContext().getTransportHandler();
         lastResult = transportHandler.getLastMeasurement();
-        try{transportHandler.closeConnection();}
-        catch (IOException e){
+        try {
+            transportHandler.closeConnection();
+        } catch (IOException e) {
             LOGGER.warn(e.getMessage());
         }
     }
@@ -146,14 +123,13 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         if (recordLength < padding.length) {
             throw new ConfigurationException("Padding too large");
         }
-        /* create a message with arbitrary bytes*/
+        /* create a message with arbitrary bytes */
         int messageSize = recordLength - padding.length;
         byte[] message = new byte[messageSize];
         new Random().nextBytes(message);
         byte[] plain = ArrayConverter.concatenate(message, padding);
         return createRecordWithPlainData(plain);
     }
-
 
     private Record createRecordWithPlainData(byte[] plain) {
         Record r = new Record();
@@ -192,9 +168,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 LOGGER.info("Starting round {}", i);
                 for (int p : paddings) {
                     Record record = createRecordWithPadding(p, suite);
-                    //record.setMeasuringTiming(true);
                     executeAttackRound(record);
-                    LOGGER.info("Padding: {}, Measured {}",p,lastResult);
+                    LOGGER.info("Padding: {}, Measured {}", p, lastResult);
                     if (results.get(p) == null) {
                         results.put(p, new LinkedList<Long>());
                     }
@@ -222,15 +197,16 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                         String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
                         String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName + " --name=lucky13-"
-                                + suite.name() + "-" + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
+                                + " --name=lucky13-" + suite.name() + "-" + paddings[i] + "-" + paddings[j]
+                                + " --lowerBound=0.3 --upperBound=0.5";
                         LOGGER.info("Run mona timing lib with: " + command);
                         commands.append(command);
                         commands.append(System.getProperty("line.separator"));
                     }
                 }
             }
-            //vulnerable |= false;
+            // vulnerable |= false;
         }
         LOGGER.info("All commands at once: \n{}", commands);
         LOGGER.warn("Vulnerability has to be tested using the mona timing lib.");
