@@ -76,7 +76,8 @@ public class EncryptedExtensionsHandlerTest {
     @Test
     public void testAdjustTLSContextWithSNI() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
-        // "[T]he server SHALL include an extension of type 'server_name' in the (extended) server hello.  The
+        // "[T]he server SHALL include an extension of type 'server_name' in the
+        // (extended) server hello. The
         // 'extension_data' field of this extension SHALL be empty."
         message.addExtension(new ServerNameIndicationExtensionMessage());
         handler.adjustTLSContext(message);
