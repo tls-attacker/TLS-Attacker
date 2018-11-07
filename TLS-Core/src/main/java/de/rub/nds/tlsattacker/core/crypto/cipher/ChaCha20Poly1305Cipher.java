@@ -27,6 +27,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.tls.crypto.impl.bc.BcChaCha20Poly1305;
+import org.bouncycastle.crypto.engines.ChaCha7539Engine;
+import org.bouncycastle.crypto.macs.Poly1305;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.tls.AlertDescription;
+import org.bouncycastle.tls.TlsFatalAlert;
+import org.bouncycastle.tls.crypto.impl.TlsAEADCipherImpl;
+import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.Pack;
 
 /**
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
@@ -37,34 +46,43 @@ import org.bouncycastle.tls.crypto.impl.bc.BcChaCha20Poly1305;
  */
 public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
 
-    private final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
+    private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private long nonce = (-1);
+    // init nonce with 0 in order to prevent errors in calculateRFC7905Iv()
+    private long nonce = 0;
 
-    private final BcChaCha20Poly1305 bc_cipher;
+    private final boolean isEncrypting;
+    private static final byte[] ZEROES = new byte[15];
+    private int additionalDataLength = 0;
+
+    // instanciate ChaCha20Poly1305 algorithms
+    private final ChaCha7539Engine cipher = new ChaCha7539Engine();
+    private final Poly1305 mac = new Poly1305();
 
     public ChaCha20Poly1305Cipher(boolean isEncrypting, byte[] key) {
-        bc_cipher = new BcChaCha20Poly1305(isEncrypting);
-        try {
-            bc_cipher.setKey(key, 0, key.length);
-        } catch (IOException e) {
-            LOGGER.error("Something is wrong with the provided key!");
-        }
+        this.isEncrypting = isEncrypting;
+        this.cipher.init(isEncrypting, new ParametersWithIV(new KeyParameter(key, 0, key.length), ZEROES, 0, 12));
     }
 
-    @Override
-    public byte[] encrypt(byte[] someBytes) throws CryptoException {
-        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
+    /**
+     * From RFC7905: AEAD_CHACHA20_POLY1305 requires a 96-bit nonce, which is
+     * formed as follows: 1. The 64-bit recor sequence number is serialized as
+     * an 8-byte, big-endian value and padded on the left with four 0x00 bytes.
+     * 2. The padded sequence number is XORed with the client_write_IV (when the
+     * client is sending) or server_write_IV (when the server is sending).
+     */
+    private byte[] calculateRFC7905Iv(byte[] iv) {
+        byte[] temp = new byte[12];
+        TlsUtils.writeUint64(this.nonce, temp, 4);
+        for (int i = 0; i < 12; ++i) {
+            temp[i] ^= iv[i];
+        }
+        return temp;
     }
 
     @Override
     public byte[] decrypt(byte[] someBytes) throws CryptoException {
-        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
-    }
-
-    @Override
-    public byte[] encrypt(byte[] iv, byte[] someBytes) {
         throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
     }
 
@@ -74,65 +92,90 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     }
 
     @Override
-    public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) {
-        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
-    }
-
-    @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) {
         throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
     }
 
     @Override
-    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        LOGGER.info("Encyption: input iv: {}", ArrayConverter.bytesToHexString(iv));
-        byte[] ciphertext = new byte[bc_cipher.getOutputSize(someBytes.length)];
-        try {
-            byte[] rfc7905_iv = calculateRFC7905Iv(iv);
-            LOGGER.info("Encyption: rfc iv: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
-            LOGGER.info("Encyption: input AAD: {}", ArrayConverter.bytesToHexString(additionAuthenticatedData));
-            LOGGER.info("Encyption: input plaintext: {}", ArrayConverter.bytesToHexString(someBytes));
-            LOGGER.info("Encyption: max. output size: {}", String.valueOf(bc_cipher.getOutputSize(someBytes.length)));
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        this.additionalDataLength = additionAuthenticatedData.length;
+        byte[] plaintext = new byte[getOutputSize(someBytes.length)];
+        byte[] rfc7905_iv = calculateRFC7905Iv(iv);
+        LOGGER.debug("Decrypting with the following rfc7905_iv: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
 
-            // init BC Cipher
-            bc_cipher.init(rfc7905_iv, tagLength, additionAuthenticatedData);
+        this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
+        initMAC();
+        updateMAC(additionAuthenticatedData, 0, this.additionalDataLength);
+        doFinal(someBytes, plaintext);
 
-            // Encrypt with BC Cipher int output_size =
-            bc_cipher.doFinal(someBytes, 0, someBytes.length, ciphertext, 0);
+        return plaintext;
+    }
 
-            LOGGER.info("Encyption: Ciphertext|MAC-tag from BouncyCastle Cipher: {}",
-                    ArrayConverter.bytesToHexString(ciphertext));
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-            return null;
-        } catch (CryptoException ex) {
-            LOGGER.error("Encyption: Something went wrong while calculating the RFC7905 IV!\n" + ex);
-            return null;
+    public void doFinal(byte[] input, byte[] output) {
+        int inputLength = input.length;
+
+        if (this.isEncrypting) {
+            byte[] lengths = new byte[16];
+            int ciphertextLength = inputLength;
+
+            // encrypt plaintext
+            cipher.processBytes(input, 0, ciphertextLength, output, 0);
+
+            // calculate mac
+            updateMAC(output, 0, ciphertextLength);
+            Pack.longToLittleEndian(this.additionalDataLength & 0xFFFFFFFFL, lengths, 0);
+            Pack.longToLittleEndian(ciphertextLength & 0xFFFFFFFFL, lengths, 8);
+            mac.update(lengths, 0, 16);
+            mac.doFinal(output, 0 + ciphertextLength);
+        } else { // decrypt ciphertext
+            int ciphertextLength = inputLength - 16;
+
+            updateMAC(input, 0, ciphertextLength);
+
+            byte[] calculatedMAC = new byte[16];
+            Pack.longToLittleEndian(this.additionalDataLength & 0xFFFFFFFFL, calculatedMAC, 0);
+            Pack.longToLittleEndian(ciphertextLength & 0xFFFFFFFFL, calculatedMAC, 8);
+            this.mac.update(calculatedMAC, 0, 16);
+            this.mac.doFinal(calculatedMAC, 0);
+
+            byte[] receivedMAC = Arrays.copyOfRange(input, ciphertextLength, inputLength);
+
+            if (!Arrays.constantTimeAreEqual(calculatedMAC, receivedMAC)) {
+                LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
+            }
+
+            this.cipher.processBytes(input, 0, ciphertextLength, output, 0);
         }
-        return ciphertext;
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        LOGGER.info("Decyption: input iv: {}", ArrayConverter.bytesToHexString(iv));
-        byte[] plaintext = new byte[bc_cipher.getOutputSize(someBytes.length)];
-        try {
-            byte[] rfc7905_iv = calculateRFC7905Iv(iv);
-            LOGGER.debug("Decrypting with the following rfc7905_iv: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
+    public byte[] encrypt(byte[] someBytes) throws CryptoException {
+        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
+    }
 
-            // init BC Cipher
-            bc_cipher.init(rfc7905_iv, tagLength, additionAuthenticatedData);
+    @Override
+    public byte[] encrypt(byte[] iv, byte[] someBytes) {
+        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
+    }
 
-            // Encrypt with BC Cipher int output_size =
-            bc_cipher.doFinal(someBytes, 0, someBytes.length, plaintext, 0);
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-            return null;
-        } catch (CryptoException ex) {
-            LOGGER.error("Decyption: Something went wrong while calculating the RFC7905 IV!\n" + ex);
-            return null;
-        }
-        return plaintext;
+    @Override
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) {
+        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
+    }
+
+    @Override
+    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        this.additionalDataLength = additionAuthenticatedData.length;
+        byte[] ciphertext = new byte[getOutputSize(someBytes.length)];
+        byte[] rfc7905_iv = calculateRFC7905Iv(iv);
+        LOGGER.info("Encypting with the following RFV7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
+
+        this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
+        initMAC();
+        updateMAC(additionAuthenticatedData, 0, this.additionalDataLength);
+        doFinal(someBytes, ciphertext);
+
+        return ciphertext;
     }
 
     @Override
@@ -140,12 +183,27 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
     }
 
-    /**
-     * Used to get the [client/server]_[read/write]_key-
-     */
     @Override
     public byte[] getIv() {
         throw new UnsupportedOperationException();
+    }
+
+    private int getOutputSize(int inputLength) {
+        return this.isEncrypting ? inputLength + 16 : inputLength - 16;
+    }
+
+    /**
+     * private byte[] hexStringToByteArray(String s) { int len = s.length();
+     * byte[] data = new byte[len / 2]; for (int i = 0; i < len; i += 2) {
+     * data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) +
+     * Character.digit(s.charAt(i + 1), 16)); } return data; }
+     */
+
+    private void initMAC() {
+        byte[] firstBlock = new byte[64];
+        this.cipher.processBytes(firstBlock, 0, 64, firstBlock, 0);
+        this.mac.init(new KeyParameter(firstBlock, 0, 32));
+        Arrays.fill(firstBlock, (byte) 0);
     }
 
     @Override
@@ -158,34 +216,13 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         this.nonce = nonce;
     }
 
-    /**
-     * From RFC7905: AEAD_CHACHA20_POLY1305 requires a 96-bit nonce, which is
-     * formed as follows: 1. The 64-bit recor sequence number is serialized as
-     * an 8-byte, big-endian value and padded on the left with four 0x00 bytes.
-     * 2. The padded sequence number is XORed with the client_write_IV (when the
-     * client is sending) or server_write_IV (when the server is sending).
-     *
-     * Method must be called after setNonce() and setIv() where called!
-     */
-    // TODO Robin remove unnecessary part when debugged!
-    private byte[] calculateRFC7905Iv(byte[] iv) throws CryptoException {
-        if (this.nonce == (-1)) {
-            throw new CryptoException("Nonce has not been set!");
+    private void updateMAC(byte[] buf, int off, int len) {
+        this.mac.update(buf, off, len);
+
+        int partial = len % 16;
+        if (partial != 0) {
+            this.mac.update(ZEROES, 0, 16 - partial);
         }
-        byte[] temp = new byte[12];
-        TlsUtils.writeUint64(this.nonce, temp, 4);
-        for (int i = 0; i < 12; ++i) {
-            temp[i] ^= iv[i];
-        }
-        return temp;
     }
 
-    private byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
 }
