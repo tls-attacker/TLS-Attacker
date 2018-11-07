@@ -27,9 +27,10 @@ public class KeyBlockParser extends Parser<KeySet> {
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
 
     /**
-     * iv length in byte
+     * iv lengths in byte
      */
     public static final int GCM_IV_LENGTH = 12;
+    public static final int CHACHAPOLY_IV_LENGTH = 12;
 
     private final CipherSuite suite;
 
@@ -62,6 +63,16 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getAeadSaltSize() {
+        if (suite.usesCHACHA20POLY1305()) {
+            return CHACHAPOLY_IV_LENGTH;
+        }
+        /**
+         * ==> ERROR: TlsClient - Encountered an uncaught Exception aborting.
+         * See debug for more info.
+         * de.rub.nds.tlsattacker.core.exceptions.ParserException: Parsing over
+         * the end of the array. Current Pointer:64 ToParse Length:12
+         * ArrayLength:72
+         */
         return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
     }
 

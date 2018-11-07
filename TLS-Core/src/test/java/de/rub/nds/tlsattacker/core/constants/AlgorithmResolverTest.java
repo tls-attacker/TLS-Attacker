@@ -302,7 +302,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherType.BLOCK);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherType.AEAD);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.STREAM);
-        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.STREAM);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.AEAD);
     }
 
     /**

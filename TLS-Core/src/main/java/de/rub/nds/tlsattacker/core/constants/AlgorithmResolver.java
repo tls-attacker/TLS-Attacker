@@ -249,6 +249,10 @@ public class AlgorithmResolver {
         } else if (cipher.contains("28147_CNT")) {
             return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
+            if (cipherSuite.isTLS13()) {
+                throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite
+                        + " is not yet supported for TLS 1.3!");
+            }
             return CipherAlgorithm.ChaCha20Poly1305;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
@@ -276,13 +280,13 @@ public class AlgorithmResolver {
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
+        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB() || cipherSuite.usesCHACHA20POLY1305()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
                 || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA")
                 || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA") || cs.contains("28147_CNT")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
@@ -360,6 +364,5 @@ public class AlgorithmResolver {
     }
 
     private AlgorithmResolver() {
-
     }
 }

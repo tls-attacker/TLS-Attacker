@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public enum BulkCipherAlgorithm {
 
     /**
@@ -27,6 +30,8 @@ public enum BulkCipherAlgorithm {
     CHACHA20_POLY1305,
     GOST28147,
     AES;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * @param cipherSuite
@@ -62,6 +67,10 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("28147")) {
             return GOST28147;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
+            if (cipherSuite.isTLS13()) {
+                throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite
+                        + " is not yet supported for TLS 1.3!");
+            }
             return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
@@ -100,7 +109,8 @@ public enum BulkCipherAlgorithm {
                 + " is not supported yet.");
     }
 
-    public String getJavaName() {
+    public String getJavaName() { // TODO Robin: ADD IF-CLAUSE FOR CHACHA?!
+        LOGGER.warn("getJavaName() called!");
         if (this == DES40) {
             return "DES";
         }

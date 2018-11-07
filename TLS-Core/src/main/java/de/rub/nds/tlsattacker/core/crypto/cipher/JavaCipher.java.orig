@@ -114,11 +114,6 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public void setNonce(long nonce) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public byte[] decrypt(byte[] iv, byte[] someBytes) throws CryptoException {
         IvParameterSpec decryptIv = new IvParameterSpec(iv);
         try {

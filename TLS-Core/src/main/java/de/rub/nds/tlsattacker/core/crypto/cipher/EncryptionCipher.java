@@ -30,4 +30,6 @@ public interface EncryptionCipher {
     public byte[] getIv();
 
     public void setIv(byte[] iv);
+
+    public void setNonce(long nonce);
 }

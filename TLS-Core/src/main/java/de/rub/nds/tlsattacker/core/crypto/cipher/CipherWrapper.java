@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import javax.crypto.Cipher;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -27,6 +29,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
                     keySet.getWriteIv(connectionEndType));
+        } else if (cipherAlg == CipherAlgorithm.ChaCha20Poly1305) {
+            LOGGER.warn("Enc-Key: " + ArrayConverter.bytesToHexString(keySet.getWriteKey(connectionEndType)));
+            return new ChaCha20Poly1305Cipher(true, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
@@ -43,6 +48,9 @@ public class CipherWrapper {
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
                     keySet.getReadIv(connectionEndType));
+        } else if (cipherAlg == CipherAlgorithm.ChaCha20Poly1305) {
+            LOGGER.warn("Dec-Key: " + ArrayConverter.bytesToHexString(keySet.getReadKey(connectionEndType)));
+            return new ChaCha20Poly1305Cipher(false, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {

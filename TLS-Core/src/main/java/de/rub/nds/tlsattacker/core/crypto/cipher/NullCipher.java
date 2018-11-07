@@ -55,6 +55,10 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
+    public void setNonce(long nonce) {
+    }
+
+    @Override
     public byte[] decrypt(byte[] someBytes) throws CryptoException {
         return someBytes;
     }

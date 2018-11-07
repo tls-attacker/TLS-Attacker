@@ -25,6 +25,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO Robin: ADAPT CLASS FOR CHACHA!
 public class RecordAEADCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -34,13 +35,15 @@ public class RecordAEADCipher extends RecordCipher {
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
     /**
-     * tag length in byte
+     * tag lengths in byte
      */
     public static final int GCM_TAG_LENGTH = 16;
+    public static final int CHACHAPOLY_TAG_LENGTH = 16;
     /**
-     * iv length in byte
+     * iv lengths in byte
      */
     public static final int GCM_IV_LENGTH = 12;
+    public static final int CHACHAPOLY_IV_LENGTH = 12;
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
@@ -81,6 +84,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
+    // TODO Robin: TLS1.3 Adapt for chacha???
     private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
@@ -100,7 +104,9 @@ public class RecordAEADCipher extends RecordCipher {
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
+    // TODO Robin: TLS1.3 Adapt for chacha???
     private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
+        LOGGER.info("PREPARING AEAD PARAMs");
         byte[] param = new byte[GCM_IV_LENGTH];
         for (int i = 0; i < GCM_IV_LENGTH; i++) {
             param[i] = (byte) (iv[i] ^ nonce[i]);
@@ -108,18 +114,41 @@ public class RecordAEADCipher extends RecordCipher {
         return param;
     }
 
+    // TODO Robin: Adapt for chacha
+    /**
+     * Different handling for "GCM-Mode" AEAD Ciphers and ChaCha20Poly1305
+     */
     private EncryptionResult encryptTLS12(EncryptionRequest request) throws CryptoException {
+        // ChaCha20Poly1305 is used as AEAD Cipher
+        if (cipherSuite.usesCHACHA20POLY1305()) {
+            LOGGER.warn("Write Seq.no:" + Long.toString(context.getWriteSequenceNumber()));
+            LOGGER.warn("Read Seq.no:" + Long.toString(context.getReadSequenceNumber()));
+            encryptCipher.setNonce(context.getWriteSequenceNumber());
+            LOGGER.warn("Using write-seqno");
+            LOGGER.info("Encrypting ChaCha20Poly1305 with the following AAD: {}",
+                    ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
+
+            LOGGER.info("encrypting...");
+            byte[] iv = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
+            byte[] ciphertext = encryptCipher.encrypt(iv, CHACHAPOLY_TAG_LENGTH,
+                    request.getAdditionalAuthenticatedData(), request.getPlainText());
+
+            LOGGER.info("returning EncryptionResult...");
+            return new EncryptionResult(ciphertext);
+        }
+        // else: Cipher runs in GCM-mode:
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), RecordByteLength.SEQUENCE_NUMBER);
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
-        LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-        LOGGER.debug("Encrypting GCM with the following AAD: {}",
+        LOGGER.info("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.info("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
         byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
-        return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
+        return new EncryptionResult(iv, ciphertext, true);
     }
 
+    // TODO Robin: TLS1.3 Adapt for chacha???
     private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
         LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
@@ -140,21 +169,47 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
+    // TODO Robin: Adapt for chacha
+    /**
+     * Different handling for "GCM-Mode" AEAD Ciphers and ChaCha20Poly1305
+     */
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
+
         if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
             LOGGER.warn("Could not DecryptCipherText. Too short. Returning undecrypted Ciphertext");
             return decryptionRequest.getCipherText();
         }
-        byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
-        byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
-                decryptionRequest.getCipherText().length);
-        byte[] iv = ArrayConverter.concatenate(
-                getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
-        LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-        LOGGER.debug("Decrypting GCM with the following AAD: {}",
-                ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
-        LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
+        // ChaCha20Poly1305 is used as AEAD Cipher
+        if (cipherSuite.usesCHACHA20POLY1305()) {
+            if (cipherSuite.usesCHACHA20POLY1305()) {
+                LOGGER.warn("Write Seq.no:" + Long.toString(context.getWriteSequenceNumber()));
+                LOGGER.warn("Read Seq.no:" + Long.toString(context.getReadSequenceNumber()));
+                LOGGER.warn("Using write-seqno");
+                decryptCipher.setNonce(context.getWriteSequenceNumber());
+
+                LOGGER.info("decrypting...");
+                byte[] iv = getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType());
+                byte[] plaintext = decryptCipher.decrypt(iv, CHACHAPOLY_TAG_LENGTH,
+                        decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
+
+                LOGGER.info("returning EncryptionResult...");
+                return plaintext;
+            }
+        } else {
+            // Cipher runs in GCM-mode:
+            byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
+            byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
+                    decryptionRequest.getCipherText().length);
+            byte[] iv = ArrayConverter.concatenate(
+                    getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
+            LOGGER.info("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+            LOGGER.info("Decrypting GCM with the following AAD: {}",
+                    ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
+            LOGGER.info("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
+            return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(),
+                    data);
+        }
+        return new byte[1];
     }
 
     @Override
@@ -175,7 +230,11 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getTagSize() {
-        return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
+        if (cipherSuite.usesCHACHA20POLY1305()) {
+            return SEQUENCE_NUMBER_LENGTH + CHACHAPOLY_TAG_LENGTH;
+        } else {
+            return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
+        }
     }
 
     @Override
