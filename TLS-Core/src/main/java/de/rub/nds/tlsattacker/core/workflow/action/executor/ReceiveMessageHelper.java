@@ -134,26 +134,28 @@ public class ReceiveMessageHelper {
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<AbstractRecord> records = new LinkedList<>();
-        List<ProtocolMessage> fragmentedMessages = new LinkedList<>();
+        List<ProtocolMessage> messageFragments = new LinkedList<>();
         if (receivedBytes.length != 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
             List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
             for (List<AbstractRecord> recordGroup : recordGroups) {
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                     decryptRecords(recordGroup, context);
-                    fragmentedMessages.addAll(collectMessageFragments(recordGroup, recordGroup.get(0)
-                            .getContentMessageType(), context));
-                    messages.addAll(processFragmentGroup(fragmentedMessages, context));
+                    List<ProtocolMessage> fragmentGroup = collectMessageFragments(recordGroup, recordGroup.get(0)
+                            .getContentMessageType(), context);
+                    List<ProtocolMessage> fullMessages = processFragmentGroup(fragmentGroup, context);
+                    messageFragments.addAll(fragmentGroup);
+                    messages.addAll(fullMessages);
                 } else {
                     messages.addAll(processRecordGroup(recordGroup, context));
                 }
             }
             records.addAll(tempRecords);
         }
-        if (fragmentedMessages.isEmpty()) {
-            fragmentedMessages = null;
+        if (messageFragments.isEmpty()) {
+            messageFragments = null;
         }
-        return new MessageActionResult(records, messages, fragmentedMessages);
+        return new MessageActionResult(records, messages, messageFragments);
     }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
@@ -280,7 +282,6 @@ public class ReceiveMessageHelper {
                     } else {
                         result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
                                 context);
-
                     }
                 } else {
                     if (cleanProtocolMessageBytes.length > 2) {
@@ -395,7 +396,7 @@ public class ReceiveMessageHelper {
     private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
         DtlsHandshakeMessageFragmentHandler fragmentHandler = new DtlsHandshakeMessageFragmentHandler(context);
-        return fragmentHandler.parseMessage(protocolMessageBytes, pointer, true);
+        return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
     }
 
     private ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer, TlsContext context) {
