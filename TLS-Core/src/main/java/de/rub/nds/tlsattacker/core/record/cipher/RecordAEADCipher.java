@@ -120,31 +120,24 @@ public class RecordAEADCipher extends RecordCipher {
     private EncryptionResult encryptTLS12(EncryptionRequest request) throws CryptoException {
         // ChaCha20Poly1305 is used as AEAD Cipher
         if (cipherSuite.usesCHACHA20POLY1305()) {
-            LOGGER.warn("Write Seq.no:" + Long.toString(context.getWriteSequenceNumber()));
-            LOGGER.warn("Read Seq.no:" + Long.toString(context.getReadSequenceNumber()));
             encryptCipher.setNonce(context.getWriteSequenceNumber());
-            LOGGER.warn("Using write-seqno");
-            LOGGER.info("Encrypting ChaCha20Poly1305 with the following AAD: {}",
-                    ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-
-            LOGGER.info("encrypting...");
             byte[] iv = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
+            LOGGER.debug("Encrypting ChaCha20Poly1305 with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+            LOGGER.debug("Encrypting ChaCha20Poly1305 with the following AAD: {}",
+                    ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
             byte[] ciphertext = encryptCipher.encrypt(iv, CHACHAPOLY_TAG_LENGTH,
                     request.getAdditionalAuthenticatedData(), request.getPlainText());
-
-            LOGGER.info("returning EncryptionResult...");
             return new EncryptionResult(ciphertext);
-        }
-        // else: Cipher runs in GCM-mode:
+        } // else: Cipher runs in GCM-mode:
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), RecordByteLength.SEQUENCE_NUMBER);
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
-        LOGGER.info("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-        LOGGER.info("Encrypting GCM with the following AAD: {}",
+        LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
         byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
-        return new EncryptionResult(iv, ciphertext, true);
+        return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
 
     // TODO Robin: TLS1.3 Adapt for chacha???
@@ -181,36 +174,27 @@ public class RecordAEADCipher extends RecordCipher {
         // ChaCha20Poly1305 is used as AEAD Cipher
         if (cipherSuite.usesCHACHA20POLY1305()) {
             if (cipherSuite.usesCHACHA20POLY1305()) {
-                LOGGER.warn("Write Seq.no:" + Long.toString(context.getWriteSequenceNumber()));
-                LOGGER.warn("Read Seq.no:" + Long.toString(context.getReadSequenceNumber()));
-                LOGGER.warn("Using read-seqno");
                 decryptCipher.setNonce(context.getReadSequenceNumber());
-
-                LOGGER.info("decrypting...");
                 byte[] iv = getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType());
-                LOGGER.warn("Decrypting with the following AAD: {}",
+                LOGGER.debug("Decrypting ChaCha20Poly1305 with the following IV: {}",
+                        ArrayConverter.bytesToHexString(iv));
+                LOGGER.debug("Decrypting ChaCha20Poly1305 with the following AAD: {}",
                         ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
                 byte[] plaintext = decryptCipher.decrypt(iv, CHACHAPOLY_TAG_LENGTH,
                         decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
-
-                LOGGER.info("returning EncryptionResult...");
                 return plaintext;
             }
-        } else {
-            // Cipher runs in GCM-mode:
-            byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
-            byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
-                    decryptionRequest.getCipherText().length);
-            byte[] iv = ArrayConverter.concatenate(
-                    getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
-            LOGGER.info("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-            LOGGER.info("Decrypting GCM with the following AAD: {}",
-                    ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
-            LOGGER.info("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-            return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(),
-                    data);
-        }
-        return new byte[1];
+        } // else: Cipher runs in GCM-mode:
+        byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
+        byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
+                decryptionRequest.getCipherText().length);
+        byte[] iv = ArrayConverter.concatenate(
+                getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
+        LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Decrypting GCM with the following AAD: {}",
+                ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
+        LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
+        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override
