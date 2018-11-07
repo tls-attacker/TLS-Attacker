@@ -29,9 +29,12 @@ import java.util.List;
 public class ShortPaddingGenerator extends PaddingVectorGenerator {
 
     /**
-     * Default length of the encrypted data (app + mac + padding)
+     * Default length of the encrypted data (app + mac + padding). This value
+     * was chosen to cover all the possible MAC algorithms (with SHA384 which
+     * has a 48 byte long output length) so that two full padding blocks can be
+     * inserted.
      */
-    static final int DEFAULT_CIPHERTEXT_LENGTH = 64;
+    static final int DEFAULT_CIPHERTEXT_LENGTH = 80;
     /**
      * Default padding length for the construction of modified encrypted
      * plaintexts
@@ -105,6 +108,8 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
         vectorList.add(createVectorWithPlainData("Plain 3F", plain));
         return vectorList;
@@ -117,12 +122,10 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue);
         vectorList.addAll(createClassicModifiedPaddingWithInvalidMAC(applicationLength, paddingValue));
 
-        if (macSize != 48) {
-            paddingValue = 6;
-            applicationLength = DEFAULT_CIPHERTEXT_LENGTH - macSize - 7;
-            vectorList.addAll(createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue));
-            vectorList.addAll(createClassicModifiedPaddingWithInvalidMAC(applicationLength, paddingValue));
-        }
+        paddingValue = 6;
+        applicationLength = DEFAULT_CIPHERTEXT_LENGTH - macSize - 7;
+        vectorList.addAll(createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue));
+        vectorList.addAll(createClassicModifiedPaddingWithInvalidMAC(applicationLength, paddingValue));
 
         return vectorList;
     }
