@@ -8,6 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -31,13 +39,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
@@ -268,6 +269,9 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
+        	if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+        		break;
+        	}
             ParserResult result = null;
             try {
                 if (typeFromRecord != null) {
@@ -337,6 +341,9 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
+        	if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+        		break;
+        	}
             ParserResult result = null;
             try {
                 if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
@@ -366,6 +373,14 @@ public class ReceiveMessageHelper {
             }
         }
         return receivedFragmentMessages;
+    }
+    
+    private boolean remainsZeroPadding(byte[] protocolMessageBytes, int dataPointer) {
+    	for (int i=dataPointer; i<protocolMessageBytes.length; i++) {
+    		if (protocolMessageBytes[i] != 0)
+    			return false;
+    	}
+    	return true;
     }
 
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)

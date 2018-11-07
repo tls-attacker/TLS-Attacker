@@ -208,6 +208,21 @@ public class ResponseFingerprint {
         if (this.numberRecordsReceived != other.numberRecordsReceived) {
             return false;
         }
+        if (!this.recordClasses.equals(other.recordClasses)) {
+        	return false;
+        }
+        if (!this.messageClasses.equals(other.messageClasses)) {
+        	return false;
+        }
+        if (this.messageList.size() == other.messageList.size()) {
+	        for (int i=0; i<this.messageList.size(); i++) {
+	        	if (!this.messageList.get(i).toCompactString().equals(other.messageList.get(i).toCompactString())) {
+	        		return false;
+	        	}
+	        }
+        } else {
+        	return false;
+        }
         if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
             return false;
         }
