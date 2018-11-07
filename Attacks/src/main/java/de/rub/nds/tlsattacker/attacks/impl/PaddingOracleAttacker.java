@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
-import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -31,7 +30,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -169,14 +167,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 }
             }
             if (vectorResponseOne.getFingerprint() == null) {
-
                 LOGGER.error("First vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 vectorResponseOne.setErrorDuringHandshake(true);
                 result = false;
                 continue;
             }
             if (equivalentVector == null) {
-
                 LOGGER.error("Equivalent Vector is null:" + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);
@@ -213,7 +209,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
                 tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
-            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 3);
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 6);
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
@@ -256,7 +252,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         // to read?
         for (VectorResponse responseOne : responseVectorList) {
             for (VectorResponse responseTwo : responseVectorList) {
-
+                if (responseOne == responseTwo) {
+                    continue;
+                }
                 boolean shouldCompare = true;
                 if (responseOne.getFingerprint() == null) {
                     responseOne.setErrorDuringHandshake(true);
@@ -267,6 +265,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     shouldCompare = false;
                 }
                 if (responseOne.getLength() == null || responseTwo.getLength() == null) {
+
                     shouldCompare = false;
                 }
                 if (shouldCompare) {

@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.attacks.task;
 
+import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +40,10 @@ public class FingerPrintTask extends TlsTask {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
             fingerprint = ResponseExtractor.getFingerprint(state);
+            if (fingerprint == null
+                    && !WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, state.getWorkflowTrace())) {
+                throw new PaddingOracleUnstableException("Could not extract fingerprint, rescanning");
+            }
         } finally {
             try {
                 state.getTlsContext().getTransportHandler().closeConnection();
