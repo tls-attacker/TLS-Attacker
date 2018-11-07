@@ -114,7 +114,6 @@ public class RecordAEADCipher extends RecordCipher {
         return param;
     }
 
-    // TODO Robin: Adapt for chacha
     /**
      * Different handling for "GCM-Mode" AEAD Ciphers and ChaCha20Poly1305
      */
@@ -184,11 +183,13 @@ public class RecordAEADCipher extends RecordCipher {
             if (cipherSuite.usesCHACHA20POLY1305()) {
                 LOGGER.warn("Write Seq.no:" + Long.toString(context.getWriteSequenceNumber()));
                 LOGGER.warn("Read Seq.no:" + Long.toString(context.getReadSequenceNumber()));
-                LOGGER.warn("Using write-seqno");
-                decryptCipher.setNonce(context.getWriteSequenceNumber());
+                LOGGER.warn("Using read-seqno");
+                decryptCipher.setNonce(context.getReadSequenceNumber());
 
                 LOGGER.info("decrypting...");
                 byte[] iv = getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType());
+                LOGGER.warn("Decrypting with the following AAD: {}",
+                        ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
                 byte[] plaintext = decryptCipher.decrypt(iv, CHACHAPOLY_TAG_LENGTH,
                         decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
 
@@ -231,7 +232,7 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public int getTagSize() {
         if (cipherSuite.usesCHACHA20POLY1305()) {
-            return SEQUENCE_NUMBER_LENGTH + CHACHAPOLY_TAG_LENGTH;
+            return CHACHAPOLY_TAG_LENGTH;
         } else {
             return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
         }

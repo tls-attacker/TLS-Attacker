@@ -16,8 +16,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class RecordCryptoUnit {
+
+    private final Logger LOGGER = LogManager.getLogger();
 
     protected RecordCipher recordCipher;
 
@@ -71,6 +75,8 @@ public abstract class RecordCryptoUnit {
                 }
                 stream.write(version);
                 int length = record.getComputations().getNonMetaDataMaced().getValue().length;
+                // LOGGER.warn("RecordCipher: " +
+                // this.recordCipher.bulkCipherAlg.getJavaName());
                 stream.write(ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
                 return stream.toByteArray();
             }

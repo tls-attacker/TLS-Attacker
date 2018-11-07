@@ -66,13 +66,6 @@ public class KeyBlockParser extends Parser<KeySet> {
         if (suite.usesCHACHA20POLY1305()) {
             return CHACHAPOLY_IV_LENGTH;
         }
-        /**
-         * ==> ERROR: TlsClient - Encountered an uncaught Exception aborting.
-         * See debug for more info.
-         * de.rub.nds.tlsattacker.core.exceptions.ParserException: Parsing over
-         * the end of the array. Current Pointer:64 ToParse Length:12
-         * ArrayLength:72
-         */
         return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
     }
 

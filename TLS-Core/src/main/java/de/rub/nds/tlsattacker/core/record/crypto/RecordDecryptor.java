@@ -153,6 +153,7 @@ public class RecordDecryptor extends Decryptor {
         }
     }
 
+    // blablabla
     private void prepareAdditionalMetadata(Record record) throws CryptoException {
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());

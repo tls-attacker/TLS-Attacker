@@ -944,8 +944,10 @@ public enum CipherSuite {
         list.add(TLS_GOSTR341001_WITH_NULL_GOSTR3411);
         list.add(TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
         list.add(TLS_GOSTR341112_256_WITH_NULL_GOSTR3411);
-        list.add(RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256); // added for
-                                                                 // testing
+        list.add(RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         // TODO Robin: ADD CIPHER SUITES HERE AS SOON AS SUPPORTED!
         return list;
     }
