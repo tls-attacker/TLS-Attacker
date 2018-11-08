@@ -11,29 +11,13 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.security.GeneralSecurityException;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import org.bouncycastle.crypto.Mac;
-import org.bouncycastle.crypto.StreamCipher;
-import org.bouncycastle.crypto.engines.ChaCha7539Engine;
-import org.bouncycastle.crypto.macs.Poly1305;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.util.Arrays;
-import org.bouncycastle.util.Pack;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.bouncycastle.tls.crypto.impl.bc.BcChaCha20Poly1305;
 import org.bouncycastle.crypto.engines.ChaCha7539Engine;
 import org.bouncycastle.crypto.macs.Poly1305;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.bouncycastle.tls.AlertDescription;
-import org.bouncycastle.tls.TlsFatalAlert;
-import org.bouncycastle.tls.crypto.impl.TlsAEADCipherImpl;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.Pack;
 
@@ -143,7 +127,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
             if (!Arrays.constantTimeAreEqual(calculatedMAC, receivedMAC)) {
                 LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
             }
-
             this.cipher.processBytes(input, 0, ciphertextLength, output, 0);
         }
     }
@@ -168,7 +151,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         this.additionalDataLength = additionAuthenticatedData.length;
         byte[] ciphertext = new byte[getOutputSize(someBytes.length)];
         byte[] rfc7905_iv = calculateRFC7905Iv(iv);
-        LOGGER.info("Encypting with the following RFV7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
+        LOGGER.debug("Encypting with the following RFV7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
 
         this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
         initMAC();
@@ -191,13 +174,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private int getOutputSize(int inputLength) {
         return this.isEncrypting ? inputLength + 16 : inputLength - 16;
     }
-
-    /**
-     * private byte[] hexStringToByteArray(String s) { int len = s.length();
-     * byte[] data = new byte[len / 2]; for (int i = 0; i < len; i += 2) {
-     * data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) +
-     * Character.digit(s.charAt(i + 1), 16)); } return data; }
-     */
 
     private void initMAC() {
         byte[] firstBlock = new byte[64];

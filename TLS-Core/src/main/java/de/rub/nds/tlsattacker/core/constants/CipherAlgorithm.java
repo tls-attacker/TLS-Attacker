@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Symmetric cipher algorithm and its mapping to Java names
  */
