@@ -84,7 +84,6 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    // TODO Robin: TLS1.3 Adapt for chacha???
     private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
@@ -104,7 +103,6 @@ public class RecordAEADCipher extends RecordCipher {
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
-    // TODO Robin: TLS1.3 Adapt for chacha???
     private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
         LOGGER.info("PREPARING AEAD PARAMs");
         byte[] param = new byte[GCM_IV_LENGTH];
@@ -140,7 +138,6 @@ public class RecordAEADCipher extends RecordCipher {
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
 
-    // TODO Robin: TLS1.3 Adapt for chacha???
     private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
         LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
@@ -161,7 +158,6 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    // TODO Robin: Adapt for chacha
     /**
      * Different handling for "GCM-Mode" AEAD Ciphers and ChaCha20Poly1305
      */
