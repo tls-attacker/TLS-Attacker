@@ -63,8 +63,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     /**
-     * "salt" is misleading for ChaCha20Poly1305,
-     * but equals IV_LENGTH....
+     * "salt" is misleading for ChaCha20Poly1305, but equals IV_LENGTH....
      */
     private int getAeadSaltSize() {
         if (suite.usesCHACHA20POLY1305()) {
