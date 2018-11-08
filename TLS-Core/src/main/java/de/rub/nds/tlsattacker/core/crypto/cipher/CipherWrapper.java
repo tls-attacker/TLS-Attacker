@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;

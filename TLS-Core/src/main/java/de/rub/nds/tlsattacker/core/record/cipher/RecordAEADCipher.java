@@ -25,7 +25,6 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// TODO Robin: ADAPT CLASS FOR CHACHA!
 public class RecordAEADCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -103,6 +102,9 @@ public class RecordAEADCipher extends RecordCipher {
         return new EncryptionResult(encryptIV, cipherText, false);
     }
 
+    /**
+     * Used to prepare AAD for TLS1.3 only!
+     */
     private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
         LOGGER.info("PREPARING AEAD PARAMs");
         byte[] param = new byte[GCM_IV_LENGTH];
