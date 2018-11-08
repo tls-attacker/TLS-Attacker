@@ -111,7 +111,7 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
-        vectorList.add(createVectorWithPlainData("Plain 3F", plain));
+        vectorList.add(createVectorWithPlainData("Plain 4F", plain));
         return vectorList;
     }
 

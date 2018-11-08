@@ -29,7 +29,7 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
     /**
      * Default length of the encrypted data (app + mac + padding)
      */
-    static final int DEFAULT_CIPHERTEXT_LENGTH = 64;
+    static final int DEFAULT_CIPHERTEXT_LENGTH = 80;
     /**
      * Default padding length for the construction of modified encrypted
      * plaintexts
@@ -62,8 +62,10 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
-        vectorList.add(createVectorWithPlainData("Plain 3F", plain));
+        vectorList.add(createVectorWithPlainData("Plain 4F", plain));
         return vectorList;
     }
 
