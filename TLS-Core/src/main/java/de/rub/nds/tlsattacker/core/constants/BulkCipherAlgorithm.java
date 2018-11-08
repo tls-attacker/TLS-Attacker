@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public enum BulkCipherAlgorithm {
 
     /**
@@ -30,8 +27,6 @@ public enum BulkCipherAlgorithm {
     CHACHA20_POLY1305,
     GOST28147,
     AES;
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * @param cipherSuite
@@ -109,8 +104,7 @@ public enum BulkCipherAlgorithm {
                 + " is not supported yet.");
     }
 
-    public String getJavaName() { // TODO Robin: ADD IF-CLAUSE FOR CHACHA?!
-        LOGGER.warn("getJavaName() called!");
+    public String getJavaName() {
         if (this == DES40) {
             return "DES";
         }
