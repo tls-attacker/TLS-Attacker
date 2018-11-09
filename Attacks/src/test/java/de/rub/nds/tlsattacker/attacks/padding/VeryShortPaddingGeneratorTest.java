@@ -24,7 +24,7 @@ public class VeryShortPaddingGeneratorTest {
     public void setUp() {
         generator = new VeryShortPaddingGenerator();
     }
-    
+
     @Test
     public void testGetVectors() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
