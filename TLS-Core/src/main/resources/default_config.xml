@@ -88,10 +88,18 @@
         <alias>client</alias>
         <port>443</port>
         <hostname>localhost</hostname>
+        <proxyDataPort>8080</proxyDataPort>
+        <proxyDataHostname>localhost</proxyDataHostname>
+        <proxyControlPort>8080</proxyControlPort>
+        <proxyControlHostname>localhost</proxyControlHostname>
     </defaultClientConnection>
     <defaultServerConnection>
         <alias>server</alias>
         <port>443</port>
+        <proxyDataPort>8080</proxyDataPort>
+        <proxyDataHostname>localhost</proxyDataHostname>
+        <proxyControlPort>8080</proxyControlPort>
+        <proxyControlHostname>localhost</proxyControlHostname>
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>

@@ -99,8 +99,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
-        // TODO: think about when (and where) to set proxy settings
-        // transportHandler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

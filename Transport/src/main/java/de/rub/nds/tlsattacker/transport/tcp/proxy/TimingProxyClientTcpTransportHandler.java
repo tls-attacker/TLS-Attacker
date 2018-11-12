@@ -53,6 +53,10 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         super(connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
+        this.proxyDataHostName = connection.getProxyDataHostname();
+        this.proxyDataPort = connection.getProxyDataPort();
+        this.proxyControlHostName = connection.getProxyControlHostname();
+        this.proxyControlPort = connection.getProxyControlPort();
     }
 
     public TimingProxyClientTcpTransportHandler(long timeout, String hostname, int port) {
