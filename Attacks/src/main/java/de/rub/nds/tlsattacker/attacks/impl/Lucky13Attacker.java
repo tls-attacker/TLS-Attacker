@@ -155,6 +155,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         StringBuilder commands = new StringBuilder();
         List<CipherSuite> suites = config.getCipherSuites();
         for (CipherSuite suite : suites) {
+            results.clear();
             LOGGER.info("Testing ciphersuite {}", suite);
             tlsConfig.setDefaultClientSupportedCiphersuites(suite);
             tlsConfig.setDefaultServerSupportedCiphersuites(suite);
@@ -194,12 +195,13 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             if (config.getMonaFile() != null) {
                 for (int i = 0; i < paddings.length - 1; i++) {
                     for (int j = i + 1; j < paddings.length; j++) {
-                        String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
+                        String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-"
+                                + suite.name() + ".csv";
                         String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
                         String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
-                                + " --name=lucky13-" + suite.name() + "-" + paddings[i] + "-" + paddings[j]
-                                + " --lowerBound=0.3 --upperBound=0.5";
+                                + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"
+                                + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
                         LOGGER.info("Run mona timing lib with: " + command);
                         commands.append(command);
                         commands.append(System.getProperty("line.separator"));
