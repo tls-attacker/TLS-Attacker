@@ -69,7 +69,6 @@ public abstract class Serializer<T> {
     protected final void appendBigInteger(BigInteger i, int length) {
         byte[] bytes;
         if (i.equals(new BigInteger("0"))) {
-            LOGGER.warn("BigInteger " + i + " is 0.");
             bytes = ArrayConverter.intToBytes(0, length);
         } else {
             bytes = ArrayConverter.bigIntegerToByteArray(i, length, true);

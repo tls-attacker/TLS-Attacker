@@ -147,8 +147,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @return True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(T message) {
-    	return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
-                    + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
+        return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
+                + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
     }
 
     /**

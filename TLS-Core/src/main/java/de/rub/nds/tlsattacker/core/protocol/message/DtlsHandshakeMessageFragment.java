@@ -8,10 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -20,6 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
+@XmlRootElement
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     private byte[] contentConfig;
@@ -38,6 +42,10 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
+    }
+    
+    public DtlsHandshakeMessageFragment(Config tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.UNKNOWN);
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] contentConfig) {

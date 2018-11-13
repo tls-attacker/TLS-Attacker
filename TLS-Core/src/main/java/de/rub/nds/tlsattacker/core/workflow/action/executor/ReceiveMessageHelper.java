@@ -269,9 +269,9 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-        	if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
-        		break;
-        	}
+            if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+                break;
+            }
             ParserResult result = null;
             try {
                 if (typeFromRecord != null) {
@@ -341,9 +341,9 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-        	if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
-        		break;
-        	}
+            if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+                break;
+            }
             ParserResult result = null;
             try {
                 if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
@@ -374,13 +374,14 @@ public class ReceiveMessageHelper {
         }
         return receivedFragmentMessages;
     }
-    
+
+    // check needed for some implementations www.google.com
     private boolean remainsZeroPadding(byte[] protocolMessageBytes, int dataPointer) {
-    	for (int i=dataPointer; i<protocolMessageBytes.length; i++) {
-    		if (protocolMessageBytes[i] != 0)
-    			return false;
-    	}
-    	return true;
+        for (int i = dataPointer; i < protocolMessageBytes.length; i++) {
+            if (protocolMessageBytes[i] != 0)
+                return false;
+        }
+        return true;
     }
 
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
@@ -399,13 +400,6 @@ public class ReceiveMessageHelper {
         HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
-    }
-
-    private ParserResult tryParseAsCorrectMessage(byte[] protocolMessageBytes, int pointer,
-            ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
-        HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
-        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
-        return pmh.parseMessage(protocolMessageBytes, pointer, true);
     }
 
     private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,

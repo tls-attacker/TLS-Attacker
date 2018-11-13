@@ -200,11 +200,12 @@ public class TlsContext {
      */
     private Certificate clientCertificate;
 
-    /** 
-     * Collects messages for computation of the Finished and CertificateVerify hashes
+    /**
+     * Collects messages for computation of the Finished and CertificateVerify
+     * hashes
      */
     private MessageDigestCollector digest;
-    
+
     private RecordLayer recordLayer;
 
     private TransportHandler transportHandler;
@@ -457,28 +458,28 @@ public class TlsContext {
      * sequence number used for the encryption
      */
     private long writeSequenceNumber = 0;
-    
+
     /**
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
-    
+
     /**
      * sequence number used in DTLS for handshake messages
      */
     private long messageSequenceNumber = 0;
-    
+
     /**
      * epoch used in DTLS records
      */
     private int epoch = 0;
-    
+
     /**
-     * a fragment manager assembles DTLS fragments into corresponding messages. 
+     * a fragment manager assembles DTLS fragments into corresponding messages.
      */
     private FragmentManager fragmentManager;
-    
-	/**
+
+    /**
      * supported protocol versions
      */
     private List<ProtocolVersion> clientSupportedProtocolVersions;
@@ -693,10 +694,10 @@ public class TlsContext {
     public void setEpoch(int epoch) {
         this.epoch = epoch;
     }
-    
+
     public FragmentManager getFragmentManager() {
-		return fragmentManager;
-	}
+        return fragmentManager;
+    }
 
     public Session getSession(byte[] sessionId) {
         for (Session session : sessionList) {

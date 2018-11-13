@@ -48,8 +48,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
             preparePaddingLength(record);
         }
         if (isDTLS()) {
-        	prepareEpoch(record);
-        	prepareDtlsSequenceNumber(record);
+            prepareEpoch(record);
+            prepareDtlsSequenceNumber(record);
         }
         encryptor.encrypt(record);
         prepareLength(record);
@@ -75,22 +75,24 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
     }
-    
+
     private boolean isDTLS() {
-    	return chooser.getSelectedProtocolVersion().isDTLS();
+        return chooser.getSelectedProtocolVersion().isDTLS();
     }
 
-	private void prepareEpoch(Record record) {
-		record.setEpoch(chooser.getContext().getEpoch());
-		LOGGER.debug("Epoch: " + record.getEpoch().getValue());
-	}
-    
+    private void prepareEpoch(Record record) {
+        record.setEpoch(chooser.getContext().getEpoch());
+        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
+    }
+
     private void prepareDtlsSequenceNumber(Record record) {
-    	// the dtls sequence number takes is updated in the same way as the implicit sequence number in TLS
-    	record.setSequenceNumber(record.getComputations().getSequenceNumber().getValue());
-		
-		LOGGER.debug("DtlsSequenceNumber: " + record.getSequenceNumber().getValue());
-	}
+        // the dtls sequence number takes is updated in the same way as the
+        // implicit sequence number in TLS
+        record.setSequenceNumber(record.getComputations().getSequenceNumber().getValue());
+
+        LOGGER.debug("DtlsSequenceNumber: " + record.getSequenceNumber().getValue());
+    }
+
     private void prepareSequenceNumber(Record record) {
         record.getComputations().setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
         LOGGER.debug("SequenceNumber: " + record.getComputations().getSequenceNumber().getValue());
