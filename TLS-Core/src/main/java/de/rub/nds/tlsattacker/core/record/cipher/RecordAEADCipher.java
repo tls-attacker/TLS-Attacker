@@ -170,12 +170,11 @@ public class RecordAEADCipher extends RecordCipher {
         if (cipherSuite.usesCHACHA20POLY1305()) {
             decryptCipher.setNonce(context.getReadSequenceNumber());
             byte[] iv = getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType());
-            LOGGER.debug("Decrypting ChaCha20Poly1305 with the following IV: {}",
-                    ArrayConverter.bytesToHexString(iv));
+            LOGGER.debug("Decrypting ChaCha20Poly1305 with the following IV: {}", ArrayConverter.bytesToHexString(iv));
             LOGGER.debug("Decrypting ChaCha20Poly1305 with the following AAD: {}",
                     ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
-            return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH,
-                    decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
+            return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH, decryptionRequest.getAdditionalAuthenticatedData(),
+                    decryptionRequest.getCipherText());
         } // else: Cipher runs in GCM-mode:
         byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
         byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
@@ -209,9 +208,8 @@ public class RecordAEADCipher extends RecordCipher {
     public int getTagSize() {
         if (cipherSuite.usesCHACHA20POLY1305()) {
             return AEAD_TAG_LENGTH;
-        } else {
-            return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
         }
+        return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
     }
 
     @Override

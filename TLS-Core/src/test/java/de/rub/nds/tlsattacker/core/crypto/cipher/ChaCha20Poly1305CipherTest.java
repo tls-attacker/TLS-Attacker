@@ -31,7 +31,7 @@ public class ChaCha20Poly1305CipherTest {
         byte[] expectedCiphertext = ArrayConverter
                 .hexStringToByteArray("ACE73C8630758D6DBFCEF6D1A0318D4F85BA532C183455F27E00618365DE1A57");
 
-        ChaCha20Poly1305Cipher encryptCipher = new ChaCha20Poly1305Cipher(true, key); //
+        ChaCha20Poly1305Cipher encryptCipher = new ChaCha20Poly1305Cipher(key); //
         encryptCipher.setNonce(nonce);
         byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16, aad, plaintext);
 
@@ -49,7 +49,7 @@ public class ChaCha20Poly1305CipherTest {
                 .hexStringToByteArray("C11D4D4DE0E1B97DFA9BB935A7E072B27EB0FD0483F8586842155D48CBC552FD");
         byte[] expectedPlaintext = ArrayConverter.hexStringToByteArray("1400000C5C2BB43710C69470E41B058C");
 
-        ChaCha20Poly1305Cipher decryptCipher = new ChaCha20Poly1305Cipher(false, key); //
+        ChaCha20Poly1305Cipher decryptCipher = new ChaCha20Poly1305Cipher(key); //
         decryptCipher.setNonce(nonce);
         byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16, aad, ciphertext);
 

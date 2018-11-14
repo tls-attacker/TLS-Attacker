@@ -28,6 +28,7 @@ import org.bouncycastle.crypto.macs.Poly1305;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.Arrays;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 
 public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
 
@@ -37,17 +38,16 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     // init nonce with 0 in order to prevent errors in calculateRFC7905Iv()
     private long nonce = 0;
 
-    private final boolean isEncrypting;
-    private static final byte[] ZEROES = new byte[15];
+    private byte[] key;
+    private static final byte[] ZEROES = new byte[RecordAEADCipher.AEAD_TAG_LENGTH - 1];
     private int additionalDataLength = 0;
 
     // instanciate ChaCha20Poly1305 algorithms
     private final ChaCha7539Engine cipher = new ChaCha7539Engine();
     private final Poly1305 mac = new Poly1305();
 
-    public ChaCha20Poly1305Cipher(boolean isEncrypting, byte[] key) {
-        this.isEncrypting = isEncrypting;
-        this.cipher.init(isEncrypting, new ParametersWithIV(new KeyParameter(key, 0, key.length), ZEROES, 0, 12));
+    public ChaCha20Poly1305Cipher(byte[] key) {
+        this.key = key;
     }
 
     /**
@@ -58,9 +58,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
      * client is sending) or server_write_IV (when the server is sending).
      */
     private byte[] calculateRFC7905Iv(byte[] iv) {
-        byte[] temp = new byte[12];
+        byte[] temp = new byte[RecordAEADCipher.AEAD_IV_LENGTH];
         TlsUtils.writeUint64(this.nonce, temp, 4);
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < RecordAEADCipher.AEAD_IV_LENGTH; ++i) {
             temp[i] ^= iv[i];
         }
         return temp;
@@ -73,7 +73,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] decrypt(byte[] iv, byte[] someBytes) {
-        return new byte[1];
+        throw new UnsupportedOperationException("ChaCha20Poly1305 can only be used as an AEAD Cipher!");
     }
 
     @Override
@@ -83,13 +83,15 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length), this.ZEROES, 0,
+                RecordAEADCipher.AEAD_IV_LENGTH));
         additionalDataLength = additionAuthenticatedData.length;
-        int ciphertextLength = someBytes.length - 16;
-        byte[] plaintext = new byte[getOutputSize(someBytes.length)];
-        byte[] rfc7905_iv = calculateRFC7905Iv(iv);
-        LOGGER.debug("Decrypting with the following rfc7905_iv: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
+        int ciphertextLength = someBytes.length - RecordAEADCipher.AEAD_TAG_LENGTH;
+        byte[] plaintext = new byte[getOutputSize(false, someBytes.length)];
+        byte[] rfc7905Iv = calculateRFC7905Iv(iv);
+        LOGGER.debug("Decrypting with the following rfc7905Iv: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
 
-        this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
+        this.cipher.init(false, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
         updateMAC(additionAuthenticatedData, 0, additionalDataLength);
 
@@ -99,7 +101,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] ciphertextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLe, ciphertextLengthLe, 8);
-        this.mac.update(calculatedMAC, 0, 16);
+        this.mac.update(calculatedMAC, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
         this.mac.doFinal(calculatedMAC, 0);
 
         byte[] receivedMAC = Arrays.copyOfRange(someBytes, ciphertextLength, someBytes.length);
@@ -128,13 +130,15 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length), this.ZEROES, 0,
+                RecordAEADCipher.AEAD_IV_LENGTH));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
-        byte[] ciphertext = new byte[getOutputSize(plaintextLength)];
-        byte[] rfc7905_iv = calculateRFC7905Iv(iv);
-        LOGGER.debug("Encypting with the following RFV7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
+        byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
+        byte[] rfc7905Iv = calculateRFC7905Iv(iv);
+        LOGGER.debug("Encrypting with the following RFC7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
 
-        this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
+        this.cipher.init(true, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
         updateMAC(additionAuthenticatedData, 0, additionalDataLength);
         cipher.processBytes(someBytes, 0, plaintextLength, ciphertext, 0);
@@ -145,7 +149,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] plaintextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(plaintextLength)), 8);
         byte[] aad_plaintextLengthsLe = ArrayConverter.concatenate(aadLengthLe, plaintextLengthLe, 8);
 
-        mac.update(aad_plaintextLengthsLe, 0, 16);
+        mac.update(aad_plaintextLengthsLe, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
         mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;
@@ -161,8 +165,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         throw new UnsupportedOperationException();
     }
 
-    private int getOutputSize(int inputLength) {
-        return this.isEncrypting ? inputLength + 16 : inputLength - 16;
+    private int getOutputSize(boolean isEncrypting, int inputLength) {
+        return isEncrypting ? inputLength + RecordAEADCipher.AEAD_TAG_LENGTH : inputLength
+                - RecordAEADCipher.AEAD_TAG_LENGTH;
     }
 
     private void initMAC() {
@@ -193,9 +198,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private void updateMAC(byte[] buf, int off, int len) {
         this.mac.update(buf, off, len);
 
-        int partial = len % 16;
+        int partial = len % RecordAEADCipher.AEAD_TAG_LENGTH;
         if (partial != 0) {
-            this.mac.update(ZEROES, 0, 16 - partial);
+            this.mac.update(this.ZEROES, 0, RecordAEADCipher.AEAD_TAG_LENGTH - partial);
         }
     }
 
