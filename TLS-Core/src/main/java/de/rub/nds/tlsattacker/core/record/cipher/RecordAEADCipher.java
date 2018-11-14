@@ -104,7 +104,6 @@ public class RecordAEADCipher extends RecordCipher {
      * Used to prepare AAD for TLS1.3 only!
      */
     private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
-        LOGGER.info("PREPARING AEAD PARAMs");
         byte[] param = new byte[AEAD_IV_LENGTH];
         for (int i = 0; i < AEAD_IV_LENGTH; i++) {
             param[i] = (byte) (iv[i] ^ nonce[i]);
