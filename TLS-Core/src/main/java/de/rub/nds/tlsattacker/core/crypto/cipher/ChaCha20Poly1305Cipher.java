@@ -105,7 +105,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         this.mac.doFinal(calculatedMAC, 0);
 
         byte[] receivedMAC = Arrays.copyOfRange(someBytes, ciphertextLength, someBytes.length);
-        if (!Arrays.constantTimeAreEqual(calculatedMAC, receivedMAC)) {
+        if (!Arrays.areEqual(calculatedMAC, receivedMAC)) {
             LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
         }
         this.cipher.processBytes(someBytes, 0, ciphertextLength, plaintext, 0);
