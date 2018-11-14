@@ -89,7 +89,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         int ciphertextLength = someBytes.length - RecordAEADCipher.AEAD_TAG_LENGTH;
         byte[] plaintext = new byte[getOutputSize(false, someBytes.length)];
         byte[] rfc7905Iv = calculateRFC7905Iv(iv);
-        LOGGER.debug("Decrypting with the following rfc7905Iv: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
+        LOGGER.debug("Decrypting with the following RFC7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
 
         this.cipher.init(false, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
