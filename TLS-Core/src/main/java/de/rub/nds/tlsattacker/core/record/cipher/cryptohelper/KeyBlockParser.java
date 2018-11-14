@@ -27,10 +27,9 @@ public class KeyBlockParser extends Parser<KeySet> {
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
 
     /**
-     * iv lengths in byte
+     * AEAD iv length in byte
      */
-    public static final int GCM_IV_LENGTH = 12;
-    public static final int CHACHAPOLY_IV_LENGTH = 12;
+    public static final int AEAD_IV_LENGTH = 12;
 
     private final CipherSuite suite;
 
@@ -63,14 +62,13 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     /**
-     * "salt" is misleading for ChaCha20Poly1305,
-     * but equals IV_LENGTH....
+     * "salt" is misleading for ChaCha20Poly1305, but equals IV_LENGTH....
      */
     private int getAeadSaltSize() {
         if (suite.usesCHACHA20POLY1305()) {
-            return CHACHAPOLY_IV_LENGTH;
+            return AEAD_IV_LENGTH;
         }
-        return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
+        return AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {

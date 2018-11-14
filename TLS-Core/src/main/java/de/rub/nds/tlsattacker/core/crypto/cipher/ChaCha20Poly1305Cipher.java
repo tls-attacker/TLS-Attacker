@@ -6,8 +6,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/**
+ * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
+ * "BcChaCha20Poly1305".
+ * See RFC7905 for further information.
+ */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -19,15 +28,7 @@ import org.bouncycastle.crypto.macs.Poly1305;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.Arrays;
-import org.bouncycastle.util.Pack;
 
-/**
- * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
- * "BcChaCha20Poly1305". URL:
- * https://github.com/bcgit/bc-java/blob/master/tls/src
- * /main/java/org/bouncycastle/tls/crypto/impl/bc/BcChaCha20Poly1305.java See
- * RFC7905 for further information.
- */
 public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
 
     private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
@@ -82,53 +83,32 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        this.additionalDataLength = additionAuthenticatedData.length;
+        additionalDataLength = additionAuthenticatedData.length;
+        int ciphertextLength = someBytes.length - 16;
         byte[] plaintext = new byte[getOutputSize(someBytes.length)];
         byte[] rfc7905_iv = calculateRFC7905Iv(iv);
         LOGGER.debug("Decrypting with the following rfc7905_iv: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
 
         this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
         initMAC();
-        updateMAC(additionAuthenticatedData, 0, this.additionalDataLength);
-        doFinal(someBytes, plaintext);
+        updateMAC(additionAuthenticatedData, 0, additionalDataLength);
+
+        updateMAC(someBytes, 0, ciphertextLength);
+
+        byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
+        byte[] ciphertextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
+
+        byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLe, ciphertextLengthLe, 8);
+        this.mac.update(calculatedMAC, 0, 16);
+        this.mac.doFinal(calculatedMAC, 0);
+
+        byte[] receivedMAC = Arrays.copyOfRange(someBytes, ciphertextLength, someBytes.length);
+        if (!Arrays.constantTimeAreEqual(calculatedMAC, receivedMAC)) {
+            LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
+        }
+        this.cipher.processBytes(someBytes, 0, ciphertextLength, plaintext, 0);
 
         return plaintext;
-    }
-
-    public void doFinal(byte[] input, byte[] output) {
-        int inputLength = input.length;
-
-        if (this.isEncrypting) {
-            byte[] lengths = new byte[16];
-            int ciphertextLength = inputLength;
-
-            // encrypt plaintext
-            cipher.processBytes(input, 0, ciphertextLength, output, 0);
-
-            // calculate mac
-            updateMAC(output, 0, ciphertextLength);
-            Pack.longToLittleEndian(this.additionalDataLength & 0xFFFFFFFFL, lengths, 0);
-            Pack.longToLittleEndian(ciphertextLength & 0xFFFFFFFFL, lengths, 8);
-            mac.update(lengths, 0, 16);
-            mac.doFinal(output, 0 + ciphertextLength);
-        } else { // decrypt ciphertext
-            int ciphertextLength = inputLength - 16;
-
-            updateMAC(input, 0, ciphertextLength);
-
-            byte[] calculatedMAC = new byte[16];
-            Pack.longToLittleEndian(this.additionalDataLength & 0xFFFFFFFFL, calculatedMAC, 0);
-            Pack.longToLittleEndian(ciphertextLength & 0xFFFFFFFFL, calculatedMAC, 8);
-            this.mac.update(calculatedMAC, 0, 16);
-            this.mac.doFinal(calculatedMAC, 0);
-
-            byte[] receivedMAC = Arrays.copyOfRange(input, ciphertextLength, inputLength);
-
-            if (!Arrays.constantTimeAreEqual(calculatedMAC, receivedMAC)) {
-                LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
-            }
-            this.cipher.processBytes(input, 0, ciphertextLength, output, 0);
-        }
     }
 
     @Override
@@ -148,15 +128,25 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        this.additionalDataLength = additionAuthenticatedData.length;
-        byte[] ciphertext = new byte[getOutputSize(someBytes.length)];
+        int additionalDataLength = additionAuthenticatedData.length;
+        int plaintextLength = someBytes.length;
+        byte[] ciphertext = new byte[getOutputSize(plaintextLength)];
         byte[] rfc7905_iv = calculateRFC7905Iv(iv);
         LOGGER.debug("Encypting with the following RFV7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905_iv));
 
         this.cipher.init(this.isEncrypting, new ParametersWithIV(null, rfc7905_iv));
         initMAC();
-        updateMAC(additionAuthenticatedData, 0, this.additionalDataLength);
-        doFinal(someBytes, ciphertext);
+        updateMAC(additionAuthenticatedData, 0, additionalDataLength);
+        cipher.processBytes(someBytes, 0, plaintextLength, ciphertext, 0);
+
+        updateMAC(ciphertext, 0, plaintextLength);
+
+        byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
+        byte[] plaintextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(plaintextLength)), 8);
+        byte[] aad_plaintextLengthsLe = ArrayConverter.concatenate(aadLengthLe, plaintextLengthLe, 8);
+
+        mac.update(aad_plaintextLengthsLe, 0, 16);
+        mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;
     }
@@ -180,6 +170,14 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         this.cipher.processBytes(firstBlock, 0, 64, firstBlock, 0);
         this.mac.init(new KeyParameter(firstBlock, 0, 32));
         Arrays.fill(firstBlock, (byte) 0);
+    }
+
+    private long longToLittleEndian(long bigEndian) {
+        ByteBuffer buf = ByteBuffer.allocate(8);
+        buf.order(ByteOrder.BIG_ENDIAN);
+        buf.putLong(bigEndian);
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        return buf.getLong(0);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ChaCha20Poly1305CipherTest {
 
         ChaCha20Poly1305Cipher decryptCipher = new ChaCha20Poly1305Cipher(false, key); //
         decryptCipher.setNonce(nonce);
-        byte[] calculatedPlaintext = decryptCipher.encrypt(iv, 16, aad, ciphertext);
+        byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16, aad, ciphertext);
 
         Assert.assertArrayEquals(expectedPlaintext, calculatedPlaintext);
     }

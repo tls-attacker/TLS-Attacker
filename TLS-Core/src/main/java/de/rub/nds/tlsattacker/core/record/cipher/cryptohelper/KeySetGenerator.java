@@ -88,10 +88,10 @@ public class KeySetGenerator {
                 cipherAlg.getKeySize()));
         LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
         keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.GCM_IV_LENGTH));
+                RecordAEADCipher.AEAD_IV_LENGTH));
         LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
         keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.GCM_IV_LENGTH));
+                RecordAEADCipher.AEAD_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
@@ -195,16 +195,16 @@ public class KeySetGenerator {
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        int secretSetSize = 0;
+        // GCM in TLS uses 4 bytes long salt (generated in the handshake),
+        // 8 bytes long nonce (changed for each new record), and 4 bytes
+        // long sequence number used increased in the record
+        int saltSize = RecordAEADCipher.AEAD_IV_LENGTH - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH;
+        int secretSetSize = 2 * keySize + 2 * saltSize;
+
+        // Reset secretSetSize without substracted SEQUENCE_NUMBER_LENGTH for
+        // ChaCha20Poly1305...
         if (cipherSuite.usesCHACHA20POLY1305()) {
-            secretSetSize = 2 * keySize + 2 * RecordAEADCipher.CHACHAPOLY_IV_LENGTH;
-        } else {
-            // GCM in TLS uses 4 bytes long salt (generated in the handshake),
-            // 8 bytes long nonce (changed for each new record), and 4 bytes
-            // long
-            // sequence number used increased in the record
-            int saltSize = RecordAEADCipher.GCM_IV_LENGTH - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH;
-            secretSetSize = 2 * keySize + 2 * saltSize;
+            secretSetSize = 2 * keySize + 2 * RecordAEADCipher.AEAD_IV_LENGTH;
         }
         return secretSetSize;
     }

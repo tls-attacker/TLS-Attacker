@@ -34,15 +34,13 @@ public class RecordAEADCipher extends RecordCipher {
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
     /**
-     * tag lengths in byte
+     * AEAD tag length in byte
      */
-    public static final int GCM_TAG_LENGTH = 16;
-    public static final int CHACHAPOLY_TAG_LENGTH = 16;
+    public static final int AEAD_TAG_LENGTH = 16;
     /**
-     * iv lengths in byte
+     * AEAD iv length in byte
      */
-    public static final int GCM_IV_LENGTH = 12;
-    public static final int CHACHAPOLY_IV_LENGTH = 12;
+    public static final int AEAD_IV_LENGTH = 12;
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
@@ -86,7 +84,7 @@ public class RecordAEADCipher extends RecordCipher {
     private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
-        byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+        byte[] nonce = ArrayConverter.concatenate(new byte[AEAD_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                 sequenceNumberByte);
         byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
@@ -94,10 +92,10 @@ public class RecordAEADCipher extends RecordCipher {
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
-            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
-                    request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, AEAD_TAG_LENGTH * 8,
+                    request.getAdditionalAuthenticatedData(), request.getPlainText());
         } else {
-            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, AEAD_TAG_LENGTH * 8, request.getPlainText());
         }
         return new EncryptionResult(encryptIV, cipherText, false);
     }
@@ -107,8 +105,8 @@ public class RecordAEADCipher extends RecordCipher {
      */
     private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
         LOGGER.info("PREPARING AEAD PARAMs");
-        byte[] param = new byte[GCM_IV_LENGTH];
-        for (int i = 0; i < GCM_IV_LENGTH; i++) {
+        byte[] param = new byte[AEAD_IV_LENGTH];
+        for (int i = 0; i < AEAD_IV_LENGTH; i++) {
             param[i] = (byte) (iv[i] ^ nonce[i]);
         }
         return param;
@@ -125,8 +123,8 @@ public class RecordAEADCipher extends RecordCipher {
             LOGGER.debug("Encrypting ChaCha20Poly1305 with the following IV: {}", ArrayConverter.bytesToHexString(iv));
             LOGGER.debug("Encrypting ChaCha20Poly1305 with the following AAD: {}",
                     ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-            byte[] ciphertext = encryptCipher.encrypt(iv, CHACHAPOLY_TAG_LENGTH,
-                    request.getAdditionalAuthenticatedData(), request.getPlainText());
+            byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH, request.getAdditionalAuthenticatedData(),
+                    request.getPlainText());
             return new EncryptionResult(ciphertext);
         } // else: Cipher runs in GCM-mode:
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), RecordByteLength.SEQUENCE_NUMBER);
@@ -135,7 +133,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-        byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+        byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
@@ -144,7 +142,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
-        byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+        byte[] nonce = ArrayConverter.concatenate(new byte[AEAD_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                 sequenceNumberByte);
         byte[] decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
         LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
@@ -153,10 +151,10 @@ public class RecordAEADCipher extends RecordCipher {
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
-            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8,
+            return decryptCipher.decrypt(decryptIV, AEAD_TAG_LENGTH * 8,
                     decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
         } else {
-            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
+            return decryptCipher.decrypt(decryptIV, AEAD_TAG_LENGTH * 8, decryptionRequest.getCipherText());
         }
     }
 
@@ -178,7 +176,7 @@ public class RecordAEADCipher extends RecordCipher {
                         ArrayConverter.bytesToHexString(iv));
                 LOGGER.debug("Decrypting ChaCha20Poly1305 with the following AAD: {}",
                         ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
-                byte[] plaintext = decryptCipher.decrypt(iv, CHACHAPOLY_TAG_LENGTH,
+                byte[] plaintext = decryptCipher.decrypt(iv, AEAD_TAG_LENGTH,
                         decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
                 return plaintext;
             }
@@ -192,7 +190,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
+        return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override
@@ -214,9 +212,9 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public int getTagSize() {
         if (cipherSuite.usesCHACHA20POLY1305()) {
-            return CHACHAPOLY_TAG_LENGTH;
+            return AEAD_TAG_LENGTH;
         } else {
-            return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
+            return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
         }
     }
 
