@@ -219,25 +219,27 @@ public class ResponseFingerprint {
         if (encryptedAlert) {
             resultString.append(" ENC ");
         }
-        switch (socketState) {
-            case CLOSED:
-                resultString.append("X");
-                break;
-            case DATA_AVAILABLE:
-                resultString.append("$$$");
-                break;
-            case IO_EXCEPTION:
-                resultString.append("§");
-                break;
-            case SOCKET_EXCEPTION:
-                resultString.append("@");
-                break;
-            case TIMEOUT:
-                resultString.append("T");
-                break;
-            case UP:
-                resultString.append("U");
-                break;
+        if (socketState != null) {
+            switch (socketState) {
+                case CLOSED:
+                    resultString.append("X");
+                    break;
+                case DATA_AVAILABLE:
+                    resultString.append("$$$");
+                    break;
+                case IO_EXCEPTION:
+                    resultString.append("§");
+                    break;
+                case SOCKET_EXCEPTION:
+                    resultString.append("@");
+                    break;
+                case TIMEOUT:
+                    resultString.append("T");
+                    break;
+                case UP:
+                    resultString.append("U");
+                    break;
+            }
         }
         return resultString.toString();
     }
