@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -269,7 +270,7 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-            if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+            if (isZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
                 break;
             }
             ParserResult result = null;
@@ -338,10 +339,12 @@ public class ReceiveMessageHelper {
 
     private List<ProtocolMessage> handleFragments(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord,
             TlsContext context) {
+    	// TODO: Wouldn't it be better if we merged DTLS fragments here, rather than do it when in  
+    	// {@link ProtocolMessageHandler}?
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-            if (remainsZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
+            if (isZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
                 break;
             }
             ParserResult result = null;
@@ -368,15 +371,18 @@ public class ReceiveMessageHelper {
                     throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
                 }
                 dataPointer = result.getParserPosition();
-                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
-                receivedFragmentMessages.add(result.getMessage());
+                // NOTE: not a retransmission
+                if (result.getMessage() != null) {
+	                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
+	                receivedFragmentMessages.add(result.getMessage());
+                }
             }
         }
         return receivedFragmentMessages;
     }
 
-    // check needed for some implementations www.google.com
-    private boolean remainsZeroPadding(byte[] protocolMessageBytes, int dataPointer) {
+    // check needed for some implementations (i.e. OpenSSL 0.9.8h on Windows)
+    private boolean isZeroPadding(byte[] protocolMessageBytes, int dataPointer) {
         for (int i = dataPointer; i < protocolMessageBytes.length; i++) {
             if (protocolMessageBytes[i] != 0)
                 return false;
@@ -402,10 +408,27 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
+    /*
+     * @return ParserResult, if the message is null it should be ignored.
+     */
     private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
+    	//TODO: this is an absolute hack, and it does not account for out of order fragments )
         DtlsHandshakeMessageFragmentHandler fragmentHandler = new DtlsHandshakeMessageFragmentHandler(context);
-        return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
+        if (context.isDropRetransmissions()) {
+        	 ParserResult parsedResult = fragmentHandler.parseMessage(protocolMessageBytes, pointer, true);
+             DtlsHandshakeMessageFragment dtlsMessage = ((DtlsHandshakeMessageFragment)parsedResult.getMessage());
+             if (dtlsMessage.getMessageSeq().getValue() == context.getNextReceiveSequenceNumber()) {
+            	 context.increaseNextReceiveSequenceNumber();
+            	 return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
+             } else {
+            	 LOGGER.debug("The following fragment was dropped: {}", dtlsMessage.toString());
+            	 parsedResult.setMessage(null);
+            	 return parsedResult;
+             }
+        } else {
+        	return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
+        }
     }
 
     private ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer, TlsContext context) {

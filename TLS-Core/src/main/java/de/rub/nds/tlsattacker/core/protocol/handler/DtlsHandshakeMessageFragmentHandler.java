@@ -43,5 +43,6 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
 
     @Override
     public void adjustTLSContext(DtlsHandshakeMessageFragment message) {
+    	message.getMessageSeq();
     }
 }
