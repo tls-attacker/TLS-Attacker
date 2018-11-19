@@ -36,6 +36,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
+        // TODO note that for DTLS, the random value of a second ClientHello message should be
+        // the same as that of the first (at least in case the first prompted HelloVerifyResponse from server)
         prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();

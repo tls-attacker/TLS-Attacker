@@ -78,9 +78,10 @@ public class ReceiveMessageHelper {
                     for (List<AbstractRecord> recordGroup : recordGroups) {
                         if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                             decryptRecords(recordGroup, context);
-                            fragmentedMessages.addAll(collectMessageFragments(recordGroup, recordGroup.get(0)
-                                    .getContentMessageType(), context));
-                            messages.addAll(processFragmentGroup(fragmentedMessages, context));
+                            List<ProtocolMessage> fragmentedMessagesInGroup = collectMessageFragments(recordGroup, recordGroup.get(0)
+                                    .getContentMessageType(), context); 
+                            fragmentedMessages.addAll(fragmentedMessagesInGroup);
+                            messages.addAll(processFragmentGroup(fragmentedMessagesInGroup, context));
                         } else {
                             messages.addAll(processRecordGroup(recordGroup, context));
                         }
