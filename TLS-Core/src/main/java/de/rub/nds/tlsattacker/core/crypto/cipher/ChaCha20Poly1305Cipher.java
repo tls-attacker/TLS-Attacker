@@ -97,6 +97,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(someBytes, 0, ciphertextLength);
 
+        //The appended "Le" stands for "LittleEndian", which is the required format for the BouncyCastle Chacha20 and Poly1305 engines.
         byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
         byte[] ciphertextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
 
@@ -106,7 +107,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         byte[] receivedMAC = Arrays.copyOfRange(someBytes, ciphertextLength, someBytes.length);
         if (!Arrays.areEqual(calculatedMAC, receivedMAC)) {
-            LOGGER.warn("MAC-Verification failed (bad_record_mac), continuing anyways!");
+            LOGGER.warn("MAC verification failed, continuing anyways.");
         }
         this.cipher.processBytes(someBytes, 0, ciphertextLength, plaintext, 0);
 
@@ -145,11 +146,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(ciphertext, 0, plaintextLength);
 
+        //The appended "Le" stands for "LittleEndian", which is the required format for the BouncyCastle Chacha20 and Poly1305 engines.
         byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
         byte[] plaintextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(plaintextLength)), 8);
-        byte[] aad_plaintextLengthsLe = ArrayConverter.concatenate(aadLengthLe, plaintextLengthLe, 8);
+        byte[] aadPlaintextLengthsLe = ArrayConverter.concatenate(aadLengthLe, plaintextLengthLe, 8);
 
-        mac.update(aad_plaintextLengthsLe, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
+        mac.update(aadPlaintextLengthsLe, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
         mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;
