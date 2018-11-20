@@ -91,6 +91,8 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         vectorList.add(new TrippleVector("MissingMacByteFirst", new ByteArrayExplicitValueModification(new byte[0]),
                 new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
         // Missing last MAC byte because of overlong valid padding
+        padding = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - macSize);
+
         vectorList.add(new TrippleVector("MissingMacByteLast", new ByteArrayExplicitValueModification(new byte[0]),
                 new ByteArrayDeleteModification((macSize - 1), 1), new ByteArrayExplicitValueModification(padding)));
         return vectorList;

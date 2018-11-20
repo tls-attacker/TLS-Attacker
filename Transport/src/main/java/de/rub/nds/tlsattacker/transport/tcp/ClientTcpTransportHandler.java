@@ -37,14 +37,14 @@ public class ClientTcpTransportHandler extends TransportHandler {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
-        this.connectionTimeout = 60000;
+        this.connectionTimeout = timeout;
     }
 
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
-        this.connectionTimeout = 60000;
+        this.connectionTimeout = connectionTimeout;
     }
 
     @Override
