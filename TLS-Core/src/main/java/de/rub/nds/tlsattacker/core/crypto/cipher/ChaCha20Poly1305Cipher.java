@@ -49,7 +49,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     /**
      * From RFC7905: AEAD_CHACHA20_POLY1305 requires a 96-bit nonce, which is
-     * formed as follows: 1. The 64-bit recor sequence number is serialized as
+     * formed as follows: 1. The 64-bit record sequence number is serialized as
      * an 8-byte, big-endian value and padded on the left with four 0x00 bytes.
      * 2. The padded sequence number is XORed with the client_write_IV (when the
      * client is sending) or server_write_IV (when the server is sending).
@@ -96,7 +96,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         this.cipher.init(false, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
         updateMAC(additionAuthenticatedData, 0, additionalDataLength);
-
         updateMAC(someBytes, 0, ciphertextLength);
 
         byte[] aadLengthLittleEndian = ArrayConverter.longToBytes(
