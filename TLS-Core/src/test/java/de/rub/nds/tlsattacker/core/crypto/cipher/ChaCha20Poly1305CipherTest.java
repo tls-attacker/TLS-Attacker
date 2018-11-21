@@ -22,8 +22,8 @@ public class ChaCha20Poly1305CipherTest {
 
     @Test
     public void testEncrypt() {
-        long nonce = 0;
-        byte[] iv = ArrayConverter.hexStringToByteArray("DB9225611E4646D7D10BA135");
+        byte[] nonce = new byte[8];
+        byte[] iv = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("DB9225611E4646D7D10BA135"), nonce);
         byte[] key = ArrayConverter
                 .hexStringToByteArray("5C602601DBAC4CD0B8BA794A208763A8036C239C91835BA8FD4396B34F004F3A");
         byte[] aad = ArrayConverter.hexStringToByteArray("00000000000000001603030010");
@@ -32,7 +32,6 @@ public class ChaCha20Poly1305CipherTest {
                 .hexStringToByteArray("ACE73C8630758D6DBFCEF6D1A0318D4F85BA532C183455F27E00618365DE1A57");
 
         ChaCha20Poly1305Cipher encryptCipher = new ChaCha20Poly1305Cipher(key); //
-        encryptCipher.setNonce(nonce);
         byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16, aad, plaintext);
 
         Assert.assertArrayEquals(expectedCiphertext, calculatedCiphertext);
@@ -40,8 +39,8 @@ public class ChaCha20Poly1305CipherTest {
 
     @Test
     public void testDecrypt() {
-        long nonce = 0;
-        byte[] iv = ArrayConverter.hexStringToByteArray("FC8A9AA4809FB4F11B5E6E2B");
+        byte[] nonce = new byte[8];
+        byte[] iv = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("FC8A9AA4809FB4F11B5E6E2B"), nonce);
         byte[] key = ArrayConverter
                 .hexStringToByteArray("7A3B05D1E2A054BB00ED2E308463D4AA258C1E54F946898919B059765B8636DD");
         byte[] aad = ArrayConverter.hexStringToByteArray("00000000000000001603030010");
@@ -50,7 +49,6 @@ public class ChaCha20Poly1305CipherTest {
         byte[] expectedPlaintext = ArrayConverter.hexStringToByteArray("1400000C5C2BB43710C69470E41B058C");
 
         ChaCha20Poly1305Cipher decryptCipher = new ChaCha20Poly1305Cipher(key); //
-        decryptCipher.setNonce(nonce);
         byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16, aad, ciphertext);
 
         Assert.assertArrayEquals(expectedPlaintext, calculatedPlaintext);

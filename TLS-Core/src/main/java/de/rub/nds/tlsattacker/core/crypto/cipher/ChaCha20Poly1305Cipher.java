@@ -35,9 +35,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    // init nonce with 0 in order to prevent errors in calculateRFC7905Iv()
-    private long nonce = 0;
-
     private byte[] key;
     private static final byte[] ZEROES = new byte[RecordAEADCipher.AEAD_TAG_LENGTH - 1];
     private int additionalDataLength = 0;
@@ -57,9 +54,10 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
      * 2. The padded sequence number is XORed with the client_write_IV (when the
      * client is sending) or server_write_IV (when the server is sending).
      */
-    private byte[] calculateRFC7905Iv(byte[] iv) {
+    private byte[] calculateRFC7905Iv(byte[] nonce, byte[] iv) {
         byte[] temp = new byte[RecordAEADCipher.AEAD_IV_LENGTH];
-        TlsUtils.writeUint64(this.nonce, temp, 4);
+        long nonceLong = ArrayConverter.bytesToLong(nonce);
+        TlsUtils.writeUint64(nonceLong, temp, 4);
         for (int i = 0; i < RecordAEADCipher.AEAD_IV_LENGTH; ++i) {
             temp[i] ^= iv[i];
         }
@@ -88,8 +86,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         additionalDataLength = additionAuthenticatedData.length;
         int ciphertextLength = someBytes.length - RecordAEADCipher.AEAD_TAG_LENGTH;
         byte[] plaintext = new byte[getOutputSize(false, someBytes.length)];
-        byte[] rfc7905Iv = calculateRFC7905Iv(iv);
-        LOGGER.debug("Decrypting with the following RFC7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
+
+        int concatIvLength = iv.length;
+        byte[] nonce = Arrays.copyOfRange(iv, (concatIvLength - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH),
+                concatIvLength);
+        byte[] readIv = Arrays.copyOfRange(iv, 0, (concatIvLength - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH));
+        byte[] rfc7905Iv = calculateRFC7905Iv(nonce, readIv);
 
         this.cipher.init(false, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
@@ -97,11 +99,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(someBytes, 0, ciphertextLength);
 
-        //The appended "Le" stands for "LittleEndian", which is the required format for the BouncyCastle Chacha20 and Poly1305 engines.
-        byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
-        byte[] ciphertextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
+        byte[] aadLengthLittleEndian = ArrayConverter.longToBytes(
+                longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
+        byte[] ciphertextLengthLittleEndian = ArrayConverter.longToBytes(
+                longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
 
-        byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLe, ciphertextLengthLe, 8);
+        byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
         this.mac.update(calculatedMAC, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
         this.mac.doFinal(calculatedMAC, 0);
 
@@ -131,13 +134,16 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
+        int concatIvLength = iv.length;
+        byte[] nonce = Arrays.copyOfRange(iv, (concatIvLength - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH),
+                concatIvLength);
+        byte[] writeIv = Arrays.copyOfRange(iv, 0, (concatIvLength - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH));
         this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length), this.ZEROES, 0,
                 RecordAEADCipher.AEAD_IV_LENGTH));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
         byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
-        byte[] rfc7905Iv = calculateRFC7905Iv(iv);
-        LOGGER.debug("Encrypting with the following RFC7905 IV: {}", ArrayConverter.bytesToHexString(rfc7905Iv));
+        byte[] rfc7905Iv = calculateRFC7905Iv(nonce, writeIv);
 
         this.cipher.init(true, new ParametersWithIV(null, rfc7905Iv));
         initMAC();
@@ -146,12 +152,14 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(ciphertext, 0, plaintextLength);
 
-        //The appended "Le" stands for "LittleEndian", which is the required format for the BouncyCastle Chacha20 and Poly1305 engines.
-        byte[] aadLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
-        byte[] plaintextLengthLe = ArrayConverter.longToBytes(longToLittleEndian(Long.valueOf(plaintextLength)), 8);
-        byte[] aadPlaintextLengthsLe = ArrayConverter.concatenate(aadLengthLe, plaintextLengthLe, 8);
+        byte[] aadLengthLittleEndian = ArrayConverter.longToBytes(
+                longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
+        byte[] plaintextLengthLittleEndian = ArrayConverter.longToBytes(
+                longToLittleEndian(Long.valueOf(plaintextLength)), 8);
+        byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
+                plaintextLengthLittleEndian, 8);
 
-        mac.update(aadPlaintextLengthsLe, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
+        mac.update(aadPlaintextLengthsLittleEndian, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
         mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;
@@ -190,11 +198,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     @Override
     public void setIv(byte[] iv) {
         throw new UnsupportedOperationException("The IV has to be passed with the encrypt() call!");
-    }
-
-    @Override
-    public void setNonce(long nonce) {
-        this.nonce = nonce;
     }
 
     private void updateMAC(byte[] buf, int off, int len) {
