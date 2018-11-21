@@ -30,23 +30,30 @@ public class RecordAEADCipher extends RecordCipher {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * sequence Number length in byte
+     * sequence Number length in bytes
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
+    
     /**
-     * tag length in byte
-     */
-    public static final int GCM_TAG_LENGTH = 16;
-    /**
-     * iv length in byte
+     * iv length in bytes
      */
     public static final int GCM_IV_LENGTH = 12;
+    
+    /**
+     * authentication tag length in bytes
+     */
+    private final int gcmTagLength;
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
+        if (cipherSuite.name().contains("CCM_8")) {
+        	gcmTagLength = 8;
+        } else {
+        	gcmTagLength = 16;
+        }
     }
 
     @Override
@@ -92,10 +99,10 @@ public class RecordAEADCipher extends RecordCipher {
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
-            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+            cipherText = encryptCipher.encrypt(encryptIV, gcmTagLength * 8, request.getAdditionalAuthenticatedData(),
                     request.getPlainText());
         } else {
-            cipherText = encryptCipher.encrypt(encryptIV, GCM_TAG_LENGTH * 8, request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, gcmTagLength * 8, request.getPlainText());
         }
         return new EncryptionResult(encryptIV, cipherText, false);
     }
@@ -115,7 +122,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Encrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-        byte[] ciphertext = encryptCipher.encrypt(iv, GCM_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+        byte[] ciphertext = encryptCipher.encrypt(iv, gcmTagLength * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
@@ -133,10 +140,10 @@ public class RecordAEADCipher extends RecordCipher {
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
-            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8,
+            return decryptCipher.decrypt(decryptIV, gcmTagLength * 8,
                     decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
         } else {
-            return decryptCipher.decrypt(decryptIV, GCM_TAG_LENGTH * 8, decryptionRequest.getCipherText());
+            return decryptCipher.decrypt(decryptIV, gcmTagLength * 8, decryptionRequest.getCipherText());
         }
     }
 
@@ -154,7 +161,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting GCM with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
         LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(iv, GCM_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
+        return decryptCipher.decrypt(iv, gcmTagLength * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override
@@ -175,7 +182,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getTagSize() {
-        return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
+        return SEQUENCE_NUMBER_LENGTH + gcmTagLength;
     }
 
     @Override
