@@ -115,8 +115,8 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
-        LOGGER.debug("Encrypting with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-        LOGGER.debug("Encrypting with the following AAD: {}",
+        LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Encrypting AEAD with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
         byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
@@ -146,45 +146,6 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    /**
-     * Different handling for "GCM-Mode" AEAD Ciphers and ChaCha20Poly1305
-     * private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws
-     * CryptoException {
-     *
-     * if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
-     * LOGGER.warn(
-     * "Could not DecryptCipherText. Too short. Returning undecrypted Ciphertext"
-     * ); return decryptionRequest.getCipherText(); } // ChaCha20Poly1305 is
-     * used as AEAD Cipher if (cipherSuite.usesCHACHA20POLY1305()) {
-     * decryptCipher.setNonce(context.getReadSequenceNumber()); byte[] iv =
-     * getKeySet
-     * ().getReadIv(context.getConnection().getLocalConnectionEndType());
-     * LOGGER.debug("Decrypting ChaCha20Poly1305 with the following IV: {}",
-     * ArrayConverter.bytesToHexString(iv));
-     * LOGGER.debug("Decrypting ChaCha20Poly1305 with the following AAD: {}",
-     * ArrayConverter
-     * .bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
-     * return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH,
-     * decryptionRequest.getAdditionalAuthenticatedData(),
-     * decryptionRequest.getCipherText()); } // else: Cipher runs in GCM-mode:
-     * byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(),
-     * SEQUENCE_NUMBER_LENGTH); byte[] data =
-     * Arrays.copyOfRange(decryptionRequest.getCipherText(),
-     * SEQUENCE_NUMBER_LENGTH, decryptionRequest.getCipherText().length); byte[]
-     * iv = ArrayConverter.concatenate(
-     * getKeySet().getReadIv(context.getConnection
-     * ().getLocalConnectionEndType()), nonce);
-     * LOGGER.debug("Decrypting GCM with the following IV: {}",
-     * ArrayConverter.bytesToHexString(iv));
-     * LOGGER.debug("Decrypting GCM with the following AAD: {}",
-     * ArrayConverter.bytesToHexString
-     * (decryptionRequest.getAdditionalAuthenticatedData()));
-     * LOGGER.debug("Decrypting the following GCM ciphertext: {}",
-     * ArrayConverter.bytesToHexString(data)); return decryptCipher.decrypt(iv,
-     * AEAD_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(),
-     * data); }
-     */
-
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
         if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
             LOGGER.warn("Could not decrypt ciphertext. Too short. Returning undecrypted Ciphertext");
@@ -199,8 +160,8 @@ public class RecordAEADCipher extends RecordCipher {
         }
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
-        LOGGER.debug("Decrypting with the following IV: {}", ArrayConverter.bytesToHexString(iv));
-        LOGGER.debug("Decrypting with the following AAD: {}",
+        LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Decrypting AEAD with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
         LOGGER.debug("Decrypting the following ciphertext: {}", ArrayConverter.bytesToHexString(data));
         return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
