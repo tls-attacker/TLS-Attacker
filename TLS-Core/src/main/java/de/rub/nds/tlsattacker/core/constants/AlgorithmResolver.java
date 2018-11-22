@@ -249,10 +249,6 @@ public class AlgorithmResolver {
         } else if (cipher.contains("28147_CNT")) {
             return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
-            if (cipherSuite.isTLS13()) {
-                throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite
-                        + " is not yet supported for TLS 1.3!");
-            }
             return CipherAlgorithm.ChaCha20Poly1305;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV

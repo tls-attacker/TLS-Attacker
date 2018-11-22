@@ -62,10 +62,6 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("28147")) {
             return GOST28147;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
-            if (cipherSuite.isTLS13()) {
-                throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite
-                        + " is not yet supported for TLS 1.3!");
-            }
             return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");

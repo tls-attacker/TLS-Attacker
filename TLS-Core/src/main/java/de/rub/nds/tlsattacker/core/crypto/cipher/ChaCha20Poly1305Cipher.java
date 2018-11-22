@@ -55,9 +55,11 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
      * client is sending) or server_write_IV (when the server is sending).
      */
     private byte[] calculateRFC7905Iv(byte[] nonce, byte[] iv) {
-        byte[] temp = new byte[RecordAEADCipher.AEAD_IV_LENGTH];
+        byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
         long nonceLong = ArrayConverter.bytesToLong(nonce);
-        TlsUtils.writeUint64(nonceLong, temp, 4);
+        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(nonceLong),
+                (RecordAEADCipher.AEAD_IV_LENGTH - padding.length));
+
         for (int i = 0; i < RecordAEADCipher.AEAD_IV_LENGTH; ++i) {
             temp[i] ^= iv[i];
         }
@@ -98,10 +100,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         updateMAC(additionAuthenticatedData, 0, additionalDataLength);
         updateMAC(someBytes, 0, ciphertextLength);
 
-        byte[] aadLengthLittleEndian = ArrayConverter.longToBytes(
-                longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
-        byte[] ciphertextLengthLittleEndian = ArrayConverter.longToBytes(
-                longToLittleEndian(Long.valueOf(ciphertextLength)), 8);
+        // TODO Use ArrayConverter.reverseByteOrder
+        byte[] aadLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
+                8));
+        // TODO Use ArrayConverter.reverseByteOrder
+        byte[] ciphertextLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(
+                Long.valueOf(ciphertextLength), 8));
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
         this.mac.update(calculatedMAC, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
@@ -151,10 +155,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(ciphertext, 0, plaintextLength);
 
-        byte[] aadLengthLittleEndian = ArrayConverter.longToBytes(
-                longToLittleEndian(Long.valueOf(additionalDataLength)), 8);
-        byte[] plaintextLengthLittleEndian = ArrayConverter.longToBytes(
-                longToLittleEndian(Long.valueOf(plaintextLength)), 8);
+        // TODO Use ArrayConverter.reverseByteOrder
+        byte[] aadLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
+                8));
+        // TODO Use ArrayConverter.reverseByteOrder
+        byte[] plaintextLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength),
+                8));
         byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
                 plaintextLengthLittleEndian, 8);
 
@@ -183,15 +189,17 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] firstBlock = new byte[64];
         this.cipher.processBytes(firstBlock, 0, 64, firstBlock, 0);
         this.mac.init(new KeyParameter(firstBlock, 0, 32));
-        Arrays.fill(firstBlock, (byte) 0);
     }
 
-    private long longToLittleEndian(long bigEndian) {
-        ByteBuffer buf = ByteBuffer.allocate(8);
-        buf.order(ByteOrder.BIG_ENDIAN);
-        buf.putLong(bigEndian);
-        buf.order(ByteOrder.LITTLE_ENDIAN);
-        return buf.getLong(0);
+    // TODO Remove when method is merged in ArrayConverter
+    public byte[] reverseByteOrder(byte[] array) {
+        int length = array.length;
+        byte[] temp = new byte[length];
+        int counter = length - 1;
+        for (int i = 0; i < length; i++) {
+            temp[i] = array[counter--];
+        }
+        return temp;
     }
 
     @Override
