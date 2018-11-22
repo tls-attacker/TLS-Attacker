@@ -65,10 +65,6 @@ public class KeyBlockParser extends Parser<KeySet> {
     private int getAeadSaltSize() {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
         return cipherAlg.getNonceBytesFromHandshake();
-        /**
-         * if (suite.usesCHACHA20POLY1305()) { return AEAD_IV_LENGTH; } return
-         * AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
-         */
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {
