@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -61,14 +62,13 @@ public class KeyBlockParser extends Parser<KeySet> {
         return keys;
     }
 
-    /**
-     * "salt" is misleading for ChaCha20Poly1305, but equals IV_LENGTH....
-     */
     private int getAeadSaltSize() {
-        if (suite.usesCHACHA20POLY1305()) {
-            return AEAD_IV_LENGTH;
-        }
-        return AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
+        return cipherAlg.getNonceBytesFromHandshake();
+        /**
+         * if (suite.usesCHACHA20POLY1305()) { return AEAD_IV_LENGTH; } return
+         * AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
+         */
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {
