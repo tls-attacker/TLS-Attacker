@@ -195,17 +195,8 @@ public class KeySetGenerator {
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        // GCM in TLS uses 4 bytes long salt (generated in the handshake),
-        // 8 bytes long nonce (changed for each new record), and 4 bytes
-        // long sequence number used increased in the record
-        int saltSize = RecordAEADCipher.AEAD_IV_LENGTH - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH;
+        int saltSize = cipherAlg.getNonceBytesFromHandshake();
         int secretSetSize = 2 * keySize + 2 * saltSize;
-
-        // Reset secretSetSize without substracted SEQUENCE_NUMBER_LENGTH for
-        // ChaCha20Poly1305...
-        if (cipherSuite.usesCHACHA20POLY1305()) {
-            secretSetSize = 2 * keySize + 2 * RecordAEADCipher.AEAD_IV_LENGTH;
-        }
         return secretSetSize;
     }
 
