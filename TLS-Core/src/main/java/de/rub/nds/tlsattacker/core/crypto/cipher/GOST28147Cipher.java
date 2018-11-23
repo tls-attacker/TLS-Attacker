@@ -154,4 +154,10 @@ public class GOST28147Cipher implements EncryptionCipher, DecryptionCipher {
     public void setIv(byte[] iv) {
         throw new UnsupportedOperationException("Can only be used as a stream cipher!");
     }
+
+    @Override
+    public boolean usesStrictExplicitIv() {
+        return false;
+    }
+
 }

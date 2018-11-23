@@ -75,4 +75,8 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
         return someBytes;
     }
 
+    @Override
+    public boolean usesStrictExplicitIv() {
+        return false;
+    }
 }

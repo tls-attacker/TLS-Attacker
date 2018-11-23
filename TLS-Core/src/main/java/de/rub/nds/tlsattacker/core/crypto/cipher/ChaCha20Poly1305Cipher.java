@@ -215,4 +215,8 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         }
     }
 
+    public boolean usesStrictExplicitIv() {
+        return true;
+    }
+
 }

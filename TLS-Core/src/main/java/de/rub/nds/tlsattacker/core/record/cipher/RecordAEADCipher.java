@@ -120,7 +120,7 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
         byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
-        if (cipherSuite.usesCHACHA20POLY1305()) {
+        if (encryptCipher.usesStrictExplicitIv()) {
             return new EncryptionResult(ciphertext);
         }
         return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
@@ -154,7 +154,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
         byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
                 decryptionRequest.getCipherText().length);
-        if (cipherSuite.usesCHACHA20POLY1305()) {
+        if (decryptCipher.usesStrictExplicitIv()) {
             nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
             data = decryptionRequest.getCipherText();
         }
@@ -185,10 +185,16 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getTagSize() {
-        if (cipherSuite.usesCHACHA20POLY1305()) {
-            return AEAD_TAG_LENGTH;
+        if (encryptCipher.usesStrictExplicitIv() && decryptCipher.usesStrictExplicitIv()) {
+            if (encryptCipher.usesStrictExplicitIv()) {
+                return AEAD_TAG_LENGTH;
+            } else {
+                return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
+            }
+        } else {
+            throw new UnsupportedOperationException(
+                "Encryption cipher and decryption cipher returned different values!");
         }
-        return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
     }
 
     @Override
