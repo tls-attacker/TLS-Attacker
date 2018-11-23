@@ -99,11 +99,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         updateMAC(additionAuthenticatedData, 0, additionalDataLength);
         updateMAC(someBytes, 0, ciphertextLength);
 
-        // TODO Use ArrayConverter.reverseByteOrder
-        byte[] aadLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
+        byte[] aadLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
                 8));
-        // TODO Use ArrayConverter.reverseByteOrder
-        byte[] ciphertextLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(
+        byte[] ciphertextLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
                 Long.valueOf(ciphertextLength), 8));
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
@@ -154,11 +152,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(ciphertext, 0, plaintextLength);
 
-        // TODO Use ArrayConverter.reverseByteOrder
-        byte[] aadLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
+        byte[] aadLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength),
                 8));
-        // TODO Use ArrayConverter.reverseByteOrder
-        byte[] plaintextLengthLittleEndian = reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength),
+        byte[] plaintextLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength),
                 8));
         byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
                 plaintextLengthLittleEndian, 8);
@@ -188,17 +184,6 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] firstBlock = new byte[64];
         this.cipher.processBytes(firstBlock, 0, 64, firstBlock, 0);
         this.mac.init(new KeyParameter(firstBlock, 0, 32));
-    }
-
-    // TODO Remove when method is merged in ArrayConverter
-    public byte[] reverseByteOrder(byte[] array) {
-        int length = array.length;
-        byte[] temp = new byte[length];
-        int counter = length - 1;
-        for (int i = 0; i < length; i++) {
-            temp[i] = array[counter--];
-        }
-        return temp;
     }
 
     @Override
