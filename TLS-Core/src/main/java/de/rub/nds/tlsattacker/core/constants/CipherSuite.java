@@ -602,7 +602,7 @@ public enum CipherSuite {
         return this.name().startsWith("TLS_GOSTR3411");
     }
 
-    public boolean usesCHACHA20POLY1305() {
+    public boolean usesStrictExplicitIv() {
         return (this.name().contains("CHACHA20_POLY1305"));
     }
 

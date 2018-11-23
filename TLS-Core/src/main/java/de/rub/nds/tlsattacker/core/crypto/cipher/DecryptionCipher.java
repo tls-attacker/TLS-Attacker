@@ -30,6 +30,4 @@ public interface DecryptionCipher {
     public byte[] getIv();
 
     public void setIv(byte[] iv);
-
-    public boolean usesStrictExplicitIv();
 }

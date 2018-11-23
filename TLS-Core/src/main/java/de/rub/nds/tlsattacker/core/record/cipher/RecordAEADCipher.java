@@ -120,10 +120,11 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
         byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
-        if (encryptCipher.usesStrictExplicitIv()) {
+        if (cipherSuite.usesStrictExplicitIv()) {
             return new EncryptionResult(ciphertext);
+        } else {
+            return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
         }
-        return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
     }
 
     private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
@@ -151,12 +152,15 @@ public class RecordAEADCipher extends RecordCipher {
             LOGGER.warn("Could not decrypt ciphertext. Too short. Returning undecrypted Ciphertext");
             return decryptionRequest.getCipherText();
         }
-        byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
-        byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
-                decryptionRequest.getCipherText().length);
-        if (decryptCipher.usesStrictExplicitIv()) {
+        byte[] nonce;
+        byte[] data;
+        if (cipherSuite.usesStrictExplicitIv()) {
             nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
             data = decryptionRequest.getCipherText();
+        } else {
+            nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
+            data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
+                    decryptionRequest.getCipherText().length);
         }
         byte[] iv = ArrayConverter.concatenate(
                 getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
@@ -185,15 +189,10 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getTagSize() {
-        if (encryptCipher.usesStrictExplicitIv() && decryptCipher.usesStrictExplicitIv()) {
-            if (encryptCipher.usesStrictExplicitIv()) {
-                return AEAD_TAG_LENGTH;
-            } else {
-                return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
-            }
+        if (cipherSuite.usesStrictExplicitIv()) {
+            return AEAD_TAG_LENGTH;
         } else {
-            throw new UnsupportedOperationException(
-                "Encryption cipher and decryption cipher returned different values!");
+            return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
         }
     }
 

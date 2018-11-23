@@ -214,9 +214,4 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
             this.mac.update(this.ZEROES, 0, RecordAEADCipher.AEAD_TAG_LENGTH - partial);
         }
     }
-
-    public boolean usesStrictExplicitIv() {
-        return true;
-    }
-
 }

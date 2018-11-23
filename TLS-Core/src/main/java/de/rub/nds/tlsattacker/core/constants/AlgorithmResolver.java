@@ -276,7 +276,7 @@ public class AlgorithmResolver {
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB() || cipherSuite.usesCHACHA20POLY1305()) {
+        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB() || cipherSuite.usesStrictExplicitIv()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
                 || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA")
