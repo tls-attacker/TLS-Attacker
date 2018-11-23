@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -63,8 +62,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getAeadSaltSize() {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
-        return cipherAlg.getNonceBytesFromHandshake();
+        return AEAD_IV_LENGTH - AlgorithmResolver.getCipher(suite).getNonceBytesFromRecord();
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {
