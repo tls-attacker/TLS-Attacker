@@ -195,7 +195,7 @@ public class KeySetGenerator {
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        int saltSize = cipherAlg.getNonceBytesFromHandshake();
+        int saltSize = RecordAEADCipher.AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
         int secretSetSize = 2 * keySize + 2 * saltSize;
         return secretSetSize;
     }
