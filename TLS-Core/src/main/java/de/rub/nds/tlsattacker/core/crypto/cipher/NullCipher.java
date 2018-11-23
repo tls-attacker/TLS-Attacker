@@ -74,4 +74,5 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
             throws CryptoException {
         return someBytes;
     }
+
 }
