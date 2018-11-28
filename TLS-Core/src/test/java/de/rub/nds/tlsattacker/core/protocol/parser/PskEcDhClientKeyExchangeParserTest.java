@@ -30,22 +30,15 @@ public class PskEcDhClientKeyExchangeParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
-                .asList(new Object[][]{
-            {
-                ArrayConverter
-                .hexStringToByteArray("10000032000f436c69656e745f6964656e7469747920f73171f4379e1897f443a82bcc06d79368f96aad699f10d21505c661fe80655b"),
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE,
-                50,
-                ProtocolVersion.TLS12
-            },
-            {
-                ArrayConverter
-                .hexStringToByteArray("10000032000f436c69656e745f6964656e746974792073f7cf3676cef0cf08b800519732540c8a16062aa5e24fc2360007c265b83f1b"),
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE,
-                50,
-                ProtocolVersion.TLS12
-            }
-        });
+                .asList(new Object[][] {
+                        {
+                                ArrayConverter
+                                        .hexStringToByteArray("10000032000f436c69656e745f6964656e7469747920f73171f4379e1897f443a82bcc06d79368f96aad699f10d21505c661fe80655b"),
+                                HandshakeMessageType.CLIENT_KEY_EXCHANGE, 50, ProtocolVersion.TLS12 },
+                        {
+                                ArrayConverter
+                                        .hexStringToByteArray("10000032000f436c69656e745f6964656e746974792073f7cf3676cef0cf08b800519732540c8a16062aa5e24fc2360007c265b83f1b"),
+                                HandshakeMessageType.CLIENT_KEY_EXCHANGE, 50, ProtocolVersion.TLS12 } });
     }
 
     private final byte[] message;
@@ -53,7 +46,8 @@ public class PskEcDhClientKeyExchangeParserTest {
     private final int length;
     private final ProtocolVersion version;
 
-    public PskEcDhClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
+    public PskEcDhClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
+            ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;

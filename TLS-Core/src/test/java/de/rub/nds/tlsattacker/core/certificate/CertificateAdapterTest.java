@@ -61,21 +61,16 @@ public class CertificateAdapterTest {
         Date endDate = new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000);
 
         // Initialize certificate generating objects
-        X509v1CertificateBuilder certificateBuilder = new JcaX509v1CertificateBuilder(
-                new X500Principal("CN=Test"),
-                BigInteger.ONE,
-                startDate, endDate,
-                new X500Principal("CN=Test"),
-                publicKey);
-        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA")
-                .setProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()).build(privK);
+        X509v1CertificateBuilder certificateBuilder = new JcaX509v1CertificateBuilder(new X500Principal("CN=Test"),
+                BigInteger.ONE, startDate, endDate, new X500Principal("CN=Test"), publicKey);
+        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(
+                new org.bouncycastle.jce.provider.BouncyCastleProvider()).build(privK);
 
         // Create certificate
         X509CertificateHolder certHolder = certificateBuilder.build(contentSigner);
-        certificate = new Certificate(
-                new org.bouncycastle.asn1.x509.Certificate[]{certHolder.toASN1Structure()});
+        certificate = new Certificate(new org.bouncycastle.asn1.x509.Certificate[] { certHolder.toASN1Structure() });
     }
-    
+
     /**
      * Tests if marshal() creates the correct HexString corresponding to a given
      * certificate.
