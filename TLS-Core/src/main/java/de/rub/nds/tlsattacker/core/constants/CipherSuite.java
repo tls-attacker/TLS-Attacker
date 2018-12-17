@@ -499,6 +499,54 @@ public enum CipherSuite {
     public int getValue() {
         return value;
     }
+    
+    //Determine Key Exchange Algorithms
+    
+    public boolean isKeyExchangeRsa() {
+        return this.name().contains("TLS_RSA");
+    }
+    
+    public boolean isKeyExchangeDh() {
+        return this.name().contains("TLS_DH");
+    }
+    
+    public boolean isKeyExchangeEcdh() {
+        return this.name().contains("TLS_ECDH");
+    }
+    
+    public boolean isKeyExchangeEphemeral() {
+        return this.name().contains("DHE_") || this.isAuthenticationAnon();
+    }
+    
+    public boolean isKeyExchangePsk() {
+        return this.name().contains("TLS_PSK");
+    }
+    
+    public boolean isKeyExchangeSrp() {
+        return this.name().contains("TLS_SRP");
+    }
+    
+    //Determine Authentication Algorithms
+    
+    public boolean isAuthenticationRsa() {
+        return this.name().contains("RSA") && !this.name().contains("PSK");
+    }
+    
+    public boolean isAuthenticationDss() {
+        return this.name().contains("DSS");
+    }
+    
+    public boolean isAuthenticationEcdsa() {
+        return this.name().contains("ECDSA");
+    }
+    
+    public boolean isAuthenticationPsk() {
+        return this.name().contains("PSK");
+    }
+    
+    public boolean isAuthenticationAnon() {
+        return this.name().contains("anon");
+    }
 
     /**
      * Returns true in case the cipher suite enforces ephemeral keys. This is
