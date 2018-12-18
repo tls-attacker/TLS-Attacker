@@ -966,9 +966,13 @@ public enum CipherSuite {
     public boolean isImplemented() {
         return getImplemented().contains(this);
     }
-
+    
     public boolean isSHA256() {
         return this.name().contains("SHA256");
+    }
+
+    public boolean isChachaPoly() {
+        return this.name().contains("CHACHA");
     }
 
     public boolean isSHA384() {
