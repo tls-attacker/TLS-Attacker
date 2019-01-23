@@ -135,7 +135,7 @@ public class RemBufferedChCiphersActionTest {
     @Test
     public void removingNonProposedExtensionsIsOk() {
         remove.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
-        remove.add(CipherSuite.RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        remove.add(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         remove.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         expected.removeAll(remove);
         setExpectedFields("1304001C008A");

@@ -183,4 +183,5 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             throw new CryptoException("Could not initialize JavaCipher", ex);
         }
     }
+
 }

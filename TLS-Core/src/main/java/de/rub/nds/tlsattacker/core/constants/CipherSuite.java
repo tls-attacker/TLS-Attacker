@@ -383,25 +383,20 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM(0xC0AD),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8(0xC0AE),
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8(0xC0AF),
-    TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC13),
-    TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCC14),
-    TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC15),
+    // *************************************************************************
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     // These Ciphersuite are from a Draft and also dont have a mac algorithm
     // defined
     // i am not sure if we want to keep draft ciphers here
     // UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
-    // UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
-    // UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
-    // UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
     // UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
     // UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
     // UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
     // UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
-    // Chacha poly CipherSuites, some are double specified, added RFC_ infront
-    RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
-    RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
-    RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),
+    // *************************************************************************
+    TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
+    TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
+    TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),
     TLS_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAB),
     TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAC),
     TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAD),
@@ -607,6 +602,10 @@ public enum CipherSuite {
         return this.name().startsWith("TLS_GOSTR3411");
     }
 
+    public boolean usesStrictExplicitIv() {
+        return (this.name().contains("CHACHA20_POLY1305"));
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version. TODO: this is still very imprecise and must be improved with new
@@ -620,7 +619,8 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384")) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") && !this.name().contains("IDEA")
+                && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
@@ -940,6 +940,9 @@ public enum CipherSuite {
         list.add(TLS_GOSTR341001_WITH_NULL_GOSTR3411);
         list.add(TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
         list.add(TLS_GOSTR341112_256_WITH_NULL_GOSTR3411);
+        list.add(TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         return list;
     }
 
@@ -968,6 +971,10 @@ public enum CipherSuite {
 
     public boolean isSHA256() {
         return this.name().contains("SHA256");
+    }
+
+    public boolean isChachaPoly() {
+        return this.name().contains("CHACHA");
     }
 
     public boolean isSHA384() {

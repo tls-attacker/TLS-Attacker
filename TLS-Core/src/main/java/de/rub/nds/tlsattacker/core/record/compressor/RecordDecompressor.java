@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.*;
 
-public class RecordCompressor extends Compressor<AbstractRecord> {
+/**
+ *
+ * @author root
+ */
+public class RecordDecompressor extends Decompressor<AbstractRecord> {
 
     private CompressionAlgorithm algorithm;
     private ProtocolVersion version;
 
-    public RecordCompressor(TlsContext context) {
+    public RecordDecompressor(TlsContext context) {
         version = context.getChooser().getSelectedProtocolVersion();
         if (version.isTLS13()) {
             setMethod(CompressionMethod.NULL);
@@ -31,10 +35,10 @@ public class RecordCompressor extends Compressor<AbstractRecord> {
     }
 
     @Override
-    public void compress(AbstractRecord record) {
-        byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        byte[] compressedBytes = algorithm.compress(cleanBytes);
-        record.setCleanProtocolMessageBytes(compressedBytes);
+    public void decompress(AbstractRecord record) {
+        byte[] compressedBytes = record.getCleanProtocolMessageBytes().getValue();
+        byte[] cleanBytes = algorithm.decompress(compressedBytes);
+        record.setCleanProtocolMessageBytes(cleanBytes);
     }
 
     public void setMethod(CompressionMethod method) {

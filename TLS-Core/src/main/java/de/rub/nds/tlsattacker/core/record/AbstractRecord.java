@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.AbstractRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
@@ -108,7 +109,7 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     }
 
     public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-            ProtocolMessageType type);
+            RecordCompressor compressor, ProtocolMessageType type);
 
     public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
 
