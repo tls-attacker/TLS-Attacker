@@ -98,6 +98,12 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
                 CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
                 CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
@@ -217,7 +223,9 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherAlgorithm.ARIA_256_CBC);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherAlgorithm.ARIA_256_GCM);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherAlgorithm.GOST_28147_CNT);
-        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
     }
 
     @Test
@@ -302,7 +310,9 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherType.BLOCK);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherType.AEAD);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.STREAM);
-        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.STREAM);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.AEAD);
     }
 
     /**
