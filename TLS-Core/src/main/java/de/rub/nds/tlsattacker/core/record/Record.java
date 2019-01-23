@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
@@ -96,8 +97,9 @@ public class Record extends AbstractRecord {
     }
 
     @Override
-    public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, ProtocolMessageType type) {
-        return new RecordPreparator(chooser, this, encryptor, type);
+    public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
+            ProtocolMessageType type) {
+        return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
     @Override

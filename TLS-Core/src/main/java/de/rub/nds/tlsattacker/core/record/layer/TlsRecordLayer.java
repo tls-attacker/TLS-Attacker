@@ -26,6 +26,9 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -42,6 +45,9 @@ public class TlsRecordLayer extends RecordLayer {
     private final Decryptor decryptor;
     private final Encryptor encryptor;
 
+    private RecordCompressor compressor;
+    private RecordDecompressor decompressor;
+
     private RecordCipher cipher;
 
     public TlsRecordLayer(TlsContext tlsContext) {
@@ -49,6 +55,8 @@ public class TlsRecordLayer extends RecordLayer {
         cipher = new RecordNullCipher(tlsContext);
         encryptor = new RecordEncryptor(cipher, tlsContext);
         decryptor = new RecordDecryptor(cipher, tlsContext);
+        compressor = new RecordCompressor(tlsContext);
+        decompressor = new RecordDecompressor(tlsContext);
     }
 
     /**
@@ -56,6 +64,17 @@ public class TlsRecordLayer extends RecordLayer {
      *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data
      */
+
+    @Override
+    public void updateCompressor() {
+        compressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+    }
+
+    @Override
+    public void updateDecompressor() {
+        decompressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+    }
+
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawRecordData) {
         List<AbstractRecord> records = new LinkedList<>();
@@ -123,8 +142,9 @@ public class TlsRecordLayer extends RecordLayer {
             if (useRecordType) {
                 contentType = record.getContentMessageType();
             }
+
             AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext.getChooser(), encryptor,
-                    contentType);
+                    compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -186,6 +206,7 @@ public class TlsRecordLayer extends RecordLayer {
                     }
                 }
                 decryptor.decrypt(record);
+                decompressor.decompress(record);
             } catch (CryptoException E) {
                 record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
                 LOGGER.warn("Could not decrypt Record, parsing as unencrypted");
