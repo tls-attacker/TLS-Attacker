@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -21,15 +22,21 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
 
     private final BlobRecord record;
     private final Encryptor encryptor;
+    private final RecordCompressor compressor;
 
-    public BlobRecordPreparator(Chooser chooser, BlobRecord record, Encryptor encryptor, ProtocolMessageType type) {
+    public BlobRecordPreparator(Chooser chooser, BlobRecord record, Encryptor encryptor, ProtocolMessageType type,
+            RecordCompressor compressor) {
         super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
+        this.compressor = compressor;
     }
 
     @Override
     public void prepare() {
+        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
+            compressor.compress(record);
+        }
         encryptor.encrypt(record);
         prepareContentMessageType(record);
     }

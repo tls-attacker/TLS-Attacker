@@ -49,11 +49,11 @@ public class ServerHelloPreparatorTest {
         List<CipherSuite> suiteList = new LinkedList<>();
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
         suiteList.add(CipherSuite.TLS_DHE_DSS_WITH_AES_256_CBC_SHA256);
-        suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        suiteList.add(CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         suiteList.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_GCM_SHA256);
         context.setClientSupportedCiphersuites(suiteList);
         List<CipherSuite> ourSuiteList = new LinkedList<>();
-        ourSuiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        ourSuiteList.add(CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         List<CompressionMethod> ourCompressionList = new LinkedList<>();
         ourCompressionList.add(CompressionMethod.LZS);
         context.getConfig().setDefaultClientSupportedCiphersuites(ourSuiteList);

@@ -30,7 +30,7 @@ public enum CipherAlgorithm {
     SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"), // TODO this is not verified
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
-    ChaCha20Poly1305(32, 12, 0, 0),
+    ChaCha20Poly1305(32, 12, 0, 0, "ChaCha20Poly1305"),
     DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
     ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet

@@ -27,9 +27,9 @@ public class KeyBlockParser extends Parser<KeySet> {
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
 
     /**
-     * iv length in byte
+     * AEAD iv length in byte
      */
-    public static final int GCM_IV_LENGTH = 12;
+    public static final int AEAD_IV_LENGTH = 12;
 
     private final CipherSuite suite;
 
@@ -62,7 +62,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getAeadSaltSize() {
-        return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
+        return AEAD_IV_LENGTH - AlgorithmResolver.getCipher(suite).getNonceBytesFromRecord();
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {

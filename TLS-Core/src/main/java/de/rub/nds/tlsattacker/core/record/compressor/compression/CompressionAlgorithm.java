@@ -10,13 +10,20 @@ package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public abstract class CompressionAlgorithm {
 
     private final CompressionMethod method;
+
+    protected static final Logger LOGGER = LogManager.getLogger(CompressionAlgorithm.class.getName());
 
     public CompressionAlgorithm(CompressionMethod method) {
         this.method = method;
     }
 
     public abstract byte[] compress(byte[] data);
+
+    public abstract byte[] decompress(byte[] data);
 }
