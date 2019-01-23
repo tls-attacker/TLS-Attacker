@@ -32,4 +32,9 @@ public class NullCompression extends CompressionAlgorithm {
         return data;
     }
 
+    @Override
+    public byte[] decompress(byte[] data) {
+        return data;
+    }
+
 }

@@ -52,6 +52,8 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
+        tlsContext.getRecordLayer().updateCompressor();
+        tlsContext.getRecordLayer().updateDecompressor();
         LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
                 + newValue.name());
         setExecuted(true);

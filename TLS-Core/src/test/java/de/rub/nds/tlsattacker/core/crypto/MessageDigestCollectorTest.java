@@ -94,9 +94,9 @@ public class MessageDigestCollectorTest {
         digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        digest.digest(ProtocolVersion.TLS10, CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
-        digest.digest(ProtocolVersion.TLS11, CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
-        digest.digest(ProtocolVersion.TLS12, CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         digest.digest(ProtocolVersion.TLS10, CipherSuite.TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384);
         digest.digest(ProtocolVersion.TLS11, CipherSuite.TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384);
         digest.digest(ProtocolVersion.TLS12, CipherSuite.TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384);
