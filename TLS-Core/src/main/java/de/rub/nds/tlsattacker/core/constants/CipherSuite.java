@@ -973,6 +973,10 @@ public enum CipherSuite {
         return this.name().contains("SHA256");
     }
 
+    public boolean isChachaPoly() {
+        return this.name().contains("CHACHA");
+    }
+
     public boolean isSHA384() {
         return this.name().contains("SHA384");
     }
