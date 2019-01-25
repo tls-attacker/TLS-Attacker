@@ -84,17 +84,4 @@ public enum EqualityError {
      */
     RECORD_VERSION;
 
-    public static EqualityError valueOf(Object second) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
-    }
-
 }
