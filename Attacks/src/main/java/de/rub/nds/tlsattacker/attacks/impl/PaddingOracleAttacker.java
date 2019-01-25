@@ -117,7 +117,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                         CONSOLE.info("Found an equality Error.");
                         CONSOLE.info("The Server is very likely vulnerable");
                     } else {
-                        LOGGER.error("2ndRescan false positive");
+                        LOGGER.error("2nd rescan false positive");
                         CONSOLE.info("Rescan revealed a false positive");
                         shakyScans = true;
                         return false;
@@ -173,13 +173,13 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 continue;
             }
             if (equivalentVector == null) {
-                LOGGER.error("Equivalent Vector is null:" + testedSuite + " - " + testedVersion);
+                LOGGER.error("Equivalent vector is null:" + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);
                 continue;
             }
             if (equivalentVector.getFingerprint() == null) {
-                LOGGER.error("Equivalent Vector has no fingerprint:" + testedSuite + " - " + testedVersion);
+                LOGGER.error("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 equivalentVector.setErrorDuringHandshake(true);
                 result = false;
                 continue;
@@ -272,7 +272,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
                             responseTwo.getFingerprint(), true);
                     if (error != EqualityError.NONE) {
-                        CONSOLE.info("Found an equality Error: " + error);
+                        CONSOLE.info("Found an EqualityError: " + error);
                         LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
                         LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
                         return error;
