@@ -23,9 +23,6 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     @Override
     public void parseExtensionMessageContent(PaddingExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() <= 65535) {
-            LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
-        }
         msg.setPaddingBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
         LOGGER.debug("The padding extension parser parsed the padding bytes " + bytesToHexString(msg.getPaddingBytes()));
     }

@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -56,34 +58,52 @@ public class ParallelExecutor {
         }
     }
 
-    public Future addTask(State state) {
+    public Future addTask(TlsTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
-        Future<?> submit = executorService.submit(new StateThreadExecutor(state, reexecutions));
+        Future<?> submit = executorService.submit(task);
         return submit;
     }
 
-    public void bulkExecute(List<State> stateList) {
-        if (executorService.isShutdown()) {
-            throw new RuntimeException("Cannot add Tasks to already shutdown executor");
-        }
+    public Future addStateTask(State state) {
+        return addTask(new StateExecutionTask(state, reexecutions));
+    }
+
+    public void bulkExecuteStateTasks(List<State> stateList) {
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
-            futureList.add(addTask(state));
+            futureList.add(addStateTask(state));
         }
         for (Future future : futureList) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {
-                throw new RuntimeException("Failed to execute tasks!");
+                throw new RuntimeException("Failed to execute tasks!", ex);
             }
         }
-        return;
     }
 
-    public void bulkExecute(State... states) {
-        this.bulkExecute(new ArrayList<>(Arrays.asList(states)));
+    public void bulkExecuteStateTasks(State... states) {
+        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+    }
+
+    public void bulkExecuteTasks(List<TlsTask> taskList) {
+        List<Future> futureList = new LinkedList<>();
+        for (TlsTask tlStask : taskList) {
+            futureList.add(addTask(tlStask));
+        }
+        for (Future future : futureList) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new RuntimeException("Failed to execute tasks!", ex);
+            }
+        }
+    }
+
+    public void bulkExecuteTasks(TlsTask... tasks) {
+        this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }
 
     public int getSize() {
@@ -92,43 +112,5 @@ public class ParallelExecutor {
 
     public void shutdown() {
         executorService.shutdown();
-    }
-
-    private class StateThreadExecutor implements Runnable {
-
-        private final State state;
-
-        private boolean hasError = false;
-
-        public StateThreadExecutor(State state, int reexecutions) {
-            this.state = state;
-        }
-
-        @Override
-        public void run() {
-            Exception exception = null;
-            long sleepTime = 0;
-            for (int i = 0; i < reexecutions + 1; i++) {
-                WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-                try {
-                    if (sleepTime > 0) {
-                        Thread.sleep(sleepTime);
-                    }
-                    executor.executeWorkflow();
-                    break;
-                } catch (Exception E) {
-                    LOGGER.debug("Encountered an exception during the execution", E);
-                    hasError = true;
-                    sleepTime += 1000;
-                    exception = E;
-                }
-            }
-            if (hasError) {
-                LOGGER.error("Could not executre Workflow.", exception);
-                throw new RuntimeException("Could not execute State even after " + reexecutions + " reexecutions",
-                        exception);
-            }
-        }
-
     }
 }
