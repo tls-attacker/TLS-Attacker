@@ -12,24 +12,24 @@ import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
-import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGeneratorFactory;
+import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.FingerprintTaskVectorPair;
+import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
-import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -48,7 +48,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean groupRecords = true;
 
-    private HashMap<Integer, List<ResponseFingerprint>> responseMap;
+    private List<VectorResponse> vectorResponseList;
+    private List<VectorResponse> vectorResponseListTwo;
+    private List<VectorResponse> vectorResponseListThree;
 
     private CipherSuite testedSuite;
 
@@ -57,6 +59,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private final ParallelExecutor executor;
 
     private boolean shakyScans = false;
+    private boolean errornousScans = false;
 
     /**
      *
@@ -101,24 +104,26 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         EqualityError error;
 
         try {
-            responseMap = createResponseMap();
-            error = getEqualityError(responseMap);
-            if (error != EqualityError.NONE) {
+            vectorResponseList = createVectorResponseList();
+            error = getEqualityError(vectorResponseList);
+            if (error != EqualityError.NONE && error != null) {
                 CONSOLE.info("Found a side channel. Rescanning to confirm.");
-                HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
-                EqualityError errorTwo = getEqualityError(responseMapTwo);
-                if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
-                    HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
-                    EqualityError errorThree = getEqualityError(responseMapThree);
-                    if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
+                vectorResponseListTwo = createVectorResponseList();
+                EqualityError errorTwo = getEqualityError(vectorResponseListTwo);
+                if (error == errorTwo && lookEqual(vectorResponseList, vectorResponseListTwo)) {
+                    vectorResponseListThree = createVectorResponseList();
+                    EqualityError errorThree = getEqualityError(vectorResponseListThree);
+                    if (error == errorThree && lookEqual(vectorResponseList, vectorResponseListThree)) {
                         CONSOLE.info("Found an equality Error.");
-                        CONSOLE.info("The Server is very likely vulnerabble");
+                        CONSOLE.info("The Server is very likely vulnerable");
                     } else {
+                        LOGGER.error("2nd rescan false positive");
                         CONSOLE.info("Rescan revealed a false positive");
                         shakyScans = true;
                         return false;
                     }
                 } else {
+                    LOGGER.error("Rescan false positive");
                     CONSOLE.info("Rescan revealed a false positive");
                     shakyScans = true;
                     return false;
@@ -130,11 +135,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         CONSOLE.info(EqualityErrorTranslator.translation(error, null, null));
         if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
-            for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
-                LOGGER.debug("----------------Map-----------------");
-                for (ResponseFingerprint fingerprint : fingerprintList) {
-                    LOGGER.debug(fingerprint.toString());
-                }
+            LOGGER.debug("-------------(Not Grouped)-----------------");
+            for (VectorResponse vectorResponse : vectorResponseList) {
+                LOGGER.debug(vectorResponse.toString());
             }
         }
 
@@ -143,107 +146,167 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     /**
      *
-     * @param responseMapOne
-     * @param responseMapTwo
+     * @param responseVectorListOne
+     * @param responseVectorListTwo
      * @return
      */
-    public boolean lookEqual(HashMap<Integer, List<ResponseFingerprint>> responseMapOne,
-            HashMap<Integer, List<ResponseFingerprint>> responseMapTwo) {
-        for (Integer key : responseMapOne.keySet()) {
-            List<ResponseFingerprint> listOne = responseMapOne.get(key);
-            List<ResponseFingerprint> listTwo = responseMapTwo.get(key);
-            if (listOne.size() != listTwo.size()) {
-                throw new PaddingOracleUnstableException(
-                        "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
-            }
-            for (int i = 0; i < listOne.size(); i++) {
-                if (FingerPrintChecker.checkEquality(listOne.get(i), listTwo.get(i), false) != EqualityError.NONE) {
-                    return false;
+    public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
+        boolean result = true;
+        if (responseVectorListOne.size() != responseVectorListTwo.size()) {
+            throw new PaddingOracleUnstableException(
+                    "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+        }
+
+        for (VectorResponse vectorResponseOne : responseVectorListOne) {
+            // Find equivalent
+            VectorResponse equivalentVector = null;
+            for (VectorResponse vectorResponseTwo : responseVectorListTwo) {
+                if (vectorResponseOne.getPaddingVector().equals(vectorResponseTwo.getPaddingVector())) {
+                    equivalentVector = vectorResponseTwo;
+                    break;
                 }
             }
+            if (vectorResponseOne.getFingerprint() == null) {
+                LOGGER.error("First vector has no fingerprint:" + testedSuite + " - " + testedVersion);
+                vectorResponseOne.setErrorDuringHandshake(true);
+                result = false;
+                continue;
+            }
+            if (equivalentVector == null) {
+                LOGGER.error("Equivalent vector is null:" + testedSuite + " - " + testedVersion);
+                result = false;
+                vectorResponseOne.setMissingEquivalent(true);
+                continue;
+            }
+            if (equivalentVector.getFingerprint() == null) {
+                LOGGER.error("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
+                equivalentVector.setErrorDuringHandshake(true);
+                result = false;
+                continue;
+            }
+
+            EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
+                    equivalentVector.getFingerprint(), true);
+            if (error != EqualityError.NONE) {
+                LOGGER.error("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
+                result = false;
+                vectorResponseOne.setShaky(true);
+            }
         }
-        return true;
+        return result;
     }
 
     /**
      *
      * @return
      */
-    public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
-        PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
-        List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
-        boolean first = true;
-        HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
-        List<State> stateList = new LinkedList<>();
-        for (WorkflowTrace trace : traceList) {
-            stateList.add(new State(tlsConfig, trace));
+    public List<VectorResponse> createVectorResponseList() {
+
+        PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
+        PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
+        List<TlsTask> taskList = new LinkedList<>();
+        List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
+        for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
+                tlsConfig.getDefaultHighestClientProtocolVersion())) {
+            State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 6);
+            taskList.add(fingerPrintTask);
+            stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
-        executor.bulkExecute(stateList);
-        for (State state : stateList) {
-            testedSuite = state.getTlsContext().getSelectedCipherSuite();
-            testedVersion = state.getTlsContext().getSelectedProtocolVersion();
-            if (state.getWorkflowTrace().allActionsExecuted()) {
-                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
-                clearConnections(state);
-                int length = getLastRecordLength(state);
-                if (!groupRecords) {
-                    length = 0;
+        List<VectorResponse> tempResponseVectorList = new LinkedList<>();
+        executor.bulkExecuteTasks(taskList);
+        for (FingerprintTaskVectorPair pair : stateVectorPairList) {
+            ResponseFingerprint fingerprint = null;
+            if (pair.getFingerPrintTask().getState().getWorkflowTrace().allActionsExecuted()) {
+                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
+                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+                if (testedSuite == null || testedVersion == null) {
+                    // Did not receive ServerHello?!
+                    LOGGER.error("Could not find ServerHello" + testedSuite + " - " + testedVersion);
+                    errornousScans = true;
                 }
-                List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
-                if (responseFingerprintList == null) {
-                    responseFingerprintList = new LinkedList<>();
-                    responseMap.put(length, responseFingerprintList);
-                }
-                responseFingerprintList.add(fingerprint);
+                fingerprint = pair.getFingerPrintTask().getFingerprint();
+                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
+                        testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
             } else {
+
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+                VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
+                        tlsConfig.getDefaultApplicationMessageData().getBytes().length);
+                vectorResponse.setErrorDuringHandshake(true);
+                tempResponseVectorList.add(vectorResponse);
+                LOGGER.error("Could not execute whole workflow" + testedSuite + " - " + testedVersion);
+                errornousScans = true;
             }
         }
-        return responseMap;
-    }
-
-    private int getLastRecordLength(State state) {
-        AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
-                .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
-        return ((Record) lastRecord).getLength().getValue();
+        return tempResponseVectorList;
     }
 
     /**
      *
-     * @param responseMap
+     * @param responseVectorList
      * @return
      */
-    public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
-        for (List<ResponseFingerprint> list : responseMap.values()) {
-            ResponseFingerprint fingerprint = list.get(0);
-            for (int i = 1; i < list.size(); i++) {
-                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
-                if (error != EqualityError.NONE) {
-                    CONSOLE.info("Found an equality Error: " + error);
-                    LOGGER.debug("Fingerprint1: " + fingerprint.toString());
-                    LOGGER.debug("Fingerprint2: " + list.get(i).toString());
+    public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
+        // TODO this comparision does too many equivalnce tests but is a easier
+        // to read?
+        for (VectorResponse responseOne : responseVectorList) {
+            for (VectorResponse responseTwo : responseVectorList) {
+                if (responseOne == responseTwo) {
+                    continue;
+                }
+                boolean shouldCompare = true;
+                if (responseOne.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
+                if (responseTwo.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
+                if (responseOne.getLength() == null || responseTwo.getLength() == null) {
 
-                    return error;
+                    shouldCompare = false;
+                }
+                if (shouldCompare) {
+                    EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
+                            responseTwo.getFingerprint(), true);
+                    if (error != EqualityError.NONE) {
+                        CONSOLE.info("Found an EqualityError: " + error);
+                        LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
+                        LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
+                        return error;
+                    }
                 }
             }
         }
         return EqualityError.NONE;
     }
 
-    private void clearConnections(State state) {
-        try {
-            state.getTlsContext().getTransportHandler().closeConnection();
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
-        }
-    }
-
     /**
      *
      * @return
      */
-    public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
-        return responseMap;
+    public List<VectorResponse> getVectorResponseList() {
+        return vectorResponseList;
+    }
+
+    /**
+     * The responseVector list of the first rescan
+     *
+     * @return
+     */
+    public List<VectorResponse> getVectorResponseListTwo() {
+        return vectorResponseListTwo;
+    }
+
+    /**
+     * The responseVector list of the second rescan
+     *
+     * @return
+     */
+    public List<VectorResponse> getVectorResponseListThree() {
+        return vectorResponseListThree;
     }
 
     /**
@@ -268,5 +331,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      */
     public boolean isShakyScans() {
         return shakyScans;
+    }
+
+    public boolean isErrornousScans() {
+        return errornousScans;
     }
 }

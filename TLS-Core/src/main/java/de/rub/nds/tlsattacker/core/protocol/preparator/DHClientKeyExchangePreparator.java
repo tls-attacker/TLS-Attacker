@@ -84,7 +84,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected void preparePublicKey(T msg) {
-        msg.setPublicKey(clientPublicKey.toByteArray());
+        msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(clientPublicKey));
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
