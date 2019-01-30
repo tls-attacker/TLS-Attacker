@@ -29,6 +29,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -89,8 +90,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         ReceiveAction action = new ReceiveAction();
 
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        alertMessage.setDescription(AlertDescription.BAD_RECORD_MAC.getValue());
-        alertMessage.setLevel(AlertLevel.FATAL.getValue());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
@@ -122,7 +121,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     private Record createRecordWithPadding(int p, CipherSuite suite) {
         byte[] padding = createPaddingBytes(p);
-        int recordLength = config.getBlockSizeForCiphersuite(suite) * config.getBlocks();
+        int recordLength = AlgorithmResolver.getCipher(suite).getBlocksize() * config.getBlocks();
         if (recordLength < padding.length) {
             throw new ConfigurationException("Padding too large");
         }
@@ -156,7 +155,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     protected Boolean isVulnerable() {
         Boolean vulnerable = false;
         StringBuilder commands = new StringBuilder();
-        List<CipherSuite> suites = config.getCipherSuites();
+        List<CipherSuite> suites = tlsConfig.getDefaultClientSupportedCiphersuites();
         for (CipherSuite suite : suites) {
             results.clear();
             LOGGER.info("Testing ciphersuite {}", suite);
@@ -168,7 +167,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             for (int i = 0; i < paddingStrings.length; i++) {
                 paddings[i] = Integer.parseInt(paddingStrings[i]);
             }
-            for (int i = 0; i < ((int) config.getMeasurements() * 1.25); i++) {
+            for (int i = 0; i < config.getMeasurements(); i++) {
                 LOGGER.info("Starting round {}", i);
                 for (int p : paddings) {
                     Record record = createRecordWithPadding(p, suite);
@@ -200,7 +199,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                     for (int j = i + 1; j < paddings.length; j++) {
                         String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-"
                                 + suite.name() + ".csv";
-                        String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
+                        String[] delimiters = {(";" + paddings[i] + ";"), (";" + paddings[j] + ";")};
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
                         String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
                                 + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"
@@ -211,7 +210,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                     }
                 }
             }
-            // vulnerable |= false;
         }
         LOGGER.info("All commands at once: \n{}", commands);
         LOGGER.warn("Vulnerability has to be tested using the mona timing lib.");

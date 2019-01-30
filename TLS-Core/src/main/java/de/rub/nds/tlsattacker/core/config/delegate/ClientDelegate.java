@@ -19,12 +19,6 @@ public class ClientDelegate extends Delegate {
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
-    @Parameter(names = "-proxyData", description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")
-    private String proxyData = "localhost:4444";
-
-    @Parameter(names = "-proxyControl", description = "Specify the host and port for control messafes used in the proxy. Syntax: localhost:5555")
-    private String proxyControl = "localhost:5555";
-
     public ClientDelegate() {
     }
 
@@ -63,36 +57,6 @@ public class ClientDelegate extends Delegate {
                 break;
             default:
                 throw new ParameterException("Could not parse provided host: " + host);
-        }
-
-        if (proxyData != null) {
-            String[] parsedProxyData = proxyData.split(":");
-            switch (parsedProxyData.length) {
-                case 1:
-                    con.setProxyDataHostname(proxyData);
-                    break;
-                case 2:
-                    con.setProxyDataHostname(parsedProxyData[0]);
-                    con.setProxyDataPort(parsePort(parsedProxyData[1]));
-                    break;
-                default:
-                    throw new ParameterException("Could not parse provided proxyData: " + proxyData);
-            }
-        }
-
-        if (proxyControl != null) {
-            String[] parsedProxyControl = proxyControl.split(":");
-            switch (parsedProxyControl.length) {
-                case 1:
-                    con.setProxyControlHostname(proxyControl);
-                    break;
-                case 2:
-                    con.setProxyControlHostname(parsedProxyControl[0]);
-                    con.setProxyControlPort(parsePort(parsedProxyControl[1]));
-                    break;
-                default:
-                    throw new ParameterException("Could not parse provided proxyControl: " + proxyControl);
-            }
         }
     }
 

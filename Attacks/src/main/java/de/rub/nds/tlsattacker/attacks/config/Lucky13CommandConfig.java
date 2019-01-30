@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.config.delegate.ProxyDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,31 +26,20 @@ public class Lucky13CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "lucky13";
 
-    protected List<CipherSuite> cipherSuites;
-
-    protected static HashMap<CipherSuite, Integer> blockSizeForCipherSuite;
-    static {
-        blockSizeForCipherSuite = new HashMap<>();
-        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, 16);
-        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA, 16);
-        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA, 8);
-        blockSizeForCipherSuite.put(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, 8);
-    }
-
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
-    Integer measurements = 100;
+    private Integer measurements = 100;
 
     @Parameter(names = "-mona_file", description = "File output for Mona timing lib. If set, the output is generated and written.")
-    String monaFile;
+    private String monaFile;
 
     @Parameter(names = "-mona_jar", description = "Location of the ReportingTool.jar file.")
-    String monaJar = "ReportingTool.jar";
+    private String monaJar = "ReportingTool.jar";
 
     @Parameter(names = "-paddings", description = "Paddings to check for differences, column separated.")
-    String paddings = "0,255";
+    private String paddings = "0,255";
 
     @Parameter(names = "-blocks", description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
-    Integer blocks = 18;
+    private Integer blocks = 18;
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -62,6 +51,8 @@ public class Lucky13CommandConfig extends AttackConfig {
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate
+    private ProxyDelegate proxyDelegate;
 
     /**
      *
@@ -79,17 +70,7 @@ public class Lucky13CommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(starttlsDelegate);
-        cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-    }
-
-    public Integer getBlockSizeForCiphersuite(CipherSuite suite) {
-        return blockSizeForCipherSuite.get(suite);
-    }
-
-    public List<CipherSuite> getCipherSuites() {
-        return cipherSuites;
+        addDelegate(proxyDelegate);
     }
 
     public Integer getMeasurements() {
@@ -153,11 +134,11 @@ public class Lucky13CommandConfig extends AttackConfig {
              * No explicit cipher suites are set. Use the default cipher suites
              * for this attack
              */
-            config.setDefaultServerSupportedCiphersuites(cipherSuites);
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
-            config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
-        } else {
-            cipherSuites = ciphersuiteDelegate.getCipherSuites();
+            List<CipherSuite> suiteList = new LinkedList<>();
+            suiteList.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            config.setDefaultServerSupportedCiphersuites(suiteList);
+            config.setDefaultClientSupportedCiphersuites(suiteList);
+            config.setDefaultSelectedCipherSuite(suiteList.get(0));
         }
         return config;
     }
