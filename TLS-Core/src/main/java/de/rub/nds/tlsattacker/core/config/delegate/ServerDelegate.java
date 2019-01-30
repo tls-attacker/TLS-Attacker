@@ -45,13 +45,13 @@ public class ServerDelegate extends Delegate {
         }
     }
 
-    private int parsePort(Integer portStr) {
-        if (portStr == null) {
+    private int parsePort(Integer port) {
+        if (port == null) {
             throw new ParameterException("Port must be set, but was not specified");
         }
-        if (portStr < 0 || portStr > 65535) {
+        if (port < 0 || port > 65535) {
             throw new ParameterException("Port must be in interval [0,65535], but is " + port);
         }
-        return portStr;
+        return port;
     }
 }
