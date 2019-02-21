@@ -58,7 +58,6 @@ public class ResponseExtractor {
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state) {
-        TlsContext context = state.getTlsContext();
         ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
         return getFingerprint(state, action);
     }
