@@ -18,10 +18,22 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     private boolean hasError = false;
 
-    private int reexecutions = 0;
+    private final int reexecutions;
+
+    private final long additionalSleepTime;
+
+    private final boolean increasingSleepTimes;
 
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
+        additionalSleepTime = 1000;
+        increasingSleepTimes = true;
+    }
+
+    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes) {
+        this.reexecutions = reexecutions;
+        this.additionalSleepTime = additionalSleepTime;
+        this.increasingSleepTimes = increasingSleepTimes;
     }
 
     @Override
@@ -39,7 +51,9 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
             } catch (Exception E) {
                 LOGGER.debug("Encountered an exception during the execution", E);
                 hasError = true;
-                sleepTime += 1000;
+                if (increasingSleepTimes) {
+                    sleepTime += additionalSleepTime;
+                }
                 exception = E;
             }
         }
