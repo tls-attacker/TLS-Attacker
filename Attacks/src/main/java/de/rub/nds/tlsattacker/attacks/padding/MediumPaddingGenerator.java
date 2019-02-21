@@ -100,7 +100,7 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     List<PaddingVector> createOnlyPaddingVectors(CipherSuite suite, ProtocolVersion version) {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - 1);
-        vectorList.add(createVectorWithPlainData("Plain FF", plain));
+        vectorList.add(createVectorWithPlainData("Plain XF (0xXF=#padding bytes)", plain));
         plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
@@ -112,7 +112,7 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
-        vectorList.add(createVectorWithPlainData("Plain 4F", plain));
+        vectorList.add(createVectorWithPlainData("Plain FF", plain));
         return vectorList;
     }
 
