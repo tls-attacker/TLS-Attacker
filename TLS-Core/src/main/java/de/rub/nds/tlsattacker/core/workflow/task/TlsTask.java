@@ -66,4 +66,6 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
     public boolean isHasError() {
         return hasError;
     }
+
+    public abstract void reset();
 }

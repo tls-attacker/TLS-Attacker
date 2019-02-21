@@ -91,6 +91,12 @@ public class State {
         initState();
     }
 
+    public void reset() {
+        contextContainer.clear();
+        workflowTrace.reset();
+        initState();
+    }
+
     /**
      * Normalize trace and initialize TLS contexts.
      */

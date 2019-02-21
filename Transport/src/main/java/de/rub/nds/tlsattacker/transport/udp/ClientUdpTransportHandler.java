@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
@@ -48,7 +49,7 @@ public class ClientUdpTransportHandler extends TransportHandler {
         socket = new DatagramSocket();
         socket.connect(new InetSocketAddress(hostname, port));
         socket.setSoTimeout((int) getTimeout());
-        setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
+        setStreams(new PushbackInputStream(new UdpInputStream(socket)), new UdpOutputStream(socket));
     }
 
     public int getLocalPort() throws IOException {

@@ -66,4 +66,10 @@ public class FingerPrintTask extends TlsTask {
     public ResponseFingerprint getFingerprint() {
         return fingerprint;
     }
+
+    @Override
+    public void reset() {
+        state.reset();
+    }
+
 }
