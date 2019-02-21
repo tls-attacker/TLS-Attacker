@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -24,6 +25,7 @@ import java.nio.ByteBuffer;
 
 public class TimingProxyClientTcpTransportHandler extends TransportHandler implements ProxyableTransportHandler,
         TimeableTransportHandler {
+
     protected Socket dataSocket;
     protected Socket controlSocket;
     protected String hostname;
@@ -102,7 +104,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         controlSocket.getOutputStream().write((Integer.toString(port) + "\n").getBytes());
         controlSocket.getOutputStream().flush();
 
-        setStreams(dataSocket.getInputStream(), dataSocket.getOutputStream());
+        setStreams(new PushbackInputStream(dataSocket.getInputStream()), dataSocket.getOutputStream());
     }
 
     @Override

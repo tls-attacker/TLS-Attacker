@@ -31,4 +31,10 @@ public class FingerprintTaskVectorPair {
     public PaddingVector getVector() {
         return vector;
     }
+
+    @Override
+    public String toString() {
+        return "FingerprintTaskVectorPair{" + "fingerPrintTask=" + fingerPrintTask + ", vector=" + vector + '}';
+    }
+
 }

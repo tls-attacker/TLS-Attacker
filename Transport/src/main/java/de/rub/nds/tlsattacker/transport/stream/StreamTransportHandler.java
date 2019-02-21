@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 
 public class StreamTransportHandler extends TransportHandler {
 
@@ -51,7 +52,7 @@ public class StreamTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        setStreams(inputStream, outputStream);
+        setStreams(new PushbackInputStream(inputStream), outputStream);
     }
 
     public InputStream getInputStream() {
