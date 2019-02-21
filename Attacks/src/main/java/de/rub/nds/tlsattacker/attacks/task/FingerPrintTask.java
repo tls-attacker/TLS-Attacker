@@ -32,6 +32,11 @@ public class FingerPrintTask extends TlsTask {
         this.state = state;
     }
 
+    public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions) {
+        super(reexecutions, additionalTimeout, increasingTimeout);
+        this.state = state;
+    }
+
     @Override
     public void execute() {
         try {

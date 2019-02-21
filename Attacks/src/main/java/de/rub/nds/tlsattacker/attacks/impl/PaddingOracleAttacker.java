@@ -48,6 +48,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean groupRecords = true;
 
+    private boolean increasingTimeout = true;
+
+    private long additionalTimeout = 1000;
+
     private List<VectorResponse> vectorResponseList;
     private List<VectorResponse> vectorResponseListTwo;
     private List<VectorResponse> vectorResponseListThree;
@@ -209,7 +213,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
                 tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
-            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 6);
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout, 6);
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
@@ -335,5 +339,21 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public boolean isErrornousScans() {
         return errornousScans;
+    }
+
+    public boolean isIncreasingTimeout() {
+        return increasingTimeout;
+    }
+
+    public void setIncreasingTimeout(boolean increasingTimeout) {
+        this.increasingTimeout = increasingTimeout;
+    }
+
+    public long getAdditionalTimeout() {
+        return additionalTimeout;
+    }
+
+    public void setAdditionalTimeout(long additionalTimeout) {
+        this.additionalTimeout = additionalTimeout;
     }
 }
