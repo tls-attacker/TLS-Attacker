@@ -174,6 +174,7 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.840.113549.1.1.1":
                 return CertificateKeyType.RSA;
             case "1.2.840.10045.2.1":
+            case "1.2.840.10045.4.3.4":
                 return CertificateKeyType.ECDSA;
             case "1.2.840.113549.1.3.1":
                 return CertificateKeyType.DH;
