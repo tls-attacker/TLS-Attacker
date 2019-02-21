@@ -56,11 +56,13 @@ public abstract class TransportHandler {
                     Thread.currentThread().sleep(1);
                     int read = inStream.read();
                     if (read == -1) {
+                        // TCP FIN
                         return stream.toByteArray();
                     }
                     inStream.unread(read);
 
                 } catch (SocketException E) {
+                    // TCP RST received
                     return stream.toByteArray();
                 } catch (Exception E) {
                 }
