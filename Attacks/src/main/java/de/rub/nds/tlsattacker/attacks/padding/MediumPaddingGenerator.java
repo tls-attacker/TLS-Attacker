@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.attacks.padding.vector.TrippleVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -159,8 +158,10 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     private List<PaddingVector> createClassicModifiedPaddingWithInvalidMAC(int applicationLength, int paddingValue) {
         List<PaddingVector> vectorList = new LinkedList<>();
         // invalid mac
-        byte[] padding = createPaddingBytes(paddingValue);
-        for (int i = 0; i < DEFAULT_CIPHERTEXT_LENGTH - paddingValue - applicationLength; i++) {
+        byte[] padding = null;
+        for (int i = 0; i < DEFAULT_CIPHERTEXT_LENGTH - paddingValue - applicationLength - 1; i++) {
+
+            padding = createPaddingBytes(paddingValue);
             vectorList.add(new TrippleVector("ValPadInvMac-[" + i + "]0x01-" + applicationLength + "-" + paddingValue,
                     new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
                             new byte[] { 0x01 }, i), new ByteArrayExplicitValueModification(padding)));
@@ -176,6 +177,7 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
                             new byte[] { (byte) 0x80 }, i), new ByteArrayExplicitValueModification(padding)));
         }
         for (int i = 0; i < paddingValue; i++) {
+            padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x80; // flip first padding byte highest bit
             vectorList.add(new TrippleVector("InvPadInvMac-[" + i + "]x80-" + applicationLength + "-" + paddingValue,
                     new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
