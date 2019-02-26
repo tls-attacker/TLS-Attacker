@@ -19,8 +19,11 @@ public abstract class PaddingVector {
 
     protected final String name;
 
-    public PaddingVector(String name) {
+    protected final String identifier;
+
+    public PaddingVector(String name, String identifier) {
         this.name = name;
+        this.identifier = identifier;
     }
 
     public abstract Record createRecord();
@@ -31,4 +34,7 @@ public abstract class PaddingVector {
         return name;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
 }

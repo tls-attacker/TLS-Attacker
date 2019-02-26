@@ -100,9 +100,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      */
     @Override
     public Boolean isVulnerable() {
-        if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
-            groupRecords = false;
-        }
+        groupRecords = false;
         CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError error;
@@ -205,7 +203,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      * @return
      */
     public List<VectorResponse> createVectorResponseList() {
-
         PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
         PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
         List<TlsTask> taskList = new LinkedList<>();
