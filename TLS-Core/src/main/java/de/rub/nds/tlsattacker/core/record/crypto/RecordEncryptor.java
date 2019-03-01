@@ -57,7 +57,11 @@ public class RecordEncryptor extends Encryptor {
             // TLS13 needs the record length before encrypting
             // Encrypted length
             int cleanLength = record.getCleanProtocolMessageBytes().getValue().length;
-            int length = cleanLength + recordCipher.getTagSize() + 1; //+1 for the encrypted record type
+            int length = cleanLength + recordCipher.getTagSize() + 1; // +1 for
+                                                                      // the
+                                                                      // encrypted
+                                                                      // record
+                                                                      // type
             record.setLength(length);
         }
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
