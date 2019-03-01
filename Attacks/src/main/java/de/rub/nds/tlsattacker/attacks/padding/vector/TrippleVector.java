@@ -26,9 +26,9 @@ public class TrippleVector extends PaddingVector {
     private final VariableModification macModification;
     private final VariableModification paddingModification;
 
-    public TrippleVector(String name, VariableModification cleanModification, VariableModification macModification,
-            VariableModification paddingModification) {
-        super(name);
+    public TrippleVector(String name, String identifier, VariableModification cleanModification,
+            VariableModification macModification, VariableModification paddingModification) {
+        super(name, identifier);
         this.cleanModification = cleanModification;
         this.macModification = macModification;
         this.paddingModification = paddingModification;

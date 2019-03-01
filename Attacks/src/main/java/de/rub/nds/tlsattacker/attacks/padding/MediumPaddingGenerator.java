@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.attacks.padding.vector.TrippleVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,11 +68,15 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     List<PaddingVector> createBasicMacVectors(CipherSuite suite, ProtocolVersion version) {
         List<PaddingVector> vectorList = new LinkedList<>();
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
+        int i = 1;
         for (ByteArrayXorModification modification : createFlippedModifications(macSize)) {
             vectorList.add(new TrippleVector("BasicMac-" + modification.getStartPosition() + "-"
-                    + ArrayConverter.bytesToHexString(modification.getXor()), new ByteArrayExplicitValueModification(
-                    new byte[DEFAULT_CIPHERTEXT_LENGTH - macSize - DEFAULT_PADDING_LENGTH]), modification, null));
+                    + ArrayConverter.bytesToHexString(modification.getXor()), "BasicMac" + i,
+                    new ByteArrayExplicitValueModification(new byte[DEFAULT_CIPHERTEXT_LENGTH - macSize
+                            - DEFAULT_PADDING_LENGTH]), modification, null));
+            i++;
         }
+
         return vectorList;
     }
 
@@ -89,18 +92,20 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         byte[] padding = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - macSize);
         // Missing first MAC byte because of overlong valid padding
-        vectorList.add(new TrippleVector("MissingMacByteFirst", new ByteArrayExplicitValueModification(new byte[0]),
-                new ByteArrayDeleteModification(0, 1), new ByteArrayExplicitValueModification(padding)));
+        vectorList.add(new TrippleVector("MissingMacByteFirst", "MissingMacByteFirst",
+                new ByteArrayExplicitValueModification(new byte[0]), new ByteArrayDeleteModification(0, 1),
+                new ByteArrayExplicitValueModification(padding)));
         // Missing last MAC byte because of overlong valid padding
-        vectorList.add(new TrippleVector("MissingMacByteLast", new ByteArrayExplicitValueModification(new byte[0]),
-                new ByteArrayDeleteModification((macSize - 1), 1), new ByteArrayExplicitValueModification(padding)));
+        vectorList.add(new TrippleVector("MissingMacByteLast", "MissingMacByteLast",
+                new ByteArrayExplicitValueModification(new byte[0]), new ByteArrayDeleteModification((macSize - 1), 1),
+                new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }
 
     List<PaddingVector> createOnlyPaddingVectors(CipherSuite suite, ProtocolVersion version) {
         List<PaddingVector> vectorList = new LinkedList<>();
         byte[] plain = createPaddingBytes(DEFAULT_CIPHERTEXT_LENGTH - 1);
-        vectorList.add(createVectorWithPlainData("Plain XF (0xXF=#padding bytes)", plain));
+        vectorList.add(createVectorWithPlainData("Plain XF (0xXF=#padding bytes)", "PlainOnlyPadding", plain));
         plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
@@ -112,7 +117,7 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, };
-        vectorList.add(createVectorWithPlainData("Plain FF", plain));
+        vectorList.add(createVectorWithPlainData("Plain FF", "PlainTooMuchPadding", plain));
         return vectorList;
     }
 
@@ -138,19 +143,19 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
             byte[] padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x80; // flip first padding byte highest bit
             vectorList.add(new TrippleVector("InvPadValMac-[" + i + "]x80-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
+                    "InvPadValMacStart" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
                     new ByteArrayExplicitValueModification(padding)));
             padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x8; // flip middle padding byte
             // middle bit
             vectorList.add(new TrippleVector("InvPadValMac-[" + i + "]x08-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
+                    "InvPadValMacMid" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
                     new ByteArrayExplicitValueModification(padding)));
             padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x01; // flip last padding byte lowest
             // bit
             vectorList.add(new TrippleVector("InvPadValMac-[" + i + "]x01-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
+                    "InvPadValMacEnd" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
                     new ByteArrayExplicitValueModification(padding)));
         }
         return vectorList;
@@ -159,39 +164,48 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     private List<PaddingVector> createClassicModifiedPaddingWithInvalidMAC(int applicationLength, int paddingValue) {
         List<PaddingVector> vectorList = new LinkedList<>();
         // invalid mac
-        byte[] padding = createPaddingBytes(paddingValue);
-        for (int i = 0; i < DEFAULT_CIPHERTEXT_LENGTH - paddingValue - applicationLength; i++) {
+        byte[] padding = null;
+        for (int i = 0; i < DEFAULT_CIPHERTEXT_LENGTH - paddingValue - applicationLength - 1; i++) {
+
+            padding = createPaddingBytes(paddingValue);
             vectorList.add(new TrippleVector("ValPadInvMac-[" + i + "]0x01-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { 0x01 }, i), new ByteArrayExplicitValueModification(padding)));
+                    "ValPadInvMacStart" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { 0x01 }, i), new ByteArrayExplicitValueModification(
+                            padding)));
 
             padding = createPaddingBytes(paddingValue);
             vectorList.add(new TrippleVector("ValPadInvMac-[" + i + "]0x08-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { 0x08 }, i), new ByteArrayExplicitValueModification(padding)));
+                    "ValPadInvMacMid" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { 0x08 }, i), new ByteArrayExplicitValueModification(
+                            padding)));
             padding = createPaddingBytes(paddingValue);
 
             vectorList.add(new TrippleVector("ValPadInvMac-[" + i + "]0x80-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { (byte) 0x80 }, i), new ByteArrayExplicitValueModification(padding)));
+                    "ValPadInvMacEnd" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { (byte) 0x80 }, i),
+                    new ByteArrayExplicitValueModification(padding)));
         }
         for (int i = 0; i < paddingValue; i++) {
+            padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x80; // flip first padding byte highest bit
             vectorList.add(new TrippleVector("InvPadInvMac-[" + i + "]x80-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
+                    "InvPadInvMacStart" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(
+                            padding)));
             padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x8; // flip middle padding byte
             // middle bit
             vectorList.add(new TrippleVector("InvPadInvMac-[" + i + "]x08-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
+                    "InvPadInvMacMid" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(
+                            padding)));
             padding = createPaddingBytes(paddingValue);
             padding[i] ^= 0x01; // flip last padding lowest first
             // bit
             vectorList.add(new TrippleVector("InvPadInvMac-[" + i + "]x01-" + applicationLength + "-" + paddingValue,
-                    new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
-                            new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
+                    "InvPadInvMacEnd" + i, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                    new ByteArrayXorModification(new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(
+                            padding)));
         }
 
         return vectorList;
@@ -211,8 +225,8 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
         return modificationList;
     }
 
-    private PaddingVector createVectorWithPlainData(String name, byte[] plain) {
-        return new PlainPaddingVector(name,
+    private PaddingVector createVectorWithPlainData(String name, String identifier, byte[] plain) {
+        return new PlainPaddingVector(name, identifier,
                 (ByteArrayExplicitValueModification) ByteArrayModificationFactory.explicitValue(plain));
     }
 }

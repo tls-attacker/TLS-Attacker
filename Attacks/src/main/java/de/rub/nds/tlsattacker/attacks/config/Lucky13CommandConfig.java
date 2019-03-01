@@ -65,6 +65,7 @@ public class Lucky13CommandConfig extends AttackConfig {
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
+        proxyDelegate = new ProxyDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
