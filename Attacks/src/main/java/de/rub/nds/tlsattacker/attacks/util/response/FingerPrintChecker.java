@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -153,6 +154,25 @@ public class FingerPrintChecker {
         return true;
     }
 
+    private static boolean checkMessageListAlertEquality(List<ProtocolMessage> messageList1,
+            List<ProtocolMessage> messageList2) {
+        for (int i = 0; i < messageList1.size(); i++) {
+            ProtocolMessage protocolMessage1 = messageList1.get(i);
+            ProtocolMessage protocolMessage2 = messageList2.get(i);
+            if (protocolMessage1 instanceof AlertMessage && protocolMessage2 instanceof AlertMessage) {
+                if (((AlertMessage) protocolMessage1).getDescription().getValue() != ((AlertMessage) protocolMessage2)
+                        .getDescription().getValue()) {
+                    return false;
+                }
+                if (((AlertMessage) protocolMessage1).getLevel().getValue() != ((AlertMessage) protocolMessage2)
+                        .getLevel().getValue()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private static boolean checkRecordLengthEquality(List<AbstractRecord> recordList1, List<AbstractRecord> recordList2) {
         for (int i = 0; i < recordList1.size(); i++) {
             AbstractRecord abstractRecord1 = recordList1.get(i);
@@ -203,6 +223,32 @@ public class FingerPrintChecker {
             }
         }
         return true;
+    }
+
+    public static EqualityError checkSimpleEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
+            boolean canDecryptAlerts) {
+        if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
+            return EqualityError.SOCKET_EXCEPTION;
+        }
+        if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
+            return EqualityError.RECORD_COUNT;
+        }
+        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+            return EqualityError.ENCRYPTED_ALERT;
+        }
+        if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
+            if (!checkMessageListAlertEquality(fingerprint1.getMessageList(), fingerprint2.getMessageList())) {
+                return EqualityError.ALERT_MESSAGE_CONTENT;
+            }
+            if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
+                return EqualityError.MESSAGE_COUNT;
+            }
+        }
+        if (!checkSocketState(fingerprint1, fingerprint2)) {
+            return EqualityError.SOCKET_STATE;
+        }
+        return EqualityError.NONE;
+
     }
 
     private FingerPrintChecker() {

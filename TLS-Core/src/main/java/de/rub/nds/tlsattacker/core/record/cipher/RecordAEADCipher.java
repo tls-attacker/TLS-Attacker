@@ -82,16 +82,20 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
-        byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
+        byte[] sequenceNumberBytes = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
+        LOGGER.debug("SQN bytes: " + ArrayConverter.bytesToHexString(sequenceNumberBytes));
         byte[] nonce = ArrayConverter.concatenate(new byte[AEAD_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
-                sequenceNumberByte);
+                sequenceNumberBytes);
+        LOGGER.debug("NonceBytes:" + ArrayConverter.bytesToHexString(nonce));
+
         byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
         LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
         byte[] cipherText;
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
+            LOGGER.debug("AAD:" + ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
             cipherText = encryptCipher.encrypt(encryptIV, AEAD_TAG_LENGTH * 8,
                     request.getAdditionalAuthenticatedData(), request.getPlainText());
         } else {
@@ -189,7 +193,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getTagSize() {
-        if (cipherSuite.usesStrictExplicitIv()) {
+        if (cipherSuite.usesStrictExplicitIv() || version.isTLS13()) {
             return AEAD_TAG_LENGTH;
         } else {
             return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;

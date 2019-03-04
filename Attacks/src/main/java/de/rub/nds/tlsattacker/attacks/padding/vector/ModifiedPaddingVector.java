@@ -23,8 +23,8 @@ public class ModifiedPaddingVector extends PaddingVector {
 
     private final VariableModification modification;
 
-    public ModifiedPaddingVector(String name, VariableModification modification) {
-        super(name);
+    public ModifiedPaddingVector(String name, String identifier, VariableModification modification) {
+        super(name, identifier);
         this.modification = modification;
     }
 

@@ -48,6 +48,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private boolean groupRecords = true;
 
+    private boolean increasingTimeout = true;
+
+    private long additionalTimeout = 1000;
+
     private List<VectorResponse> vectorResponseList;
     private List<VectorResponse> vectorResponseListTwo;
     private List<VectorResponse> vectorResponseListThree;
@@ -96,9 +100,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      */
     @Override
     public Boolean isVulnerable() {
-        if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
-            groupRecords = false;
-        }
+        groupRecords = false;
         CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError error;
@@ -201,7 +203,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      * @return
      */
     public List<VectorResponse> createVectorResponseList() {
-
         PaddingTraceGenerator generator = PaddingTraceGeneratorFactory.getPaddingTraceGenerator(config);
         PaddingVectorGenerator vectorGenerator = generator.getVectorGenerator();
         List<TlsTask> taskList = new LinkedList<>();
@@ -209,7 +210,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
                 tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
-            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, 6);
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout, 6);
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
@@ -217,26 +218,25 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         executor.bulkExecuteTasks(taskList);
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
             ResponseFingerprint fingerprint = null;
-            if (pair.getFingerPrintTask().getState().getWorkflowTrace().allActionsExecuted()) {
-                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
-                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
-                if (testedSuite == null || testedVersion == null) {
-                    // Did not receive ServerHello?!
-                    LOGGER.error("Could not find ServerHello" + testedSuite + " - " + testedVersion);
-                    errornousScans = true;
-                }
-                fingerprint = pair.getFingerPrintTask().getFingerprint();
-                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
-                        testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
-            } else {
-
-                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            if (pair.getFingerPrintTask().isHasError()) {
+                errornousScans = true;
+                LOGGER.error("Could not extract fingerprint for " + pair.toString());
                 VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
                         tlsConfig.getDefaultApplicationMessageData().getBytes().length);
                 vectorResponse.setErrorDuringHandshake(true);
                 tempResponseVectorList.add(vectorResponse);
-                LOGGER.error("Could not execute whole workflow" + testedSuite + " - " + testedVersion);
-                errornousScans = true;
+                LOGGER.error("Could not execute whole workflow: " + testedSuite + " - " + testedVersion);
+
+            } else {
+                testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
+                testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
+                if (testedSuite == null || testedVersion == null) {
+                    LOGGER.fatal("Could not find ServerHello after successful extraction");
+                    throw new PaddingOracleUnstableException("Fatal Extraction error");
+                }
+                fingerprint = pair.getFingerPrintTask().getFingerprint();
+                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
+                        testedSuite, tlsConfig.getDefaultApplicationMessageData().getBytes().length));
             }
         }
         return tempResponseVectorList;
@@ -335,5 +335,21 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public boolean isErrornousScans() {
         return errornousScans;
+    }
+
+    public boolean isIncreasingTimeout() {
+        return increasingTimeout;
+    }
+
+    public void setIncreasingTimeout(boolean increasingTimeout) {
+        this.increasingTimeout = increasingTimeout;
+    }
+
+    public long getAdditionalTimeout() {
+        return additionalTimeout;
+    }
+
+    public void setAdditionalTimeout(long additionalTimeout) {
+        this.additionalTimeout = additionalTimeout;
     }
 }

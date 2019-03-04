@@ -34,4 +34,8 @@ public class StateExecutionTask extends TlsTask {
         return state;
     }
 
+    @Override
+    public void reset() {
+        state.reset();
+    }
 }

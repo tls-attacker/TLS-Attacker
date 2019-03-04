@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.attacks.task;
 
-import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +23,7 @@ public class FingerPrintTask extends TlsTask {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private State state;
+    private final State state;
 
     private ResponseFingerprint fingerprint;
 
@@ -34,15 +32,23 @@ public class FingerPrintTask extends TlsTask {
         this.state = state;
     }
 
+    public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions) {
+        super(reexecutions, additionalTimeout, increasingTimeout);
+        this.state = state;
+    }
+
     @Override
     public void execute() {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
+            if (!state.getWorkflowTrace().executedAsPlanned()) {
+                throw new FingerprintExtractionException("Could not extract fingerprint.");
+            }
             fingerprint = ResponseExtractor.getFingerprint(state);
-            if (fingerprint == null
-                    && !WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, state.getWorkflowTrace())) {
-                throw new PaddingOracleUnstableException("Could not extract fingerprint, rescanning");
+
+            if (fingerprint == null) {
+                throw new FingerprintExtractionException("Could not extract fingerprint.");
             }
         } finally {
             try {
@@ -60,4 +66,10 @@ public class FingerPrintTask extends TlsTask {
     public ResponseFingerprint getFingerprint() {
         return fingerprint;
     }
+
+    @Override
+    public void reset() {
+        state.reset();
+    }
+
 }

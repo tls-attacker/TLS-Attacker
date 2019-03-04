@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
@@ -58,7 +57,6 @@ public class ResponseExtractor {
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state) {
-        TlsContext context = state.getTlsContext();
         ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
         return getFingerprint(state, action);
     }

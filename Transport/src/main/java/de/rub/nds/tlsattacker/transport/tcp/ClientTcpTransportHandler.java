@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -62,7 +63,9 @@ public class ClientTcpTransportHandler extends TransportHandler {
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
-        setStreams(socket.getInputStream(), socket.getOutputStream());
+        setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
+
+        socket.setSoTimeout(1);
     }
 
     @Override
@@ -90,6 +93,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
             }
             socket.setSoTimeout(1);
             int read = socket.getInputStream().read();
+            socket.setSoTimeout((int) timeout);
             if (read == -1) {
                 return SocketState.CLOSED;
             } else {
@@ -103,4 +107,5 @@ public class ClientTcpTransportHandler extends TransportHandler {
             return SocketState.IO_EXCEPTION;
         }
     }
+
 }
