@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.constants.EarlyCcsVulnerabilityType;
+import de.rub.nds.tlsattacker.attacks.constants.EarlyFinishedVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.ConsoleLogger;
@@ -36,8 +37,8 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
 
     private final Logger LOGGER = LogManager.getLogger();
 
-    public EarlyFinishedAttacker(EarlyFinishedCommandConfig config) {
-        super(config, Config.createConfig());
+    public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -47,10 +48,9 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
-        EarlyCcsVulnerabilityType earlyCcsVulnerabilityType = getEarlyCcsVulnerabilityType();
-        switch (earlyCcsVulnerabilityType) {
-            case VULN_EXPLOITABLE:
-            case VULN_NOT_EXPLOITABLE:
+        EarlyFinishedVulnerabilityType earlyFinVulnerabilityType = getEarlyFinishedVulnerabilityType();
+        switch (earlyFinVulnerabilityType) {
+            case VULNERABLE:
                 return true;
             case NOT_VULNERABLE:
                 return false;
@@ -67,14 +67,10 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         WorkflowConfigurationFactory workflowConfigurationFactory = new WorkflowConfigurationFactory(tlsConfig);
         OutboundConnection connection = tlsConfig.getDefaultClientConnection();
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createHelloWorkflow(connection);
-
-        // TODO: This shares code with WorkflowConfigurationFactory, and not in
-        // a good way :-)
+        workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
         List<ProtocolMessage> messages = new LinkedList<>();
-        workflowConfigurationFactory.addClientKeyExchangeMessage(messages);
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
-
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         messages.add(new FinishedMessage(tlsConfig));
@@ -97,12 +93,11 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         }
     }
 
-    public EarlyCcsVulnerabilityType getEarlyCcsVulnerabilityType() {
-        // TODO: Changed return value
+    public EarlyFinishedVulnerabilityType getEarlyFinishedVulnerabilityType() {
         if (checkTargetVersion()) {
-            return EarlyCcsVulnerabilityType.VULN_EXPLOITABLE;
+            return EarlyFinishedVulnerabilityType.VULNERABLE;
         }
-        return EarlyCcsVulnerabilityType.NOT_VULNERABLE;
+        return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
     }
 
 }
