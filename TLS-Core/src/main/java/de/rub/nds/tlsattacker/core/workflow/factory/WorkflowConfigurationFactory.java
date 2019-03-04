@@ -86,6 +86,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -869,10 +870,57 @@ public class WorkflowConfigurationFactory {
         }
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
-        trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-        trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            }
+            trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+            trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+
+        } else {
+            List<ProtocolMessage> messages = new LinkedList<>();
+            messages.add(new ServerHelloMessage(config));
+
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                    messages.add(new ChangeCipherSpecMessage());
+                }
+                messages.add(new EncryptedExtensionsMessage(config));
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+                messages.add(new FinishedMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+
+            } else {
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                messages = new LinkedList<>();
+                CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
+                if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk()
+                        && !selectedCipherSuite.isAnon()) {
+                    messages.add(new CertificateMessage(config));
+                }
+                // TODO This actually need a dynamic certificate message
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
+                messages = new LinkedList<>();
+
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new ServerHelloDoneMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            }
+        }
         return trace;
     }
 }
