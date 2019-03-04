@@ -20,6 +20,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class SRPExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return SRPExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -38,11 +42,6 @@ public class SRPExtensionSerializerTest {
         this.startParsing = startParsing;
         this.srpIdentifierLength = srpIdentifierLength;
         this.srpIdentifier = srpIdentifier;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SRPExtensionParserTest.generateData();
     }
 
     @Before

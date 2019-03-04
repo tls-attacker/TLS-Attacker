@@ -10,13 +10,18 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -29,6 +34,7 @@ public class ECDHClientKeyExchangeHandlerTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         handler = new ECDHClientKeyExchangeHandler(context);
 
@@ -67,19 +73,29 @@ public class ECDHClientKeyExchangeHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        context.setClientRandom(new byte[] {});
+        context.setServerRandom(new byte[] {});
+        // set server ECDH-parameters
+        context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
+        context.setSelectedGroup(NamedGroup.SECP192R1);
+        context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
+                "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
+                "4390496211885670837594012513791855863576256216444143941964")));
+        context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
+        context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
+        context.setRecordLayer(new TlsRecordLayer(context));
+        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage(context.getConfig());
         ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
         prep.prepare();
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setRecordLayer(new TlsRecordLayer(context));
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-
         handler.adjustTLSContext(message);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("A3B5299147537E6696500AB8CD870DB3BA78303DE749DFBA"),
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9"),
                 context.getPreMasterSecret());
         assertArrayEquals(
                 ArrayConverter
-                        .hexStringToByteArray("01F395D34D67E2DF13E19BC94F407D3FC97B440A55F65F7F807219672316C36F761384E8F468D1404E9C2C9083A3CD41"),
+                        .hexStringToByteArray("5686D5F789AEDC43162480112E94C7C60F1292B1C5D688AE58F237BD054594775B94AC5F0B18A01B808ADBBE78BCC8C7"),
                 context.getMasterSecret());
+
     }
 }

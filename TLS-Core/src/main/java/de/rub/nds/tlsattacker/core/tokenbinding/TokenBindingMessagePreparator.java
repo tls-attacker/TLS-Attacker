@@ -12,10 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
@@ -34,16 +32,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
-import org.bouncycastle.crypto.tls.NamedCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
 
-    private TokenBindingMessage message;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final TokenBindingMessage message;
 
     public TokenBindingMessagePreparator(Chooser chooser, TokenBindingMessage message) {
         super(chooser, message);
@@ -72,7 +73,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             try {
                 dig = MessageDigest.getInstance("SHA-256");
             } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
+                LOGGER.warn(ex);
             }
             dig.update(generateToBeSigned());
             BigInteger[] signature = signer.generateSignature(dig.digest());
@@ -90,8 +91,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setKeyLength(serializer.serializeKey().length);
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(message.getExtensionBytes().getValue().length);
-        SignatureAndHashAlgorithm algorithm = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA1);
+        SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         // message.setSignature(SignatureCalculator.generateSignature(chooser.getConfig()
         // .getDefaultTokenBindingKeyParameters().get(0), chooser,));
         message.setSignatureLength(message.getSignature().getValue().length);

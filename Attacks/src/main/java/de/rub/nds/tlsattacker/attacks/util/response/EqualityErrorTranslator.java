@@ -8,11 +8,19 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
+/**
+ *
+ *
+ */
 public class EqualityErrorTranslator {
 
-    private EqualityErrorTranslator() {
-    }
-
+    /**
+     *
+     * @param error
+     * @param fingerprint1
+     * @param fingerprint2
+     * @return
+     */
     public static String translation(EqualityError error, ResponseFingerprint fingerprint1,
             ResponseFingerprint fingerprint2) {
         StringBuilder builder = new StringBuilder();
@@ -63,5 +71,8 @@ public class EqualityErrorTranslator {
                 builder.append(error.toString());
         }
         return builder.toString();
+    }
+
+    private EqualityErrorTranslator() {
     }
 }

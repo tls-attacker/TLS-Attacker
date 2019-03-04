@@ -15,8 +15,10 @@ import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -36,18 +38,27 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
  */
 public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final List<ProtocolMessage> lastMessages;
 
     private boolean vulnerable;
 
-    public Cve20162107Attacker(Cve20162107CommandConfig config) {
-        super(config);
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public Cve20162107Attacker(Cve20162107CommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
         lastMessages = new LinkedList<>();
     }
 
@@ -57,12 +68,17 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
-        Config tlsConfig = config.createConfig();
-
-        List<CipherSuite> suiteList = new LinkedList<>();
-        suiteList.add(suite);
-        tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
-        tlsConfig.setEnforceSettings(true);
+        Config tlsConfig = getTlsConfig();
+        tlsConfig.setDefaultSelectedCipherSuite(suite);
+        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+        if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
+            tlsConfig.setAddECPointFormatExtension(true);
+            tlsConfig.setAddEllipticCurveExtension(true);
+        } else {
+            tlsConfig.setAddECPointFormatExtension(false);
+            tlsConfig.setAddEllipticCurveExtension(false);
+        }
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
 
@@ -123,7 +139,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
-            LOGGER.info(suite.name() + " - " + version.name() + ": Not Vulnerable / Not supported");
+            LOGGER.info(suite.name() + " - " + version.name() + ": Not Vulnerable");
             return false;
         }
     }
@@ -147,10 +163,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         return r;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         List<ProtocolVersion> versions = config.getVersions();
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {

@@ -12,13 +12,17 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final KeyShareExtensionMessage msg;
     private ByteArrayOutputStream stream;

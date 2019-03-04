@@ -28,7 +28,7 @@ public enum SrtpProtectionProfiles {
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
 
-    public static Logger LOGGER = LogManager.getLogger(SrtpProtectionProfiles.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private SrtpProtectionProfiles(byte[] value) {
         this.srtpProtectionProfiles = value;
@@ -53,7 +53,7 @@ public enum SrtpProtectionProfiles {
         List<SrtpProtectionProfiles> profileList = new ArrayList<>();
 
         for (int i = 0; i < value.length; i += 2) {
-            if (value.length > i) {
+            if (i + 1 < value.length) {
                 profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
             } else {
                 LOGGER.warn("value cannot be converted into an SrtpProtectionProfile - not enough bytes left");

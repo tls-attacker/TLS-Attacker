@@ -14,14 +14,15 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CompressionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
@@ -40,6 +41,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private GeneralDelegate generalDelegate;
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private CompressionDelegate compressionDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
@@ -96,9 +99,11 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
+        this.compressionDelegate = new CompressionDelegate();
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
+        addDelegate(compressionDelegate);
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ellipticCurveDelegate);

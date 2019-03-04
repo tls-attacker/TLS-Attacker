@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -17,8 +18,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordEncryptor extends Encryptor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 
@@ -48,6 +53,17 @@ public class RecordEncryptor extends Encryptor {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
         record.getComputations().setNonMetaDataMaced(cleanBytes);
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            // TLS13 needs the record length before encrypting
+            // Encrypted length
+            int cleanLength = record.getCleanProtocolMessageBytes().getValue().length;
+            int length = cleanLength + recordCipher.getTagSize() + 1; // +1 for
+                                                                      // the
+                                                                      // encrypted
+                                                                      // record
+                                                                      // type
+            record.setLength(length);
+        }
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);

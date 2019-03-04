@@ -18,14 +18,16 @@ import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -35,6 +37,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage> extends
         ServerKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final T msg;
     protected ECPublicKeyParameters pubEcParams;
@@ -50,7 +54,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         setEcDhParams();
         prepareEcDhParams();
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+        signHashAlgo = chooser.getSelectedSigHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
         byte[] signature = new byte[0];
         try {
@@ -66,9 +70,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         preparePrivateKey(msg);
         prepareSerializedPublicKey(msg, pubEcParams.getQ());
         prepareSerializedPublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
-
+        prepareClientServerRandom(msg);
     }
 
     protected void setEcDhParams() {
@@ -169,29 +171,25 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected void generateNamedGroupList(T msg) {
-        List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
-
-        if (sharedGroups.isEmpty()) {
-            throw new PreparationException("Don't know which groups are supported by the "
-                    + "server. Check if named groups is set in config.");
-        }
-
+        List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getClientSupportedNamedGroups());
         List<NamedGroup> unsupportedGroups = new ArrayList<>();
         if (!chooser.getConfig().isEnforceSettings()) {
 
-            List<NamedGroup> clientGroups = chooser.getClientSupportedNamedGroups();
+            List<NamedGroup> clientGroups = chooser.getServerSupportedNamedGroups();
             for (NamedGroup c : sharedGroups) {
                 if (!clientGroups.contains(c)) {
                     unsupportedGroups.add(c);
                 }
             }
-
             sharedGroups.removeAll(unsupportedGroups);
             if (sharedGroups.isEmpty()) {
-                sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+                if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+                } else {
+                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultServerNamedGroups());
+                }
             }
         }
-
         try {
             msg.getComputations().setNamedGroupList(NamedGroup.namedGroupsToByteArray(sharedGroups));
         } catch (IOException ex) {
@@ -222,8 +220,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.", ex);
         }
 
-        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
-                .getServerRandom().getValue(), ecParams.toByteArray());
+        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(),
+                ecParams.toByteArray());
 
     }
 
@@ -237,16 +235,11 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    protected void prepareServerRandom(T msg) {
-        msg.getComputations().setServerRandom(chooser.getServerRandom());
-        LOGGER.debug("ServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
+    protected void prepareClientServerRandom(T msg) {
+        msg.getComputations().setClientServerRandom(
+                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {

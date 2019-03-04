@@ -12,11 +12,15 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+/**
+ *
+ *
+ */
 public class ICEPointReaderTest {
 
     /**
      * Test of readPoints method, of class ICEPointReader.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test

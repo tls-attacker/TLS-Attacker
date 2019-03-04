@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchange
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
-import org.bouncycastle.crypto.tls.NamedCurve;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

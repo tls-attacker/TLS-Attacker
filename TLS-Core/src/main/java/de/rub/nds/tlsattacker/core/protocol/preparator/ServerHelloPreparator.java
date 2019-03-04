@@ -15,8 +15,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ServerHelloMessage msg;
 
@@ -30,10 +34,9 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
         prepareRandom();
-        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
-            prepareSessionID();
-            prepareSessionIDLength();
-        }
+        prepareSessionID();
+        prepareSessionIDLength();
+
         prepareCipherSuite();
         if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareCompressionMethod();
@@ -47,7 +50,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
-            for (CipherSuite suite : chooser.getConfig().getDefaultClientSupportedCiphersuites()) {
+            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCiphersuites()) {
                 if (chooser.getClientSupportedCiphersuites().contains(suite)) {
                     selectedSuite = suite;
                     break;
@@ -81,7 +84,11 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        msg.setSessionId(chooser.getServerSessionId());
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            msg.setSessionId(new byte[0]);
+        } else {
+            msg.setSessionId(chooser.getServerSessionId());
+        }
         LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 

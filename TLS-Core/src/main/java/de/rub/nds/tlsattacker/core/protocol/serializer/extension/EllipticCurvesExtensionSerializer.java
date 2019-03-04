@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<EllipticCurvesExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final EllipticCurvesExtensionMessage msg;
 

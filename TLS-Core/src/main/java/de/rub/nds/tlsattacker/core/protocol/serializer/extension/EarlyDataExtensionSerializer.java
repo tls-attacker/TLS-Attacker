@@ -9,11 +9,15 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EarlyDataExtensionSerializer(EarlyDataExtensionMessage message) {
         super(message);

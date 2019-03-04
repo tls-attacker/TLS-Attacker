@@ -12,10 +12,14 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 
-    private HttpsResponseMessage message;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final HttpsResponseMessage message;
 
     public HttpsResponseSerializer(HttpsResponseMessage message, ProtocolVersion version) {
         super(message, version);

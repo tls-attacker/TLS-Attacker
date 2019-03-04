@@ -12,18 +12,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected long timeout;
 
     protected OutputStream outStream;
 
-    protected InputStream inStream;
+    protected PushbackInputStream inStream;
 
     private boolean initialized = false;
 
@@ -42,9 +45,28 @@ public abstract class TransportHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis() + timeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
-            while (inStream.available() != 0) {
-                int read = inStream.read();
-                stream.write(read);
+            if (inStream.available() != 0) {
+                while (inStream.available() != 0) {
+                    int read = inStream.read();
+                    stream.write(read);
+                }
+            } else {
+                try {
+                    // dont ask - the java api does not allow this otherwise...
+                    Thread.currentThread().sleep(1);
+                    int read = inStream.read();
+                    if (read == -1) {
+                        // TCP FIN
+                        return stream.toByteArray();
+                    }
+                    inStream.unread(read);
+
+                } catch (SocketException E) {
+                    // TCP RST received
+                    return stream.toByteArray();
+                } catch (Exception E) {
+                }
+
             }
         }
         return stream.toByteArray();
@@ -58,7 +80,7 @@ public abstract class TransportHandler {
         outStream.flush();
     }
 
-    protected final void setStreams(InputStream inStream, OutputStream outStream) {
+    protected final void setStreams(PushbackInputStream inStream, OutputStream outStream) {
         this.outStream = outStream;
         this.inStream = inStream;
         initialized = true;

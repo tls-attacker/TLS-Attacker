@@ -19,10 +19,13 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -35,6 +38,7 @@ public class RecordPreparatorTest {
     private Record record;
     private Encryptor encryptor;
     public RecordPreparator preparator;
+    private RecordCompressor compressor;
 
     public RecordPreparatorTest() {
     }
@@ -43,6 +47,7 @@ public class RecordPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         record = new Record();
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
@@ -53,7 +58,7 @@ public class RecordPreparatorTest {
      */
     @Test
     public void testPrepare() throws NoSuchAlgorithmException, CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.getConfig().setPaddingLength(0);
         context.setClientHandshakeTrafficSecret(ArrayConverter
@@ -65,11 +70,13 @@ public class RecordPreparatorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
-        preparator = new RecordPreparator(context.getChooser(), record, encryptor, ProtocolMessageType.HANDSHAKE);
+        compressor = new RecordCompressor(context);
+        preparator = new RecordPreparator(context.getChooser(), record, encryptor, ProtocolMessageType.HANDSHAKE,
+                compressor);
         preparator.prepare();
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
-        assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS10.getValue());
+        assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
         assertTrue(record.getComputations().getPaddingLength().getValue() == 0);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());

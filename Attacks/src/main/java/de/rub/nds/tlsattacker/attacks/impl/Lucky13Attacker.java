@@ -8,47 +8,52 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Lucky13 attack test
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
+    private static final Logger LOGGER = LogManager.getLogger(Lucky13Attacker.class);
+
     private final Map<Integer, List<Long>> results;
 
     private long lastResult;
 
-    private TimingClientTcpTransportHandler transportHandler;
+    private final Config tlsConfig;
 
-    public Lucky13Attacker(Lucky13CommandConfig config) {
-        super(config);
+    public Lucky13Attacker(Lucky13CommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
+        tlsConfig = getTlsConfig();
         results = new HashMap<>();
     }
 
@@ -66,59 +71,71 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 fw.write(delimiters[1] + result2.get(i) + System.getProperty("line.separator"));
             }
         } catch (IOException ex) {
-            LOGGER.debug(ex);
+            LOGGER.error(ex);
         }
     }
 
-    public void executeAttackRound(Record record) throws IOException {
-        Config tlsConfig = config.createConfig();
+    public void executeAttackRound(Record record) {
+        tlsConfig.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP_PROXY_TIMING);
+        tlsConfig.setWorkflowExecutorShouldClose(true);
 
-        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getDefaultClientConnection());
-        transportHandler.initialize();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
 
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
-        WorkflowTrace trace = factory.createWorkflowTrace(tlsConfig.getWorkflowTraceType(),
-                tlsConfig.getDefaultRunningMode());
-        // Client
-        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        SendAction action = new SendAction(applicationMessage);
-        trace.addTlsAction(action);
-        List<AbstractRecord> configuredRecords = new LinkedList<>();
-        configuredRecords.add(record);
-        action.setRecords(configuredRecords);
-        // Server
+        SendAction sendAction = (SendAction) trace.getLastSendingAction();
+        LinkedList<AbstractRecord> records = new LinkedList<>();
+        records.add(record);
+        sendAction.setRecords(records);
+
+        ReceiveAction action = new ReceiveAction();
+
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ReceiveAction(alertMessage));
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(alertMessage);
+        action.setExpectedMessages(messages);
+        trace.addTlsAction(action);
 
         State state = new State(tlsConfig, trace);
-        state.getTlsContext().setTransportHandler(transportHandler);
-
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
         try {
-            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                    tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow.");
-            LOGGER.debug(ex);
+            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
-        lastResult = transportHandler.getLastMeasurement();
 
+        TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) state
+                .getTlsContext().getTransportHandler();
+        lastResult = transportHandler.getLastMeasurement();
+        try {
+            transportHandler.closeConnection();
+        } catch (IOException e) {
+            LOGGER.warn(e.getMessage());
+        }
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+
+        }
     }
 
-    private Record createRecordWithPadding(int p) {
+    private Record createRecordWithPadding(int p, CipherSuite suite) {
         byte[] padding = createPaddingBytes(p);
-        int recordLength = config.getBlockSize() * config.getBlocks();
+        int recordLength = AlgorithmResolver.getCipher(suite).getBlocksize() * config.getBlocks();
         if (recordLength < padding.length) {
             throw new ConfigurationException("Padding too large");
         }
+        /* create a message with arbitrary bytes */
         int messageSize = recordLength - padding.length;
         byte[] message = new byte[messageSize];
+        new Random().nextBytes(message);
         byte[] plain = ArrayConverter.concatenate(message, padding);
         return createRecordWithPlainData(plain);
     }
 
     private Record createRecordWithPlainData(byte[] plain) {
         Record r = new Record();
+        r.prepareComputations();
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
@@ -135,62 +152,67 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     }
 
     @Override
-    public Boolean isVulnerable() {
-        String[] paddingStrings = config.getPaddings().split(",");
-        int[] paddings = new int[paddingStrings.length];
-        for (int i = 0; i < paddingStrings.length; i++) {
-            paddings[i] = Integer.parseInt(paddingStrings[i]);
-        }
-        for (int i = 0; i < config.getMeasurements(); i++) {
-            LOGGER.info("Starting round {}", i);
-            for (int p : paddings) {
-                try {
-                    Record record = createRecordWithPadding(p);
+    protected Boolean isVulnerable() {
+        Boolean vulnerable = false;
+        StringBuilder commands = new StringBuilder();
+        List<CipherSuite> suites = tlsConfig.getDefaultClientSupportedCiphersuites();
+        for (CipherSuite suite : suites) {
+            results.clear();
+            LOGGER.info("Testing ciphersuite {}", suite);
+            tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+            tlsConfig.setDefaultServerSupportedCiphersuites(suite);
+            tlsConfig.setDefaultSelectedCipherSuite(suite);
+            String[] paddingStrings = config.getPaddings().split(",");
+            int[] paddings = new int[paddingStrings.length];
+            for (int i = 0; i < paddingStrings.length; i++) {
+                paddings[i] = Integer.parseInt(paddingStrings[i]);
+            }
+            for (int i = 0; i < config.getMeasurements(); i++) {
+                LOGGER.info("Starting round {}", i);
+                for (int p : paddings) {
+                    Record record = createRecordWithPadding(p, suite);
                     executeAttackRound(record);
+                    LOGGER.info("Padding: {}, Measured {}", p, lastResult);
                     if (results.get(p) == null) {
                         results.put(p, new LinkedList<Long>());
                     }
-                    // removeTlsAction the first 20% of measurements
-                    if (i > config.getMeasurements() / 5) {
+                    // remove the first 20% of measurements
+                    if (i > (config.getMeasurements() / 4) - 1) {
                         results.get(p).add(lastResult);
                     }
-                } catch (IOException ex) {
-                    LOGGER.warn("Problem while running Padding: " + p);
-                    LOGGER.error(ex);
+                }
+            }
+
+            StringBuilder medians = new StringBuilder();
+            for (int padding : paddings) {
+                List<Long> rp = (List) ((LinkedList) results.get(padding)).clone();
+                Collections.sort(rp);
+                LOGGER.info("Padding: {}", padding);
+                long median = rp.get(rp.size() / 2);
+                LOGGER.info("Median: {}", median);
+                medians.append(median).append(",");
+            }
+            LOGGER.info("Medians: {}", medians);
+
+            if (config.getMonaFile() != null) {
+                for (int i = 0; i < paddings.length - 1; i++) {
+                    for (int j = i + 1; j < paddings.length; j++) {
+                        String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-"
+                                + suite.name() + ".csv";
+                        String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
+                        createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
+                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
+                                + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"
+                                + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                        LOGGER.info("Run mona timing lib with: " + command);
+                        commands.append(command);
+                        commands.append(System.getProperty("line.separator"));
+                    }
                 }
             }
         }
-
-        StringBuilder medians = new StringBuilder();
-        for (int padding : paddings) {
-            List<Long> rp = results.get(padding);
-            Collections.sort(rp);
-            LOGGER.info("Padding: {}", padding);
-            long median = rp.get(rp.size() / 2);
-            LOGGER.info("Median: {}", median);
-            medians.append(median).append(",");
-        }
-        LOGGER.info("Medians: {}", medians);
-
-        if (config.getMonaFile() != null) {
-            StringBuilder commands = new StringBuilder();
-            for (int i = 0; i < paddings.length - 1; i++) {
-                for (int j = i + 1; j < paddings.length; j++) {
-                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
-                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
-                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
-                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
-                    LOGGER.info("Run mona timing lib with: " + command);
-                    commands.append(command);
-                    commands.append(System.getProperty("line.separator"));
-                }
-            }
-            LOGGER.info("All commands at once: \n{}", commands);
-        }
-        // A Security analyst has to manually check if an implementation is
-        // vulnerable
-        return null;
+        LOGGER.info("All commands at once: \n{}", commands);
+        LOGGER.warn("Vulnerability has to be tested using the mona timing lib.");
+        return vulnerable;
     }
-
 }

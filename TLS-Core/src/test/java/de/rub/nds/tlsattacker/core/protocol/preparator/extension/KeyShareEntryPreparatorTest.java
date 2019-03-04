@@ -8,19 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+ * Merget <robert.merget@rub.de>
  */
 public class KeyShareEntryPreparatorTest {
 

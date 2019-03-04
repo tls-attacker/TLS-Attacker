@@ -17,8 +17,12 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PSKIdentity pskIdentity;
 

@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the EllipticCurves extensions, as defined in
@@ -30,6 +32,8 @@ import java.util.List;
  * See: https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EllipticCurvesExtensionHandler(TlsContext context) {
         super(context);

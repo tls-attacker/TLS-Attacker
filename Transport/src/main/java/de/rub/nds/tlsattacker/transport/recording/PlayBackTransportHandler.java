@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PlayBackTransportHandler extends TransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<RecordedLine> linesToSend;
 
@@ -59,15 +63,15 @@ public class PlayBackTransportHandler extends TransportHandler {
     @Override
     public void closeClientConnection() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 
     @Override

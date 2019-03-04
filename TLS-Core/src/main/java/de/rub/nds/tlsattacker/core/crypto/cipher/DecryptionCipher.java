@@ -12,19 +12,19 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 /**
  *
- * @author robert
+ *
  */
 public interface DecryptionCipher {
 
     public int getBlocksize();
 
-    public byte[] decrypt(byte[] key, byte[] someBytes) throws CryptoException;
+    public byte[] decrypt(byte[] someBytes) throws CryptoException;
 
-    public byte[] decrypt(byte[] key, byte[] iv, byte[] someBytes) throws CryptoException;
+    public byte[] decrypt(byte[] iv, byte[] someBytes) throws CryptoException;
 
-    public byte[] decrypt(byte[] key, byte[] iv, int tagLength, byte[] someBytes) throws CryptoException;
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException;
 
-    public byte[] decrypt(byte[] key, byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException;
 
     public byte[] getIv();

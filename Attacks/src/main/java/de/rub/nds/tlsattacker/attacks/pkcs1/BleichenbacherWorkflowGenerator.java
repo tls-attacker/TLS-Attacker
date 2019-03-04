@@ -12,35 +12,41 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
+/**
+ *
+ *
+ */
 public class BleichenbacherWorkflowGenerator {
 
-    private BleichenbacherWorkflowGenerator() {
-
-    }
-
+    /**
+     *
+     * @param tlsConfig
+     * @param type
+     * @param encryptedPMS
+     * @return
+     */
     public static WorkflowTrace generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type, byte[] encryptedPMS) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
-
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(tlsConfig);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
-
         trace.addTlsAction(new SendAction(cke));
-
-        if (null != type)
+        if (null != type) {
             switch (type) {
+                case CKE:
+                    // introduced for readability
+                    break;
                 case CKE_CCS:
                     trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig)));
                     break;
@@ -54,8 +60,13 @@ public class BleichenbacherWorkflowGenerator {
                 default:
                     break;
             }
-        trace.addTlsAction(new ReceiveAction(new AlertMessage(tlsConfig)));
-
+        }
+        trace.addTlsAction(new GenericReceiveAction());
         return trace;
     }
+
+    private BleichenbacherWorkflowGenerator() {
+
+    }
+
 }

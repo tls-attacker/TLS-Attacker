@@ -20,8 +20,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DefaultWorkflowExecutor(State state) {
         super(WorkflowExecutorType.DEFAULT, state);
@@ -59,14 +63,17 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
+            if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
+                LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
+                LOGGER.trace("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                break;
+            }
 
             try {
-                if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                    action.execute(state);
-                } else {
-                    LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-                    break;
-                }
+                action.execute(state);
             } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
@@ -86,6 +93,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
+
         state.storeTrace();
 
         if (config.getConfigOutput() != null) {
@@ -99,6 +107,15 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     private boolean isReceivedFatalAlert() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isIoException() {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            if (ctx.isReceivedTransportHandlerException()) {
                 return true;
             }
         }

@@ -39,10 +39,12 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
         this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
+    @Override
     public ModifiableByte getType() {
         return type;
     }
 
+    @Override
     public void setType(ModifiableByte type) {
         this.type = type;
     }
@@ -51,6 +53,7 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         if (getType() != null && getType().getValue() != null) {

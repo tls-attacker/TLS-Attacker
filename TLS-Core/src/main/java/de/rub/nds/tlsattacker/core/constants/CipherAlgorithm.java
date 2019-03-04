@@ -26,17 +26,17 @@ public enum CipherAlgorithm {
     CAMELLIA_256_CBC(32, 16, 0, 16, "Camellia/CBC/NoPadding"),
     CAMELLIA_128_GCM(16, 16, 8, 16, "Camellia/CBC/NoPadding"), // not tested yet
     CAMELLIA_256_GCM(32, 16, 8, 16, "Camellia/CBC/NoPadding"), // not tested yet
-    IDEA_128(16, 16, 0, 16, "IDEA/CBC/NoPadding"),
+    IDEA_128(16, 8, 0, 8, "IDEA/CBC/NoPadding"),
     SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"), // TODO this is not verified
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
-    ChaCha20Poly1305(32, 12, 0, 0),
-    DES40_CBC(8, 5, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
+    ChaCha20Poly1305(32, 12, 0, 0, "ChaCha20Poly1305"),
+    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
     ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
-    ARIA_128_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
-    ARIA_256_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
-    GOST_28147(0, 0, 0, 0), // TODO
+    ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    ARIA_256_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0);// TODO
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {

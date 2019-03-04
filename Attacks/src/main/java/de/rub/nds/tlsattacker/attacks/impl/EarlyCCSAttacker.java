@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -34,16 +33,40 @@ import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /**
+     *
+     */
     public enum TargetVersion {
+
+        /**
+         *
+         */
         OPENSSL_1_0_0,
+
+        /**
+         *
+         */
         OPENSSL_1_0_1
     };
 
-    public EarlyCCSAttacker(EarlyCCSCommandConfig config) {
-        super(config);
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public EarlyCCSAttacker(EarlyCCSCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -51,6 +74,10 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         EarlyCcsVulnerabilityType earlyCcsVulnerabilityType = getEarlyCcsVulnerabilityType();
@@ -66,8 +93,13 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         return null;
     }
 
+    /**
+     *
+     * @param targetVersion
+     * @return
+     */
     public boolean checkTargetVersion(TargetVersion targetVersion) {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
@@ -104,18 +136,21 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowExecutor.executeWorkflow();
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (definitely), Alert message found");
+            CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (definitely), Finished message found");
+            CONSOLE.warn("Vulnerable (definitely), Finished message found");
             return true;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Not vulnerable (probably), No Finished message found, yet also no alert");
+            CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
             return false;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public EarlyCcsVulnerabilityType getEarlyCcsVulnerabilityType() {
         if (checkTargetVersion(TargetVersion.OPENSSL_1_0_0)) {
             return EarlyCcsVulnerabilityType.VULN_NOT_EXPLOITABLE;

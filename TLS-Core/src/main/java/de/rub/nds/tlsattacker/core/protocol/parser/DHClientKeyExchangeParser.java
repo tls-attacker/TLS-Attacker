@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class

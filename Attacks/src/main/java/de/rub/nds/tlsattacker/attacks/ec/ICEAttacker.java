@@ -21,9 +21,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ */
 public class ICEAttacker {
 
-    private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ServerType server;
 
@@ -41,14 +44,29 @@ public class ICEAttacker {
 
     private BigInteger result;
 
+    /**
+     *
+     * @param oracle
+     */
     public ICEAttacker(ECOracle oracle) {
         this(oracle, ServerType.NORMAL);
     }
 
+    /**
+     *
+     * @param oracle
+     * @param server
+     */
     public ICEAttacker(ECOracle oracle, ServerType server) {
         this(oracle, server, 0);
     }
 
+    /**
+     *
+     * @param oracle
+     * @param server
+     * @param oracleAdditionalEquations
+     */
     public ICEAttacker(ECOracle oracle, ServerType server, int oracleAdditionalEquations) {
         this.oracle = oracle;
         this.computer = new ECComputer();
@@ -57,6 +75,9 @@ public class ICEAttacker {
         this.oracleAdditionalEquations = oracleAdditionalEquations;
     }
 
+    /**
+     *
+     */
     public void attack() {
         long currentTime = System.currentTimeMillis();
         switch (server) {
@@ -126,18 +147,6 @@ public class ICEAttacker {
                 LOGGER.info("Successfully found: x = +/- " + cong + " mod " + point.getOrder());
                 LOGGER.info("Using equation: x^2 =   " + squareCong + " mod " + point.getOrder());
 
-                // BigInteger x = new BigInteger(
-                // "81621876370632603442940437509300704111441085977373560521586039023365897398922");
-                // BigInteger real =
-                // x.mod(BigInteger.valueOf(point.getOrder()));
-                // BigInteger square =
-                // real.pow(2).mod(BigInteger.valueOf(point.getOrder()));
-                // if (square.compareTo(squareCong) != 0) {
-                // System.out.println("-------------- real result: " + square);
-                // } else {
-                // System.out.println("real result: " + square);
-                // }
-
                 BigInteger prodModuli = computeModuliProduct(moduli);
                 if (prodModuli.bitLength() > (computer.getCurve().getKeyBits() * 2 + 4)) {
                     /**
@@ -175,7 +184,7 @@ public class ICEAttacker {
     /**
      * Creates recursively all possible combinations of equations and tries to
      * compute the server private key with CRT.
-     * 
+     *
      * @param usedOracleEquations
      *            The used oracle equations
      * @param congs
@@ -211,7 +220,7 @@ public class ICEAttacker {
 
     /**
      * Computes CRT from a given combination of congs and modulis
-     * 
+     *
      * @param usedOracleEquations
      *            The used oracle equations
      * @param congs
@@ -240,7 +249,7 @@ public class ICEAttacker {
 
     /**
      * Uses the oracle to get a congruence for a specific point
-     * 
+     *
      * @param point
      *            A Point
      * @return The Congruence
@@ -263,6 +272,10 @@ public class ICEAttacker {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getResult() {
         return result;
     }
@@ -275,9 +288,19 @@ public class ICEAttacker {
         return prodModuli;
     }
 
+    /**
+     *
+     */
     public enum ServerType {
 
+        /**
+         *
+         */
         NORMAL,
+
+        /**
+         *
+         */
         ORACLE
     }
 }

@@ -16,8 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<KeyShareEntry> entryList;
 
@@ -28,7 +32,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage");
-        parseKeySahreListLength(msg);
+        parseKeyShareListLength(msg);
         LOGGER.debug("Parsing KeyShareExtensionMessage");
         if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
                 .getExtensionLength().getValue()) {
@@ -64,7 +68,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * @param msg
      *            Message to write in
      */
-    private void parseKeySahreListLength(KeyShareExtensionMessage msg) {
+    private void parseKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
         LOGGER.debug("KeyShareListLength: " + msg.getKeyShareListLength().getValue());
     }

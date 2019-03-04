@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerNamePairParser extends Parser<ServerNamePair> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerNamePair pair;
 
@@ -27,6 +31,8 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
         parseServerNameType(pair);
         parseServerNameLength(pair);
         parseServerName(pair);
+        pair.setServerNameConfig(pair.getServerName().getValue());
+        pair.setServerNameTypeConfig(pair.getServerNameType().getValue());
         return pair;
     }
 

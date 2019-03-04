@@ -49,9 +49,9 @@ public class SrtpExtensionPreparatorTest {
 
         assertArrayEquals(ExtensionType.USE_SRTP.getValue(), msg.getExtensionType().getValue());
         assertArrayEquals(profilesAsBytes, msg.getSrtpProtectionProfiles().getValue());
-        assertEquals(profilesLength, (int) msg.getSrtpProtectionProfilesLength().getValue());
+        assertEquals(profilesLength, (long) msg.getSrtpProtectionProfilesLength().getValue());
         assertArrayEquals(mki, msg.getSrtpMki().getValue());
-        assertEquals(mkiLength, (int) msg.getSrtpMkiLength().getValue());
+        assertEquals(mkiLength, (long) msg.getSrtpMkiLength().getValue());
 
     }
 

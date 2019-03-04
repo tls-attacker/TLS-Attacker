@@ -45,7 +45,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
@@ -73,7 +72,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddECPointFormatExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
             addExtension(new ECPointFormatExtensionMessage());
         }
-        if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
+        if (tlsConfig.isAddMaxFragmentLengthExtension()) {
             addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
@@ -82,9 +81,6 @@ public class ServerHelloMessage extends HelloMessage {
             pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
             extension.getServerNameList().add(pair);
             addExtension(extension);
-        }
-        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
-            addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
             if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13

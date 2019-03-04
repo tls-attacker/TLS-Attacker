@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.Socket;
 
 public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler {
@@ -21,6 +22,6 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
     public void initialize() throws IOException {
         socket = new Socket(hostname, port);
         socket.setTcpNoDelay(true);
-        setStreams(socket.getInputStream(), socket.getOutputStream());
+        setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 }

@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class StarttlsTypeConverterTest {
     private StarttlsTypeConverter converter;

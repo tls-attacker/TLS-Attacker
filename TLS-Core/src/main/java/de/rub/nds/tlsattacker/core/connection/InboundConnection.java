@@ -37,17 +37,21 @@ public class InboundConnection extends AliasedConnection {
         super(alias, port, hostname);
     }
 
-    @Override
-    public ConnectionEndType getLocalConnectionEndType() {
-        return LOCAL_CONNECTION_END_TYPE;
-    }
-
     public InboundConnection(InboundConnection other) {
         this.alias = other.alias;
         this.hostname = other.hostname;
         this.port = other.port;
+        this.proxyDataHostname = other.proxyDataHostname;
+        this.proxyDataPort = other.proxyDataPort;
+        this.proxyControlHostname = other.proxyControlHostname;
+        this.proxyControlPort = other.proxyControlPort;
         this.timeout = other.timeout;
         this.transportHandlerType = other.transportHandlerType;
+    }
+
+    @Override
+    public ConnectionEndType getLocalConnectionEndType() {
+        return LOCAL_CONNECTION_END_TYPE;
     }
 
     @Override
@@ -55,9 +59,21 @@ public class InboundConnection extends AliasedConnection {
         StringBuilder sb = new StringBuilder("InboundConnection{");
         sb.append(" alias=").append(alias);
         sb.append(" port=").append(port);
+        sb.append(" proxyDataHost=").append(proxyDataHostname);
+        sb.append(" proxyDataPort=").append(proxyDataPort);
+        sb.append(" proxyControlHost=").append(proxyControlHostname);
+        sb.append(" proxyControlPort=").append(proxyControlPort);
         sb.append(" type=").append(transportHandlerType);
         sb.append(" timeout=").append(timeout);
         sb.append("}");
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder("InboundConnection[");
+        sb.append(alias);
+        sb.append(":").append(port).append("]");
         return sb.toString();
     }
 

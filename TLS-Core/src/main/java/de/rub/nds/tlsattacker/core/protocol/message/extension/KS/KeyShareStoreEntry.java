@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.KS;
 
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.io.Serializable;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +19,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KeyShareStoreEntry {
+public class KeyShareStoreEntry implements Serializable {
 
     private NamedGroup group;
 
@@ -64,10 +65,7 @@ public class KeyShareStoreEntry {
         if (this.group != other.group) {
             return false;
         }
-        if (!Arrays.equals(this.publicKey, other.publicKey)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.publicKey, other.publicKey);
     }
 
 }

@@ -12,29 +12,45 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
+/**
+ *
+ */
 public class DrownCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String COMMAND = "drown";
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public DrownCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         addDelegate(clientDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();

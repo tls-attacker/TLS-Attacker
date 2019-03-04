@@ -26,18 +26,13 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
-import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.primitives.Bytes;
-
 public class KeySetGenerator {
 
-    protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
@@ -58,21 +53,29 @@ public class KeySetGenerator {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
-        if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS) {
-            clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
-            serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
-            clientSecret = context.getChooser().getClientApplicationTrafficSecret();
-            serverSecret = context.getChooser().getServerApplicationTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            cipherSuite = context.getChooser().getEarlyDataCipherSuite();
-            clientSecret = context.getChooser().getClientEarlyTrafficSecret();
-            serverSecret = context.getChooser().getClientEarlyTrafficSecret();
-        } else if (keySetType == Tls13KeySetType.NONE) {
-            LOGGER.warn("KeySet is NONE! , returning empty KeySet");
-            return new KeySet(keySetType);
-        } else {
+        if (null == keySetType) {
             throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+        } else {
+            switch (keySetType) {
+                case HANDSHAKE_TRAFFIC_SECRETS:
+                    clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
+                    serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
+                    break;
+                case APPLICATION_TRAFFIC_SECRETS:
+                    clientSecret = context.getChooser().getClientApplicationTrafficSecret();
+                    serverSecret = context.getChooser().getServerApplicationTrafficSecret();
+                    break;
+                case EARLY_TRAFFIC_SECRETS:
+                    cipherSuite = context.getChooser().getEarlyDataCipherSuite();
+                    clientSecret = context.getChooser().getClientEarlyTrafficSecret();
+                    serverSecret = context.getChooser().getClientEarlyTrafficSecret();
+                    break;
+                case NONE:
+                    LOGGER.warn("KeySet is NONE! , returning empty KeySet");
+                    return new KeySet(keySetType);
+                default:
+                    throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+            }
         }
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
@@ -85,15 +88,17 @@ public class KeySetGenerator {
                 cipherAlg.getKeySize()));
         LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
         keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.GCM_IV_LENGTH));
+                RecordAEADCipher.AEAD_IV_LENGTH));
         LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
         keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.GCM_IV_LENGTH));
+                RecordAEADCipher.AEAD_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
+        keySet.setServerWriteMacSecret(new byte[0]);
+        keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;
     }
 
-    private static KeySet getTlsKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
+    private static KeySet getTlsKeySet(TlsContext context) throws CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = context.getChooser().getMasterSecret();
@@ -163,7 +168,7 @@ public class KeySetGenerator {
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException, CryptoException {
+            throws CryptoException {
         switch (AlgorithmResolver.getCipherType(cipherSuite)) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
@@ -176,42 +181,35 @@ public class KeySetGenerator {
         }
     }
 
-    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws CryptoException {
-        try {
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            boolean useExplicitIv = protocolVersion.usesExplicitIv();
-            int keySize = cipherAlg.getKeySize();
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
-            Mac mac = Mac.getInstance(macAlg.getJavaName());
-            int secretSetSize = 2 * keySize + 2 * mac.getMacLength();
-            if (!useExplicitIv) {
-                secretSetSize += (2 * cipherAlg.getBlocksize());
-            }
-            return secretSetSize;
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not calculate SecretSetSize", ex);
+    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        int keySize = cipherAlg.getKeySize();
+        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
+        int secretSetSize = (2 * keySize) + (2 * macAlg.getKeySize());
+        if (!protocolVersion.usesExplicitIv()) {
+            secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }
+        return secretSetSize;
     }
 
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        // GCM in TLS uses 4 bytes long salt (generated in the handshake),
-        // 8 bytes long nonce (changed for each new record), and 4 bytes long
-        // sequence number used increased in the record
-        int saltSize = RecordAEADCipher.GCM_IV_LENGTH - RecordAEADCipher.SEQUENCE_NUMBER_LENGTH;
+        int saltSize = RecordAEADCipher.AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
         int secretSetSize = 2 * keySize + 2 * saltSize;
         return secretSetSize;
     }
 
-    private static int getStreamSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException {
+    private static int getStreamSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        int keySize = cipherAlg.getKeySize();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
-        Mac mac = Mac.getInstance(macAlg.getJavaName());
-        int secretSetSize = (2 * keySize) + mac.getMacLength() + mac.getMacLength();
+        int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
+        if (cipherSuite.isSteamCipherWithIV()) {
+            secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
+        }
         return secretSetSize;
+    }
+
+    private KeySetGenerator() {
     }
 }

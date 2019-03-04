@@ -26,17 +26,27 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TlsRecordLayer extends RecordLayer {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext tlsContext;
 
     private final Decryptor decryptor;
     private final Encryptor encryptor;
+
+    private RecordCompressor compressor;
+    private RecordDecompressor decompressor;
 
     private RecordCipher cipher;
 
@@ -45,6 +55,8 @@ public class TlsRecordLayer extends RecordLayer {
         cipher = new RecordNullCipher(tlsContext);
         encryptor = new RecordEncryptor(cipher, tlsContext);
         decryptor = new RecordDecryptor(cipher, tlsContext);
+        compressor = new RecordCompressor(tlsContext);
+        decompressor = new RecordDecompressor(tlsContext);
     }
 
     /**
@@ -52,6 +64,17 @@ public class TlsRecordLayer extends RecordLayer {
      *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data
      */
+
+    @Override
+    public void updateCompressor() {
+        compressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+    }
+
+    @Override
+    public void updateDecompressor() {
+        decompressor.setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+    }
+
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawRecordData) {
         List<AbstractRecord> records = new LinkedList<>();
@@ -119,8 +142,9 @@ public class TlsRecordLayer extends RecordLayer {
             if (useRecordType) {
                 contentType = record.getContentMessageType();
             }
+
             AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext.getChooser(), encryptor,
-                    contentType);
+                    compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
@@ -160,20 +184,29 @@ public class TlsRecordLayer extends RecordLayer {
                 if (tlsContext.isTls13SoftDecryption()
                         && tlsContext.getTalkingConnectionEndType() != tlsContext.getConnection()
                                 .getLocalConnectionEndType()) {
-                    if (((Record) record).getContentMessageType() == ProtocolMessageType.ALERT) {
-                        LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
-                        setRecordCipher(new RecordNullCipher(tlsContext));
-                        updateDecryptionCipher();
-                    } else if (((Record) record).getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                        LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
-                        record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
-                        return;
-                    } else {
+                    if (null == ((Record) record).getContentMessageType()) {
                         LOGGER.debug("Deactivating soft decryption since we received a non alert record");
                         tlsContext.setTls13SoftDecryption(false);
+                    } else {
+                        switch (((Record) record).getContentMessageType()) {
+                            case ALERT:
+                                LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
+                                setRecordCipher(new RecordNullCipher(tlsContext));
+                                updateDecryptionCipher();
+                                break;
+                            case CHANGE_CIPHER_SPEC:
+                                LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
+                                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+                                return;
+                            default:
+                                LOGGER.debug("Deactivating soft decryption since we received a non alert record");
+                                tlsContext.setTls13SoftDecryption(false);
+                                break;
+                        }
                     }
                 }
                 decryptor.decrypt(record);
+                decompressor.decompress(record);
             } catch (CryptoException E) {
                 record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
                 LOGGER.warn("Could not decrypt Record, parsing as unencrypted");

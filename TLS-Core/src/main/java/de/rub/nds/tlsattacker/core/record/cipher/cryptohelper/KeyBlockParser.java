@@ -8,20 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.Cipher;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyBlockParser extends Parser<KeySet> {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     /**
      * sequence Number length in byte
@@ -29,9 +27,9 @@ public class KeyBlockParser extends Parser<KeySet> {
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
 
     /**
-     * iv length in byte
+     * AEAD iv length in byte
      */
-    public static final int GCM_IV_LENGTH = 12;
+    public static final int AEAD_IV_LENGTH = 12;
 
     private final CipherSuite suite;
 
@@ -45,80 +43,82 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     @Override
     public KeySet parse() {
-        try {
-            KeySet keys = new KeySet();
-            if (AlgorithmResolver.getCipherType(suite) != CipherType.AEAD) {
-                parseClientWriteMacSecret(keys);
-                parseServerWriteMacSecret(keys);
-            }
-            parseClientWriteKey(keys);
-            parseServerWriteKey(keys);
-            if (AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
-                if (!version.usesExplicitIv()) {
-                    parseClientWriteIvBlock(keys);
-                    parseServerWriteIvBlock(keys);
-                }
-            } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {
-                parseClientWriteIvAead(keys);
-                parseServerWriteIvAead(keys);
-            }
-            return keys;
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new ParserException("Could not parse KeyBlock", ex);
+        KeySet keys = new KeySet();
+        if (AlgorithmResolver.getCipherType(suite) != CipherType.AEAD) {
+            parseClientWriteMacSecret(keys);
+            parseServerWriteMacSecret(keys);
         }
+        parseClientWriteKey(keys);
+        parseServerWriteKey(keys);
+        if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !version.usesExplicitIv())
+                || suite.isSteamCipherWithIV()) {
+            parseClientWriteIvBlock(keys);
+            parseServerWriteIvBlock(keys);
+        } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {
+            parseClientWriteIvAead(keys);
+            parseServerWriteIvAead(keys);
+        }
+        return keys;
     }
 
     private int getAeadSaltSize() {
-        return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
+        return AEAD_IV_LENGTH - AlgorithmResolver.getCipher(suite).getNonceBytesFromRecord();
     }
 
-    private void parseClientWriteIvBlock(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
-        keys.setClientWriteIv(parseByteArrayField(getBlockSize()));
+    private void parseClientWriteIvBlock(KeySet keys) {
+        keys.setClientWriteIv(parseByteArrayField(getIVSize()));
+        LOGGER.debug("ClientWriteIV: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
     }
 
-    private void parseServerWriteIvBlock(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
-        keys.setServerWriteIv(parseByteArrayField(getBlockSize()));
+    private void parseServerWriteIvBlock(KeySet keys) {
+        keys.setServerWriteIv(parseByteArrayField(getIVSize()));
+        LOGGER.debug("ServerWriteIV: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
     }
 
-    private void parseClientWriteIvAead(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
+    private void parseClientWriteIvAead(KeySet keys) {
         keys.setClientWriteIv(parseByteArrayField(getAeadSaltSize()));
+        LOGGER.debug("ClientWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
     }
 
-    private void parseServerWriteIvAead(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
+    private void parseServerWriteIvAead(KeySet keys) {
         keys.setServerWriteIv(parseByteArrayField(getAeadSaltSize()));
+        LOGGER.debug("ServerWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
     }
 
-    private void parseClientWriteKey(KeySet keys) throws NoSuchAlgorithmException {
+    private void parseClientWriteKey(KeySet keys) {
         keys.setClientWriteKey(parseByteArrayField(getKeySize()));
+        LOGGER.debug("ClientWriteKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteKey()));
     }
 
-    private void parseServerWriteKey(KeySet keys) throws NoSuchAlgorithmException {
+    private void parseServerWriteKey(KeySet keys) {
         keys.setServerWriteKey(parseByteArrayField(getKeySize()));
+        LOGGER.debug("ServerWriteKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteKey()));
     }
 
-    private void parseClientWriteMacSecret(KeySet keys) throws NoSuchAlgorithmException {
-        keys.setClientWriteMacSecret(parseByteArrayField(getMacLength()));
+    private void parseClientWriteMacSecret(KeySet keys) {
+        keys.setClientWriteMacSecret(parseByteArrayField(getMacKeySize()));
+        LOGGER.debug("ClientMacKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteMacSecret()));
     }
 
-    private void parseServerWriteMacSecret(KeySet keys) throws NoSuchAlgorithmException {
-        keys.setServerWriteMacSecret(parseByteArrayField(getMacLength()));
+    private void parseServerWriteMacSecret(KeySet keys) {
+        keys.setServerWriteMacSecret(parseByteArrayField(getMacKeySize()));
+        LOGGER.debug("ServerMacKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteMacSecret()));
     }
 
-    private int getMacLength() throws NoSuchAlgorithmException {
-        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(version, suite);
-        return Mac.getInstance(macAlg.getJavaName()).getMacLength();
+    private int getMacKeySize() {
+        return AlgorithmResolver.getMacAlgorithm(version, suite).getKeySize();
     }
 
-    private int getKeySize() throws NoSuchAlgorithmException {
+    private int getKeySize() {
         if (suite.isExportSymmetricCipher()) {
             return CipherSuite.EXPORT_SYMMETRIC_KEY_SIZE_BYTES;
+        } else {
+            return AlgorithmResolver.getCipher(suite).getKeySize();
         }
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
-        return cipherAlg.getKeySize();
     }
 
-    private int getBlockSize() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
-        return Cipher.getInstance(cipherAlg.getJavaName()).getBlockSize();
+    private int getIVSize() {
+        return AlgorithmResolver.getCipher(suite).getNonceBytesFromHandshake();
     }
+
 }

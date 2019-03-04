@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
 public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected BigInteger clientPublicKey;
     protected byte[] premasterSecret;
@@ -43,7 +47,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         preparePremasterSecret(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     protected BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
@@ -80,7 +84,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected void preparePublicKey(T msg) {
-        msg.setPublicKey(clientPublicKey.toByteArray());
+        msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(clientPublicKey));
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
@@ -89,18 +93,18 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    protected void prepareClientRandom(T msg) {
+    protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        random = msg.getComputations().getClientRandom().getValue();
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        random = msg.getComputations().getClientServerRandom().getValue();
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
         setComputationGenerator(msg);
         setComputationModulus(msg);
         setComputationPrivateKey(msg, clientMode);

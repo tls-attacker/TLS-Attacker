@@ -13,9 +13,13 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The cleanrecordbytes should be set when the record preparator received the
@@ -23,13 +27,19 @@ import java.math.BigInteger;
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final Record record;
     private final Encryptor encryptor;
+    private final RecordCompressor compressor;
 
-    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type) {
+    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
+            RecordCompressor compressor) {
         super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
+        this.compressor = compressor;
+
     }
 
     @Override
@@ -43,6 +53,9 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             preparePaddingLength(record);
         }
+
+        compressor.compress(record);
+
         encryptor.encrypt(record);
         prepareLength(record);
     }
@@ -61,7 +74,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+            record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }

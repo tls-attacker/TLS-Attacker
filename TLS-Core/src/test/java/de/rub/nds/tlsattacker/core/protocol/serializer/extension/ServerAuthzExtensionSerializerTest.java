@@ -19,6 +19,10 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ServerAuthzExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return ClientAuthzExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -35,11 +39,6 @@ public class ServerAuthzExtensionSerializerTest {
         this.extensionLength = extensionLength;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ClientAuthzExtensionParserTest.generateData();
     }
 
     @Test

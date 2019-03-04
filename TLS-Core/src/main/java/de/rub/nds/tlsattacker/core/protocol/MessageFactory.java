@@ -24,7 +24,7 @@ import org.reflections.Reflections;
 
 public class MessageFactory {
 
-    static final Logger LOGGER = LogManager.getLogger(MessageFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<ProtocolMessage> generateProtocolMessages() {
         List<ProtocolMessage> protocolMessageList = new LinkedList<>();

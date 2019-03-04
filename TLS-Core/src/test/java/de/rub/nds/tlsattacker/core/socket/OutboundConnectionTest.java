@@ -31,12 +31,7 @@ import org.junit.Test;
 
 public class OutboundConnectionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(OutboundConnectionTest.class);
-
-    @XmlRootElement
-    @XmlAccessorType(XmlAccessType.FIELD)
-    private static class TestXmlRoot extends OutboundConnection {
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private StringWriter writer;
     private JAXBContext context;
@@ -88,7 +83,7 @@ public class OutboundConnectionTest {
     /**
      * Verify that the ServerConnectionEnd includes manually set values in
      * serialization output.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -218,5 +213,10 @@ public class OutboundConnectionTest {
         assertNull(con.getHostname());
         assertNull(con.getAlias());
         assertNull(con.getPort());
+    }
+
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    private static class TestXmlRoot extends OutboundConnection {
     }
 }

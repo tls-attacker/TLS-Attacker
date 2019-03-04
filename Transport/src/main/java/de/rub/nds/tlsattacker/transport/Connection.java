@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,10 +16,14 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Connection {
+public abstract class Connection implements Serializable {
 
     protected Integer port = null;
     protected String hostname = null;
+    protected Integer proxyDataPort = null;
+    protected String proxyDataHostname = null;
+    protected Integer proxyControlPort = null;
+    protected String proxyControlHostname = null;
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
 
@@ -37,6 +42,10 @@ public abstract class Connection {
     public Connection(Connection other) {
         port = other.port;
         hostname = other.hostname;
+        proxyDataPort = other.proxyDataPort;
+        proxyDataHostname = other.proxyDataHostname;
+        proxyControlPort = other.proxyControlPort;
+        proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
     }
@@ -55,6 +64,38 @@ public abstract class Connection {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public Integer getProxyDataPort() {
+        return proxyDataPort;
+    }
+
+    public void setProxyDataPort(Integer proxyDataPort) {
+        this.proxyDataPort = proxyDataPort;
+    }
+
+    public String getProxyDataHostname() {
+        return proxyDataHostname;
+    }
+
+    public void setProxyDataHostname(String proxyDataHostname) {
+        this.proxyDataHostname = proxyDataHostname;
+    }
+
+    public String getProxyControlHostname() {
+        return proxyControlHostname;
+    }
+
+    public void setProxyControlHostname(String proxyControlHostname) {
+        this.proxyControlHostname = proxyControlHostname;
+    }
+
+    public Integer getProxyControlPort() {
+        return proxyControlPort;
+    }
+
+    public void setProxyControlPort(Integer proxyControlPort) {
+        this.proxyControlPort = proxyControlPort;
     }
 
     public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
@@ -76,7 +117,7 @@ public abstract class Connection {
     /**
      * Get the connection end type of the connection end. This must be
      * implemented by all children.
-     * 
+     *
      * @return the connection end type of the connection end.
      */
     public abstract ConnectionEndType getLocalConnectionEndType();
@@ -112,9 +153,6 @@ public abstract class Connection {
         if (!Objects.equals(this.timeout, other.timeout)) {
             return false;
         }
-        if (!Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType());
     }
 }

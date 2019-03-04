@@ -27,8 +27,8 @@ public class CachedObjectPreparatorTest {
 
         preparator.prepare();
 
-        assertEquals(cachedInfoType, (byte) object.getCachedInformationType().getValue());
-        assertEquals(hashLength, (int) object.getHashValueLength().getValue());
+        assertEquals(cachedInfoType, (long) object.getCachedInformationType().getValue());
+        assertEquals(hashLength, (long) object.getHashValueLength().getValue());
         assertArrayEquals(hash, object.getHashValue().getValue());
     }
 }

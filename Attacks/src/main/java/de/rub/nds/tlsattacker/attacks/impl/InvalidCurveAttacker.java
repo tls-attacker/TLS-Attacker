@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -37,19 +38,31 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
+/**
+ *
+ */
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger premasterSecret;
 
-    public InvalidCurveAttacker(InvalidCurveAttackConfig config) {
-        super(config);
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public InvalidCurveAttacker(InvalidCurveAttackConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultClientNamedGroups()
                 .get(0));
         Curve curve = CurveFactory.getNamedCurve(tlsConfig.getDefaultClientNamedGroups().get(0).name());
@@ -60,11 +73,15 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         LOGGER.info("Result found: {}", result);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
-        if (!AlgorithmResolver.getKeyExchangeAlgorithm(config.createConfig().getDefaultSelectedCipherSuite()).isEC()) {
+        if (!AlgorithmResolver.getKeyExchangeAlgorithm(getTlsConfig().getDefaultSelectedCipherSuite()).isEC()) {
             LOGGER.info("The CipherSuite that should be tested is not an Ec one:"
-                    + config.createConfig().getDefaultSelectedCipherSuite().name());
+                    + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
         ECComputer computer = new ECComputer();
@@ -83,8 +100,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                         premasterSecret = BigInteger.ZERO;
                     }
                     LOGGER.debug(premasterSecret.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (DivisionException e) {
                 }
             }
             try {
@@ -108,7 +124,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace executeProtocolFlow() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(

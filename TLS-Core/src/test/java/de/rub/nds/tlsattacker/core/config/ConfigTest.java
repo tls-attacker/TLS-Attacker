@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.config;
 import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ConfigTest {
 
@@ -129,7 +128,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of isUseRandomUnixTime method, of class Config.
+     * Test of isUseFreshRandom method, of class Config.
      */
     @Test
     public void testIsUseRandomUnixTime() {

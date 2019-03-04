@@ -24,7 +24,7 @@ public class CertificateRequestParserTest {
 
     // private static byte[] SSL3_CERTREQ_MSG =
     // ArrayConverter.hexStringToByteArray("0d000006030102400000");
-    private static byte[] RSA_DSS_ECDSA_TYPES = ArrayConverter.hexStringToByteArray("010240");
+    private static final byte[] RSA_DSS_ECDSA_TYPES = ArrayConverter.hexStringToByteArray("010240");
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {

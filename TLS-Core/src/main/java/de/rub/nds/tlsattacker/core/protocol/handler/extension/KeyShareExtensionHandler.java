@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
@@ -27,6 +29,8 @@ import java.util.List;
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public KeyShareExtensionHandler(TlsContext context) {
         super(context);

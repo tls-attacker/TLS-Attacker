@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -19,12 +18,16 @@ import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This handler processes the EncryptedExtension messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EncryptedExtensionsHandler(TlsContext tlsContext) {
         super(tlsContext);

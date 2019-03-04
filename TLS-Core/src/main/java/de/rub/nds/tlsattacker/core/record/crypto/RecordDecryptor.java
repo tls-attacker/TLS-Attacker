@@ -29,8 +29,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordDecryptor extends Decryptor {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 

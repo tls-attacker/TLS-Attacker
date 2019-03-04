@@ -13,10 +13,14 @@ import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateStatusRequestExtensionPreparator extends
         ExtensionPreparator<CertificateStatusRequestExtensionMessage> {
     private final CertificateStatusRequestExtensionMessage msg;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CertificateStatusRequestExtensionPreparator(Chooser chooser,
             CertificateStatusRequestExtensionMessage message,

@@ -14,12 +14,15 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage> extends
         ServerKeyExchangePreparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected BigInteger publicKey;
     protected SignatureAndHashAlgorithm selectedSignatureHashAlgo;
@@ -62,8 +65,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         prepareModulusLength(msg);
         prepareGenerator(msg);
         prepareGeneratorLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
+        prepareClientServerRandom(msg);
         preparePublicKeyLength(msg);
     }
 
@@ -74,8 +76,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
                         msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH), msg
                         .getGenerator().getValue(), ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(),
                         HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
-                .getServerRandom().getValue(), dhParams);
+        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(), dhParams);
 
     }
 
@@ -134,16 +135,11 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    protected void prepareServerRandom(T msg) {
-        msg.getComputations().setServerRandom(chooser.getServerRandom());
-        LOGGER.debug("ServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
+    protected void prepareClientServerRandom(T msg) {
+        msg.getComputations().setClientServerRandom(
+                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg) {

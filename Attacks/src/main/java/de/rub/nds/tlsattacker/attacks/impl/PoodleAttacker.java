@@ -20,10 +20,18 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class PoodleAttacker extends Attacker {
 
-    public PoodleAttacker(PoodleCommandConfig config) {
-        super(config);
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public PoodleAttacker(PoodleCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -31,9 +39,13 @@ public class PoodleAttacker extends Attacker {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
         tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);

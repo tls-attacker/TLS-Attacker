@@ -23,7 +23,7 @@ public abstract class KeyExchangeComputations extends ModifiableVariableHolder i
     protected ModifiableByteArray premasterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray clientRandom;
+    protected ModifiableByteArray clientServerRandom;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
     private ModifiableBigInteger privateKey;
@@ -40,16 +40,16 @@ public abstract class KeyExchangeComputations extends ModifiableVariableHolder i
         this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, premasterSecret);
     }
 
-    public ModifiableByteArray getClientRandom() {
-        return clientRandom;
+    public ModifiableByteArray getClientServerRandom() {
+        return clientServerRandom;
     }
 
-    public void setClientRandom(ModifiableByteArray clientRandom) {
-        this.clientRandom = clientRandom;
+    public void setClientServerRandom(ModifiableByteArray clientServerRandom) {
+        this.clientServerRandom = clientServerRandom;
     }
 
-    public void setClientRandom(byte[] random) {
-        this.clientRandom = ModifiableVariableFactory.safelySetValue(this.clientRandom, random);
+    public void setClientServerRandom(byte[] random) {
+        this.clientServerRandom = ModifiableVariableFactory.safelySetValue(this.clientServerRandom, random);
     }
 
     public ModifiableBigInteger getPrivateKey() {

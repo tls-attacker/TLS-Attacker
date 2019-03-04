@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
@@ -28,6 +29,7 @@ public class BlobRecordTest {
     private BlobRecord record;
     private Chooser chooser;
     private Encryptor encryptor;
+    private RecordCompressor compressor;
 
     @Before
     public void setUp() {
@@ -36,6 +38,8 @@ public class BlobRecordTest {
         TlsContext ctx = new TlsContext(config);
         chooser = ctx.getChooser();
         encryptor = new RecordEncryptor(new RecordNullCipher(ctx), ctx);
+        compressor = new RecordCompressor(ctx);
+
     }
 
     /**
@@ -43,7 +47,7 @@ public class BlobRecordTest {
      */
     @Test
     public void testGetRecordPreparator() {
-        assertEquals(record.getRecordPreparator(chooser, encryptor, ProtocolMessageType.ALERT).getClass(),
+        assertEquals(record.getRecordPreparator(chooser, encryptor, compressor, ProtocolMessageType.ALERT).getClass(),
                 BlobRecordPreparator.class);
     }
 

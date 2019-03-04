@@ -383,25 +383,20 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM(0xC0AD),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8(0xC0AE),
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8(0xC0AF),
-    TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC13),
-    TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCC14),
-    TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC15),
+    // *************************************************************************
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     // These Ciphersuite are from a Draft and also dont have a mac algorithm
     // defined
     // i am not sure if we want to keep draft ciphers here
     // UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
-    // UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
-    // UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
-    // UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
     // UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
     // UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
     // UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
     // UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
-    // Chacha poly CipherSuites, some are double specified, added RFC_ infront
-    RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
-    RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
-    RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),
+    // *************************************************************************
+    TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
+    TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
+    TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),
     TLS_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAB),
     TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAC),
     TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256(0xCCAD),
@@ -409,26 +404,27 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256(0x16B7),
     TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0x16B8),
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
-    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA);
-    // TODO Grease logic implementation, because the tests fail if the lines
-    // aren't commented
+    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
+    TLS_RSA_WITH_RABBIT_CBC_SHA(0x00FD), // non rfc, only wolfssl
     // GREASE constants
-    // GREASE_00(0x0A0A),
-    // GREASE_01(0x1A1A),
-    // GREASE_02(0x2A2A),
-    // GREASE_03(0x3A3A),
-    // GREASE_04(0x4A4A),
-    // GREASE_05(0x5A5A),
-    // GREASE_06(0x6A6A),
-    // GREASE_07(0x7A7A),
-    // GREASE_08(0x8A8A),
-    // GREASE_09(0x9A9A),
-    // GREASE_10(0xAAAA),
-    // GREASE_11(0xBABA),
-    // GREASE_12(0xCACA),
-    // GREASE_13(0xDADA),
-    // GREASE_14(0xEAEA),
-    // GREASE_15(0xFAFA);
+    GREASE_00(0x0A0A),
+    GREASE_01(0x1A1A),
+    GREASE_02(0x2A2A),
+    GREASE_03(0x3A3A),
+    GREASE_04(0x4A4A),
+    GREASE_05(0x5A5A),
+    GREASE_06(0x6A6A),
+    GREASE_07(0x7A7A),
+    GREASE_08(0x8A8A),
+    GREASE_09(0x9A9A),
+    GREASE_10(0xAAAA),
+    GREASE_11(0xBABA),
+    GREASE_12(0xCACA),
+    GREASE_13(0xDADA),
+    GREASE_14(0xEAEA),
+    GREASE_15(0xFAFA),
+    TLS_GOSTR341112_256_WITH_28147_CNT_IMIT(0xFF85),
+    TLS_GOSTR341112_256_WITH_NULL_GOSTR3411(0xFF87);
 
     private int value;
 
@@ -534,6 +530,10 @@ public enum CipherSuite {
         return this.name().contains("EXPORT");
     }
 
+    public boolean isGrease() {
+        return this.name().contains("GREASE");
+    }
+
     public boolean isExportSymmetricCipher() {
         return this.name().contains("DES40") || this.name().contains("RC4_40") || this.name().contains("RC2_CBC_40")
                 || this.name().contains("DES_CBC_40");
@@ -559,7 +559,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "CNT_INIT", "GOSTR3411" };
+            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -567,7 +567,7 @@ public enum CipherSuite {
             }
             return false;
         }
-        return (this.name().contains("_CBC") || this.name().contains("RC4"));
+        return (this.name().contains("_CBC") || this.name().contains("RC4") || this.name().contains("CNT"));
     }
 
     public boolean isSCSV() {
@@ -586,8 +586,24 @@ public enum CipherSuite {
         return (this.name().contains("_OCB"));
     }
 
+    public boolean isSteamCipherWithIV() {
+        return this.name().contains("28147_CNT");
+    }
+
     public boolean usesSHA384() {
         return this.name().endsWith("SHA384");
+    }
+
+    public boolean usesGOSTR3411() {
+        return this.name().startsWith("TLS_GOSTR3410");
+    }
+
+    public boolean usesGOSTR34112012() {
+        return this.name().startsWith("TLS_GOSTR3411");
+    }
+
+    public boolean usesStrictExplicitIv() {
+        return (this.name().contains("CHACHA20_POLY1305"));
     }
 
     /**
@@ -603,7 +619,8 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384")) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") && !this.name().contains("IDEA")
+                && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
@@ -919,6 +936,13 @@ public enum CipherSuite {
         list.add(TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384);
         list.add(TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256);
         list.add(TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_GOSTR341001_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341001_WITH_NULL_GOSTR3411);
+        list.add(TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341112_256_WITH_NULL_GOSTR3411);
+        list.add(TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         return list;
     }
 
@@ -949,7 +973,25 @@ public enum CipherSuite {
         return this.name().contains("SHA256");
     }
 
+    public boolean isChachaPoly() {
+        return this.name().contains("CHACHA");
+    }
+
+    public boolean isSHA384() {
+        return this.name().contains("SHA384");
+    }
+
     public boolean isAnon() {
         return this.name().contains("anon");
     }
+
+    public boolean isNull() {
+        return this.name().toLowerCase().contains("null");
+    }
+
+    // Note: We don't consider DES as weak for these purposes.
+    public boolean isWeak() {
+        return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
+    }
+
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Parser<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger(Parser.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Current position in the byte array
@@ -143,6 +143,19 @@ public abstract class Parser<T> {
             if (b == endSequence) {
                 return new String(stream.toByteArray());
             }
+        }
+    }
+
+    /**
+     * Returns the byte at the current pointer position
+     *
+     * @return byte at the current pointer position
+     */
+    protected byte peek() {
+        if (pointer < array.length) {
+            return array[pointer];
+        } else {
+            throw new ParserException("Cannot peek, would peek over the end ot the array");
         }
     }
 

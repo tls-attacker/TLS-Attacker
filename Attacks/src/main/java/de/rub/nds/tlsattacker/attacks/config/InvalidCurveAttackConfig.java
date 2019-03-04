@@ -28,8 +28,14 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class InvalidCurveAttackConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
@@ -83,6 +89,10 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -99,83 +109,163 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getPremasterSecret() {
         return premasterSecret;
     }
 
+    /**
+     *
+     * @param premasterSecret
+     */
     public void setPremasterSecret(BigInteger premasterSecret) {
         this.premasterSecret = premasterSecret;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getPublicPointBaseX() {
         return publicPointBaseX;
     }
 
+    /**
+     *
+     * @param publicPointBaseX
+     */
     public void setPublicPointBaseX(BigInteger publicPointBaseX) {
         this.publicPointBaseX = publicPointBaseX;
     }
 
+    /**
+     *
+     * @return
+     */
     public BigInteger getPublicPointBaseY() {
         return publicPointBaseY;
     }
 
+    /**
+     *
+     * @param publicPointBaseY
+     */
     public void setPublicPointBaseY(BigInteger publicPointBaseY) {
         this.publicPointBaseY = publicPointBaseY;
     }
 
+    /**
+     *
+     * @return
+     */
     public NamedGroup getNamedGroup() {
         return namedGroup;
     }
 
+    /**
+     *
+     * @param namedGroup
+     */
     public void setNamedCurve(NamedGroup namedGroup) {
         this.namedGroup = namedGroup;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurveFieldSize() {
         return curveFieldSize;
     }
 
+    /**
+     *
+     * @param curveFieldSize
+     */
     public void setCurveFieldSize(int curveFieldSize) {
         this.curveFieldSize = curveFieldSize;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProtocolFlows() {
         return protocolFlows;
     }
 
+    /**
+     *
+     * @param protocolFlows
+     */
     public void setProtocolFlows(int protocolFlows) {
         this.protocolFlows = protocolFlows;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getAdditionalEquations() {
         return additionalEquations;
     }
 
+    /**
+     *
+     * @param additionalEquations
+     */
     public void setAdditionalEquations(int additionalEquations) {
         this.additionalEquations = additionalEquations;
     }
 
+    /**
+     *
+     * @return
+     */
     public ICEAttacker.ServerType getServerType() {
         return serverType;
     }
 
+    /**
+     *
+     * @param serverType
+     */
     public void setServerType(ICEAttacker.ServerType serverType) {
         this.serverType = serverType;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isEphemeral() {
         return ephemeral;
     }
 
+    /**
+     *
+     * @param ephemeral
+     */
     public void setEphemeral(boolean ephemeral) {
         this.ephemeral = ephemeral;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
@@ -210,6 +300,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setEarlyStop(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddRenegotiationInfoExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
         List<NamedGroup> namedCurves = new LinkedList<>();
         namedCurves.add(namedGroup);

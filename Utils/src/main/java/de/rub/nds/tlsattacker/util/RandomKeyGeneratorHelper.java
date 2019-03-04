@@ -230,4 +230,7 @@ public class RandomKeyGeneratorHelper {
         return curveName;
     }
 
+    private RandomKeyGeneratorHelper() {
+    }
+
 }

@@ -17,10 +17,19 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 
+/**
+ *
+ */
 public class HeartbleedCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "heartbleed";
 
     @Parameter(names = "-payload_length", description = "Payload length sent in the client heartbeat message")
@@ -37,6 +46,10 @@ public class HeartbleedCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -51,24 +64,57 @@ public class HeartbleedCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getPayloadLength() {
         return payloadLength;
     }
 
+    /**
+     *
+     * @param payloadLength
+     */
     public void setPayloadLength(Integer payloadLength) {
         this.payloadLength = payloadLength;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        boolean containsEc = false;
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
+                containsEc = true;
+                break;
+            }
+        }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
 }

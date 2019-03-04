@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -55,8 +53,8 @@ public class DHEServerKeyExchangePreparatorTest {
         context.setServerRandom(ArrayConverter.hexStringToByteArray("AABBCCDD"));
         // Set Signature and Hash Algorithm
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
+        SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA1);
+        SigAndHashList.add(SignatureAndHashAlgorithm.DSA_MD5);
         context.getConfig().setSupportedSignatureAndHashAlgorithms(SigAndHashList);
         // Test
         preparator.prepareHandshakeMessageContents();
@@ -69,10 +67,8 @@ public class DHEServerKeyExchangePreparatorTest {
                 ArrayConverter
                         .hexStringToByteArray("da3a8085d372437805de95b88b675122f575df976610c6a844de99f1df82a06848bf7a42f18895c97402e81118e01a00d0855d51922f434c022350861d58ddf60d65bc6941fc6064b147071a4c30426d82fc90d888f94990267c64beef8c304a4b2b26fb93724d6a9472fa16bc50c5b9b8b59afb62cfe9ea3ba042c73a6ade35"),
                 message.getModulus().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("AABBCCDD"), message.getComputations().getClientRandom()
-                .getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("AABBCCDD"), message.getComputations().getServerRandom()
-                .getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("AABBCCDDAABBCCDD"), message.getComputations()
+                .getClientServerRandom().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0201"), message.getSignatureAndHashAlgorithm()
                 .getValue());
         assertNotNull(message.getSignature().getValue());

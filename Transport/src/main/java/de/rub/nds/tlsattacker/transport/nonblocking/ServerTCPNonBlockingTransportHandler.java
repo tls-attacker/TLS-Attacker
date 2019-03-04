@@ -11,14 +11,19 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final int port;
 
@@ -62,7 +67,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             if (task.isDone()) {
                 try {
                     clientSocket = task.get();
-                    setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
+                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
                 } catch (InterruptedException | ExecutionException ex) {
                     LOGGER.warn("Could not retrieve clientSocket");
                     LOGGER.debug(ex);
@@ -80,7 +85,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             if (task != null) {
                 clientSocket = task.get(timeout, TimeUnit.MILLISECONDS);
                 if (clientSocket != null) {
-                    setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
+                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
                 }
             }
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {

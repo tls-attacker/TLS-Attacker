@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TLSDelegateConfig.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
     private final GeneralDelegate generalDelegate;
@@ -58,6 +58,17 @@ public abstract class TLSDelegateConfig {
         return generalDelegate;
     }
 
+    public Config createConfig(Config baseConfig) {
+        for (Delegate delegate : getDelegateList()) {
+            delegate.applyDelegate(baseConfig);
+        }
+        return baseConfig;
+    }
+
+    public final boolean hasDifferentConfig() {
+        return defaultConfig != null;
+    }
+
     public Config createConfig() {
         Config config = null;
         if (defaultConfig != null) {
@@ -71,10 +82,6 @@ public abstract class TLSDelegateConfig {
             config = Config.createConfig();
         }
 
-        for (Delegate delegate : getDelegateList()) {
-            delegate.applyDelegate(config);
-        }
-        return config;
+        return createConfig(config);
     }
-
 }

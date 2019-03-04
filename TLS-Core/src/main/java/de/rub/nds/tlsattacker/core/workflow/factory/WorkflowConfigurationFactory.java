@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -34,6 +35,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -51,6 +54,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -58,16 +62,31 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -78,7 +97,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class WorkflowConfigurationFactory {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowConfigurationFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
     RunningModeType mode;
@@ -120,6 +139,8 @@ public class WorkflowConfigurationFactory {
                 return createFullZeroRttWorkflow();
             case FALSE_START:
                 return createFalseStartWorkflow();
+            case RSA_SYNC_PROXY:
+                return createSyncProxyWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -156,7 +177,6 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a hello workflow for the given connection end.
      */
-    // TODO: Should I have changed this method to public? :-)
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
@@ -419,6 +439,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
         trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
@@ -483,24 +504,24 @@ public class WorkflowConfigurationFactory {
         trace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
-        ForwardAction f = new ForwardAction(clientToMitmAlias, mitmToServerAlias, new ApplicationMessage(config));
+        ForwardMessagesAction f = new ForwardMessagesAction(clientToMitmAlias, mitmToServerAlias,
+                new ApplicationMessage(config));
         trace.addTlsAction(f);
 
-        // Print the application data contents to console
+        // Print client's app data contents
         PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
-        p.setStringEncoding("US_ASCII");
+        p.setStringEncoding("US-ASCII");
         trace.addTlsAction(p);
 
-        // // Forward response server -> client
-        // List<ProtocolMessage> messages = new LinkedList<>();
-        // f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new
-        // ApplicationMessage(config));
-        // trace.addTlsAction(f);
-        //
-        // // Print the server's answer
-        // p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
-        // p.setStringEncoding(StandardCharsets.US_ASCII);
-        // trace.addTlsAction(p);
+        // Forward response server -> client
+        f = new ForwardMessagesAction(mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
+        trace.addTlsAction(f);
+
+        // Print server's app data contents
+        p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
+        p.setStringEncoding("US-ASCII");
+        trace.addTlsAction(p);
+
         return trace;
     }
 
@@ -563,11 +584,11 @@ public class WorkflowConfigurationFactory {
             if (action.isMessageAction()) {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
-                        List<ExtensionMessage> extensions = ((ClientHelloMessage) msg).getExtensions();
+                        List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
                         for (int x = 0; x < extensions.size(); x++) {
                             if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
                                     || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((ClientHelloMessage) msg).getExtensions().remove(extensions.get(x));
+                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
                                 x--;
                             }
                         }
@@ -582,6 +603,109 @@ public class WorkflowConfigurationFactory {
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {
             trace.addTlsAction(zeroRttAction);
         }
+        return trace;
+    }
+
+    /**
+     * A simple synchronizing proxy for RSA KE.
+     *
+     * Synchronizes the secrets between all parties and forwards first round of
+     * exchanged application data messages.
+     *
+     * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
+     * extensions) will brake it. So per default, all extensions are removed and
+     * all cipher suites except RSA suites are removed, too.
+     */
+    private WorkflowTrace createSyncProxyWorkflow() {
+
+        if (mode != RunningModeType.MITM) {
+            throw new ConfigurationException("This workflow trace can only be created when running"
+                    + " in MITM mode. Actual mode: " + mode);
+        }
+
+        // client -> mitm
+        AliasedConnection inboundConnection = config.getDefaultServerConnection();
+        String clientToMitmAlias = inboundConnection.getAlias();
+        // mitm -> server
+        AliasedConnection outboundConnection = config.getDefaultClientConnection();
+        String mitmToServerAlias = outboundConnection.getAlias();
+
+        if (outboundConnection == null || inboundConnection == null) {
+            throw new ConfigurationException("Could not find both necesary connection ends");
+        }
+
+        LOGGER.info("Building synchronizing proxy trace for:\n" + inboundConnection.toCompactString() + ", "
+                + outboundConnection.toCompactString());
+
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addConnection(inboundConnection);
+        trace.addConnection(outboundConnection);
+
+        List<CipherSuite> removeCiphers = CipherSuite.getImplemented();
+        removeCiphers.addAll(CipherSuite.getNotImplemented());
+        List<CipherSuite> keepCiphers = new ArrayList();
+        for (CipherSuite cs : removeCiphers) {
+            if (cs.name().startsWith("TLS_RSA")) {
+                keepCiphers.add(cs);
+            }
+        }
+        removeCiphers.removeAll(keepCiphers);
+
+        List<ExtensionType> removeExtensions = ExtensionType.getReceivable();
+        List<ExtensionType> keepExtensions = new ArrayList();
+        // keepExtensions.add(ExtensionType.EXTENDED_MASTER_SECRET);
+        removeExtensions.removeAll(keepExtensions);
+
+        // Sorry for fooling the silly formatter with EOL comments :>
+        trace.addTlsActions( //
+                // Forward CH, remove extensions and non RSA KE ciphers
+                new BufferedGenericReceiveAction(clientToMitmAlias), //
+                new CopyBuffersAction(clientToMitmAlias, mitmToServerAlias), //
+                new RemBufferedChCiphersAction(mitmToServerAlias, removeCiphers), //
+                new RemBufferedChExtensionsAction(mitmToServerAlias, removeExtensions), //
+                new BufferedSendAction(mitmToServerAlias), //
+                new ClearBuffersAction(clientToMitmAlias), //
+
+                // Forward SH
+                new BufferedGenericReceiveAction(mitmToServerAlias), //
+                new CopyBuffersAction(mitmToServerAlias, clientToMitmAlias), //
+                new PopAndSendAction(clientToMitmAlias), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+                // But send our own certificate
+                new PopBufferedMessageAction(clientToMitmAlias), //
+                new PopBufferedRecordAction(clientToMitmAlias), //
+                new SendAction(clientToMitmAlias, new CertificateMessage(config)), //
+                // Send SHD
+                new PopAndSendAction(clientToMitmAlias), //
+                new ClearBuffersAction(mitmToServerAlias), //
+
+                // Forward CKE (use received PMS)
+                new BufferedGenericReceiveAction(clientToMitmAlias), //
+                new CopyBuffersAction(clientToMitmAlias, mitmToServerAlias), //
+                new PopBuffersAction(mitmToServerAlias), //
+                new CopyPreMasterSecretAction(clientToMitmAlias, mitmToServerAlias), //
+                new SendAction(mitmToServerAlias, new RSAClientKeyExchangeMessage()), //
+                // Sends CCS
+                new PopAndSendAction(mitmToServerAlias), //
+                new ClearBuffersAction(mitmToServerAlias), //
+                new ClearBuffersAction(clientToMitmAlias), //
+
+                // Send fresh FIN
+                new SendAction(mitmToServerAlias, new FinishedMessage()), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+
+                // Finish the handshake, and print the secrets we negotiated
+                new ReceiveAction(mitmToServerAlias, new ChangeCipherSpecMessage(), new FinishedMessage()), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+                new SendAction(clientToMitmAlias, new ChangeCipherSpecMessage(), new FinishedMessage()), //
+
+                // Step out, enjoy :)
+                new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias), //
+                new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias)); //
+
         return trace;
     }
 
@@ -608,16 +732,18 @@ public class WorkflowConfigurationFactory {
                     return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
                     return new PskEcDhClientKeyExchangeMessage(config);
-                case RSA_PSK:
+                case PSK_RSA:
                     return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
                     return new SrpClientKeyExchangeMessage(config);
+                case VKO_GOST01:
+                case VKO_GOST12:
+                    return new GOSTClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not creating ClientKeyExchange Message");
-
             }
         } else {
             LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ClientKeyExchange Message");
@@ -625,49 +751,52 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    // TODO: Public? :-)
+    public ServerKeyExchangeMessage createServerKeyExchangeMessage(KeyExchangeAlgorithm algorithm) {
+        if (algorithm != null) {
+            switch (algorithm) {
+                case RSA:
+                case DH_DSS:
+                case DH_RSA:
+                    return null;
+                case ECDHE_ECDSA:
+                case ECDHE_RSA:
+                case ECDH_ANON:
+                    return new ECDHEServerKeyExchangeMessage(config);
+                case DHE_DSS:
+                case DHE_RSA:
+                case DH_ANON:
+                    return new DHEServerKeyExchangeMessage(config);
+                case PSK:
+                    return new PskServerKeyExchangeMessage(config);
+                case DHE_PSK:
+                    return new PskDheServerKeyExchangeMessage(config);
+                case ECDHE_PSK:
+                    return new PskEcDheServerKeyExchangeMessage(config);
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    return new SrpServerKeyExchangeMessage(config);
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
+                            + ", not creating ServerKeyExchange Message");
+            }
+        } else {
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ServerKeyExchange Message");
+        }
+        return null;
+    }
+
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         messages.add(message);
     }
 
-    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        if (cs.isEphemeral()) {
-            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-                case ECDHE_ECDSA:
-                case ECDHE_RSA:
-                case ECDH_ANON:
-                    messages.add(new ECDHEServerKeyExchangeMessage(config));
-                    break;
-                case DHE_DSS:
-                case DHE_RSA:
-                case DH_ANON:
-                    messages.add(new DHEServerKeyExchangeMessage(config));
-                    break;
-                case PSK:
-                    messages.add(new PskServerKeyExchangeMessage(config));
-                    break;
-                case DHE_PSK:
-                    messages.add(new PskDheServerKeyExchangeMessage(config));
-                    break;
-                case ECDHE_PSK:
-                    messages.add(new PskEcDheServerKeyExchangeMessage(config));
-                    break;
-                case SRP_SHA_DSS:
-                case SRP_SHA_RSA:
-                case SRP_SHA:
-                    messages.add(new SrpServerKeyExchangeMessage(config));
-                    break;
-                default:
-                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                            + ", not adding ServerKeyExchange Message");
-                    break;
-            }
-        }
-        if (cs.isSrp()) {
-            messages.add(new SrpServerKeyExchangeMessage(config));
+        ServerKeyExchangeMessage message = createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        if (message != null) {
+            messages.add(message);
         }
     }
 

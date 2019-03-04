@@ -11,11 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PreSharedKeyExtensionSerializer extends ExtensionSerializer<PreSharedKeyExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PreSharedKeyExtensionMessage msg;
     private final ConnectionEndType connectionType;

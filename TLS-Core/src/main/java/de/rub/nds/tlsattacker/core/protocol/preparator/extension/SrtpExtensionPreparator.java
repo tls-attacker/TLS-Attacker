@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessa
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SrtpExtensionMessage msg;
 

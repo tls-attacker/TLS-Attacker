@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
@@ -47,6 +46,8 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -54,6 +55,8 @@ import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -101,7 +104,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
-        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        CipherSuite suite = null;
+        if (message.getSelectedCipherSuite() != null) {
+            suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        }
+
         if (suite != null) {
             tlsContext.setSelectedCipherSuite(suite);
             LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
@@ -116,15 +123,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
+
+        CompressionMethod method = null;
         if (message.getSelectedCompressionMethod() != null) {
-            CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
-                    .getValue());
-            if (method != null) {
-                tlsContext.setSelectedCompressionMethod(method);
-                LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
-            } else {
-                LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
-            }
+            method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod().getValue());
+        }
+
+        if (method != null) {
+            tlsContext.setSelectedCompressionMethod(method);
+            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
         } else {
             LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
@@ -134,11 +141,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         byte[] sessionID = message.getSessionId().getValue();
         tlsContext.setServerSessionId(sessionID);
         LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
-
     }
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        ProtocolVersion version = null;
+
+        if (message.getProtocolVersion() != null) {
+            version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        }
+
         if (version != null) {
             tlsContext.setSelectedProtocolVersion(version);
             LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
@@ -297,7 +308,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case SECT571R1:
                 ECDomainParameters generateEcParameters = generateEcParameters(keyShare.getGroup());
                 ECPoint deserializeEcPoint = deserializeEcPoint(generateEcParameters, keyShare.getPublicKey());
-                deserializeEcPoint.normalize();
+                deserializeEcPoint = deserializeEcPoint.normalize();
                 ECPublicKeyParameters params = new ECPublicKeyParameters(deserializeEcPoint, generateEcParameters);
                 ECPrivateKeyParameters privParams = new ECPrivateKeyParameters(tlsContext.getConfig()
                         .getDefaultKeySharePrivateKey(), generateEcParameters);

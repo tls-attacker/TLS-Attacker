@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HelloRetryRequestParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.HELLO_RETRY_REQUEST, version);

@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateVerifyParser extends HandshakeMessageParser<CertificateVerifyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class
@@ -35,7 +39,9 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
     @Override
     protected void parseHandshakeMessageContent(CertificateVerifyMessage msg) {
         LOGGER.debug("Parsing CertificateVerifyMessage");
-        parseSignatureHashAlgorithm(msg);
+        if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12 || getVersion().isTLS13()) {
+            parseSignatureHashAlgorithm(msg);
+        }
         parseSignatureLength(msg);
         parseSignature(msg);
     }

@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PaddingExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -19,9 +23,6 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     @Override
     public void parseExtensionMessageContent(PaddingExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() <= 65535) {
-            LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
-        }
         msg.setPaddingBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
         LOGGER.debug("The padding extension parser parsed the padding bytes " + bytesToHexString(msg.getPaddingBytes()));
     }

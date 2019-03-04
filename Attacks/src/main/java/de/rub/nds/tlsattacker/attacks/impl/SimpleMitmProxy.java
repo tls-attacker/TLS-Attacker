@@ -16,10 +16,18 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
+/**
+ *
+ */
 public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
 
-    public SimpleMitmProxy(SimpleMitmProxyCommandConfig config) {
-        super(config);
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public SimpleMitmProxy(SimpleMitmProxyCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -33,6 +41,10 @@ public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
         workflowExecutor.executeWorkflow();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not supported yet.");

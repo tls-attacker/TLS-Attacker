@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChangeCompressionAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private CompressionMethod newValue = null;
     private CompressionMethod oldValue = null;
@@ -48,6 +52,8 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
+        tlsContext.getRecordLayer().updateCompressor();
+        tlsContext.getRecordLayer().updateDecompressor();
         LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
                 + newValue.name());
         setExecuted(true);

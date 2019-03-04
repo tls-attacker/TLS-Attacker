@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 public class DateHeaderPreparator extends Preparator<DateHeader> {
 
-    private DateHeader header;
+    private final DateHeader header;
 
     public DateHeaderPreparator(Chooser chooser, DateHeader header) {
         super(chooser, header);

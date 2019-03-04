@@ -23,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class RecordAEADCipherTest {
     public void setUp() {
         Security.addProvider(new BouncyCastleProvider());
         this.context = new TlsContext();
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
@@ -104,7 +103,7 @@ public class RecordAEADCipherTest {
                 .getClientWriteKey());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("7DD498D9EA924142CD3BF45CD8A1B4B9"), cipher.getKeySet()
                 .getServerWriteKey());
-        assertNull(cipher.getKeySet().getClientWriteMacSecret());
-        assertNull(cipher.getKeySet().getServerWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getClientWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getServerWriteMacSecret());
     }
 }

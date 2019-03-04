@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestSerializer extends HandshakeMessageSerializer<CertificateRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final CertificateRequestMessage msg;
 
@@ -35,8 +39,10 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
         LOGGER.debug("Serializing CertificateRequestMessage");
         writeClientCertificateTypesCount(msg);
         writeClientCertificateTypes(msg);
-        writeSignatureHandshakeAlgorithmsLength(msg);
-        writeSignatureHandshakeAlgorithms(msg);
+        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
+            writeSignatureHandshakeAlgorithmsLength(msg);
+            writeSignatureHandshakeAlgorithms(msg);
+        }
         writeDistinguishedNamesLength(msg);
         if (hasDistinguishedNames(msg)) {
             writeDistinguishedNames(msg);

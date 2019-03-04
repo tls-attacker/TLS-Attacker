@@ -12,7 +12,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -20,7 +19,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -50,9 +48,8 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.error("Encountered a ConfigurationException aborting. See debug for more info.");
-                LOGGER.debug(E);
+            } catch (Exception E) {
+                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
             LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());

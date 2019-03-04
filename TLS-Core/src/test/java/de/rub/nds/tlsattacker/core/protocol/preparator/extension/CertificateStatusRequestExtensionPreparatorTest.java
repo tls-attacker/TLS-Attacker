@@ -49,11 +49,11 @@ public class CertificateStatusRequestExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), msg.getExtensionType().getValue());
-        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(), (int) msg
+        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(), (long) msg
                 .getCertificateStatusRequestType().getValue());
-        assertEquals(responderIDListLength, (int) msg.getResponderIDListLength().getValue());
+        assertEquals(responderIDListLength, (long) msg.getResponderIDListLength().getValue());
         assertArrayEquals(certificateStatusRequestExtensionResponderIDList, msg.getResponderIDList().getValue());
-        assertEquals(requestExtensionLength, (int) msg.getRequestExtensionLength().getValue());
+        assertEquals(requestExtensionLength, (long) msg.getRequestExtensionLength().getValue());
         assertArrayEquals(certificateStatusRequestExtensionRequestExtension, msg.getRequestExtension().getValue());
     }
 }

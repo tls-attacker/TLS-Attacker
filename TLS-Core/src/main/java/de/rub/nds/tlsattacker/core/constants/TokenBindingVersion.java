@@ -28,7 +28,10 @@ public enum TokenBindingVersion {
     DRAFT_12(new byte[] { (byte) 0, (byte) 0xC }),
     DRAFT_13(new byte[] { (byte) 0, (byte) 0xD }),
     DRAFT_14(new byte[] { (byte) 0, (byte) 0xE }),
-    DRAFT_15(new byte[] { (byte) 0, (byte) 0xF });
+    DRAFT_15(new byte[] { (byte) 0, (byte) 0xF }),
+    DRAFT_16(new byte[] { (byte) 0, (byte) 0x10 }),
+    DRAFT_17(new byte[] { (byte) 0, (byte) 0x11 }),
+    DRAFT_18(new byte[] { (byte) 0, (byte) 0x12 });
 
     private final byte[] tokenBindingVersion;
     public static final int LENGTH = 2;

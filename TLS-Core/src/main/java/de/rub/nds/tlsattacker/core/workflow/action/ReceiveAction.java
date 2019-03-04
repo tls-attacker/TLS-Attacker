@@ -21,8 +21,12 @@ import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReceiveAction extends MessageAction implements ReceivingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -36,14 +40,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
             @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -54,6 +57,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),

@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import java.util.List;
-
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -30,6 +28,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
@@ -37,8 +38,15 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
-    public TLSPoodleAttacker(TLSPoodleCommandConfig config) {
-        super(config);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /**
+     *
+     * @param config
+     * @param baseConfig
+     */
+    public TLSPoodleAttacker(TLSPoodleCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -46,9 +54,13 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 

@@ -21,6 +21,12 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class AlpnExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] { { ExtensionType.ALPN,
+                ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0, 12,
+                ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
+    }
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -41,13 +47,6 @@ public class AlpnExtensionParserTest {
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.ALPN,
-                ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0, 12,
-                ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
-    }
-
     @Before
     public void setUp() {
         parser = new AlpnExtensionParser(startParsing, expectedBytes);
@@ -57,9 +56,9 @@ public class AlpnExtensionParserTest {
     public void testParseExtensionMessageContent() {
         message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
-        assertEquals(alpnExtensionLength, (int) message.getAlpnExtensionLength().getValue());
+        assertEquals(alpnExtensionLength, (long) message.getAlpnExtensionLength().getValue());
         assertArrayEquals(alpnAnnouncedProtocols, message.getAlpnAnnouncedProtocols().getValue());
     }
 

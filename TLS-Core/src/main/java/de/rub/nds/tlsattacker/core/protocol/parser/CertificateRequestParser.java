@@ -14,8 +14,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestParser extends HandshakeMessageParser<CertificateRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class
@@ -38,8 +42,10 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         LOGGER.debug("Parsing CertificateRequestMessage");
         parseClientCertificateTypesCount(msg);
         parseClientCertificateTypes(msg);
-        parseSignatureHashAlgorithmsLength(msg);
-        parseSignatureHashAlgorithms(msg);
+        if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12) {
+            parseSignatureHashAlgorithmsLength(msg);
+            parseSignatureHashAlgorithms(msg);
+        }
         parseDistinguishedNamesLength(msg);
         if (hasDistinguishedNamesLength(msg)) {
             parseDistinguishedNames(msg);

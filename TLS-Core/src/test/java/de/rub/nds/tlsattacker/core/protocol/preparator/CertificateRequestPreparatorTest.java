@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -45,8 +43,8 @@ public class CertificateRequestPreparatorTest {
         list.add(ClientCertificateType.RSA_EPHEMERAL_DH_RESERVED);
         context.getConfig().setClientCertificateTypes(list);
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
-        algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
+        algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
+        algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
         context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 0, 1, 2 }, message.getDistinguishedNames().getValue());

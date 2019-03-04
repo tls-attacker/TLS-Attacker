@@ -25,6 +25,8 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Message>
@@ -32,6 +34,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -51,9 +55,9 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug("Calculate SSL MasterSecret with Client and Server Nonces, which are: "
-                    + ArrayConverter.bytesToHexString(message.getComputations().getClientRandom().getValue()));
+                    + ArrayConverter.bytesToHexString(message.getComputations().getClientServerRandom().getValue()));
             return SSLUtils.calculateMasterSecretSSL3(chooser.getPreMasterSecret(), message.getComputations()
-                    .getClientRandom().getValue());
+                    .getClientServerRandom().getValue());
         } else {
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite());
@@ -71,7 +75,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
             } else {
                 LOGGER.debug("Calculating MasterSecret");
                 byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
-                        PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientRandom()
+                        PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientServerRandom()
                                 .getValue(), HandshakeByteLength.MASTER_SECRET);
                 return masterSecret;
             }

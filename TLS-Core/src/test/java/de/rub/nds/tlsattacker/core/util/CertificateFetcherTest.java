@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -19,11 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -39,13 +40,13 @@ import org.junit.experimental.categories.Category;
  */
 public class CertificateFetcherTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcherTest.class);
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final int SERVER_PORT = 4999;
 
     private static BasicTlsServer tlsServer;
     private static PublicKey expectedPublicKey;
     private static Certificate expectedCertificate;
-    private Config config;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -72,12 +73,12 @@ public class CertificateFetcherTest {
         LOGGER.info("Done.");
     }
 
+    private Config config;
+
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         config = Config.createConfig();
-        GeneralDelegate generalDelegate = new GeneralDelegate();
-        // Setup security provider
-        generalDelegate.applyDelegate(config);
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);

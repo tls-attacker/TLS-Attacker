@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -29,11 +28,16 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.util.ConsoleLogger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
+    private final Logger LOGGER = LogManager.getLogger();
+
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config) {
-        super(config);
+        super(config, Config.createConfig());
     }
 
     @Override
@@ -82,14 +86,13 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowExecutor.executeWorkflow();
 
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (definitely), Alert message found");
+            ConsoleLogger.CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (definitely), Finished message found");
+            ConsoleLogger.CONSOLE.error("Vulnerable (definitely), Finished message found");
             return true;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Not vulnerable (probably), No Finished message found, yet also no alert");
+            ConsoleLogger.CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
             return false;
         }
     }

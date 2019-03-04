@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,20 +40,18 @@ public class SignatureAndHashAlgorithmDelegateTest {
     public void testGetSignatureAndHashAlgorithms() {
         args = new String[2];
         args[0] = "-signature_hash_algo";
-        args[1] = "RSA-SHA512,DSA-SHA512";
+        args[1] = "RSA_SHA512,DSA_SHA512";
         delegate.setSignatureAndHashAlgorithms(null);
         jcommander.parse(args);
-        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(
-                new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512)));
-        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(
-                new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA512)));
+        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test(expected = ParameterException.class)
     public void testGetInvalidSignatureHashAlgorithms() {
         args = new String[2];
         args[0] = "-signature_hash_algo";
-        args[1] = "RSA-STSDHA512,DsdfsdSA-SHA512";
+        args[1] = "RSA_STSDHA512,DsdfsdSA_SHA512";
         jcommander.parse(args);
     }
 
@@ -66,10 +62,9 @@ public class SignatureAndHashAlgorithmDelegateTest {
     @Test
     public void testSetSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> signatureAndHashAlgoList = new LinkedList<>();
-        signatureAndHashAlgoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
+        signatureAndHashAlgoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
         delegate.setSignatureAndHashAlgorithms(signatureAndHashAlgoList);
-        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(
-                new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1)));
+        assertTrue(delegate.getSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.ANONYMOUS_SHA1));
     }
 
     /**
@@ -80,17 +75,15 @@ public class SignatureAndHashAlgorithmDelegateTest {
         Config config = Config.createConfig();
         args = new String[2];
         args[0] = "-signature_hash_algo";
-        args[1] = "RSA-SHA512,DSA-SHA512";
+        args[1] = "RSA_SHA512,DSA_SHA512";
         delegate.setSignatureAndHashAlgorithms(null);
         jcommander.parse(args);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
         assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
         delegate.applyDelegate(config);
         assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(
-                new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512)));
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(
-                new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA512)));
+        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test

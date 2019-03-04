@@ -12,15 +12,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
-public abstract class AliasedConnection extends Connection implements Aliasable, Serializable {
+@XmlType(propOrder = { "alias", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
+        "proxyControlHostname", "timeout", "transportHandlerType" })
+public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
@@ -75,6 +75,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
         }
     }
 
+    public abstract String toCompactString();
+
     @Override
     public String aliasesToString() {
         return alias;
@@ -112,6 +114,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
         return DEFAULT_CONNECTION_ALIAS;
     }
 
+    @Override
     public abstract ConnectionEndType getLocalConnectionEndType();
 
     @Override
@@ -127,10 +130,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
             return false;
         }
         final AliasedConnection other = (AliasedConnection) obj;
-        if (!Objects.equals(this.alias, other.alias)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.alias, other.alias);
     }
 
     public void normalize(AliasedConnection defaultCon) {

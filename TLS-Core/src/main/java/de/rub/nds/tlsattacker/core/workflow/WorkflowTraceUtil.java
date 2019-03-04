@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceUtil {
 
-    protected static final Logger LOGGER = LogManager.getLogger(WorkflowTraceUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ProtocolMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
@@ -272,6 +272,9 @@ public class WorkflowTraceUtil {
     public static SendingAction getLastSendingAction(WorkflowTrace trace) {
         List<SendingAction> sendingActions = trace.getSendingActions();
         return sendingActions.get(sendingActions.size() - 1);
+    }
+
+    private WorkflowTraceUtil() {
     }
 
 }

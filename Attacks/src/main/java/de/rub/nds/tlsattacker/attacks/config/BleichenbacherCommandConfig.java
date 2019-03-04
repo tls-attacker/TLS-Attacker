@@ -24,8 +24,14 @@ import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ *
+ */
 public class BleichenbacherCommandConfig extends AttackConfig {
 
+    /**
+     *
+     */
     public static final String ATTACK_COMMAND = "bleichenbacher";
 
     @ParametersDelegate
@@ -51,6 +57,10 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
+    /**
+     *
+     * @param delegate
+     */
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -67,14 +77,26 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         addDelegate(starttlsDelegate);
     }
 
+    /**
+     *
+     * @return
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(Type type) {
         this.type = type;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
@@ -82,7 +104,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             for (CipherSuite suite : CipherSuite.getImplemented()) {
                 if (AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA
-                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA_PSK) {
+                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.PSK_RSA) {
                     cipherSuites.add(suite);
                 }
             }
@@ -90,29 +112,55 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);
+        config.setWorkflowExecutorShouldClose(false);
+
         return config;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEncryptedPremasterSecret() {
         return encryptedPremasterSecret;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMsgPkcsConform() {
         return msgPkcsConform;
     }
 
+    /**
+     *
+     */
     public enum Type {
 
+        /**
+         *
+         */
         FULL,
+
+        /**
+         *
+         */
         FAST
     }
 

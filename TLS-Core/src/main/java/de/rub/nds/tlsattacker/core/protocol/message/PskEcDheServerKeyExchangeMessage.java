@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.bouncycastle.crypto.tls.NamedCurve;
 
 @XmlRootElement
 public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {

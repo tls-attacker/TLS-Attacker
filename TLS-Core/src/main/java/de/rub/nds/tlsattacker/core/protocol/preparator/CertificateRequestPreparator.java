@@ -17,8 +17,12 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestPreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] certTypes;
     private byte[] sigHashAlgos;

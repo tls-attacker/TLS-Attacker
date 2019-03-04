@@ -9,15 +9,18 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SrpServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

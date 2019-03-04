@@ -14,11 +14,23 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ *
+ *
+ */
 public class TestECOracle extends ECOracle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ECComputer computer;
 
+    /**
+     *
+     * @param namedCurve
+     */
     public TestECOracle(String namedCurve) {
         curve = CurveFactory.getNamedCurve(namedCurve);
         BigInteger privateKey = new BigInteger(curve.getKeyBits(), new Random());
@@ -45,6 +57,10 @@ public class TestECOracle extends ECOracle {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ECComputer getComputer() {
         return computer;
     }

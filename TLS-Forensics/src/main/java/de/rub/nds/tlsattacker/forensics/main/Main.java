@@ -6,21 +6,16 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsattacker.forensics.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.forensics.analyzer.ForensicAnalyzer;
 import de.rub.nds.tlsattacker.forensics.config.TlsForensicsConfig;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,11 +23,10 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -41,7 +35,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class Main {
 
-    protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Main.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         TlsForensicsConfig config = new TlsForensicsConfig();
@@ -50,7 +44,7 @@ public class Main {
         try {
             commander.parse(args);
             if (config.isDebug()) {
-                Configurator.setRootLevel(org.apache.logging.log4j.Level.ALL);
+                Configurator.setRootLevel(org.apache.logging.log4j.Level.DEBUG);
             }
             // Cmd was parsable
             try {
@@ -78,12 +72,11 @@ public class Main {
                                 rsaPrivateKey = ((RSAPrivateKey) privateKey).getPrivateExponent();
                                 LOGGER.info("RSA privateKey:" + rsaPrivateKey.toString());
                             } else {
-                                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                                        "PrivateKey file does not look like an RSA private key!");
+                                CONSOLE.info("PrivateKey file does not look like an RSA private key!");
                             }
                         } catch (Exception E) {
-                            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not read private key");
-                            E.printStackTrace();
+                            CONSOLE.info("Could not read private key");
+                            LOGGER.warn(E);
                             return;
                         } finally {
                             if (parser != null) {
@@ -93,7 +86,7 @@ public class Main {
                             reader.close();
                         }
                     } else {
-                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PrivateKey file does not exist!");
+                        CONSOLE.info("PrivateKey file does not exist!");
                         return;
                     }
                 }
@@ -104,13 +97,14 @@ public class Main {
                 LOGGER.info(realWorkflowTrace.toString());
             } catch (ConfigurationException E) {
                 LOGGER.info("Encountered an Exception. Aborting.");
-                LOGGER.debug(E);
+                LOGGER.warn(E);
             } catch (JAXBException | XMLStreamException | IOException ex1) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex1);
+                LOGGER.warn(ex1);
             }
         } catch (ParameterException E) {
             LOGGER.info("Could not parse provided parameters");
             LOGGER.debug(E);
+            LOGGER.warn(E);
             commander.usage();
             ex = E;
         }
