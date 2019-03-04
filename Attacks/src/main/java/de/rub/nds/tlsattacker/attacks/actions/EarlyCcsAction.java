@@ -20,8 +20,11 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange
@@ -30,7 +33,11 @@ import java.util.List;
  */
 public class EarlyCcsAction extends TlsAction {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final Boolean targetOpenssl1_0_0;
+
+    private boolean executedAsPlanned = false;
 
     /**
      * Constructor for the Action. If the target is Openssl 1.0.0 the boolean
@@ -76,8 +83,15 @@ public class EarlyCcsAction extends TlsAction {
         recordList.add(new Record());
         byte[] prepareRecords = state.getTlsContext().getRecordLayer()
                 .prepareRecords(protocolMessageBytes, ProtocolMessageType.HANDSHAKE, recordList);
-        state.getTlsContext().getTransportHandler().sendData(prepareRecords);
+        try {
+            state.getTlsContext().getTransportHandler().sendData(prepareRecords);
+            executedAsPlanned = true;
+        } catch (SocketException E) {
+            LOGGER.debug("Could not write Data to stream", E);
+            executedAsPlanned = false;
+        }
         setExecuted(true);
+
     }
 
     /**
@@ -86,11 +100,12 @@ public class EarlyCcsAction extends TlsAction {
     @Override
     public void reset() {
         setExecuted(false);
+        executedAsPlanned = false;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return executedAsPlanned;
     }
 
 }
