@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTranspor
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpNoDelayTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingServerTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
@@ -58,6 +59,13 @@ public class TransportHandlerFactory {
                     return new TimingClientUdpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
                     return new TimingServerUdpTransportHandler(timeout, con.getPort());
+                }
+            case TCP_PROXY_TIMING:
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new TimingProxyClientTcpTransportHandler(timeout, con.getHostname(), con.getPort());
+                } else {
+                    throw new UnsupportedOperationException(
+                            "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {

@@ -80,6 +80,39 @@ public enum KeyExchangeAlgorithm {
         }
     }
 
+    public boolean isKeyExchangeRsa() {
+        return this.equals(this.RSA);
+    }
+
+    public boolean isKeyExchangeDh() {
+        switch (this) {
+            case DHE_DSS:
+            case DHE_PSK:
+            case DHE_RSA:
+            case DH_ANON:
+            case DH_DSS:
+            case DH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isKeyExchangeEcdh() {
+        switch (this) {
+            case ECDHE_ECDSA:
+            case ECDHE_PSK:
+            case ECDHE_RSA:
+            case ECDH_ANON:
+            case ECDH_ECDSA:
+            case ECDH_ECNRA:
+            case ECDH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isEC() {
         return this.name().contains("EC");
     }

@@ -25,6 +25,11 @@ public enum ClientCertificateType {
     FORTEZZA_DMS_RESERVED((byte) 20),
     GOSTR34101994((byte) 21),
     GOSTR34102001((byte) 22),
+    ECDSA_SIGN((byte) 64), // TODO Implement these
+    RSA_FIXED_ECDH((byte) 65),
+    ECDSA_FIXED_ECDH((byte) 66),
+    GOST_SIGN256((byte) 66),
+    GOST_SIGN512((byte) 67),
     GOSTR34102012_256((byte) 238),
     GOSTR34102012_512((byte) 239);
 

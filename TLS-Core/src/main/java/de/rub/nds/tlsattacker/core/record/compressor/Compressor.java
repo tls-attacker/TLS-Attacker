@@ -8,11 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.record.compressor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @param <T>
  *            The Object that should be compressed
  */
 public abstract class Compressor<T> {
 
+    protected static final Logger LOGGER = LogManager.getLogger(Compressor.class.getName());
+
     public abstract void compress(T object);
+
 }

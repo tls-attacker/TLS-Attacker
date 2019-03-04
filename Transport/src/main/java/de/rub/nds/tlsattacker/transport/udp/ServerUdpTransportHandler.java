@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
 public class ServerUdpTransportHandler extends TransportHandler {
@@ -37,7 +38,7 @@ public class ServerUdpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         socket = new DatagramSocket();
         socket.setSoTimeout((int) getTimeout());
-        setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
+        setStreams(new PushbackInputStream(new UdpInputStream(socket)), new UdpOutputStream(socket));
     }
 
     @Override

@@ -17,6 +17,7 @@ public enum TransportHandlerType {
     STREAM,
     TCP_TIMING,
     UDP_TIMING,
+    TCP_PROXY_TIMING,
     TCP_NO_DELAY,
 
 }

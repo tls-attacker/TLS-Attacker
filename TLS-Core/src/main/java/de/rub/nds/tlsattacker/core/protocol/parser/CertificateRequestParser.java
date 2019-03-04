@@ -42,8 +42,10 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         LOGGER.debug("Parsing CertificateRequestMessage");
         parseClientCertificateTypesCount(msg);
         parseClientCertificateTypes(msg);
-        parseSignatureHashAlgorithmsLength(msg);
-        parseSignatureHashAlgorithms(msg);
+        if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12) {
+            parseSignatureHashAlgorithmsLength(msg);
+            parseSignatureHashAlgorithms(msg);
+        }
         parseDistinguishedNamesLength(msg);
         if (hasDistinguishedNamesLength(msg)) {
             parseDistinguishedNames(msg);

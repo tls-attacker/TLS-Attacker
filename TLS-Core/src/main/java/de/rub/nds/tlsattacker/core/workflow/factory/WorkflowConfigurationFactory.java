@@ -54,6 +54,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -747,10 +748,44 @@ public class WorkflowConfigurationFactory {
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not creating ClientKeyExchange Message");
-
             }
         } else {
             LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ClientKeyExchange Message");
+        }
+        return null;
+    }
+
+    public ServerKeyExchangeMessage createServerKeyExchangeMessage(KeyExchangeAlgorithm algorithm) {
+        if (algorithm != null) {
+            switch (algorithm) {
+                case RSA:
+                case DH_DSS:
+                case DH_RSA:
+                    return null;
+                case ECDHE_ECDSA:
+                case ECDHE_RSA:
+                case ECDH_ANON:
+                    return new ECDHEServerKeyExchangeMessage(config);
+                case DHE_DSS:
+                case DHE_RSA:
+                case DH_ANON:
+                    return new DHEServerKeyExchangeMessage(config);
+                case PSK:
+                    return new PskServerKeyExchangeMessage(config);
+                case DHE_PSK:
+                    return new PskDheServerKeyExchangeMessage(config);
+                case ECDHE_PSK:
+                    return new PskEcDheServerKeyExchangeMessage(config);
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    return new SrpServerKeyExchangeMessage(config);
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
+                            + ", not creating ServerKeyExchange Message");
+            }
+        } else {
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ServerKeyExchange Message");
         }
         return null;
     }
@@ -763,40 +798,9 @@ public class WorkflowConfigurationFactory {
 
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        if (cs.isEphemeral()) {
-            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-                case ECDHE_ECDSA:
-                case ECDHE_RSA:
-                case ECDH_ANON:
-                    messages.add(new ECDHEServerKeyExchangeMessage(config));
-                    break;
-                case DHE_DSS:
-                case DHE_RSA:
-                case DH_ANON:
-                    messages.add(new DHEServerKeyExchangeMessage(config));
-                    break;
-                case PSK:
-                    messages.add(new PskServerKeyExchangeMessage(config));
-                    break;
-                case DHE_PSK:
-                    messages.add(new PskDheServerKeyExchangeMessage(config));
-                    break;
-                case ECDHE_PSK:
-                    messages.add(new PskEcDheServerKeyExchangeMessage(config));
-                    break;
-                case SRP_SHA_DSS:
-                case SRP_SHA_RSA:
-                case SRP_SHA:
-                    messages.add(new SrpServerKeyExchangeMessage(config));
-                    break;
-                default:
-                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                            + ", not adding ServerKeyExchange Message");
-                    break;
-            }
-        }
-        if (cs.isSrp()) {
-            messages.add(new SrpServerKeyExchangeMessage(config));
+        ServerKeyExchangeMessage message = createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        if (message != null) {
+            messages.add(message);
         }
     }
 

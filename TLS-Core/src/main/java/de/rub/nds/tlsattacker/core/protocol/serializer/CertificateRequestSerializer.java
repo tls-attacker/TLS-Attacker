@@ -39,8 +39,10 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
         LOGGER.debug("Serializing CertificateRequestMessage");
         writeClientCertificateTypesCount(msg);
         writeClientCertificateTypes(msg);
-        writeSignatureHandshakeAlgorithmsLength(msg);
-        writeSignatureHandshakeAlgorithms(msg);
+        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
+            writeSignatureHandshakeAlgorithmsLength(msg);
+            writeSignatureHandshakeAlgorithms(msg);
+        }
         writeDistinguishedNamesLength(msg);
         if (hasDistinguishedNames(msg)) {
             writeDistinguishedNames(msg);

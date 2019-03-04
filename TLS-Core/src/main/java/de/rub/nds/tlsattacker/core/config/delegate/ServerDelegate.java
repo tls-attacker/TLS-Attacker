@@ -45,7 +45,7 @@ public class ServerDelegate extends Delegate {
         }
     }
 
-    private int parsePort(Integer portStr) {
+    private int parsePort(Integer port) {
         if (port == null) {
             throw new ParameterException("Port must be set, but was not specified");
         }
