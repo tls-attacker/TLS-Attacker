@@ -37,11 +37,14 @@ public class EarlyCcsAction extends TlsAction {
 
     private final Boolean targetOpenssl1_0_0;
 
+    private boolean executedAsPlanned = false;
+
     /**
      * Constructor for the Action. If the target is Openssl 1.0.0 the boolean
      * value should be set to true
      *
-     * @param targetsOpenssl1_0_0 If the target is an openssl 1.0.0 server
+     * @param targetsOpenssl1_0_0
+     *            If the target is an openssl 1.0.0 server
      */
     public EarlyCcsAction(Boolean targetsOpenssl1_0_0) {
         this.targetOpenssl1_0_0 = targetsOpenssl1_0_0;
@@ -52,9 +55,11 @@ public class EarlyCcsAction extends TlsAction {
      * ciphersuite. Depening on the target version cryptographic material is
      * adjusted.
      *
-     * @param state the State in which the action should be executed in
-     * @throws IOException If something goes wrong during the transmission of
-     * the ClientKeyExchange message
+     * @param state
+     *            the State in which the action should be executed in
+     * @throws IOException
+     *             If something goes wrong during the transmission of the
+     *             ClientKeyExchange message
      */
     @Override
     public void execute(State state) throws IOException {
@@ -80,11 +85,12 @@ public class EarlyCcsAction extends TlsAction {
                 .prepareRecords(protocolMessageBytes, ProtocolMessageType.HANDSHAKE, recordList);
         try {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
-            setExecuted(true);
+            executedAsPlanned = true;
         } catch (SocketException E) {
             LOGGER.debug("Could not write Data to stream", E);
-            setExecuted(false);
+            executedAsPlanned = false;
         }
+        setExecuted(true);
 
     }
 
@@ -94,11 +100,12 @@ public class EarlyCcsAction extends TlsAction {
     @Override
     public void reset() {
         setExecuted(false);
+        executedAsPlanned = false;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return executedAsPlanned;
     }
 
 }
