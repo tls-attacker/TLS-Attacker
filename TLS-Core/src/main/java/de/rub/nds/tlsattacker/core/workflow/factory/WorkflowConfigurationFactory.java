@@ -143,7 +143,7 @@ public class WorkflowConfigurationFactory {
                 return createFalseStartWorkflow();
             case RSA_SYNC_PROXY:
                 return createSyncProxyWorkflow();
-            case DYNAMIC_HS:
+            case DYNAMIC_HANDSHAKE:
                 return createDynamicHandshakeWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());

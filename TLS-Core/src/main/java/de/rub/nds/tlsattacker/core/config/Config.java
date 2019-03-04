@@ -1080,7 +1080,7 @@ public class Config implements Serializable {
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443);
-        workflowTraceType = WorkflowTraceType.DYNAMIC_HS;
+        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
