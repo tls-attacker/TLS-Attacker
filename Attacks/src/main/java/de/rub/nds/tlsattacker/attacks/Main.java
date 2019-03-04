@@ -59,6 +59,9 @@ public class Main {
         jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
         EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig(generalDelegate);
         jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+        EarlyFinishedCommandConfig earlyFin = new EarlyFinishedCommandConfig(generalDelegate);
+        jc.addCommand(EarlyFinishedCommandConfig.ATTACK_COMMAND, earlyFin);
+
         PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
@@ -98,7 +101,10 @@ public class Main {
                 attacker = new Cve20162107Attacker(cve20162107, cve20162107.createConfig());
                 break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
-                attacker = new EarlyCCSAttacker(earlyCCS, earlyCCS.createConfig());
+                attacker = new EarlyCCSAttacker(earlyCCS, earlyFin.createConfig());
+                break;
+            case EarlyFinishedCommandConfig.ATTACK_COMMAND:
+                attacker = new EarlyFinishedAttacker(earlyFin, earlyFin.createConfig());
                 break;
             case PoodleCommandConfig.ATTACK_COMMAND:
                 attacker = new PoodleAttacker(poodle, poodle.createConfig());

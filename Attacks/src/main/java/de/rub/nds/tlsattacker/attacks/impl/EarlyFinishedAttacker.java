@@ -48,10 +48,11 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
-        EarlyFinishedVulnerabilityType earlyFinVulnerabilityType = getEarlyFinishedVulnerabilityType();
+        EarlyFinishedVulnerabilityType earlyFinVulnerabilityType = performCheck();
         switch (earlyFinVulnerabilityType) {
             case VULNERABLE:
                 return true;
+            case NOT_VULNERABLE_PROBABBlY:
             case NOT_VULNERABLE:
                 return false;
             case UNKNOWN:
@@ -60,7 +61,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         return null;
     }
 
-    public boolean checkTargetVersion() {
+    public EarlyFinishedVulnerabilityType performCheck() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
 
@@ -81,23 +82,19 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
 
+        if (!workflowTrace.allActionsExecuted()) {
+            ConsoleLogger.CONSOLE.warn("Could not complete Workflow - Vulnerability unknown");
+            return EarlyFinishedVulnerabilityType.UNKNOWN;
+        }
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
             ConsoleLogger.CONSOLE.info("Not vulnerable (definitely), Alert message found");
-            return false;
+            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
             ConsoleLogger.CONSOLE.error("Vulnerable (definitely), Finished message found");
-            return true;
+            return EarlyFinishedVulnerabilityType.VULNERABLE;
         } else {
             ConsoleLogger.CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
-            return false;
+            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE_PROBABBlY;
         }
     }
-
-    public EarlyFinishedVulnerabilityType getEarlyFinishedVulnerabilityType() {
-        if (checkTargetVersion()) {
-            return EarlyFinishedVulnerabilityType.VULNERABLE;
-        }
-        return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
-    }
-
 }

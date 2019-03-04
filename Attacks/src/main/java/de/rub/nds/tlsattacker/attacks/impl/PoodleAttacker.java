@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  */
-public class PoodleAttacker extends Attacker {
+public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
 
     /**
      *
