@@ -68,7 +68,6 @@ public class PaddingOracleCommandConfig extends AttackConfig {
      */
     private boolean abortRescansOnFailure = true;
 
-    
     /**
      *
      * @param delegate
@@ -199,6 +198,5 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     public void setRescanNotVulnerable(boolean rescanNotVulnerable) {
         this.rescanNotVulnerable = rescanNotVulnerable;
     }
-    
-    
+
 }

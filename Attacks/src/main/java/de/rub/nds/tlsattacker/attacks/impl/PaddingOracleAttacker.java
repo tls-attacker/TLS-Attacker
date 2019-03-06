@@ -54,6 +54,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private List<List<VectorResponse>> responseMapList;
 
+    private EqualityError resultError;
+
     private CipherSuite testedSuite;
 
     private ProtocolVersion testedVersion;
@@ -103,7 +105,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError referenceError = null;
         List<VectorResponse> referenceResponseMap = null;
-        List<List<VectorResponse>> responseMapList = new LinkedList<>();
+        responseMapList = new LinkedList<>();
         try {
             for (int i = 0; i < config.getMapListDepth(); i++) {
 
@@ -126,6 +128,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                         CONSOLE.info("Rescan[" + i + "] shows different results");
                         if (config.isAbortRescansOnFailure()) {
                             CONSOLE.info("Abort Rescans on failure is active. Stopping.");
+                            resultError = referenceError;
                             return false;
                         }
 
@@ -138,9 +141,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
 
         CONSOLE.info(EqualityErrorTranslator.translation(referenceError, null, null));
-        if (referenceError != EqualityError.NONE
-                || LOGGER.getLevel()
-                        .isMoreSpecificThan(Level.INFO)) {
+        if (referenceError != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             LOGGER.debug("-------------(Not Grouped)-----------------");
             for (VectorResponse vectorResponse : referenceResponseMap) {
                 LOGGER.debug(vectorResponse.toString());
@@ -150,6 +151,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         if (shakyScans) {
             return null;
         }
+        resultError = referenceError;
         return referenceError != EqualityError.NONE;
     }
 
@@ -288,6 +290,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             }
         }
         return EqualityError.NONE;
+    }
+
+    public EqualityError getResultError() {
+        return resultError;
     }
 
     public List<List<VectorResponse>> getResponseMapList() {
