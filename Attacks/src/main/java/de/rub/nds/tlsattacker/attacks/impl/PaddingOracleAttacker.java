@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
@@ -128,7 +127,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                         CONSOLE.info("Rescan[" + i + "] shows different results");
                         if (config.isAbortRescansOnFailure()) {
                             CONSOLE.info("Abort Rescans on failure is active. Stopping.");
-                            resultError = referenceError;
+                            resultError = EqualityError.NONE;
                             return false;
                         }
 
