@@ -131,7 +131,6 @@ public class SendMessageHelper {
         }
 
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        sendData(messageBytesCollector, context);
 
         for (AbstractRecord record : records) {
             messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());

@@ -468,9 +468,10 @@ public class TlsContext {
      * sequence number used in DTLS for handshake messages
      */
     private long messageSequenceNumber = 0;
-    
+
     /**
-     * sequence number used in DTLS for keeping track of received handshake messages
+     * sequence number used in DTLS for keeping track of received handshake
+     * messages
      */
     private int nextReceiveSequenceNumber = 0;
 
@@ -595,13 +596,13 @@ public class TlsContext {
      * one, if its protocolmessage type is alert
      */
     private boolean tls13SoftDecryption = false;
-    
+
     /**
-     * In DTLS, don't receive/process retransmissions of handshake messages. A retransmission is 
-     * a message whose 
+     * In DTLS, don't receive/process retransmissions of handshake messages. A
+     * retransmission is a message whose
      */
     private boolean dropRetransmissions = false;
-    
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -657,15 +658,15 @@ public class TlsContext {
         }
         return chooser;
     }
-    
+
     public boolean isDropRetransmissions() {
-    	return dropRetransmissions;
+        return dropRetransmissions;
     }
-    
+
     public void setDropRetransmissions(boolean dropRetransmissions) {
-    	this.dropRetransmissions = dropRetransmissions;
+        this.dropRetransmissions = dropRetransmissions;
     }
-    
+
     public boolean isTls13SoftDecryption() {
         return tls13SoftDecryption;
     }
@@ -1289,7 +1290,7 @@ public class TlsContext {
     public void increaseMessageSequenceNumber() {
         this.messageSequenceNumber++;
     }
-    
+
     public int getNextReceiveSequenceNumber() {
         return nextReceiveSequenceNumber;
     }

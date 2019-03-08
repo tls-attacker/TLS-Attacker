@@ -199,10 +199,10 @@ public class ServerHelloMessage extends HelloMessage {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null) {
-        	sb.append( ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
         } else {
-        	sb.append("null");
-        } 
+            sb.append("null");
+        }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
                 && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Server Unix Time: ").append(

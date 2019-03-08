@@ -43,7 +43,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
     }
-    
+
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
     }

@@ -33,12 +33,12 @@ public class RecordAEADCipher extends RecordCipher {
      * sequence Number length in bytes
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
-    
+
     /**
      * iv length in bytes
      */
     public static final int GCM_IV_LENGTH = 12;
-    
+
     /**
      * authentication tag length in bytes
      */
@@ -50,9 +50,9 @@ public class RecordAEADCipher extends RecordCipher {
         encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
         if (cipherSuite.name().contains("CCM_8")) {
-        	gcmTagLength = 8;
+            gcmTagLength = 8;
         } else {
-        	gcmTagLength = 16;
+            gcmTagLength = 16;
         }
     }
 

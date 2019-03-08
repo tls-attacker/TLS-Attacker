@@ -89,7 +89,7 @@ public class MessageFragmentCollector {
 
     public DtlsHandshakeMessageFragment getCombinedFragment() {
         if (!isMessageComplete()) {
-            LOGGER.warn("Returning incompletly received message! Missing pieces are replaced by 0 in content.");
+            LOGGER.warn("Returning incompletely received message! Missing pieces are replaced by 0 in content.");
         }
         if (type == null) {
             throw new WorkflowExecutionException("DtlsFragmentedMessage does not have type!");

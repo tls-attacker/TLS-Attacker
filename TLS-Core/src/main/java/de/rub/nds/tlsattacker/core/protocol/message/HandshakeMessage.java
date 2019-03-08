@@ -124,9 +124,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
-            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"), 
-            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), 
-    })
+            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
+            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -261,7 +260,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         if (length != null && length.getValue() != null) {
             sb.append("\n  Length: ").append(length.getValue());
         } else {
-        	sb.append("null");
+            sb.append("null");
         }
         return sb.toString();
     }

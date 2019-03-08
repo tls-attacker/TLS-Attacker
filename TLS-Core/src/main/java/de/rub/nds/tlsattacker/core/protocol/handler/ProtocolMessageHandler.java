@@ -86,7 +86,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                         tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                     }
 
-                    // Increase message counter for outgoing handshake messages for
+                    // Increase message counter for outgoing handshake messages
+                    // for
                     // DTLS
                     tlsContext.increaseMessageSequenceNumber();
                 }
@@ -128,7 +129,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                         // should not be included in the digest in DTLS
                         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
                             // TODO updating the digest should be done elsewhere
-                            // (maybe in adjustTlsContext of HandshakeMessage instead of here)
+                            // (maybe in adjustTlsContext of HandshakeMessage
+                            // instead of here)
                             if ((parsedMessage instanceof DtlsHandshakeMessageFragment)
                                     && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
                                             .getValue())) {
@@ -138,7 +140,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                                 if (fragmentManager.isFragmentedMessageComplete(dtlsFragment)) {
                                     tlsContext.getDigest().append(
                                             fragmentManager.getFragmentedMessageAsByteArray(dtlsFragment));
-                                    LOGGER.debug("Digested " + dtlsFragment.toCompactString());
                                     fragmentManager.clearFragmentedMessage(dtlsFragment);
                                 }
 

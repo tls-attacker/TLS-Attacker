@@ -36,8 +36,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
-        // TODO note that for DTLS, the random value of a second ClientHello message should be
-        // the same as that of the first (at least in case the first prompted HelloVerifyResponse from server)
         prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
@@ -58,6 +56,17 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         prepareExtensions();
         prepareExtensionLength();
+    }
+
+    // for DTLS, the random value of a second ClientHello message should be
+    // the same as that of the first (at least in case the first prompted
+    // HelloVerifyResponse from server)
+    protected void prepareRandom() {
+        if (isDTLS() && hasClientRandom()) {
+            msg.setRandom(chooser.getClientRandom());
+        } else {
+            super.prepareRandom();
+        }
     }
 
     private void prepareSessionID() {
@@ -134,6 +143,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     private void prepareCipherSuitesLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
         LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+    }
+
+    private boolean hasClientRandom() {
+        return chooser.getContext().getClientRandom() != null;
     }
 
     private boolean hasHandshakeCookie() {

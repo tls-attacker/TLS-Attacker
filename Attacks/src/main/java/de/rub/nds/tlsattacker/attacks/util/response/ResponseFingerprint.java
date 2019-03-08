@@ -136,24 +136,23 @@ public class ResponseFingerprint {
     public List<ProtocolMessage> getMessageList() {
         return messageList;
     }
-    
+
     /**
-    *
-    * @return
-    */
+     *
+     * @return
+     */
     public String toCompactString() {
-	   StringBuilder messages = new StringBuilder();
-       for (ProtocolMessage someMessage : this.messageList) {
-           messages.append(someMessage.toCompactString()).append(",");
-       }
-       return "Response[" + messages.toString() + 
-    		   (this.socketState == null? "" : this.socketState.name()) + "]"; 
+        StringBuilder messages = new StringBuilder();
+        for (ProtocolMessage someMessage : this.messageList) {
+            messages.append(someMessage.toCompactString()).append(",");
+        }
+        return "Response[" + messages.toString() + (this.socketState == null ? "" : this.socketState.name()) + "]";
     }
 
-   /**
-   *
-   * @return
-   */
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         StringBuilder recordClasses = new StringBuilder();
@@ -179,7 +178,7 @@ public class ResponseFingerprint {
                 + "], Messages=[" + messages.toString() + "], Reccords=[" + records.toString() + "], NetworkState="
                 + socketState + ']';
     }
-    
+
     /**
      *
      * @return
@@ -194,7 +193,7 @@ public class ResponseFingerprint {
         hash = 53 * hash + Objects.hashCode(this.socketState);
         return hash;
     }
-    
+
     /**
      *
      * @param obj

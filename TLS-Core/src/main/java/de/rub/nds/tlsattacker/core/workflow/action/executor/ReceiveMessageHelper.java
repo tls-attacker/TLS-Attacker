@@ -125,38 +125,37 @@ public class ReceiveMessageHelper {
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messageFragments = new LinkedList<>();
         if (receivedBytes.length != 0) {
-        	handleReceivedBytes(receivedBytes, context, records, messages, messageFragments);
+            handleReceivedBytes(receivedBytes, context, records, messages, messageFragments);
         }
         if (messageFragments.isEmpty()) {
             messageFragments = null;
         }
         return new MessageActionResult(records, messages, messageFragments);
     }
-    
-    private void handleReceivedBytes(byte[] receivedBytes, TlsContext context, 
-    		/*OUT PARAMS*/ 
-    		List<AbstractRecord> records, List<ProtocolMessage> messages, List<ProtocolMessage> messageFragments)
-    {
-    	 if (receivedBytes.length != 0) {
-             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-             List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
-             for (List<AbstractRecord> recordGroup : recordGroups) {
-                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                     adjustContext(recordGroup, context);
-                     decryptRecords(recordGroup, context);
-                     List<ProtocolMessage> fragmentGroup = collectMessageFragments(recordGroup, recordGroup.get(0)
-                             .getContentMessageType(), context);
-                     List<ProtocolMessage> fullMessages = processFragmentGroup(fragmentGroup, context);
-                     messageFragments.addAll(fragmentGroup);
-                     messages.addAll(fullMessages);
-                 } else {
-                     messages.addAll(processRecordGroup(recordGroup, context));
-                 }
-             }
-             records.addAll(tempRecords);
-         }
+
+    private void handleReceivedBytes(byte[] receivedBytes, TlsContext context,
+    /* OUT PARAMS */
+    List<AbstractRecord> records, List<ProtocolMessage> messages, List<ProtocolMessage> messageFragments) {
+        if (receivedBytes.length != 0) {
+            List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+            List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+            for (List<AbstractRecord> recordGroup : recordGroups) {
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    adjustContext(recordGroup, context);
+                    decryptRecords(recordGroup, context);
+                    List<ProtocolMessage> fragmentGroup = collectMessageFragments(recordGroup, recordGroup.get(0)
+                            .getContentMessageType(), context);
+                    List<ProtocolMessage> fullMessages = processFragmentGroup(fragmentGroup, context);
+                    messageFragments.addAll(fragmentGroup);
+                    messages.addAll(fullMessages);
+                } else {
+                    messages.addAll(processRecordGroup(recordGroup, context));
+                }
+            }
+            records.addAll(tempRecords);
+        }
     }
-    
+
     public List<AbstractRecord> receiveRecords(TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
         List<AbstractRecord> realRecords = new LinkedList<>();
@@ -336,8 +335,9 @@ public class ReceiveMessageHelper {
 
     private List<ProtocolMessage> handleFragments(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord,
             TlsContext context) {
-    	// TODO: Wouldn't it be better if we merged DTLS fragments here, rather than do it when in  
-    	// {@link ProtocolMessageHandler}?
+        // TODO: Wouldn't it be better if we merged DTLS fragments here, rather
+        // than do it when in
+        // {@link ProtocolMessageHandler}?
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
@@ -370,8 +370,8 @@ public class ReceiveMessageHelper {
                 dataPointer = result.getParserPosition();
                 // NOTE: not a retransmission
                 if (result.getMessage() != null) {
-	                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
-	                receivedFragmentMessages.add(result.getMessage());
+                    LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
+                    receivedFragmentMessages.add(result.getMessage());
                 }
             }
         }
@@ -410,21 +410,22 @@ public class ReceiveMessageHelper {
      */
     private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
-    	//TODO: this is an absolute hack, and it does not account for out of order fragments )
+        // TODO: this is an absolute hack, and it does not account for out of
+        // order fragments )
         DtlsHandshakeMessageFragmentHandler fragmentHandler = new DtlsHandshakeMessageFragmentHandler(context);
         if (context.isDropRetransmissions()) {
-        	 ParserResult parsedResult = fragmentHandler.parseMessage(protocolMessageBytes, pointer, true);
-             DtlsHandshakeMessageFragment dtlsMessage = ((DtlsHandshakeMessageFragment)parsedResult.getMessage());
-             if (dtlsMessage.getMessageSeq().getValue() == context.getNextReceiveSequenceNumber()) {
-            	 context.increaseNextReceiveSequenceNumber();
-            	 return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
-             } else {
-            	 LOGGER.debug("The following fragment was dropped: {}", dtlsMessage.toString());
-            	 parsedResult.setMessage(null);
-            	 return parsedResult;
-             }
+            ParserResult parsedResult = fragmentHandler.parseMessage(protocolMessageBytes, pointer, true);
+            DtlsHandshakeMessageFragment dtlsMessage = ((DtlsHandshakeMessageFragment) parsedResult.getMessage());
+            if (dtlsMessage.getMessageSeq().getValue() == context.getNextReceiveSequenceNumber()) {
+                context.increaseNextReceiveSequenceNumber();
+                return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
+            } else {
+                LOGGER.debug("The following fragment was dropped: {}", dtlsMessage.toString());
+                parsedResult.setMessage(null);
+                return parsedResult;
+            }
         } else {
-        	return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
+            return fragmentHandler.parseMessage(protocolMessageBytes, pointer, false);
         }
     }
 
