@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
  *         <fiteraup@yahoo.com>
  */
 public class FragmentManager {
-    private Map<Object, MessageFragmentCollector> fragments;
+    private Map<Object, FragmentCollector> fragments;
 
     private static final Logger LOGGER = LogManager.getLogger(FragmentManager.class);
 
@@ -34,9 +34,9 @@ public class FragmentManager {
     }
 
     public void addMessageFragment(DtlsHandshakeMessageFragment fragment) {
-        MessageFragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(key(fragment));
         if (collector == null) {
-            collector = new MessageFragmentCollector();
+            collector = new FragmentCollector();
             fragments.put(key(fragment), collector);
         }
         collector.insertFragment(fragment);
@@ -46,7 +46,12 @@ public class FragmentManager {
      * Returns true if the message corresponding to this fragment is complete
      */
     public boolean isFragmentedMessageComplete(DtlsHandshakeMessageFragment fragment) {
-        MessageFragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(key(fragment));
+        if (collector == null) {
+        	LOGGER.warn("Fragment belongs to foreign message, that is, "
+        			+ "message whose fragments haven't been added to the manager");
+        	return false;
+        }
         return collector.isMessageComplete();
     }
 
@@ -54,11 +59,11 @@ public class FragmentManager {
      * Returns the byte array of the message corresponding to this fragment
      */
     public byte[] getFragmentedMessageAsByteArray(DtlsHandshakeMessageFragment fragment) {
-        MessageFragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(key(fragment));
         if (!collector.isMessageComplete()) {
             LOGGER.warn("Message is incomplete");
         }
-        byte[] fragmentedMessageBytes = collector.getFragmentedMessageAsByteArray();
+        byte[] fragmentedMessageBytes = collector.getCombinedFragmentAsByteArray();
         return fragmentedMessageBytes;
     }
 
@@ -69,6 +74,10 @@ public class FragmentManager {
         fragments.put(key(fragment), null);
     }
 
+    /*
+     * The key of a fragment is the message sequence. The key is used to distinguish between
+     * fragments belonging to different messages.
+     */
     private Object key(DtlsHandshakeMessageFragment fragment) {
         return fragment.getMessageSeq().getValue();
     }
