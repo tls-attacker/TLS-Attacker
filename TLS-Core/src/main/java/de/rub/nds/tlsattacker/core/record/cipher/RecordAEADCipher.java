@@ -38,17 +38,17 @@ public class RecordAEADCipher extends RecordCipher {
      * AEAD tag length in bytes for regular ciphers
      */
     public static final int AEAD_TAG_LENGTH = 16;
-    
+
     /**
      * AEAD tag length in bytes for CCM_8 ciphers
      */
     public static final int AEAD_CCM_8_TAG_LENGTH = 16;
-    
+
     /**
      * AEAD iv length in bytes
      */
     public static final int AEAD_IV_LENGTH = 12;
-    
+
     /**
      * Stores the computed tag length
      */
@@ -59,11 +59,11 @@ public class RecordAEADCipher extends RecordCipher {
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
-        
+
         if (cipherSuite.isCCM_8()) {
             aeadTagLength = AEAD_CCM_8_TAG_LENGTH;
         } else {
-        	aeadTagLength = AEAD_TAG_LENGTH;
+            aeadTagLength = AEAD_TAG_LENGTH;
         }
     }
 
@@ -114,8 +114,8 @@ public class RecordAEADCipher extends RecordCipher {
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
             LOGGER.debug("AAD:" + ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-            cipherText = encryptCipher.encrypt(encryptIV, aeadTagLength * 8,
-                    request.getAdditionalAuthenticatedData(), request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, aeadTagLength * 8, request.getAdditionalAuthenticatedData(),
+                    request.getPlainText());
         } else {
             cipherText = encryptCipher.encrypt(encryptIV, aeadTagLength * 8, request.getPlainText());
         }
@@ -161,7 +161,7 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
-                || version == ProtocolVersion.TLS13_DRAFT28) {        	
+                || version == ProtocolVersion.TLS13_DRAFT28) {
             return decryptCipher.decrypt(decryptIV, aeadTagLength * 8,
                     decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
         } else {

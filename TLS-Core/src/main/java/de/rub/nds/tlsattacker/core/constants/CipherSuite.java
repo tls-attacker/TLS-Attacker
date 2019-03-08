@@ -581,9 +581,9 @@ public enum CipherSuite {
     public boolean isCCM() {
         return (this.name().contains("_CCM"));
     }
-    
+
     public boolean isCCM_8() {
-    	return (this.name().contains("_CCM_8"));
+        return (this.name().contains("_CCM_8"));
     }
 
     public boolean isOCB() {
