@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
@@ -37,6 +38,7 @@ public class RecordTest {
     Record record;
     Chooser chooser;
     Encryptor encryptor;
+    RecordCompressor compressor;
 
     @Before
     public void setUp() {
@@ -50,7 +52,7 @@ public class RecordTest {
      */
     @Test
     public void testGetRecordPreparator() {
-        assertEquals(record.getRecordPreparator(chooser, encryptor, ProtocolMessageType.ALERT).getClass(),
+        assertEquals(record.getRecordPreparator(chooser, encryptor, compressor, ProtocolMessageType.ALERT).getClass(),
                 RecordPreparator.class);
     }
 

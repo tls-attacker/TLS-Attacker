@@ -55,4 +55,8 @@ public abstract class RecordLayer {
     public abstract RecordCipher getDecryptor();
 
     public abstract AbstractRecord getFreshRecord();
+
+    public abstract void updateCompressor();
+
+    public abstract void updateDecompressor();
 }

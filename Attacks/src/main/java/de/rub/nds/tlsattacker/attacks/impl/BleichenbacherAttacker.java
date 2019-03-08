@@ -217,13 +217,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
         if (executor.getSize() > 1) {
-            executor.bulkExecute(stateList);
+            executor.bulkExecuteStateTasks(stateList);
             for (StateVectorPair stateVectorPair : stateVectorPairList) {
                 processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
             }
         } else {
             for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                executor.bulkExecute(stateVectorPair.getState());
+                executor.bulkExecuteStateTasks(stateVectorPair.getState());
                 processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
             }
         }

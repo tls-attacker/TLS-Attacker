@@ -112,13 +112,19 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         return false;
     }
 
+    @Override
+    public Config createConfig() {
+        return this.createConfig(super.createConfig());
+    }
+
     /**
      *
+     * @param config
      * @return
      */
     @Override
-    public Config createConfig() {
-        Config config = super.createConfig();
+    public Config createConfig(Config config) {
+        super.createConfig(config);
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
@@ -137,7 +143,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopRecievingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;

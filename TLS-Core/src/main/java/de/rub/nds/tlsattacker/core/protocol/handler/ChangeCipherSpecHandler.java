@@ -40,6 +40,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
+            tlsContext.getRecordLayer().updateDecompressor();
         }
     }
 
@@ -48,6 +49,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
+            tlsContext.getRecordLayer().updateCompressor();
+
         }
         tlsContext.setEpoch(tlsContext.getEpoch() + 1);
     }

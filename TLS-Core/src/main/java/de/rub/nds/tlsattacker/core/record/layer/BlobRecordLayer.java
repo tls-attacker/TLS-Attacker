@@ -23,6 +23,8 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,12 +38,26 @@ public class BlobRecordLayer extends RecordLayer {
     private RecordCipher cipher;
     private final Encryptor encryptor;
     private final Decryptor decryptor;
+    private RecordCompressor compressor;
+    private RecordDecompressor decompressor;
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
         cipher = new RecordNullCipher(context);
         encryptor = new RecordEncryptor(cipher, context);
         decryptor = new RecordDecryptor(cipher, context);
+        compressor = new RecordCompressor(context);
+        decompressor = new RecordDecompressor(context);
+    }
+
+    @Override
+    public void updateCompressor() {
+        compressor.setMethod(context.getChooser().getSelectedCompressionMethod());
+    }
+
+    @Override
+    public void updateDecompressor() {
+        decompressor.setMethod(context.getChooser().getSelectedCompressionMethod());
     }
 
     @Override
@@ -62,6 +78,7 @@ public class BlobRecordLayer extends RecordLayer {
         byte[] data = record.getProtocolMessageBytes().getValue();
         data = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(data);
+        decompressor.decompress(record);
     }
 
     @Override
@@ -72,7 +89,7 @@ public class BlobRecordLayer extends RecordLayer {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
             AbstractRecordPreparator preparator = record.getRecordPreparator(context.getChooser(), encryptor,
-                    contentType);
+                    compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {

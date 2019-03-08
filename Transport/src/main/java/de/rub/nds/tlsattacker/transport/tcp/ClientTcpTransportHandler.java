@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -24,17 +25,27 @@ public class ClientTcpTransportHandler extends TransportHandler {
     protected Socket socket;
     protected String hostname;
     protected int port;
+    protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
         super(connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
+        this.connectionTimeout = 60000;
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
+        this.connectionTimeout = timeout;
+    }
+
+    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
+        super(timeout, ConnectionEndType.CLIENT);
+        this.hostname = hostname;
+        this.port = port;
+        this.connectionTimeout = connectionTimeout;
     }
 
     @Override
@@ -48,11 +59,13 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(hostname, port), (int) timeout);
+        socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
-        setStreams(socket.getInputStream(), socket.getOutputStream());
+        setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
+
+        socket.setSoTimeout(1);
     }
 
     @Override
@@ -80,6 +93,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
             }
             socket.setSoTimeout(1);
             int read = socket.getInputStream().read();
+            socket.setSoTimeout((int) timeout);
             if (read == -1) {
                 return SocketState.CLOSED;
             } else {
@@ -93,4 +107,5 @@ public class ClientTcpTransportHandler extends TransportHandler {
             return SocketState.IO_EXCEPTION;
         }
     }
+
 }

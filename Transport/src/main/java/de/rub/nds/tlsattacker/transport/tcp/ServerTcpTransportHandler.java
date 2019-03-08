@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -70,7 +71,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
             }
             socket = serverSocket.accept();
         }
-        setStreams(socket.getInputStream(), socket.getOutputStream());
+        setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 
     @Override

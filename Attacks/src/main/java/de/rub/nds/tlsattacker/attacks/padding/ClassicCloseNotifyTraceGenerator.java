@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
+import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -28,13 +29,13 @@ import java.util.List;
 /**
  *
  */
-public class ClassicCloseNotifyVectorGenerator extends PaddingVectorGenerator {
+public class ClassicCloseNotifyTraceGenerator extends PaddingTraceGenerator {
 
     /**
      *
      * @param recordGeneratorType
      */
-    public ClassicCloseNotifyVectorGenerator(PaddingRecordGeneratorType recordGeneratorType) {
+    public ClassicCloseNotifyTraceGenerator(PaddingRecordGeneratorType recordGeneratorType) {
         super(recordGeneratorType);
     }
 
@@ -44,24 +45,18 @@ public class ClassicCloseNotifyVectorGenerator extends PaddingVectorGenerator {
      * @return
      */
     @Override
-    public List<WorkflowTrace> getPaddingOracleVectors(Config config) {
-        List<WorkflowTrace> traceList = new LinkedList<>();
-        for (Record record : recordGenerator.getRecords(config.getDefaultSelectedCipherSuite(),
-                config.getDefaultSelectedProtocolVersion())) {
-            WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(
-                    WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-            ApplicationMessage applicationMessage = new ApplicationMessage(config);
-            AlertMessage alert = new AlertMessage();
-            alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-            SendAction sendAction = new SendAction(applicationMessage, alert);
-            sendAction.setRecords(new LinkedList<AbstractRecord>());
-            sendAction.getRecords().add(record);
-            sendAction.getRecords().add(new Record(config));
-
-            trace.addTlsAction(sendAction);
-            trace.addTlsAction(new GenericReceiveAction());
-            traceList.add(trace);
-        }
-        return traceList;
+    public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
+        ApplicationMessage applicationMessage = new ApplicationMessage(config);
+        AlertMessage alert = new AlertMessage();
+        alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+        SendAction sendAction = new SendAction(applicationMessage, alert);
+        sendAction.setRecords(new LinkedList<AbstractRecord>());
+        sendAction.getRecords().add(vector.createRecord());
+        sendAction.getRecords().add(new Record(config));
+        trace.addTlsAction(sendAction);
+        trace.addTlsAction(new GenericReceiveAction());
+        return trace;
     }
 }
