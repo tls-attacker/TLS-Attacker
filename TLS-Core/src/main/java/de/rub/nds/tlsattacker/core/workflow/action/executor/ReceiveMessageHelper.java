@@ -63,18 +63,18 @@ public class ReceiveMessageHelper {
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
-        List<AbstractRecord> realRecords = new LinkedList<>();
-        List<ProtocolMessage> messages = new LinkedList<>();
-        List<ProtocolMessage> fragmentedMessages = new LinkedList<>();
+        MessageActionResult result = new MessageActionResult();
+        
         try {
             byte[] receivedBytes;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
-                handleReceivedBytes(receivedBytes, context, realRecords, messages, fragmentedMessages);
+                MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
+                result = result.merge(tempResult);
                 if (receivedBytes.length != 0) {
                     if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
-                        shouldContinue = shouldContinue(expectedMessages, messages, context);
+                        shouldContinue = shouldContinue(expectedMessages, result.getMessageList(), context);
 
                     }
                 }
@@ -85,26 +85,21 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             context.setReceivedTransportHandlerException(true);
         }
-        if (fragmentedMessages.size() == 0) {
-            fragmentedMessages = null;
-        }
-        return new MessageActionResult(realRecords, messages, fragmentedMessages);
+        
+        return result;
     }
 
     public MessageActionResult receiveMessagesTill(ProtocolMessage waitTillMessage, TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
-        List<AbstractRecord> realRecords = new LinkedList<>();
-        List<ProtocolMessage> messages = new LinkedList<>();
-        List<ProtocolMessage> fragmentedMessages = new LinkedList<>();
+        MessageActionResult result = new MessageActionResult();
         try {
             byte[] receivedBytes;
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
-                MessageActionResult tempMessageActionResult = handleReceivedBytes(receivedBytes, context);
-                messages.addAll(tempMessageActionResult.getMessageList());
-                realRecords.addAll(tempMessageActionResult.getRecordList());
-                for (ProtocolMessage message : messages) {
+                MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
+                result = result.merge(tempResult);
+                for (ProtocolMessage message : result.getMessageList()) {
                     if (message.getClass().equals(waitTillMessage.getClass())) {
                         LOGGER.debug("Received message we waited for");
                         shouldContinue = false;
@@ -117,44 +112,47 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             context.setReceivedTransportHandlerException(true);
         }
-        return new MessageActionResult(realRecords, messages, fragmentedMessages);
+        return result;
     }
-
+    
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        List<AbstractRecord> records = new LinkedList<>();
+    	List<AbstractRecord> records = new LinkedList<>();
+    	List<ProtocolMessage> messages = new LinkedList<>();
         List<ProtocolMessage> messageFragments = new LinkedList<>();
-        if (receivedBytes.length != 0) {
-            handleReceivedBytes(receivedBytes, context, records, messages, messageFragments);
+        if (receivedBytes.length > 0) {
+        	List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+        	records.addAll(tempRecords);
+        	List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+        	for(List<AbstractRecord> recordGroup : recordGroups) {
+        		processRecordGroup(recordGroup, context, messageFragments, messages);
+        	}
         }
-        if (messageFragments.isEmpty()) {
-            messageFragments = null;
-        }
+        
         return new MessageActionResult(records, messages, messageFragments);
     }
 
-    private void handleReceivedBytes(byte[] receivedBytes, TlsContext context,
-    /* OUT PARAMS */
-    List<AbstractRecord> records, List<ProtocolMessage> messages, List<ProtocolMessage> messageFragments) {
-        if (receivedBytes.length != 0) {
-            List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-            List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
-            for (List<AbstractRecord> recordGroup : recordGroups) {
-                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                    adjustContext(recordGroup, context);
-                    decryptRecords(recordGroup, context);
-                    List<ProtocolMessage> fragmentGroup = collectMessageFragments(recordGroup, recordGroup.get(0)
-                            .getContentMessageType(), context);
-                    List<ProtocolMessage> fullMessages = processFragmentGroup(fragmentGroup, context);
-                    messageFragments.addAll(fragmentGroup);
-                    messages.addAll(fullMessages);
-                } else {
-                    messages.addAll(processRecordGroup(recordGroup, context));
-                }
-            }
-            records.addAll(tempRecords);
-        }
-    }
+    private void processRecordGroup(List<AbstractRecord> recordGroup, TlsContext context,
+    		// OUT params
+    	List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
+    	
+    	adjustContext(recordGroup, context);
+        decryptRecords(recordGroup, context);
+    	
+        List<ProtocolMessage> processedMessages = null;
+        
+    	if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+    		processedMessages = parseMessages(recordGroup, context);
+    	} else {
+    		List<ProtocolMessage> processedFragments = 
+    				collectMessageFragments(recordGroup, 
+    						recordGroup.get(0).getContentMessageType(), context);
+    		messageFragments.addAll(processedFragments);
+    		processedMessages = processFragmentGroup(processedFragments , context); 
+    	}  
+    	
+    	messages.addAll(processedMessages);
+		
+	}
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
@@ -217,13 +215,7 @@ public class ReceiveMessageHelper {
                 .getConfig().isEarlyStop());
         return !receivedAllExpectedMessages;
     }
-
-    private List<ProtocolMessage> processRecordGroup(List<AbstractRecord> recordGroup, TlsContext context) {
-        adjustContext(recordGroup, context);
-        decryptRecords(recordGroup, context);
-        return parseMessages(recordGroup, context);
-    }
-
+    
     private byte[] receiveByteArray(TlsContext context) throws IOException {
         byte[] received = context.getTransportHandler().fetchData();
         return received;
