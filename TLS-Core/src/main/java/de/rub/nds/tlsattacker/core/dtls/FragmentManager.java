@@ -66,7 +66,17 @@ public class FragmentManager {
         byte[] fragmentedMessageBytes = collector.getCombinedFragmentAsByteArray();
         return fragmentedMessageBytes;
     }
-
+    
+    public DtlsHandshakeMessageFragment getFragmentedMessageAsCombinedFragment(
+    		DtlsHandshakeMessageFragment fragment) {
+    	FragmentCollector collector = fragments.get(key(fragment));
+        if (!collector.isMessageComplete()) {
+        	return null;
+        }
+        return collector.getCombinedFragment();
+    }
+    
+    
     /**
      * Clears the fragmented message corresponding to this fragment.
      */

@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
@@ -143,9 +144,9 @@ public class ReceiveMessageHelper {
     	if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
     		processedMessages = parseMessages(recordGroup, context);
     	} else {
+    		byte[] cleanBytes = getCleanBytes(recordGroup);
     		List<ProtocolMessage> processedFragments = 
-    				collectMessageFragments(recordGroup, 
-    						recordGroup.get(0).getContentMessageType(), context);
+    				handleFragments(cleanBytes, recordGroup.get(0).getContentMessageType(), context);
     		messageFragments.addAll(processedFragments);
     		processedMessages = processFragmentGroup(processedFragments , context); 
     	}  
@@ -511,36 +512,16 @@ public class ReceiveMessageHelper {
         }
     }
 
-    private List<ProtocolMessage> collectMessageFragments(List<AbstractRecord> recordGroup,
-            ProtocolMessageType typeFromRecord, TlsContext context) {
-        byte[] cleanBytes = getCleanBytes(recordGroup);
-        return handleFragments(cleanBytes, typeFromRecord, context);
-    }
-
     private List<ProtocolMessage> processFragmentGroup(List<ProtocolMessage> fragmentedMessages, TlsContext context) {
         List<ProtocolMessage> realMessages = new LinkedList<>();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         ProtocolMessageType lastRecordType = null;
         for (ProtocolMessage message : fragmentedMessages) {
             if (lastRecordType == null) {
                 lastRecordType = message.getProtocolMessageType();
             }
             if (message instanceof DtlsHandshakeMessageFragment) {
-                DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) message;
-                if (fragment.getFragmentOffset().getValue() == 0) {
-                    stream.write(fragment.getType().getValue());
-                    try {
-                        stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
-                                HandshakeByteLength.MESSAGE_LENGTH_FIELD));
-                    } catch (IOException ex) {
-                        LOGGER.warn("Could not write fragment to stream.", ex);
-                    }
-                }
-                try {
-                    stream.write(fragment.getContent().getValue());
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not write fragment to stream.", ex);
-                }
+            	fragments.add((DtlsHandshakeMessageFragment) message);            
             } else {
                 message.getHandler(context).prepareAfterParse(message);
                 message.getHandler(context).adjustTLSContext(message);
@@ -548,15 +529,61 @@ public class ReceiveMessageHelper {
             }
             lastRecordType = message.getProtocolMessageType();
         }
-        if (stream.size() > 0) {
-            realMessages.addAll(handleCleanBytes(stream.toByteArray(), lastRecordType, context));
-            for (ProtocolMessage realMessage : realMessages) {
-                // This cannot work in the general case.....
-                realMessage.getHandler(context).prepareAfterParse(realMessage);
-                realMessage.getHandler(context).adjustTLSContext(realMessage);
-
-            }
-        }
+        List<ProtocolMessage> messagesFromFragments = processDtlsFragments(fragments, context);
+        realMessages.addAll(messagesFromFragments);
+        
         return realMessages;
     }
+    
+    private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+    	// the fragment manager stores all the received message fragments
+    	FragmentManager manager = context.getFragmentManager();
+    	List<ProtocolMessage> messages = new LinkedList<>();
+    	for (DtlsHandshakeMessageFragment fragment : fragments) {
+	    	manager.addMessageFragment(fragment);
+	    	
+	    	// we process fragmented messages only if they
+	    	// 1. can be fully reconstructed (no bytes are missing)
+	    	// 2. they are next in line to be processed
+	    	if (manager.isFragmentedMessageComplete(fragment) && 
+	    			fragment.getMessageSeq().getValue().intValue() == context.getNextReceiveSequenceNumber()) 
+	    	{
+	    		context.increaseNextReceiveSequenceNumber();
+	    		DtlsHandshakeMessageFragment combinedFragment = manager.getFragmentedMessageAsCombinedFragment(fragment);
+	    		manager.clearFragmentedMessage(fragment);
+	    		messages.addAll(processCombinedDtlsFragment(combinedFragment, context));
+	    	}
+    	}
+    	
+    	return messages;
+    }
+    
+    private List<ProtocolMessage> processCombinedDtlsFragment(DtlsHandshakeMessageFragment fragment, TlsContext context) {
+    	// we don't adjust the digest for when receiving HELLO_VERIFy_REQUEST messages
+		boolean shouldAdjustDigest =  
+				(fragment.getCompleteResultingMessage().getValue()[0] != 
+				HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue());
+		if (shouldAdjustDigest) {
+			
+		}
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		stream.write(fragment.getType().getValue());
+		try {
+            stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
+                    HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+        } catch (IOException ex) {
+            LOGGER.warn("Could not write fragment to stream.", ex);
+        }
+		try {
+            stream.write(fragment.getContent().getValue());
+        } catch (IOException ex) {
+            LOGGER.warn("Could not write fragment to stream.", ex);
+        }
+		List<ProtocolMessage> protocolMessages = handleCleanBytes(stream.toByteArray(), fragment.getProtocolMessageType(), context);
+		for (ProtocolMessage message : protocolMessages) {
+            message.getHandler(context).prepareAfterParse(message);
+            message.getHandler(context).adjustTLSContext(message);
+		}
+		return protocolMessages;
+    } 
 }

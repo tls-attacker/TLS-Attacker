@@ -21,28 +21,28 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
 
-    public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {
-        super(tlsContext);
-    }
+	public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {
+		super(tlsContext);
+	}
 
-    @Override
-    public DtlsHandshakeMessageFragmentParser getParser(byte[] message, int pointer) {
-        return new DtlsHandshakeMessageFragmentParser(pointer, message, tlsContext.getChooser()
-                .getSelectedProtocolVersion());
-    }
+	@Override
+	public DtlsHandshakeMessageFragmentParser getParser(byte[] message, int pointer) {
+		return new DtlsHandshakeMessageFragmentParser(pointer, message,
+				tlsContext.getChooser().getSelectedProtocolVersion());
+	}
 
-    @Override
-    public DtlsHandshakeMessageFragmentPreparator getPreparator(DtlsHandshakeMessageFragment message) {
-        return new DtlsHandshakeMessageFragmentPreparator(tlsContext.getChooser(), message);
-    }
+	@Override
+	public DtlsHandshakeMessageFragmentPreparator getPreparator(DtlsHandshakeMessageFragment message) {
+		return new DtlsHandshakeMessageFragmentPreparator(tlsContext.getChooser(), message);
+	}
 
-    @Override
-    public ProtocolMessageSerializer getSerializer(DtlsHandshakeMessageFragment message) {
-        return new DtlsHandshakeMessageFragmentSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
+	@Override
+	public ProtocolMessageSerializer getSerializer(DtlsHandshakeMessageFragment message) {
+		return new DtlsHandshakeMessageFragmentSerializer(message,
+				tlsContext.getChooser().getSelectedProtocolVersion());
+	}
 
-    @Override
-    public void adjustTLSContext(DtlsHandshakeMessageFragment message) {
-        message.getMessageSeq();
-    }
+	@Override
+	public void adjustTLSContext(DtlsHandshakeMessageFragment message) {
+	}
 }
