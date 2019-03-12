@@ -67,14 +67,14 @@ public class FragmentCollector {
      * Tries to insert a fragment in the collection. Fragments already contained will not be added.
      * 
      * <p>
-	 * Note: If onlyFitting is true, it assumes that the message "fits" in the collection, 
-	 * that is,  it shares the same type, length and message sequence with the first 
+	 * Note: If onlyFitting is true, it only adds messages which "fit" in the collection, 
+	 * that is, which share the same type, length and message sequence with the first 
 	 * element inserted in the collection. 
 	 * </p>
      * 
      * @return true if the fragment was added or false if it wasn't.
      */
-    public boolean insertFragment(DtlsHandshakeMessageFragment fragment) {
+    public boolean addFragment(DtlsHandshakeMessageFragment fragment) {
         boolean isFitting = parseType(fragment);
         isFitting &= parseMessageSeq(fragment);
         isFitting &= parseLength(fragment);
@@ -154,7 +154,7 @@ public class FragmentCollector {
     }
 
     /* Combines the content in collected fragments, filling the gaps with 0s.
-     * Note: the implementation relies on the sorted nature of fragmentData.
+     * Note: the implementation relies on the sorted nature of {@link fragmentData}.
      */
     private byte[] getCombinedContent() {
         try {

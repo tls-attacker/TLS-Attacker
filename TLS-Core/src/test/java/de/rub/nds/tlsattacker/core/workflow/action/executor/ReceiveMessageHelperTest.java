@@ -1,7 +1,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
 
 import java.io.IOException;
 
@@ -124,7 +124,7 @@ public class ReceiveMessageHelperTest {
 		result = receive(DTLS.REC_SERVER_HELLO_F2);
 		assertEquals(1, result.getMessageList().size());
 		checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
-		// the digest shouldn't have been updated since the message is OO
+		// the digest shouldn't have been updated since the message is received out of order
 		assertEquals(0, context.getDigest().getRawBytes().length);
 	}
 	

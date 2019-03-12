@@ -39,7 +39,7 @@ public class FragmentManager {
             collector = new FragmentCollector();
             fragments.put(messageSeq(fragment), collector);
         }
-        collector.insertFragment(fragment);
+        collector.addFragment(fragment);
     }
 
     /**
@@ -53,18 +53,6 @@ public class FragmentManager {
         	return false;
         }
         return collector.isMessageComplete();
-    }
-
-    /**
-     * Returns the byte array of the message corresponding to this fragment
-     */
-    public byte[] getFragmentedMessageAsByteArray(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(messageSeq(fragment));
-        if (!collector.isMessageComplete()) {
-            LOGGER.warn("Message is incomplete");
-        }
-        byte[] fragmentedMessageBytes = collector.getCombinedFragmentAsByteArray();
-        return fragmentedMessageBytes;
     }
     
     /**
@@ -103,8 +91,8 @@ public class FragmentManager {
     }
 
     /*
-     * The key with which a fragment is stored is the message sequence. 
-     * The key is used to distinguish between fragments belonging to different messages.
+     * The message sequence is the key with which fragments are stored. 
+     * It is used to distinguish between fragments belonging to different messages.
      */
     private Object messageSeq(DtlsHandshakeMessageFragment fragment) {
         return fragment.getMessageSeq().getValue();

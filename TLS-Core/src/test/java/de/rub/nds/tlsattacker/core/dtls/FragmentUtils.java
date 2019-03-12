@@ -2,6 +2,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.bouncycastle.util.Arrays;
 
@@ -35,9 +36,9 @@ public class FragmentUtils {
 	
 	public static void checkFragment(DtlsHandshakeMessageFragment fragment, int expectedOffset, 
 			int expectedLength, byte [] expectedContent) {
-		assertEquals(fragment.getFragmentOffset().getValue().intValue(), expectedOffset);
-		assertEquals(fragment.getFragmentLength().getValue().intValue(), expectedLength);
-		assertArrayEquals(fragment.getContent().getValue(), expectedContent);
-		assertEquals(fragment.getLength().getValue().intValue(), DEFAULT_MESSAGE_LENGTH);
+		assertNotNull(fragment);
+		assertEquals(expectedOffset, fragment.getFragmentOffset().getValue().intValue());
+		assertEquals(expectedLength, fragment.getFragmentLength().getValue().intValue());
+		assertArrayEquals(expectedContent, fragment.getContent().getValue());
 	}
 }

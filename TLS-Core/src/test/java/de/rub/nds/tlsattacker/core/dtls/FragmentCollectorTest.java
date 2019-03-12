@@ -30,17 +30,22 @@ public class FragmentCollectorTest {
 		collector = new FragmentCollector();
 	}
 	
-	
+	/**
+	 * Test that addFragment is successful.
+	 */
 	@Test
-	public void testInsertTrue() {
-		assertTrue(collector.insertFragment(fragment(0, 0, 10)));
+	public void testAddTrue() {
+		assertTrue(collector.addFragment(fragment(0, 0, 10)));
 	}
 	
+	/**
+	 * Test that one cannot add the same fragment twice.
+	 */
 	@Test
-	public void testInsertFalse() {
+	public void testAddFalse() {
 		DtlsHandshakeMessageFragment frag = fragment(0, 0, 10);
-		collector.insertFragment(frag);
-		assertFalse(collector.insertFragment(frag));
+		collector.addFragment(frag);
+		assertFalse(collector.addFragment(frag));
 	}
 
 	/**
@@ -48,8 +53,8 @@ public class FragmentCollectorTest {
 	 */
 	@Test
 	public void testIsMessageCompleteTrue() {
-		collector.insertFragment(fragment(0, 0, 5));
-		collector.insertFragment(fragment(0, 5, 5));
+		collector.addFragment(fragment(0, 0, 5));
+		collector.addFragment(fragment(0, 5, 5));
 		assertTrue(collector.isMessageComplete());
 	}
 	
@@ -58,8 +63,8 @@ public class FragmentCollectorTest {
 	 */
 	@Test
 	public void testIsMessageCompleteFalse() {
-		collector.insertFragment(fragment(0, 0, 5));
-		collector.insertFragment(fragment(0, 6, 4));
+		collector.addFragment(fragment(0, 0, 5));
+		collector.addFragment(fragment(0, 6, 4));
 		assertFalse(collector.isMessageComplete());
 	}
 	
@@ -68,10 +73,10 @@ public class FragmentCollectorTest {
 	 */
 	@Test
 	public void testIsMessageCompleteDisordelyTrue() {
-		collector.insertFragment(fragment(0, 0, 2));
-		collector.insertFragment(fragment(0, 8, 2));
-		collector.insertFragment(fragment(0, 5, 3));
-		collector.insertFragment(fragment(0, 2, 3));
+		collector.addFragment(fragment(0, 0, 2));
+		collector.addFragment(fragment(0, 8, 2));
+		collector.addFragment(fragment(0, 5, 3));
+		collector.addFragment(fragment(0, 2, 3));
 		assertTrue(collector.isMessageComplete());
 	}
 	
@@ -80,10 +85,10 @@ public class FragmentCollectorTest {
 	 */
 	@Test
 	public void testIsMessageCompleteTrueDisordelyOverlap() {
-		collector.insertFragment(fragment(0, 5, 3));
-		collector.insertFragment(fragment(0, 7, 3));
-		collector.insertFragment(fragment(0, 0, 3));
-		collector.insertFragment(fragment(0, 2, 4));
+		collector.addFragment(fragment(0, 5, 3));
+		collector.addFragment(fragment(0, 7, 3));
+		collector.addFragment(fragment(0, 0, 3));
+		collector.addFragment(fragment(0, 2, 4));
 		assertTrue(collector.isMessageComplete());
 	}
 	
@@ -93,8 +98,8 @@ public class FragmentCollectorTest {
 	 */
 	@Test
 	public void testIsMessageCompleteFalseDisordelyOverlap() {
-		collector.insertFragment(fragment(0, 6, 3));
-		collector.insertFragment(fragment(0, 0, 7));
+		collector.addFragment(fragment(0, 6, 3));
+		collector.addFragment(fragment(0, 0, 7));
 		assertFalse(collector.isMessageComplete());
 	}
 	
@@ -104,9 +109,9 @@ public class FragmentCollectorTest {
 	@Test
 	public void testGetCombinedFragment() {
 		byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
-		collector.insertFragment(fragmentOfMsg(0, 0, 3, original));
-		collector.insertFragment(fragmentOfMsg(0, 3, 5, original));
-		collector.insertFragment(fragmentOfMsg(0, 8, 2, original));
+		collector.addFragment(fragmentOfMsg(0, 0, 3, original));
+		collector.addFragment(fragmentOfMsg(0, 3, 5, original));
+		collector.addFragment(fragmentOfMsg(0, 8, 2, original));
 		DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
 		checkFragment(fragment, 0, 10, original);
 	}
@@ -117,9 +122,9 @@ public class FragmentCollectorTest {
 	@Test
 	public void testGetCombinedFragmentDisorderlyOverlap() {
 		byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
-		collector.insertFragment(fragmentOfMsg(0, 5, 5, original));
-		collector.insertFragment(fragmentOfMsg(0, 0, 3, original));
-		collector.insertFragment(fragmentOfMsg(0, 2, 4, original));
+		collector.addFragment(fragmentOfMsg(0, 5, 5, original));
+		collector.addFragment(fragmentOfMsg(0, 0, 3, original));
+		collector.addFragment(fragmentOfMsg(0, 2, 4, original));
 		DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
 		checkFragment(fragment, 0, 10, original);
 	}
@@ -130,8 +135,8 @@ public class FragmentCollectorTest {
 	@Test
 	public void testGetCombinedFragmentIncomplete() {
 		byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
-		collector.insertFragment(fragmentOfMsg(0, 0, 5, original));
-		collector.insertFragment(fragmentOfMsg(0, 6, 4, original));
+		collector.addFragment(fragmentOfMsg(0, 0, 5, original));
+		collector.addFragment(fragmentOfMsg(0, 6, 4, original));
 		DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
 		byte[] expected = ArrayConverter.hexStringToByteArray("123456789A003456789A");
 		checkFragment(fragment, 0, 10, expected);

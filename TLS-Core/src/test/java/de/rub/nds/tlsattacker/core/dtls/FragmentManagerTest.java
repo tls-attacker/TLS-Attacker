@@ -2,6 +2,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -39,16 +40,6 @@ public class FragmentManagerTest {
 		DtlsHandshakeMessageFragment frag = fragment(0, 0, 5);
 		assertFalse(manager.isFragmentedMessageComplete(frag));
 	}
-	@Test
-	public void testIsMessageCompleteMultipleMessages() {
-		DtlsHandshakeMessageFragment frag1 = fragment(0, 0, 5);
-		manager.addMessageFragment(frag1);
-		DtlsHandshakeMessageFragment frag2 = fragment(1, 0, 5);
-		manager.addMessageFragment(frag2);
-		manager.addMessageFragment(fragment(0, 5, 5));
-		assertTrue(manager.isFragmentedMessageComplete(frag1));
-		assertFalse(manager.isFragmentedMessageComplete(frag2));
-	}
 	
 	@Test
 	public void testClearFragmentedMessage() {
@@ -57,5 +48,26 @@ public class FragmentManagerTest {
 		manager.addMessageFragment(fragment(0, 5, 5));
 		manager.clearFragmentedMessage(frag);
 		assertFalse(manager.isFragmentedMessageComplete(frag));
+		assertNull(manager.getFragmentedMessage(frag));
+	}
+	
+	@Test
+	public void testGetFragmentedMessageMultipleMessages() {
+		manager.addMessageFragment(fragment(0, 0, 5, new byte [] {0, 1, 2, 3, 4}));
+		manager.addMessageFragment(fragment(1, 0, 5, new byte [] {8, 9, 10, 11, 12}));
+		manager.addMessageFragment(fragment(0, 5, 5, new byte [] {5, 6, 7, 8, 9}));
+		assertNull(manager.getFragmentedMessage(1));
+		DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(0);
+		FragmentUtils.checkFragment(fragmentedMessage, 0, 10, new byte [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+	}
+	
+	@Test
+	public void testGetFragmentedMessageDisordelyOverlapping() {
+		manager.addMessageFragment(fragment(0, 0, 5, new byte [] {0, 1, 2, 3, 4}));
+		manager.addMessageFragment(fragment(0, 7, 3, new byte [] {7, 8, 9}));
+		manager.addMessageFragment(fragment(0, 5, 4, new byte [] {5, 6, 7, 8}));
+		manager.addMessageFragment(fragment(0, 0, 5, new byte [] {0, 1, 2, 3, 4}));
+		DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(0);
+		FragmentUtils.checkFragment(fragmentedMessage, 0, 10, new byte [] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 	}
 }
