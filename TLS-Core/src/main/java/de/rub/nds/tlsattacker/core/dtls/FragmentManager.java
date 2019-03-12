@@ -34,10 +34,10 @@ public class FragmentManager {
     }
 
     public void addMessageFragment(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(messageSeq(fragment));
         if (collector == null) {
             collector = new FragmentCollector();
-            fragments.put(key(fragment), collector);
+            fragments.put(messageSeq(fragment), collector);
         }
         collector.insertFragment(fragment);
     }
@@ -46,7 +46,7 @@ public class FragmentManager {
      * Returns true if the message corresponding to this fragment is complete
      */
     public boolean isFragmentedMessageComplete(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(messageSeq(fragment));
         if (collector == null) {
         	LOGGER.warn("Fragment belongs to foreign message, that is, "
         			+ "message whose fragments haven't been added to the manager");
@@ -59,7 +59,7 @@ public class FragmentManager {
      * Returns the byte array of the message corresponding to this fragment
      */
     public byte[] getFragmentedMessageAsByteArray(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(key(fragment));
+        FragmentCollector collector = fragments.get(messageSeq(fragment));
         if (!collector.isMessageComplete()) {
             LOGGER.warn("Message is incomplete");
         }
@@ -67,10 +67,28 @@ public class FragmentManager {
         return fragmentedMessageBytes;
     }
     
-    public DtlsHandshakeMessageFragment getFragmentedMessageAsCombinedFragment(
+    /**
+     * Returns the fragmented message corresponding to this fragment as a single combined fragment.
+     * Returns null if no message was stored for this fragment, or if the fragmented message 
+     * is incomplete.
+     */
+    public DtlsHandshakeMessageFragment getFragmentedMessage(
     		DtlsHandshakeMessageFragment fragment) {
-    	FragmentCollector collector = fragments.get(key(fragment));
-        if (!collector.isMessageComplete()) {
+    	FragmentCollector collector = fragments.get(messageSeq(fragment));
+        if (collector == null || !collector.isMessageComplete()) {
+        	return null; 
+        }
+        return collector.getCombinedFragment();
+    }
+    
+    /**
+     * Returns the stored fragmented message with the messageSeq.
+     * Returns null if no message was stored with this message Seq, or if 
+     * the message is incomplete.
+     */
+    public DtlsHandshakeMessageFragment getFragmentedMessage(Integer messageSeq) {
+    	FragmentCollector collector = fragments.get(messageSeq);
+        if (collector == null || !collector.isMessageComplete()) {
         	return null;
         }
         return collector.getCombinedFragment();
@@ -81,14 +99,14 @@ public class FragmentManager {
      * Clears the fragmented message corresponding to this fragment.
      */
     public void clearFragmentedMessage(DtlsHandshakeMessageFragment fragment) {
-        fragments.put(key(fragment), null);
+        fragments.put(messageSeq(fragment), null);
     }
 
     /*
-     * The key of a fragment is the message sequence. The key is used to distinguish between
-     * fragments belonging to different messages.
+     * The key with which a fragment is stored is the message sequence. 
+     * The key is used to distinguish between fragments belonging to different messages.
      */
-    private Object key(DtlsHandshakeMessageFragment fragment) {
+    private Object messageSeq(DtlsHandshakeMessageFragment fragment) {
         return fragment.getMessageSeq().getValue();
     }
 

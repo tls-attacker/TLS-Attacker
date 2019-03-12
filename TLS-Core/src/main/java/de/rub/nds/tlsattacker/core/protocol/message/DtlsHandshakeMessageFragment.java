@@ -42,20 +42,23 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] contentConfig) {
         super(handshakeMessageType);
         this.contentConfig = contentConfig;
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     @Override
     public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
-        return new DtlsHandshakeMessageFragmentHandler(context);
+    	return new DtlsHandshakeMessageFragmentHandler(context);
     }
 
     public byte[] getContentConfig() {

@@ -147,6 +147,9 @@ public class FragmentCollector {
         message.setFragmentOffset(0);
         message.setFragmentLength(messageLength);
         message.setContent(getCombinedContent());
+        DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(
+                message, null);
+        message.setCompleteResultingMessage(serializer.serialize());
         return message;
     }
 

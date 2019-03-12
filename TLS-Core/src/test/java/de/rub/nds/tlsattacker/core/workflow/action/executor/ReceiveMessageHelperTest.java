@@ -1,6 +1,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -88,18 +89,21 @@ public class ReceiveMessageHelperTest {
 		checkFragment(fragment, 1, 0, 75);
 	}
 	
-//	@Test
-//	public void testReceiveDTLSMessages() {
-//		context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-//		MessageActionResult result = receive(REC_SERVER_HELLO_F1, REC_SERVER_HELLO_F2, REC_SERVER_HELLO_DONE);
-//		assertEquals(3, result.getMessageFragmentList().size());
-//		assertEquals(2, result.getMessageList().size());
-//		checkMessage(result.getMessageList().get(0), MSG_SERVER_HELLO_ASSEMBLED);
-//	}
+	@Test
+	public void testReceiveDTLSMessages() {
+		context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+		context.setNextReceiveSequenceNumber(1);
+		MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2, 
+				DTLS.REC_SERVER_HELLO_DONE);
+		assertEquals(3, result.getMessageFragmentList().size());
+		assertEquals(2, result.getMessageList().size());
+		checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+	}
 	
 	@Test
 	public void testReceiveDTLSMessagesDisorderly() {
 		context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+		context.setNextReceiveSequenceNumber(1);
 		MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, 
 				DTLS.REC_SERVER_HELLO_DONE, DTLS.REC_SERVER_HELLO_F2);
 		assertEquals(3, result.getMessageFragmentList().size());
@@ -107,15 +111,21 @@ public class ReceiveMessageHelperTest {
 		checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
 	}
 	
-//	@Test
-//	public void testReceiveDTLSMessagesSeparatelyDisorderly() {
-//		context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-//		MessageActionResult result = receive(REC_SERVER_HELLO_F1);
-//		assertEquals(1, result.getMessageFragmentList().size());
-//		result = receive(REC_SERVER_HELLO_DONE);
-//		assertEquals(1, result.getMessageFragmentList().size());
-//		result = receive(REC_SERVER_HELLO_F2);
-//		checkMessage(result.getMessageList().get(0), MSG_SERVER_HELLO_ASSEMBLED);
-//	}
+	@Test
+	public void testReceiveDTLSMessagesSeparatelyDisorderly() {
+		context.setNextReceiveSequenceNumber(0);
+		context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+		MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1);
+		assertEquals(1, result.getMessageFragmentList().size());
+		assertEquals(0, result.getMessageList().size());
+		result = receive(DTLS.REC_SERVER_HELLO_DONE);
+		assertEquals(1, result.getMessageFragmentList().size());
+		assertEquals(1, result.getMessageList().size());
+		result = receive(DTLS.REC_SERVER_HELLO_F2);
+		assertEquals(1, result.getMessageList().size());
+		checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+		// the digest shouldn't have been updated since the message is OO
+		assertEquals(0, context.getDigest().getRawBytes().length);
+	}
 	
 }
