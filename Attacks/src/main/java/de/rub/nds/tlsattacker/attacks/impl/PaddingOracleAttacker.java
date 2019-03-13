@@ -183,6 +183,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 continue;
             }
             if (equivalentVector == null) {
+                System.out.println("OneList:" + responseVectorListOne.size());
+                System.out.println("TwoList:" + responseVectorListTwo.size());
                 LOGGER.error("Equivalent vector is null:" + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setMissingEquivalent(true);

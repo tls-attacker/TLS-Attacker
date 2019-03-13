@@ -72,7 +72,7 @@ public class ResponseExtractor {
             }
         } catch (InvalidTransportHandlerStateException ex) {
             LOGGER.warn(ex);
-            return null;
+            return SocketState.DATA_AVAILABLE;
         }
     }
 
