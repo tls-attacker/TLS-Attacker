@@ -40,7 +40,7 @@ public class UdpInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (index == packetSize) {
-        	return -1;
+            return -1;
         }
         index++;
         return dataBuffer[index - 1] & 0xff;

@@ -58,7 +58,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     @Override
     public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
-    	return new DtlsHandshakeMessageFragmentHandler(context);
+        return new DtlsHandshakeMessageFragmentHandler(context);
     }
 
     public byte[] getContentConfig() {

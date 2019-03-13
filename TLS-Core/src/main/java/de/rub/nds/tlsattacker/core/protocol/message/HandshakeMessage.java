@@ -245,7 +245,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public ModifiableBoolean getIncludeInDigestModifiableBoolean() {
         return this.includeInDigest;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

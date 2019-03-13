@@ -26,7 +26,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
-    
+
     protected void adjustExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {

@@ -68,7 +68,7 @@ public class ReceiveMessageHelper {
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
         MessageActionResult result = new MessageActionResult();
-        
+
         try {
             byte[] receivedBytes;
             boolean shouldContinue = true;
@@ -89,7 +89,7 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             context.setReceivedTransportHandlerException(true);
         }
-        
+
         return result;
     }
 
@@ -118,45 +118,45 @@ public class ReceiveMessageHelper {
         }
         return result;
     }
-    
+
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
-    	List<AbstractRecord> records = new LinkedList<>();
-    	List<ProtocolMessage> messages = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         List<ProtocolMessage> messageFragments = new LinkedList<>();
         if (receivedBytes.length > 0) {
-        	List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-        	records.addAll(tempRecords);
-        	List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
-        	for(List<AbstractRecord> recordGroup : recordGroups) {
-        		processRecordGroup(recordGroup, context, messageFragments, messages);
-        	}
+            List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+            records.addAll(tempRecords);
+            List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+            for (List<AbstractRecord> recordGroup : recordGroups) {
+                processRecordGroup(recordGroup, context, messageFragments, messages);
+            }
         }
-        
+
         return new MessageActionResult(records, messages, messageFragments);
     }
 
     private void processRecordGroup(List<AbstractRecord> recordGroup, TlsContext context,
-    		// OUT params
-    	List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
-    	
-    	adjustContext(recordGroup, context);
+    // OUT params
+            List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
+
+        adjustContext(recordGroup, context);
         decryptRecords(recordGroup, context);
-    	
+
         List<ProtocolMessage> processedMessages = null;
-        
-    	if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-    		processedMessages = parseMessages(recordGroup, context);
-    	} else {
-    		byte[] cleanBytes = getCleanBytes(recordGroup);
-    		List<ProtocolMessage> processedFragments = 
-    				handleFragments(cleanBytes, recordGroup.get(0).getContentMessageType(), context);
-    		messageFragments.addAll(processedFragments);
-    		processedMessages = processFragmentGroup(processedFragments , context); 
-    	}  
-    	
-    	messages.addAll(processedMessages);
-		
-	}
+
+        if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            processedMessages = parseMessages(recordGroup, context);
+        } else {
+            byte[] cleanBytes = getCleanBytes(recordGroup);
+            List<ProtocolMessage> processedFragments = handleFragments(cleanBytes, recordGroup.get(0)
+                    .getContentMessageType(), context);
+            messageFragments.addAll(processedFragments);
+            processedMessages = processFragmentGroup(processedFragments, context);
+        }
+
+        messages.addAll(processedMessages);
+
+    }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
@@ -219,7 +219,7 @@ public class ReceiveMessageHelper {
                 .getConfig().isEarlyStop());
         return !receivedAllExpectedMessages;
     }
-    
+
     private byte[] receiveByteArray(TlsContext context) throws IOException {
         byte[] received = context.getTransportHandler().fetchData();
         return received;
@@ -331,9 +331,6 @@ public class ReceiveMessageHelper {
 
     private List<ProtocolMessage> handleFragments(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord,
             TlsContext context) {
-        // TODO: Wouldn't it be better if we merged DTLS fragments here, rather
-        // than do it when in
-        // {@link ProtocolMessageHandler}?
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
@@ -346,7 +343,8 @@ public class ReceiveMessageHelper {
                     result = tryParseAsDtlsMessageFragment(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
                             context);
                 } else {
-                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context, false);
+                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context,
+                            false);
                 }
             } catch (ParserException | AdjustmentException exCorrectMsg) {
                 LOGGER.warn("Could not parse Message as a DtlsMessageFragment/NonHsMessage");
@@ -395,7 +393,8 @@ public class ReceiveMessageHelper {
     }
 
     private ParserResult tryHandleAsCorrectMessage(byte[] protocolMessageBytes, int pointer,
-            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse) throws ParserException, AdjustmentException {
+            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse) throws ParserException,
+            AdjustmentException {
         HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
         return pmh.parseMessage(protocolMessageBytes, pointer, onlyParse);
@@ -509,7 +508,7 @@ public class ReceiveMessageHelper {
                 lastRecordType = message.getProtocolMessageType();
             }
             if (message instanceof DtlsHandshakeMessageFragment) {
-            	fragments.add((DtlsHandshakeMessageFragment) message);            
+                fragments.add((DtlsHandshakeMessageFragment) message);
             } else {
                 message.getHandler(context).prepareAfterParse(message);
                 message.getHandler(context).adjustTLSContext(message);
@@ -519,72 +518,90 @@ public class ReceiveMessageHelper {
         }
         List<ProtocolMessage> messagesFromFragments = processDtlsFragments(fragments, context);
         realMessages.addAll(messagesFromFragments);
-        
+
         return realMessages;
     }
-    
+
+    /*
+     * Processes a list of arbitrary-ordered fragments. The idea is: 1. we
+     * assemble fragments into "fragmented messages" 2. we extract the messages
+     * from fragments but only update the context for fragments whose message
+     * sequence is next for processing.
+     */
     private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
-    	// the fragment manager stores all the received message fragments
-    	FragmentManager manager = context.getFragmentManager();
-    	List<ProtocolMessage> messages = new LinkedList<>();
-    	
-    	// we first add the fragments to the manager
-    	for (DtlsHandshakeMessageFragment fragment : fragments) {
-    		manager.addMessageFragment(fragment);
-    	}
-    	
-    	// we then process all the fragmented messages with increasing message seq
-    	// until we until we arrive at a message seq for which no fragmented message was formed
-    	DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(context.getNextReceiveSequenceNumber());
-    	while (fragmentedMessage != null) {
-    		context.increaseNextReceiveSequenceNumber();
-    		manager.clearFragmentedMessage(fragmentedMessage);
-    		messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-    		fragmentedMessage = manager.getFragmentedMessage(context.getNextReceiveSequenceNumber());
-    	}
-    	
-    	// we finally process fragmented messages whose sequence number is out-of-order
-    	// note that we do not update the TLS context for these messages, we only do that
-    	// for in-order messages
-    	Set<Integer> fragmentSeq = new HashSet<Integer>();
-    	for (DtlsHandshakeMessageFragment fragment : fragments) {
-    		fragmentedMessage = manager.getFragmentedMessage(fragment);
-    		if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
-    			messages.add(processFragmentedMessage(fragmentedMessage, context, false));
-    		}
-    		fragmentSeq.add(fragment.getMessageSeq().getValue());
-    	}
-    	
-    	return messages;
+        // the fragment manager stores all the received message fragments
+        FragmentManager manager = context.getFragmentManager();
+        List<ProtocolMessage> messages = new LinkedList<>();
+
+        // we first add the fragments to the manager
+        for (DtlsHandshakeMessageFragment fragment : fragments) {
+            manager.addMessageFragment(fragment);
+        }
+
+        // we then process all the fragmented messages with increasing message
+        // seq
+        // until we until we arrive at a message seq for which no fragmented
+        // message was formed
+        DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(context
+                .getNextReceiveSequenceNumber());
+        while (fragmentedMessage != null) {
+            context.increaseNextReceiveSequenceNumber();
+            manager.clearFragmentedMessage(fragmentedMessage);
+            messages.add(processFragmentedMessage(fragmentedMessage, context, true));
+            fragmentedMessage = manager.getFragmentedMessage(context.getNextReceiveSequenceNumber());
+        }
+
+        // we finally process fragmented messages whose sequence number is
+        // out-of-order
+        // note that we do not update the TLS context for these messages, we
+        // only do that
+        // for in-order messages
+        Set<Integer> fragmentSeq = new HashSet<Integer>();
+        for (DtlsHandshakeMessageFragment fragment : fragments) {
+            fragmentedMessage = manager.getFragmentedMessage(fragment);
+            if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
+                messages.add(processFragmentedMessage(fragmentedMessage, context, false));
+            }
+            fragmentSeq.add(fragment.getMessageSeq().getValue());
+        }
+
+        return messages;
     }
-    
-    private HandshakeMessage processFragmentedMessage(DtlsHandshakeMessageFragment fragment, TlsContext context, boolean updateContext) {
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		stream.write(fragment.getType().getValue());
-		try {
+
+    /*
+     * Processes a fragmented message by extracting the underlying message and
+     * optionally performing the corresponding context update.
+     */
+    private HandshakeMessage processFragmentedMessage(DtlsHandshakeMessageFragment fragment, TlsContext context,
+            boolean updateContext) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        stream.write(fragment.getType().getValue());
+        try {
             stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
                     HandshakeByteLength.MESSAGE_LENGTH_FIELD));
         } catch (IOException ex) {
             LOGGER.warn("Could not write fragment to stream.", ex);
         }
-		try {
+        try {
             stream.write(fragment.getContent().getValue());
         } catch (IOException ex) {
             LOGGER.warn("Could not write fragment to stream.", ex);
         }
-		
-		ParserResult parsingResult = tryHandleAsCorrectMessage( stream.toByteArray(), 0, fragment.getProtocolMessageType(), context, true );
-		HandshakeMessage message = (HandshakeMessage) parsingResult.getMessage();
-		message.getHandler(context).prepareAfterParse(message);
+
+        ParserResult parsingResult = tryHandleAsCorrectMessage(stream.toByteArray(), 0,
+                fragment.getProtocolMessageType(), context, true);
+        HandshakeMessage message = (HandshakeMessage) parsingResult.getMessage();
+        message.getHandler(context).prepareAfterParse(message);
         if (updateContext) {
-        	message.getHandler(context).adjustTLSContext(message);
-		
-			// TODO it is not nice that we are updating receiving digests outside of the message handlers
-	        if (message.getIncludeInDigest()) {
-	    		context.getDigest().append(fragment.getCompleteResultingMessage().getOriginalValue());
-	        }
-		}
-		
-		return message;
-    } 
+            message.getHandler(context).adjustTLSContext(message);
+
+            // TODO it is not nice that we are updating receiving digests
+            // outside of the message handlers
+            if (message.getIncludeInDigest()) {
+                context.getDigest().append(fragment.getCompleteResultingMessage().getOriginalValue());
+            }
+        }
+
+        return message;
+    }
 }

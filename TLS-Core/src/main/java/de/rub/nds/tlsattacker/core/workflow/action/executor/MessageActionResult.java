@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class MessageActionResult {
 
     private final List<AbstractRecord> recordList;
@@ -24,20 +23,20 @@ public class MessageActionResult {
     private final List<ProtocolMessage> messageList;
 
     private final List<ProtocolMessage> messageFragmentList;
-    
+
     public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
             List<ProtocolMessage> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
     }
-    
+
     /**
-     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
+     * Generates an empty MessageActionResult, that is, a result whose list
+     * fields are empty.
      */
     public MessageActionResult() {
-    	this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(), 
-    			new LinkedList<ProtocolMessage>());
+        this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(), new LinkedList<ProtocolMessage>());
     }
 
     public List<AbstractRecord> getRecordList() {
@@ -51,23 +50,23 @@ public class MessageActionResult {
     public List<ProtocolMessage> getMessageFragmentList() {
         return messageFragmentList;
     }
-    
+
     /**
      * Merger this with other results, forming a new result.
      */
-    public MessageActionResult merge(MessageActionResult ...other) {
-    	LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
-    	results.add(0, this);
-    	List<AbstractRecord> recordList = new LinkedList<>();
-    	List<ProtocolMessage> messageFragmentList = new LinkedList<>();
-    	List<ProtocolMessage> messageList = new LinkedList<>();
+    public MessageActionResult merge(MessageActionResult... other) {
+        LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
+        results.add(0, this);
+        List<AbstractRecord> recordList = new LinkedList<>();
+        List<ProtocolMessage> messageFragmentList = new LinkedList<>();
+        List<ProtocolMessage> messageList = new LinkedList<>();
 
-    	for (MessageActionResult result : results) {
-    		recordList.addAll(result.getRecordList());
-    		messageFragmentList.addAll(result.getMessageFragmentList());
-    		messageList.addAll(result.getMessageList());
-    	}
-    	
-    	return new MessageActionResult(recordList, messageFragmentList, messageList);
+        for (MessageActionResult result : results) {
+            recordList.addAll(result.getRecordList());
+            messageFragmentList.addAll(result.getMessageFragmentList());
+            messageList.addAll(result.getMessageList());
+        }
+
+        return new MessageActionResult(recordList, messageFragmentList, messageList);
     }
 }

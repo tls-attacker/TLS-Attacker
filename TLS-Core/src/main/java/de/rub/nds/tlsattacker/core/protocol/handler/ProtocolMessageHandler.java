@@ -118,29 +118,40 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 prepareAfterParse(parsedMessage);
                 adjustTLSContext(parsedMessage);
 
-                // TODO we should think of a better place for computing the digest
+                // TODO we should think of a better place for computing the
+                // digest
                 if (parsedMessage instanceof HandshakeMessage) {
                     if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                        // The first ClientHello and the HelloVerifyRequest messages
+                        // The first ClientHello and the HelloVerifyRequest
+                        // messages
                         // should not be included in the digest in DTLS
-//                        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-//                            if ((parsedMessage instanceof DtlsHandshakeMessageFragment)
-//                                    && (parsedMessage.getCompleteResultingMessage().getValue()[0] != HandshakeMessageType.HELLO_VERIFY_REQUEST
-//                                            .getValue())) {
-//                            	
-//                                DtlsHandshakeMessageFragment dtlsFragment = (DtlsHandshakeMessageFragment) parsedMessage;
-//                                FragmentManager fragmentManager = tlsContext.getFragmentManager();
-//                                fragmentManager.addMessageFragment(dtlsFragment);
-//                                if (fragmentManager.isFragmentedMessageComplete(dtlsFragment)) {
-//                                    tlsContext.getDigest().append(
-//                                            fragmentManager.getFragmentedMessageAsByteArray(dtlsFragment));
-//                                    fragmentManager.clearFragmentedMessage(dtlsFragment);
-//                                }
-//                                
-//                            }
-//                        } else {
-                            tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-//                        }
+                        // if
+                        // (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS())
+                        // {
+                        // if ((parsedMessage instanceof
+                        // DtlsHandshakeMessageFragment)
+                        // &&
+                        // (parsedMessage.getCompleteResultingMessage().getValue()[0]
+                        // != HandshakeMessageType.HELLO_VERIFY_REQUEST
+                        // .getValue())) {
+                        //
+                        // DtlsHandshakeMessageFragment dtlsFragment =
+                        // (DtlsHandshakeMessageFragment) parsedMessage;
+                        // FragmentManager fragmentManager =
+                        // tlsContext.getFragmentManager();
+                        // fragmentManager.addMessageFragment(dtlsFragment);
+                        // if
+                        // (fragmentManager.isFragmentedMessageComplete(dtlsFragment))
+                        // {
+                        // tlsContext.getDigest().append(
+                        // fragmentManager.getFragmentedMessageAsByteArray(dtlsFragment));
+                        // fragmentManager.clearFragmentedMessage(dtlsFragment);
+                        // }
+                        //
+                        // }
+                        // } else {
+                        tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+                        // }
                     }
                 }
             }
@@ -151,7 +162,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         }
         return new ParserResult(parsedMessage, parser.getPointer());
     }
-    
+
     @Override
     public abstract ProtocolMessageParser getParser(byte[] message, int pointer);
 
