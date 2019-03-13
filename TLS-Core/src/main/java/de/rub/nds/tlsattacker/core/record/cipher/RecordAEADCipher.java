@@ -42,7 +42,7 @@ public class RecordAEADCipher extends RecordCipher {
     /**
      * AEAD tag length in bytes for CCM_8 ciphers
      */
-    public static final int AEAD_CCM_8_TAG_LENGTH = 16;
+    public static final int AEAD_CCM_8_TAG_LENGTH = 8;
 
     /**
      * AEAD iv length in bytes
