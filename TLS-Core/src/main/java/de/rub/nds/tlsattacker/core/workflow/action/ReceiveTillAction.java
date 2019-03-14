@@ -141,8 +141,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         if (waitTillMessage != null) {
             sb.append(" (");
             sb.append(waitTillMessage.toCompactString());
-
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            if (sb.lastIndexOf(",") > 0) {
+                sb.deleteCharAt(sb.lastIndexOf(","));
+            }
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }
