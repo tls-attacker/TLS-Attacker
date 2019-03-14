@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
@@ -1832,7 +1833,7 @@ public class TlsContext {
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
-            throw new ConfigurationException("Unable to initialize the transport handler with: "
+            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
                     + connection.toString(), ex);
         }
     }
