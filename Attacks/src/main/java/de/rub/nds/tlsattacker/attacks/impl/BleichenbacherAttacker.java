@@ -233,11 +233,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
             List<VectorFingerprintPair> bleichenbacherVectorMap) {
-        if (stateVectorPair.getState().getWorkflowTrace().allActionsExecuted()) {
+        if (stateVectorPair.getState().getWorkflowTrace().executedAsPlanned()) {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
             bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
         } else {
-            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.error("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         clearConnections(stateVectorPair.getState());
 
