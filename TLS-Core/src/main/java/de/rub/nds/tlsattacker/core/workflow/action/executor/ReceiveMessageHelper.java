@@ -26,6 +26,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -224,6 +230,28 @@ public class ReceiveMessageHelper {
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
+            TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
+            if (context.getConfig().getDoNotParseInvalidMacOrPadMessages() == Boolean.TRUE
+                    && context.getRecordLayerType() == RecordLayerType.RECORD) {
+                if (!(layer.getDecryptor() instanceof RecordNullCipher)) {
+                    boolean invalid = false;
+                    for (AbstractRecord record : subgroup) {
+                        if (record instanceof Record) {
+                            RecordCryptoComputations computations = ((Record) record).getComputations();
+                            if (computations.getMacValid() != Boolean.TRUE
+                                    || (computations.getPaddingValid() != Boolean.TRUE
+                                    && !(layer.getRecordCipher() instanceof RecordStreamCipher))) {
+                                invalid = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (invalid) {
+                        messages.add(tryHandleAsUnknownMessage(cleanProtocolMessageBytes, 0, context).getMessage());
+                        continue;
+                    }
+                }
+            }
             messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(subgroup), context)));
         }
         return messages;
