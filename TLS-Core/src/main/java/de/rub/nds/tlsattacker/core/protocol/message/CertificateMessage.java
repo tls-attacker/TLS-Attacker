@@ -54,7 +54,7 @@ public class CertificateMessage extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray certificatesListBytes;
 
-    // this enables allows users to also send empty certificates
+    // this allows users to also send empty certificates
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElement(name="certificatesList")
