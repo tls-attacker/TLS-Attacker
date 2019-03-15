@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -232,7 +233,7 @@ public class ReceiveMessageHelper {
         for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
             if (context.getConfig().getDoNotParseInvalidMacOrPadMessages() == Boolean.TRUE
                     && context.getRecordLayerType() == RecordLayerType.RECORD) {
-                TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
+                RecordLayer layer = context.getRecordLayer();
                 if (!(layer.getDecryptorCipher() instanceof RecordNullCipher)) {
                     boolean invalid = false;
                     for (AbstractRecord record : subgroup) {
@@ -240,7 +241,7 @@ public class ReceiveMessageHelper {
                             RecordCryptoComputations computations = ((Record) record).getComputations();
                             if (computations.getMacValid() != Boolean.TRUE
                                     || (computations.getPaddingValid() != Boolean.TRUE
-                                    && !(layer.getRecordCipher() instanceof RecordStreamCipher))) {
+                                    && !(layer.getDecryptorCipher() instanceof RecordStreamCipher))) {
                                 invalid = true;
                                 break;
                             }
