@@ -230,9 +230,9 @@ public class ReceiveMessageHelper {
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
-            TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
             if (context.getConfig().getDoNotParseInvalidMacOrPadMessages() == Boolean.TRUE
                     && context.getRecordLayerType() == RecordLayerType.RECORD) {
+                TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
                 if (!(layer.getDecryptor() instanceof RecordNullCipher)) {
                     boolean invalid = false;
                     for (AbstractRecord record : subgroup) {
