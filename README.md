@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v2.6-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v2.8-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -46,20 +46,22 @@ Although these example applications are very powerful in itself, TLS-Attacker un
 
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
+- Attacks: Implementation of some well-known attacks and vulnerability tests
+- TLS-Client: The client example application
 - TLS-Core: The protocol stack and heart of TLS-Attacker
+- TLS-Forensic: Forensic analysis of TLS traffic
+- TLS-Mitm: A prototype for MitM workflows
+- TLS-Server: The server example application
 - Transport: Transport utilities for lower layers
 - Utils: A collection of utility classes
-- TLS-Client: The client example application
-- TLS-Server: The server example application
-- Attacks: Implementation of some well-known attacks and vulnerability tests.
-- TLS-Mitm: A prototype for MitM workflows
+
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
 
 ## Features
 Currently, the following features are supported:
-- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346), 1.2 (RFC-5246), and 1.3 (RFC 8446)
+- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346), 1.2 (RFC-5246), and 1.3 (RFC-8446)
 - SSL 2 (Partially supported)
 - (EC)DH(E), RSA, PSK, SRP, GOST and ANON key exchange algorithms
 - CBC, AEAD and Streamciphers (AES, CAMELLIA, DES, 3DES, IDEA, RC2, ARIA, GOST_28147_CNT_IMIT, RC4, SEED, NULL)
@@ -77,15 +79,16 @@ Currently, the following features are supported:
 ## Usage
 Here we present some very simple examples on using TLS-Attacker.
 
-First, you need to start a TLS server (*please do not use public servers*). For example, you can use an OpenSSL test server:
+First, you need to start a TLS server (*please do not use public servers*). Please run the keygen.sh script if not done before. For example, you can use an OpenSSL test server:
 ```
 $ cd TLS-Attacker/resources
 $ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem
 ```
-This command starts a TLS server on a port 4433 (please run the keygen.sh script if not done before).
+This command starts a TLS server on a port 4433.
 
 If you want to connect to a server, you can use this command:
 ```bash
+$ cd TLS-Attacker/apps
 $ java -jar TLS-Client.jar -connect localhost:4433
 ```
 *Note: If this Handshake fails, it is probably because you did not specify a concrete cipher suite. TLS-Attacker will not completely respect server selected cipher suites.*
@@ -100,15 +103,14 @@ The Attacks module contains some attacks, you can for example test for the paddi
 $ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```
 
-In case you are a more experienced developer, you can create your own TLS message flow. By writing Java code. For example:
+In case you are a more experienced developer, you can create your own TLS message flow by writing Java code. For example:
 ```java
 Config config = Config.createConfig();
 WorkflowTrace trace = new WorkflowTrace();
 trace.addTlsAction(new SendAction(new ClientHelloMessage()));
 trace.addTlsAction(new ReceiveAction(new ServerHelloMessage()));
 State state = new State(config, trace);
-DefaultWorkflowExecutor executor = new
-DefaultWorkflowExecutor(state);
+DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
 TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other.
@@ -123,7 +125,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
         <messages>
             <ClientHello>
                 <extensions>
-                    <ECPointFormat/>#
+                    <ECPointFormat/>
                     <HeartbeatExtension/>
                     <EllipticCurves/>
                 </extensions>
@@ -158,7 +160,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
     </Receive>
 </workflowTrace>
 ```
-Given this XML structure is located in workflow.xml, you would just need to execute:
+Given this XML structure is located in TLS-Attacker/apps/workflow.xml, you would just need to execute:
 ```bash
 $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 ```
@@ -182,7 +184,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <messages>
             <ClientHello>
                 <extensions>
-                    <ECPointFormat/>#
+                    <ECPointFormat/>
                     <HeartbeatExtension/>
                     <EllipticCurves/>
                 </extensions>
@@ -221,13 +223,13 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                 <payloadLength>
                 <integerExplicitValueModification>
                     <explicitValue>20000</explicitValue>
-                    </integerExplicitValueModification>
+                </integerExplicitValueModification>
                 </payloadLength>
             </Heartbeat>
 	</messages>
     </Send>
     <Receive>
-		<Heartbeat/>
+      <Heartbeat/>
     </Receive>
 </workflowTrace>
 ```
@@ -269,7 +271,7 @@ TLS-Attacker was furthermore used in the following scientific papers and project
 - Tibor Jager, Jörg Schwenk, Juraj Somorovsky. On the Security of TLS 1.3 and QUIC Against Weaknesses in PKCS#1 v1.5 Encryption. ACM CCS'15. https://www.nds.rub.de/research/publications/ccs15/
 - Tibor Jager, Jörg Schwenk, Juraj Somorovsky. Practical Invalid Curve Attacks on TLS-ECDH. ESORICS'15. https://www.nds.rub.de/research/publications/ESORICS15/
 - Quellcode-basierte Untersuchung von kryptographisch relevanten Aspekten der OpenSSL-Bibliothek. https://www.bsi.bund.de/DE/Publikationen/Studien/OpenSSL-Bibliothek/opensslbibliothek.html
-- Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptotechnologie/Kryptobibliothek/kryptobibliothek_node.html
+- Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptografie_Kryptotechnologie/Kryptografie/Kryptobibliothek/kryptobibliothek_node.html
 - Yuan Xiao, Mengyuan Li, Sanchuan Chen, Yinqian Zhang. Stacco: Differentially Analyzing Side-Channel Traces for Detecting SSL/TLS Vulnerabilities in Secure Enclaves. CCS'17. http://web.cse.ohio-state.edu/~zhang.834/papers/ccs17a.pdf
 
 If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky ) or at https://www.hackmanit.de/.
