@@ -79,7 +79,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 adjustTLSContext(message);
                 if (message instanceof HandshakeMessage) {
                     if (((HandshakeMessage) message).getIncludeInDigest()) {
-                        LOGGER.info("Included in digest: " + message.toCompactString());
+                        LOGGER.debug("Included in digest: " + message.toCompactString());
                         tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                     }
 
@@ -88,8 +88,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                     // DTLS
                     tlsContext.increaseMessageSequenceNumber();
                 }
-            } else {
-                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
             }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
@@ -117,10 +115,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             if (!onlyParse) {
                 prepareAfterParse(parsedMessage);
                 adjustTLSContext(parsedMessage);
-                
+
                 if (parsedMessage.isHandshakeMessage()) {
                     if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                    	LOGGER.info("Included in digest: " + parsedMessage.toCompactString());
+                        LOGGER.debug("Included in digest: " + parsedMessage.toCompactString());
                         tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
                     }
                 }

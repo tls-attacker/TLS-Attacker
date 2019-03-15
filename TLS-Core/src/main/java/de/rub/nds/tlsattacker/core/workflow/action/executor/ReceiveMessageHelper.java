@@ -400,9 +400,6 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, onlyParse);
     }
 
-    /*
-     * @return ParserResult, if the message is null it should be ignored.
-     */
     private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
         DtlsHandshakeMessageFragmentHandler fragmentHandler = new DtlsHandshakeMessageFragmentHandler(context);
@@ -539,8 +536,7 @@ public class ReceiveMessageHelper {
         }
 
         // we then process all the fragmented messages with increasing message
-        // seq
-        // until we until we arrive at a message seq for which no fragmented
+        // seq until we until we arrive at a message seq for which no fragmented
         // message was formed
         DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(context
                 .getNextReceiveSequenceNumber());
@@ -552,10 +548,8 @@ public class ReceiveMessageHelper {
         }
 
         // we finally process fragmented messages whose sequence number is
-        // out-of-order
-        // note that we do not update the TLS context for these messages, we
-        // only do that
-        // for in-order messages
+        // out-of-order note that we do not update the TLS context for
+        // these messages, we only do that for in-order messages
         Set<Integer> fragmentSeq = new HashSet<Integer>();
         for (DtlsHandshakeMessageFragment fragment : fragments) {
             fragmentedMessage = manager.getFragmentedMessage(fragment);
@@ -598,7 +592,7 @@ public class ReceiveMessageHelper {
             // TODO it is not nice that we are updating receiving digests
             // outside of the message handlers
             if (message.getIncludeInDigest()) {
-            	LOGGER.info("Included in digest fragmented version of: " + message.toCompactString());
+                LOGGER.info("Included in digest fragmented version of: " + message.toCompactString());
                 context.getDigest().append(fragment.getCompleteResultingMessage().getOriginalValue());
             }
         }

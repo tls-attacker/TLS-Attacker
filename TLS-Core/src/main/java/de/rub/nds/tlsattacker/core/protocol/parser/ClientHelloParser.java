@@ -46,7 +46,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
             msg.setCookieLength(parseByteField(1));
             msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
             if (msg.getCookieLength().getValue() == 0) {
-            	msg.setIncludeInDigest(false);
+                msg.setIncludeInDigest(false);
             }
         }
         parseCipherSuiteLength(msg);

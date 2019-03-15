@@ -69,9 +69,9 @@ public class FragmentManager {
     }
 
     /**
-     * Returns the stored fragmented message with the messageSeq. Returns null
-     * if no message was stored with this message Seq, or if the message is
-     * incomplete.
+     * Returns the stored fragmented message with the given messageSeq as as
+     * single combined fragment. Returns null if no message was stored with this
+     * message Seq, or if the message is incomplete.
      */
     public DtlsHandshakeMessageFragment getFragmentedMessage(Integer messageSeq) {
         FragmentCollector collector = fragments.get(messageSeq);
