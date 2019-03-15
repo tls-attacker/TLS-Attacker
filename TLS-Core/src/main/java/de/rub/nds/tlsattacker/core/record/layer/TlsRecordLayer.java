@@ -224,12 +224,12 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public RecordCipher getEncryptor() {
+    public RecordCipher getEncryptorCipher() {
         return encryptor.getRecordCipher();
     }
 
     @Override
-    public RecordCipher getDecryptor() {
+    public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordCipher();
     }
 

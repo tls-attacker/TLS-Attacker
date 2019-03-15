@@ -65,8 +65,8 @@ public class ResetConnectionActionTest {
         action.execute(state);
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
         assertTrue(layer.getRecordCipher() instanceof RecordNullCipher);
-        assertTrue(layer.getEncryptor() instanceof RecordNullCipher);
-        assertTrue(layer.getDecryptor() instanceof RecordNullCipher);
+        assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);
         assertEquals(tlsContext.getActiveServerKeySetType(), Tls13KeySetType.NONE);
         assertFalse(tlsContext.getTransportHandler().isClosed());

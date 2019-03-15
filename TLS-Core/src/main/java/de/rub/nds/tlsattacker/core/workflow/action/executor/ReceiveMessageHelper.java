@@ -233,7 +233,7 @@ public class ReceiveMessageHelper {
             if (context.getConfig().getDoNotParseInvalidMacOrPadMessages() == Boolean.TRUE
                     && context.getRecordLayerType() == RecordLayerType.RECORD) {
                 TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
-                if (!(layer.getDecryptor() instanceof RecordNullCipher)) {
+                if (!(layer.getDecryptorCipher() instanceof RecordNullCipher)) {
                     boolean invalid = false;
                     for (AbstractRecord record : subgroup) {
                         if (record instanceof Record) {

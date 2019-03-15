@@ -50,9 +50,9 @@ public abstract class RecordLayer {
 
     public abstract void updateDecryptionCipher();
 
-    public abstract RecordCipher getEncryptor();
+    public abstract RecordCipher getEncryptorCipher();
 
-    public abstract RecordCipher getDecryptor();
+    public abstract RecordCipher getDecryptorCipher();
 
     public abstract AbstractRecord getFreshRecord();
 

@@ -47,8 +47,8 @@ public class ActivateEncryptionActionTest {
         assertTrue(action.isExecuted());
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
         assertFalse(layer.getRecordCipher() instanceof RecordNullCipher);
-        assertFalse(layer.getEncryptor() instanceof RecordNullCipher);
-        assertFalse(layer.getDecryptor() instanceof RecordNullCipher);
+        assertFalse(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertFalse(layer.getDecryptorCipher() instanceof RecordNullCipher);
     }
 
     @Test
