@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.transport.udp.stream;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
 public class UdpInputStream extends InputStream {
@@ -19,6 +20,11 @@ public class UdpInputStream extends InputStream {
     private final static int BUFFER_SIZE = 16384;
 
     private DatagramSocket socket = null;
+
+    /*
+     * Stores the address of the originator of the last datagram.
+     */
+    private SocketAddress remoteAddress = null;
 
     private final byte[] dataBuffer = new byte[BUFFER_SIZE];
 
@@ -58,10 +64,17 @@ public class UdpInputStream extends InputStream {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
         try {
             socket.receive(packet);
+            SocketAddress address = packet.getSocketAddress();
+            if (address != null)
+                remoteAddress = address;
             index = 0;
             packetSize = packet.getLength();
         } catch (SocketTimeoutException E) {
             packet = null;
         }
+    }
+
+    public SocketAddress getRemoteAddress() {
+        return remoteAddress;
     }
 }

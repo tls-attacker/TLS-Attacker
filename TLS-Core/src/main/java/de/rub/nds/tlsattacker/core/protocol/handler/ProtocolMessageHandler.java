@@ -79,7 +79,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 adjustTLSContext(message);
                 if (message instanceof HandshakeMessage) {
                     if (((HandshakeMessage) message).getIncludeInDigest()) {
-                        LOGGER.debug("Digested " + message.toCompactString());
+                        LOGGER.info("Included in digest: " + message.toCompactString());
                         tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                     }
 
@@ -117,41 +117,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             if (!onlyParse) {
                 prepareAfterParse(parsedMessage);
                 adjustTLSContext(parsedMessage);
-
-                // TODO we should think of a better place for computing the
-                // digest
-                if (parsedMessage instanceof HandshakeMessage) {
+                
+                if (parsedMessage.isHandshakeMessage()) {
                     if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                        // The first ClientHello and the HelloVerifyRequest
-                        // messages
-                        // should not be included in the digest in DTLS
-                        // if
-                        // (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS())
-                        // {
-                        // if ((parsedMessage instanceof
-                        // DtlsHandshakeMessageFragment)
-                        // &&
-                        // (parsedMessage.getCompleteResultingMessage().getValue()[0]
-                        // != HandshakeMessageType.HELLO_VERIFY_REQUEST
-                        // .getValue())) {
-                        //
-                        // DtlsHandshakeMessageFragment dtlsFragment =
-                        // (DtlsHandshakeMessageFragment) parsedMessage;
-                        // FragmentManager fragmentManager =
-                        // tlsContext.getFragmentManager();
-                        // fragmentManager.addMessageFragment(dtlsFragment);
-                        // if
-                        // (fragmentManager.isFragmentedMessageComplete(dtlsFragment))
-                        // {
-                        // tlsContext.getDigest().append(
-                        // fragmentManager.getFragmentedMessageAsByteArray(dtlsFragment));
-                        // fragmentManager.clearFragmentedMessage(dtlsFragment);
-                        // }
-                        //
-                        // }
-                        // } else {
+                    	LOGGER.info("Included in digest: " + parsedMessage.toCompactString());
                         tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-                        // }
                     }
                 }
             }

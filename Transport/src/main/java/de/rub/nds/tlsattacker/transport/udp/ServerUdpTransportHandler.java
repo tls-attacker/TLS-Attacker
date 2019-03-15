@@ -8,23 +8,46 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
+
 public class ServerUdpTransportHandler extends TransportHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /*
+     * The first time we wait for a message, we wait longer, in order to give
+     * enough time for a tested client to respond.
+     */
+    public static final int DEFAULT_FIRST_TIMEOUT = 10000;
 
     private final int port;
 
     private DatagramSocket socket;
 
-    public ServerUdpTransportHandler(long timeout, int port) {
+    private UdpInputStream udpInputStream;
+
+    private boolean isFirstTimeout;
+
+    private final long firstTimeout;
+
+    public ServerUdpTransportHandler(long timeout, int port, long firstTimeout) {
         super(timeout, ConnectionEndType.SERVER);
         this.port = port;
+        this.firstTimeout = firstTimeout;
+    }
+
+    public ServerUdpTransportHandler(long timeout, int port) {
+        this(timeout, port, DEFAULT_FIRST_TIMEOUT);
     }
 
     @Override
@@ -36,9 +59,38 @@ public class ServerUdpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        socket = new DatagramSocket();
+        socket = new DatagramSocket(port);
         socket.setSoTimeout((int) getTimeout());
-        setStreams(new PushbackInputStream(new UdpInputStream(socket)), new UdpOutputStream(socket));
+        udpInputStream = new UdpInputStream(socket);
+        isFirstTimeout = true;
+        setStreams(new PushbackInputStream(udpInputStream), new UdpOutputStream(socket));
+
+    }
+
+    public void sendData(byte[] data) throws IOException {
+        if (socket.isConnected()) {
+            super.sendData(data);
+        } else {
+            LOGGER.error("Socket is not connected. Not sending.");
+        }
+    }
+
+    public byte[] fetchData() throws IOException {
+        byte[] bytes = new byte[] {};
+        if (isFirstTimeout) {
+            long time = System.currentTimeMillis();
+            do {
+                bytes = super.fetchData();
+            } while (bytes.length == 0 && (System.currentTimeMillis() - time) < firstTimeout);
+            isFirstTimeout = false;
+        } else {
+            bytes = super.fetchData();
+        }
+
+        if (!socket.isConnected() && udpInputStream.getRemoteAddress() != null) {
+            socket.connect(udpInputStream.getRemoteAddress());
+        }
+        return bytes;
     }
 
     @Override

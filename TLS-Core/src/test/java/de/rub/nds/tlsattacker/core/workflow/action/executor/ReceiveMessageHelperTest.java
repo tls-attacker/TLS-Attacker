@@ -134,4 +134,18 @@ public class ReceiveMessageHelperTest {
         assertEquals(0, context.getDigest().getRawBytes().length);
     }
 
+    /**
+     * Tests behavior if multiple retransmissions of the same message are
+     * received.
+     */
+    @Test
+    public void testReceiveDTLSMessagesManyRepeats() {
+        context.setNextReceiveSequenceNumber(0);
+        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
+                DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2, DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2);
+        assertEquals(6, result.getMessageFragmentList().size());
+        assertEquals(1, result.getMessageList().size());
+    }
+
 }

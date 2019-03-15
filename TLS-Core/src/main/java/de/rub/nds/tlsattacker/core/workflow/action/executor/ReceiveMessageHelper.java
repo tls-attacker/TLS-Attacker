@@ -598,6 +598,7 @@ public class ReceiveMessageHelper {
             // TODO it is not nice that we are updating receiving digests
             // outside of the message handlers
             if (message.getIncludeInDigest()) {
+            	LOGGER.info("Included in digest fragmented version of: " + message.toCompactString());
                 context.getDigest().append(fragment.getCompleteResultingMessage().getOriginalValue());
             }
         }

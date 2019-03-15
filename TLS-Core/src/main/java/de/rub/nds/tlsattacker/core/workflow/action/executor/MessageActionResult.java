@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 
 public class MessageActionResult {
 
@@ -67,6 +66,6 @@ public class MessageActionResult {
             messageList.addAll(result.getMessageList());
         }
 
-        return new MessageActionResult(recordList, messageFragmentList, messageList);
+        return new MessageActionResult(recordList, messageList, messageFragmentList);
     }
 }
