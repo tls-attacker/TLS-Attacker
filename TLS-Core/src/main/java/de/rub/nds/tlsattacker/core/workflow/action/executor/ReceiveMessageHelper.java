@@ -29,10 +29,10 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -239,9 +239,11 @@ public class ReceiveMessageHelper {
                     for (AbstractRecord record : subgroup) {
                         if (record instanceof Record) {
                             RecordCryptoComputations computations = ((Record) record).getComputations();
-                            if (computations.getMacValid() != Boolean.TRUE
+                            if ((computations.getMacValid() != Boolean.TRUE
+                                    && (layer.getDecryptorCipher() instanceof RecordStreamCipher
+                                    || layer.getDecryptorCipher() instanceof RecordBlockCipher))
                                     || (computations.getPaddingValid() != Boolean.TRUE
-                                    && !(layer.getDecryptorCipher() instanceof RecordStreamCipher))) {
+                                    && layer.getDecryptorCipher() instanceof RecordBlockCipher)) {
                                 invalid = true;
                                 break;
                             }
