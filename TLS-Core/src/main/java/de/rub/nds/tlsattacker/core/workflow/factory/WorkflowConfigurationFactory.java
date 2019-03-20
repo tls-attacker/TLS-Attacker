@@ -166,11 +166,27 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
+     * Creates an Empty - or almost Empty Workflowtrace, depending on the
+     * Startls flag in the config
+     *
+     * @param connection
+     * @return
+     */
+    public WorkflowTrace createTlsEntryWorkflowtrace(AliasedConnection connection) {
+        WorkflowTrace workflowTrace = new WorkflowTrace();
+
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+        }
+        return workflowTrace;
+    }
+
+    /**
      * Create a hello workflow for the default connection end defined in config.
      *
      * @return A HelloWorkflow
      */
-    public WorkflowTrace createHelloWorkflow() {
+    private WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getConnection());
     }
 
@@ -178,11 +194,7 @@ public class WorkflowConfigurationFactory {
      * Create a hello workflow for the given connection end.
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = new WorkflowTrace();
-
-        if (config.getStarttlsType() != StarttlsType.NONE) {
-            addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
-        }
+        WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
