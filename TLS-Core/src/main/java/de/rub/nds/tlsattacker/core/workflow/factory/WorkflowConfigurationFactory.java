@@ -147,7 +147,7 @@ public class WorkflowConfigurationFactory {
 
     private AliasedConnection getConnection() {
         AliasedConnection con = null;
-        if (null == mode) {
+        if (mode == null) {
             throw new ConfigurationException("Running mode not set, can't configure workflow");
         } else {
             switch (mode) {
@@ -800,8 +800,7 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    private WorkflowTrace addStartTlsActions(AliasedConnection connection, StarttlsType type,
-            WorkflowTrace workflowTrace) {
+    public WorkflowTrace addStartTlsActions(AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
         switch (type) {
             case FTP: {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
