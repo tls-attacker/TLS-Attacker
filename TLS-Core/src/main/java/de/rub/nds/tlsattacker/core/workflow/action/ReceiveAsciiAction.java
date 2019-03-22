@@ -12,15 +12,19 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ReceiveAsciiAction extends MessageAction {
+public class ReceiveAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ReceiveAsciiAction() {
-        super();
+    private String receivedAsciiString;
+
+    public ReceiveAsciiAction(String asciiText, String encoding) {
+        super(asciiText, encoding);
+        receivedAsciiString = null;
     }
 
     @Override
@@ -33,12 +37,18 @@ public class ReceiveAsciiAction extends MessageAction {
 
         try {
             LOGGER.info("Receiving ASCII message...");
+
+            byte[] fetchData = tlsContext.getTransportHandler().fetchData();
+            receivedAsciiString = new String(fetchData, getEncoding());
             setExecuted(true);
-            tlsContext.getTransportHandler().fetchData();
         } catch (IOException E) {
             LOGGER.debug(E);
             setExecuted(false);
         }
+    }
+
+    public String getReceivedAsciiString() {
+        return receivedAsciiString;
     }
 
     @Override
@@ -48,7 +58,6 @@ public class ReceiveAsciiAction extends MessageAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return Objects.equals(receivedAsciiString, getAsciiText());
     }
-
 }

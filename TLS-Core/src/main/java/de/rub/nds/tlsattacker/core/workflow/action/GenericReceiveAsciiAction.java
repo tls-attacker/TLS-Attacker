@@ -15,30 +15,26 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendAsciiAction extends AsciiAction {
+public class GenericReceiveAsciiAction extends MessageAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SendAsciiAction(String asciiString, String encoding) {
-        super(asciiString, encoding);
-    }
-
-    public SendAsciiAction(String encoding) {
-        super(encoding);
+    public GenericReceiveAsciiAction(String encoding) {
+        super();
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext();
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-
         try {
-            LOGGER.info("Sending ASCII message: " + getAsciiText());
-            tlsContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
+            LOGGER.info("Receiving ASCII message...");
+            byte[] fetchData = tlsContext.getTransportHandler().fetchData();
             setExecuted(true);
+
         } catch (IOException E) {
             LOGGER.debug(E);
             setExecuted(false);
@@ -54,4 +50,5 @@ public class SendAsciiAction extends AsciiAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
+
 }

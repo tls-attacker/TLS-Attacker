@@ -106,4 +106,30 @@ public class ConnectivityChecker {
             return false;
         }
     }
+
+    public boolean speaksStartTls(Config config) {
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
+        trace.removeTlsAction(trace.getTlsActions().size() - 1);
+        ReceiveTillAction receiveTillAction = new ReceiveTillAction(new ServerHelloDoneMessage());
+        trace.addTlsAction(receiveTillAction);
+        State state = new State(config, trace);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+        executor.executeWorkflow();
+        if (receiveTillAction.getRecords().size() > 0) {
+            if (receiveTillAction.getRecords().get(0) instanceof Record) {
+                return true;
+            } else {
+                for (ProtocolMessage message : receiveTillAction.getReceivedMessages()) {
+                    if (message instanceof ServerHelloMessage || message instanceof ServerHelloDoneMessage
+                            || message instanceof SSL2ServerHelloMessage) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

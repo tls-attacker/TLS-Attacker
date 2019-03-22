@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MessageActionFactory {
+
     public static MessageAction createAction(AliasedConnection connection, ConnectionEndType sendingConnectionEndType,
             ProtocolMessage... protocolMessages) {
         return createAction(connection, sendingConnectionEndType, new ArrayList<>(Arrays.asList(protocolMessages)));
@@ -33,13 +34,13 @@ public class MessageActionFactory {
         return action;
     }
 
-    public static MessageAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-            String message) {
-        MessageAction action;
+    public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
+            String message, String encoding) {
+        AsciiAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAsciiAction(message);
+            action = new SendAsciiAction(message, encoding);
         } else {
-            action = new ReceiveAsciiAction();
+            action = new Generic(message, encoding);
         }
         return action;
     }

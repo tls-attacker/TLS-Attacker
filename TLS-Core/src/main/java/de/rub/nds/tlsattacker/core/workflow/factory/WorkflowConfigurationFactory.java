@@ -655,7 +655,7 @@ public class WorkflowConfigurationFactory {
 
         List<CipherSuite> removeCiphers = CipherSuite.getImplemented();
         removeCiphers.addAll(CipherSuite.getNotImplemented());
-        List<CipherSuite> keepCiphers = new ArrayList();
+        List<CipherSuite> keepCiphers = new ArrayList<>();
         for (CipherSuite cs : removeCiphers) {
             if (cs.name().startsWith("TLS_RSA")) {
                 keepCiphers.add(cs);
@@ -664,7 +664,7 @@ public class WorkflowConfigurationFactory {
         removeCiphers.removeAll(keepCiphers);
 
         List<ExtensionType> removeExtensions = ExtensionType.getReceivable();
-        List<ExtensionType> keepExtensions = new ArrayList();
+        List<ExtensionType> keepExtensions = new ArrayList<>();
         // keepExtensions.add(ExtensionType.EXTENDED_MASTER_SECRET);
         removeExtensions.removeAll(keepExtensions);
 
@@ -816,52 +816,52 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP: {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage()));
+                        StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.FTP_TLS.getStarttlsMessage()));
+                        StarttlsMessage.FTP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.FTP_S_READY.getStarttlsMessage()));
+                        StarttlsMessage.FTP_S_READY.getStarttlsMessage(), "US-ASCII"));
                 return workflowTrace;
             }
             case IMAP: {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage()));
+                        StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage()));
+                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage()));
+                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.IMAP_TLS.getStarttlsMessage()));
+                        StarttlsMessage.IMAP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.IMAP_S_READY.getStarttlsMessage()));
+                        StarttlsMessage.IMAP_S_READY.getStarttlsMessage(), "US-ASCII"));
                 return workflowTrace;
             }
             case POP3: {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage()));
+                        StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.POP3_TLS.getStarttlsMessage()));
+                        StarttlsMessage.POP3_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.POP3_S_READY.getStarttlsMessage()));
+                        StarttlsMessage.POP3_S_READY.getStarttlsMessage(), "US-ASCII"));
                 return workflowTrace;
             }
             case SMTP: {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_OK.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.SMTP_TLS.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_READY.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_READY.getStarttlsMessage(), "US-ASCII"));
                 return workflowTrace;
             }
         }
