@@ -130,8 +130,8 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = SendAction.class, name = "Send"),
-            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
-            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
+            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
+            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
@@ -376,7 +376,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()) {
+                LOGGER.error("Action " + action.toCompactString() + " did not execute as planned");
                 return false;
+            } else {
+                LOGGER.error("Action " + action.toCompactString() + " executed as planned");
             }
         }
         return true;
