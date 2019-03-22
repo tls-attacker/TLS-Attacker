@@ -22,6 +22,10 @@ public class ReceiveAsciiAction extends AsciiAction {
 
     private String receivedAsciiString;
 
+    public ReceiveAsciiAction() {
+        super();
+    }
+
     public ReceiveAsciiAction(String asciiText, String encoding) {
         super(asciiText, encoding);
         receivedAsciiString = null;

@@ -14,6 +14,11 @@ public abstract class AsciiAction extends TlsAction {
 
     private final String encoding;
 
+    protected AsciiAction() {
+        asciiText = null;
+        encoding = null;
+    }
+
     public AsciiAction(String asciiText, String encoding) {
         this.asciiText = asciiText;
         this.encoding = encoding;
@@ -32,7 +37,8 @@ public abstract class AsciiAction extends TlsAction {
     }
 
     /**
-     * @param asciiText the asciiText to set
+     * @param asciiText
+     *            the asciiText to set
      */
     public void setAsciiText(String asciiText) {
         this.asciiText = asciiText;

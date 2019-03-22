@@ -15,12 +15,12 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GenericReceiveAsciiAction extends MessageAction {
+public class GenericReceiveAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public GenericReceiveAsciiAction(String encoding) {
-        super();
+        super(encoding);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class GenericReceiveAsciiAction extends MessageAction {
         try {
             LOGGER.info("Receiving ASCII message...");
             byte[] fetchData = tlsContext.getTransportHandler().fetchData();
+            setAsciiText(new String(fetchData, getEncoding()));
             setExecuted(true);
-
         } catch (IOException E) {
             LOGGER.debug(E);
             setExecuted(false);

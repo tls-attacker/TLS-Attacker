@@ -40,7 +40,7 @@ public class MessageActionFactory {
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAsciiAction(message, encoding);
         } else {
-            action = new Generic(message, encoding);
+            action = new GenericReceiveAsciiAction(encoding);
         }
         return action;
     }

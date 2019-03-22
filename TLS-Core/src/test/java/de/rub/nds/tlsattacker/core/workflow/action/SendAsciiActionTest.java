@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SendAsciiActionTest {
+
     private State state;
     private TlsContext tlsContext;
     private final String expString = "STARTTLS";
@@ -86,6 +87,6 @@ public class SendAsciiActionTest {
      */
     @Test
     public void testGetAsciiString() {
-        assertEquals(action.getAsciiString(), expString);
+        assertEquals(action.getAsciiText(), expString);
     }
 }
