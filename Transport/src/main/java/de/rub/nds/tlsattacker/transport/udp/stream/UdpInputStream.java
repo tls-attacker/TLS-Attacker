@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.transport.udp.stream;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
 public class UdpInputStream extends InputStream {
@@ -21,19 +20,30 @@ public class UdpInputStream extends InputStream {
 
     private DatagramSocket socket = null;
 
-    /*
-     * Stores the address of the originator of the last datagram.
+    /**
+     * A buffer used to store the content of received datagrams.
      */
-    private SocketAddress remoteAddress = null;
-
     private final byte[] dataBuffer = new byte[BUFFER_SIZE];
 
+    /**
+     * The size of the last received datagram
+     */
     private int packetSize = 0;
 
+    /**
+     * The index of the next byte to be read in the datagram
+     */
     private int index = 0;
 
-    public UdpInputStream(DatagramSocket socket) {
+    /**
+     * If set to true, on datagram receipt it connects the socket to the datagram's source address.
+     * This is useful if the source address is not pre-set, such as in {@link} ServerUdpTransportHandler}'s case.
+     */
+	private boolean connectOnReceive;
+
+    public UdpInputStream(DatagramSocket socket, boolean connectOnReceive) {
         this.socket = socket;
+        this.connectOnReceive = connectOnReceive;
     }
 
     @Override
@@ -43,13 +53,18 @@ public class UdpInputStream extends InputStream {
         }
     }
 
+    /**
+     * Blocks until data is received from a UDP peer. 
+     * Will never return -1, as UDP has no mechanism of notifying that all data has been sent.
+     * To avoid blocking indefinitely, should be called only once data is available.
+     */
     @Override
     public int read() throws IOException {
-        if (index == packetSize) {
-            return -1;
-        }
+    	// we wait until data is available
+        while (available() == 0);
+	    
         index++;
-        return dataBuffer[index - 1] & 0xff;
+	    return dataBuffer[index - 1] & 0xff;
     }
 
     @Override
@@ -60,21 +75,23 @@ public class UdpInputStream extends InputStream {
         return packetSize - index;
     }
 
-    private void receive() throws IOException {
+    /*
+     * Receives a packet or times out. On receipt, updates packetSize and index.
+     */
+    private DatagramPacket receive() throws IOException {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
         try {
             socket.receive(packet);
-            SocketAddress address = packet.getSocketAddress();
-            if (address != null)
-                remoteAddress = address;
             index = 0;
             packetSize = packet.getLength();
+            
+            if (connectOnReceive && !socket.isConnected()) {
+            	socket.connect(packet.getSocketAddress());
+            }
         } catch (SocketTimeoutException E) {
             packet = null;
         }
-    }
-
-    public SocketAddress getRemoteAddress() {
-        return remoteAddress;
+        
+        return packet;
     }
 }

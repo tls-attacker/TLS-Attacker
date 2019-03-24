@@ -24,30 +24,13 @@ public class ServerUdpTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-     * The first time we wait for a message, we wait longer, in order to give
-     * enough time for a tested client to respond.
-     */
-    public static final int DEFAULT_FIRST_TIMEOUT = 10000;
-
     private final int port;
 
     private DatagramSocket socket;
 
-    private UdpInputStream udpInputStream;
-
-    private boolean isFirstTimeout;
-
-    private final long firstTimeout;
-
-    public ServerUdpTransportHandler(long timeout, int port, long firstTimeout) {
-        super(timeout, ConnectionEndType.SERVER);
-        this.port = port;
-        this.firstTimeout = firstTimeout;
-    }
-
     public ServerUdpTransportHandler(long timeout, int port) {
-        this(timeout, port, DEFAULT_FIRST_TIMEOUT);
+    	 super(timeout, ConnectionEndType.SERVER, false);
+         this.port = port;
     }
 
     @Override
@@ -61,36 +44,22 @@ public class ServerUdpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
         socket.setSoTimeout((int) getTimeout());
-        udpInputStream = new UdpInputStream(socket);
-        isFirstTimeout = true;
-        setStreams(new PushbackInputStream(udpInputStream), new UdpOutputStream(socket));
-
+        setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
+        // this could be made an option
+        waitOnReceive();
     }
-
-    public void sendData(byte[] data) throws IOException {
-        if (socket.isConnected()) {
-            super.sendData(data);
-        } else {
-            LOGGER.error("Socket is not connected. Not sending.");
-        }
-    }
-
-    public byte[] fetchData() throws IOException {
-        byte[] bytes = new byte[] {};
-        if (isFirstTimeout) {
-            long time = System.currentTimeMillis();
-            do {
-                bytes = super.fetchData();
-            } while (bytes.length == 0 && (System.currentTimeMillis() - time) < firstTimeout);
-            isFirstTimeout = false;
-        } else {
-            bytes = super.fetchData();
-        }
-
-        if (!socket.isConnected() && udpInputStream.getRemoteAddress() != null) {
-            socket.connect(udpInputStream.getRemoteAddress());
-        }
-        return bytes;
+    
+    /*
+     * Provides a routine equivalent to TCP's accept method. Blocks until a client "connects",
+     * meaning that data is available to be read. 
+     */
+    private void waitOnReceive() throws IOException{
+    	while (inStream.available() == 0) {
+    		try {
+				Thread.sleep(1);
+			} catch (InterruptedException _) {
+			}
+    	}
     }
 
     @Override
