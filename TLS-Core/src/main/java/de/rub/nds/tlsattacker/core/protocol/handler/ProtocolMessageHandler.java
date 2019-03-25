@@ -86,7 +86,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                     // Increase message counter for outgoing handshake messages
                     // for
                     // DTLS
-                    tlsContext.increaseMessageSequenceNumber();
+                    tlsContext.increaseDtlsMessageSequenceNumber();
                 }
             }
         } catch (AdjustmentException E) {

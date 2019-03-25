@@ -61,7 +61,7 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
     }
 
     private void prepareMessageSeq(DtlsHandshakeMessageFragment msg) {
-        msg.setMessageSeq((int) chooser.getContext().getMessageSequenceNumber());
+        msg.setMessageSeq((int) chooser.getContext().getDtlsMessageSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 }

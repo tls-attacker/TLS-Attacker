@@ -467,13 +467,13 @@ public class TlsContext {
     /**
      * sequence number used in DTLS for handshake messages
      */
-    private long messageSequenceNumber = 0;
+    private long dtlsMessageSequenceNumber = 0;
 
     /**
      * sequence number used in DTLS for keeping track of received handshake
      * messages
      */
-    private int nextReceiveSequenceNumber = 0;
+    private int nextDtlsReceiveSequenceNumber = 0;
 
     /**
      * epoch used in DTLS records
@@ -483,7 +483,7 @@ public class TlsContext {
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
-    private FragmentManager fragmentManager;
+    private FragmentManager dtlsFragmentManager;
 
     /**
      * supported protocol versions
@@ -649,7 +649,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
-        fragmentManager = new FragmentManager(config);
+        dtlsFragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {
@@ -715,8 +715,8 @@ public class TlsContext {
         this.epoch = epoch;
     }
 
-    public FragmentManager getFragmentManager() {
-        return fragmentManager;
+    public FragmentManager getDtlsFragmentManager() {
+        return dtlsFragmentManager;
     }
 
     public Session getSession(byte[] sessionId) {
@@ -1279,28 +1279,28 @@ public class TlsContext {
         this.readSequenceNumber++;
     }
 
-    public long getMessageSequenceNumber() {
-        return messageSequenceNumber;
+    public long getDtlsMessageSequenceNumber() {
+        return dtlsMessageSequenceNumber;
     }
 
-    public void setMessageSequenceNumber(long messageSequenceNumber) {
-        this.messageSequenceNumber = messageSequenceNumber;
+    public void setDtlsMessageSequenceNumber(long dtlsMessageSequenceNumber) {
+        this.dtlsMessageSequenceNumber = dtlsMessageSequenceNumber;
     }
 
-    public void increaseMessageSequenceNumber() {
-        this.messageSequenceNumber++;
+    public void increaseDtlsMessageSequenceNumber() {
+        this.dtlsMessageSequenceNumber++;
     }
 
-    public int getNextReceiveSequenceNumber() {
-        return nextReceiveSequenceNumber;
+    public int getDtlsNextReceiveSequenceNumber() {
+        return nextDtlsReceiveSequenceNumber;
     }
 
-    public void setNextReceiveSequenceNumber(int nextReceivedSequenceNumber) {
-        this.nextReceiveSequenceNumber = nextReceivedSequenceNumber;
+    public void setDtlsNextReceiveSequenceNumber(int nextDtlsReceivedSequenceNumber) {
+        this.nextDtlsReceiveSequenceNumber = nextDtlsReceivedSequenceNumber;
     }
 
-    public void increaseNextReceiveSequenceNumber() {
-        nextReceiveSequenceNumber++;
+    public void increaseDtlsNextReceiveSequenceNumber() {
+        nextDtlsReceiveSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

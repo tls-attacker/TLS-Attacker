@@ -97,7 +97,7 @@ public class ReceiveMessageHelperTest {
     @Test
     public void testReceiveDTLSMessages() {
         context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        context.setNextReceiveSequenceNumber(1);
+        context.setDtlsNextReceiveSequenceNumber(1);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
                 DTLS.REC_SERVER_HELLO_DONE);
         assertEquals(3, result.getMessageFragmentList().size());
@@ -108,7 +108,7 @@ public class ReceiveMessageHelperTest {
     @Test
     public void testReceiveDTLSMessagesDisorderly() {
         context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        context.setNextReceiveSequenceNumber(1);
+        context.setDtlsNextReceiveSequenceNumber(1);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_DONE,
                 DTLS.REC_SERVER_HELLO_F2);
         assertEquals(3, result.getMessageFragmentList().size());
@@ -118,7 +118,7 @@ public class ReceiveMessageHelperTest {
 
     @Test
     public void testReceiveDTLSMessagesSeparatelyDisorderly() {
-        context.setNextReceiveSequenceNumber(0);
+        context.setDtlsNextReceiveSequenceNumber(0);
         context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1);
         assertEquals(1, result.getMessageFragmentList().size());
@@ -140,7 +140,7 @@ public class ReceiveMessageHelperTest {
      */
     @Test
     public void testReceiveDTLSMessagesManyRepeats() {
-        context.setNextReceiveSequenceNumber(0);
+        context.setDtlsNextReceiveSequenceNumber(0);
         context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
                 DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2, DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2);

@@ -527,7 +527,7 @@ public class ReceiveMessageHelper {
      */
     private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
         // the fragment manager stores all the received message fragments
-        FragmentManager manager = context.getFragmentManager();
+        FragmentManager manager = context.getDtlsFragmentManager();
         List<ProtocolMessage> messages = new LinkedList<>();
 
         // we first add the fragments to the manager
@@ -539,12 +539,12 @@ public class ReceiveMessageHelper {
         // seq until we until we arrive at a message seq for which no fragmented
         // message was formed
         DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(context
-                .getNextReceiveSequenceNumber());
+                .getDtlsNextReceiveSequenceNumber());
         while (fragmentedMessage != null) {
-            context.increaseNextReceiveSequenceNumber();
+            context.increaseDtlsNextReceiveSequenceNumber();
             manager.clearFragmentedMessage(fragmentedMessage);
             messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-            fragmentedMessage = manager.getFragmentedMessage(context.getNextReceiveSequenceNumber());
+            fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber());
         }
 
         // we finally process fragmented messages whose sequence number is
