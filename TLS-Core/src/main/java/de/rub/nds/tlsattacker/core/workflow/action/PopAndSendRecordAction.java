@@ -17,12 +17,14 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PopAndSendRecordAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private Boolean asPlanned = null;
 
     public PopAndSendRecordAction() {
         super();
@@ -33,7 +35,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
@@ -48,7 +50,14 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
             LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
         }
         AbstractRecordSerializer s = record.getRecordSerializer();
-        tlsContext.getTransportHandler().sendData(s.serialize());
+        try {
+            tlsContext.getTransportHandler().sendData(s.serialize());
+            asPlanned = true;
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
+            tlsContext.setReceivedTransportHandlerException(true);
+            asPlanned = false;
+        }
         setExecuted(true);
     }
 
@@ -59,7 +68,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
     }
 
     @Override
@@ -72,6 +81,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         messages = new LinkedList<>();
         records = new LinkedList<>();
         setExecuted(null);
+        asPlanned = null;
     }
 
     @Override

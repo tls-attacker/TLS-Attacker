@@ -48,7 +48,7 @@ public class GeneralAction extends TlsAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

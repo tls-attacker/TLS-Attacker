@@ -34,7 +34,7 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {

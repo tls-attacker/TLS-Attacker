@@ -62,7 +62,7 @@ public class EarlyCcsAction extends TlsAction {
      *             ClientKeyExchange message
      */
     @Override
-    public void execute(State state) throws IOException {
+    public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(AlgorithmResolver
                 .getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
@@ -86,7 +86,7 @@ public class EarlyCcsAction extends TlsAction {
         try {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
             executedAsPlanned = true;
-        } catch (SocketException E) {
+        } catch (IOException E) {
             LOGGER.debug("Could not write Data to stream", E);
             executedAsPlanned = false;
         }

@@ -31,7 +31,7 @@ public class SendAsciiAction extends AsciiAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext();
 
         if (isExecuted()) {
