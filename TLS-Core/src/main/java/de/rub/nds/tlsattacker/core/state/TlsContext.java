@@ -649,7 +649,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
-        fragmentManager = new FragmentManager();
+        fragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {

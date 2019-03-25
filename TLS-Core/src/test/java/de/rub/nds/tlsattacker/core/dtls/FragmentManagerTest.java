@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 
 public class FragmentManagerTest {
@@ -24,7 +25,7 @@ public class FragmentManagerTest {
 
     @Before
     public void setUp() {
-        manager = new FragmentManager();
+        manager = new FragmentManager(Config.createConfig());
     }
 
     @Test

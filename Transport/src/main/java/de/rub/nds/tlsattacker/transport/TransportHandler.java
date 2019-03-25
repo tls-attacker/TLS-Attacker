@@ -67,7 +67,6 @@ public abstract class TransportHandler {
                         // dont ask - the java api does not allow this
                         // otherwise...
                         Thread.sleep(1);
-                        LOGGER.error("Optimizing");
                         int read = inStream.read();
                         if (read == -1) {
                             // TCP FIN

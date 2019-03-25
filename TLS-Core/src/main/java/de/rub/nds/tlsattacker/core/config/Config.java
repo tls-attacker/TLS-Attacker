@@ -258,11 +258,6 @@ public class Config implements Serializable {
     private Boolean sniHostnameFatal = false;
 
     /**
-     * If set to true retransmits wont appear in the workflowtrace
-     */
-    private Boolean ignoreDtlsRetransmits = true;
-
-    /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
@@ -678,8 +673,6 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
-    private Boolean doDTLSRetransmits = false;
-
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -774,13 +767,6 @@ public class Config implements Serializable {
 
     private String defaultApplicationMessageData = "Test";
 
-    /**
-     * If this is set TLS-Attacker only waits for the expected messages in the
-     * ReceiveActions This is interesting for DTLS since this prevents the
-     * server from retransmitting
-     */
-    private Boolean waitOnlyForExpectedDTLS = true;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
@@ -789,11 +775,6 @@ public class Config implements Serializable {
     private Integer heartbeatPayloadLength = 256;
 
     private Integer heartbeatPaddingLength = 256;
-
-    /**
-     * How long should our DTLSCookies be by default
-     */
-    private Integer defaultDTLSCookieLength = 6;
 
     /**
      * How much data we should put into a record by default
@@ -805,6 +786,18 @@ public class Config implements Serializable {
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+
+    /**
+     * How long should our DTLSCookies be by default
+     */
+    private Integer dtlsDefaultCookieLength = 6;
+
+    /**
+     * Enables a check on DTLS fragments ensuring that messages are formed only
+     * from fragments with consistent field values. Fields checked are type,
+     * message length and message seq.
+     */
+    private boolean dtlsOnlyFitting = true;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -910,7 +903,7 @@ public class Config implements Serializable {
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultDtlsCookie = new byte[0];
+    private byte[] dtlsDefaultCookie = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -1737,12 +1730,28 @@ public class Config implements Serializable {
         this.defaultPRFAlgorithm = defaultPRFAlgorithm;
     }
 
-    public byte[] getDefaultDtlsCookie() {
-        return Arrays.copyOf(defaultDtlsCookie, defaultDtlsCookie.length);
+    public byte[] getDtlsDefaultCookie() {
+        return Arrays.copyOf(dtlsDefaultCookie, dtlsDefaultCookie.length);
     }
 
-    public void setDefaultDtlsCookie(byte[] defaultDtlsCookie) {
-        this.defaultDtlsCookie = defaultDtlsCookie;
+    public void setDtlsDefaultCookie(byte[] defaultDtlsCookie) {
+        this.dtlsDefaultCookie = defaultDtlsCookie;
+    }
+
+    public Integer getDtlsDefaultCookieLength() {
+        return dtlsDefaultCookieLength;
+    }
+
+    public void setDtlsDefaultCookieLength(Integer dtlsDefaultCookieLength) {
+        this.dtlsDefaultCookieLength = dtlsDefaultCookieLength;
+    }
+
+    public boolean isDtlsOnlyFitting() {
+        return dtlsOnlyFitting;
+    }
+
+    public void setDtlsOnlyFitting(boolean dtlsOnlyFitting) {
+        this.dtlsOnlyFitting = dtlsOnlyFitting;
     }
 
     public byte[] getDefaultClientSessionId() {
@@ -2110,24 +2119,8 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public Boolean isWaitOnlyForExpectedDTLS() {
-        return waitOnlyForExpectedDTLS;
-    }
-
-    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
-        this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
-    }
-
     public String getDefaultApplicationMessageData() {
         return defaultApplicationMessageData;
-    }
-
-    public Boolean isDoDTLSRetransmits() {
-        return doDTLSRetransmits;
-    }
-
-    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
-        this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
     public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {
@@ -2423,14 +2416,6 @@ public class Config implements Serializable {
 
     public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
         return pskKeyExchangeModes;
-    }
-
-    public Integer getDefaultDTLSCookieLength() {
-        return defaultDTLSCookieLength;
-    }
-
-    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
-        this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
     public Integer getPaddingLength() {
@@ -3271,13 +3256,5 @@ public class Config implements Serializable {
 
     public void setDefaultHandshakeSecret(byte[] defaultHandshakeSecret) {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
-    }
-
-    public Boolean getIgnoreDtlsRetransmits() {
-        return ignoreDtlsRetransmits;
-    }
-
-    public void setIgnoreDtlsRetransmits(Boolean ignoreDtlsRetransmits) {
-        this.ignoreDtlsRetransmits = ignoreDtlsRetransmits;
     }
 }

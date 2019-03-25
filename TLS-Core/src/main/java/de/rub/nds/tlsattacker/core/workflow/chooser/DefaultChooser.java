@@ -282,7 +282,7 @@ public class DefaultChooser extends Chooser {
         if (context.getDtlsCookie() != null) {
             return copy(context.getDtlsCookie());
         } else {
-            return config.getDefaultDtlsCookie();
+            return config.getDtlsDefaultCookie();
         }
     }
 

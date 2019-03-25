@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 
 /**
@@ -25,18 +26,21 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
  *         <fiteraup@yahoo.com>
  */
 public class FragmentManager {
-    private Map<Object, FragmentCollector> fragments;
 
     private static final Logger LOGGER = LogManager.getLogger(FragmentManager.class);
 
-    public FragmentManager() {
+    private Map<Object, FragmentCollector> fragments;
+    private Config config;
+
+    public FragmentManager(Config config) {
         fragments = new HashMap<>();
+        this.config = config;
     }
 
     public void addMessageFragment(DtlsHandshakeMessageFragment fragment) {
         FragmentCollector collector = fragments.get(messageSeq(fragment));
         if (collector == null) {
-            collector = new FragmentCollector();
+            collector = new FragmentCollector(config);
             fragments.put(messageSeq(fragment), collector);
         }
         collector.addFragment(fragment);

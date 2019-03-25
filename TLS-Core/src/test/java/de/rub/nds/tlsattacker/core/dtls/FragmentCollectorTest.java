@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 
 public class FragmentCollectorTest {
@@ -26,7 +27,7 @@ public class FragmentCollectorTest {
 
     @Before
     public void setUp() {
-        collector = new FragmentCollector();
+        collector = new FragmentCollector(Config.createConfig());
     }
 
     /**
