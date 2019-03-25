@@ -135,7 +135,6 @@ public class FingerPrintChecker {
             if (abstractRecord1 instanceof BlobRecord && abstractRecord2 instanceof BlobRecord) {
                 if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1
                         .getCompleteRecordBytes().getValue())) {
-                    System.out.println(new String(abstractRecord1.getCompleteRecordBytes().getValue()));
                     continue;
                 } else {
                     return false;
