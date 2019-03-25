@@ -81,25 +81,36 @@ public class FragmentCollector {
     /**
      * Adds a fragment to the collection, unless the fragment is already
      * contained, or the fragment doesn't fit and
-     * {@link FragmentCollector#onlyFitting} is set to true.
-     * 
-     * <p>
-     * Fragments which "fit" share the same type, length and message sequence
-     * with the first element inserted in the collection.
-     * </p>
+     * {@link FragmentCollector#onlyFitting} is set to true. In case the
+     * collector is empty, also updates the "type" (given by type, message
+     * sequence, message length) of the collector with that of the fragment, .
      * 
      * @return true if the fragment was added or false if it wasn't.
      */
+    // TODO perhaps it would make sense to extract this "type" to a separate
+    // internal class?
+    // instance of this class could be then extracted from the collector and
+    // from the fragment
     public boolean addFragment(DtlsHandshakeMessageFragment fragment) {
-        if (type == null) {
+        if (isEmpty()) {
             type = fragment.getType().getValue();
             messageSeq = fragment.getMessageSeq().getValue();
             messageLength = fragment.getLength().getValue();
         }
 
+        // this is the invariant of the collector
+        assert (messageLength == null && type == null && messageSeq == null)
+                || (messageLength != null && type != null && messageSeq != null);
+
         boolean isFitting = isFitting(fragment);
 
         if (!fragmentData.contains(fragment) && (isFitting || !onlyFitting)) {
+            if (!isFitting) {
+                LOGGER.warn(String.format("Adding an unffiting fragment! \n"
+                        + "(type, message sequence, message length) of collector is "
+                        + "(%s,%s,%s)\n and of added fragment is (%s,%s%s)", type, messageSeq, messageLength, fragment
+                        .getType().getValue(), fragment.getMessageSeq().getValue(), fragment.getLength().getValue()));
+            }
             fragmentData.add(fragment);
             return true;
         } else {
@@ -107,37 +118,34 @@ public class FragmentCollector {
         }
     }
 
+    /**
+     * Returns true for fragments which "fit" the collector, that is they share
+     * the type, length and message sequence with the first fragment added to
+     * the collector. Fragments also fit if the collector is empty.
+     * 
+     * @param fragment
+     * @return true if fragment fits the collector, false if it doesn't
+     */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
         if (type == null) {
             return true;
         } else {
-            if (!fragment.getType().getValue().equals(type)) {
-                LOGGER.warn("Found an unffiting fragment! Type before:" + type + " inserted fragment type:"
-                        + fragment.getType().getValue());
-                return false;
-            } else if (!fragment.getMessageSeq().getValue().equals(messageSeq)) {
-                LOGGER.warn("Found an unffiting fragment! Message seq before:" + messageSeq + " inserted message seq:"
-                        + fragment.getMessageSeq().getValue());
-                return false;
-            } else if (!fragment.getLength().getValue().equals(messageLength)) {
-                LOGGER.warn("Found an unffiting fragment! Message length before:" + messageLength
-                        + " inserted fragment length:" + fragment.getLength().getValue());
-                return false;
-            }
-            return true;
+            return fragment.getType().getValue().equals(type) && fragment.getMessageSeq().getValue().equals(messageSeq)
+                    && fragment.getLength().getValue().equals(messageLength);
         }
     }
 
     /**
-     * Assembles collected messages into a combined fragment. Note that missing
-     * bytes are replaced by 0.
+     * Assembles collected fragments into a combined fragment. Note that missing
+     * bytes are replaced by 0. Throws an exception if the collector
+     * {@link #isEmpty()}.
      */
-    public DtlsHandshakeMessageFragment getCombinedFragment() {
+    public DtlsHandshakeMessageFragment buildCombinedFragment() {
         if (!isMessageComplete()) {
             LOGGER.warn("Returning incompletely received message! Missing pieces are replaced by 0 in content.");
         }
-        if (type == null) {
-            throw new WorkflowExecutionException("DtlsFragmentedMessage does not have type!");
+        if (isEmpty()) {
+            throw new WorkflowExecutionException("The FragmentCollector is empty, cannot build combined fragment!");
         }
 
         DtlsHandshakeMessageFragment message = new DtlsHandshakeMessageFragment();
@@ -184,7 +192,7 @@ public class FragmentCollector {
             byte[] array = stream.toByteArray();
             if (!messageLength.equals(array.length)) {
                 LOGGER.warn("Assembled message length is different than expected message length. "
-                        + "Truncating/filling with 0s.");
+                        + "Truncating/Filling with 0s.");
                 array = Arrays.copyOf(array, messageLength);
             }
             return array;
@@ -195,14 +203,10 @@ public class FragmentCollector {
     }
 
     /**
-     * Assembles the message, serializes it and returns the resulting byte
-     * array.
+     * Returns true if no fragments have been added, false otherwise.
      */
-    public byte[] getCombinedFragmentAsByteArray() {
-        DtlsHandshakeMessageFragment combinedFragment = getCombinedFragment();
-        DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(
-                combinedFragment, null);
-        return serializer.serialize();
+    public boolean isEmpty() {
+        return type == null;
     }
 
     /**
@@ -210,7 +214,7 @@ public class FragmentCollector {
      * message. Otherwise returns false.
      */
     public boolean isMessageComplete() {
-        if (messageLength == null) {
+        if (isEmpty()) {
             return false;
         } else {
             int currentOffset = 0;

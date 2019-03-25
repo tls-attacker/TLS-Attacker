@@ -105,43 +105,120 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test getCombinedFragment in the usual case.
+     * Test isFitting for unfitting fragments.
      */
     @Test
-    public void testGetCombinedFragment() {
+    public void testIsFittingFalse() {
+        collector.addFragment(fragment(0, 0, 7));
+        DtlsHandshakeMessageFragment badSeq = fragment(0, 6, 3);
+        badSeq.setMessageSeq(1000);
+        assertFalse(collector.isFitting(badSeq));
+        DtlsHandshakeMessageFragment badLength = fragment(0, 6, 3);
+        badLength.setLength(1000);
+        assertFalse(collector.isFitting(badLength));
+        DtlsHandshakeMessageFragment badType = fragment(0, 6, 3);
+        badType.setType(Byte.MAX_VALUE);
+        assertFalse(collector.isFitting(badType));
+    }
+
+    /**
+     * Test isEmpty true case.
+     */
+    @Test
+    public void testIsEmptyTrue() {
+        assertTrue(collector.isEmpty());
+    }
+
+    /**
+     * Test isEmpty false case.
+     */
+    @Test
+    public void testIsEmptyFalse() {
+        collector.addFragment(fragment(0, 0, 7));
+        assertFalse(collector.isEmpty());
+    }
+
+    /**
+     * Test isFitting for fragment which has the same type as a previously added
+     * fragment.
+     */
+    @Test
+    public void testIsFittingTrue() {
+        collector.addFragment(fragment(0, 0, 7));
+        DtlsHandshakeMessageFragment frag = fragment(0, 6, 3);
+        assertTrue(collector.isFitting(frag));
+    }
+
+    /**
+     * Test isFitting for fragment which should fit since collector is empty.
+     */
+    @Test
+    public void testIsFittingTrueEmpty() {
+        DtlsHandshakeMessageFragment frag = fragment(0, 6, 3);
+        frag.setMessageSeq(1000);
+        assertTrue(collector.isFitting(frag));
+    }
+
+    /**
+     * Test buildCombinedFragment in the usual case.
+     */
+    @Test
+    public void testbuildCombinedFragment() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 3, original));
         collector.addFragment(fragmentOfMsg(0, 3, 5, original));
         collector.addFragment(fragmentOfMsg(0, 8, 2, original));
-        DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
+        DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
         checkFragment(fragment, 0, 10, original);
     }
 
     /**
-     * Test getCombinedFragment when fragments have been inserted disorderly
+     * Test buildCombinedFragment when fragments have been inserted disorderly
      * with overlaps.
      */
     @Test
-    public void testGetCombinedFragmentDisorderlyOverlap() {
+    public void testbuildCombinedFragmentDisorderlyOverlap() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 5, 5, original));
         collector.addFragment(fragmentOfMsg(0, 0, 3, original));
         collector.addFragment(fragmentOfMsg(0, 2, 4, original));
-        DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
+        DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
         checkFragment(fragment, 0, 10, original);
     }
 
     /**
-     * Test getCombinedFragment when not all bytes have been received.
+     * Test buildCombinedFragment when not all bytes have been received.
      */
     @Test
-    public void testGetCombinedFragmentIncomplete() {
+    public void testbuildCombinedFragmentIncomplete() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original));
         collector.addFragment(fragmentOfMsg(0, 6, 4, original));
-        DtlsHandshakeMessageFragment fragment = collector.getCombinedFragment();
+        DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
         byte[] expected = ArrayConverter.hexStringToByteArray("123456789A003456789A");
         checkFragment(fragment, 0, 10, expected);
     }
 
+    private FragmentCollector generateOnlyFittingFalseCollector() {
+        Config config = Config.createEmptyConfig();
+        config.setDtlsOnlyFitting(false);
+        return new FragmentCollector(config);
+    }
+
+    /**
+     * Test buildCombinedFragment after adding an unfitting fragment, with only
+     * fitting set to false.
+     */
+    @Test
+    public void testbuildCombinedFragmentAddUnfitting() {
+        collector = generateOnlyFittingFalseCollector();
+        byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
+        collector.addFragment(fragmentOfMsg(0, 0, 5, original));
+        DtlsHandshakeMessageFragment unfitting = fragmentOfMsg(0, 6, 4, original);
+        unfitting.setLength(20);
+        collector.addFragment(unfitting);
+        DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
+        byte[] expected = ArrayConverter.hexStringToByteArray("123456789A003456789A");
+        checkFragment(fragment, 0, 10, expected);
+    }
 }
