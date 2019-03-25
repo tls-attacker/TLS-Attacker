@@ -478,7 +478,7 @@ public class TlsContext {
     /**
      * epoch used in DTLS records
      */
-    private int epoch = 0;
+    private int dtlsEpoch = 0;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
@@ -707,12 +707,16 @@ public class TlsContext {
         this.httpContext = httpContext;
     }
 
-    public int getEpoch() {
-        return epoch;
+    public int getDtlsEpoch() {
+        return dtlsEpoch;
     }
 
-    public void setEpoch(int epoch) {
-        this.epoch = epoch;
+    public void increaseDtlsEpoch() {
+        dtlsEpoch++;
+    }
+
+    public void setDtlsEpoch(int epoch) {
+        this.dtlsEpoch = epoch;
     }
 
     public FragmentManager getDtlsFragmentManager() {

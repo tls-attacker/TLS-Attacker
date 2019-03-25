@@ -91,7 +91,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareEpoch(Record record) {
-        record.setEpoch(chooser.getContext().getEpoch());
+        record.setEpoch(chooser.getContext().getDtlsEpoch());
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 

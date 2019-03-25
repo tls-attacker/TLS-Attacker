@@ -52,7 +52,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             tlsContext.getRecordLayer().updateCompressor();
 
         }
-        tlsContext.setEpoch(tlsContext.getEpoch() + 1);
+        tlsContext.increaseDtlsEpoch();
     }
 
 }
