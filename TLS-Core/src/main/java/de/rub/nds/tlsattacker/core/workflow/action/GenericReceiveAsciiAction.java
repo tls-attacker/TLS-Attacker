@@ -19,6 +19,9 @@ public class GenericReceiveAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private GenericReceiveAsciiAction() {
+    }
+
     public GenericReceiveAsciiAction(String encoding) {
         super(encoding);
     }

@@ -132,16 +132,18 @@ public class FingerPrintChecker {
         for (int i = 0; i < recordList1.size(); i++) {
             AbstractRecord abstractRecord1 = recordList1.get(i);
             AbstractRecord abstractRecord2 = recordList2.get(i);
-            Record record1 = (Record) abstractRecord1;
-            Record record2 = (Record) abstractRecord2;
             if (abstractRecord1 instanceof BlobRecord && abstractRecord2 instanceof BlobRecord) {
                 if (Arrays.areEqual(abstractRecord1.getCompleteRecordBytes().getValue(), abstractRecord1
                         .getCompleteRecordBytes().getValue())) {
+                    System.out.println(new String(abstractRecord1.getCompleteRecordBytes().getValue()));
                     continue;
                 } else {
                     return false;
                 }
             }
+            Record record1 = (Record) abstractRecord1;
+            Record record2 = (Record) abstractRecord2;
+
             if (record1.getContentMessageType() == ProtocolMessageType.ALERT) {
                 // The record is probably not encrypted, therefore the clean
                 // bytes have to be equal

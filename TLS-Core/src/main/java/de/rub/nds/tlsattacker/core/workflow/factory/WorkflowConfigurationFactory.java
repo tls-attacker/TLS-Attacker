@@ -349,10 +349,9 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createShortHelloWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        if (config.getStarttlsType() != StarttlsType.NONE) {
-            addStartTlsActions(connection, config.getStarttlsType(), trace);
-        }
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
@@ -396,7 +395,9 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createSsl2HelloWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new SSL2ClientHelloMessage(config));
         action.setRecords(new BlobRecord());
@@ -422,7 +423,9 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createResumptionWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config));
         trace.addTlsAction(action);
@@ -509,7 +512,9 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace clientToMitmHandshake = createHandshakeWorkflow(inboundConnection);
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
 
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+
         trace.addConnection(inboundConnection);
         trace.addConnection(outboundConnection);
         trace.addTlsActions(clientToMitmHandshake.getTlsActions());
@@ -539,7 +544,8 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createZeroRttWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
 
         List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
         List<ProtocolMessage> serverMessages = new LinkedList<>();
@@ -649,7 +655,9 @@ public class WorkflowConfigurationFactory {
         LOGGER.info("Building synchronizing proxy trace for:\n" + inboundConnection.toCompactString() + ", "
                 + outboundConnection.toCompactString());
 
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+
         trace.addConnection(inboundConnection);
         trace.addConnection(outboundConnection);
 
