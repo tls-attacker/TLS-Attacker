@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +27,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
  * @author Robert Merget <robert.merget@rub.de> Paul Fiterau
  *         <fiteraup@yahoo.com>
  */
+// TODO A current limitation of the FragmentManager is that it does indexing
+// based on message sequence numbers. That is, message sequence numbers are used
+// to determine the assembled message the fragment is part of. In DTLS,
+// the record epoch should also be used, since a fragments from separate epochs
+// might have the same sequence number, while belonging to different messages.
 public class FragmentManager {
 
     private static final Logger LOGGER = LogManager.getLogger(FragmentManager.class);
@@ -83,6 +90,18 @@ public class FragmentManager {
             return null;
         }
         return collector.buildCombinedFragment();
+    }
+
+    /**
+     * Returns a list with stored fragments for the fragmented message
+     * corresponding to this fragment.
+     */
+    public List<DtlsHandshakeMessageFragment> getStoredFragments(DtlsHandshakeMessageFragment fragment) {
+        FragmentCollector collector = fragments.get(getMessageSeq(fragment));
+        if (collector == null) {
+            return new ArrayList<>();
+        }
+        return collector.getStoredFragments();
     }
 
     /**

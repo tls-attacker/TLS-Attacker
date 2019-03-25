@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.dtls;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -133,6 +134,13 @@ public class FragmentCollector {
             return fragment.getType().getValue().equals(type) && fragment.getMessageSeq().getValue().equals(messageSeq)
                     && fragment.getLength().getValue().equals(messageLength);
         }
+    }
+
+    /**
+     * Returns a list with stored fragments.
+     */
+    public List<DtlsHandshakeMessageFragment> getStoredFragments() {
+        return new ArrayList<>(fragmentData);
     }
 
     /**
