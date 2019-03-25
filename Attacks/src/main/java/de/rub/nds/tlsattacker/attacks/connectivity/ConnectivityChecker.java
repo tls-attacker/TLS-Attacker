@@ -19,7 +19,10 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.AsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -28,6 +31,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -106,27 +110,22 @@ public class ConnectivityChecker {
 
     public boolean speaksStartTls(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
-        trace.removeTlsAction(trace.getTlsActions().size() - 1);
-        ReceiveTillAction receiveTillAction = new ReceiveTillAction(new ServerHelloDoneMessage());
-        trace.addTlsAction(receiveTillAction);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
         State state = new State(config, trace);
         WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
         executor.executeWorkflow();
-        if (receiveTillAction.getRecords().size() > 0) {
-            if (receiveTillAction.getRecords().get(0) instanceof Record) {
-                return true;
-            } else {
-                for (ProtocolMessage message : receiveTillAction.getReceivedMessages()) {
-                    if (message instanceof ServerHelloMessage || message instanceof ServerHelloDoneMessage
-                            || message instanceof SSL2ServerHelloMessage) {
-                        return true;
+        if (trace.allActionsExecuted()) {
+            for (TlsAction action : trace.getTlsActions()) {
+                if (action instanceof AsciiAction || !(action instanceof SendAsciiAction)) {
+                    AsciiAction asciiAction = (AsciiAction) action;
+                    if (asciiAction.getAsciiText() != null) {
+                        if (asciiAction.getAsciiText().toLowerCase().contains("TLS negotiation".toLowerCase())) {
+                            return true;
+                        }
                     }
                 }
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 }
