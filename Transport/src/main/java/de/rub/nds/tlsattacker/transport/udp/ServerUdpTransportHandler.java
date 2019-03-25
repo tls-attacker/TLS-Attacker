@@ -29,8 +29,8 @@ public class ServerUdpTransportHandler extends TransportHandler {
     private DatagramSocket socket;
 
     public ServerUdpTransportHandler(long timeout, int port) {
-    	 super(timeout, ConnectionEndType.SERVER, false);
-         this.port = port;
+        super(timeout, ConnectionEndType.SERVER, false);
+        this.port = port;
     }
 
     @Override
@@ -48,18 +48,18 @@ public class ServerUdpTransportHandler extends TransportHandler {
         // this could be made an option
         waitOnReceive();
     }
-    
+
     /*
-     * Provides a routine equivalent to TCP's accept method. Blocks until a client "connects",
-     * meaning that data is available to be read. 
+     * Provides a routine equivalent to TCP's accept method. Blocks until a
+     * client "connects", meaning that data is available to be read.
      */
-    private void waitOnReceive() throws IOException{
-    	while (inStream.available() == 0) {
-    		try {
-				Thread.sleep(1);
-			} catch (InterruptedException _) {
-			}
-    	}
+    private void waitOnReceive() throws IOException {
+        while (inStream.available() == 0) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException _) {
+            }
+        }
     }
 
     @Override

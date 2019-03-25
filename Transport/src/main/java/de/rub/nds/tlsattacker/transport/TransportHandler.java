@@ -30,9 +30,10 @@ public abstract class TransportHandler {
     private boolean initialized = false;
 
     private final ConnectionEndType type;
-    
+
     /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
+     * True {@link inStream} is expected to reach the End of Stream, meaning
+     * read will return -1.
      */
     private boolean isInStreamTerminating = true;
 
@@ -41,7 +42,7 @@ public abstract class TransportHandler {
         this.type = type;
         this.isInStreamTerminating = isInStreamTerminating;
     }
-    
+
     public TransportHandler(long timeout, ConnectionEndType type) {
         this.timeout = timeout;
         this.type = type;
@@ -61,29 +62,30 @@ public abstract class TransportHandler {
                     stream.write(read);
                 }
             } else {
-            	if (isInStreamTerminating) {
-	                try {
-	                    // dont ask - the java api does not allow this otherwise...
-	                    Thread.sleep(1);
-	                    LOGGER.error("Optimizing");
-	                    int read = inStream.read();
-	                    if (read == -1) {
-	                        // TCP FIN
-	                        return stream.toByteArray();
-	                    }
-	                    inStream.unread(read);
-	
-	                } catch (SocketException E) {
-	                    // TCP RST received
-	                    return stream.toByteArray();
-	                } catch (Exception E) {
-	                }
-            	}
+                if (isInStreamTerminating) {
+                    try {
+                        // dont ask - the java api does not allow this
+                        // otherwise...
+                        Thread.sleep(1);
+                        LOGGER.error("Optimizing");
+                        int read = inStream.read();
+                        if (read == -1) {
+                            // TCP FIN
+                            return stream.toByteArray();
+                        }
+                        inStream.unread(read);
+
+                    } catch (SocketException E) {
+                        // TCP RST received
+                        return stream.toByteArray();
+                    } catch (Exception E) {
+                    }
+                }
             }
         }
         return stream.toByteArray();
     }
-    
+
     public void sendData(byte[] data) throws IOException {
         if (!initialized) {
             throw new IOException("Transporthandler is not initalized!");
