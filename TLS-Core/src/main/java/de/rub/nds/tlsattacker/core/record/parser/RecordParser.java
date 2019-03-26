@@ -47,7 +47,7 @@ public class RecordParser extends AbstractRecordParser<Record> {
     }
 
     private void parseEpoch(Record record) {
-        record.setEpoch(parseIntField(RecordByteLength.EPOCH));
+        record.setEpoch(parseIntField(RecordByteLength.DTLS_EPOCH));
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 

@@ -145,18 +145,6 @@ public class ResponseFingerprint {
      *
      * @return
      */
-    public String toCompactString() {
-        StringBuilder messages = new StringBuilder();
-        for (ProtocolMessage someMessage : this.messageList) {
-            messages.append(someMessage.toCompactString()).append(",");
-        }
-        return "Response[" + messages.toString() + (this.socketState == null ? "" : this.socketState.name()) + "]";
-    }
-
-    /**
-     *
-     * @return
-     */
     @Override
     public String toString() {
 

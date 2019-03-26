@@ -115,6 +115,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             }
 
         }
+
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            tlsContext.setDtlsMessageSequenceNumber(0);
+        }
     }
 
     private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {

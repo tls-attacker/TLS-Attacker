@@ -43,14 +43,18 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
         prepareMessageLength(msg.getContent().getValue().length);
     }
 
+    /*
+     * We need to overwrite this method, since the message length in DTLS only
+     * includes the content and does not include DTLS fragment headers. In the
+     * base class, we supply the length of the serialized byte array which also
+     * contains these headers.
+     */
     @Override
     protected void prepareMessageLength(int length) {
-        // TODO ....
         msg.setLength(msg.getContent().getValue().length);
     }
 
     private void prepareFragmentLength(DtlsHandshakeMessageFragment msg) {
-        // todo do proper
         msg.setFragmentLength(msg.getContent().getValue().length);
         LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
