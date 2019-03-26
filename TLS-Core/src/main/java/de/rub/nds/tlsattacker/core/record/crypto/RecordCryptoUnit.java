@@ -60,8 +60,8 @@ public abstract class RecordCryptoUnit {
                 stream.write(ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
                 return stream.toByteArray();
             } else {
-                if (protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
-                    stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(), 2));
+                if (protocolVersion.isDTLS()) {
+                    stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(), RecordByteLength.DTLS_EPOCH));
                     stream.write(ArrayConverter.longToUint48Bytes(record.getComputations().getSequenceNumber()
                             .getValue().longValue()));
                 } else {
