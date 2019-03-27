@@ -26,7 +26,7 @@ public class ClientUdpTransportHandler extends TransportHandler {
     private DatagramSocket socket;
 
     public ClientUdpTransportHandler(Connection connection) {
-        super(connection.getTimeout(), ConnectionEndType.CLIENT);
+        super(connection.getTimeout(), ConnectionEndType.CLIENT, false);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
     }
