@@ -30,6 +30,9 @@ public abstract class PaddingTraceGenerator {
      */
     public PaddingTraceGenerator(PaddingRecordGeneratorType type) {
         switch (type) {
+            case LONG_RECORD:
+                vectorGenerator = new LongRecordPaddingGenerator();
+                break;
             case LONG:
                 vectorGenerator = new LongPaddingGenerator();
                 break;
