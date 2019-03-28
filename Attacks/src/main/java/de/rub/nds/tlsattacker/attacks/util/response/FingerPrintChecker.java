@@ -238,11 +238,11 @@ public class FingerPrintChecker {
             return EqualityError.ENCRYPTED_ALERT;
         }
         if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
-            if (!checkMessageListAlertEquality(fingerprint1.getMessageList(), fingerprint2.getMessageList())) {
-                return EqualityError.ALERT_MESSAGE_CONTENT;
-            }
             if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
                 return EqualityError.MESSAGE_COUNT;
+            }
+            if (!checkMessageListAlertEquality(fingerprint1.getMessageList(), fingerprint2.getMessageList())) {
+                return EqualityError.ALERT_MESSAGE_CONTENT;
             }
         }
         if (!checkSocketState(fingerprint1, fingerprint2)) {
