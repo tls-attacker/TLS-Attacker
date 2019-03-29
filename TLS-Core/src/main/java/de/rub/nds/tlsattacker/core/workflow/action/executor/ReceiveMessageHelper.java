@@ -126,8 +126,8 @@ public class ReceiveMessageHelper {
         if (receivedBytes.length > 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
             records.addAll(tempRecords);
-            List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
-            for (List<AbstractRecord> recordGroup : recordGroups) {
+            List<RecordGroup> recordGroups = RecordGroup.parseRecordGroups(tempRecords, context);
+            for (RecordGroup recordGroup : recordGroups) {
                 processRecordGroup(recordGroup, context, messageFragments, messages);
             }
         }
@@ -135,21 +135,20 @@ public class ReceiveMessageHelper {
         return new MessageActionResult(records, messages, messageFragments);
     }
 
-    private void processRecordGroup(List<AbstractRecord> recordGroup, TlsContext context,
-    // OUT params
-            List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
+    private void processRecordGroup(RecordGroup recordGroup, TlsContext context,
+    		List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
 
         adjustContext(recordGroup, context);
         decryptRecords(recordGroup, context);
 
+        
         List<ProtocolMessage> processedMessages = null;
 
         if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
             processedMessages = parseMessages(recordGroup, context);
         } else {
             byte[] cleanBytes = getCleanBytes(recordGroup);
-            List<ProtocolMessage> processedFragments = handleFragments(cleanBytes, recordGroup.get(0)
-                    .getContentMessageType(), context);
+            List<ProtocolMessage> processedFragments = handleFragments(cleanBytes, recordGroup.getProtocolMessageType(), context);
             messageFragments.addAll(processedFragments);
             processedMessages = processFragmentGroup(processedFragments, context);
         }
@@ -246,13 +245,13 @@ public class ReceiveMessageHelper {
         }
     }
 
-    public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
-        byte[] cleanProtocolMessageBytes = getCleanBytes(records);
+    public List<ProtocolMessage> parseMessages(RecordGroup recordGroup, TlsContext context) {
+        byte[] cleanProtocolMessageBytes = getCleanBytes(recordGroup);
         // Due to TLS 1.3 Encrypted Type it might be necessary to look for
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
-        for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
-            messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(subgroup), context)));
+        for (RecordGroup group : RecordGroup.parseRecordGroups(recordGroup.getRecords(), context)) {
+            messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, group.getProtocolMessageType(), context)));
         }
         return messages;
     }
@@ -262,9 +261,6 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-            if (isZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
-                break;
-            }
             ParserResult result = null;
             try {
                 if (typeFromRecord != null) {
@@ -334,9 +330,6 @@ public class ReceiveMessageHelper {
         int dataPointer = 0;
         List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
-            if (isZeroPadding(cleanProtocolMessageBytes, dataPointer)) {
-                break;
-            }
             ParserResult result = null;
             try {
                 if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
@@ -371,16 +364,7 @@ public class ReceiveMessageHelper {
         }
         return receivedFragmentMessages;
     }
-
-    // check needed for some implementations (i.e. OpenSSL 0.9.8h on Windows)
-    private boolean isZeroPadding(byte[] protocolMessageBytes, int dataPointer) {
-        for (int i = dataPointer; i < protocolMessageBytes.length; i++) {
-            if (protocolMessageBytes[i] != 0)
-                return false;
-        }
-        return true;
-    }
-
+    
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -431,9 +415,9 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
-    private byte[] getCleanBytes(List<AbstractRecord> recordSubGroup) {
+    private byte[] getCleanBytes(RecordGroup recordGroup) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (AbstractRecord record : recordSubGroup) {
+        for (AbstractRecord record : recordGroup.getRecords()) {
             try {
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
             } catch (IOException ex) {
@@ -444,54 +428,14 @@ public class ReceiveMessageHelper {
         return stream.toByteArray();
     }
 
-    private List<List<AbstractRecord>> getRecordGroups(List<AbstractRecord> records) {
-        List<List<AbstractRecord>> returnList = new LinkedList<>();
-        if (records.isEmpty()) {
-            return returnList;
-        }
-        List<AbstractRecord> subGroup = new LinkedList<>();
-        ProtocolMessageType currentSearchType = records.get(0).getContentMessageType();
-        for (AbstractRecord record : records) {
-            if (record.getContentMessageType() == currentSearchType) {
-                subGroup.add(record);
-            } else {
-                returnList.add(subGroup);
-                subGroup = new LinkedList<>();
-                currentSearchType = record.getContentMessageType();
-                subGroup.add(record);
-            }
-        }
-        returnList.add(subGroup);
-        return returnList;
-
-    }
-
-    private ProtocolMessageType getProtocolMessageType(List<AbstractRecord> recordSubGroup) {
-        ProtocolMessageType type = null;
-        for (AbstractRecord record : recordSubGroup) {
-            if (type == null) {
-                type = record.getContentMessageType();
-            } else {
-                ProtocolMessageType tempType = ProtocolMessageType.getContentType(record.getContentMessageType()
-                        .getValue());
-
-                if (tempType != type) {
-                    LOGGER.error("Mixed Subgroup detected");
-                }
-            }
-
-        }
-        return type;
-    }
-
-    private void decryptRecords(List<AbstractRecord> records, TlsContext context) {
-        for (AbstractRecord record : records) {
+    private void decryptRecords(RecordGroup recordGroup, TlsContext context) {
+        for (AbstractRecord record : recordGroup.getRecords()) {
             context.getRecordLayer().decryptRecord(record);
         }
     }
 
-    private void adjustContext(List<AbstractRecord> recordGroup, TlsContext context) {
-        for (AbstractRecord record : recordGroup) {
+    private void adjustContext(RecordGroup recordGroup, TlsContext context) {
+        for (AbstractRecord record : recordGroup.getRecords()) {
             record.adjustContext(context);
         }
     }
