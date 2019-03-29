@@ -76,11 +76,8 @@ public class ReceiveMessageHelper {
                 receivedBytes = receiveByteArray(context);
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
-                if (receivedBytes.length != 0) {
-                    if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
-                        shouldContinue = shouldContinue(expectedMessages, result.getMessageList(), context);
-
-                    }
+                if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
+                    shouldContinue = shouldContinue(expectedMessages, result.getMessageList(), context);
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
 
@@ -350,17 +347,10 @@ public class ReceiveMessageHelper {
                     break;
                 }
             }
-            if (result != null) {
-                if (dataPointer == result.getParserPosition()) {
-                    throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
-                }
-                dataPointer = result.getParserPosition();
-                // NOTE: not a retransmission
-                if (result.getMessage() != null) {
-                    LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
-                    receivedFragmentMessages.add(result.getMessage());
-                }
+            if (dataPointer == result.getParserPosition()) {
+                throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
             }
+            dataPointer = result.getParserPosition();
         }
         return receivedFragmentMessages;
     }
@@ -440,11 +430,11 @@ public class ReceiveMessageHelper {
         }
     }
 
-    private List<ProtocolMessage> processFragmentGroup(List<ProtocolMessage> fragmentedMessages, TlsContext context) {
+    private List<ProtocolMessage> processFragmentGroup(List<ProtocolMessage> messages, TlsContext context) {
         List<ProtocolMessage> realMessages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         ProtocolMessageType lastRecordType = null;
-        for (ProtocolMessage message : fragmentedMessages) {
+        for (ProtocolMessage message : messages) {
             if (lastRecordType == null) {
                 lastRecordType = message.getProtocolMessageType();
             }

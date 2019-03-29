@@ -23,7 +23,7 @@ public class RecordGroup {
     /**
      * Splits a list of received records into RecordGroups such that records in
      * each record group share the following characteristics: 1. they are of the
-     * same type (Blob or real records); 2. they use the same cipher state (for
+     * same type (blob or real records); 2. they use the same cipher state (for
      * DTLS, this means they have the same epochs); 3. their content is of the
      * same type.
      * 
@@ -87,7 +87,7 @@ public class RecordGroup {
         if (records.isEmpty()) {
             isFitting = true;
         } else {
-            if (record.getContentMessageType().equals(getProtocolMessageType())
+            if (Objects.equals(record.getContentMessageType(), getProtocolMessageType())
                     && record.getClass().equals(records.get(0).getClass())) {
                 if (isDtls) {
                     if (Objects.equals(getRecordEpoch(record), getDtlsEpoch())) {
