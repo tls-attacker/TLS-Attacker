@@ -50,8 +50,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Config tlsConfig;
-
     private BleichenbacherWorkflowType vulnerableType;
 
     private EqualityError errorType;
@@ -70,7 +68,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
         executor = new ParallelExecutor(1, 3);
-        this.tlsConfig = getTlsConfig();
     }
 
     /**
@@ -83,7 +80,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         this.executor = executor;
-        this.tlsConfig = getTlsConfig();
     }
 
     /**
@@ -93,6 +89,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      * @return
      */
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, encryptedPMS);
         State state = new State(tlsConfig, trace);
         tlsConfig.setWorkflowExecutorShouldClose(false);
@@ -108,35 +105,35 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      */
     @Override
     public Boolean isVulnerable() {
-        tlsConfig = getTlsConfig();
+        errorType = getEqualityError();
+        if (errorType != EqualityError.NONE) {
+            vulnerableType = config.getWorkflowType();
+            return true;
+        }
+        return false;
+    }
+
+    public EqualityError getEqualityError() {
+        Config tlsConfig = getTlsConfig();
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return null;
         }
         LOGGER.info("Fetched the following server public key: " + publicKey);
-
         List<Pkcs1Vector> pkcs1Vectors = Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
                 tlsConfig.getDefaultHighestClientProtocolVersion());
-
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
         CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
-        for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
-            LOGGER.debug("Testing: " + bbWorkflowType);
-            errorType = isVulnerable(bbWorkflowType, pkcs1Vectors);
-            if (errorType != EqualityError.NONE) {
-                vulnerableType = bbWorkflowType;
-                return true;
-
-            }
-        }
-        return false;
+        LOGGER.debug("Testing: " + config.getWorkflowType());
+        errorType = isVulnerable(pkcs1Vectors);
+        return errorType;
     }
 
-    public EqualityError isVulnerable(BleichenbacherWorkflowType bbWorkflowType, List<Pkcs1Vector> pkcs1Vectors) {
-        fingerprintPairList = getBleichenbacherMap(bbWorkflowType, pkcs1Vectors);
+    public EqualityError isVulnerable(List<Pkcs1Vector> pkcs1Vectors) {
+        fingerprintPairList = getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors);
         if (fingerprintPairList.isEmpty()) {
             LOGGER.warn("Could not extract Fingerprints");
             return null;
@@ -148,15 +145,15 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             // Socket Equality Errors can be caused by problems on on the
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
-            List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType,
+            List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
                     pkcs1Vectors);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
             BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
             BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
                     error2);
             if (mapOne.looksIdentical(mapTwo)) {
-                List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType,
-                        pkcs1Vectors);
+                List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(
+                        config.getWorkflowType(), pkcs1Vectors);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
                 BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
                         thirdBleichenbacherVectorMap, error3);
@@ -172,7 +169,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
         if (error != EqualityError.NONE) {
-            CONSOLE.info("Found a vulnerability with " + bbWorkflowType.getDescription());
+            CONSOLE.info("Found a vulnerability with " + config.getWorkflowType().getDescription());
         }
         return error;
     }
@@ -206,6 +203,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
             List<Pkcs1Vector> pkcs1Vectors) {
+        Config tlsConfig = getTlsConfig();
         List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
@@ -267,6 +265,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             LOGGER.warn("The server is not vulnerable to the Bleichenbacher attack");
             return;
         }
+        Config tlsConfig = getTlsConfig();
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
