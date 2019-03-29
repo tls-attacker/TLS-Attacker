@@ -113,4 +113,8 @@ public class ParallelExecutor {
     public void shutdown() {
         executorService.shutdown();
     }
+
+    public int getReexecutions() {
+        return reexecutions;
+    }
 }

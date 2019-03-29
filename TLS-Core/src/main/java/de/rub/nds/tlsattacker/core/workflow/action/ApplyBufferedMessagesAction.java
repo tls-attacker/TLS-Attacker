@@ -36,7 +36,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {

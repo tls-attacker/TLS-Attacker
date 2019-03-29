@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +54,6 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
          *
          */
         OPENSSL_1_0_0,
-
         /**
          *
          */
@@ -101,7 +101,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     public boolean checkTargetVersion(TargetVersion targetVersion) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
-        WorkflowTrace workflowTrace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
+        WorkflowTrace workflowTrace = factory.createTlsEntryWorkflowtrace(tlsConfig.getDefaultClientConnection());
 
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
 

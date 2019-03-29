@@ -64,17 +64,17 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
             if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
             if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
-                LOGGER.trace("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 
             try {
                 action.execute(state);
-            } catch (IOException | PreparationException ex) {
+            } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
         }
