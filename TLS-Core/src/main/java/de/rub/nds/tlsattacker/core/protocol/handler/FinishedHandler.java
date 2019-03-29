@@ -75,12 +75,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } else {
             tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
         }
-        
-        
+
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
-            	// upon receiving a FINISHED, we set the next receive sequence number to 0
-            	tlsContext.setDtlsNextReceiveSequenceNumber(0);
+                // upon receiving a FINISHED, we set the next receive sequence
+                // number to 0
+                tlsContext.setDtlsNextReceiveSequenceNumber(0);
             }
         }
     }

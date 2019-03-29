@@ -136,19 +136,19 @@ public class ReceiveMessageHelper {
     }
 
     private void processRecordGroup(RecordGroup recordGroup, TlsContext context,
-    		List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
+            List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
 
         adjustContext(recordGroup, context);
         decryptRecords(recordGroup, context);
 
-        
         List<ProtocolMessage> processedMessages = null;
 
         if (!context.getChooser().getSelectedProtocolVersion().isDTLS()) {
             processedMessages = parseMessages(recordGroup, context);
         } else {
             byte[] cleanBytes = getCleanBytes(recordGroup);
-            List<ProtocolMessage> processedFragments = handleFragments(cleanBytes, recordGroup.getProtocolMessageType(), context);
+            List<ProtocolMessage> processedFragments = handleFragments(cleanBytes,
+                    recordGroup.getProtocolMessageType(), context);
             messageFragments.addAll(processedFragments);
             processedMessages = processFragmentGroup(processedFragments, context);
         }
@@ -364,7 +364,7 @@ public class ReceiveMessageHelper {
         }
         return receivedFragmentMessages;
     }
-    
+
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
