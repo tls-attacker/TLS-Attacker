@@ -27,16 +27,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
  * @author Robert Merget <robert.merget@rub.de> Paul Fiterau
  *         <fiteraup@yahoo.com>
  */
-// TODO A current limitation of the FragmentManager is that it does indexing
-// based on message sequence numbers. That is, message sequence numbers are used
-// to determine the assembled message the fragment is part of. In DTLS,
-// the record epoch should also be used, since a fragments from separate epochs
-// might have the same sequence number, while belonging to different messages.
 public class FragmentManager {
 
     private static final Logger LOGGER = LogManager.getLogger(FragmentManager.class);
 
-    private Map<Integer, FragmentCollector> fragments;
+    private Map<FragmentKey, FragmentCollector> fragments;
     private Config config;
 
     public FragmentManager(Config config) {
@@ -44,35 +39,45 @@ public class FragmentManager {
         this.config = config;
     }
 
-    public void addMessageFragment(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(getMessageSeq(fragment));
+    /**
+     * Adds a fragment to the collector corresponding to the fragment's
+     * messageSeq and the given epoch. Instantiates a new collector if no
+     * collector exists.
+     * 
+     * @return true if the fragment was added successfully, or false if it was
+     *         rejected by the collector.
+     */
+    public boolean addMessageFragment(DtlsHandshakeMessageFragment fragment, Integer epoch) {
+        FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), epoch);
+        FragmentCollector collector = fragments.get(key);
         if (collector == null) {
             collector = new FragmentCollector(config);
-            fragments.put(getMessageSeq(fragment), collector);
+            fragments.put(key, collector);
         }
-        collector.addFragment(fragment);
+        return collector.addFragment(fragment);
     }
 
     /**
-     * Returns true if the message corresponding to this fragment is complete
+     * Returns true if the message corresponding to this messageSeq and epoch is
+     * complete, returns false otherwise.
      */
-    public boolean isFragmentedMessageComplete(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(getMessageSeq(fragment));
+    public boolean isFragmentedMessageComplete(Integer messageSeq, Integer epoch) {
+        FragmentKey key = new FragmentKey(messageSeq, epoch);
+        FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            LOGGER.warn("Fragment belongs to foreign message, that is, "
-                    + "message whose fragments haven't been added to the manager");
             return false;
         }
         return collector.isMessageComplete();
     }
 
     /**
-     * Returns the fragmented message corresponding to this fragment as a single
-     * combined fragment. Returns null if no message was stored for this
-     * fragment, or if the fragmented message is incomplete.
+     * Returns the stored fragmented message with the given messageSeq and
+     * epoch, as a single combined fragment. Returns null if no message was
+     * stored with this messageSeq, or if the message is incomplete.
      */
-    public DtlsHandshakeMessageFragment getFragmentedMessage(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(getMessageSeq(fragment));
+    public DtlsHandshakeMessageFragment getFragmentedMessage(Integer messageSeq, Integer epoch) {
+        FragmentKey key = new FragmentKey(messageSeq, epoch);
+        FragmentCollector collector = fragments.get(key);
         if (collector == null || !collector.isMessageComplete()) {
             return null;
         }
@@ -80,24 +85,11 @@ public class FragmentManager {
     }
 
     /**
-     * Returns the stored fragmented message with the given messageSeq as as
-     * single combined fragment. Returns null if no message was stored with this
-     * message Seq, or if the message is incomplete.
+     * Returns the stored fragments for the given messageSeq and epoch.
      */
-    public DtlsHandshakeMessageFragment getFragmentedMessage(Integer messageSeq) {
-        FragmentCollector collector = fragments.get(messageSeq);
-        if (collector == null || !collector.isMessageComplete()) {
-            return null;
-        }
-        return collector.buildCombinedFragment();
-    }
-
-    /**
-     * Returns a list with stored fragments for the fragmented message
-     * corresponding to this fragment.
-     */
-    public List<DtlsHandshakeMessageFragment> getStoredFragments(DtlsHandshakeMessageFragment fragment) {
-        FragmentCollector collector = fragments.get(getMessageSeq(fragment));
+    public List<DtlsHandshakeMessageFragment> getStoredFragments(Integer messageSeq, Integer epoch) {
+        FragmentKey key = new FragmentKey(messageSeq, epoch);
+        FragmentCollector collector = fragments.get(key);
         if (collector == null) {
             return new ArrayList<>();
         }
@@ -105,18 +97,65 @@ public class FragmentManager {
     }
 
     /**
-     * Clears the fragmented message corresponding to this fragment.
+     * Clears the fragmented message corresponding to this messageSeq and epoch.
      */
-    public void clearFragmentedMessage(DtlsHandshakeMessageFragment fragment) {
-        fragments.remove(getMessageSeq(fragment));
+    public void clearFragmentedMessage(Integer messageSeq, Integer epoch) {
+        FragmentKey key = new FragmentKey(messageSeq, epoch);
+        fragments.remove(key);
     }
 
-    /*
-     * The message sequence is the key with which fragments are stored. It is
-     * used to distinguish between fragments belonging to different messages.
-     */
-    private Integer getMessageSeq(DtlsHandshakeMessageFragment fragment) {
-        return fragment.getMessageSeq().getValue();
-    }
+    static class FragmentKey {
+        private Integer messageSeq;
+        private Integer epoch;
 
+        public FragmentKey(Integer messageSeq, Integer epoch) {
+            super();
+            this.messageSeq = messageSeq;
+            this.epoch = epoch;
+        }
+
+        public Integer getEpoch() {
+            return epoch;
+        }
+
+        public Integer getMessageSeq() {
+            return messageSeq;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((epoch == null) ? 0 : epoch.hashCode());
+            result = prime * result + ((messageSeq == null) ? 0 : messageSeq.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            FragmentKey other = (FragmentKey) obj;
+            if (epoch == null) {
+                if (other.epoch != null)
+                    return false;
+            } else if (!epoch.equals(other.epoch))
+                return false;
+            if (messageSeq == null) {
+                if (other.messageSeq != null)
+                    return false;
+            } else if (!messageSeq.equals(other.messageSeq))
+                return false;
+            return true;
+        }
+
+        public String toString() {
+            return String.format("Key{messageSeq:%d,epoch:%d}", messageSeq, epoch);
+        }
+
+    }
 }

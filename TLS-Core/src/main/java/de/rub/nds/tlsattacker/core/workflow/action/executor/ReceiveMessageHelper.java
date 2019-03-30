@@ -145,7 +145,8 @@ public class ReceiveMessageHelper {
             List<DtlsHandshakeMessageFragment> fragments = getFragments(processedMessages);
             messageFragments.addAll(fragments);
             processedMessages.removeAll(fragments);
-            List<ProtocolMessage> fragmentedMessages = processDtlsFragments(fragments, context);
+            List<ProtocolMessage> fragmentedMessages = processDtlsFragments(fragments, recordGroup.getDtlsEpoch(),
+                    context);
             processedMessages.addAll(fragmentedMessages);
         }
 
@@ -381,55 +382,33 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
-    private List<ProtocolMessage> processFragmentGroup(List<ProtocolMessage> messages, TlsContext context) {
-        List<ProtocolMessage> realMessages = new LinkedList<>();
-        List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
-        ProtocolMessageType lastRecordType = null;
-        for (ProtocolMessage message : messages) {
-            if (lastRecordType == null) {
-                lastRecordType = message.getProtocolMessageType();
-            }
-            if (message instanceof DtlsHandshakeMessageFragment) {
-                fragments.add((DtlsHandshakeMessageFragment) message);
-            } else {
-                message.getHandler(context).prepareAfterParse(message);
-                message.getHandler(context).adjustTLSContext(message);
-                realMessages.add(message);
-            }
-            lastRecordType = message.getProtocolMessageType();
-        }
-        List<ProtocolMessage> messagesFromFragments = processDtlsFragments(fragments, context);
-        realMessages.addAll(messagesFromFragments);
-
-        return realMessages;
-    }
-
     /*
      * Processes a list of arbitrary-ordered fragments. The idea is: 1. we
      * assemble fragments into "fragmented messages" 2. we extract the messages
      * from fragments but only update the context for fragments whose message
      * sequence is next for processing.
      */
-    private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+    private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, Integer epoch,
+            TlsContext context) {
         // the fragment manager stores all the received message fragments
         FragmentManager manager = context.getDtlsFragmentManager();
         List<ProtocolMessage> messages = new LinkedList<>();
 
         // we first add the fragments to the manager
         for (DtlsHandshakeMessageFragment fragment : fragments) {
-            manager.addMessageFragment(fragment);
+            manager.addMessageFragment(fragment, epoch);
         }
 
         // we then process all the fragmented messages with increasing message
         // seq until we until we arrive at a message seq for which no fragmented
         // message was formed
-        DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(context
-                .getDtlsNextReceiveSequenceNumber());
+        DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
+                context.getDtlsNextReceiveSequenceNumber(), epoch);
         while (fragmentedMessage != null) {
             context.increaseDtlsNextReceiveSequenceNumber();
-            manager.clearFragmentedMessage(fragmentedMessage);
+            manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
             messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-            fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber());
+            fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
         }
 
         // we finally process fragmented messages whose sequence number is
@@ -437,7 +416,7 @@ public class ReceiveMessageHelper {
         // these messages, we only do that for in-order messages
         Set<Integer> fragmentSeq = new HashSet<Integer>();
         for (DtlsHandshakeMessageFragment fragment : fragments) {
-            fragmentedMessage = manager.getFragmentedMessage(fragment);
+            fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq().getValue(), epoch);
             if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
                 messages.add(processFragmentedMessage(fragmentedMessage, context, false));
             }

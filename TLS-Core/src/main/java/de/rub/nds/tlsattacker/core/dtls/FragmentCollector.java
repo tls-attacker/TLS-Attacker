@@ -84,7 +84,7 @@ public class FragmentCollector {
      * contained, or the fragment doesn't fit and
      * {@link FragmentCollector#onlyFitting} is set to true. In case the
      * collector is empty, also updates the "type" (given by type, message
-     * sequence, message length) of the collector with that of the fragment, .
+     * sequence, message length) of the collector with that of the fragment.
      * 
      * @return true if the fragment was added or false if it wasn't.
      */
