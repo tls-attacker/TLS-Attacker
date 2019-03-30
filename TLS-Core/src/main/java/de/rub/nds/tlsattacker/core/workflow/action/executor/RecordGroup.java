@@ -8,30 +8,38 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
+/**
+ * A RecordGroup comprises records sharing the following characteristics: 1.
+ * they are of the same type (blob or real records); 2. they use the same cipher
+ * state (for DTLS, this means they have the same epochs); 3. their content is
+ * of the same type.
+ * 
+ * The class provides functionality for grouping records into RecordGroups,
+ * decrypting and parsing them.
+ */
 public class RecordGroup {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /**
-     * Splits a list of received records into RecordGroups such that records in
-     * each record group share the following characteristics: 1. they are of the
-     * same type (blob or real records); 2. they use the same cipher state (for
-     * DTLS, this means they have the same epochs); 3. their content is of the
-     * same type.
-     * 
-     * 
-     * This allows for records in a particular RecordGroup to be processed
-     * together.
+     * Arranges a list of records into RecordGroups.
      */
-    static final List<RecordGroup> parseRecordGroups(List<AbstractRecord> records, TlsContext context) {
+    static final List<RecordGroup> generateRecordGroups(List<AbstractRecord> records, TlsContext context) {
         List<RecordGroup> recordGroups = new LinkedList<>();
         if (records.isEmpty()) {
             return recordGroups;
@@ -80,6 +88,31 @@ public class RecordGroup {
 
     public List<AbstractRecord> getRecords() {
         return Collections.unmodifiableList(records);
+    }
+
+    public byte[] getCleanBytes() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (AbstractRecord record : this.getRecords()) {
+            try {
+                stream.write(record.getCleanProtocolMessageBytes().getValue());
+            } catch (IOException ex) {
+                LOGGER.warn("Could not write CleanProtocolMessage bytes to Array");
+                LOGGER.debug(ex);
+            }
+        }
+        return stream.toByteArray();
+    }
+
+    public void decryptRecords(TlsContext context) {
+        for (AbstractRecord record : this.getRecords()) {
+            context.getRecordLayer().decryptRecord(record);
+        }
+    }
+
+    public void adjustContext(TlsContext context) {
+        for (AbstractRecord record : this.getRecords()) {
+            record.adjustContext(context);
+        }
     }
 
     private boolean addRecord(AbstractRecord record) {

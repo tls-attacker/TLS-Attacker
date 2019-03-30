@@ -143,11 +143,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
     }
-    
+
     public boolean isDtlsHandshakeMessageFragment() {
-    	return this instanceof DtlsHandshakeMessageFragment;
+        return this instanceof DtlsHandshakeMessageFragment;
     }
-    
+
     public abstract String toCompactString();
 
     public abstract ProtocolMessageHandler getHandler(TlsContext context);
