@@ -7,7 +7,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 @javax.xml.bind.annotation.XmlSchema(elementFormDefault = XmlNsForm.UNSET, attributeFormDefault = XmlNsForm.UNSET, namespace = "http://nds.rub.de/tlsattacker")
-package de.rub.nds.tlsattacker.core.protocol.message.extension.SNI;
+package de.rub.nds.tlsattacker.core.protocol.message.extension.sni;
 
 import javax.xml.bind.annotation.XmlNsForm;
 
