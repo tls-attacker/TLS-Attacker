@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 
@@ -93,7 +94,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         T msg = createHandshakeMessage();
         parseType(msg);
         parseLength(msg);
+        if (! version.isDTLS()) {
+            pushContext(new MessageParserBoundaryVerificationContext(msg.getLength().getOriginalValue().intValue(),
+                    "Message Length", getPointer()));
+        }
         parseHandshakeMessageContent(msg);
+        if (!version.isDTLS()) {
+            popContext();
+        }
         return msg;
     }
 

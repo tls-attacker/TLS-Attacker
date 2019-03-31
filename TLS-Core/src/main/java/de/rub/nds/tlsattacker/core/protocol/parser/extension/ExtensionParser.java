@@ -12,6 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +35,11 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
         T msg = createExtensionMessage();
         parseExtensionType(msg);
         parseExtensionLength(msg);
+        pushContext(new MessageParserBoundaryVerificationContext(
+                msg.getExtensionLength().getOriginalValue().intValue(), String.format("Extension Length [%s]",
+                        msg.getExtensionTypeConstant()), getPointer()));
         parseExtensionMessageContent(msg);
+        popContext();
         setExtensionBytes(msg);
         return msg;
     }

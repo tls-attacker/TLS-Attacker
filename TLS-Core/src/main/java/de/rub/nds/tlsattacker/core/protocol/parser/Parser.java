@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.ParserContext;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Stack;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +42,10 @@ public abstract class Parser<T> {
      * Start position of the parser
      */
     private final int startPoint;
+    /**
+     * Stack of parser contexts to be evaluated
+     */
+    private final Stack<ParserContext> context;
 
     /**
      * Constructor for the Parser
@@ -56,6 +64,7 @@ public abstract class Parser<T> {
             throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
                     + array.length);
         }
+        this.context = new Stack<>();
     }
 
     /**
@@ -68,12 +77,14 @@ public abstract class Parser<T> {
      * @return A subbyteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
+        LOGGER.trace("request to parse {} bytes with pointer at {}", length, getPointer());
         if (length == 0) {
             return new byte[0];
         }
         if (length < 0) {
             throw new ParserException("Cannot parse field of size " + length);
         }
+        beforeParseRequest(length);
         int nextPointer = pointer + length;
         if (!enoughBytesLeft(length)) {
             throw new ParserException("Parsing over the end of the array. Current Pointer:" + pointer
@@ -81,6 +92,7 @@ public abstract class Parser<T> {
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
         pointer = nextPointer;
+        LOGGER.trace("next pointer at {}", getPointer());
         return result;
     }
 
@@ -215,8 +227,25 @@ public abstract class Parser<T> {
         }
     }
 
-    protected int getBytesLeft() {
+    public int getBytesLeft() {
         return array.length - pointer;
+    }
+
+    protected void pushContext(ParserContext parserContext) {
+        LOGGER.trace("Pushing new context {}", parserContext);
+        context.push(parserContext);
+    }
+
+    protected void popContext() {
+        if (!context.isEmpty()) {
+            context.pop();
+        }
+    }
+
+    private void beforeParseRequest(int length) {
+        if (!context.isEmpty()) {
+            context.peek().beforeParse(this, length).evaluate();
+        }
     }
 
     /**
