@@ -7,7 +7,7 @@ release.properties
 /apps/
 nbproject/
 nbactions.xml.project
-.settings/org.eclipse.core.resources.prefs
+.settings/
 Attacks/.classpath
 Attacks/.project
 Attacks/.settings/org.eclipse.core.resources.prefs
@@ -20,6 +20,9 @@ TLS-Core/.classpath
 TLS-Core/.project
 TLS-Core/.settings/org.eclipse.core.resources.prefs
 TLS-Core/.settings/org.eclipse.jdt.core.prefs
+TLS-Forensics/.classpath
+TLS-Forensics/.project
+TLS-Forensics/.settings/
 TLS-Mitm/.classpath
 TLS-Mitm/.project
 TLS-Mitm/.settings/org.eclipse.core.resources.prefs
@@ -40,6 +43,7 @@ Utils/.classpath
 Utils/.project
 Utils/.settings/org.eclipse.core.resources.prefs
 Utils/.settings/org.eclipse.jdt.core.prefs
+resources/*.pem
 .project
 test.sh
 .settings/
