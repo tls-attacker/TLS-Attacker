@@ -186,10 +186,8 @@ public class WorkflowConfigurationFactory {
         }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
-                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (config.getHighestProtocolVersion().isDTLS()) {
             clientHello = new ClientHelloMessage(config);
-            clientHello.setIncludeInDigest(Modifiable.explicit(false));
         } else {
             clientHello = new ClientHelloMessage(config);
         }
@@ -197,11 +195,9 @@ public class WorkflowConfigurationFactory {
 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
 
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
-                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (config.getHighestProtocolVersion().isDTLS()) {
 
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
-            helloVerifyRequestMessage.setIncludeInDigest(Modifiable.explicit(false));
             messages = new LinkedList<>();
 
             messages.add(helloVerifyRequestMessage);
