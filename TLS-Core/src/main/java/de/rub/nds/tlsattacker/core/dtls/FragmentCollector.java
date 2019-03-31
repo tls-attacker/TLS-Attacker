@@ -76,7 +76,7 @@ public class FragmentCollector {
                 return comp;
             }
         });
-        this.onlyFitting = config.isDtlsOnlyFitting();
+        onlyFitting = config.isDtlsOnlyFitting();
     }
 
     /**
@@ -100,8 +100,8 @@ public class FragmentCollector {
         }
 
         // this is the invariant of the collector
-        assert (messageLength == null && type == null && messageSeq == null)
-                || (messageLength != null && type != null && messageSeq != null);
+        assert (messageLength == null && type == null && messageSeq == null && fragmentData.isEmpty())
+                || (messageLength != null && type != null && messageSeq != null && !fragmentData.isEmpty());
 
         boolean isFitting = isFitting(fragment);
 
@@ -128,7 +128,7 @@ public class FragmentCollector {
      * @return true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
-        if (type == null) {
+        if (fragmentData.isEmpty()) {
             return true;
         } else {
             return fragment.getType().getValue().equals(type) && fragment.getMessageSeq().getValue().equals(messageSeq)
@@ -214,7 +214,7 @@ public class FragmentCollector {
      * Returns true if no fragments have been added, false otherwise.
      */
     public boolean isEmpty() {
-        return type == null;
+        return fragmentData.isEmpty();
     }
 
     /**
