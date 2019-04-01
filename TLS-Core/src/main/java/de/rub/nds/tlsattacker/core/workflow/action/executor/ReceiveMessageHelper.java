@@ -405,9 +405,9 @@ public class ReceiveMessageHelper {
         DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
                 context.getDtlsNextReceiveSequenceNumber(), epoch);
         while (fragmentedMessage != null) {
-            context.increaseDtlsNextReceiveSequenceNumber();
             manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
             messages.add(processFragmentedMessage(fragmentedMessage, context, true));
+            context.increaseDtlsNextReceiveSequenceNumber();
             fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
         }
 
@@ -447,19 +447,8 @@ public class ReceiveMessageHelper {
         }
 
         ParserResult parsingResult = tryHandleAsCorrectMessage(stream.toByteArray(), 0,
-                fragment.getProtocolMessageType(), context, true, false);
+                fragment.getProtocolMessageType(), context, !updateContext, false);
         HandshakeMessage message = (HandshakeMessage) parsingResult.getMessage();
-        message.getHandler(context).prepareAfterParse(message);
-        if (updateContext) {
-            message.getHandler(context).adjustTLSContext(message);
-
-            // TODO it is not nice that we are updating receiving digests
-            // outside of the message handlers
-            if (message.getIncludeInDigest()) {
-                LOGGER.info("Included in digest fragmented version of: " + message.toCompactString());
-                context.getDigest().append(fragment.getCompleteResultingMessage().getOriginalValue());
-            }
-        }
 
         return message;
     }

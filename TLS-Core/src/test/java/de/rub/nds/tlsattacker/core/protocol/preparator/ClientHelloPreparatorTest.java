@@ -67,7 +67,7 @@ public class ClientHelloPreparatorTest {
         assertTrue(message.getExtensionsLength().getValue() == 0);
         assertTrue(message.getExtensionBytes().getValue().length == 0);
     }
-    
+
     @Test
     public void testPrepareWithCookie() {
         TimeHelper.setProvider(new FixedTimeProvider(12345678l));

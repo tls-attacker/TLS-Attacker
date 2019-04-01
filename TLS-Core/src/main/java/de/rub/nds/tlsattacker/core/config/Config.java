@@ -793,6 +793,12 @@ public class Config implements Serializable {
     private Integer dtlsDefaultCookieLength = 6;
 
     /**
+     * Configures the maximum fragment length. This should not be confused with
+     * MTU (which includes the IP, UDP, record and DTLS headers).
+     */
+    private Integer dtlsMaximumFragmentLength = 1200;
+
+    /**
      * Enables a check on DTLS fragments ensuring that messages are formed only
      * from fragments with consistent field values. Fields checked are type,
      * message length and message seq.
@@ -814,7 +820,7 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
     /**
      * When "Null" records are defined to be send, every message will be sent in
-     * atleast one individual record
+     * at least one individual record
      */
     private Boolean createIndividualRecords = true;
 
@@ -1744,6 +1750,14 @@ public class Config implements Serializable {
 
     public void setDtlsDefaultCookieLength(Integer dtlsDefaultCookieLength) {
         this.dtlsDefaultCookieLength = dtlsDefaultCookieLength;
+    }
+
+    public Integer getDtlsMaximumFragmentLength() {
+        return dtlsMaximumFragmentLength;
+    }
+
+    public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
+        this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
     }
 
     public boolean isDtlsOnlyFitting() {

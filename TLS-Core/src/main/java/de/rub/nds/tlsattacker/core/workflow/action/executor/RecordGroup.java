@@ -24,12 +24,12 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * A RecordGroup comprises records sharing the following characteristics: 1.
- * they are of the same type (blob or real records); 2. they use the same cipher
- * state (for DTLS, this means they have the same epochs); 3. their content is
- * of the same type.
+ * A RecordGroup comprises records which should be decrypted/processed together.
+ * They share the following characteristics: 1. they are of the same type (blob
+ * or real records); 2. they use the same cipher state (for DTLS, this means
+ * they have the same epoch); 3. their content is of the same type.
  * 
- * The class provides functionality for grouping records into RecordGroups,
+ * The class also provides functionality for grouping records into RecordGroups,
  * decrypting and parsing them.
  */
 public class RecordGroup {
@@ -39,6 +39,7 @@ public class RecordGroup {
     /**
      * Arranges a list of records into RecordGroups.
      */
+    // one could implement this into a RecordSplitter class
     static final List<RecordGroup> generateRecordGroups(List<AbstractRecord> records, TlsContext context) {
         List<RecordGroup> recordGroups = new LinkedList<>();
         if (records.isEmpty()) {
@@ -92,7 +93,7 @@ public class RecordGroup {
 
     public byte[] getCleanBytes() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (AbstractRecord record : this.getRecords()) {
+        for (AbstractRecord record : getRecords()) {
             try {
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
             } catch (IOException ex) {
@@ -104,13 +105,13 @@ public class RecordGroup {
     }
 
     public void decryptRecords(TlsContext context) {
-        for (AbstractRecord record : this.getRecords()) {
+        for (AbstractRecord record : getRecords()) {
             context.getRecordLayer().decryptRecord(record);
         }
     }
 
     public void adjustContext(TlsContext context) {
-        for (AbstractRecord record : this.getRecords()) {
+        for (AbstractRecord record : getRecords()) {
             record.adjustContext(context);
         }
     }

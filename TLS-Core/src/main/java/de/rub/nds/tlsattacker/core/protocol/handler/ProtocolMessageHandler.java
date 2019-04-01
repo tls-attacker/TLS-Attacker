@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -77,16 +79,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         try {
             if (message.getAdjustContext()) {
                 adjustTLSContext(message);
-                if (message instanceof HandshakeMessage) {
-                    if (((HandshakeMessage) message).getIncludeInDigest()) {
-                        LOGGER.debug("Included in digest: " + message.toCompactString());
-                        tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
-                    }
-
-                    // Increase message counter for outgoing handshake messages
-                    // for DTLS
-                    tlsContext.increaseDtlsMessageSequenceNumber();
-                }
+                updateDigest(message);
             }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
@@ -113,14 +106,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         try {
             if (!onlyParse) {
                 prepareAfterParse(parsedMessage);
+                updateDigest(parsedMessage);
                 adjustTLSContext(parsedMessage);
-
-                if (parsedMessage.isHandshakeMessage()) {
-                    if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                        LOGGER.debug("Included in digest: " + parsedMessage.toCompactString());
-                        tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-                    }
-                }
             }
 
         } catch (AdjustmentException | UnsupportedOperationException E) {
@@ -128,6 +115,20 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             LOGGER.debug(E);
         }
         return new ParserResult(parsedMessage, parser.getPointer());
+    }
+
+    private void updateDigest(ProtocolMessage message) {
+        if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
+                        .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
+                LOGGER.error("Included in digest fragmented version of: " + message.toCompactString());
+                tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
+            } else {
+                LOGGER.debug("Included in digest: " + message.toCompactString());
+                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+            }
+        }
     }
 
     @Override

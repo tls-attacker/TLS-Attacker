@@ -9,21 +9,19 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -52,6 +50,7 @@ public class SendMessageHelper {
         ProtocolMessageType lastType = null;
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig());
         for (ProtocolMessage message : messages) {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
@@ -61,27 +60,33 @@ public class SendMessageHelper {
             }
             lastMessage = message;
             lastType = message.getProtocolMessageType();
-            byte[] protocolMessageBytes;
             if (prepareMessages) {
                 LOGGER.debug("Preparing " + message.toCompactString());
-                protocolMessageBytes = handleProtocolMessage(message, context);
-            } else {
-                protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
             }
+
+            byte[] protocolMessageBytes = handleProtocolMessage(message, context, prepareMessages);
             if (message.isGoingToBeSent()) {
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                     if (message.isHandshakeMessage()) {
-                        HandshakeMessageType handshakeMessageType = ((HandshakeMessage) message)
-                                .getHandshakeMessageType();
-                        DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(handshakeMessageType,
-                                protocolMessageBytes);
-                        fragment.setIncludeInDigest(((HandshakeMessage) message).getIncludeInDigest());
-                        byte[] preparedFragment = fragment.getHandler(context).prepareMessage(fragment);
-                        messageBytesCollector.appendProtocolMessageBytes(preparedFragment);
-                        fragmentMessages.add(fragment);
+                        List<DtlsHandshakeMessageFragment> messageFragments;
+                        if (message.isDtlsHandshakeMessageFragment()) {
+                            messageFragments = Collections.singletonList((DtlsHandshakeMessageFragment) message);
+                        } else {
+                            messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
+                        }
+                        for (DtlsHandshakeMessageFragment fragment : messageFragments) {
+                            messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
+                                    .getValue());
+                            fragmentMessages.add(fragment);
+                        }
+                        if (message.isHandshakeMessage()) {
+                            // Increase message counter for outgoing handshake
+                            // messages
+                            // for DTLS
+                            context.increaseDtlsMessageSequenceNumber();
+                        }
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
-                        fragmentMessages.add(message);
                     }
                 } else {
                     messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
@@ -119,6 +124,10 @@ public class SendMessageHelper {
             fragmentMessages = null;
         }
         return new MessageActionResult(records, messages, fragmentMessages);
+    }
+
+    private void appendMessageBytes() {
+
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
@@ -189,33 +198,9 @@ public class SendMessageHelper {
         collector.flushRecordBytes();
     }
 
-    private byte[] handleProtocolMessageWithoutPrepare(ProtocolMessage message, TlsContext context) {
+    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context, boolean withPrepare) {
         ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message, false);
+        byte[] protocolMessageBytes = handler.prepareMessage(message, withPrepare);
         return protocolMessageBytes;
-    }
-
-    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            Preparator preparator = message.getHandler(context).getPreparator(message);
-            preparator.prepare();
-            preparator.afterPrepare();
-            message.getHandler(context).adjustTLSContext(message);
-            byte[] messageBytes;
-            if (message instanceof HandshakeMessage) {
-                HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context)
-                        .getSerializer(message);
-                messageBytes = serializer.serializeHandshakeMessageContent();
-            } else {
-                Serializer serializer = message.getHandler(context).getSerializer(message);
-                messageBytes = serializer.serialize();
-            }
-            message.setCompleteResultingMessage(messageBytes);
-            return message.getCompleteResultingMessage().getValue();
-        } else {
-            ProtocolMessageHandler handler = message.getHandler(context);
-            byte[] protocolMessageBytes = handler.prepareMessage(message);
-            return protocolMessageBytes;
-        }
     }
 }

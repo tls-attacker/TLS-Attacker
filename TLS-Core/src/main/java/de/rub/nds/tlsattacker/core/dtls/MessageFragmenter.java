@@ -33,7 +33,8 @@ public class MessageFragmenter {
     }
 
     /**
-     * Generates a single fragment carrying the contents of the message as payload. 
+     * Generates a single fragment carrying the contents of the message as
+     * payload.
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context).getSerializer(
@@ -54,9 +55,12 @@ public class MessageFragmenter {
                     fragmentBytes);
             fragment.getHandler(context).prepareMessage(fragment);
             // TODO it is unfortunate we need to resort to this
-            // an option would be to add a variable in the context for storing the current fragment offset
-            // This variable which would be updated with the parsing of each fragment.
-            // However, such a variable would constrain the order in which fragments are built, so I am unsure
+            // an option would be to add a variable in the context for storing
+            // the current fragment offset
+            // This variable which would be updated with the parsing of each
+            // fragment.
+            // However, such a variable would constrain the order in which
+            // fragments are built, so I am unsure
             // if we should do this.
             fragment.setFragmentOffset(currentOffset);
             fragments.add(fragment);
