@@ -80,12 +80,9 @@ public class SendMessageHelper {
                                     .getValue());
                             fragmentMessages.add(fragment);
                         }
-                        if (message.isHandshakeMessage()) {
-                            // Increase message counter for outgoing handshake
-                            // messages
-                            // for DTLS
-                            context.increaseDtlsMessageSequenceNumber();
-                        }
+                        // Increase message seq for outgoing future handshake
+                        // DTLS fragments
+                        context.increaseDtlsMessageSequenceNumber();
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
                     }
@@ -125,10 +122,6 @@ public class SendMessageHelper {
             fragmentMessages = null;
         }
         return new MessageActionResult(records, messages, fragmentMessages);
-    }
-
-    private void appendMessageBytes() {
-
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {

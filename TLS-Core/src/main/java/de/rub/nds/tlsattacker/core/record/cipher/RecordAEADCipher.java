@@ -91,11 +91,11 @@ public class RecordAEADCipher extends RecordCipher {
             } else {
                 decrypted = decryptTLS12(decryptionRequest);
             }
-            return new DecryptionResult(null, decrypted, null);
+            return new DecryptionResult(null, decrypted, null, true);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
             LOGGER.debug(E);
-            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false, false);
         }
     }
 
