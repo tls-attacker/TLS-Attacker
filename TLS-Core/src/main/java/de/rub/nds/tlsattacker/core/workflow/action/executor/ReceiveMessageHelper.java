@@ -401,22 +401,29 @@ public class ReceiveMessageHelper {
 
         // we then process all the fragmented messages with increasing message
         // seq until we until we arrive at a message seq for which no fragmented
-        // message was formed
-        DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
-                context.getDtlsNextReceiveSequenceNumber(), epoch);
-        while (fragmentedMessage != null) {
-            manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-            messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-            context.increaseDtlsNextReceiveSequenceNumber();
-            fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
+        // message was formed.
+        if (epoch >= context.getDtlsProcessedEpoch()) {
+            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
+                    context.getDtlsNextReceiveSequenceNumber(), epoch);
+            while (fragmentedMessage != null) {
+                manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                messages.add(processFragmentedMessage(fragmentedMessage, context, true));
+                context.increaseDtlsNextReceiveSequenceNumber();
+                fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
+            }
+            context.setDtlsProcessedEpoch(epoch);
         }
 
         // we finally process fragmented messages whose sequence number is
         // out-of-order note that we do not update the TLS context for
-        // these messages, we only do that for in-order messages
+        // these messages since it might invalidate the context.
+        // (for example, we could update the digest with the contents of a
+        // retransmission, causing the subsequent FINISHED verify_data check to
+        // fail)
         Set<Integer> fragmentSeq = new HashSet<Integer>();
         for (DtlsHandshakeMessageFragment fragment : fragments) {
-            fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq().getValue(), epoch);
+            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
+                    .getValue(), epoch);
             if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
                 messages.add(processFragmentedMessage(fragmentedMessage, context, false));
             }

@@ -481,6 +481,11 @@ public class TlsContext {
     private int dtlsEpoch = 0;
 
     /**
+     * the latest epoch processed in a received handshake message
+     */
+    private int dtlsProcessedEpoch = 0;
+
+    /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
     private FragmentManager dtlsFragmentManager;
@@ -717,6 +722,18 @@ public class TlsContext {
 
     public void setDtlsEpoch(int epoch) {
         this.dtlsEpoch = epoch;
+    }
+
+    public int getDtlsProcessedEpoch() {
+        return dtlsProcessedEpoch;
+    }
+
+    public void setDtlsProcessedEpoch(int epoch) {
+        this.dtlsProcessedEpoch = epoch;
+    }
+
+    public void increaseDtlsProcessedEpoch() {
+        dtlsProcessedEpoch++;
     }
 
     public FragmentManager getDtlsFragmentManager() {

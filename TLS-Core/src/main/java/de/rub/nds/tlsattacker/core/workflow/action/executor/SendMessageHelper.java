@@ -74,6 +74,7 @@ public class SendMessageHelper {
                         } else {
                             messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
                         }
+                        // a fragment must not span records
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
                                     .getValue());
