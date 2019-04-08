@@ -39,7 +39,7 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context, boolean prepareMessages) throws IOException {
-        List<ProtocolMessage> fragmentMessages = new LinkedList<>();
+        List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");

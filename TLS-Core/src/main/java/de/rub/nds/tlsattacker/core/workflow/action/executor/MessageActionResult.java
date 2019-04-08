@@ -22,10 +22,10 @@ public class MessageActionResult {
 
     private final List<ProtocolMessage> messageList;
 
-    private final List<ProtocolMessage> messageFragmentList;
+    private final List<DtlsHandshakeMessageFragment> messageFragmentList;
 
     public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
-            List<ProtocolMessage> messageFragmentList) {
+            List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
@@ -36,7 +36,8 @@ public class MessageActionResult {
      * fields are empty.
      */
     public MessageActionResult() {
-        this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(), new LinkedList<ProtocolMessage>());
+        this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(),
+                new LinkedList<DtlsHandshakeMessageFragment>());
     }
 
     public List<AbstractRecord> getRecordList() {
@@ -47,7 +48,7 @@ public class MessageActionResult {
         return messageList;
     }
 
-    public List<ProtocolMessage> getMessageFragmentList() {
+    public List<DtlsHandshakeMessageFragment> getMessageFragmentList() {
         return messageFragmentList;
     }
 
@@ -58,7 +59,7 @@ public class MessageActionResult {
         LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
         results.add(0, this);
         List<AbstractRecord> recordList = new LinkedList<>();
-        List<ProtocolMessage> messageFragmentList = new LinkedList<>();
+        List<DtlsHandshakeMessageFragment> messageFragmentList = new LinkedList<>();
         List<ProtocolMessage> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {

@@ -117,50 +117,27 @@ public class ReceiveMessageHelper {
     }
 
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
-        List<AbstractRecord> records = new LinkedList<>();
-        List<ProtocolMessage> messages = new LinkedList<>();
-        List<ProtocolMessage> messageFragments = new LinkedList<>();
+        MessageActionResult result = new MessageActionResult();
         if (receivedBytes.length > 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-            records.addAll(tempRecords);
             List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords, context);
             for (RecordGroup recordGroup : recordGroups) {
-                processRecordGroup(recordGroup, context, messageFragments, messages);
+                MessageActionResult tempResult = processRecordGroup(recordGroup, context);
+                result = result.merge(tempResult);
             }
         }
 
-        return new MessageActionResult(records, messages, messageFragments);
+        return result;
     }
 
-    private void processRecordGroup(RecordGroup recordGroup, TlsContext context,
-            List<ProtocolMessage> messageFragments, List<ProtocolMessage> messages) {
-
+    private MessageActionResult processRecordGroup(RecordGroup recordGroup, TlsContext context) {
         recordGroup.adjustContext(context);
         recordGroup.decryptRecords(context);
 
-        List<ProtocolMessage> processedMessages = null;
+        MessageParsingResult messageParsingResult = parseMessages(recordGroup, context);
 
-        processedMessages = parseMessages(recordGroup, context);
-        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            List<DtlsHandshakeMessageFragment> fragments = getFragments(processedMessages);
-            messageFragments.addAll(fragments);
-            processedMessages.removeAll(fragments);
-            List<ProtocolMessage> fragmentedMessages = processDtlsFragments(fragments, recordGroup.getDtlsEpoch(),
-                    context);
-            processedMessages.addAll(fragmentedMessages);
-        }
-
-        messages.addAll(processedMessages);
-    }
-
-    public List<DtlsHandshakeMessageFragment> getFragments(List<ProtocolMessage> processedMessages) {
-        List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
-        for (ProtocolMessage message : processedMessages) {
-            if (message.isDtlsHandshakeMessageFragment()) {
-                fragments.add((DtlsHandshakeMessageFragment) message);
-            }
-        }
-        return fragments;
+        return new MessageActionResult(recordGroup.getRecords(), messageParsingResult.getMessages(),
+                messageParsingResult.getMessageFragments());
     }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
@@ -251,16 +228,31 @@ public class ReceiveMessageHelper {
         }
     }
 
-    public List<ProtocolMessage> parseMessages(RecordGroup recordGroup, TlsContext context) {
+    public MessageParsingResult parseMessages(RecordGroup recordGroup, TlsContext context) {
         byte[] cleanProtocolMessageBytes = recordGroup.getCleanBytes();
         // Due to TLS 1.3 Encrypted Type it might be necessary to look for
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
+        List<DtlsHandshakeMessageFragment> messageFragments = new LinkedList<>();
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
-            messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, group.getProtocolMessageType(), context,
-                    context.getChooser().getSelectedProtocolVersion().isDTLS())));
+            List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                    group.getProtocolMessageType(), context, context.getChooser().getSelectedProtocolVersion().isDTLS());
+
+            // if the protocol is DTLS, parsing HANDSHAKE messages results in
+            // fragments. Here we process these fragments.
+            if (context.getChooser().getSelectedProtocolVersion().isDTLS()
+                    && group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+                for (ProtocolMessage parsedMessage : parsedMessages) {
+                    messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
+                }
+                List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
+                        recordGroup.getDtlsEpoch(), context);
+                messages.addAll(parsedFragmentedMessages);
+            } else {
+                messages.addAll(parsedMessages);
+            }
         }
-        return messages;
+        return new MessageParsingResult(messages, messageFragments);
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,

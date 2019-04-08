@@ -1,0 +1,26 @@
+package de.rub.nds.tlsattacker.core.workflow.action.executor;
+
+import java.util.List;
+
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+
+public class MessageParsingResult {
+    private List<ProtocolMessage> messages;
+    private List<DtlsHandshakeMessageFragment> messageFragments;
+
+    public MessageParsingResult(List<ProtocolMessage> messages, List<DtlsHandshakeMessageFragment> messageFragments) {
+        super();
+        this.messages = messages;
+        this.messageFragments = messageFragments;
+    }
+
+    public List<ProtocolMessage> getMessages() {
+        return messages;
+    }
+
+    public List<DtlsHandshakeMessageFragment> getMessageFragments() {
+        return messageFragments;
+    }
+
+}
