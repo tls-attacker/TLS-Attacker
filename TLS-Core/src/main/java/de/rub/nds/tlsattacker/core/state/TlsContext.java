@@ -465,15 +465,24 @@ public class TlsContext {
     private long readSequenceNumber = 0;
 
     /**
-     * sequence number used in DTLS for handshake messages
+     * the value of the next sequence number to be used
      */
-    private long dtlsMessageSequenceNumber = 0;
+    private int dtlsNextSendSequenceNumber = 0;
 
     /**
-     * sequence number used in DTLS for keeping track of received handshake
-     * messages
+     * the value of the sequence number currently in use
      */
-    private int nextDtlsReceiveSequenceNumber = 0;
+    private int dtlsCurrentSendSequenceNumber = 0;
+
+    /**
+     * the value of the sequence number expected in the next message
+     */
+    private int dtlsNextReceiveSequenceNumber = 0;
+
+    /**
+     * the value of the sequence number expected in the current message
+     */
+    private int dtlsCurrentReceiveSequenceNumber = 0;
 
     /**
      * epoch used in DTLS records
@@ -603,10 +612,9 @@ public class TlsContext {
     private boolean tls13SoftDecryption = false;
 
     /**
-     * In DTLS, don't receive/process retransmissions of handshake messages. A
-     * retransmission is a message whose
+     * In DTLS, exclude retransmissions from the output received.
      */
-    private boolean dropRetransmissions = false;
+    private boolean dtlsDtlsExcludeRetransmissions = true;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -664,12 +672,12 @@ public class TlsContext {
         return chooser;
     }
 
-    public boolean isDropRetransmissions() {
-        return dropRetransmissions;
+    public boolean isDtlsExcludeRetransmissions() {
+        return dtlsDtlsExcludeRetransmissions;
     }
 
-    public void setDropRetransmissions(boolean dropRetransmissions) {
-        this.dropRetransmissions = dropRetransmissions;
+    public void setDtlsDropRetransmissions(boolean dtlsExcludeRetransmissions) {
+        this.dtlsDtlsExcludeRetransmissions = dtlsExcludeRetransmissions;
     }
 
     public boolean isTls13SoftDecryption() {
@@ -1300,28 +1308,52 @@ public class TlsContext {
         this.readSequenceNumber++;
     }
 
-    public long getDtlsMessageSequenceNumber() {
-        return dtlsMessageSequenceNumber;
+    public int getDtlsNextSendSequenceNumber() {
+        return dtlsNextSendSequenceNumber;
     }
 
-    public void setDtlsMessageSequenceNumber(long dtlsMessageSequenceNumber) {
-        this.dtlsMessageSequenceNumber = dtlsMessageSequenceNumber;
+    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
+        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
     }
 
-    public void increaseDtlsMessageSequenceNumber() {
-        this.dtlsMessageSequenceNumber++;
+    public void increaseDtlsNextSendSequenceNumber() {
+        this.dtlsNextSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentSendSequenceNumber() {
+        return dtlsCurrentSendSequenceNumber;
+    }
+
+    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
+        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentSendSequenceNumber() {
+        this.dtlsCurrentSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentReceiveSequenceNumber() {
+        return dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
+        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentReceiveSequenceNumber() {
+        dtlsCurrentReceiveSequenceNumber++;
     }
 
     public int getDtlsNextReceiveSequenceNumber() {
-        return nextDtlsReceiveSequenceNumber;
+        return dtlsNextReceiveSequenceNumber;
     }
 
-    public void setDtlsNextReceiveSequenceNumber(int nextDtlsReceivedSequenceNumber) {
-        this.nextDtlsReceiveSequenceNumber = nextDtlsReceivedSequenceNumber;
+    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
+        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
     }
 
     public void increaseDtlsNextReceiveSequenceNumber() {
-        nextDtlsReceiveSequenceNumber++;
+        dtlsNextReceiveSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

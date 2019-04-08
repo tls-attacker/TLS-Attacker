@@ -125,7 +125,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            tlsContext.setDtlsMessageSequenceNumber(0);
+            tlsContext.setDtlsNextSendSequenceNumber(0);
         }
     }
 

@@ -82,7 +82,7 @@ public class SendMessageHelper {
                         }
                         // Increase message seq for outgoing future handshake
                         // DTLS fragments
-                        context.increaseDtlsMessageSequenceNumber();
+                        // context.increaseDtlsMessageSequenceNumber();
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
                     }

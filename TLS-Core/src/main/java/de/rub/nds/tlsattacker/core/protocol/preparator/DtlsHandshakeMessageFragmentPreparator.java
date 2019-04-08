@@ -68,11 +68,11 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
         // sending
         if (chooser.getContext().getTalkingConnectionEndType() == chooser.getContext().getChooser()
                 .getConnectionEndType()) {
-            msg.setMessageSeq((int) chooser.getContext().getDtlsMessageSequenceNumber());
+            msg.setMessageSeq((int) chooser.getContext().getDtlsCurrentSendSequenceNumber());
         }
         // receiving
         else {
-            msg.setMessageSeq((int) chooser.getContext().getDtlsNextReceiveSequenceNumber());
+            msg.setMessageSeq((int) chooser.getContext().getDtlsCurrentReceiveSequenceNumber());
         }
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }

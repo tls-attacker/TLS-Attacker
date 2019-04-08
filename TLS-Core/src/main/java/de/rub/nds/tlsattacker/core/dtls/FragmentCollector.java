@@ -93,15 +93,14 @@ public class FragmentCollector {
     // instance of this class could be then extracted from the collector and
     // from the fragment
     public boolean addFragment(DtlsHandshakeMessageFragment fragment) {
+        // this is the invariant of the collector
+        assert (messageLength == null && type == null && messageSeq == null && fragmentData.isEmpty())
+                || (messageLength != null && type != null && messageSeq != null && !fragmentData.isEmpty());
         if (isEmpty()) {
             type = fragment.getType().getValue();
             messageSeq = fragment.getMessageSeq().getValue();
             messageLength = fragment.getLength().getValue();
         }
-
-        // this is the invariant of the collector
-        assert (messageLength == null && type == null && messageSeq == null && fragmentData.isEmpty())
-                || (messageLength != null && type != null && messageSeq != null && !fragmentData.isEmpty());
 
         boolean isFitting = isFitting(fragment);
 

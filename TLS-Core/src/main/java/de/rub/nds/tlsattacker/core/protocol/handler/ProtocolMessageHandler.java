@@ -78,8 +78,15 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         }
         try {
             if (message.getAdjustContext()) {
-                adjustTLSContext(message);
+                // we update the current and next send sequence numbers for DTLS
+                // we only do this for full fledged messages (not for fragments)
+                if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && message.isHandshakeMessage()
+                        && !message.isDtlsHandshakeMessageFragment()) {
+                    tlsContext.setDtlsCurrentSendSequenceNumber(tlsContext.getDtlsNextSendSequenceNumber());
+                    tlsContext.increaseDtlsNextSendSequenceNumber();
+                }
                 updateDigest(message);
+                adjustTLSContext(message);
             }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
@@ -105,6 +112,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         Message parsedMessage = parser.parse();
         try {
             if (!onlyParse) {
+
+                if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
+                        && parsedMessage.isHandshakeMessage() && !parsedMessage.isDtlsHandshakeMessageFragment()) {
+                    tlsContext.setDtlsCurrentReceiveSequenceNumber(tlsContext.getDtlsNextReceiveSequenceNumber());
+                    tlsContext.increaseDtlsNextReceiveSequenceNumber();
+                }
                 prepareAfterParse(parsedMessage);
                 updateDigest(parsedMessage);
                 adjustTLSContext(parsedMessage);
