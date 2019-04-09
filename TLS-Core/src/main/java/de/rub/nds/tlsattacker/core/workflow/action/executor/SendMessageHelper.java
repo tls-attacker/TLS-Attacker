@@ -74,15 +74,13 @@ public class SendMessageHelper {
                         } else {
                             messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
                         }
-                        // a fragment must not span records
+                        // TODO a fragment can span records currently, which
+                        // should not be allowed
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
                                     .getValue());
                             fragmentMessages.add(fragment);
                         }
-                        // Increase message seq for outgoing future handshake
-                        // DTLS fragments
-                        // context.increaseDtlsMessageSequenceNumber();
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
                     }

@@ -253,7 +253,7 @@ public class ReceiveMessageHelper {
                             recordGroup.getDtlsEpoch(), context);
                     messages.addAll(parsedFragmentedMessages);
                 } else {
-                    boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsProcessedEpoch();
+                    boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsNextReceiveEpoch();
                     // we only update the context for in order records (with
                     // epoch >= current)
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
@@ -411,7 +411,7 @@ public class ReceiveMessageHelper {
         // we then process all the fragmented messages with increasing message
         // seq until we until we arrive at a message seq for which no fragmented
         // message was formed.
-        if (epoch == context.getDtlsProcessedEpoch() || epoch == context.getDtlsProcessedEpoch() + 1) {
+        if (epoch == context.getDtlsNextReceiveEpoch()) {
             DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
                     context.getDtlsNextReceiveSequenceNumber(), epoch);
             while (fragmentedMessage != null) {
@@ -419,7 +419,6 @@ public class ReceiveMessageHelper {
                 messages.add(processFragmentedMessage(fragmentedMessage, context, true));
                 fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
             }
-            context.setDtlsProcessedEpoch(epoch);
         }
 
         // we finally process fragmented messages whose sequence number is

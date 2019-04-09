@@ -135,7 +135,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
                         .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
-                LOGGER.error("Included in digest fragmented version of: " + message.toCompactString());
+                LOGGER.debug("Included in digest fragmented version of: " + message.toCompactString());
                 tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
             } else {
                 LOGGER.debug("Included in digest: " + message.toCompactString());

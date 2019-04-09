@@ -485,14 +485,14 @@ public class TlsContext {
     private int dtlsCurrentReceiveSequenceNumber = 0;
 
     /**
-     * epoch applied to DTLS records
+     * epoch applied to transmitted DTLS records
      */
-    private int dtlsEpoch = 0;
+    private int dtlsSendEpoch = 0;
 
     /**
-     * epoch we are currently processing
+     * the epoch expected in the next record
      */
-    private int dtlsProcessedEpoch = 0;
+    private int dtlsNextReceiveEpoch = 0;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
@@ -614,7 +614,7 @@ public class TlsContext {
     /**
      * Exclude out of order messages from the output received.
      */
-    private boolean dtlsDtlsExcludeOutOfOrder = false;
+    private boolean dtlsDtlsExcludeOutOfOrder = true;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -718,34 +718,6 @@ public class TlsContext {
 
     public void setHttpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
-    }
-
-    public int getDtlsEpoch() {
-        return dtlsEpoch;
-    }
-
-    public void increaseDtlsEpoch() {
-        dtlsEpoch++;
-    }
-
-    public void setDtlsEpoch(int epoch) {
-        this.dtlsEpoch = epoch;
-    }
-
-    public int getDtlsProcessedEpoch() {
-        return dtlsProcessedEpoch;
-    }
-
-    public void setDtlsProcessedEpoch(int epoch) {
-        this.dtlsProcessedEpoch = epoch;
-    }
-
-    public void increaseDtlsProcessedEpoch() {
-        dtlsProcessedEpoch++;
-    }
-
-    public FragmentManager getDtlsFragmentManager() {
-        return dtlsFragmentManager;
     }
 
     public Session getSession(byte[] sessionId) {
@@ -1350,6 +1322,34 @@ public class TlsContext {
 
     public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
         this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
+    }
+
+    public int getDtlsSendEpoch() {
+        return dtlsSendEpoch;
+    }
+
+    public void increaseDtlsSendEpoch() {
+        dtlsSendEpoch++;
+    }
+
+    public void setDtlsSendEpoch(int sendEpoch) {
+        this.dtlsSendEpoch = sendEpoch;
+    }
+
+    public int getDtlsNextReceiveEpoch() {
+        return dtlsNextReceiveEpoch;
+    }
+
+    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
+        this.dtlsNextReceiveEpoch = receiveEpoch;
+    }
+
+    public void increaseDtlsNextReceiveEpoch() {
+        dtlsNextReceiveEpoch++;
+    }
+
+    public FragmentManager getDtlsFragmentManager() {
+        return dtlsFragmentManager;
     }
 
     public void increaseDtlsNextReceiveSequenceNumber() {
