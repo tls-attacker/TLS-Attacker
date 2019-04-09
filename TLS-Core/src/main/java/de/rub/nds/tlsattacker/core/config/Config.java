@@ -796,7 +796,7 @@ public class Config implements Serializable {
      * Configures the maximum fragment length. This should not be confused with
      * MTU (which includes the IP, UDP, record and DTLS headers).
      */
-    private Integer dtlsMaximumFragmentLength = 1200;
+    private Integer dtlsMaximumFragmentLength = 1400;
 
     /**
      * Enables a check on DTLS fragments ensuring that messages are formed only

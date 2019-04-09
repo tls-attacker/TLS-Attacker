@@ -56,13 +56,11 @@ public class MessageFragmenter {
             fragment.getHandler(context).prepareMessage(fragment);
             // TODO it is unfortunate we need to resort to this
             // an option would be to add a variable in the context for storing
-            // the current fragment offset
-            // This variable which would be updated with the parsing of each
-            // fragment.
-            // However, such a variable would constrain the order in which
-            // fragments are built, so I am unsure
-            // if we should do this.
+            // the current fragment offset/message length
             fragment.setFragmentOffset(currentOffset);
+            fragment.setLength(handshakeBytes.length);
+            byte[] bytes = fragment.getHandler(context).getSerializer(fragment).serialize();
+            fragment.setCompleteResultingMessage(bytes);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);

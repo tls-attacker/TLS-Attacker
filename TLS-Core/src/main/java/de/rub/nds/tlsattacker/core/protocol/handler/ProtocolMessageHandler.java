@@ -13,8 +13,10 @@ import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -132,6 +134,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
     private void updateDigest(ProtocolMessage message) {
         if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
+            if (message instanceof ClientHelloMessage) {
+                tlsContext.getDigest().reset();
+            }
             if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
                         .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
