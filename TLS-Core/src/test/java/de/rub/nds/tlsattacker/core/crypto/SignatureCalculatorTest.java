@@ -151,7 +151,8 @@ public class SignatureCalculatorTest {
             SignatureException, InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410");
-        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("GostR3410-2001-CryptoPro-XchB"), context.getBadSecureRandom());
+        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("GostR3410-2001-CryptoPro-XchB"),
+                context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         BCECGOST3410PrivateKey privateKey = (BCECGOST3410PrivateKey) keyPair.getPrivate();
         context.setServerEcPrivateKey(privateKey.getS());
@@ -168,7 +169,8 @@ public class SignatureCalculatorTest {
             SignatureException, InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
-        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("Tc26-Gost-3410-12-512-paramSetA"), context.getBadSecureRandom());
+        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("Tc26-Gost-3410-12-512-paramSetA"),
+                context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         BCECGOST3410_2012PrivateKey privateKey = (BCECGOST3410_2012PrivateKey) keyPair.getPrivate();
         context.setServerEcPrivateKey(privateKey.getS());
