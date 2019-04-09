@@ -235,21 +235,36 @@ public class ReceiveMessageHelper {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = new LinkedList<>();
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
-            List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                    group.getProtocolMessageType(), context, context.getChooser().getSelectedProtocolVersion().isDTLS());
 
-            // if the protocol is DTLS, parsing HANDSHAKE messages results in
-            // fragments. Here we process these fragments.
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()
-                    && group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-                for (ProtocolMessage parsedMessage : parsedMessages) {
-                    if (parsedMessage.isDtlsHandshakeMessageFragment())
-                        messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
+            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                // if the protocol is DTLS, parsing HANDSHAKE messages results
+                // in
+                // fragments.
+                if (group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+                    List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            group.getProtocolMessageType(), context, false, true);
+                    for (ProtocolMessage parsedMessage : parsedMessages) {
+                        // we need this check since there might be
+                        // "unknown messages"
+                        if (parsedMessage.isDtlsHandshakeMessageFragment())
+                            messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
+                    }
+                    List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
+                            recordGroup.getDtlsEpoch(), context);
+                    messages.addAll(parsedFragmentedMessages);
+                } else {
+                    boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsProcessedEpoch();
+                    // we only update the context for in order records (with
+                    // epoch >= current)
+                    List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            group.getProtocolMessageType(), context, !isInOrder, false);
+                    if (isInOrder || !context.isDtlsExcludeOutOfOrder()) {
+                        messages.addAll(parsedMessages);
+                    }
                 }
-                List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
-                        recordGroup.getDtlsEpoch(), context);
-                messages.addAll(parsedFragmentedMessages);
             } else {
+                List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                        group.getProtocolMessageType(), context, false, false);
                 messages.addAll(parsedMessages);
             }
         }
@@ -257,7 +272,8 @@ public class ReceiveMessageHelper {
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
-            ProtocolMessageType typeFromRecord, TlsContext context, boolean handleHandshakeAsDtlsFragments) {
+            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse,
+            boolean handleHandshakeAsDtlsFragments) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
@@ -270,11 +286,11 @@ public class ReceiveMessageHelper {
                             result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
                         } catch (ParserException | AdjustmentException | UnsupportedOperationException E) {
                             result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
-                                    context, false, handleHandshakeAsDtlsFragments);
+                                    context, onlyParse, handleHandshakeAsDtlsFragments);
                         }
                     } else {
                         result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
-                                context, false, handleHandshakeAsDtlsFragments);
+                                context, onlyParse, handleHandshakeAsDtlsFragments);
                     }
                 } else {
                     if (cleanProtocolMessageBytes.length > 2) {
@@ -412,7 +428,7 @@ public class ReceiveMessageHelper {
         // (for example, we could update the digest with the contents of a
         // retransmission, causing the subsequent FINISHED verify_data check to
         // fail)
-        if (!context.isDtlsExcludeRetransmissions()) {
+        if (!context.isDtlsExcludeOutOfOrder()) {
             Set<Integer> fragmentSeq = new HashSet<Integer>();
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
@@ -426,11 +442,6 @@ public class ReceiveMessageHelper {
         }
 
         return messages;
-    }
-
-    private boolean isOld(DtlsHandshakeMessageFragment fragment, Integer epoch, TlsContext context) {
-        return fragment.getMessageSeq().getValue() < context.getDtlsNextReceiveSequenceNumber()
-                || epoch < context.getDtlsProcessedEpoch();
     }
 
     /*

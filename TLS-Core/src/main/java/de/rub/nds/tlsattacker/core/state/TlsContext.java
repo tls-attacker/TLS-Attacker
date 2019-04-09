@@ -480,17 +480,17 @@ public class TlsContext {
     private int dtlsNextReceiveSequenceNumber = 0;
 
     /**
-     * the value of the sequence number expected in the current message
+     * the value of the sequence number in the current message
      */
     private int dtlsCurrentReceiveSequenceNumber = 0;
 
     /**
-     * epoch used in DTLS records
+     * epoch applied to DTLS records
      */
     private int dtlsEpoch = 0;
 
     /**
-     * the latest epoch processed in a received handshake message
+     * epoch we are currently processing
      */
     private int dtlsProcessedEpoch = 0;
 
@@ -612,9 +612,9 @@ public class TlsContext {
     private boolean tls13SoftDecryption = false;
 
     /**
-     * In DTLS, exclude retransmissions from the output received.
+     * Exclude out of order messages from the output received.
      */
-    private boolean dtlsDtlsExcludeRetransmissions = true;
+    private boolean dtlsDtlsExcludeOutOfOrder = false;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -672,12 +672,12 @@ public class TlsContext {
         return chooser;
     }
 
-    public boolean isDtlsExcludeRetransmissions() {
-        return dtlsDtlsExcludeRetransmissions;
+    public boolean isDtlsExcludeOutOfOrder() {
+        return dtlsDtlsExcludeOutOfOrder;
     }
 
-    public void setDtlsDropRetransmissions(boolean dtlsExcludeRetransmissions) {
-        this.dtlsDtlsExcludeRetransmissions = dtlsExcludeRetransmissions;
+    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
+        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
     }
 
     public boolean isTls13SoftDecryption() {
