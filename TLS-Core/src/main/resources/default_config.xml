@@ -929,6 +929,7 @@
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
     <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
+    <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
     <dtlsOnlyFitting>true</dtlsOnlyFitting>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>

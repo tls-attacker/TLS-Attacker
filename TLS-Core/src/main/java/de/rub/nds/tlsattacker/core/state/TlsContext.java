@@ -615,7 +615,7 @@ public class TlsContext {
     /**
      * Exclude out of order messages from the output received.
      */
-    private boolean dtlsDtlsExcludeOutOfOrder = true;
+    private boolean dtlsDtlsExcludeOutOfOrder = false;
 
     public TlsContext() {
         this(Config.createConfig());
