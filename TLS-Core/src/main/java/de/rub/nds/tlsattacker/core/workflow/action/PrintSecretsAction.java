@@ -29,7 +29,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
         StringBuilder sb = new StringBuilder("\n\nContext: " + ctx);
         sb.append("\n  (Record Layer) ");

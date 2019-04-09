@@ -23,7 +23,7 @@ public class PopBufferedRecordAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
         ctx.getRecordBuffer().pop();
         setExecuted(Boolean.TRUE);

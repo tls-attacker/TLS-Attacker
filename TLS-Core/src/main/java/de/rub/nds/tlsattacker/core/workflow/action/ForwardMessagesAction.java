@@ -304,7 +304,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
@@ -335,7 +335,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     /**
      * Apply the contents of the messages to the given TLS context.
-     * 
+     *
      * @param protocolMessages
      * @param tlsContext
      */
