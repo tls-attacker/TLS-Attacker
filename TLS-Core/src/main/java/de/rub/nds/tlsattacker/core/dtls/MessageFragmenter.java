@@ -63,7 +63,7 @@ public class MessageFragmenter {
                     fragmentBytes);
             fragment.getHandler(context).prepareMessage(fragment);
             // TODO it is unfortunate we need to resort to this
-            // an option would be to add a variable in the context for storing
+            // an option would be to add variables to the context for storing
             // the current fragment offset/message length
             fragment.setFragmentOffset(currentOffset);
             fragment.setLength(handshakeBytes.length);

@@ -238,8 +238,7 @@ public class ReceiveMessageHelper {
 
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 // if the protocol is DTLS, parsing HANDSHAKE messages results
-                // in
-                // fragments.
+                // in fragments.
                 if (group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, false, true);
@@ -255,7 +254,7 @@ public class ReceiveMessageHelper {
                 } else {
                     boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsNextReceiveEpoch();
                     // we only update the context for in order records (with
-                    // epoch >= current)
+                    // epoch == current)
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, !isInOrder, false);
                     if (isInOrder || !context.isDtlsExcludeOutOfOrder()) {
