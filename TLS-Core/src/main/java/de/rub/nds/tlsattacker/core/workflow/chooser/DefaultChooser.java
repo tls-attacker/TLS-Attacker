@@ -884,6 +884,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getDsaServerPrivateKey() {
+        if (context.getServerDsaPrivateKey() != null) {
+            return context.getServerDsaPrivateKey();
+        } else {
+            return config.getDefaultServerDsaPrivateKey();
+        }
+    }
+
+    @Override
     public BigInteger getDsaServerPublicKey() {
         if (context.getServerDsaPublicKey() != null) {
             return context.getServerDsaPublicKey();
