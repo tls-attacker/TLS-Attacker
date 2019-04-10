@@ -931,6 +931,7 @@
     <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
     <dtlsOnlyFitting>true</dtlsOnlyFitting>
+    <dtlsDtlsExcludeOutOfOrder>false</dtlsDtlsExcludeOutOfOrder>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
@@ -940,7 +941,7 @@
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
-    <stopRecievingAfterFatal>false</stopRecievingAfterFatal>
+    <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>

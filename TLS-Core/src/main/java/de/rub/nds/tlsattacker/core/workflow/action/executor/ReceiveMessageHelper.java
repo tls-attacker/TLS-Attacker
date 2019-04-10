@@ -257,7 +257,7 @@ public class ReceiveMessageHelper {
                     // epoch == current)
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, !isInOrder, false);
-                    if (isInOrder || !context.isDtlsExcludeOutOfOrder()) {
+                    if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.addAll(parsedMessages);
                     }
                 }
@@ -426,7 +426,7 @@ public class ReceiveMessageHelper {
         // (for example, we could update the digest with the contents of a
         // retransmission, causing the subsequent FINISHED verify_data check to
         // fail)
-        if (!context.isDtlsExcludeOutOfOrder()) {
+        if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
             Set<Integer> fragmentSeq = new HashSet<Integer>();
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()

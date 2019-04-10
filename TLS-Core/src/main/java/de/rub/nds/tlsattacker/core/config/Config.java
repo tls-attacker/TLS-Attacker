@@ -805,6 +805,11 @@ public class Config implements Serializable {
      */
     private boolean dtlsOnlyFitting = true;
 
+    /**
+     * Exclude out of order messages from the output received.
+     */
+    private boolean dtlsDtlsExcludeOutOfOrder = false;
+
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
@@ -1758,6 +1763,14 @@ public class Config implements Serializable {
 
     public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
         this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public boolean isDtlsExcludeOutOfOrder() {
+        return dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
+        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
     }
 
     public boolean isDtlsOnlyFitting() {

@@ -612,11 +612,6 @@ public class TlsContext {
      */
     private boolean tls13SoftDecryption = false;
 
-    /**
-     * Exclude out of order messages from the output received.
-     */
-    private boolean dtlsDtlsExcludeOutOfOrder = false;
-
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -671,14 +666,6 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
-    }
-
-    public boolean isDtlsExcludeOutOfOrder() {
-        return dtlsDtlsExcludeOutOfOrder;
-    }
-
-    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
-        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
     }
 
     public boolean isTls13SoftDecryption() {
