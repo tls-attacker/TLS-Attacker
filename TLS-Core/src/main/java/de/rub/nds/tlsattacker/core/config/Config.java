@@ -852,7 +852,7 @@ public class Config implements Serializable {
      */
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean stopRecievingAfterFatal = false;
+    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
     /**
@@ -1403,12 +1403,12 @@ public class Config implements Serializable {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public Boolean isStopRecievingAfterFatal() {
-        return stopRecievingAfterFatal;
+    public Boolean isStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
-        this.stopRecievingAfterFatal = stopRecievingAfterFatal;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
