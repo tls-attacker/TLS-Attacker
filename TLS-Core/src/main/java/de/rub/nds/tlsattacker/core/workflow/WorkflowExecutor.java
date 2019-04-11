@@ -20,7 +20,7 @@ public abstract class WorkflowExecutor {
 
     static {
         if (BouncyCastleProviderChecker.isLoaded() == false) {
-            throw new BouncyCastleNotLoadedException("BouncyCastle Provide not loaded");
+            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
         }
     }
     private static final Logger LOGGER = LogManager.getLogger();

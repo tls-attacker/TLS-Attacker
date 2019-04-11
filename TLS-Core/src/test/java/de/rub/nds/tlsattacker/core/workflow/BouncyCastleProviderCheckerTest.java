@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,6 +23,11 @@ public class BouncyCastleProviderCheckerTest {
     @Before
     public void setUp() {
         Security.removeProvider("BC");
+    }
+    
+    @After
+    public void tearDown() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
