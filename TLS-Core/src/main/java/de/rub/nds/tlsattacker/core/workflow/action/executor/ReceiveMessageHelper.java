@@ -59,10 +59,8 @@ public class ReceiveMessageHelper {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages
-     *            Messages which should be received
-     * @param context
-     *            The context on which Messages should be received
+     * @param expectedMessages Messages which should be received
+     * @param context The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
@@ -245,8 +243,9 @@ public class ReceiveMessageHelper {
                     for (ProtocolMessage parsedMessage : parsedMessages) {
                         // we need this check since there might be
                         // "unknown messages"
-                        if (parsedMessage.isDtlsHandshakeMessageFragment())
+                        if (parsedMessage.isDtlsHandshakeMessageFragment()) {
                             messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
+                        }
                     }
                     List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
                             recordGroup.getDtlsEpoch(), context);
@@ -453,15 +452,10 @@ public class ReceiveMessageHelper {
         try {
             stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
                     HandshakeByteLength.MESSAGE_LENGTH_FIELD));
-        } catch (IOException ex) {
-            LOGGER.warn("Could not write fragment to stream.", ex);
-        }
-        try {
             stream.write(fragment.getContent().getValue());
         } catch (IOException ex) {
             LOGGER.warn("Could not write fragment to stream.", ex);
         }
-
         ParserResult parsingResult = tryHandleAsCorrectMessage(stream.toByteArray(), 0,
                 fragment.getProtocolMessageType(), context, !updateContext, false);
         HandshakeMessage message = (HandshakeMessage) parsingResult.getMessage();
