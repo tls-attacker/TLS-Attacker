@@ -810,6 +810,12 @@ public class Config implements Serializable {
      */
     private boolean dtlsDtlsExcludeOutOfOrder = false;
 
+    /**
+     * Reset the message sequence on receiving/sending Finished messages. This
+     * allows exploration of behaviors such as session resumption.
+     */
+    private boolean dtlsResetMessageSequenceOnFinished = true;
+
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
@@ -1771,6 +1777,14 @@ public class Config implements Serializable {
 
     public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
         this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsResetMessageSequenceOnFinished() {
+        return dtlsResetMessageSequenceOnFinished;
+    }
+
+    public void setDtlsResetMessageSequenceOnFinished(boolean dtlsResetMessageSequenceOnFinished) {
+        this.dtlsResetMessageSequenceOnFinished = dtlsResetMessageSequenceOnFinished;
     }
 
     public boolean isDtlsOnlyFitting() {

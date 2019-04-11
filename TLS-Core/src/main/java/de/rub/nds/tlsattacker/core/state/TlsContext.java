@@ -466,27 +466,28 @@ public class TlsContext {
     private long readSequenceNumber = 0;
 
     /**
-     * the value of the next sequence number to be used
+     * the sequence number to be used in the fragments of the next message sent
      */
     private int dtlsNextSendSequenceNumber = 0;
 
     /**
-     * the value of the sequence number currently in use
+     * the sequence number used in fragments
      */
     private int dtlsCurrentSendSequenceNumber = 0;
 
     /**
-     * the value of the sequence number expected in the next message
+     * the sequence number expected in the fragments of the next message
+     * received
      */
     private int dtlsNextReceiveSequenceNumber = 0;
 
     /**
-     * the value of the sequence number in the current message
+     * the sequence number expected in the fragments of the current message
      */
     private int dtlsCurrentReceiveSequenceNumber = 0;
 
     /**
-     * epoch applied to transmitted DTLS records
+     * the epoch applied to transmitted DTLS records
      */
     private int dtlsSendEpoch = 0;
 
