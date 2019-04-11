@@ -932,6 +932,7 @@
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
     <dtlsOnlyFitting>true</dtlsOnlyFitting>
     <dtlsDtlsExcludeOutOfOrder>false</dtlsDtlsExcludeOutOfOrder>
+    <dtlsResetMessageSequenceOnFinished>true</dtlsResetMessageSequenceOnFinished>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
