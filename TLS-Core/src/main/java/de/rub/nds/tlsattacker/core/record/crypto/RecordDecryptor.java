@@ -95,7 +95,7 @@ public class RecordDecryptor extends Decryptor {
         }
         if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac() && result.isSuccessful()) {
             LOGGER.trace("EncryptThenMac is not active");
-            if (cipherSuite.isUsingMac()) {
+            if (cipherSuite.isUsingMac() /* && ! Arrays.equals(encrypted, decrypted) */) {
                 adjustMac(record);
             } else {
                 useNoMac(record);
