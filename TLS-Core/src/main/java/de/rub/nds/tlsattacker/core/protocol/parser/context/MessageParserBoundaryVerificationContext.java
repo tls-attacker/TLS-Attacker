@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public class MessageParserBoundaryVerificationContext implements ParserContext {
 
+	public static boolean THROWING = false;
+	
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final int messageBoundary;
@@ -42,12 +44,17 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
             return new ParserContextResult() {
                 @Override
                 public void evaluate() {
-                    throw new ParserException(String.format("Attempt to parse over boundary %s of current context, "
+                	String message = String.format("Attempt to parse over boundary %s of current context, "
                             + "boundary only has %d bytes left, but parse request was for %d bytes in %s",
                             boundaryQualifier,
                             MessageParserBoundaryVerificationContext.this.messageBoundary
                                     - (p.getPointer() - pointerOffset), requestedLength,
-                            MessageParserBoundaryVerificationContext.this));
+                            MessageParserBoundaryVerificationContext.this);
+                	if(THROWING) {
+	                    throw new ParserException(message);
+                	} else {
+                		LOGGER.info(message);
+                	}
                 }
             };
         }

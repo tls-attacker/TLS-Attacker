@@ -83,7 +83,7 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setInitialisationVector(result.getInitialisationVector());
         LOGGER.debug("PlainRecordBytes: "
                 + ArrayConverter.bytesToHexString(record.getComputations().getPlainRecordBytes().getValue()));
-        if (recordCipher.isUsingPadding()) {
+        if (recordCipher.isUsingPadding() && ! Arrays.equals(encrypted, decrypted)) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
                     && context.getActiveKeySetTypeRead() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
                 adjustPaddingTLS(record);
@@ -95,7 +95,7 @@ public class RecordDecryptor extends Decryptor {
         }
         if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac()) {
             LOGGER.trace("EncryptThenMac is not active");
-            if (cipherSuite.isUsingMac()) {
+            if (cipherSuite.isUsingMac() && ! Arrays.equals(encrypted, decrypted)) {
                 adjustMac(record);
             } else {
                 useNoMac(record);
