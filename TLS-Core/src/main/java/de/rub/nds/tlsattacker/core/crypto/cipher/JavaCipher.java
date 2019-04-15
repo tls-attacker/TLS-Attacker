@@ -21,7 +21,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-class JavaCipher implements EncryptionCipher, DecryptionCipher {
+class JavaCipher extends BaseCipher {
 
     private final CipherAlgorithm algorithm;
 

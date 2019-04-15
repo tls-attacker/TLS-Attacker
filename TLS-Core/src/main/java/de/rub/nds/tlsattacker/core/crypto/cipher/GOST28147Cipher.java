@@ -21,7 +21,7 @@ import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
  * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing
  * as defined in RFC 4357.
  */
-public class GOST28147Cipher implements EncryptionCipher, DecryptionCipher {
+public class GOST28147Cipher extends BaseCipher {
 
     public static final byte[] C = { (byte) 0x69, (byte) 0x00, (byte) 0x72, (byte) 0x22, (byte) 0x64, (byte) 0xC9,
             (byte) 0x04, (byte) 0x23, (byte) 0x8D, (byte) 0x3A, (byte) 0xDB, (byte) 0x96, (byte) 0x46, (byte) 0xE9,
