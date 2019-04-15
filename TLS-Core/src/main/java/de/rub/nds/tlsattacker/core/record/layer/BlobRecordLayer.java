@@ -76,7 +76,8 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public void decryptRecord(AbstractRecord record) {
         byte[] data = record.getProtocolMessageBytes().getValue();
-        data = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
+        data = cipher.decrypt(new DecryptionRequest(null, data, context.getChooser().getConnectionEndType()))
+                .getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(data);
         decompressor.decompress(record);
     }
