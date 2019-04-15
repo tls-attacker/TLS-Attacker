@@ -47,7 +47,7 @@ public class RecordDecryptor extends Decryptor {
     public void decrypt(BlobRecord record) {
         LOGGER.debug("Decrypting BlobRecord");
         DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(null, record.getProtocolMessageBytes()
-                .getValue()));
+                .getValue(), context.getChooser().getConnectionEndType()));
         byte[] decrypted = result.getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(decrypted);
         LOGGER.debug("CleanProtocolMessageBytes: "
@@ -77,7 +77,7 @@ public class RecordDecryptor extends Decryptor {
         }
         LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
         DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(record.getComputations()
-                .getAuthenticatedMetaData().getValue(), encrypted));
+                .getAuthenticatedMetaData().getValue(), encrypted, context.getChooser().getConnectionEndType()));
         byte[] decrypted = result.getDecryptedCipherText();
         record.getComputations().setPlainRecordBytes(decrypted);
         record.getComputations().setInitialisationVector(result.getInitialisationVector());

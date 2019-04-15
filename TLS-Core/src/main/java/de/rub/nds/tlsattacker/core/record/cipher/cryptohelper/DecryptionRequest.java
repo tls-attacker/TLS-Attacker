@@ -8,15 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 public class DecryptionRequest {
 
     private final byte[] additionalAuthenticatedData;
 
     private final byte[] cipherText;
 
-    public DecryptionRequest(byte[] additionalAuthenticatedData, byte[] cipherText) {
+    private final ConnectionEndType connectionEndType;
+
+    public DecryptionRequest(byte[] additionalAuthenticatedData, byte[] cipherText, ConnectionEndType connectionEndType) {
         this.additionalAuthenticatedData = additionalAuthenticatedData;
         this.cipherText = cipherText;
+        this.connectionEndType = connectionEndType;
     }
 
     public byte[] getAdditionalAuthenticatedData() {
@@ -27,4 +32,7 @@ public class DecryptionRequest {
         return cipherText;
     }
 
+    public ConnectionEndType getConnectionEndType() {
+        return connectionEndType;
+    }
 }

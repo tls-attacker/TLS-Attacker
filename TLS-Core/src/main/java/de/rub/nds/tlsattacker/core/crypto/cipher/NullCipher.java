@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
  *
  *
  */
-public class NullCipher implements EncryptionCipher, DecryptionCipher {
+public class NullCipher extends BaseCipher {
 
     public NullCipher() {
     }

@@ -27,7 +27,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.Arrays;
 
-public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
+public class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
