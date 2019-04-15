@@ -59,6 +59,14 @@ public abstract class RecordCipher {
         this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
     }
 
+    protected DecryptionCipher getDecryptionCipher(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
+            return encryptCipher.getDecryptionCipher();
+        } else {
+            return decryptCipher;
+        }
+    }
+
     public abstract EncryptionResult encrypt(EncryptionRequest encryptionRequest);
 
     public abstract DecryptionResult decrypt(DecryptionRequest decryptionRequest);

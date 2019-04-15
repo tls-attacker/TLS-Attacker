@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -128,6 +129,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
                 return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv, false);
             }
+            DecryptionCipher decryptCipher = getDecryptionCipher(decryptionRequest.getConnectionEndType());
             if (useExplicitIv) {
                 byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
