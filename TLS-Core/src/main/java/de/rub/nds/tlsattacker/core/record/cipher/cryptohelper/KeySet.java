@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class KeySet {
-	
-	private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] clientWriteMacSecret;
     private byte[] serverWriteMacSecret;
