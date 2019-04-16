@@ -62,8 +62,12 @@ public class UdpInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         // we wait until data is available
-        while (available() == 0)
-            ;
+        while (available() == 0) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException _) {
+            }
+        }
 
         index++;
         return dataBuffer[index - 1] & 0xff;

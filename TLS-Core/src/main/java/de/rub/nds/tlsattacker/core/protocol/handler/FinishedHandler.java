@@ -77,8 +77,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
-                    && tlsContext.getConfig().isDtlsResetMessageSequenceOnFinished()) {
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 // upon receiving a FINISHED, we set the next receive sequence
                 // number to 0
                 tlsContext.setDtlsNextReceiveSequenceNumber(0);
@@ -125,8 +124,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
         }
 
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
-                && tlsContext.getConfig().isDtlsResetMessageSequenceOnFinished()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             tlsContext.setDtlsNextSendSequenceNumber(0);
         }
     }

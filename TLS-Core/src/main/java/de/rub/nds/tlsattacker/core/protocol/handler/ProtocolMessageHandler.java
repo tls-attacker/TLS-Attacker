@@ -134,9 +134,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
     private void updateDigest(ProtocolMessage message) {
         if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
-            if (message instanceof ClientHelloMessage) {
-                tlsContext.getDigest().reset();
-            }
             if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
                         .wrapInSingleFragment((HandshakeMessage) message, tlsContext);

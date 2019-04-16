@@ -59,8 +59,10 @@ public class ReceiveMessageHelper {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages Messages which should be received
-     * @param context The context on which Messages should be received
+     * @param expectedMessages
+     *            Messages which should be received
+     * @param context
+     *            The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
