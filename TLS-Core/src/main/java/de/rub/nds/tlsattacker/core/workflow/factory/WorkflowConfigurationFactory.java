@@ -197,15 +197,16 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
 
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS()) {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, new HelloVerifyRequestMessage(config)));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ClientHelloMessage(config)));
         }
-        
+
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
@@ -281,8 +282,8 @@ public class WorkflowConfigurationFactory {
         messages.add(new FinishedMessage(config));
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
         if (!config.getHighestProtocolVersion().isTLS13()) {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, new ChangeCipherSpecMessage(config),new FinishedMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         }
 
         return workflowTrace;
@@ -299,18 +300,18 @@ public class WorkflowConfigurationFactory {
 
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
         if (config.isServerSendsApplicationData()) {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, new ApplicationMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new ApplicationMessage(config)));
         }
 
         if (config.isAddHeartbeatExtension()) {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, new ApplicationMessage(config), new HeartbeatMessage(config)));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER,  new HeartbeatMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ApplicationMessage(config), new HeartbeatMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HeartbeatMessage(config)));
         } else {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, new ApplicationMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ApplicationMessage(config)));
         }
         return workflowTrace;
     }
@@ -349,7 +350,7 @@ public class WorkflowConfigurationFactory {
                 new ApplicationMessage(config));
 
         // Client CKE, CCS, Fin
-        //TODO weired
+        // TODO weired
         TlsAction lastClientAction;
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             lastClientAction = (TlsAction) workflowTrace.getLastSendingAction();
@@ -401,8 +402,8 @@ public class WorkflowConfigurationFactory {
             action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
                     new HelloVerifyRequestMessage(config));
             trace.addTlsAction(action);
-            action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
-                    new ClientHelloMessage(config));
+            action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, new ClientHelloMessage(
+                    config));
             trace.addTlsAction(action);
 
         }
