@@ -50,10 +50,8 @@ public class ReceiveMessageHelper {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages
-     *            Messages which should be received
-     * @param context
-     *            The context on which Messages should be received
+     * @param expectedMessages Messages which should be received
+     * @param context The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
@@ -138,8 +136,7 @@ public class ReceiveMessageHelper {
             } while (receivedBytes.length != 0);
 
         } catch (IOException ex) {
-            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
-            LOGGER.debug(ex);
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.", ex);
             context.setReceivedTransportHandlerException(true);
         }
         return realRecords;
@@ -322,7 +319,16 @@ public class ReceiveMessageHelper {
         // it's up to the client to know what to expect next. Is this good
         // enough?
         HandshakeMessageHandler<? extends SSL2HandshakeMessage> handler;
-        if (cleanProtocolMessageBytes[2] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
+        int typeOffset = 2;
+        // SSL2 Long length field?
+        if ((cleanProtocolMessageBytes[dataPointer] & (byte) 0x80) == 0) {
+            LOGGER.debug("Long SSL2 length field detected");
+            typeOffset++;
+        } else {
+            LOGGER.debug("Normal SSL2 length field detected");
+        }
+
+        if (cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
             handler = new SSL2ServerVerifyHandler(context);
