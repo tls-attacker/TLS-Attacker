@@ -72,4 +72,7 @@ public class ServerUdpTransportHandler extends TransportHandler {
         closeConnection();
     }
 
+    public int getPort() {
+        return port;
+    }
 }
