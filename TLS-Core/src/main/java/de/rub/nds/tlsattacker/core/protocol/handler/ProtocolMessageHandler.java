@@ -13,10 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -87,9 +85,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                     tlsContext.setDtlsCurrentSendSequenceNumber(tlsContext.getDtlsNextSendSequenceNumber());
                     tlsContext.increaseDtlsNextSendSequenceNumber();
                 }
-                updateDigest(message);
+
                 adjustTLSContext(message);
             }
+            updateDigest(message);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);

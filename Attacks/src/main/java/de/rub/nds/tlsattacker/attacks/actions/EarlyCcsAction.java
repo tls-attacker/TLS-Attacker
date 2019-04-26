@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.actions;
 
 import de.rub.nds.modifiablevariable.bool.BooleanExplicitValueModification;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
@@ -56,21 +57,16 @@ public class EarlyCcsAction extends TlsAction {
      *
      * @param state
      *            the State in which the action should be executed in
-     * @throws IOException
-     *             If something goes wrong during the transmission of the
-     *             ClientKeyExchange message
      */
     @Override
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(AlgorithmResolver
                 .getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
-        ModifiableBoolean modifiableBoolean = new ModifiableBoolean();
-        modifiableBoolean.setModification(new BooleanExplicitValueModification(false));
         if (!targetOpenssl1_0_0) {
-            message.setIncludeInDigest(modifiableBoolean);
+            message.setIncludeInDigest(Modifiable.explicit(false));
         }
-        message.setAdjustContext(modifiableBoolean);
+        message.setAdjustContext(Modifiable.explicit(false));
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         if (targetOpenssl1_0_0) {
@@ -88,6 +84,7 @@ public class EarlyCcsAction extends TlsAction {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
             executedAsPlanned = true;
         } catch (IOException E) {
+            E.printStackTrace();
             LOGGER.debug("Could not write Data to stream", E);
             executedAsPlanned = false;
         }

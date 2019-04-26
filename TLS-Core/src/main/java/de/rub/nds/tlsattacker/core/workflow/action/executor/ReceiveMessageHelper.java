@@ -357,6 +357,8 @@ public class ReceiveMessageHelper {
         ProtocolMessageHandler pmh = null;
         if (typeFromRecord == ProtocolMessageType.HANDSHAKE && handleHandshakeAsDtlsFragments) {
             pmh = new DtlsHandshakeMessageFragmentHandler(context);
+        } else if (typeFromRecord == ProtocolMessageType.UNKNOWN) {
+            return tryHandleAsSslMessage(protocolMessageBytes, pointer, context);
         } else {
             HandshakeMessageType handshakeMessageType = HandshakeMessageType
                     .getMessageType(protocolMessageBytes[pointer]);
