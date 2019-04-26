@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -80,7 +79,9 @@ public class EarlyCcsAction extends TlsAction {
         }
         handler.adjustTlsContextAfterSerialize(message);
         List<AbstractRecord> recordList = new LinkedList<>();
-        recordList.add(new Record());
+        Record r = new Record();
+        r.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        recordList.add(r);
         byte[] prepareRecords = state.getTlsContext().getRecordLayer()
                 .prepareRecords(protocolMessageBytes, ProtocolMessageType.HANDSHAKE, recordList);
         try {
