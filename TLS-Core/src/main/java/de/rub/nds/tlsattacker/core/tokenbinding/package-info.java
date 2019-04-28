@@ -10,4 +10,3 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import javax.xml.bind.annotation.XmlNsForm;
-

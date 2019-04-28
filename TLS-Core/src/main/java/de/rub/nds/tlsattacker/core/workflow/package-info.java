@@ -12,4 +12,3 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import javax.xml.bind.annotation.XmlNsForm;
-

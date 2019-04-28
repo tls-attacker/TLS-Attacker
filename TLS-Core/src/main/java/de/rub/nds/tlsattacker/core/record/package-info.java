@@ -10,4 +10,3 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import javax.xml.bind.annotation.XmlNsForm;
-

@@ -10,4 +10,3 @@
 package de.rub.nds.tlsattacker.transport;
 
 import javax.xml.bind.annotation.XmlNsForm;
-
