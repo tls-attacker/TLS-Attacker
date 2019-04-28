@@ -156,7 +156,7 @@ public class ForwardMessagesActionTest {
             // OS-independent functionality for printing new lines
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            pw.println("<workflowTrace>");
+            pw.println("<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>ctx1</alias>");
             pw.println("    </OutboundConnection>");
@@ -167,7 +167,7 @@ public class ForwardMessagesActionTest {
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardMessages>");
-            pw.println("</workflowTrace>");
+            pw.println("</ta:workflowTrace>");
             pw.close();
             String expected = sw.toString();
 
