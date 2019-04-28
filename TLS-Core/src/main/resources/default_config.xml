@@ -1,4 +1,4 @@
-<config>
+<config xmlns:ns2="http://nds.rub.de/tlsattacker">
     <defaultHandshakeSecret>
         00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
         00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00

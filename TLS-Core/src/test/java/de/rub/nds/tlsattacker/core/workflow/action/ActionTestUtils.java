@@ -84,9 +84,11 @@ public class ActionTestUtils {
                         + " does not end with string 'Action'");
             }
             StringBuilder sb = new StringBuilder("");
-            sb.append("<workflowTrace>").append(System.lineSeparator());
+            sb.append(
+                    "<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
+                    .append(System.lineSeparator());
             sb.append("    <").append(xmlName).append("/>").append(System.lineSeparator());
-            sb.append("</workflowTrace>").append(System.lineSeparator());
+            sb.append("</ta:workflowTrace>").append(System.lineSeparator());
             String expected = sb.toString();
 
             Config config = Config.createConfig();
