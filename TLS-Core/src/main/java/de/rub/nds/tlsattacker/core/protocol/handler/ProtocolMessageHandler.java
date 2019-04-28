@@ -77,6 +77,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             message.setCompleteResultingMessage(completeMessage);
         }
         try {
+            updateDigest(message);
             if (message.getAdjustContext()) {
                 // we update the current and next send sequence numbers for DTLS
                 // we only do this for full fledged messages (not for fragments)
@@ -88,7 +89,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
                 adjustTLSContext(message);
             }
-            updateDigest(message);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
