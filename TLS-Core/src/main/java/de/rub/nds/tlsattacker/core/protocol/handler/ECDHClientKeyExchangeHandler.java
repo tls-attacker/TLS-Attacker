@@ -84,7 +84,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         }
     }
 
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
+    public ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
                 namedGroup.getValue()));
         try {
