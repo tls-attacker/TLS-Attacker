@@ -51,7 +51,7 @@ public class WorkflowTraceSerializer {
      */
     private static JAXBContext context;
 
-    private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
+    /* package */ static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
@@ -172,7 +172,7 @@ public class WorkflowTraceSerializer {
         } else {
             throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
         }
-
+    
     }
 
     private WorkflowTraceSerializer() {
