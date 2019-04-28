@@ -54,10 +54,10 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
-    
+
     @XmlTransient
     private ReceiveMessageHelper receiveMessageHelper;
-    
+
     @XmlTransient
     private SendMessageHelper sendMessageHelper;
 

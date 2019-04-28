@@ -1,4 +1,4 @@
-<workflowTrace>
+<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Send>
         <executed>true</executed>
         <messages/>
@@ -162,5 +162,5 @@
             </Record>
         </records>
         <expectedMessages/>
-    </Receive>
-</workflowTrace>
+    </Receive>    
+</ta:workflowTrace>
