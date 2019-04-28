@@ -34,6 +34,8 @@ import java.math.BigInteger;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -53,6 +55,11 @@ public class ForensicAnalyzer {
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow, BigInteger rsaPrivateKey)
             throws IOException {
+        return getRealWorkflowTraceWithContext(executedWorkflow, rsaPrivateKey).getKey();
+    }
+
+    public Pair<WorkflowTrace, TlsContext> getRealWorkflowTraceWithContext(WorkflowTrace executedWorkflow,
+            BigInteger rsaPrivateKey) throws IOException {
         Security.addProvider(new BouncyCastleProvider());
         if (!isSupported(executedWorkflow)) {
             return null;
@@ -115,7 +122,7 @@ public class ForensicAnalyzer {
             }
         }
 
-        return reconstructed;
+        return Pair.of(reconstructed, context);
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
