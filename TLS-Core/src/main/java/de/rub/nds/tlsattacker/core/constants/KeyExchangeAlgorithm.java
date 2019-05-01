@@ -36,7 +36,8 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECDSA,
     ECMQV_ECNRA,
     ECDH_ECNRA,
-    CECPQ1_ECDSA;
+    CECPQ1_ECDSA,
+    ECCPWD;
 
     public CertificateKeyType getRequiredCertPublicKeyType() {
         switch (this) {

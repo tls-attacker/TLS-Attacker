@@ -383,6 +383,10 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM(0xC0AD),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8(0xC0AE),
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8(0xC0AF),
+    TLS_ECCPWD_WITH_AES_128_GCM_SHA256(0xC0B0),
+    TLS_ECCPWD_WITH_AES_256_GCM_SHA384(0xC0B1),
+    TLS_ECCPWD_WITH_AES_128_CCM_SHA256(0xC0B2),
+    TLS_ECCPWD_WITH_AES_256_CCM_SHA384(0xC0B3),
     // *************************************************************************
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     // These Ciphersuite are from a Draft and also dont have a mac algorithm
