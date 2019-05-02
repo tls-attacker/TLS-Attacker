@@ -492,6 +492,8 @@ public class TlsContext {
 
     private Boolean clientAuthentication;
 
+    private String clientPWDUsername;
+
     /**
      * Last application message data received/send by this context. This is
      * especially useful for forwarding application messages via ForwardAction.
@@ -2172,6 +2174,14 @@ public class TlsContext {
 
     public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
         this.clientDsaGenerator = clientDsaGenerator;
+    }
+
+    public void setClientPWDUsername(String username) {
+        this.clientPWDUsername = username;
+    }
+
+    public String getClientPWDUsername() {
+        return clientPWDUsername;
     }
 
 }

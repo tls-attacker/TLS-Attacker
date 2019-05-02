@@ -940,4 +940,13 @@ public class DefaultChooser extends Chooser {
     private byte[] copy(byte[] array) {
         return Arrays.copyOf(array, array.length);
     }
+
+    @Override
+    public String getClientPWDUsername() {
+        if (context.getClientPWDUsername() != null) {
+            return context.getClientPWDUsername();
+        } else {
+            return config.getDefaultClientPWDUsername();
+        }
+    }
 }

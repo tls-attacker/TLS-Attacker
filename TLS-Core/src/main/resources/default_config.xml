@@ -798,6 +798,7 @@
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
+    <addPWDClearExtension>false</addPWDClearExtension>
     <addPSKKeyExchangeModesExtension>false</addPSKKeyExchangeModesExtension>
     <addPreSharedKeyExtension>false</addPreSharedKeyExtension>
     <addPaddingExtension>false</addPaddingExtension>
@@ -1077,4 +1078,5 @@
     </defaultSessionTicketIdentity>
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
+    <defaultClientPWDUsername>fred</defaultClientPWDUsername>
 </config>

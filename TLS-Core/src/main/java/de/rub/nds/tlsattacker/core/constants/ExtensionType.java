@@ -41,6 +41,7 @@ public enum ExtensionType {
     EXTENDED_MASTER_SECRET(new byte[] { (byte) 0, (byte) 23 }),
     TOKEN_BINDING(new byte[] { (byte) 0, (byte) 24 }),
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
+    PWD_CLEAR(new byte[] { (byte) 0, (byte) 30 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
     KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
                                                        // extension before TLS

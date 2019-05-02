@@ -55,6 +55,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -133,6 +134,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
+            @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
             @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;

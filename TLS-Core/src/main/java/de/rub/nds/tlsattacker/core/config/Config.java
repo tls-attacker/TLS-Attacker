@@ -472,6 +472,11 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
+     * If we generate ClientHello with the PWDClear extension
+     */
+    private Boolean addPWDClearExtension = false;
+
+    /**
      * If we generate ClientHello with the PSKKeyExchangeModes extension
      */
     private Boolean addPSKKeyExchangeModesExtension = false;
@@ -1076,6 +1081,11 @@ public class Config implements Serializable {
      * 1.3 only)
      */
     private Boolean tls13BackwardsCompatibilityMode = true;
+
+    /**
+     * Use username from the example of RFC8492
+     */
+    private String defaultClientPWDUsername = "fred";
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -2396,6 +2406,10 @@ public class Config implements Serializable {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
+    public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
+        this.addPWDClearExtension = addPWDClearExtension;
+    }
+
     public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
@@ -2406,6 +2420,10 @@ public class Config implements Serializable {
 
     public Boolean isAddPreSharedKeyExtension() {
         return addPreSharedKeyExtension;
+    }
+
+    public Boolean isAddPWDClearExtension() {
+        return addPWDClearExtension;
     }
 
     public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
@@ -3266,6 +3284,14 @@ public class Config implements Serializable {
 
     public void setDefaultHandshakeSecret(byte[] defaultHandshakeSecret) {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
+    }
+
+    public String getDefaultClientPWDUsername() {
+        return defaultClientPWDUsername;
+    }
+
+    public void setDefaultClientPWDUsername(String username) {
+        this.defaultClientPWDUsername = username;
     }
 
 }

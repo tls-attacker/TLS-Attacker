@@ -236,6 +236,11 @@ public class ExtensionByteLength {
 
     public static final int RENEGOTIATION_INFO = 1;
 
+    /**
+     * PWD_NAME length field of the pwd_clear and pwd_protect extension messages
+     */
+    public static final int PWD_NAME = 1;
+
     private ExtensionByteLength() {
     }
 }

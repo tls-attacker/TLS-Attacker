@@ -87,6 +87,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -253,6 +254,8 @@ public class HandlerFactory {
                     return new UserMappingExtensionHandler(context);
                 case USE_SRTP:
                     return new SrtpExtensionHandler(context);
+                case PWD_CLEAR:
+                    return new PWDClearExtensionHandler(context);
                 default:
                     throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
             }

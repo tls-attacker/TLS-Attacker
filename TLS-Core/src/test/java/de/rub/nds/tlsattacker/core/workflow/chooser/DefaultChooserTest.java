@@ -771,4 +771,17 @@ public class DefaultChooserTest {
         assertArrayEquals(secret2, chooser.getClientHandshakeTrafficSecret());
     }
 
+    /**
+     * Test of getPWDClientUsername method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDClientUsername() {
+        context.setClientPWDUsername(null);
+        config.setDefaultClientPWDUsername("Jake");
+        assertEquals("Jake", config.getDefaultClientPWDUsername());
+        assertEquals("Jake", chooser.getClientPWDUsername());
+        context.setClientPWDUsername("Brian");
+        assertEquals("Brian", chooser.getClientPWDUsername());
+    }
+
 }
