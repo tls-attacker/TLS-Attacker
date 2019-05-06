@@ -50,7 +50,14 @@ public class ForensicAnalyzer {
 
     private ConnectionEndType connectionEndType;
 
+    private final Config config;
+
     public ForensicAnalyzer() {
+        this(Config.createConfig());
+    }
+
+    public ForensicAnalyzer(Config config) {
+        this.config = config;
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow, BigInteger rsaPrivateKey)
@@ -66,7 +73,7 @@ public class ForensicAnalyzer {
         }
         WorkflowTrace reconstructed = new WorkflowTrace();
         int tracePosition = 0; // The action we are currently looking at.
-        State state = new State(); // initialise an empty state
+        State state = new State(config); // initialise an empty state
         TlsContext context = state.getTlsContext();
         if (rsaPrivateKey != null) {
             context.getConfig().setDefaultClientRSAPrivateKey(rsaPrivateKey);
