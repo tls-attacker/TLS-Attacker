@@ -249,6 +249,12 @@ public class Pkcs1VectorGenerator {
     private static List<Pkcs1Vector> getEK_DifferentPositionsOf0x00(int rsaKeyLength, byte[] symmetricKey) {
         List<Pkcs1Vector> vectors = new LinkedList<>();
         for (int i = 2; i < rsaKeyLength; i++) {
+            /*
+             * actually the right position, so doesn't need to be included
+             */
+            if (rsaKeyLength - 1 - HandshakeByteLength.PREMASTER_SECRET == i) {
+                continue;
+            }
             // generate padded key
             byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
             // remove 0x00
