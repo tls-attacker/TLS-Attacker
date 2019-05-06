@@ -106,7 +106,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    protected byte[] decryptPremasterSecret() {
+    public byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
         BigInteger serverPrivateKey = chooser.getServerRSAPrivateKey();
         if (chooser.getServerRsaModulus().equals(BigInteger.ZERO)) {
