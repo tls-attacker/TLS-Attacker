@@ -1062,7 +1062,7 @@ public class TlsContext {
         this.clientNamedGroupsList = clientNamedGroupsList;
     }
 
-    public void setClientNamedGroupsList(NamedGroup... clientNamedCurvesList) {
+    public void setClientNamedGroupsList(NamedGroup... clientNamedGroupsList) {
         this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
     }
 
