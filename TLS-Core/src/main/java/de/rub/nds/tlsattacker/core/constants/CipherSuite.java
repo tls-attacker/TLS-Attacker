@@ -506,7 +506,7 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon();
+        return this.name().contains("DHE_") || this.isAnon() || this.isPWD();
     }
 
     public boolean isPskOrDhPsk() {
@@ -947,6 +947,10 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_256_CCM_SHA384);
         return list;
     }
 
@@ -991,6 +995,10 @@ public enum CipherSuite {
 
     public boolean isNull() {
         return this.name().toLowerCase().contains("null");
+    }
+
+    public boolean isPWD() {
+        return this.name().contains("PWD");
     }
 
     // Note: We don't consider DES as weak for these purposes.

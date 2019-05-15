@@ -784,4 +784,27 @@ public class DefaultChooserTest {
         assertEquals("Brian", chooser.getClientPWDUsername());
     }
 
+    /**
+     * Test of getServerPWDSalt method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetServerPWDSalt() {
+        byte[] salt = ArrayConverter.hexStringToByteArray("12");
+        byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
+        context.setServerPWDSalt(null);
+        config.setDefaultServerPWDSalt(salt);
+        assertEquals(salt, config.getDefaultServerPWDSalt());
+        assertEquals(salt, chooser.getServerPWDSalt());
+        context.setServerPWDSalt(salt2);
+        assertEquals(salt2, chooser.getServerPWDSalt());
+    }
+
+    /**
+     * Test of getPWDPassword method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDPassword() {
+        config.setDefaultPWDPassword("Jake");
+        assertEquals("Jake", chooser.getPWDPassword());
+    }
 }

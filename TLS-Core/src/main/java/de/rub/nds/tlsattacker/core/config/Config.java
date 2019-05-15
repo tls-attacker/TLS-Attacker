@@ -1087,6 +1087,18 @@ public class Config implements Serializable {
      */
     private String defaultClientPWDUsername = "fred";
 
+    /**
+     * Use password from the example of RFC8492
+     */
+    private String defaultPWDPassword = "barney";
+
+    /**
+     * Use salt from the example of RFC8492, should be 32 octets
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDSalt = ArrayConverter
+            .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443);
@@ -3292,6 +3304,22 @@ public class Config implements Serializable {
 
     public void setDefaultClientPWDUsername(String username) {
         this.defaultClientPWDUsername = username;
+    }
+
+    public byte[] getDefaultServerPWDSalt() {
+        return defaultServerPWDSalt;
+    }
+
+    public void setDefaultServerPWDSalt(byte[] salt) {
+        this.defaultServerPWDSalt = salt;
+    }
+
+    public String getDefaultPWDPassword() {
+        return defaultPWDPassword;
+    }
+
+    public void setDefaultPWDPassword(String password) {
+        this.defaultPWDPassword = password;
     }
 
 }

@@ -14,43 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
@@ -298,6 +262,8 @@ public class HandlerFactory {
             case VKO_GOST01:
             case VKO_GOST12:
                 return new GOSTClientKeyExchangeHandler(context);
+            case ECCPWD:
+                return new PWDClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
@@ -335,6 +301,8 @@ public class HandlerFactory {
             case SRP_SHA_RSA:
             case SRP_SHA:
                 return new SrpServerKeyExchangeHandler(context);
+            case ECCPWD:
+                return new PWDServerKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }

@@ -150,6 +150,9 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof GOSTClientKeyExchangeHandler);
         context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
         assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof GOSTClientKeyExchangeHandler);
+
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.CLIENT_KEY_EXCHANGE) instanceof PWDClientKeyExchangeHandler);
     }
 
     @Test
@@ -189,5 +192,8 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof SrpServerKeyExchangeHandler);
         context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
         assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof SrpServerKeyExchangeHandler);
+
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        assertTrue(HandlerFactory.getHandshakeHandler(context, HandshakeMessageType.SERVER_KEY_EXCHANGE) instanceof PWDServerKeyExchangeHandler);
     }
 }

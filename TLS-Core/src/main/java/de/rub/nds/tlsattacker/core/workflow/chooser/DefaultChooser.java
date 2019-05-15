@@ -949,4 +949,18 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultClientPWDUsername();
         }
     }
+
+    @Override
+    public byte[] getServerPWDSalt() {
+        if (context.getServerPWDSalt() != null) {
+            return context.getServerPWDSalt();
+        } else {
+            return config.getDefaultServerPWDSalt();
+        }
+    }
+
+    @Override
+    public String getPWDPassword() {
+        return config.getDefaultPWDPassword();
+    }
 }
