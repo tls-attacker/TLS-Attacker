@@ -107,7 +107,7 @@ public class PWDComputations extends KeyExchangeComputations {
                 found = true;
                 chooser.getContext().getBadSecureRandom().nextBytes(base);
             }
-        } while (!found || counter < 40);
+        } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
         // y = y^((p+1)/4) mod p = sqrt(y)
         y = y.modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
         ECPoint PE = curve.createPoint(x, y);

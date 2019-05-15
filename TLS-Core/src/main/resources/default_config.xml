@@ -1088,6 +1088,7 @@
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
     <defaultClientPWDUsername>fred</defaultClientPWDUsername>
     <defaultPWDPassword>barney</defaultPWDPassword>
+    <defaultPWDIterations>40</defaultPWDIterations>
     <defaultServerPWDSalt>
         96 3C 77 CD C1 3A 2A 8D  75 CD DD D1 E0 44 99 29
         84 37 11 C2 1D 47 CE 6E  63 83 CD DA 37 E4 7D A3

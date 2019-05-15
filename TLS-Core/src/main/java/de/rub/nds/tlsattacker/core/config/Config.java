@@ -1092,6 +1092,8 @@ public class Config implements Serializable {
      */
     private String defaultPWDPassword = "barney";
 
+    private int defaultPWDIterations = 40;
+
     /**
      * Use salt from the example of RFC8492, should be 32 octets
      */
@@ -3322,4 +3324,14 @@ public class Config implements Serializable {
         this.defaultPWDPassword = password;
     }
 
+    /**
+     * Min iterations for finding the PWD password element
+     */
+    public int getDefaultPWDIterations() {
+        return defaultPWDIterations;
+    }
+
+    public void setDefaultPWDIterations(int defaultPWDIterations) {
+        this.defaultPWDIterations = defaultPWDIterations;
+    }
 }
