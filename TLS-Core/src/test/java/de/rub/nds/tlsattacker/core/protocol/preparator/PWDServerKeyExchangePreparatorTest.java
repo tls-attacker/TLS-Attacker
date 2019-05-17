@@ -9,11 +9,14 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,9 +50,20 @@ public class PWDServerKeyExchangePreparatorTest {
         tlsContext.setServerRandom(ArrayConverter
                 .hexStringToByteArray("528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        tlsContext.setConnection(new InboundConnection());
         tlsContext.getConfig().setDefaultServerPWDSalt(salt);
         tlsContext.getConfig().setDefaultClientPWDUsername("fred");
         tlsContext.getConfig().setDefaultPWDPassword("barney");
+        tlsContext
+                .getConfig()
+                .setDefaultServerPWDMask(
+                        ArrayConverter
+                                .hexStringToByteArray("3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB"));
+        tlsContext
+                .getConfig()
+                .setDefaultServerPWDPrivate(
+                        ArrayConverter
+                                .hexStringToByteArray("081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"));
         msg = new PWDServerKeyExchangeMessage();
         preparator = new PWDServerKeyExchangePreparator(tlsContext.getChooser(), msg);
     }

@@ -121,20 +121,19 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
         ECCurve curve = msg.getComputations().getCurve();
-        byte[] valueStore = new byte[curve.getFieldSize() / 8];
         BigInteger mask;
         BigInteger priv;
-        BigInteger scalar;
-        do {
-            chooser.getContext().getBadSecureRandom().nextBytes(valueStore);
-            mask = new BigInteger(valueStore).mod(curve.getOrder());
-            chooser.getContext().getBadSecureRandom().nextBytes(valueStore);
-            priv = new BigInteger(valueStore).mod(curve.getOrder());
-            scalar = mask.add(priv);
-            // repeat if either mask or priv is zero or the scalar is less than
-            // or equal to one
-        } while (mask.compareTo(BigInteger.ZERO) == 0 || priv.compareTo(BigInteger.ZERO) == 0
-                || scalar.compareTo(BigInteger.ONE) < 1);
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask());
+            priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate());
+        } else {
+            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask());
+            priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate());
+        }
+        mask = mask.mod(curve.getOrder());
+        priv = priv.mod(curve.getOrder());
+        BigInteger scalar = mask.add(priv).mod(curve.getOrder());
+
         ECPoint element = msg.getComputations().getPE().multiply(mask).negate();
 
         msg.getComputations().setPrivate(priv);

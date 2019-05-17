@@ -87,11 +87,11 @@ public class PWDClientKeyExchangeHandlerTest {
         handler.adjustTLSContext(message);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("1E838FA7C9D39A38D156270777DEEE9E14270C27DE896AC0E57ACBB69AEEBE68"),
+                ArrayConverter.hexStringToByteArray("3A2FCC800826845D086E4DD4F79A6543CB18DF21C24C878156299687273D6D41"),
                 context.getPreMasterSecret());
         assertArrayEquals(
                 ArrayConverter
-                        .hexStringToByteArray("F7F68A836F08F0A0A7133301792E1189888191BC475600B7D12C6A6541BF5EFF093A70649E899CC60EDBFCC4AD0A2504"),
+                        .hexStringToByteArray("5524608D5F4A2BC1882830583C789B1FDE2A3723DA0D2003EBDE0C2A041396D5EA598578CEAC27D25F78A2771E69E87D"),
                 context.getMasterSecret());
     }
 }

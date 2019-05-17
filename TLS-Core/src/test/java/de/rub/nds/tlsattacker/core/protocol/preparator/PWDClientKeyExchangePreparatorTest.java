@@ -60,6 +60,16 @@ public class PWDClientKeyExchangePreparatorTest {
         tlsContext.getConfig().setDefaultPWDPassword("barney");
         tlsContext.setServerPWDScalar(new BigInteger(scalar));
         tlsContext.setServerPWDElement(curve.decodePoint(element));
+        tlsContext
+                .getConfig()
+                .setDefaultClientPWDMask(
+                        ArrayConverter
+                                .hexStringToByteArray("3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB"));
+        tlsContext
+                .getConfig()
+                .setDefaultClientPWDPrivate(
+                        ArrayConverter
+                                .hexStringToByteArray("081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"));
         msg = new PWDClientKeyExchangeMessage();
         preparator = new PWDClientKeyExchangePreparator(tlsContext.getChooser(), msg);
     }

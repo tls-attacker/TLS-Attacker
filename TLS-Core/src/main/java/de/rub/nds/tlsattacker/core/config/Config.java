@@ -1094,6 +1094,22 @@ public class Config implements Serializable {
 
     private int defaultPWDIterations = 40;
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDPrivate = ArrayConverter
+            .hexStringToByteArray("21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDMask = ArrayConverter
+            .hexStringToByteArray("0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDPrivate = ArrayConverter
+            .hexStringToByteArray("171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDMask = ArrayConverter
+            .hexStringToByteArray("4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
+
     /**
      * Use salt from the example of RFC8492, should be 32 octets
      */
@@ -3333,5 +3349,37 @@ public class Config implements Serializable {
 
     public void setDefaultPWDIterations(int defaultPWDIterations) {
         this.defaultPWDIterations = defaultPWDIterations;
+    }
+
+    public byte[] getDefaultServerPWDPrivate() {
+        return defaultServerPWDPrivate;
+    }
+
+    public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
+        this.defaultServerPWDPrivate = defaultServerPWDPrivate;
+    }
+
+    public byte[] getDefaultServerPWDMask() {
+        return defaultServerPWDMask;
+    }
+
+    public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
+        this.defaultServerPWDMask = defaultServerPWDMask;
+    }
+
+    public byte[] getDefaultClientPWDPrivate() {
+        return defaultClientPWDPrivate;
+    }
+
+    public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
+        this.defaultClientPWDPrivate = defaultClientPWDPrivate;
+    }
+
+    public byte[] getDefaultClientPWDMask() {
+        return defaultClientPWDMask;
+    }
+
+    public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
+        this.defaultClientPWDMask = defaultClientPWDMask;
     }
 }
