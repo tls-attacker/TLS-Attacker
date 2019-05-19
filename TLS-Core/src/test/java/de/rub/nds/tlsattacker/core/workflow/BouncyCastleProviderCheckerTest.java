@@ -24,7 +24,7 @@ public class BouncyCastleProviderCheckerTest {
     public void setUp() {
         Security.removeProvider("BC");
     }
-    
+
     @After
     public void tearDown() {
         Security.addProvider(new BouncyCastleProvider());
