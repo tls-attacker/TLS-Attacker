@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class WorkflowExecutor {
 
     static {
-        if (BouncyCastleProviderChecker.isLoaded() == false) {
+        if (!BouncyCastleProviderChecker.isLoaded()) {
             throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
         }
     }
