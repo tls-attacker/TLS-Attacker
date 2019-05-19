@@ -84,7 +84,6 @@ public class EarlyCcsAction extends TlsAction {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
             executedAsPlanned = true;
         } catch (IOException E) {
-            E.printStackTrace();
             LOGGER.debug("Could not write Data to stream", E);
             executedAsPlanned = false;
         }
