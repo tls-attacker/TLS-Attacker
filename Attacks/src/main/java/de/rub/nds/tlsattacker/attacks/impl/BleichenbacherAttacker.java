@@ -204,6 +204,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
             List<Pkcs1Vector> pkcs1Vectors) {
         Config tlsConfig = getTlsConfig();
+        tlsConfig.setWorkflowExecutorShouldClose(false);
         List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
