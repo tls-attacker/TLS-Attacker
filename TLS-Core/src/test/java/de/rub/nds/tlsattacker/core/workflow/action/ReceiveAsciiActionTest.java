@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ReceiveAsciiActionTest {
+
     private State state;
     private TlsContext tlsContext;
 
@@ -27,7 +28,7 @@ public class ReceiveAsciiActionTest {
 
     @Before
     public void setUp() {
-        action = new ReceiveAsciiAction();
+        action = new ReceiveAsciiAction("test", "US-ASCII");
 
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);

@@ -126,36 +126,37 @@ public class ShortPaddingGenerator extends PaddingVectorGenerator {
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         int paddingValue = DEFAULT_CIPHERTEXT_LENGTH - macSize - 1;
         int applicationLength = 0;
-        List<PaddingVector> vectorList = createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue);
+        List<PaddingVector> vectorList = createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue, "0");
         vectorList.addAll(createClassicModifiedPaddingWithInvalidMAC(applicationLength, paddingValue, "0"));
 
         paddingValue = 6;
         applicationLength = DEFAULT_CIPHERTEXT_LENGTH - macSize - 7;
-        vectorList.addAll(createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue));
+        vectorList.addAll(createClassicModifiedPaddingWithValidMAC(applicationLength, paddingValue, ""));
         vectorList.addAll(createClassicModifiedPaddingWithInvalidMAC(applicationLength, paddingValue, ""));
 
         return vectorList;
     }
 
-    private List<PaddingVector> createClassicModifiedPaddingWithValidMAC(int applicationLength, int paddingValue) {
+    private List<PaddingVector> createClassicModifiedPaddingWithValidMAC(int applicationLength, int paddingValue,
+            String suffix) {
         List<PaddingVector> vectorList = new LinkedList<>();
         // valid mac
         byte[] padding = createPaddingBytes(paddingValue);
         padding[0] ^= 0x80; // flip first padding byte highest bit
         vectorList.add(new TrippleVector("InvPadValMac-[0]-" + applicationLength + "-" + paddingValue,
-                "InvPadValMacStart", new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
-                new ByteArrayExplicitValueModification(padding)));
+                "InvPadValMacStart" + suffix, new ByteArrayExplicitValueModification(new byte[applicationLength]),
+                null, new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[paddingValue / 2] ^= 0x8; // flip middle padding byte
         // middle bit
         vectorList.add(new TrippleVector("InvPadValMac-[" + (paddingValue / 2) + "]-" + applicationLength + "-"
-                + paddingValue, "InvPadValMacMid", new ByteArrayExplicitValueModification(new byte[applicationLength]),
-                null, new ByteArrayExplicitValueModification(padding)));
+                + paddingValue, "InvPadValMacMid" + suffix, new ByteArrayExplicitValueModification(
+                new byte[applicationLength]), null, new ByteArrayExplicitValueModification(padding)));
         padding = createPaddingBytes(paddingValue);
         padding[padding.length - 1] ^= 0x01; // flip last padding byte lowest
         // bit
         vectorList.add(new TrippleVector("InvPadValMac-[last]-" + applicationLength + "-" + paddingValue,
-                "InvPadValMacEnd", new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
+                "InvPadValMacEnd" + suffix, new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
                 new ByteArrayExplicitValueModification(padding)));
         return vectorList;
     }

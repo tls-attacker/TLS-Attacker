@@ -45,7 +45,7 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
         found = WorkflowTraceUtil.didReceiveMessage(protocolMessageType, state.getWorkflowTrace());
         if (found) {

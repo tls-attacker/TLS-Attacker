@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
+import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -56,6 +57,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     private boolean msgPkcsConform = true;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+
+    @Parameter(names = "-workflowType", description = "Which workflow traces should be tested with")
+    private BleichenbacherWorkflowType workflowType = BleichenbacherWorkflowType.CKE_CCS_FIN;
+
+    ;
 
     /**
      *
@@ -157,11 +163,17 @@ public class BleichenbacherCommandConfig extends AttackConfig {
          *
          */
         FULL,
-
         /**
          *
          */
         FAST
     }
 
+    public BleichenbacherWorkflowType getWorkflowType() {
+        return workflowType;
+    }
+
+    public void setWorkflowType(BleichenbacherWorkflowType workflowType) {
+        this.workflowType = workflowType;
+    }
 }

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class Record extends AbstractRecord {
 
@@ -50,6 +52,12 @@ public class Record extends AbstractRecord {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_RECORD)
     private ModifiableByteArray fragment;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger epoch;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableBigInteger sequenceNumber;
 
     private RecordCryptoComputations computations;
 
@@ -94,6 +102,30 @@ public class Record extends AbstractRecord {
 
     public void setProtocolVersion(byte[] array) {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+    }
+
+    public ModifiableInteger getEpoch() {
+        return epoch;
+    }
+
+    public void setEpoch(ModifiableInteger epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setEpoch(Integer epoch) {
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
+    }
+
+    public ModifiableBigInteger getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public void setSequenceNumber(BigInteger sequenceNumber) {
+        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
     @Override

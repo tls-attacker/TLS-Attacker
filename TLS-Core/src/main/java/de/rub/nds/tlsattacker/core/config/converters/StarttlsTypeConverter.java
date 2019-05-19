@@ -16,6 +16,7 @@ public class StarttlsTypeConverter implements IStringConverter<StarttlsType> {
 
     @Override
     public StarttlsType convert(String starttlsType) {
+        starttlsType = starttlsType.toUpperCase();
         try {
             switch (starttlsType) {
                 case "FTP": {

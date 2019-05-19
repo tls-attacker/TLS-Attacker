@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -25,7 +24,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -90,10 +88,14 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
         } else if (cert != null) {
-            LOGGER.debug("No CertificatekeyPair found, creating new one");
-            CertificateKeyPair pair = new CertificateKeyPair(cert);
-            message.setCertificateKeyPair(pair);
-            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            if (cert.isEmpty()) {
+                LOGGER.debug("Certificate is empty - no adjustments");
+            } else {
+                LOGGER.debug("No CertificatekeyPair found, creating new one");
+                CertificateKeyPair pair = new CertificateKeyPair(cert);
+                message.setCertificateKeyPair(pair);
+                message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            }
 
         } else {
             LOGGER.debug("Ceritificate not parseable - no adjustments");

@@ -36,7 +36,9 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
@@ -199,6 +201,10 @@ public class TlsContext {
      */
     private Certificate clientCertificate;
 
+    /**
+     * Collects messages for computation of the Finished and CertificateVerify
+     * hashes
+     */
     private MessageDigestCollector digest;
 
     private RecordLayer recordLayer;
@@ -453,10 +459,48 @@ public class TlsContext {
      * sequence number used for the encryption
      */
     private long writeSequenceNumber = 0;
+
     /**
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
+
+    /**
+     * the sequence number to be used in the fragments of the next message sent
+     */
+    private int dtlsNextSendSequenceNumber = 0;
+
+    /**
+     * the sequence number used in fragments
+     */
+    private int dtlsCurrentSendSequenceNumber = 0;
+
+    /**
+     * the sequence number expected in the fragments of the next message
+     * received
+     */
+    private int dtlsNextReceiveSequenceNumber = 0;
+
+    /**
+     * the sequence number expected in the fragments of the current message
+     */
+    private int dtlsCurrentReceiveSequenceNumber = 0;
+
+    /**
+     * the epoch applied to transmitted DTLS records
+     */
+    private int dtlsSendEpoch = 0;
+
+    /**
+     * the epoch expected in the next record
+     */
+    private int dtlsNextReceiveEpoch = 0;
+
+    /**
+     * a fragment manager assembles DTLS fragments into corresponding messages.
+     */
+    private FragmentManager dtlsFragmentManager;
+
     /**
      * supported protocol versions
      */
@@ -615,6 +659,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        dtlsFragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {
@@ -1061,7 +1106,7 @@ public class TlsContext {
         this.clientNamedGroupsList = clientNamedGroupsList;
     }
 
-    public void setClientNamedGroupsList(NamedGroup... clientNamedCurvesList) {
+    public void setClientNamedGroupsList(NamedGroup... clientNamedGroupsList) {
         this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
     }
 
@@ -1222,6 +1267,82 @@ public class TlsContext {
 
     public void increaseReadSequenceNumber() {
         this.readSequenceNumber++;
+    }
+
+    public int getDtlsNextSendSequenceNumber() {
+        return dtlsNextSendSequenceNumber;
+    }
+
+    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
+        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
+    }
+
+    public void increaseDtlsNextSendSequenceNumber() {
+        this.dtlsNextSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentSendSequenceNumber() {
+        return dtlsCurrentSendSequenceNumber;
+    }
+
+    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
+        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentSendSequenceNumber() {
+        this.dtlsCurrentSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentReceiveSequenceNumber() {
+        return dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
+        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentReceiveSequenceNumber() {
+        dtlsCurrentReceiveSequenceNumber++;
+    }
+
+    public int getDtlsNextReceiveSequenceNumber() {
+        return dtlsNextReceiveSequenceNumber;
+    }
+
+    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
+        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
+    }
+
+    public int getDtlsSendEpoch() {
+        return dtlsSendEpoch;
+    }
+
+    public void increaseDtlsSendEpoch() {
+        dtlsSendEpoch++;
+    }
+
+    public void setDtlsSendEpoch(int sendEpoch) {
+        this.dtlsSendEpoch = sendEpoch;
+    }
+
+    public int getDtlsNextReceiveEpoch() {
+        return dtlsNextReceiveEpoch;
+    }
+
+    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
+        this.dtlsNextReceiveEpoch = receiveEpoch;
+    }
+
+    public void increaseDtlsNextReceiveEpoch() {
+        dtlsNextReceiveEpoch++;
+    }
+
+    public FragmentManager getDtlsFragmentManager() {
+        return dtlsFragmentManager;
+    }
+
+    public void increaseDtlsNextReceiveSequenceNumber() {
+        dtlsNextReceiveSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -1832,7 +1953,7 @@ public class TlsContext {
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
-            throw new ConfigurationException("Unable to initialize the transport handler with: "
+            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
                     + connection.toString(), ex);
         }
     }

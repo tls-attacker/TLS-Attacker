@@ -54,6 +54,21 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     private StarttlsDelegate starttlsDelegate;
 
     /**
+     * How many rescans should be done to confirm vulnerabilities
+     */
+    private int mapListDepth = 3;
+
+    /**
+     * When a false positive or shaky scan orrcurs stop the evaluation
+     */
+    private boolean rescanNotVulnerable = true;
+
+    /**
+     * Do not rescan servers which appear not vulnerable on first try
+     */
+    private boolean abortRescansOnFailure = true;
+
+    /**
      *
      * @param delegate
      */
@@ -143,7 +158,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(false);
+        config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;
@@ -159,4 +174,29 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
         return config;
     }
+
+    public int getMapListDepth() {
+        return mapListDepth;
+    }
+
+    public void setMapListDepth(int mapListDepth) {
+        this.mapListDepth = mapListDepth;
+    }
+
+    public boolean isAbortRescansOnFailure() {
+        return rescanNotVulnerable;
+    }
+
+    public void setAbortRescansOnFailure(boolean abortRescansOnFailure) {
+        this.rescanNotVulnerable = abortRescansOnFailure;
+    }
+
+    public boolean isRescanNotVulnerable() {
+        return rescanNotVulnerable;
+    }
+
+    public void setRescanNotVulnerable(boolean rescanNotVulnerable) {
+        this.rescanNotVulnerable = rescanNotVulnerable;
+    }
+
 }

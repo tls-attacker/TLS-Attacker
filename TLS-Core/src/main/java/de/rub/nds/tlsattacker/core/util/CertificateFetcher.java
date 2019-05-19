@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.IOException;
 import java.security.PublicKey;
@@ -48,7 +49,8 @@ public class CertificateFetcher {
     }
 
     public static Certificate fetchServerCertificate(Config config) {
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         trace.addTlsAction(new ReceiveTillAction(new CertificateMessage(config)));
         State state = new State(config, trace);

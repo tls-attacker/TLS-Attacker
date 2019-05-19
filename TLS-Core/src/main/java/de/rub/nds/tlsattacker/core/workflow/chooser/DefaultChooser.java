@@ -282,7 +282,7 @@ public class DefaultChooser extends Chooser {
         if (context.getDtlsCookie() != null) {
             return copy(context.getDtlsCookie());
         } else {
-            return config.getDefaultDtlsCookie();
+            return config.getDtlsDefaultCookie();
         }
     }
 
@@ -880,6 +880,15 @@ public class DefaultChooser extends Chooser {
             return context.getServerKeyShareStoreEntry();
         } else {
             return config.getDefaultServerKeyShareEntry();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaServerPrivateKey() {
+        if (context.getServerDsaPrivateKey() != null) {
+            return context.getServerDsaPrivateKey();
+        } else {
+            return config.getDefaultServerDsaPrivateKey();
         }
     }
 
