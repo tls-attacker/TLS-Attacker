@@ -252,6 +252,8 @@ public abstract class Chooser {
 
     public abstract BigInteger getDsaServerPublicKey();
 
+    public abstract BigInteger getDsaServerPrivateKey();
+
     public abstract BigInteger getDsaPrimeP();
 
     public abstract BigInteger getDsaPrimeQ();

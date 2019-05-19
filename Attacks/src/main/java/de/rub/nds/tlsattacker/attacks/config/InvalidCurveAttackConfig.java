@@ -296,7 +296,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);

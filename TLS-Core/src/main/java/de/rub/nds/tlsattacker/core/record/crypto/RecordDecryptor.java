@@ -83,7 +83,7 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setInitialisationVector(result.getInitialisationVector());
         LOGGER.debug("PlainRecordBytes: "
                 + ArrayConverter.bytesToHexString(record.getComputations().getPlainRecordBytes().getValue()));
-        if (recordCipher.isUsingPadding()) {
+        if (recordCipher.isUsingPadding() && result.isSuccessful()) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
                     && context.getActiveKeySetTypeRead() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
                 adjustPaddingTLS(record);
@@ -93,7 +93,7 @@ public class RecordDecryptor extends Decryptor {
         } else {
             useNoPadding(record);
         }
-        if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac()) {
+        if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac() && result.isSuccessful()) {
             LOGGER.trace("EncryptThenMac is not active");
             if (cipherSuite.isUsingMac()) {
                 adjustMac(record);
@@ -111,8 +111,10 @@ public class RecordDecryptor extends Decryptor {
                 && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             checkForEndOfEarlyData(record.getComputations().getUnpaddedRecordBytes().getValue());
         }
-        record.getComputations().setPaddingValid(isPaddingValid(record));
-        record.getComputations().setMacValid(isMacValid(record));
+        if (result.isSuccessful()) {
+            record.getComputations().setPaddingValid(isPaddingValid(record));
+            record.getComputations().setMacValid(isMacValid(record));
+        }
     }
 
     private Boolean isPaddingValid(Record record) {

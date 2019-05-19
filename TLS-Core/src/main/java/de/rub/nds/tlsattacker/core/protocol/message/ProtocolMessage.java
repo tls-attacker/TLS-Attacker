@@ -144,6 +144,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
         return this instanceof HandshakeMessage;
     }
 
+    public boolean isDtlsHandshakeMessageFragment() {
+        return this instanceof DtlsHandshakeMessageFragment;
+    }
+
     public abstract String toCompactString();
 
     public abstract ProtocolMessageHandler getHandler(TlsContext context);

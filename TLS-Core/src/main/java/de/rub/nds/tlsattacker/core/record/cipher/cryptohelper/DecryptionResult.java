@@ -16,10 +16,14 @@ public class DecryptionResult {
 
     private final Boolean explicitIv;
 
-    public DecryptionResult(byte[] initialisationVector, byte[] decryptedCipherText, Boolean explicitIv) {
+    private final boolean isSuccessful;
+
+    public DecryptionResult(byte[] initialisationVector, byte[] decryptedCipherText, Boolean explicitIv,
+            boolean isSuccessful) {
         this.initialisationVector = initialisationVector;
         this.decryptedCipherText = decryptedCipherText;
         this.explicitIv = explicitIv;
+        this.isSuccessful = isSuccessful;
     }
 
     public byte[] getInitialisationVector() {
@@ -32,5 +36,12 @@ public class DecryptionResult {
 
     public Boolean isExplicitIv() {
         return explicitIv;
+    }
+
+    /**
+     * True if the decryption was successful, false otherwise.
+     */
+    public boolean isSuccessful() {
+        return isSuccessful;
     }
 }

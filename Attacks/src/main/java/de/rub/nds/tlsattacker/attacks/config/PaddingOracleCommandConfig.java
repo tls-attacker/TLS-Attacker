@@ -158,7 +158,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(false);
+        config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;
