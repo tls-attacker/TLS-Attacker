@@ -34,9 +34,10 @@ public class GenericReceiveAsciiAction extends AsciiAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         try {
-            LOGGER.info("Receiving ASCII message...");
+            LOGGER.debug("Receiving ASCII message...");
             byte[] fetchData = tlsContext.getTransportHandler().fetchData();
             setAsciiText(new String(fetchData, getEncoding()));
+            LOGGER.info("Received:" + getAsciiText());
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);
