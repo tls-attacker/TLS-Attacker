@@ -30,23 +30,41 @@ public class RecordAEADCipher extends RecordCipher {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * sequence Number length in byte
+     * sequence Number length in bytes
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
+
     /**
-     * AEAD tag length in byte
+     * AEAD tag length in bytes for regular ciphers
      */
     public static final int AEAD_TAG_LENGTH = 16;
+
     /**
-     * AEAD iv length in byte
+     * AEAD tag length in bytes for CCM_8 ciphers
+     */
+    public static final int AEAD_CCM_8_TAG_LENGTH = 8;
+
+    /**
+     * AEAD iv length in bytes
      */
     public static final int AEAD_IV_LENGTH = 12;
+
+    /**
+     * Stores the computed tag length
+     */
+    private final int aeadTagLength;
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
         decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
+
+        if (cipherSuite.isCCM_8()) {
+            aeadTagLength = AEAD_CCM_8_TAG_LENGTH;
+        } else {
+            aeadTagLength = AEAD_TAG_LENGTH;
+        }
     }
 
     @Override
@@ -73,11 +91,11 @@ public class RecordAEADCipher extends RecordCipher {
             } else {
                 decrypted = decryptTLS12(decryptionRequest);
             }
-            return new DecryptionResult(null, decrypted, null);
+            return new DecryptionResult(null, decrypted, null, true);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
             LOGGER.debug(E);
-            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false, false);
         }
     }
 
@@ -96,10 +114,10 @@ public class RecordAEADCipher extends RecordCipher {
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
             LOGGER.debug("AAD:" + ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-            cipherText = encryptCipher.encrypt(encryptIV, AEAD_TAG_LENGTH * 8,
-                    request.getAdditionalAuthenticatedData(), request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, aeadTagLength * 8, request.getAdditionalAuthenticatedData(),
+                    request.getPlainText());
         } else {
-            cipherText = encryptCipher.encrypt(encryptIV, AEAD_TAG_LENGTH * 8, request.getPlainText());
+            cipherText = encryptCipher.encrypt(encryptIV, aeadTagLength * 8, request.getPlainText());
         }
         return new EncryptionResult(encryptIV, cipherText, false);
     }
@@ -122,7 +140,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Encrypting AEAD with the following AAD: {}",
                 ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
-        byte[] ciphertext = encryptCipher.encrypt(iv, AEAD_TAG_LENGTH * 8, request.getAdditionalAuthenticatedData(),
+        byte[] ciphertext = encryptCipher.encrypt(iv, aeadTagLength * 8, request.getAdditionalAuthenticatedData(),
                 request.getPlainText());
         if (cipherSuite.usesStrictExplicitIv()) {
             return new EncryptionResult(ciphertext);
@@ -138,16 +156,16 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] nonce = ArrayConverter
                 .concatenate(new byte[AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH], sequenceNumberByte);
         byte[] decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
-        LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
-        LOGGER.debug("Decrypting the following GCM ciphertext: {}",
+        LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
+        LOGGER.debug("Decrypting the following AEAD ciphertext: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
         if (version == ProtocolVersion.TLS13 || version == ProtocolVersion.TLS13_DRAFT25
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
-            return decryptCipher.decrypt(decryptIV, AEAD_TAG_LENGTH * 8,
+            return decryptCipher.decrypt(decryptIV, aeadTagLength * 8,
                     decryptionRequest.getAdditionalAuthenticatedData(), decryptionRequest.getCipherText());
         } else {
-            return decryptCipher.decrypt(decryptIV, AEAD_TAG_LENGTH * 8, decryptionRequest.getCipherText());
+            return decryptCipher.decrypt(decryptIV, aeadTagLength * 8, decryptionRequest.getCipherText());
         }
     }
 
@@ -171,8 +189,9 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(iv));
         LOGGER.debug("Decrypting AEAD with the following AAD: {}",
                 ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
+
         LOGGER.debug("Decrypting the following ciphertext: {}", ArrayConverter.bytesToHexString(data));
-        return decryptCipher.decrypt(iv, AEAD_TAG_LENGTH * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
+        return decryptCipher.decrypt(iv, aeadTagLength * 8, decryptionRequest.getAdditionalAuthenticatedData(), data);
     }
 
     @Override
@@ -194,9 +213,9 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public int getTagSize() {
         if (cipherSuite.usesStrictExplicitIv() || version.isTLS13()) {
-            return AEAD_TAG_LENGTH;
+            return aeadTagLength;
         } else {
-            return SEQUENCE_NUMBER_LENGTH + AEAD_TAG_LENGTH;
+            return SEQUENCE_NUMBER_LENGTH + aeadTagLength;
         }
     }
 

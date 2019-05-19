@@ -203,7 +203,6 @@ public class WorkflowConfigurationFactoryTest {
 
         firstAction = helloWorkflow.getMessageActions().get(0);
         clientHelloMessage = (ClientHelloMessage) firstAction.getMessages().get(0);
-        Assert.assertFalse(clientHelloMessage.getIncludeInDigest());
 
         Assert.assertThat(helloWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(4));
         Assert.assertNotNull(helloWorkflow.getMessageActions().get(1));

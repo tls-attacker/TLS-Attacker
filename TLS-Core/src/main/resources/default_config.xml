@@ -882,7 +882,6 @@
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
-    <doDTLSRetransmits>false</doDTLSRetransmits>
     <defaultServerDhGenerator>2</defaultServerDhGenerator>
     <defaultServerDhModulus>5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807</defaultServerDhModulus>
     <defaultClientDhGenerator>2</defaultClientDhGenerator>
@@ -924,13 +923,15 @@
     </defaultServerGost12PublicKey>
     <defaultGost12Curve>Tc26_Gost_3410_12_512_paramSetA</defaultGost12Curve>
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
-    <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
     <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
     <heartbeatPaddingLength>256</heartbeatPaddingLength>
-    <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
+    <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
+    <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
+    <dtlsOnlyFitting>true</dtlsOnlyFitting>
+    <dtlsDtlsExcludeOutOfOrder>false</dtlsDtlsExcludeOutOfOrder>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
@@ -940,7 +941,7 @@
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
-    <stopRecievingAfterFatal>false</stopRecievingAfterFatal>
+    <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
@@ -987,7 +988,7 @@
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
-    <defaultDtlsCookie/>
+    <dtlsDefaultCookie/>
     <defaultCertificateRequestContext/>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
     <defaultAlertDescription>0</defaultAlertDescription>
