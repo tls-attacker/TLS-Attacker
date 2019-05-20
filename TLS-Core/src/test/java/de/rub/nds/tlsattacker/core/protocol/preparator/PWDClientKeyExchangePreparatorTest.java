@@ -42,7 +42,7 @@ public class PWDClientKeyExchangePreparatorTest {
             + "B7 16 F3 84 37 FA 56 B9  4B EB 3D 3D D5 8D ED 94\n" + "7B").replaceAll("\\s+", ""));
 
     private byte[] premaster = ArrayConverter
-            .hexStringToByteArray("2D2ECF23F6E2ED4FAF3669E277F23EBBBCB1ECAFA7A2B9907C8D4A9ED653F35A");
+            .hexStringToByteArray("3B29832D64C2359A955BBEE5A466F5C8E9D25529056729C2FFDE0E04DD9D11BE");
 
     @Before
     public void setUp() throws Exception {

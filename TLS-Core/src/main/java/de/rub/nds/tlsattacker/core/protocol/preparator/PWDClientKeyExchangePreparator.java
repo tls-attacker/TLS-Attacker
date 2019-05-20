@@ -188,7 +188,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             LOGGER.warn("Missing peer element or scalar, returning empty premaster secret");
             return new byte[0];
         }
-        ECPoint sharedSecret = PE.multiply(peerScalar).add(peerElement).multiply(priv);
+        ECPoint sharedSecret = PE.multiply(peerScalar).add(peerElement).multiply(priv).normalize();
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger());
     }
 
