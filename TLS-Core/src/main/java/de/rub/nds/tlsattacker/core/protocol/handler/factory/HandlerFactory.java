@@ -49,6 +49,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
@@ -156,6 +157,8 @@ public class HandlerFactory {
                     return new ServerHelloDoneHandler(context);
                 case SERVER_KEY_EXCHANGE:
                     return getServerKeyExchangeHandler(context);
+                case SUPPLEMENTAL_DATA:
+                    return new SupplementalDataHandler(context);
                 case UNKNOWN:
                     return new UnknownHandshakeHandler(context);
             }
