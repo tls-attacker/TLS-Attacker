@@ -148,7 +148,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         priv = priv.mod(curve.getOrder());
         BigInteger scalar = mask.add(priv).mod(curve.getOrder());
 
-        ECPoint element = msg.getComputations().getPE().multiply(mask).negate();
+        ECPoint element = msg.getComputations().getPE().multiply(mask).negate().normalize();
 
         msg.getComputations().setPrivate(priv);
         LOGGER.debug("Private: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(priv)));
