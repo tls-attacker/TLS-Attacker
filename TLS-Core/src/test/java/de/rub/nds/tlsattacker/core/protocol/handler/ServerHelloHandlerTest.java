@@ -117,4 +117,30 @@ public class ServerHelloHandlerTest {
                 ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
                 context.getServerHandshakeTrafficSecret());
     }
+
+    @Test
+    public void testAdjustTLSContextTls13PWD() {
+        ServerHelloMessage message = new ServerHelloMessage();
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        message.setUnixTime(new byte[] { 0, 1, 2 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
+        message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
+        message.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256.getByteValue());
+        message.setSessionId(new byte[] { 6, 6, 6 });
+        message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.BRAINPOOLP256R1, ArrayConverter
+                .hexStringToByteArray(("9E E1 7F 2E  CF 74 02 8F 6C 1F D7 0D\n"
+                        + "A1 D0 5A 4A 85 97 5D 7D  27 0C AA 6B 86 05 F1 C6\n"
+                        + "EB B8 75 BA 87 57 91 67  40 8F 7C 9E 77 84 2C 2B\n"
+                        + "3F 33 68 A2 5F D1 65 63  7E 9B 5D 57 76 0B 0B 70\n"
+                        + "46 59 B8 74 20 66 92 44  AA 67 CB 00 EA 72 C0 9B\n"
+                        + "84 A9 DB 5B B8 24 FC 39  82 42 8F CD 40 69 63 AE\n" + "08 0E 67 7A 48").replaceAll("\\s+",
+                        ""))));
+        context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
+        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
+        handler.adjustTLSContext(message);
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("09E4B18F6B4F59BD8ADED8E875CD9B9A7694A8C5345EDB3381A47D1F860BF209"),
+                context.getHandshakeSecret());
+    }
 }

@@ -952,11 +952,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getServerPWDSalt() {
-        if (context.getServerPWDSalt() != null) {
-            return context.getServerPWDSalt();
-        } else {
-            return config.getDefaultServerPWDSalt();
-        }
+        return context.getServerPWDSalt();
     }
 
     @Override

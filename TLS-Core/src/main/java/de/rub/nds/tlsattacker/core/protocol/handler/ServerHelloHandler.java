@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
@@ -52,6 +53,8 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
@@ -224,7 +227,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret = new byte[macLength];
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
+                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
+                } else {
+                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
+                }
+
             } else {
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
@@ -237,7 +245,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
                     pos = 0;
                 }
-                sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                } else {
+                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                }
             }
             byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);
             tlsContext.setHandshakeSecret(handshakeSecret);
@@ -316,6 +328,30 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
         }
+    }
+
+    private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
+        Chooser chooser = tlsContext.getChooser();
+        ECCurve curve = ECNamedCurveTable.getParameterSpec(keyShare.getGroup().getJavaName()).getCurve();
+        int curveSize = curve.getFieldSize() / 8;
+        byte[] xPos = Arrays.copyOfRange(keyShare.getPublicKey(), 0, curveSize);
+        byte[] yPos = Arrays.copyOfRange(keyShare.getPublicKey(), curveSize, curveSize * 2);
+        byte scalarLength = keyShare.getPublicKey()[curveSize * 2];
+        BigInteger scalar = new BigInteger(1, Arrays.copyOfRange(keyShare.getPublicKey(), curveSize * 2 + 1, curveSize
+                * 2 + 1 + scalarLength));
+        ECPoint element = curve.createPoint(new BigInteger(1, xPos), new BigInteger(1, yPos));
+        ECPoint PE = PWDComputations.computePE(tlsContext.getChooser(), curve);
+        BigInteger priv;
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getOrder());
+        } else {
+            priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getOrder());
+        }
+        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(element.getEncoded(false)));
+        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
+
+        ECPoint sharedSecret = PE.multiply(scalar).add(element).multiply(priv).normalize();
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger(), curveSize, true);
     }
 
     protected ECDomainParameters generateEcParameters(NamedGroup group) {

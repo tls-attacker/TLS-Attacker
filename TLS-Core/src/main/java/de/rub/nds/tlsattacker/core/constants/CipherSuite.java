@@ -642,7 +642,9 @@ public enum CipherSuite {
                     TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_RSA_WITH_DES_CBC_SHA,
                     TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
                     TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
-                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA)));
+                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA, TLS_ECCPWD_WITH_AES_128_CCM_SHA256,
+                    TLS_ECCPWD_WITH_AES_128_GCM_SHA256, TLS_ECCPWD_WITH_AES_256_CCM_SHA384,
+                    TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();

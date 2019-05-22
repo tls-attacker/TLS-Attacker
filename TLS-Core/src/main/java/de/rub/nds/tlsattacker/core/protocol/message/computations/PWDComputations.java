@@ -10,20 +10,24 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.tls.HashAlgorithm;
+import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
+import sun.security.ssl.SSLContextImpl;
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class PWDComputations extends KeyExchangeComputations {
 
@@ -78,16 +82,34 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     public static ECPoint computePE(Chooser chooser, ECCurve curve) throws CryptoException {
         MacAlgorithm randomFunction = getMacAlgorithm(chooser.getSelectedCipherSuite());
-        PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite());
+
         BigInteger prime = curve.getField().getCharacteristic();
 
-        byte[] base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
-                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(), chooser.getServerPWDSalt());
+        byte[] base;
+        byte[] salt = chooser.getServerPWDSalt();
+        if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            salt = chooser.getConfig().getDefaultServerPWDSalt();
+        }
+        if (salt == null) {
+            Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
+            base = new byte[digest.getDigestSize()];
+            byte[] usernamePW = (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes();
+            digest.update(usernamePW, 0, usernamePW.length);
+            digest.doFinal(base, 0);
+        } else {
+            base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
+                    (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(), salt);
+        }
+
         boolean found = false;
         int counter = 0;
         int n = (curve.getFieldSize() + 64) / 8;
-        byte[] context = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        byte[] context;
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            context = chooser.getClientRandom();
+        } else {
+            context = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        }
 
         BigInteger x = null;
         BigInteger y = null;
@@ -98,7 +120,7 @@ public class PWDComputations extends KeyExchangeComputations {
             byte[] seedInput = ArrayConverter.concatenate(base, ArrayConverter.intToBytes(counter, 1),
                     ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
-            byte[] tmp = PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, n);
+            byte[] tmp = prf(chooser, seed, context, n);
             // (tmp mod (p - 1)) + 1
             BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
             // y^2 = (x^3 + x*val + b) mod p
@@ -138,6 +160,44 @@ public class PWDComputations extends KeyExchangeComputations {
             return MacAlgorithm.HMAC_SHA1;
         } else {
             throw new PreparationException("Unsupported Mac Algorithm for suite " + suite.toString());
+        }
+    }
+
+    /**
+     * Calculates the prf output for the dragonfly password element
+     *
+     * Note that in the RFC, the order of secret and seed is actually switched
+     * (the seed is used as the secret in the prf and the context as the
+     * seed/message). It is unclear if the author intentionally switched the
+     * order of the arguments compared to the TLS RFC or if this is actually
+     * intentional.
+     *
+     * @param chooser
+     * @param seed
+     * @param context
+     * @param outlen
+     * @return
+     * @throws CryptoException
+     */
+    protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen) throws CryptoException {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite());
+            MessageDigest hashFunction = null;
+            try {
+                hashFunction = MessageDigest.getInstance(digestAlgo.getJavaName());
+            } catch (NoSuchAlgorithmException ex) {
+                throw new CryptoException("Could not initialize HKDF", ex);
+            }
+            hashFunction.update(context);
+            byte[] hashValue = hashFunction.digest();
+
+            return HKDFunction.expandLabel(hkdfAlgortihm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+        } else {
+            PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite());
+            return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
         }
     }
 

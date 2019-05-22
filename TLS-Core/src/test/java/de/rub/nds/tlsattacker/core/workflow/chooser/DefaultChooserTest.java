@@ -794,7 +794,7 @@ public class DefaultChooserTest {
         context.setServerPWDSalt(null);
         config.setDefaultServerPWDSalt(salt);
         assertEquals(salt, config.getDefaultServerPWDSalt());
-        assertEquals(salt, chooser.getServerPWDSalt());
+        assertEquals(null, chooser.getServerPWDSalt());
         context.setServerPWDSalt(salt2);
         assertEquals(salt2, chooser.getServerPWDSalt());
     }

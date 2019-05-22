@@ -207,9 +207,10 @@ public class WorkflowConfigurationFactory {
                 } else {
                     messages.add(new CertificateMessage(config));
                 }
+
+                messages.add(new CertificateVerifyMessage(config));
             }
 
-            messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
             CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();

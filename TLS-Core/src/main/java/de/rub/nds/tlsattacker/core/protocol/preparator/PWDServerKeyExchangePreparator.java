@@ -93,7 +93,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareSalt(PWDServerKeyExchangeMessage msg) {
-        msg.setSalt(chooser.getServerPWDSalt());
+        msg.setSalt(chooser.getConfig().getDefaultServerPWDSalt());
         LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
     }
 
