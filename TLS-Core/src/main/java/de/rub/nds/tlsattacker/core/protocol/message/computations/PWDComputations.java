@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -31,6 +32,12 @@ public class PWDComputations extends KeyExchangeComputations {
     private ECPoint PE;
 
     private BigInteger priv;
+
+    public static class PWDKeyMaterial {
+        public BigInteger priv;
+        public BigInteger scalar;
+        public ECPoint element;
+    }
 
     @Override
     public void setSecretsInConfig(Config config) {
@@ -132,5 +139,25 @@ public class PWDComputations extends KeyExchangeComputations {
         } else {
             throw new PreparationException("Unsupported Mac Algorithm for suite " + suite.toString());
         }
+    }
+
+    public static PWDKeyMaterial generateKeyMaterial(ECCurve curve, ECPoint PE, Chooser chooser) {
+        BigInteger mask;
+        PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getOrder());
+            keyMaterial.priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
+                    .mod(curve.getOrder());
+        } else {
+            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getOrder());
+            keyMaterial.priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
+                    .mod(curve.getOrder());
+        }
+
+        keyMaterial.scalar = mask.add(keyMaterial.priv).mod(curve.getOrder());
+
+        keyMaterial.element = PE.multiply(mask).negate().normalize();
+
+        return keyMaterial;
     }
 }

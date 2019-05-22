@@ -121,28 +121,17 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
         ECCurve curve = msg.getComputations().getCurve();
-        BigInteger mask;
-        BigInteger priv;
-        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask());
-            priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate());
-        } else {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask());
-            priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate());
-        }
-        mask = mask.mod(curve.getOrder());
-        priv = priv.mod(curve.getOrder());
-        BigInteger scalar = mask.add(priv).mod(curve.getOrder());
+        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
+                .getPE(), chooser);
 
-        ECPoint element = msg.getComputations().getPE().multiply(mask).negate().normalize();
+        msg.getComputations().setPrivate(keyMaterial.priv);
+        LOGGER.debug("Private: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.priv)));
 
-        msg.getComputations().setPrivate(priv);
-        LOGGER.debug("Private: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(priv)));
-
-        prepareScalar(msg, scalar);
+        prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
 
-        prepareElement(msg, element);
+        prepareElement(msg, keyMaterial.element);
         prepareElementLength(msg);
     }
 
