@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
@@ -43,8 +42,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private CompressionDelegate compressionDelegate;
-    @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
     private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
@@ -80,10 +77,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
-        this.hostnameExtensionDelegate = new HostnameExtensionDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.clientDelegate = new ClientDelegate();
@@ -105,7 +100,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(compressionDelegate);
         addDelegate(maxFragmentLengthDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ellipticCurveDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(clientDelegate);

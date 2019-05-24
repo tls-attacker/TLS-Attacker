@@ -111,7 +111,8 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes(Charset.forName("ASCII")));
+            pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
+                    .getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
             addExtension(extension);

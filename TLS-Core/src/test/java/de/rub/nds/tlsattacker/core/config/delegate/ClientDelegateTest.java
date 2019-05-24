@@ -14,9 +14,10 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -28,6 +29,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class ClientDelegateTest {
+
+    private final Logger LOGGER = LogManager.getLogger();
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -100,7 +103,7 @@ public class ClientDelegateTest {
     public void testApplyDelegateWithEmptyConfig() {
         Config config = Config.createConfig();
         config.setDefaultClientConnection(null);
-        String expectedHostname = "testHostname";
+        String expectedHostname = "testHostname.de";
         delegate.setHost(expectedHostname);
         delegate.applyDelegate(config);
         OutboundConnection actual = config.getDefaultClientConnection();
@@ -110,20 +113,82 @@ public class ClientDelegateTest {
     }
 
     @Test
-    @Ignore
-    /**
-     * TODO: Does this test make sense? Rebuild
-     */
-    public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
-        delegate.applyDelegate(config);
-        List<String> excludeFields = new LinkedList<>();
-        excludeFields.add("ourCertificate");
-        excludeFields.add("keyStore");
-        excludeFields.add("connectionEnd");
-        // little ugly
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));
+    public void bulkTest() {
+        checkHostIsAsExpected("localhost", "localhost", 443);
+        checkHostIsAsExpected("localhost:123", "localhost", 123);
+        checkHostIsAsExpected("localhost:123/", "localhost", 123);
+        checkHostIsAsExpected("localhost:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("localhost:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("localhost:123/test.php?a=b#", "localhost", 123);
+        checkHostIsAsExpected("http://localhost", "localhost", 443);
+        checkHostIsAsExpected("http://localhost:123", "localhost", 123);
+        checkHostIsAsExpected("http://localhost:123/", "localhost", 123);
+        checkHostIsAsExpected("http://localhost:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("http://localhost:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("http://localhost:123/test.php?a=b#", "localhost", 123);
+        checkHostIsAsExpected("https://localhost", "localhost", 443);
+        checkHostIsAsExpected("https://localhost:123", "localhost", 123);
+        checkHostIsAsExpected("https://localhost:123/", "localhost", 123);
+        checkHostIsAsExpected("https://localhost:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("https://localhost:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("https://localhost:123/test.php?a=b#", "localhost", 123);
+        checkHostIsAsExpected("hackmanit.de", "hackmanit.de", 443);
+        checkHostIsAsExpected("hackmanit.de:123", "hackmanit.de", 123);
+        checkHostIsAsExpected("hackmanit.de:123/", "hackmanit.de", 123);
+        checkHostIsAsExpected("hackmanit.de:123/test.php", "hackmanit.de", 123);
+        checkHostIsAsExpected("hackmanit.de:123/test.php?a=b", "hackmanit.de", 123);
+        checkHostIsAsExpected("hackmanit.de:123/test.php?a=b#", "hackmanit.de", 123);
+        checkHostIsAsExpected("http://hackmanit.de", "hackmanit.de", 443);
+        checkHostIsAsExpected("http://hackmanit.de:123", "hackmanit.de", 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/", "hackmanit.de", 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/test.php", "hackmanit.de", 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b", "hackmanit.de", 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b#", "hackmanit.de", 123);
+        checkHostIsAsExpected("https://hackmanit.de", "hackmanit.de", 443);
+        checkHostIsAsExpected("https://hackmanit.de:123", "hackmanit.de", 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/", "hackmanit.de", 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/test.php", "hackmanit.de", 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b", "hackmanit.de", 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b#", "hackmanit.de", 123);
+        checkHostIsAsExpected("127.0.0.1", "localhost", 443);
+        checkHostIsAsExpected("127.0.0.1:123", "localhost", 123);
+        checkHostIsAsExpected("127.0.0.1:123/", "localhost", 123);
+        checkHostIsAsExpected("127.0.0.1:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("127.0.0.1:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("127.0.0.1:123/test.php?a=b#", "localhost", 123);
+        checkHostIsAsExpected("http://127.0.0.1", "localhost", 443);
+        checkHostIsAsExpected("http://127.0.0.1:123", "localhost", 123);
+        checkHostIsAsExpected("http://127.0.0.1:123/", "localhost", 123);
+        checkHostIsAsExpected("http://127.0.0.1:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("http://127.0.0.1:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("http://127.0.0.1:123/test.php?a=b#", "localhost", 123);
+        checkHostIsAsExpected("https://127.0.0.1", "localhost", 443);
+        checkHostIsAsExpected("https://127.0.0.1:123", "localhost", 123);
+        checkHostIsAsExpected("https://127.0.0.1:123/", "localhost", 123);
+        checkHostIsAsExpected("https://127.0.0.1:123/test.php", "localhost", 123);
+        checkHostIsAsExpected("https://127.0.0.1:123/test.php?a=b", "localhost", 123);
+        checkHostIsAsExpected("https://127.0.0.1:123/test.php?a=b#", "localhost", 123);
     }
 
+    @Test
+    @Ignore("No good testcase available atm")
+    public void reverseDnsTest() {
+        try {
+            InetAddress address = InetAddress.getByName("hackmanit.de");
+            checkHostIsAsExpected(address.getHostAddress(), "hackmanit.de", 443);
+        } catch (UnknownHostException ex) {
+            LOGGER.error("Could not perform reverse dns test. This can happen if you try to build offline", ex);
+        }
+    }
+
+    private void checkHostIsAsExpected(String fullhost, String host, int port) {
+        delegate.setHost(fullhost);
+        Config config = Config.createConfig();
+        delegate.applyDelegate(config);
+        OutboundConnection defaultClientConnection = config.getDefaultClientConnection();
+        assertThat(defaultClientConnection.getHostname(), equalTo(host));
+        assertThat(defaultClientConnection.getPort(), equalTo(port));
+        assertThat(defaultClientConnection.getLocalConnectionEndType(), equalTo(ConnectionEndType.CLIENT));
+
+    }
 }

@@ -242,20 +242,7 @@ public class Config implements Serializable {
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;
 
-    /**
-     * Hostname in SNI Extension
-     */
-    private String sniHostname = "localhost";
-
-    /**
-     * SNI HostnameType
-     */
     private NameType sniType = NameType.HOST_NAME;
-
-    /**
-     * Should we terminate the connection on a wrong SNI ?
-     */
-    private Boolean sniHostnameFatal = false;
 
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
@@ -1088,7 +1075,7 @@ public class Config implements Serializable {
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
-        defaultServerConnection = new InboundConnection("server", 443);
+        defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -2255,28 +2242,12 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public Boolean isSniHostnameFatal() {
-        return sniHostnameFatal;
-    }
-
-    public void setSniHostnameFatal(Boolean sniHostnameFatal) {
-        this.sniHostnameFatal = sniHostnameFatal;
-    }
-
     public MaxFragmentLength getMaxFragmentLength() {
         return maxFragmentLength;
     }
 
     public void setMaxFragmentLength(MaxFragmentLength maxFragmentLengthConfig) {
         this.maxFragmentLength = maxFragmentLengthConfig;
-    }
-
-    public String getSniHostname() {
-        return sniHostname;
-    }
-
-    public void setSniHostname(String SniHostname) {
-        this.sniHostname = SniHostname;
     }
 
     public NamedGroup getDefaultSelectedNamedGroup() {

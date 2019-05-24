@@ -92,6 +92,7 @@
     <defaultServerConnection>
         <alias>server</alias>
         <port>443</port>
+        <hostname>localhost</hostname>
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>
@@ -745,9 +746,7 @@
             5A C4 E6 F7 2B 31 76 A6  BD 6A 35 23 D3 EC 0F 4C
         </publicKey>
     </defaultServerKeyShareEntry>
-    <sniHostname>localhost</sniHostname>
     <sniType>HOST_NAME</sniType>
-    <sniHostnameFatal>false</sniHostnameFatal>
     <maxFragmentLength>TWO_9</maxFragmentLength>
     <tlsSessionTicket/>
     <defaultClientRenegotiationInfo/>

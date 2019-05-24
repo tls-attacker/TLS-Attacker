@@ -52,6 +52,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -78,7 +79,8 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
+                    .getBytes(Charset.forName("US-ASCII")));
             extension.getServerNameList().add(pair);
             addExtension(extension);
         }
