@@ -17,14 +17,11 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
     private final static int DEFAULT_HTTPS_PORT = 443;
-    private final static int DEFAULT_HTTP_PORT = 80;
 
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
@@ -53,12 +50,14 @@ public class ClientDelegate extends Delegate {
             // we call applyDelegate manually, e.g. in tests.
             throw new ParameterException("Could not parse provided host: " + host);
         }
+        // Remove any provided protocols
         String[] split = host.split("://");
         if (split.length > 0) {
             host = split[split.length - 1];
         }
         URI uri;
         try {
+            // Add a dummy protocol
             uri = new URI("my://" + host);
         } catch (URISyntaxException ex) {
             throw new ParameterException("Could not parse host '" + host + "'", ex);
@@ -109,5 +108,13 @@ public class ClientDelegate extends Delegate {
             LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
             return ip;
         }
+    }
+
+    public String getSniHostname() {
+        return sniHostname;
+    }
+
+    public void setSniHostname(String sniHostname) {
+        this.sniHostname = sniHostname;
     }
 }
