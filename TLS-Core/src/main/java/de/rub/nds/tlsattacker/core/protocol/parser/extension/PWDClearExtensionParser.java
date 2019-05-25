@@ -22,7 +22,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
 
     @Override
     public void parseExtensionMessageContent(PWDClearExtensionMessage msg) {
-        LOGGER.debug("Parsing ECPointFormatExtensionMessage");
+        LOGGER.debug("Parsing PWDClearExtensionMessage");
         parseUsernameLength(msg);
         parseUsername(msg);
     }
