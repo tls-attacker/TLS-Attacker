@@ -6,12 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
+package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParserTest;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,14 +18,16 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class PWDClearExtensionSerializerTest {
+public class PWDClearExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return PWDClearExtensionParserTest.generateData();
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001e00050466726564"), 0,
+                ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
     }
 
     private final byte[] expectedBytes;
@@ -35,10 +36,8 @@ public class PWDClearExtensionSerializerTest {
     private final int extensionLength;
     private final int usernameLength;
     private final String username;
-    private PWDClearExtensionMessage message;
-    private PWDClearExtensionSerializer serializer;
 
-    public PWDClearExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+    public PWDClearExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
             int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
         this.start = start;
@@ -48,20 +47,13 @@ public class PWDClearExtensionSerializerTest {
         this.username = username;
     }
 
-    @Before
-    public void setUp() {
-        message = new PWDClearExtensionMessage();
-        serializer = new PWDClearExtensionSerializer(message);
-    }
-
     @Test
-    public void testSerializeExtensionContent() {
-        message.setExtensionType(type.getValue());
-        message.setExtensionLength(extensionLength);
-        message.setUsername(username);
-        message.setUsernameLength(usernameLength);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
+    public void testParseExtensionMessageContent() {
+        PWDClearExtensionParser parser = new PWDClearExtensionParser(start, expectedBytes);
+        PWDClearExtensionMessage msg = parser.parse();
+        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
+        assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());
+        assertEquals(usernameLength, (long) msg.getUsernameLength().getValue());
+        assertEquals(username, msg.getUsername().getValue());
     }
-
 }
