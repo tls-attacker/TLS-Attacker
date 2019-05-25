@@ -241,6 +241,14 @@ public class ExtensionByteLength {
      */
     public static final int PWD_NAME = 1;
 
+    /**
+     * PASSWORD_SALT length field of the password_salt extension message
+     *
+     * Note that the field has a different length than the salt field in the
+     * ServerKeyExchange for some reason
+     */
+    public static final int PASSWORD_SALT = 2;
+
     private ExtensionByteLength() {
     }
 }
