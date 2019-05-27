@@ -27,7 +27,7 @@ public class HandlerFactory {
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
         if (protocolType == null) {
-            return new UnknownHandshakeHandler(context);
+            throw new RuntimeException("Cannot retrieve Handler, ProtocolMessageType is null");
         }
         try {
             switch (protocolType) {

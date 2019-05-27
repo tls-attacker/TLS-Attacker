@@ -135,7 +135,6 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
-
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
             CONSOLE.info("Not vulnerable (definitely), Alert message found");
             return false;

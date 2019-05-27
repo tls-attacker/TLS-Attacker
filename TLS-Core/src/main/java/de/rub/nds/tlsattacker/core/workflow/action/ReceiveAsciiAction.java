@@ -40,10 +40,11 @@ public class ReceiveAsciiAction extends AsciiAction {
         }
 
         try {
-            LOGGER.info("Receiving ASCII message...");
-
+            LOGGER.debug("Receiving ASCII message...");
             byte[] fetchData = tlsContext.getTransportHandler().fetchData();
             receivedAsciiString = new String(fetchData, getEncoding());
+            LOGGER.info("Received: " + receivedAsciiString);
+
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);

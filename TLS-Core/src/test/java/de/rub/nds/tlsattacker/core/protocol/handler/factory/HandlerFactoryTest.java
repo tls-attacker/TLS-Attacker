@@ -31,7 +31,6 @@ public class HandlerFactoryTest {
 
     @Test
     public void getHandler() {
-        assertTrue(HandlerFactory.getHandler(context, null, null) instanceof UnknownHandshakeHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.HANDSHAKE, HandshakeMessageType.UNKNOWN) instanceof UnknownHandshakeHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.CHANGE_CIPHER_SPEC, null) instanceof ChangeCipherSpecHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.ALERT, null) instanceof AlertHandler);

@@ -683,8 +683,6 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
-    private Boolean doDTLSRetransmits = false;
-
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -779,13 +777,6 @@ public class Config implements Serializable {
 
     private String defaultApplicationMessageData = "Test";
 
-    /**
-     * If this is set TLS-Attacker only waits for the expected messages in the
-     * ReceiveActions This is interesting for DTLS since this prevents the
-     * server from retransmitting
-     */
-    private Boolean waitOnlyForExpectedDTLS = true;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
@@ -794,11 +785,6 @@ public class Config implements Serializable {
     private Integer heartbeatPayloadLength = 256;
 
     private Integer heartbeatPaddingLength = 256;
-
-    /**
-     * How long should our DTLSCookies be by default
-     */
-    private Integer defaultDTLSCookieLength = 6;
 
     /**
      * How much data we should put into a record by default
@@ -810,6 +796,29 @@ public class Config implements Serializable {
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+
+    /**
+     * How long should our DTLSCookies be by default
+     */
+    private Integer dtlsDefaultCookieLength = 6;
+
+    /**
+     * Configures the maximum fragment length. This should not be confused with
+     * MTU (which includes the IP, UDP, record and DTLS headers).
+     */
+    private Integer dtlsMaximumFragmentLength = 1400;
+
+    /**
+     * Enables a check on DTLS fragments ensuring that messages are formed only
+     * from fragments with consistent field values. Fields checked are type,
+     * message length and message seq.
+     */
+    private boolean dtlsOnlyFitting = true;
+
+    /**
+     * Exclude out of order messages from the output received.
+     */
+    private boolean dtlsDtlsExcludeOutOfOrder = false;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -826,7 +835,7 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
     /**
      * When "Null" records are defined to be send, every message will be sent in
-     * atleast one individual record
+     * at least one individual record
      */
     private Boolean createIndividualRecords = true;
 
@@ -858,7 +867,7 @@ public class Config implements Serializable {
      */
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean stopRecievingAfterFatal = false;
+    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
     /**
@@ -915,7 +924,7 @@ public class Config implements Serializable {
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultDtlsCookie = new byte[0];
+    private byte[] dtlsDefaultCookie = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -1459,12 +1468,12 @@ public class Config implements Serializable {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public Boolean isStopRecievingAfterFatal() {
-        return stopRecievingAfterFatal;
+    public Boolean isStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
-        this.stopRecievingAfterFatal = stopRecievingAfterFatal;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
@@ -1792,12 +1801,44 @@ public class Config implements Serializable {
         this.defaultPRFAlgorithm = defaultPRFAlgorithm;
     }
 
-    public byte[] getDefaultDtlsCookie() {
-        return Arrays.copyOf(defaultDtlsCookie, defaultDtlsCookie.length);
+    public byte[] getDtlsDefaultCookie() {
+        return Arrays.copyOf(dtlsDefaultCookie, dtlsDefaultCookie.length);
     }
 
-    public void setDefaultDtlsCookie(byte[] defaultDtlsCookie) {
-        this.defaultDtlsCookie = defaultDtlsCookie;
+    public void setDtlsDefaultCookie(byte[] defaultDtlsCookie) {
+        this.dtlsDefaultCookie = defaultDtlsCookie;
+    }
+
+    public Integer getDtlsDefaultCookieLength() {
+        return dtlsDefaultCookieLength;
+    }
+
+    public void setDtlsDefaultCookieLength(Integer dtlsDefaultCookieLength) {
+        this.dtlsDefaultCookieLength = dtlsDefaultCookieLength;
+    }
+
+    public Integer getDtlsMaximumFragmentLength() {
+        return dtlsMaximumFragmentLength;
+    }
+
+    public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
+        this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public boolean isDtlsExcludeOutOfOrder() {
+        return dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
+        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsOnlyFitting() {
+        return dtlsOnlyFitting;
+    }
+
+    public void setDtlsOnlyFitting(boolean dtlsOnlyFitting) {
+        this.dtlsOnlyFitting = dtlsOnlyFitting;
     }
 
     public byte[] getDefaultClientSessionId() {
@@ -2165,24 +2206,8 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public Boolean isWaitOnlyForExpectedDTLS() {
-        return waitOnlyForExpectedDTLS;
-    }
-
-    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
-        this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
-    }
-
     public String getDefaultApplicationMessageData() {
         return defaultApplicationMessageData;
-    }
-
-    public Boolean isDoDTLSRetransmits() {
-        return doDTLSRetransmits;
-    }
-
-    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
-        this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
     public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {
@@ -2486,14 +2511,6 @@ public class Config implements Serializable {
 
     public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
         return pskKeyExchangeModes;
-    }
-
-    public Integer getDefaultDTLSCookieLength() {
-        return defaultDTLSCookieLength;
-    }
-
-    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
-        this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
     public Integer getPaddingLength() {

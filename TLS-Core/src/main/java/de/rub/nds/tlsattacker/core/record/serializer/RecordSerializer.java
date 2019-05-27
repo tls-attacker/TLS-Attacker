@@ -29,6 +29,10 @@ public class RecordSerializer extends AbstractRecordSerializer<Record> {
         LOGGER.debug("Serializing Record");
         writeContentType(record);
         writeProtocolVersion(record);
+        if (record.getEpoch() != null) {
+            appendInt(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH);
+            appendBigInteger(record.getSequenceNumber().getValue(), RecordByteLength.DTLS_SEQUENCE_NUMBER);
+        }
         writeLength(record);
         writeProtocolMessageBytes(record);
         return getAlreadySerialized();

@@ -196,13 +196,17 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ServerHelloMessage:");
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null) {
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
         } else {
             sb.append("null");
+        }
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
+                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            sb.append("\n  Server Unix Time: ").append(
+                    new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {

@@ -51,15 +51,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq = null;
-
-    @ModifiableVariableProperty
-    private ModifiableInteger fragmentOffset = null;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger fragmentLength = null;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
 
@@ -105,7 +96,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
             @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
             @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
-            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension") })
+            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
+            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -210,42 +202,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
-    public ModifiableInteger getMessageSeq() {
-        return messageSeq;
-    }
-
-    public ModifiableInteger getFragmentOffset() {
-        return fragmentOffset;
-    }
-
-    public ModifiableInteger getFragmentLength() {
-        return fragmentLength;
-    }
-
-    public void setMessageSeq(int messageSeq) {
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
-    }
-
-    public void setMessageSeq(ModifiableInteger messageSeq) {
-        this.messageSeq = messageSeq;
-    }
-
-    public void setFragmentOffset(int fragmentOffset) {
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(this.fragmentOffset, fragmentOffset);
-    }
-
-    public void setFragmentOffset(ModifiableInteger fragmentOffset) {
-        this.fragmentOffset = fragmentOffset;
-    }
-
-    public void setFragmentLength(int fragmentLength) {
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(this.fragmentLength, fragmentLength);
-    }
-
-    public void setFragmentLength(ModifiableInteger fragmentLength) {
-        this.fragmentLength = fragmentLength;
-    }
-
     public HandshakeMessageType getHandshakeMessageType() {
         return handshakeMessageType;
     }
@@ -274,25 +230,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         }
         sb.append("\n  Length: ");
         if (length != null && length.getValue() != null) {
-            sb.append(length.getValue());
-        } else {
-            sb.append("null");
-        }
-        sb.append("\n  message_seq: ");
-        if (messageSeq != null && messageSeq.getValue() != null) {
-            sb.append(messageSeq.getValue());
-        } else {
-            sb.append("null");
-        }
-        sb.append("\n  fragment_offset: ");
-        if (fragmentOffset != null && fragmentOffset.getValue() != null) {
-            sb.append(fragmentOffset.getValue());
-        } else {
-            sb.append("null");
-        }
-        sb.append("\n  fragment_length: ");
-        if (fragmentLength != null && fragmentLength.getValue() != null) {
-            sb.append(fragmentLength.getValue());
+            sb.append("\n  Length: ").append(length.getValue());
         } else {
             sb.append("null");
         }

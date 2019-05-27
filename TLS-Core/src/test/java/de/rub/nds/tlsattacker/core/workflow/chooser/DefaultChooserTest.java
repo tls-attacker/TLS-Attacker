@@ -446,8 +446,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetDtlsCookie() {
         byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
-        config.setDefaultDtlsCookie(cookie);
-        assertArrayEquals(cookie, config.getDefaultDtlsCookie());
+        config.setDtlsDefaultCookie(cookie);
+        assertArrayEquals(cookie, config.getDtlsDefaultCookie());
         assertArrayEquals(cookie, chooser.getDtlsCookie());
         context.setDtlsCookie(cookie);
         assertArrayEquals(cookie, chooser.getDtlsCookie());

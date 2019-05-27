@@ -103,7 +103,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
