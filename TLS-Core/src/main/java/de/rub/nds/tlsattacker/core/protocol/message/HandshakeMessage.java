@@ -103,6 +103,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
             @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
+            @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
             @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
             @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension") })
     @HoldsModifiableVariable

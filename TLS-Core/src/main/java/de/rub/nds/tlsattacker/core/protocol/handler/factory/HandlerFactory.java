@@ -182,6 +182,8 @@ public class HandlerFactory {
                     return new UserMappingExtensionHandler(context);
                 case USE_SRTP:
                     return new SrtpExtensionHandler(context);
+                case PWD_PROTECT:
+                    return new PWDProtectExtensionHandler(context);
                 case PWD_CLEAR:
                     return new PWDClearExtensionHandler(context);
                 case PASSWORD_SALT:

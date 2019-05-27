@@ -807,6 +807,7 @@
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
     <addPWDClearExtension>false</addPWDClearExtension>
+    <addPWDProtectExtension>false</addPWDProtectExtension>
     <addPSKKeyExchangeModesExtension>false</addPSKKeyExchangeModesExtension>
     <addPreSharedKeyExtension>false</addPreSharedKeyExtension>
     <addPaddingExtension>false</addPaddingExtension>
@@ -1087,6 +1088,13 @@
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
     <defaultClientPWDUsername>fred</defaultClientPWDUsername>
+    <defaultPWDProtectGroup>SECP256R1</defaultPWDProtectGroup>
+    <defaultServerPWDProtectPublicKey>
+        <x>18331185786522319349444255540874590232255475110717040504630785378857839293510</x>
+        <y>77016287303447444409379355974404854219241223376914775755121063765271326101171</y>
+    </defaultServerPWDProtectPublicKey>
+    <defaultServerPWDProtectPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultServerPWDProtectPrivateKey>
+    <defaultServerPWDProtectRandomSecret>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</defaultServerPWDProtectRandomSecret>
     <defaultPWDPassword>barney</defaultPWDPassword>
     <defaultPWDIterations>40</defaultPWDIterations>
     <defaultServerPWDPrivate>

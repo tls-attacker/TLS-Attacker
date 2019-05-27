@@ -99,6 +99,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.UNKNOWN, null) instanceof UnknownExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.USER_MAPPING, null) instanceof UserMappingExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.USE_SRTP, null) instanceof SrtpExtensionHandler);
+        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_PROTECT, null) instanceof PWDProtectExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_CLEAR, null) instanceof PWDClearExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PASSWORD_SALT, null) instanceof PasswordSaltExtensionHandler);
     }

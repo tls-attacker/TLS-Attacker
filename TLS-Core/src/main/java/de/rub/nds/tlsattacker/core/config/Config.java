@@ -477,6 +477,11 @@ public class Config implements Serializable {
     private Boolean addPWDClearExtension = false;
 
     /**
+     * If we generate ClientHello with the PWDProtect extension
+     */
+    private Boolean addPWDProtectExtension = false;
+
+    /**
      * If we generate ClientHello with the PSKKeyExchangeModes extension
      */
     private Boolean addPSKKeyExchangeModesExtension = false;
@@ -1086,6 +1091,21 @@ public class Config implements Serializable {
      * Use username from the example of RFC8492
      */
     private String defaultClientPWDUsername = "fred";
+
+    /**
+     * Group used to encrypt the username in TLS_ECCPWD
+     */
+    private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
+
+    private CustomECPoint defaultServerPWDProtectPublicKey = new CustomECPoint(new BigInteger(
+            "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
+            "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
+
+    private BigInteger defaultServerPWDProtectPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
+            "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
 
     /**
      * Use password from the example of RFC8492
@@ -3381,5 +3401,45 @@ public class Config implements Serializable {
 
     public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
         this.defaultClientPWDMask = defaultClientPWDMask;
+    }
+
+    public NamedGroup getDefaultPWDProtectGroup() {
+        return defaultPWDProtectGroup;
+    }
+
+    public void setDefaultPWDProtectGroup(NamedGroup defaultPWDProtectGroup) {
+        this.defaultPWDProtectGroup = defaultPWDProtectGroup;
+    }
+
+    public CustomECPoint getDefaultServerPWDProtectPublicKey() {
+        return defaultServerPWDProtectPublicKey;
+    }
+
+    public void setDefaultServerPWDProtectPublicKey(CustomECPoint defaultServerPWDProtectPublicKey) {
+        this.defaultServerPWDProtectPublicKey = defaultServerPWDProtectPublicKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectPrivateKey() {
+        return defaultServerPWDProtectPrivateKey;
+    }
+
+    public void setDefaultServerPWDProtectPrivateKey(BigInteger defaultServerPWDProtectPrivateKey) {
+        this.defaultServerPWDProtectPrivateKey = defaultServerPWDProtectPrivateKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectRandomSecret() {
+        return defaultServerPWDProtectRandomSecret;
+    }
+
+    public void setDefaultServerPWDProtectRandomSecret(BigInteger defaultServerPWDProtectRandomSecret) {
+        this.defaultServerPWDProtectRandomSecret = defaultServerPWDProtectRandomSecret;
+    }
+
+    public Boolean isAddPWDProtectExtension() {
+        return addPWDProtectExtension;
+    }
+
+    public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
+        this.addPWDProtectExtension = addPWDProtectExtension;
     }
 }
