@@ -427,17 +427,18 @@ public class ReceiveMessageHelper {
         // (for example, we could update the digest with the contents of a
         // retransmission, causing the subsequent FINISHED verify_data check to
         // fail)
-        if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
-            Set<Integer> fragmentSeq = new HashSet<Integer>();
-            for (DtlsHandshakeMessageFragment fragment : fragments) {
-                DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
-                        .getValue(), epoch);
-                if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
-                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
-                    messages.add(message);
+        Set<Integer> fragmentSeq = new HashSet<Integer>();
+        for (DtlsHandshakeMessageFragment fragment : fragments) {
+            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
+                    .getValue(), epoch);
+            if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
+                HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
+                manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
+                	messages.add(message);
                 }
-                fragmentSeq.add(fragment.getMessageSeq().getValue());
             }
+            fragmentSeq.add(fragment.getMessageSeq().getValue());
         }
 
         return messages;
