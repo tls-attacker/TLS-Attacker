@@ -13,6 +13,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import java.net.IDN;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,7 +43,6 @@ public class ClientDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-
         config.setDefaulRunningMode(RunningModeType.CLIENT);
 
         if (host == null) {
@@ -55,12 +55,16 @@ public class ClientDelegate extends Delegate {
         if (split.length > 0) {
             host = split[split.length - 1];
         }
+        host = IDN.toASCII(host);
         URI uri;
         try {
             // Add a dummy protocol
             uri = new URI("my://" + host);
         } catch (URISyntaxException ex) {
             throw new ParameterException("Could not parse host '" + host + "'", ex);
+        }
+        if (uri.getHost() == null) {
+            throw new ParameterException("Provided host seems invalid:" + host);
         }
         OutboundConnection con = config.getDefaultClientConnection();
         if (con == null) {
