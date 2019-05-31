@@ -418,6 +418,17 @@
     <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_128_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_256_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_NULL_WITH_NULL_NULL</defaultClientSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultServerSupportedCiphersuites>
@@ -719,6 +730,17 @@
     <defaultServerSupportedCiphersuites>TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_256_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_128_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_256_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCiphersuites>
     <defaultClientNamedGroups>SECP192R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP256R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP384R1</defaultClientNamedGroups>
