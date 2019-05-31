@@ -37,8 +37,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private CompressionDelegate compressionDelegate;
