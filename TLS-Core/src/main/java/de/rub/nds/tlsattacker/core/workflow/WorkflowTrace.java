@@ -288,7 +288,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public MessageAction getLastMessageAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof MessageAction) {
                 return (MessageAction) (tlsActions.get(i));
             }
@@ -303,7 +303,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public SendingAction getLastSendingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {
                 return (SendingAction) (tlsActions.get(i));
             }
@@ -318,7 +318,7 @@ public class WorkflowTrace implements Serializable {
      *         receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof ReceivingAction) {
                 return (ReceivingAction) (tlsActions.get(i));
             }
