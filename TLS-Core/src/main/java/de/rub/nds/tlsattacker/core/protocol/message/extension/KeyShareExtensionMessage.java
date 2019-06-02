@@ -34,19 +34,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         super(ExtensionType.KEY_SHARE);
     }
 
-    public KeyShareExtensionMessage(ExtensionType type) {
-        super(type);
-        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new IllegalArgumentException("Only KeyShare types are allowed here. Found: " + type);
-        }
-        keyShareList = new LinkedList<>();
-    }
-
-    public KeyShareExtensionMessage(ExtensionType type, Config tlsConfig) {
-        super(type);
-        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new IllegalArgumentException("Only KeyShare types are allowed here. Found: " + type);
-        }
+    public KeyShareExtensionMessage(Config tlsConfig) {
+        super(ExtensionType.KEY_SHARE);
         keyShareList = new LinkedList<>();
         KeyShareEntry keyShareEntry = new KeyShareEntry(tlsConfig.getDefaultSelectedNamedGroup(),
                 tlsConfig.getKeySharePrivate());

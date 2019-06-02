@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.DraftKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -105,6 +106,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
+            @XmlElement(type = DraftKeyShareExtensionMessage.class, name = "DraftKeyShareExtension"),
             @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),

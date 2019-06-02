@@ -41,7 +41,7 @@ public class KeyShareExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new KeyShareExtensionHandler(context);
+        handler = new KeyShareExtensionHandler(context, ExtensionType.KEY_SHARE);
     }
 
     /**
@@ -53,7 +53,7 @@ public class KeyShareExtensionHandlerTest {
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         List<KeyShareEntry> pairList = new LinkedList<>();
         KeyShareEntry pair = new KeyShareEntry(NamedGroup.ECDH_X25519,
                 new BigInteger(ArrayConverter
@@ -85,7 +85,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE)) instanceof KeyShareExtensionPreparator);
+        assertTrue(handler.getPreparator(new KeyShareExtensionMessage()) instanceof KeyShareExtensionPreparator);
     }
 
     /**
@@ -93,6 +93,6 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE)) instanceof KeyShareExtensionSerializer);
+        assertTrue(handler.getSerializer(new KeyShareExtensionMessage()) instanceof KeyShareExtensionSerializer);
     }
 }

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -36,7 +35,7 @@ public class KeyShareExtensionPreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        message = new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
+        message = new KeyShareExtensionMessage();
         preparator = new KeyShareExtensionPreparator(context.getChooser(), message, new KeyShareExtensionSerializer(
                 message, ConnectionEndType.CLIENT));
     }

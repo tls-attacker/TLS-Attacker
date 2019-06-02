@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
@@ -32,13 +33,19 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyShareExtensionHandler(TlsContext context) {
+    private ExtensionType type;
+
+    public KeyShareExtensionHandler(TlsContext context, ExtensionType type) {
         super(context);
+        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
+            throw new RuntimeException("Trying to initalize KeyShareExtensionHandler with an illegal ExtensionType");
+        }
+        this.type = type;
     }
 
     @Override
     public KeyShareExtensionParser getParser(byte[] message, int pointer) {
-        return new KeyShareExtensionParser(pointer, message);
+        return new KeyShareExtensionParser(pointer, message, type);
     }
 
     @Override
