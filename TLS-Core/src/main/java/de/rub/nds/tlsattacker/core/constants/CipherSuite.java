@@ -387,12 +387,14 @@ public enum CipherSuite {
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     // These Ciphersuite are from a Draft and also dont have a mac algorithm
     // defined
-    // i am not sure if we want to keep draft ciphers here
-    // UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
-    // UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
-    // UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
-    // UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
-    // UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
+    UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
+    UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xcc13),
+    UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xcc14),
+    UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xcc15),
+    UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
+    UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
+    UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
+    UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
     // *************************************************************************
     TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
     TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
@@ -559,7 +561,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
+            String[] hashFunctionNames = {"MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"};
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -615,8 +617,7 @@ public enum CipherSuite {
      * version. TODO: this is still very imprecise and must be improved with new
      * ciphers.
      *
-     * @param version
-     *            The ProtocolVersion to check
+     * @param version The ProtocolVersion to check
      * @return True if the Ciphersuite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
@@ -957,6 +958,14 @@ public enum CipherSuite {
         list.add(TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305);
+        list.add(UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD);
+        list.add(UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD);
+        list.add(UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD);
+        list.add(UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD);
         list.add(TLS_NULL_WITH_NULL_NULL);
         return list;
     }
