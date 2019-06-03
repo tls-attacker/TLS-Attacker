@@ -116,7 +116,7 @@ public class PWDComputations extends KeyExchangeComputations {
         byte[] savedSeed = null;
 
         do {
-            counter = counter + 1;
+            counter++;
             byte[] seedInput = ArrayConverter.concatenate(base, ArrayConverter.intToBytes(counter, 1),
                     ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
