@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -409,46 +410,42 @@ public class ReceiveMessageHelper {
      */
     private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, Integer epoch,
             TlsContext context) {
-        // the fragment manager stores all the received message fragments
+    	
+        // the fragment manager stores all the message fragments received
         FragmentManager manager = context.getDtlsFragmentManager();
         List<ProtocolMessage> messages = new LinkedList<>();
 
-        // we first add the fragments to the manager
         for (DtlsHandshakeMessageFragment fragment : fragments) {
+        	
+        	// we first add the fragment to the manager
             manager.addMessageFragment(fragment, epoch);
-        }
+            
+            // we check if the fragment is in order, and if so try to assemble the message
+            // if the message can be assembled, we parse it and update the context
+            if (epoch == context.getDtlsNextReceiveEpoch() && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
+                DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
+                		fragment.getMessageSeq().getValue(), epoch);
 
-        // we then process all the fragmented messages with increasing message
-        // seq until we until we arrive at a message seq for which no fragmented
-        // message was formed.
-        if (epoch == context.getDtlsNextReceiveEpoch()) {
-            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
-                    context.getDtlsNextReceiveSequenceNumber(), epoch);
-            while (fragmentedMessage != null) {
-                manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-                messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-                fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
-            }
-        }
-
-        // we finally process fragmented messages whose sequence number is
-        // out-of-order note that we do not update the TLS context for
-        // these messages since it might invalidate the context.
-        // (for example, we could update the digest with the contents of a
-        // retransmission, causing the subsequent FINISHED verify_data check to
-        // fail)
-        Set<Integer> fragmentSeq = new HashSet<Integer>();
-        for (DtlsHandshakeMessageFragment fragment : fragments) {
-            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
-                    .getValue(), epoch);
-            if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
-                HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
-                manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-                if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
-                	messages.add(message);
+                if (fragmentedMessage != null) {
+                    manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                    messages.add(processFragmentedMessage(fragmentedMessage, context, true));
                 }
+            } 
+            
+            // if the fragment is out of order, we again, try to assemble its corresponding message
+            // but this time, we parse it, but don't update the context 
+            else {
+            	 DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
+                         .getValue(), epoch);
+                 if (fragmentedMessage != null) {
+                     HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
+                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                     if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
+                     	messages.add(message);
+                     }
+                 }
+            	
             }
-            fragmentSeq.add(fragment.getMessageSeq().getValue());
         }
 
         return messages;
