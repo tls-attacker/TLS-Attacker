@@ -70,12 +70,11 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                 .getXCoord().toBigInteger();
         BigInteger sharedSecret = serverPublicKey.multiply(config.getDefaultServerPWDProtectRandomSecret()).normalize()
                 .getXCoord().toBigInteger();
-        LOGGER.warn(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(clientPublicKey)));
 
         byte[] key = HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                 new byte[0], curve.getFieldSize() / 8);
-        LOGGER.warn(ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
 
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
