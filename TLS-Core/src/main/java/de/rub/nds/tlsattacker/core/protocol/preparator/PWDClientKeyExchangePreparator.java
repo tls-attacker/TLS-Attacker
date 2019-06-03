@@ -11,13 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
-import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.bouncycastle.jce.ECNamedCurveTable;
@@ -50,13 +47,13 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug(chooser.getSelectedNamedGroup().getJavaName());
 
         try {
-            preparePE(msg);
+            preparePasswordElement(msg);
         } catch (CryptoException e) {
-            throw new PreparationException("Failed to generate PE", e);
+            throw new PreparationException("Failed to generate password element", e);
         }
         prepareScalarElement(msg);
-        byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPE(), msg.getComputations()
-                .getPrivate());
+        byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(), msg
+                .getComputations().getPrivate());
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -72,12 +69,13 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
     }
 
-    protected void preparePE(PWDClientKeyExchangeMessage msg) throws CryptoException {
-        ECPoint PE = PWDComputations.computePE(chooser, msg.getComputations().getCurve());
-        msg.getComputations().setPE(PE);
+    protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {
+        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PE.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(PE.getXCoord().toBigInteger())));
+        LOGGER.debug("PasswordElement.x: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
+                        .toBigInteger())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -122,7 +120,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
         ECCurve curve = msg.getComputations().getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
-                .getPE(), chooser);
+                .getPasswordElement(), chooser);
 
         msg.getComputations().setPrivate(keyMaterial.priv);
         LOGGER.debug("Private: "
@@ -162,8 +160,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("ElementLength: " + msg.getElementLength());
     }
 
-    private byte[] generatePremasterSecret(ECPoint PE, BigInteger priv) {
-        ECCurve curve = PE.getCurve();
+    private byte[] generatePremasterSecret(ECPoint passwordElement, BigInteger priv) {
+        ECCurve curve = passwordElement.getCurve();
         ECPoint peerElement;
         BigInteger peerScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -177,7 +175,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             LOGGER.warn("Missing peer element or scalar, returning empty premaster secret");
             return new byte[0];
         }
-        ECPoint sharedSecret = PE.multiply(peerScalar).add(peerElement).multiply(priv).normalize();
+        ECPoint sharedSecret = passwordElement.multiply(peerScalar).add(peerElement).multiply(priv).normalize();
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger());
     }
 

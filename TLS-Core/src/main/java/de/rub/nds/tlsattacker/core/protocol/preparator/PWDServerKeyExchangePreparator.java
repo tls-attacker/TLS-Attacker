@@ -48,19 +48,20 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         prepareSaltLength(msg);
 
         try {
-            preparePE(msg);
+            preparePasswordElement(msg);
         } catch (CryptoException e) {
-            throw new PreparationException("Failed to generate PE", e);
+            throw new PreparationException("Failed to generate password element", e);
         }
         prepareScalarElement(msg);
     }
 
-    protected void preparePE(PWDServerKeyExchangeMessage msg) throws CryptoException {
-        ECPoint PE = PWDComputations.computePE(chooser, msg.getComputations().getCurve());
-        msg.getComputations().setPE(PE);
+    protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
+        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PE.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(PE.getXCoord().toBigInteger())));
+        LOGGER.debug("PasswordElement.x: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
+                        .toBigInteger())));
     }
 
     protected void prepareNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -136,7 +137,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
         ECCurve curve = msg.getComputations().getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
-                .getPE(), chooser);
+                .getPasswordElement(), chooser);
 
         msg.getComputations().setPrivate(keyMaterial.priv);
         LOGGER.debug("Private: "

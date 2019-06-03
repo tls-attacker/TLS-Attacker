@@ -23,7 +23,6 @@ import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
-import sun.security.ssl.SSLContextImpl;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -33,7 +32,10 @@ public class PWDComputations extends KeyExchangeComputations {
 
     private ECCurve curve;
 
-    private ECPoint PE;
+    /**
+     * shared secret derived from the shared password between server and client
+     */
+    private ECPoint passwordElement;
 
     private BigInteger priv;
 
@@ -55,12 +57,12 @@ public class PWDComputations extends KeyExchangeComputations {
         return curve;
     }
 
-    public ECPoint getPE() {
-        return PE;
+    public ECPoint getPasswordElement() {
+        return passwordElement;
     }
 
-    public void setPE(ECPoint PE) {
-        this.PE = PE;
+    public void setPasswordElement(ECPoint passwordElement) {
+        this.passwordElement = passwordElement;
     }
 
     public BigInteger getPrivate() {
@@ -80,7 +82,7 @@ public class PWDComputations extends KeyExchangeComputations {
      * @return
      * @throws CryptoException
      */
-    public static ECPoint computePE(Chooser chooser, ECCurve curve) throws CryptoException {
+    public static ECPoint computePasswordElement(Chooser chooser, ECCurve curve) throws CryptoException {
         MacAlgorithm randomFunction = getMacAlgorithm(chooser.getSelectedCipherSuite());
 
         BigInteger prime = curve.getField().getCharacteristic();
@@ -139,16 +141,16 @@ public class PWDComputations extends KeyExchangeComputations {
         } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
         // y = y^((p+1)/4) mod p = sqrt(y)
         y = y.modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
-        ECPoint PE = curve.createPoint(x, y);
+        ECPoint passwordElement = curve.createPoint(x, y);
 
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
         int lsbSeed = savedSeed[0] & 1;
         int lsbY = y.getLowestSetBit() == 0 ? 1 : 0;
         if (lsbSeed == lsbY) {
-            PE = PE.negate();
+            passwordElement = passwordElement.negate();
         }
-        return PE;
+        return passwordElement;
     }
 
     protected static MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -201,7 +203,7 @@ public class PWDComputations extends KeyExchangeComputations {
         }
     }
 
-    public static PWDKeyMaterial generateKeyMaterial(ECCurve curve, ECPoint PE, Chooser chooser) {
+    public static PWDKeyMaterial generateKeyMaterial(ECCurve curve, ECPoint passwordElement, Chooser chooser) {
         BigInteger mask;
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -216,7 +218,7 @@ public class PWDComputations extends KeyExchangeComputations {
 
         keyMaterial.scalar = mask.add(keyMaterial.priv).mod(curve.getOrder());
 
-        keyMaterial.element = PE.multiply(mask).negate().normalize();
+        keyMaterial.element = passwordElement.multiply(mask).negate().normalize();
 
         return keyMaterial;
     }

@@ -37,16 +37,16 @@ public class PWDComputationsTest {
         context.getConfig().setDefaultPWDPassword("barney");
 
         ECCurve curve = ECNamedCurveTable.getParameterSpec("brainpoolP256r1").getCurve();
-        ECPoint PE = PWDComputations.computePE(context.getChooser(), curve);
+        ECPoint passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         BigInteger expectedX = new BigInteger("686B0D3FC49894DD621EC04F925E029B2B1528EDEDCA46007254281E9A6EDC", 16);
         assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-                ArrayConverter.bigIntegerToByteArray(PE.getXCoord().toBigInteger()));
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord().toBigInteger()));
 
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        PE = PWDComputations.computePE(context.getChooser(), curve);
+        passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         expectedX = new BigInteger("0BA387CE8123BEA05A4327520F5A2A66B038F2024F239F330038DA0A2744F79B", 16);
         assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-                ArrayConverter.bigIntegerToByteArray(PE.getXCoord().toBigInteger()));
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord().toBigInteger()));
     }
 
 }

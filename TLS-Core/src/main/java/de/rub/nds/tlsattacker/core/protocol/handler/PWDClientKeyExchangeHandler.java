@@ -39,7 +39,7 @@ public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDCli
     @Override
     public void adjustTLSContext(PWDClientKeyExchangeMessage message) {
         if (message.getComputations() != null) {
-            tlsContext.setPWDPE(message.getComputations().getPE());
+            tlsContext.setPWDPE(message.getComputations().getPasswordElement());
             tlsContext.setClientPWDPrivate(message.getComputations().getPrivate());
         }
 

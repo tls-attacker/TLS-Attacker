@@ -49,7 +49,7 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
         tlsContext.setServerPWDElement(curve.decodePoint(message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
-            tlsContext.setPWDPE(message.getComputations().getPE());
+            tlsContext.setPWDPE(message.getComputations().getPasswordElement());
             tlsContext.setServerPWDPrivate(message.getComputations().getPrivate());
         }
     }

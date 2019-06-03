@@ -340,7 +340,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         BigInteger scalar = new BigInteger(1, Arrays.copyOfRange(keyShare.getPublicKey(), curveSize * 2 + 1, curveSize
                 * 2 + 1 + scalarLength));
         ECPoint element = curve.createPoint(new BigInteger(1, xPos), new BigInteger(1, yPos));
-        ECPoint PE = PWDComputations.computePE(tlsContext.getChooser(), curve);
+        ECPoint passwordElement = PWDComputations.computePasswordElement(tlsContext.getChooser(), curve);
         BigInteger priv;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getOrder());
@@ -350,7 +350,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(element.getEncoded(false)));
         LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
 
-        ECPoint sharedSecret = PE.multiply(scalar).add(element).multiply(priv).normalize();
+        ECPoint sharedSecret = passwordElement.multiply(scalar).add(element).multiply(priv).normalize();
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger(), curveSize, true);
     }
 

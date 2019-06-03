@@ -45,7 +45,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             try {
                 preparePWDKeyShare();
             } catch (CryptoException e) {
-                throw new PreparationException("Failed to generate PE", e);
+                throw new PreparationException("Failed to generate password element", e);
             }
         } else {
             prepareKeyShare();
@@ -57,8 +57,9 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void preparePWDKeyShare() throws CryptoException {
         ECCurve curve = ECNamedCurveTable.getParameterSpec(entry.getGroupConfig().getJavaName()).getCurve();
-        ECPoint PE = PWDComputations.computePE(chooser, curve);
-        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, PE, chooser);
+        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, curve);
+        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, passwordElement,
+                chooser);
         int curveSize = curve.getFieldSize() / 8;
         entry.setPrivateKey(keyMaterial.priv);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
@@ -67,8 +68,9 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getYCoord().toBigInteger(), curveSize, true),
                 ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
-        LOGGER.debug("PE.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(PE.getXCoord().toBigInteger())));
+        LOGGER.debug("PasswordElement.x: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
+                        .toBigInteger())));
     }
 
     private void prepareKeyShare() {
