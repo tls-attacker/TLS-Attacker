@@ -37,6 +37,10 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     private ECPoint passwordElement;
 
+    /**
+     * private secret used to calculate the premaster secret and part of the
+     * scalar that gets send to the peer
+     */
     private BigInteger priv;
 
     public static class PWDKeyMaterial {
