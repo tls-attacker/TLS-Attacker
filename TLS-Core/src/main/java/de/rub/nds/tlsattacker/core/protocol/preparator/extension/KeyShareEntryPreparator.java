@@ -61,7 +61,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, passwordElement,
                 chooser);
         int curveSize = curve.getFieldSize() / 8;
-        entry.setPrivateKey(keyMaterial.priv);
+        entry.setPrivateKey(keyMaterial.privateKeyScalar);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(ArrayConverter.concatenate(
                 ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getXCoord().toBigInteger(), curveSize, true),

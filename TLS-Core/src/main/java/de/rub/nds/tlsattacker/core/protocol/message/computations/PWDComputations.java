@@ -41,10 +41,10 @@ public class PWDComputations extends KeyExchangeComputations {
      * private secret used to calculate the premaster secret and part of the
      * scalar that gets send to the peer
      */
-    private BigInteger priv;
+    private BigInteger privateKeyScalar;
 
     public static class PWDKeyMaterial {
-        public BigInteger priv;
+        public BigInteger privateKeyScalar;
         public BigInteger scalar;
         public ECPoint element;
     }
@@ -69,12 +69,12 @@ public class PWDComputations extends KeyExchangeComputations {
         this.passwordElement = passwordElement;
     }
 
-    public BigInteger getPrivate() {
-        return priv;
+    public BigInteger getPrivateKeyScalar() {
+        return privateKeyScalar;
     }
 
-    public void setPrivate(BigInteger priv) {
-        this.priv = priv;
+    public void setPrivateKeyScalar(BigInteger privateKeyScalar) {
+        this.privateKeyScalar = privateKeyScalar;
     }
 
     /**
@@ -212,15 +212,15 @@ public class PWDComputations extends KeyExchangeComputations {
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getOrder());
-            keyMaterial.priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
+            keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
                     .mod(curve.getOrder());
         } else {
             mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getOrder());
-            keyMaterial.priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
+            keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
                     .mod(curve.getOrder());
         }
 
-        keyMaterial.scalar = mask.add(keyMaterial.priv).mod(curve.getOrder());
+        keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getOrder());
 
         keyMaterial.element = passwordElement.multiply(mask).negate().normalize();
 

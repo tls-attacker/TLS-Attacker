@@ -341,16 +341,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 * 2 + 1 + scalarLength));
         ECPoint element = curve.createPoint(new BigInteger(1, xPos), new BigInteger(1, yPos));
         ECPoint passwordElement = PWDComputations.computePasswordElement(tlsContext.getChooser(), curve);
-        BigInteger priv;
+        BigInteger privateKeyScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            priv = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getOrder());
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
+                    .mod(curve.getOrder());
         } else {
-            priv = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getOrder());
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
+                    .mod(curve.getOrder());
         }
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(element.getEncoded(false)));
         LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
 
-        ECPoint sharedSecret = passwordElement.multiply(scalar).add(element).multiply(priv).normalize();
+        ECPoint sharedSecret = passwordElement.multiply(scalar).add(element).multiply(privateKeyScalar).normalize();
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger(), curveSize, true);
     }
 

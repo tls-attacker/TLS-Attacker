@@ -53,7 +53,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         prepareScalarElement(msg);
         byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(), msg
-                .getComputations().getPrivate());
+                .getComputations().getPrivateKeyScalar());
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -122,9 +122,9 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 
-        msg.getComputations().setPrivate(keyMaterial.priv);
+        msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug("Private: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.priv)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -160,7 +160,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("ElementLength: " + msg.getElementLength());
     }
 
-    private byte[] generatePremasterSecret(ECPoint passwordElement, BigInteger priv) {
+    private byte[] generatePremasterSecret(ECPoint passwordElement, BigInteger privateKeyScalar) {
         ECCurve curve = passwordElement.getCurve();
         ECPoint peerElement;
         BigInteger peerScalar;
@@ -175,7 +175,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             LOGGER.warn("Missing peer element or scalar, returning empty premaster secret");
             return new byte[0];
         }
-        ECPoint sharedSecret = passwordElement.multiply(peerScalar).add(peerElement).multiply(priv).normalize();
+        ECPoint sharedSecret = passwordElement.multiply(peerScalar).add(peerElement).multiply(privateKeyScalar)
+                .normalize();
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger());
     }
 

@@ -139,9 +139,9 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 
-        msg.getComputations().setPrivate(keyMaterial.priv);
+        msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug("Private: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.priv)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);

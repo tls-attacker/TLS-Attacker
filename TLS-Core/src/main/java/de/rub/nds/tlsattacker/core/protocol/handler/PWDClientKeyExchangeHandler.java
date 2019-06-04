@@ -40,7 +40,7 @@ public class PWDClientKeyExchangeHandler extends ClientKeyExchangeHandler<PWDCli
     public void adjustTLSContext(PWDClientKeyExchangeMessage message) {
         if (message.getComputations() != null) {
             tlsContext.setPWDPE(message.getComputations().getPasswordElement());
-            tlsContext.setClientPWDPrivate(message.getComputations().getPrivate());
+            tlsContext.setClientPWDPrivate(message.getComputations().getPrivateKeyScalar());
         }
 
         adjustPremasterSecret(message);
