@@ -158,7 +158,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             Set<NamedGroup> clientSet = new HashSet<>(chooser.getClientSupportedNamedGroups());
             serverSet.retainAll(clientSet);
             if (serverSet.isEmpty()) {
-                LOGGER.warn("No common ECPointFormat - falling back to default");
+                LOGGER.warn("No common NamedGroup - falling back to default");
                 namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
             } else {
                 if (serverSet.contains(chooser.getConfig().getDefaultSelectedNamedGroup())) {
