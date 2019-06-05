@@ -380,6 +380,9 @@ public class ReceiveMessageHelper {
         } else {
             LOGGER.debug("Normal SSL2 length field detected");
         }
+        if (cleanProtocolMessageBytes.length < dataPointer + typeOffset) {
+            throw new ParserException("Cannot parse cleanBytes as SSL2 messages. Not enough data present");
+        }
 
         if (cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
