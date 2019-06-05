@@ -25,7 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -75,8 +77,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected void setEcDhParams() {
         msg.prepareComputations();
-        generateNamedGroupList(msg);
-        generatePointFormatList(msg);
+        selectNamedGroup(msg);
+        selectPointFormat(msg);
         prepareCurveType(msg);
         prepareNamedGroup(msg);
 
@@ -94,107 +96,79 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("Message computations not initialized");
         }
 
-        if (msg.getComputations().getNamedGroupList() == null
-                || msg.getComputations().getNamedGroupList().getValue() == null) {
+        if (msg.getComputations().getNamedGroup() == null || msg.getComputations().getNamedGroup().getValue() == null) {
             throw new PreparationException("No groups specified in message computations");
         }
 
-        if (msg.getComputations().getEcPointFormatList() == null
-                || msg.getComputations().getEcPointFormatList().getValue() == null) {
+        if (msg.getComputations().getEcPointFormat() == null
+                || msg.getComputations().getEcPointFormat().getValue() == null) {
             throw new PreparationException("No or empty point formats specified in message computations");
         }
 
-        NamedGroup[] groups;
-        try {
-            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroupList().getValue());
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.warn("Couldn't read list of named groups from computations.", ex);
-            groups = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
-        }
-        ECPointFormat[] formats;
-        try {
-            formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.warn("Couldn't read list of EC point formats from computations", ex);
-            formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }; // TODO
+        NamedGroup group = NamedGroup.getNamedGroup(msg.getComputations().getNamedGroup().getValue());
+        if (group == null) {
+            group = chooser.getConfig().getDefaultSelectedNamedGroup();
         }
 
+        ECPointFormat format = ECPointFormat.getECPointFormat(msg.getComputations().getEcPointFormat().getValue());
+        if (format == null) {
+            format = chooser.getConfig().getDefaultSelectedPointFormat();
+        }
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
                 new byte[] { msg.getGroupType().getValue() }, msg.getNamedGroup().getValue()));
 
         ECDomainParameters ecParams;
         try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
+            ecParams = ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { group }, new ECPointFormat[] { format },
+                    is);
         } catch (IOException ex) {
-            is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, groups[0].getValue()));
-            try {
-                ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
-            } catch (IOException | IndexOutOfBoundsException ex1) {
-                throw new PreparationException("Failed to generate EC domain parameters", ex);
-            }
-            LOGGER.warn("Failed to generate EC domain parameters", ex);
+            throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
-
         return ecParams;
     }
 
-    protected void generatePointFormatList(T msg) {
-        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
-
-        if (sharedPointFormats.isEmpty()) {
-            LOGGER.warn("Don't know which point format to use for ECDHE. " + "Check if pointFormats is set in config.");
-            sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
-        }
-
-        List<ECPointFormat> unsupportedFormats = new ArrayList<>();
-
-        if (!chooser.getConfig().isEnforceSettings()) {
-            List<ECPointFormat> clientPointFormats = chooser.getClientSupportedPointFormats();
-            for (ECPointFormat f : sharedPointFormats) {
-                if (!clientPointFormats.contains(f)) {
-                    unsupportedFormats.add(f);
+    protected void selectPointFormat(T msg) {
+        ECPointFormat selectedFormat;
+        if (chooser.getConfig().isEnforceSettings()) {
+            selectedFormat = chooser.getConfig().getDefaultSelectedPointFormat();
+        } else {
+            Set<ECPointFormat> serverSet = new HashSet<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
+            Set<ECPointFormat> clientSet = new HashSet<>(chooser.getClientSupportedPointFormats());
+            serverSet.retainAll(clientSet);
+            if (serverSet.isEmpty()) {
+                LOGGER.warn("No common ECPointFormat - falling back to default");
+                selectedFormat = chooser.getConfig().getDefaultSelectedPointFormat();
+            } else {
+                if (serverSet.contains(chooser.getConfig().getDefaultSelectedPointFormat())) {
+                    selectedFormat = chooser.getConfig().getDefaultSelectedPointFormat();
+                } else {
+                    selectedFormat = (ECPointFormat) serverSet.toArray()[0];
                 }
             }
         }
-
-        sharedPointFormats.removeAll(unsupportedFormats);
-        if (sharedPointFormats.isEmpty()) {
-            sharedPointFormats = new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
-        }
-
-        try {
-            msg.getComputations().setEcPointFormatList(ECPointFormat.pointFormatsToByteArray(sharedPointFormats));
-        } catch (IOException ex) {
-            throw new PreparationException("Couldn't set EC point formats in computations", ex);
-        }
+        msg.getComputations().setEcPointFormat(selectedFormat.getValue());
     }
 
-    protected void generateNamedGroupList(T msg) {
-        List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getClientSupportedNamedGroups());
-        List<NamedGroup> unsupportedGroups = new ArrayList<>();
-        if (!chooser.getConfig().isEnforceSettings()) {
-
-            List<NamedGroup> clientGroups = chooser.getServerSupportedNamedGroups();
-            for (NamedGroup c : sharedGroups) {
-                if (!clientGroups.contains(c)) {
-                    unsupportedGroups.add(c);
-                }
-            }
-            sharedGroups.removeAll(unsupportedGroups);
-            if (sharedGroups.isEmpty()) {
-                if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+    protected void selectNamedGroup(T msg) {
+        NamedGroup namedGroup;
+        if (chooser.getConfig().isEnforceSettings()) {
+            namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
+        } else {
+            Set<NamedGroup> serverSet = new HashSet<>(chooser.getConfig().getDefaultServerNamedGroups());
+            Set<NamedGroup> clientSet = new HashSet<>(chooser.getClientSupportedNamedGroups());
+            serverSet.retainAll(clientSet);
+            if (serverSet.isEmpty()) {
+                LOGGER.warn("No common ECPointFormat - falling back to default");
+                namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
+            } else {
+                if (serverSet.contains(chooser.getConfig().getDefaultSelectedNamedGroup())) {
+                    namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
                 } else {
-                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultServerNamedGroups());
+                    namedGroup = (NamedGroup) serverSet.toArray()[0];
                 }
             }
         }
-        try {
-            msg.getComputations().setNamedGroupList(NamedGroup.namedGroupsToByteArray(sharedGroups));
-        } catch (IOException ex) {
-            throw new PreparationException("Couldn't set named groups in computations", ex);
-        }
+        msg.getComputations().setNamedGroupList(namedGroup.getValue());
     }
 
     protected byte[] generateSignatureContents(T msg) {
@@ -253,15 +227,13 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected void prepareSerializedPublicKey(T msg, ECPoint pubKey) {
-        ECPointFormat[] formats;
-        try {
-            formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
-        } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of EC point formats from computations", ex);
+        ECPointFormat format;
+        format = ECPointFormat.getECPointFormat(msg.getComputations().getEcPointFormat().getValue());
+        if (format == null) {
+            LOGGER.warn("Could not transform ECPointFormat back to a valid ecPointFormat from Modification");
         }
-
         try {
-            byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(formats, pubKey);
+            byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(new ECPointFormat[] { format }, pubKey);
             msg.setPublicKey(serializedPubKey);
         } catch (IOException ex) {
             throw new PreparationException("Could not serialize EC public key", ex);
@@ -281,7 +253,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void prepareNamedGroup(T msg) {
         NamedGroup[] groups;
         try {
-            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroupList().getValue());
+            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroup().getValue());
         } catch (IOException | ClassNotFoundException ex) {
             LOGGER.warn("Could not get named groups from ByteArray");
             groups = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };

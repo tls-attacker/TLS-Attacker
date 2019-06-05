@@ -1115,4 +1115,5 @@
     </defaultSessionTicketIdentity>
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
+    <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
 </config>

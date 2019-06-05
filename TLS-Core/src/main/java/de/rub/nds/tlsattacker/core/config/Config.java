@@ -1073,6 +1073,8 @@ public class Config implements Serializable {
      */
     private Boolean tls13BackwardsCompatibilityMode = true;
 
+    private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -1185,6 +1187,14 @@ public class Config implements Serializable {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ConfigIO.write(this, stream);
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
+    }
+
+    public ECPointFormat getDefaultSelectedPointFormat() {
+        return defaultSelectedPointFormat;
+    }
+
+    public void setDefaultSelectedPointFormat(ECPointFormat defaultSelectedPointFormat) {
+        this.defaultSelectedPointFormat = defaultSelectedPointFormat;
     }
 
     public Boolean getStopActionsAfterIOException() {

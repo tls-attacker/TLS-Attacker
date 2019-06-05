@@ -11,45 +11,42 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 
 public class ECDHEServerComputations extends KeyExchangeComputations {
 
-    // List of EC point formats supported by both server and clinet (or a server
-    // enforced list)
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray ecPointFormatList;
+    private ModifiableByte ecPointFormat;
 
-    // List of available curves negotiated between server and client (or a
-    // server enforced list)
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray namedGroupList;
+    private ModifiableByteArray namedGroup;
 
     public ECDHEServerComputations() {
     }
 
-    public ModifiableByteArray getEcPointFormatList() {
-        return ecPointFormatList;
+    public ModifiableByte getEcPointFormat() {
+        return ecPointFormat;
     }
 
-    public void setEcPointFormatList(ModifiableByteArray formats) {
-        this.ecPointFormatList = formats;
+    public void setEcPointFormat(ModifiableByte format) {
+        this.ecPointFormat = format;
     }
 
-    public void setEcPointFormatList(byte[] formats) {
-        this.ecPointFormatList = ModifiableVariableFactory.safelySetValue(this.ecPointFormatList, formats);
+    public void setEcPointFormat(byte format) {
+        this.ecPointFormat = ModifiableVariableFactory.safelySetValue(this.ecPointFormat, format);
     }
 
-    public ModifiableByteArray getNamedGroupList() {
-        return this.namedGroupList;
+    public ModifiableByteArray getNamedGroup() {
+        return this.namedGroup;
     }
 
-    public void setNamedGroupList(ModifiableByteArray groups) {
-        this.namedGroupList = groups;
+    public void setNamedGroup(ModifiableByteArray namedGroup) {
+        this.namedGroup = namedGroup;
     }
 
-    public void setNamedGroupList(byte[] groups) {
-        this.namedGroupList = ModifiableVariableFactory.safelySetValue(this.namedGroupList, groups);
+    public void setNamedGroupList(byte[] namedGroup) {
+        this.namedGroup = ModifiableVariableFactory.safelySetValue(this.namedGroup, namedGroup);
     }
 
     @Override

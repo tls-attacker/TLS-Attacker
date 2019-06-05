@@ -82,7 +82,6 @@ public class ECDHEServerKeyExchangePreparatorTest {
                 new CertificateKeyPair(cert, new CustomECPrivateKey(tlsContext.getConfig()
                         .getDefaultClientEcPrivateKey(), tlsContext.getConfig().getDefaultSelectedNamedGroup())));
         tlsContext.getConfig().setAutoSelectCertificate(false);
-
         assertArrayEquals(ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext.getServerRandom()), msg
                 .getComputations().getClientServerRandom().getValue());
 
@@ -119,6 +118,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(clientRandom));
         tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(serverRandom));
+        tlsContext.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP384R1);
 
         List<NamedGroup> clientCurves = new ArrayList<>();
         clientCurves.add(NamedGroup.SECP384R1);
