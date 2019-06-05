@@ -251,14 +251,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected void prepareNamedGroup(T msg) {
-        NamedGroup[] groups;
-        try {
-            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroup().getValue());
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.warn("Could not get named groups from ByteArray");
-            groups = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
+        NamedGroup group;
+        group = NamedGroup.getNamedGroup(msg.getComputations().getNamedGroup().getValue());
+        if (group == null) {
+            LOGGER.warn("Could not deserialize group from computations. Using default group instead");
         }
-        msg.setNamedGroup(groups[0].getValue());
+        msg.setNamedGroup(group.getValue());
     }
 
     protected void preparePrivateKey(T msg) {
