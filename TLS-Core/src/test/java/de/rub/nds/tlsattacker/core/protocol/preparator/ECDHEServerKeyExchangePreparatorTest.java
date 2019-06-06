@@ -89,6 +89,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedGroup().getValue());
 
         String serializedPubKeyExcpected = "0453E2F98C7D459354029E08404C690D857F921CE4A6AA71C2F114D04D24E033E08CFB5C9B84FA81DB3FB5CA35639AE69BDDC3E657ACD0532EF9C100F0863D9A3145BABBFDD727491991FBDD377C4EEBAE2D5ADDF3C8152824C9B4442E628A8CF3";
+        System.out.println(serializedPubKeyExcpected);
+        System.out.println(ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
         assertEquals(serializedPubKeyExcpected, ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0601"), msg.getSignatureAndHashAlgorithm().getValue());

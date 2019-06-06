@@ -45,7 +45,7 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
         this.namedGroup = namedGroup;
     }
 
-    public void setNamedGroupList(byte[] namedGroup) {
+    public void setNamedGroup(byte[] namedGroup) {
         this.namedGroup = ModifiableVariableFactory.safelySetValue(this.namedGroup, namedGroup);
     }
 
