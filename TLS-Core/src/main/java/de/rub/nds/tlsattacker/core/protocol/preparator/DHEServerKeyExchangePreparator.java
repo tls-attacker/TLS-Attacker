@@ -105,7 +105,16 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void preparePublicKey(T msg) {
-        msg.setPublicKey(chooser.getDhServerPublicKey().toByteArray());
+        BigInteger publicKey = chooser.getDhServerPublicKey();
+        try {
+
+            BigInteger generator = msg.getComputations().getGenerator().getValue();
+            publicKey = generator.modPow(msg.getComputations().getPrivateKey().getValue(), msg.getComputations()
+                    .getModulus().getValue());
+        } catch (Exception E) {
+            LOGGER.warn("Could not compute public key", E);
+        }
+        msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(publicKey));
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
