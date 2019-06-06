@@ -94,10 +94,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                 stream.write(0x04);
                 try {
                     int elementLenght = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(), elementLenght));
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getY().getData(), elementLenght));
+                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
+                            elementLenght));
+                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getY().getData(),
+                            elementLenght));
                 } catch (IOException ex) {
-                    throw new PreparationException("Could not serialize ec point");
+                    throw new PreparationException("Could not serialize ec point", ex);
                 }
             } else {
                 LOGGER.error("Unsupported Point Format - sending empty pk");

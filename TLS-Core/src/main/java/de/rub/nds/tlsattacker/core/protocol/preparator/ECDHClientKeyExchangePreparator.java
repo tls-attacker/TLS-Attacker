@@ -13,13 +13,16 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -53,11 +56,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
-        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
+        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[]{curveType.getValue()},
                 namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { namedGroup },
-                    new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[]{namedGroup},
+                    new ECPointFormat[]{ECPointFormat.UNCOMPRESSED}, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
@@ -78,7 +81,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected void prepareSerializedPublicKey(T msg) {
-        msg.setPublicKey(ArrayConverter.concatenate(new byte[] { msg.getEcPointFormat().getValue() }, msg
+        msg.setPublicKey(ArrayConverter.concatenate(new byte[]{msg.getEcPointFormat().getValue()}, msg
                 .getEcPointEncoded().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
@@ -106,28 +109,23 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         msg.prepareComputations();
         prepareClientServerRandom(msg);
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         LOGGER.debug("Used Group: " + usedGroup.name());
         setComputationPrivateKey(msg, clientMode);
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
+        EllipticCurve curve = CurveFactory.getCurve(usedGroup);
+        Point publicKey;
         if (clientMode) {
-            ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
-            clientPublicKey = clientPublicKey.normalize();
-            if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
-                msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
-                msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
-            } else {
-                LOGGER.warn("Could not compute correct public key. Using empty one instead");
-                msg.getComputations().setComputedPublicKeyX(BigInteger.ZERO);
-                msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
-            }
+            publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+            msg.getComputations().setComputedPublicKeyX(publicKey.getX().getData());
+            msg.getComputations().setComputedPublicKeyY(publicKey.getY().getData());
+        } else {
+            publicKey = msg.getPublicKey();
         }
 
         setComputationPublicKey(msg, clientMode);
         LOGGER.debug("PublicKey used:" + msg.getComputations().getPublicKey().toString());
         LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
-        ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
-                msg.getComputations().getPublicKey().getY());
-        publicKey = publicKey.normalize();
+        curve.publicKey = publicKey.normalize();
         premasterSecret = computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams),
                 new ECPrivateKeyParameters(msg.getComputations().getPrivateKey().getValue(), ecParams));
         preparePremasterSecret(msg);
@@ -189,3 +187,18 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
 }
+//ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            if (pointFormat == ECPointFormat.UNCOMPRESSED) {
+//                stream.write(0x04);
+//                try {
+//                    int elementLenght = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
+//                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
+//                            elementLenght));
+//                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getY().getData(),
+//                            elementLenght));
+//                } catch (IOException ex) {
+//                    throw new PreparationException("Could not serialize ec point", ex);
+//                }
+//            } else {
+//                LOGGER.error("Unsupported Point Format - sending empty pk");
+//            }
