@@ -84,17 +84,11 @@ public class ECDHEServerKeyExchangePreparatorTest {
         tlsContext.getConfig().setAutoSelectCertificate(false);
         assertArrayEquals(ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext.getServerRandom()), msg
                 .getComputations().getClientServerRandom().getValue());
-
         assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getGroupType().getValue()));
         assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedGroup().getValue());
-
-        String serializedPubKeyExcpected = "0453E2F98C7D459354029E08404C690D857F921CE4A6AA71C2F114D04D24E033E08CFB5C9B84FA81DB3FB5CA35639AE69BDDC3E657ACD0532EF9C100F0863D9A3145BABBFDD727491991FBDD377C4EEBAE2D5ADDF3C8152824C9B4442E628A8CF3";
-        System.out.println(serializedPubKeyExcpected);
-        System.out.println(ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
+        String serializedPubKeyExcpected = "04C93A166226760CD96FE96276AEF24A2C43E2AD8F71753662E11406D7F06A0684EDCAAD3296B6738DBA308EEAFA2EA7A4E5185E7819DE1F499A422F0293CD490D6946373842900228DAFAE3C965BB15D8EAA880EABA0B4881D81A82FA88A16310";
         assertEquals(serializedPubKeyExcpected, ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
-
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0601"), msg.getSignatureAndHashAlgorithm().getValue());
-
         String sigExpected = "543E5CC620CE4CD46062CADAB5DF7FF2A64D61D7D78C8D3D7BC1843406050FF54AA8D8BF60A1FF4CE77E499C0520CD2B697F01E1BCF19EF0E0E242B8FC374184A2C26DE227036C9E6852E3FEE3A4281B6B8CD43760D07B611A9FF45D0DD5EA81ABEF2F11173F58B6E088045A759E7D2AAAE6AF44A5CFDB1A7B3EA8C1DE229840";
         assertEquals(128, (long) msg.getSignatureLength().getValue());
         assertEquals(sigExpected, ArrayConverter.bytesToRawHexString(msg.getSignature().getValue()));
