@@ -87,12 +87,12 @@ public class RealDirectMessageECOracle extends ECOracle {
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX()));
-        message.getComputations().setComputedPublicKeyX(x);
+        message.getComputations().setPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY()));
-        message.getComputations().setComputedPublicKeyY(y);
+        message.getComputations().setPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
@@ -166,8 +166,8 @@ public class RealDirectMessageECOracle extends ECOracle {
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates
-        BigInteger x = message.getComputations().getComputedPublicKeyX().getValue();
-        BigInteger y = message.getComputations().getComputedPublicKeyY().getValue();
+        BigInteger x = message.getComputations().getPublicKeyX().getValue();
+        BigInteger y = message.getComputations().getPublicKeyY().getValue();
         checkPoint = new Point(x, y);
         checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
