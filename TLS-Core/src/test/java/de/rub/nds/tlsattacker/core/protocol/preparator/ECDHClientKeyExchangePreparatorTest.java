@@ -72,8 +72,8 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
 
         preparator.prepare();
-        assertNotNull(message.getComputations().getComputedPublicKeyX());
-        assertNotNull(message.getComputations().getComputedPublicKeyY());
+        assertNotNull(message.getComputations().getPublicKeyX());
+        assertNotNull(message.getComputations().getPublicKeyY());
         assertArrayEquals(PREMASTER_SECRET, message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());

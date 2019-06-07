@@ -216,7 +216,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             LOGGER.warn("Could not transform ECPointFormat back to a valid ecPointFormat from Modification");
         }
         try {
-            byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(new ECPointFormat[]{format}, pubKey);
+            byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(new ECPointFormat[] { format }, pubKey);
             msg.setPublicKey(serializedPubKey);
         } catch (IOException ex) {
             throw new PreparationException("Could not serialize EC public key", ex);
