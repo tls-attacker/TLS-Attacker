@@ -37,6 +37,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
+    private GeneralDelegate generalDelegate;
+    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private CompressionDelegate compressionDelegate;
@@ -75,6 +77,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
+        generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
