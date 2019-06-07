@@ -85,10 +85,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         // Compute publicKey
         if (namedGroup.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(namedGroup);
-            System.out.println("Curve:" + namedGroup);
-
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
-            System.out.println(publicKey.toString());
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             if (pointFormat == ECPointFormat.UNCOMPRESSED) {
                 stream.write(0x04);

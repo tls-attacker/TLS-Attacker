@@ -46,9 +46,13 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ECDHClientExchangeMessage");
-        prepareAfterParse(true);
+
+        msg.prepareComputations();
+
         setSerializedPublicKey();
         prepareSerializedPublicKeyLength(msg);
+
+        prepareAfterParse(true);
     }
 
     protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
@@ -96,7 +100,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         EllipticCurve curve = CurveFactory.getCurve(usedGroup);
         Point publicKey;
         if (clientMode) {
-            publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+            publicKey = curve.getPoint(chooser.getServerEcPublicKey().getX(), chooser.getServerEcPublicKey().getY());
         } else {
             publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
         }
@@ -115,7 +119,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         EllipticCurve curve = CurveFactory.getCurve(usedGroup);
-        Point publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
+        setComputationPrivateKey(msg, true);
+        Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+        msg.getComputations().setPublicKeyX(publicKey.getX().getData());
+        msg.getComputations().setPublicKeyY(publicKey.getY().getData());
+        publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
                 .getPublicKeyY().getValue());
         msg.setPublicKey(PointFormatter.formatToByteArray(publicKey, pointFormat));
     }
