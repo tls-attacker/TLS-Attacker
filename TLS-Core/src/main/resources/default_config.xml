@@ -757,14 +757,58 @@
     <defaultServerSupportedCiphersuites>UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCiphersuites>
+    <defaultClientNamedGroups>SECP160K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP160R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP160R2</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP192K1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP192R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP224K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP224R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECP256K1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP256R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP384R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP521R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT163K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT163R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT163R2</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT193R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT193R2</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT233K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT233R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT239K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT283K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT283R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT409K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT409R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT571K1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>SECT571R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>ECDH_X25519</defaultClientNamedGroups>
+    <defaultServerNamedGroups>SECP160K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP160R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP160R2</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP192K1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP192R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP224K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP224R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECP256K1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP256R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP384R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP521R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT163K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT163R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT163R2</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT193R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT193R2</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT233K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT233R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT239K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT283K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT283R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT409K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT409R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT571K1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>SECT571R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>ECDH_X25519</defaultServerNamedGroups>
     <supportedVersions>TLS13</supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <paddingLength>0</paddingLength>

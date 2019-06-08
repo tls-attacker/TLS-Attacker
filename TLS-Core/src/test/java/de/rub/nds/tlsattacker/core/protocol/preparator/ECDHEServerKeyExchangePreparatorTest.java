@@ -92,7 +92,6 @@ public class ECDHEServerKeyExchangePreparatorTest {
         String sigExpected = "4E2926B855813523BCF19289E39ADEC4F1A3A4B6706723A3C20EA1A677AAC4705ED20D6AEA6E9A875182D5D89A03F34B8814BB1BE0DE564B5B82A4F97B63594ADDD9E86A1CD06A2BBC046DC8AA89B0434862540567ADDE31C2ADDDAECE3A9C95E8B222D8F9E1348BC753C0184143585BEFA6C463FC43E033A25657BB15FF1CF8";
         assertEquals(128, (long) msg.getSignatureLength().getValue());
         assertEquals(sigExpected, ArrayConverter.bytesToRawHexString(msg.getSignature().getValue()));
-
     }
 
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,

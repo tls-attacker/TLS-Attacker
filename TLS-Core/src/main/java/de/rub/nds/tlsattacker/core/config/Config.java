@@ -1090,16 +1090,8 @@ public class Config implements Serializable {
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCiphersuites = new LinkedList<>();
         defaultServerSupportedCiphersuites.addAll(CipherSuite.getImplemented());
-        defaultClientNamedGroups = new LinkedList<>();
-        defaultClientNamedGroups.add(NamedGroup.SECP192R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP256R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP384R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP521R1);
-        defaultServerNamedGroups = new LinkedList<>();
-        defaultServerNamedGroups.add(NamedGroup.SECP192R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP256R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP384R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP521R1);
+        defaultClientNamedGroups = NamedGroup.getImplemented();
+        defaultServerNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
