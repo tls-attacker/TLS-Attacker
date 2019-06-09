@@ -8,24 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsFatalAlert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -56,22 +54,15 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
-        tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
-        // TODO avoid BC tool
-        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getGroupType().getValue() }, message
-                .getNamedGroup().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
-                message.getPublicKey().getValue());
-        InputStream is = new ByteArrayInputStream(ecParams);
-        ECPublicKeyParameters publicKeyParameters = null;
-        try {
-            publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
-        } catch (TlsFatalAlert alert) {
-            throw new AdjustmentException("Problematic EC parameters, we dont support these yet", alert);
-        } catch (IOException ex) {
-            throw new AdjustmentException("EC public key parsing failed", ex);
+        NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
+        tlsContext.setSelectedGroup(group);
+        if (group != null) {
+            Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
+            CustomECPoint publicKey = new CustomECPoint(publicKeyPoint.getX().getData(), publicKeyPoint.getY()
+                    .getData());
+            tlsContext.setServerEcPublicKey(publicKey);
+        } else {
+            LOGGER.warn("Could not adjust server public key, named group is unknown.");
         }
-        CustomECPoint publicKey = new CustomECPoint(publicKeyParameters.getQ().getRawXCoord().toBigInteger(),
-                publicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        tlsContext.setServerEcPublicKey(publicKey);
     }
 }

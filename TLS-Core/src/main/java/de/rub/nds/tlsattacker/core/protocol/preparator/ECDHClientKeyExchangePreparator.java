@@ -33,7 +33,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected byte[] serializedPoint;
     protected byte[] premasterSecret;
     protected byte[] random;
     protected final T msg;
@@ -46,12 +45,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ECDHClientExchangeMessage");
-
         msg.prepareComputations();
-
         setSerializedPublicKey();
         prepareSerializedPublicKeyLength(msg);
-
         prepareAfterParse(true);
     }
 
@@ -95,19 +91,19 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         msg.prepareComputations();
         prepareClientServerRandom(msg);
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-        LOGGER.debug("Used Group: " + usedGroup.name());
-        setComputationPrivateKey(msg, clientMode);
+        LOGGER.debug("PMS used Group: " + usedGroup.name());
+        if (msg.getComputations().getPrivateKey() == null) {
+            setComputationPrivateKey(msg, clientMode);
+        }
         EllipticCurve curve = CurveFactory.getCurve(usedGroup);
         Point publicKey;
         if (clientMode) {
             publicKey = curve.getPoint(chooser.getServerEcPublicKey().getX(), chooser.getServerEcPublicKey().getY());
+            msg.getComputations().setPublicKeyX(publicKey.getX().getData());
+            msg.getComputations().setPublicKeyY(publicKey.getY().getData());
         } else {
             publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
         }
-        msg.getComputations().setPublicKeyX(publicKey.getX().getData());
-        msg.getComputations().setPublicKeyY(publicKey.getY().getData());
-        publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
-                .getPublicKeyY().getValue());
 
         LOGGER.debug("PublicKey used:" + publicKey.toString());
         LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
@@ -117,7 +113,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private void setSerializedPublicKey() {
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        LOGGER.debug("PublicKey used Group: " + usedGroup.name());
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
+        LOGGER.debug("EC Point format: " + pointFormat.name());
         EllipticCurve curve = CurveFactory.getCurve(usedGroup);
         setComputationPrivateKey(msg, true);
         Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
@@ -130,8 +128,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     protected void setComputationPrivateKey(T msg, boolean clientMode) {
         if (clientMode) {
+            LOGGER.debug("Using Client PrivateKey");
             msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
         } else {
+            LOGGER.debug("Using Server PrivateKey");
             msg.getComputations().setPrivateKey(chooser.getServerEcPrivateKey());
         }
         LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
