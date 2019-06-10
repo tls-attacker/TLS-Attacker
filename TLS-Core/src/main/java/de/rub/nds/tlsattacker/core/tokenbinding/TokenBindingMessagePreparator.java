@@ -19,6 +19,9 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.KeyGenerator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
@@ -56,13 +59,11 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setTokenbindingType(chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
         message.setKeyParameter(chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
         if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0) == TokenBindingKeyParameters.ECDSAP256) {
-            ECDomainParameters generateEcParameters = generateEcParameters();
-            ECPrivateKey tokenBindingECPrivateKey = KeyGenerator.getTokenBindingECPrivateKey(chooser);
-            LOGGER.debug("Using private Key:" + tokenBindingECPrivateKey.getS());
-            ECPoint publicKey = generateEcParameters.getG().multiply(tokenBindingECPrivateKey.getS());
-            publicKey = publicKey.normalize();
-            CustomECPoint point = new CustomECPoint(publicKey.getRawXCoord().toBigInteger(), publicKey.getRawYCoord()
-                    .toBigInteger());
+            EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
+            BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
+            LOGGER.debug("Using private Key:" + privateKey);
+            Point publicKey = curve.mult(privateKey, curve.getBasePoint());
+            
             message.setPoint(ArrayConverter.concatenate(point.getByteX(), point.getByteY()));
             message.setPointLength(message.getPoint().getValue().length);
             ParametersWithRandom params = new ParametersWithRandom(new ECPrivateKeyParameters(
@@ -110,20 +111,4 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             throw new PreparationException("Could not generate data to be Signed!", ex);
         }
     }
-
-    private ECDomainParameters generateEcParameters() {
-        NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
-        ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
-        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
-        ECDomainParameters ecParams;
-        try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
-
-        return ecParams;
-    }
-
 }

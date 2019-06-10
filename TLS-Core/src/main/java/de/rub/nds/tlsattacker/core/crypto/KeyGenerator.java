@@ -65,10 +65,6 @@ public class KeyGenerator {
         }
     }
 
-    public static ECPrivateKey getTokenBindingECPrivateKey(Chooser chooser) {
-        return new CustomECPrivateKey(chooser.getConfig().getDefaultTokenBindingEcPrivateKey(), NamedGroup.SECP256R1);
-    }
-
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getClientDhModulus(),
