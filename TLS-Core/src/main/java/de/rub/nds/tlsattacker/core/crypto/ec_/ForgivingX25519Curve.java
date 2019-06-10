@@ -100,7 +100,7 @@ public class ForgivingX25519Curve {
             LOGGER.debug("publicKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
                     + " bytes.");
             publicKey = Arrays.copyOfRange(publicKey, 0, ELEMENT_SIZE);
-        } else if (privateKey.length < ELEMENT_SIZE) {
+        } else if (publicKey.length < ELEMENT_SIZE) {
             LOGGER.debug("publicKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
             publicKey = Arrays.copyOf(publicKey, ELEMENT_SIZE);
         }
