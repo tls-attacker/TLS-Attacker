@@ -13,19 +13,19 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX25519Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX448Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
@@ -39,20 +39,12 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsECCUtils;
-import org.bouncycastle.math.ec.ECPoint;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -267,20 +259,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case ECDH_X25519:
                 BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
                 byte[] keySharePublicKey = keyShare.getPublicKey();
-                byte[] privateKeyBytes;
-                if (privateKey.toByteArray().length != 32) {
-                    LOGGER.warn("ECDH_525519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
-                    privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 32);
-                } else {
-                    privateKeyBytes = privateKey.toByteArray();
-                }
-                LOGGER.debug("Clamping private key");
-                Curve25519.clamp(privateKeyBytes);
-                byte[] sharedSecret = new byte[32];
-                Curve25519.curve(sharedSecret, privateKeyBytes, keySharePublicKey);
-                return sharedSecret;
+                return ForgivingX25519Curve.computeSharedSecret(privateKey, keySharePublicKey);
             case ECDH_X448:
-                throw new UnsupportedOperationException("x448 not supported yet");
+                privateKey = tlsContext.getConfig().getKeySharePrivate();
+                keySharePublicKey = keyShare.getPublicKey();
+                return ForgivingX448Curve.computeSharedSecret(privateKey, keySharePublicKey);
             case SECP160K1:
             case SECP160R1:
             case SECP160R2:
@@ -306,30 +289,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case SECT409R1:
             case SECT571K1:
             case SECT571R1:
-                ECDomainParameters generateEcParameters = generateEcParameters(keyShare.getGroup());
-                ECPoint deserializeEcPoint = deserializeEcPoint(generateEcParameters, keyShare.getPublicKey());
-                deserializeEcPoint = deserializeEcPoint.normalize();
-                ECPublicKeyParameters params = new ECPublicKeyParameters(deserializeEcPoint, generateEcParameters);
-                ECPrivateKeyParameters privParams = new ECPrivateKeyParameters(tlsContext.getConfig()
-                        .getDefaultKeySharePrivateKey(), generateEcParameters);
-                return TlsECCUtils.calculateECDHBasicAgreement(params, privParams);
+                EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+                Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
+                privateKey = tlsContext.getConfig().getDefaultKeySharePrivateKey();
+                Point sharedPoint = curve.mult(privateKey, publicPoint);
+                int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
         }
-    }
-
-    protected ECDomainParameters generateEcParameters(NamedGroup group) {
-        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
-    }
-
-    protected ECPoint deserializeEcPoint(ECDomainParameters parameters, byte[] bytes) {
-        ECPoint decodePoint = parameters.getCurve().decodePoint(bytes);
-        return decodePoint;
     }
 }

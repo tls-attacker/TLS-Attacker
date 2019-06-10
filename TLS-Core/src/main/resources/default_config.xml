@@ -783,6 +783,7 @@
     <defaultClientNamedGroups>SECT571K1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECT571R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>ECDH_X25519</defaultClientNamedGroups>
+    <defaultClientNamedGroups>ECDH_X448</defaultClientNamedGroups>
     <defaultServerNamedGroups>SECP160K1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP160R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP160R2</defaultServerNamedGroups>
@@ -809,6 +810,7 @@
     <defaultServerNamedGroups>SECT571K1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECT571R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>ECDH_X25519</defaultServerNamedGroups>
+    <defaultServerNamedGroups>ECDH_X448</defaultServerNamedGroups>
     <supportedVersions>TLS13</supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <paddingLength>0</paddingLength>

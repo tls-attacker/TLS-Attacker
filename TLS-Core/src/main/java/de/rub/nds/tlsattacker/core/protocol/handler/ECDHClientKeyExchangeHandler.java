@@ -67,12 +67,12 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
-        List<ECPointFormat> pointFormatList = tlsContext.getChooser().getServerSupportedPointFormats();
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
-            LOGGER.debug("Montomery EC PublicKey");
+            LOGGER.debug("Adjusting Montgomery EC PublicKey");
             tlsContext.setClientEcPublicKey(new CustomECPoint(new BigInteger(serializedPoint), null));
         } else {
+            LOGGER.debug("Adjusting EC Point");
             Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
             tlsContext.setClientEcPublicKey(new CustomECPoint(publicKey.getX().getData(), publicKey.getY().getData()));
         }

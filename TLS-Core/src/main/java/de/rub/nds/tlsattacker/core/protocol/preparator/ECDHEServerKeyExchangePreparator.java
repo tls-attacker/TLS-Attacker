@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX25519Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -24,13 +26,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.rfc7748.X25519;
-import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage> extends
         ServerKeyExchangePreparator<T> {
@@ -88,24 +87,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         // Compute publicKey
         byte[] publicKeyBytes = null;
         if (namedGroup == NamedGroup.ECDH_X25519) {
-            byte[] privateKeyBytes = msg.getComputations().getPrivateKey().getValue().toByteArray();
-            if (privateKeyBytes.length != 32) {
-                LOGGER.warn("ECDH_25519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
-                privateKeyBytes = Arrays.copyOf(privateKeyBytes, 32);
-            }
-            publicKeyBytes = new byte[32];
-            X25519.precompute();
-            X25519.scalarMultBase(msg.getComputations().getPrivateKey().getValue().toByteArray(), 0, publicKeyBytes, 0);
+            publicKeyBytes = ForgivingX25519Curve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
         } else if (namedGroup == NamedGroup.ECDH_X448) {
-            byte[] privateKeyBytes = new byte[56];
-            
-            if (privateKeyBytes.length != 56) {
-                LOGGER.warn("ECDH_448 private Key is not 56 byte - using as much as possible and padding the rest with Zeros.");
-                privateKeyBytes = Arrays.copyOf(msg.getComputations().getPrivateKey().getValue().toByteArray(), 56);
-            }
-            publicKeyBytes = new byte[56];
-            X448.precompute();
-            X448.scalarMultBase(msg.getComputations().getPrivateKey().getValue().toByteArray(), 0, publicKeyBytes, 0);
+            publicKeyBytes = ForgivingX448Curve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
         } else if (namedGroup.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(namedGroup);
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());

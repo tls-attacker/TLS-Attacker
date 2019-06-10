@@ -12,20 +12,19 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX25519Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
-import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class KeyShareCalculator {
 
@@ -63,30 +62,11 @@ public class KeyShareCalculator {
                     "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
         if (group == NamedGroup.ECDH_X25519) {
-            byte[] privateKeyBytes;
-            if (privateKey.toByteArray().length != 32) {
-                LOGGER.warn("ECDH_25519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
-                privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 32);
-            } else {
-                privateKeyBytes = privateKey.toByteArray();
-            }
-            LOGGER.debug("Clamping private key");
-            Curve25519.clamp(privateKeyBytes);
-            byte[] publicKey = new byte[32];
-            Curve25519.keygen(publicKey, null, privateKeyBytes);
-            return publicKey;
+            return ForgivingX25519Curve.computePublicKey(privateKey);
+        } else if (group == NamedGroup.ECDH_X448) {
+            return ForgivingX448Curve.computePublicKey(privateKey);
         } else {
-            byte[] privateKeyBytes;
-            if (privateKey.toByteArray().length != 56) {
-                LOGGER.warn("ECDH_X448 private Key is not 56 byte - using as much as possible and padding the rest with Zeros.");
-                privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 56);
-            } else {
-                privateKeyBytes = privateKey.toByteArray();
-            }
-            LOGGER.debug("Creating publicKey");
-            byte[] publicKey = new byte[56];
-            X448.scalarMultBase(privateKeyBytes, 0, publicKey, 0);
-            return publicKey;
+            throw new UnsupportedOperationException("Unknown MontgomeryGroup: " + group.name());
         }
     }
 
@@ -105,16 +85,11 @@ public class KeyShareCalculator {
             case ECDH_X25519:
                 byte[] privateKey = keyShare.getPrivateKey().toByteArray();
                 byte[] publicKey = keyShare.getPublicKey().getValue();
-                Curve25519.clamp(privateKey);
-                byte[] sharedSecret = new byte[32];
-                Curve25519.curve(sharedSecret, privateKey, publicKey);
-                return sharedSecret;
+                return ForgivingX25519Curve.computeSharedSecret(privateKey, publicKey);
             case ECDH_X448:
                 privateKey = keyShare.getPrivateKey().toByteArray();
                 publicKey = keyShare.getPublicKey().getValue();
-                sharedSecret = new byte[56];
-                X448.scalarMult(privateKey, 0, publicKey, 0, sharedSecret, 0);
-                return sharedSecret;
+                return ForgivingX448Curve.computeSharedSecret(privateKey, publicKey);
             case SECP160K1:
             case SECP160R1:
             case SECP160R2:
