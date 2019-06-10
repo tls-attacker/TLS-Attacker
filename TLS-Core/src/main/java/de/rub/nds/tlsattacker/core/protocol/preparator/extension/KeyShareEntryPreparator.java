@@ -64,7 +64,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             }
             entry.setPublicKey(serializedPoint);
         } else if (entry.getGroupConfig().isCurve() && !entry.getGroupConfig().isStandardCurve()) {
-            byte[] publicKey = KeyShareCalculator.createX25519KeyShare(entry.getGroupConfig(), entry.getPrivateKey());
+            byte[] publicKey = KeyShareCalculator.createMontgomeryKeyShare(entry.getGroupConfig(),
+                    entry.getPrivateKey());
             entry.setPublicKey(publicKey);
         } else {
             throw new UnsupportedOperationException("The group \"" + entry.getGroupConfig().name()

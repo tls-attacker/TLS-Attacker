@@ -18,8 +18,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
@@ -56,7 +58,11 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
         NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
         tlsContext.setSelectedGroup(group);
-        if (group != null) {
+        if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
+            LOGGER.debug("Adjusting Montomery EC Point");
+            CustomECPoint publicKey = new CustomECPoint(new BigInteger(message.getPublicKey().getValue()), null);
+            tlsContext.setServerEcPublicKey(publicKey);
+        } else if (group != null) {
             Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
             CustomECPoint publicKey = new CustomECPoint(publicKeyPoint.getX().getData(), publicKeyPoint.getY()
                     .getData());

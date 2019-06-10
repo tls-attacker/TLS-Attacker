@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
@@ -23,6 +25,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,33 +68,13 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
         List<ECPointFormat> pointFormatList = tlsContext.getChooser().getServerSupportedPointFormats();
-        ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
-        ECDomainParameters ecParams = getDomainParameters(tlsContext.getChooser().getEcCurveType(), usedGroup);
-        short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
-        try {
-            ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, ecParams,
-                    serializedPoint);
-            tlsContext.setClientEcPublicKey(new CustomECPoint(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
-                    clientPublicKey.getQ().getRawYCoord().toBigInteger()));
-
-        } catch (IOException ex) {
-            LOGGER.info("Could not deserialize EC point (it is possible that some of your modifications made "
-                    + "the EC point invalid)");
-            LOGGER.debug(
-                    "EC point that was attempted to be deserialized: "
-                            + ArrayConverter.bytesToHexString(serializedPoint), ex);
-        }
-    }
-
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
-        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedGroup.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { tlsContext.getChooser()
-                    .getSelectedNamedGroup() }, new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
+        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
+            LOGGER.debug("Montomery EC PublicKey");
+            tlsContext.setClientEcPublicKey(new CustomECPoint(new BigInteger(serializedPoint), null));
+        } else {
+            Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
+            tlsContext.setClientEcPublicKey(new CustomECPoint(publicKey.getX().getData(), publicKey.getY().getData()));
         }
     }
 }

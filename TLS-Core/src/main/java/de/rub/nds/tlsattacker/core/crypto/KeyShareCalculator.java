@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class KeyShareCalculator {
 
@@ -56,23 +57,37 @@ public class KeyShareCalculator {
         return ecPoint;
     }
 
-    public static byte[] createX25519KeyShare(NamedGroup group, BigInteger privateKey) {
+    public static byte[] createMontgomeryKeyShare(NamedGroup group, BigInteger privateKey) {
         if (!group.isCurve() || group.isStandardCurve()) {
             throw new IllegalArgumentException(
                     "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
-        byte[] privateKeyBytes;
-        if (privateKey.toByteArray().length != 32) {
-            LOGGER.warn("ECDH_25519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
-            privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 32);
+        if (group == NamedGroup.ECDH_X25519) {
+            byte[] privateKeyBytes;
+            if (privateKey.toByteArray().length != 32) {
+                LOGGER.warn("ECDH_25519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
+                privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 32);
+            } else {
+                privateKeyBytes = privateKey.toByteArray();
+            }
+            LOGGER.debug("Clamping private key");
+            Curve25519.clamp(privateKeyBytes);
+            byte[] publicKey = new byte[32];
+            Curve25519.keygen(publicKey, null, privateKeyBytes);
+            return publicKey;
         } else {
-            privateKeyBytes = privateKey.toByteArray();
+            byte[] privateKeyBytes;
+            if (privateKey.toByteArray().length != 56) {
+                LOGGER.warn("ECDH_X448 private Key is not 56 byte - using as much as possible and padding the rest with Zeros.");
+                privateKeyBytes = Arrays.copyOf(privateKey.toByteArray(), 56);
+            } else {
+                privateKeyBytes = privateKey.toByteArray();
+            }
+            LOGGER.debug("Creating publicKey");
+            byte[] publicKey = new byte[56];
+            X448.scalarMultBase(privateKeyBytes, 0, publicKey, 0);
+            return publicKey;
         }
-        LOGGER.debug("Clamping private key");
-        Curve25519.clamp(privateKeyBytes);
-        byte[] publicKey = new byte[32];
-        Curve25519.keygen(publicKey, null, privateKeyBytes);
-        return publicKey;
     }
 
     protected static ECDomainParameters generateEcParameters(NamedGroup group) {
@@ -95,7 +110,11 @@ public class KeyShareCalculator {
                 Curve25519.curve(sharedSecret, privateKey, publicKey);
                 return sharedSecret;
             case ECDH_X448:
-                throw new UnsupportedOperationException("x448 not supported yet");
+                privateKey = keyShare.getPrivateKey().toByteArray();
+                publicKey = keyShare.getPublicKey().getValue();
+                sharedSecret = new byte[56];
+                X448.scalarMult(privateKey, 0, publicKey, 0, sharedSecret, 0);
+                return sharedSecret;
             case SECP160K1:
             case SECP160R1:
             case SECP160R2:

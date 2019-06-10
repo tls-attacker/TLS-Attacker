@@ -57,7 +57,7 @@ public class KeyShareCalculatorTest {
                 if (group.isStandardCurve()) {
                     KeyShareCalculator.createClassicEcPublicKey(group, bigInt);
                 } else {
-                    KeyShareCalculator.createX25519KeyShare(group, bigInt);
+                    KeyShareCalculator.createMontgomeryKeyShare(group, bigInt);
                 }
                 // Note this test has to be extended once we support more groups
             }

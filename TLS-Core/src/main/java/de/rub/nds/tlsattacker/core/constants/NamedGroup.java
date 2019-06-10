@@ -254,6 +254,7 @@ public enum NamedGroup {
         list.add(SECT571K1);
         list.add(SECT571R1);
         list.add(ECDH_X25519);
+        list.add(ECDH_X448);
         return list;
     }
 

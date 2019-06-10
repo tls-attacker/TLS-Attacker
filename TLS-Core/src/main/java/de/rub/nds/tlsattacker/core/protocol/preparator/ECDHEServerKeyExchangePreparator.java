@@ -13,22 +13,24 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.math.ec.rfc7748.X25519;
+import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage> extends
         ServerKeyExchangePreparator<T> {
@@ -82,28 +84,35 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             LOGGER.warn("Could not deserialize group from computations. Using default point format instead");
             pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         }
+
         // Compute publicKey
-        if (namedGroup.isCurve()) {
+        byte[] publicKeyBytes = null;
+        if (namedGroup == NamedGroup.ECDH_X25519) {
+            byte[] privateKeyBytes = msg.getComputations().getPrivateKey().getValue().toByteArray();
+            if (privateKeyBytes.length != 32) {
+                LOGGER.warn("ECDH_25519 private Key is not 32 byte - using as much as possible and padding the rest with Zeros.");
+                privateKeyBytes = Arrays.copyOf(privateKeyBytes, 32);
+            }
+            publicKeyBytes = new byte[32];
+            X25519.precompute();
+            X25519.scalarMultBase(msg.getComputations().getPrivateKey().getValue().toByteArray(), 0, publicKeyBytes, 0);
+        } else if (namedGroup == NamedGroup.ECDH_X448) {
+            byte[] privateKeyBytes = new byte[56];
+            
+            if (privateKeyBytes.length != 56) {
+                LOGGER.warn("ECDH_448 private Key is not 56 byte - using as much as possible and padding the rest with Zeros.");
+                privateKeyBytes = Arrays.copyOf(msg.getComputations().getPrivateKey().getValue().toByteArray(), 56);
+            }
+            publicKeyBytes = new byte[56];
+            X448.precompute();
+            X448.scalarMultBase(msg.getComputations().getPrivateKey().getValue().toByteArray(), 0, publicKeyBytes, 0);
+        } else if (namedGroup.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(namedGroup);
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            if (pointFormat == ECPointFormat.UNCOMPRESSED) {
-                stream.write(0x04);
-                try {
-                    int elementLenght = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
-                            elementLenght));
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getY().getData(),
-                            elementLenght));
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not serialize ec point", ex);
-                }
-            } else {
-                LOGGER.error("Unsupported Point Format - sending empty pk");
-            }
-            msg.setPublicKey(stream.toByteArray());
-            msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
+            publicKeyBytes = PointFormatter.formatToByteArray(publicKey, pointFormat);
         }
+        msg.setPublicKey(publicKeyBytes);
+        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         prepareClientServerRandom(msg);
     }
 
@@ -204,21 +213,6 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
-    }
-
-    protected void prepareSerializedPublicKey(T msg, ECPoint pubKey) {
-        ECPointFormat format;
-        format = ECPointFormat.getECPointFormat(msg.getComputations().getEcPointFormat().getValue());
-        if (format == null) {
-            LOGGER.warn("Could not transform ECPointFormat back to a valid ecPointFormat from Modification");
-        }
-        try {
-            byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(new ECPointFormat[] { format }, pubKey);
-            msg.setPublicKey(serializedPubKey);
-        } catch (IOException ex) {
-            throw new PreparationException("Could not serialize EC public key", ex);
-        }
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
