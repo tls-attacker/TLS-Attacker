@@ -105,8 +105,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             } else {
                 publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
             }
-            LOGGER.debug("PublicKey used:" + publicKey.toString());
-            LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
             premasterSecret = computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
         }
         preparePremasterSecret(msg);

@@ -56,7 +56,10 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
 
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
         NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
-        tlsContext.setSelectedGroup(group);
+        if (group != null) {
+            LOGGER.debug("Adjusting selected named group: " + group.name());
+            tlsContext.setSelectedGroup(group);
+        }
         if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
             LOGGER.debug("Adjusting Montgomery EC Point");
             CustomECPoint publicKey = new CustomECPoint(new BigInteger(message.getPublicKey().getValue()), null);

@@ -61,19 +61,15 @@ public class PointFormatter {
                     throw new UnparseablePointException("Could not parse point. Point needs to be "
                             + (elementLenght * 2 + 1) + " bytes long, but was " + compressedPoint.length + "bytes long");
                 }
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
                 byte[] xCoordinate = new byte[elementLenght];
                 byte[] yCoordinate = new byte[elementLenght];
-                {
-                    try {
-                        inputStream.read(xCoordinate);
-                        inputStream.read(yCoordinate);
-                    } catch (IOException ex) {
-                        Logger.getLogger(PointFormatter.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                try {
+                    inputStream.read(xCoordinate);
+                    inputStream.read(yCoordinate);
+                } catch (IOException ex) {
+                    Logger.getLogger(PointFormatter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                return curve.getPoint(new BigInteger(xCoordinate), new BigInteger(yCoordinate));
+                return curve.getPoint(new BigInteger(1, xCoordinate), new BigInteger(1, yCoordinate));
 
             default:
                 throw new UnsupportedOperationException("Unnsupported PointFormat: " + pointFormat);
