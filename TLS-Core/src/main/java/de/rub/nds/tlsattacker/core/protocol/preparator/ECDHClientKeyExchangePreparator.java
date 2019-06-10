@@ -10,28 +10,18 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.math.ec.rfc7748.X25519;
-import org.bouncycastle.math.ec.rfc7748.X448;
 
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
         ClientKeyExchangePreparator<T> {
@@ -54,17 +44,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setSerializedPublicKey();
         prepareSerializedPublicKeyLength(msg);
         prepareAfterParse(true);
-    }
-
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
-        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedGroup.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { namedGroup },
-                    new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
     }
 
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
@@ -123,8 +102,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             if (clientMode) {
                 publicKey = curve
                         .getPoint(chooser.getServerEcPublicKey().getX(), chooser.getServerEcPublicKey().getY());
-                msg.getComputations().setPublicKeyX(publicKey.getX().getData());
-                msg.getComputations().setPublicKeyY(publicKey.getY().getData());
             } else {
                 publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
             }
@@ -142,15 +119,15 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         LOGGER.debug("EC Point format: " + pointFormat.name());
         setComputationPrivateKey(msg, true);
         byte[] publicKeyBytes;
-        byte[] privateKeyBytes = msg.getComputations().getPrivateKey().getValue().toByteArray();
+        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
 
         if (usedGroup == NamedGroup.ECDH_X25519) {
-            publicKeyBytes = ForgivingX25519Curve.computePublicKey(privateKeyBytes);
+            publicKeyBytes = ForgivingX25519Curve.computePublicKey(privateKey);
         } else if (usedGroup == NamedGroup.ECDH_X448) {
-            publicKeyBytes = ForgivingX448Curve.computePublicKey(privateKeyBytes);
+            publicKeyBytes = ForgivingX448Curve.computePublicKey(privateKey);
         } else {
             EllipticCurve curve = CurveFactory.getCurve(usedGroup);
-            Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+            Point publicKey = curve.mult(privateKey, curve.getBasePoint());
             msg.getComputations().setPublicKeyX(publicKey.getX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getY().getData());
             publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
