@@ -9,17 +9,14 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.ForgivingX448Curve;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,30 +27,14 @@ public class KeyShareCalculator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static CustomECPoint createClassicEcPublicKey(NamedGroup group, BigInteger privateKey) {
+    public static Point createPublicKey(NamedGroup group, BigInteger privateKey) {
         if (!group.isStandardCurve()) {
             throw new IllegalArgumentException(
                     "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
-        ECDomainParameters ecDomainParameters = generateEcParameters(group);
-        ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint = ecPoint.normalize();
-        if (ecPoint.isInfinity()) {
-            // TODO ???
-            return new CustomECPoint(BigInteger.ZERO, BigInteger.ZERO);
-        }
-        return new CustomECPoint(ecPoint.getRawXCoord().toBigInteger(), ecPoint.getRawYCoord().toBigInteger());
-    }
-
-    public static ECPoint createClassicEcPoint(NamedGroup group, BigInteger privateKey) {
-        if (!group.isStandardCurve()) {
-            throw new IllegalArgumentException(
-                    "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
-        }
-        ECDomainParameters ecDomainParameters = generateEcParameters(group);
-        ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint = ecPoint.normalize();
-        return ecPoint;
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        Point point = curve.mult(privateKey, curve.getBasePoint());
+        return point;
     }
 
     public static byte[] createMontgomeryKeyShare(NamedGroup group, BigInteger privateKey) {
@@ -67,16 +48,6 @@ public class KeyShareCalculator {
             return ForgivingX448Curve.computePublicKey(privateKey);
         } else {
             throw new UnsupportedOperationException("Unknown MontgomeryGroup: " + group.name());
-        }
-    }
-
-    protected static ECDomainParameters generateEcParameters(NamedGroup group) {
-        InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, group.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(group, ECPointFormat.UNCOMPRESSED, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
     }
 
@@ -115,10 +86,12 @@ public class KeyShareCalculator {
             case SECT409R1:
             case SECT571K1:
             case SECT571R1:
-                ECDomainParameters generateEcParameters = generateEcParameters(keyShare.getGroupConfig());
-                ECPoint publicKeyPoint = generateEcParameters.getG().multiply(keyShare.getPrivateKey());
-                publicKeyPoint.normalize();
-                return publicKeyPoint.getEncoded(false);
+                EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroupConfig());
+                Point publicKeyPoint = PointFormatter.formatFromByteArray(keyShare.getGroupConfig(), keyShare
+                        .getPublicKey().getValue());
+                Point sharedPoint = curve.mult(keyShare.getPrivateKey(), publicKeyPoint);
+                int elementLenght = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroupConfig()
                         + " is unsupported");

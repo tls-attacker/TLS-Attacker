@@ -55,7 +55,7 @@ public class KeyShareCalculatorTest {
         for (BigInteger bigInt : somePrivateKeyList) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isStandardCurve()) {
-                    KeyShareCalculator.createClassicEcPublicKey(group, bigInt);
+                    KeyShareCalculator.createPublicKey(group, bigInt);
                 } else {
                     KeyShareCalculator.createMontgomeryKeyShare(group, bigInt);
                 }
