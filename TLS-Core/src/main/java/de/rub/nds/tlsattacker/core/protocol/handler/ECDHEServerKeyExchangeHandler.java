@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -62,14 +61,12 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
         }
         if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
             LOGGER.debug("Adjusting Montgomery EC Point");
-            CustomECPoint publicKey = new CustomECPoint(new BigInteger(message.getPublicKey().getValue()), null);
+            Point publicKey = Point.createPoint(new BigInteger(message.getPublicKey().getValue()), null, group);
             tlsContext.setServerEcPublicKey(publicKey);
         } else if (group != null) {
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
-            CustomECPoint publicKey = new CustomECPoint(publicKeyPoint.getX().getData(), publicKeyPoint.getY()
-                    .getData());
-            tlsContext.setServerEcPublicKey(publicKey);
+            tlsContext.setServerEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");
         }

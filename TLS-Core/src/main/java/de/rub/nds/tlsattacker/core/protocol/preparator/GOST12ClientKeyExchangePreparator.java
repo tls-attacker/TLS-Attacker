@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -18,6 +19,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
+import org.bouncycastle.jce.interfaces.ECPublicKey;
 
 public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePreparator {
 
@@ -57,7 +59,13 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     }
 
     @Override
-    protected PublicKey generatePublicKey(CustomECPoint point) {
+    protected PublicKey generatePublicKey(Point point) {
         return GOSTUtils.generate12PublicKey(getServerCurve(), point);
+    }
+
+    @Override
+    protected Point toCustomECPoint(ECPublicKey key) {
+        return Point.createPoint(key.getQ().getRawXCoord().toBigInteger(), key.getQ().getRawYCoord().toBigInteger(),
+                NamedGroup.GOST3410_2012);
     }
 }

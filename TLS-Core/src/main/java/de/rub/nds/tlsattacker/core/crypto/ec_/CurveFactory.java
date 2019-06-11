@@ -14,7 +14,7 @@ public class CurveFactory {
 
     /**
      * Returns a named elliptic curve.
-     * 
+     *
      * @param name
      *            The name of the curve, that should be returned.
      */
@@ -77,6 +77,8 @@ public class CurveFactory {
                 return new EllipticCurveSECT571K1();
             case SECT571R1:
                 return new EllipticCurveSECT571R1();
+            case GOST3410:
+            case GOST3410_2012:
             default:
                 throw new UnsupportedOperationException("The provided curve '" + name + "' is not supported.");
 

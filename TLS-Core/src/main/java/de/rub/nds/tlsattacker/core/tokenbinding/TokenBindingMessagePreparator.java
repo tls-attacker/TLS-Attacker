@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
@@ -77,8 +76,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             dig.update(generateToBeSigned());
             BigInteger[] signature = signer.generateSignature(dig.digest());
 
-            message.setSignature(ArrayConverter.concatenate(CustomECPoint.toUnsignedByteArray(signature[0]),
-                    CustomECPoint.toUnsignedByteArray(signature[1])));
+            message.setSignature(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(signature[0]),
+                    ArrayConverter.bigIntegerToByteArray(signature[1])));
         } else {
             message.setModulus(chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
             message.setModulusLength(message.getModulus().getValue().length);

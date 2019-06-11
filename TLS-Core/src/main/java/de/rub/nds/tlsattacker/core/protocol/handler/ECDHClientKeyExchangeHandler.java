@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -58,11 +57,11 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             LOGGER.debug("Adjusting Montgomery EC PublicKey");
-            tlsContext.setClientEcPublicKey(new CustomECPoint(new BigInteger(serializedPoint), null));
+            tlsContext.setClientEcPublicKey(Point.createPoint(new BigInteger(serializedPoint), null, usedGroup));
         } else {
             LOGGER.debug("Adjusting EC Point");
             Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
-            tlsContext.setClientEcPublicKey(new CustomECPoint(publicKey.getX().getData(), publicKey.getY().getData()));
+            tlsContext.setClientEcPublicKey(publicKey);
         }
     }
 }

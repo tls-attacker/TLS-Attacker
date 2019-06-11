@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
@@ -20,7 +21,7 @@ import java.math.BigInteger;
  * All arithmetic operations are performed within the laws of the specified
  * field.
  */
-public abstract class FieldElement {
+public abstract class FieldElement implements Serializable {
     /*
      * FieldElement objects are immutable. This should make deep copies in the
      * methods of the EllipticCurve class unnecessary.

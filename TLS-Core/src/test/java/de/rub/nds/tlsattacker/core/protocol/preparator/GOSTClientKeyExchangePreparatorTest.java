@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
@@ -53,13 +54,16 @@ public class GOSTClientKeyExchangePreparatorTest {
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         tlsContext.setServerGost12Curve(curve);
         tlsContext
-                .setClientEcPublicKey(new CustomECPoint(
-                        new BigInteger(
-                                "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
-                        new BigInteger(
-                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410")));
+                .setClientEcPublicKey(Point
+                        .createPoint(
+                                new BigInteger(
+                                        "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
+                                new BigInteger(
+                                        "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
+                                NamedGroup.GOST3410_2012));
         ECPoint q = publicKey.getQ();
-        CustomECPoint ecPoint = new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
+        Point ecPoint = Point.createPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(),
+                NamedGroup.GOST3410_2012);
 
         tlsContext.setServerEcPublicKey(ecPoint);
 

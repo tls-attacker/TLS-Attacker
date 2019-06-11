@@ -22,7 +22,7 @@ public class ForgivingX25519Curve {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final int ELEMENT_SIZE = 32;
+    public static final int ELEMENT_SIZE = 32;
 
     /**
      * Private constructor to prevent instantiation

@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
@@ -188,9 +188,9 @@ public abstract class Chooser {
 
     public abstract NamedGroup getEcCertificateCurve();
 
-    public abstract CustomECPoint getClientEcPublicKey();
+    public abstract Point getClientEcPublicKey();
 
-    public abstract CustomECPoint getServerEcPublicKey();
+    public abstract Point getServerEcPublicKey();
 
     public abstract EllipticCurveType getEcCurveType();
 

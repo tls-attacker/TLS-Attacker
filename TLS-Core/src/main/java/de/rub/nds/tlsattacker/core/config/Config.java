@@ -40,7 +40,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
@@ -729,11 +729,9 @@ public class Config implements Serializable {
 
     private BigInteger defaultServerGost01PrivateKey = defaultClientGost01PrivateKey;
 
-    private CustomECPoint defaultClientGost01PublicKey = new CustomECPoint(new BigInteger(
-            "22747378382093562937677152450590993403550984164767919046558575083163178129198"), new BigInteger(
-            "45951448325373922676609101796150321769091242179379405625463804456279006527922"));
+    private Point defaultClientGost01PublicKey;
 
-    private CustomECPoint defaultServerGost01PublicKey = defaultClientGost01PublicKey;
+    private Point defaultServerGost01PublicKey;
 
     private GOSTCurve defaultGost01Curve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
@@ -742,13 +740,9 @@ public class Config implements Serializable {
 
     private BigInteger defaultServerGost12PrivateKey = defaultClientGost12PrivateKey;
 
-    private CustomECPoint defaultClientGost12PublicKey = new CustomECPoint(
-            new BigInteger(
-                    "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
-            new BigInteger(
-                    "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"));
+    private Point defaultClientGost12PublicKey;
 
-    private CustomECPoint defaultServerGost12PublicKey = defaultClientGost12PublicKey;
+    private Point defaultServerGost12PublicKey;
 
     private GOSTCurve defaultGost12Curve = GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
 
@@ -914,9 +908,9 @@ public class Config implements Serializable {
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
-    private CustomECPoint defaultClientEcPublicKey;
+    private Point defaultClientEcPublicKey;
 
-    private CustomECPoint defaultServerEcPublicKey;
+    private Point defaultServerEcPublicKey;
 
     private BigInteger defaultServerEcPrivateKey = new BigInteger(
             "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
@@ -1013,7 +1007,7 @@ public class Config implements Serializable {
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
-    private CustomECPoint defaultTokenBindingECPublicKey = null;
+    private Point defaultTokenBindingECPublicKey = null;
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
@@ -1076,6 +1070,20 @@ public class Config implements Serializable {
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     Config() {
+
+        this.defaultClientGost12PublicKey = Point
+                .createPoint(
+                        new BigInteger(
+                                "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
+                        new BigInteger(
+                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
+                        NamedGroup.SECP256R1);
+        this.defaultServerGost12PublicKey = defaultClientGost12PublicKey;
+
+        this.defaultServerGost01PublicKey = defaultClientGost01PublicKey;
+        this.defaultClientGost01PublicKey = Point.createPoint(new BigInteger(
+                "22747378382093562937677152450590993403550984164767919046558575083163178129198"), new BigInteger(
+                "45951448325373922676609101796150321769091242179379405625463804456279006527922"), NamedGroup.SECP256R1);
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -1106,12 +1114,14 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = new CustomECPoint(new BigInteger(
+        defaultClientEcPublicKey = Point.createPoint(new BigInteger(
                 "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
-        defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
+                "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
+                defaultSelectedNamedGroup);
+        defaultServerEcPublicKey = Point.createPoint(new BigInteger(
                 "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
+                "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
+                defaultSelectedNamedGroup);
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
@@ -1293,11 +1303,11 @@ public class Config implements Serializable {
         this.earlyStop = earlyStop;
     }
 
-    public CustomECPoint getDefaultTokenBindingECPublicKey() {
+    public Point getDefaultTokenBindingECPublicKey() {
         return defaultTokenBindingECPublicKey;
     }
 
-    public void setDefaultTokenBindingECPublicKey(CustomECPoint defaultTokenBindingECPublicKey) {
+    public void setDefaultTokenBindingECPublicKey(Point defaultTokenBindingECPublicKey) {
         this.defaultTokenBindingECPublicKey = defaultTokenBindingECPublicKey;
     }
 
@@ -1345,7 +1355,7 @@ public class Config implements Serializable {
         this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
     }
 
-    public void setDefaultServerGost01PublicKey(CustomECPoint defaultServerGost01PublicKey) {
+    public void setDefaultServerGost01PublicKey(Point defaultServerGost01PublicKey) {
         this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
     }
 
@@ -1353,7 +1363,7 @@ public class Config implements Serializable {
         this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
     }
 
-    public void setDefaultServerGost12PublicKey(CustomECPoint defaultServerGost12PublicKey) {
+    public void setDefaultServerGost12PublicKey(Point defaultServerGost12PublicKey) {
         this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
     }
 
@@ -1594,19 +1604,19 @@ public class Config implements Serializable {
         this.defaultClientEcPrivateKey = defaultClientEcPrivateKey;
     }
 
-    public CustomECPoint getDefaultClientEcPublicKey() {
+    public Point getDefaultClientEcPublicKey() {
         return defaultClientEcPublicKey;
     }
 
-    public void setDefaultClientEcPublicKey(CustomECPoint defaultClientEcPublicKey) {
+    public void setDefaultClientEcPublicKey(Point defaultClientEcPublicKey) {
         this.defaultClientEcPublicKey = defaultClientEcPublicKey;
     }
 
-    public CustomECPoint getDefaultServerEcPublicKey() {
+    public Point getDefaultServerEcPublicKey() {
         return defaultServerEcPublicKey;
     }
 
-    public void setDefaultServerEcPublicKey(CustomECPoint defaultServerEcPublicKey) {
+    public void setDefaultServerEcPublicKey(Point defaultServerEcPublicKey) {
         this.defaultServerEcPublicKey = defaultServerEcPublicKey;
     }
 
@@ -1654,7 +1664,7 @@ public class Config implements Serializable {
         return defaultClientGost01PrivateKey;
     }
 
-    public CustomECPoint getDefaultClientGost01PublicKey() {
+    public Point getDefaultClientGost01PublicKey() {
         return defaultClientGost01PublicKey;
     }
 
@@ -1662,7 +1672,7 @@ public class Config implements Serializable {
         return defaultServerGost01PrivateKey;
     }
 
-    public CustomECPoint getDefaultServerGost01PublicKey() {
+    public Point getDefaultServerGost01PublicKey() {
         return defaultServerGost01PublicKey;
     }
 
@@ -1674,7 +1684,7 @@ public class Config implements Serializable {
         this.defaultClientGost01PrivateKey = defaultClientGost01PrivateKey;
     }
 
-    public void setDefaultClientGost01PublicKey(CustomECPoint defaultClientGost01PublicKey) {
+    public void setDefaultClientGost01PublicKey(Point defaultClientGost01PublicKey) {
         this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
     }
 
@@ -1686,7 +1696,7 @@ public class Config implements Serializable {
         this.defaultClientGost12PrivateKey = defaultClientGost12PrivateKey;
     }
 
-    public void setDefaultClientGost12PublicKey(CustomECPoint defaultClientGost12PublicKey) {
+    public void setDefaultClientGost12PublicKey(Point defaultClientGost12PublicKey) {
         this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
     }
 
@@ -1698,7 +1708,7 @@ public class Config implements Serializable {
         return defaultClientGost12PrivateKey;
     }
 
-    public CustomECPoint getDefaultClientGostEc12PublicKey() {
+    public Point getDefaultClientGostEc12PublicKey() {
         return defaultClientGost12PublicKey;
     }
 
@@ -1706,7 +1716,7 @@ public class Config implements Serializable {
         return defaultServerGost12PrivateKey;
     }
 
-    public CustomECPoint getDefaultServerGost12EcPublicKey() {
+    public Point getDefaultServerGost12EcPublicKey() {
         return defaultServerGost12PublicKey;
     }
 

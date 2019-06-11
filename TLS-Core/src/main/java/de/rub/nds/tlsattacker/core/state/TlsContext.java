@@ -35,7 +35,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -359,9 +359,9 @@ public class TlsContext {
 
     private NamedGroup ecCertificateCurve;
 
-    private CustomECPoint clientEcPublicKey;
+    private Point clientEcPublicKey;
 
-    private CustomECPoint serverEcPublicKey;
+    private Point serverEcPublicKey;
 
     private BigInteger serverEcPrivateKey;
 
@@ -423,25 +423,25 @@ public class TlsContext {
 
     private GOSTCurve serverGost01Curve;
 
-    private CustomECPoint serverGostEc01PublicKey;
+    private Point serverGostEc01PublicKey;
 
     private BigInteger serverGostEc01PrivateKey;
 
     private GOSTCurve clientGost01Curve;
 
-    private CustomECPoint clientGostEc01PublicKey;
+    private Point clientGostEc01PublicKey;
 
     private BigInteger clientGostEc01PrivateKey;
 
     private GOSTCurve serverGost12Curve;
 
-    private CustomECPoint serverGostEc12PublicKey;
+    private Point serverGostEc12PublicKey;
 
     private BigInteger serverGostEc12PrivateKey;
 
     private GOSTCurve clientGost12Curve;
 
-    private CustomECPoint clientGostEc12PublicKey;
+    private Point clientGostEc12PublicKey;
 
     private BigInteger clientGostEc12PrivateKey;
 
@@ -834,19 +834,19 @@ public class TlsContext {
         this.selectedGroup = selectedCurve;
     }
 
-    public CustomECPoint getClientEcPublicKey() {
+    public Point getClientEcPublicKey() {
         return clientEcPublicKey;
     }
 
-    public void setClientEcPublicKey(CustomECPoint clientEcPublicKey) {
+    public void setClientEcPublicKey(Point clientEcPublicKey) {
         this.clientEcPublicKey = clientEcPublicKey;
     }
 
-    public CustomECPoint getServerEcPublicKey() {
+    public Point getServerEcPublicKey() {
         return serverEcPublicKey;
     }
 
-    public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
+    public void setServerEcPublicKey(Point serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
     }
 
@@ -1034,11 +1034,11 @@ public class TlsContext {
         this.serverGost01Curve = serverGost01Curve;
     }
 
-    public CustomECPoint getServerGostEc01PublicKey() {
+    public Point getServerGostEc01PublicKey() {
         return serverGostEc01PublicKey;
     }
 
-    public void setServerGostEc01PublicKey(CustomECPoint serverGostEc01PublicKey) {
+    public void setServerGostEc01PublicKey(Point serverGostEc01PublicKey) {
         this.serverGostEc01PublicKey = serverGostEc01PublicKey;
     }
 
@@ -1058,11 +1058,11 @@ public class TlsContext {
         this.clientGost01Curve = clientGost01Curve;
     }
 
-    public CustomECPoint getClientGostEc01PublicKey() {
+    public Point getClientGostEc01PublicKey() {
         return clientGostEc01PublicKey;
     }
 
-    public void setClientGostEc01PublicKey(CustomECPoint clientGostEc01PublicKey) {
+    public void setClientGostEc01PublicKey(Point clientGostEc01PublicKey) {
         this.clientGostEc01PublicKey = clientGostEc01PublicKey;
     }
 

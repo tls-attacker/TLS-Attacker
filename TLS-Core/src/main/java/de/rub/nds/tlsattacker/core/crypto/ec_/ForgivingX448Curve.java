@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.crypto.ec_;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
 import org.bouncycastle.util.Arrays;
 
@@ -23,7 +22,7 @@ public class ForgivingX448Curve {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final int ELEMENT_SIZE = 56;
+    public static final int ELEMENT_SIZE = 56;
 
     /**
      * Private constructor to prevent instantiation

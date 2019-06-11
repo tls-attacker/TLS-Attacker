@@ -83,7 +83,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (usedGroup == NamedGroup.ECDH_X25519) {
             if (clientMode) {
                 premasterSecret = ForgivingX25519Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), chooser.getServerEcPublicKey().getByteX());
+                        .getValue(), ArrayConverter.bigIntegerToNullPaddedByteArray(chooser.getServerEcPublicKey()
+                        .getX().getData(), ForgivingX25519Curve.ELEMENT_SIZE));
             } else {
                 premasterSecret = ForgivingX25519Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
                         .getValue(), msg.getPublicKey().getValue());
@@ -91,7 +92,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         } else if (usedGroup == NamedGroup.ECDH_X448) {
             if (clientMode) {
                 premasterSecret = ForgivingX448Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), chooser.getServerEcPublicKey().getByteX());
+                        .getValue(), ArrayConverter.bigIntegerToNullPaddedByteArray(chooser.getServerEcPublicKey()
+                        .getX().getData(), ForgivingX448Curve.ELEMENT_SIZE));
             } else {
                 premasterSecret = ForgivingX448Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
                         .getValue(), msg.getPublicKey().getValue());
@@ -100,8 +102,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             EllipticCurve curve = CurveFactory.getCurve(usedGroup);
             Point publicKey;
             if (clientMode) {
-                publicKey = curve
-                        .getPoint(chooser.getServerEcPublicKey().getX(), chooser.getServerEcPublicKey().getY());
+                publicKey = chooser.getServerEcPublicKey();
             } else {
                 publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
             }

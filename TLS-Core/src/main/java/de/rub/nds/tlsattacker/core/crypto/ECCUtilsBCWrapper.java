@@ -61,7 +61,6 @@ public class ECCUtilsBCWrapper {
         return readECParameters(namedCurves, poinFormats, input);
     }
 
-
     /**
      * Converts named curves into BC style notation
      *

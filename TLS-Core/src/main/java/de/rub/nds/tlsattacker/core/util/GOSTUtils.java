@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -58,20 +58,20 @@ public class GOSTUtils {
         }
     }
 
-    public static BCECGOST3410PublicKey generate01PublicKey(GOSTCurve curve, CustomECPoint point) {
+    public static BCECGOST3410PublicKey generate01PublicKey(GOSTCurve curve, Point point) {
         LOGGER.debug("Generating GOST01 public key for " + curve.name());
         return (BCECGOST3410PublicKey) generateEcPublicKey(curve, point, "ECGOST3410");
     }
 
-    public static BCECGOST3410_2012PublicKey generate12PublicKey(GOSTCurve curve, CustomECPoint point) {
+    public static BCECGOST3410_2012PublicKey generate12PublicKey(GOSTCurve curve, Point point) {
         LOGGER.debug("Generating GOST12 public key for " + curve.name());
         return (BCECGOST3410_2012PublicKey) generateEcPublicKey(curve, point, "ECGOST3410-2012");
     }
 
-    private static PublicKey generateEcPublicKey(GOSTCurve curve, CustomECPoint point, String keyFactoryAlg) {
+    private static PublicKey generateEcPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
-            ECPoint ecPoint = new ECPoint(point.getX(), point.getY());
+            ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
             return KeyFactory.getInstance(keyFactoryAlg).generatePublic(privateKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

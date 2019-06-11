@@ -51,34 +51,16 @@ public enum NamedGroup {
     SECP256R1(new byte[] { (byte) 0, (byte) 23 }, "secp256r1", 256),
     SECP384R1(new byte[] { (byte) 0, (byte) 24 }, "secp384r1", 384),
     SECP521R1(new byte[] { (byte) 0, (byte) 25 }, "secp521r1", 521),
-    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256), // incorrect
-    // java
-    // name
-    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1", 384), // incorrect
-    // java
-    // name
-    BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1", 512), // incorrect
-    // java
-    // name
-    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256), // incorrect
-    // java name
-    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448", 448), // incorrect
-    // java name
-    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048), // incorrect
-                                                                     // java
-    // name
-    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072), // incorrect
-                                                                     // java
-    // name
-    FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096), // incorrect
-                                                                     // java
-    // name
-    FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144), // incorrect
-                                                                     // java
-    // name
-    FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192), // incorrect
-                                                                     // java
-    // name
+    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256),
+    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1", 384),
+    BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1", 512),
+    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256),
+    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448", 448),
+    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048),
+    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072),
+    FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096),
+    FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
+    FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),

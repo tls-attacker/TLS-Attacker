@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
@@ -103,7 +103,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                         generatePublicKey(chooser.getServerEcPublicKey()));
                 prepareEncryptionParams();
                 prepareCek();
-                prepareKeyBlob();
+                prepareKeyBlob(chooser.getSelectedNamedGroup());
             } else {
                 TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob()
                         .getValue());
@@ -241,9 +241,10 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         msg.getComputations().setEncryptionParamSet(getEncryptionParameters());
     }
 
-    private void prepareKeyBlob() throws IOException {
+    private void prepareKeyBlob(NamedGroup group) throws IOException {
         SubjectPublicKeyInfo ephemeralKey = null;
-        CustomECPoint ecPoint = msg.getComputations().getClientPublicKey();
+        Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg.getComputations()
+                .getClientPublicKeyY().getValue(), group);
         if (ecPoint != null) {
             ephemeralKey = SubjectPublicKeyInfo.getInstance(generatePublicKey(ecPoint).getEncoded());
         }
@@ -278,10 +279,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         }
     }
 
-    private CustomECPoint toCustomECPoint(ECPublicKey key) {
-        ECPoint q = key.getQ();
-        return new CustomECPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger());
-    }
+    protected abstract Point toCustomECPoint(ECPublicKey key);
 
     protected abstract GOSTCurve getServerCurve();
 
@@ -295,5 +293,5 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     protected abstract PrivateKey generatePrivateKey(BigInteger s);
 
-    protected abstract PublicKey generatePublicKey(CustomECPoint point);
+    protected abstract PublicKey generatePublicKey(Point point);
 }

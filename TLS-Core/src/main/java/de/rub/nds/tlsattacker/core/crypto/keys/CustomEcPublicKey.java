@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
@@ -32,22 +33,23 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger x;
-
-    private final BigInteger y;
+    private final Point point;
 
     private final NamedGroup group;
 
     private CustomEcPublicKey() {
-        x = null;
-        y = null;
-        group = null;
+        this.point = null;
+        this.group = null;
+    }
+
+    private CustomEcPublicKey(Point point, NamedGroup group) {
+        this.point = point;
+        this.group = group;
     }
 
     public CustomEcPublicKey(BigInteger x, BigInteger y, NamedGroup group) {
-        this.x = x;
-        this.y = y;
         this.group = group;
+        point = CurveFactory.getCurve(group).getPoint(x, y);
     }
 
     @Override
@@ -58,11 +60,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientEcPublicKey(new CustomECPoint(x, y));
+                    context.setClientEcPublicKey(point);
                     context.setSelectedGroup(group);
                     break;
                 case SERVER:
-                    context.setServerEcPublicKey(new CustomECPoint(x, y));
+                    context.setServerEcPublicKey(point);
                     context.setSelectedGroup(group);
                     break;
                 default:
@@ -73,7 +75,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public ECPoint getW() {
-        return new ECPoint(x, y);
+        return new ECPoint(point.getX().getData(), point.getY().getData());
     }
 
     @Override
@@ -110,11 +112,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    config.setDefaultClientEcPublicKey(new CustomECPoint(x, y));
+                    config.setDefaultClientEcPublicKey(point);
                     config.setDefaultSelectedNamedGroup(group);
                     break;
                 case SERVER:
-                    config.setDefaultServerEcPublicKey(new CustomECPoint(x, y));
+                    config.setDefaultServerEcPublicKey(point);
                     config.setDefaultSelectedNamedGroup(group);
                     break;
                 default:
@@ -126,9 +128,8 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.x);
-        hash = 47 * hash + Objects.hashCode(this.y);
-        hash = 47 * hash + Objects.hashCode(this.group);
+        hash = 79 * hash + Objects.hashCode(this.point);
+        hash = 79 * hash + Objects.hashCode(this.group);
         return hash;
     }
 
@@ -144,13 +145,12 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             return false;
         }
         final CustomEcPublicKey other = (CustomEcPublicKey) obj;
-        if (!Objects.equals(this.x, other.x)) {
+        if (!Objects.equals(this.point, other.point)) {
             return false;
         }
-        if (!Objects.equals(this.y, other.y)) {
+        if (this.group != other.group) {
             return false;
         }
-        return this.group == other.group;
+        return true;
     }
-
 }

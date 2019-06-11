@@ -8,14 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.io.Serializable;
+import java.math.BigInteger;
+
 /**
  * Can be used to store a point of an elliptic curve.
- * 
+ *
  * Affine points store their x and y coordinates. The projective z-coordinate
  * (equal to 1) will not be stored. The point at infinity [0:1:0] (the only
  * point with z-coordinate 0) does not store any of it's coordinates.
  */
-public class Point {
+public class Point implements Serializable {
+
     /*
      * Point objects are immutable. This should make deep copies in the methods
      * of the EllipticCurve class unnecessary.
@@ -33,11 +38,16 @@ public class Point {
         this.y = null;
     }
 
+    public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
+    }
+
     /**
      * Instantiates an affine point with coordinates x and y. Calling
      * EllipticCurve.getPoint() should always be preferred over using this
      * constructor.
-     * 
+     *
      * @param x
      *            A FieldElement representing the x-coordinate of the point.
      * @param y

@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -39,6 +38,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.util.Random;
 
 public class DefaultChooserTest {
@@ -659,11 +659,14 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientEcPublicKey() {
         context.setClientEcPublicKey(null);
-        config.setDefaultClientEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultClientEcPublicKey());
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getClientEcPublicKey());
-        context.setClientEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getClientEcPublicKey());
+        config.setDefaultClientEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultClientEcPublicKey());
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
+        context.setClientEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
     }
 
     /**
@@ -672,11 +675,14 @@ public class DefaultChooserTest {
     @Test
     public void testGetServerEcPublicKey() {
         context.setServerEcPublicKey(null);
-        config.setDefaultServerEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultServerEcPublicKey());
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getServerEcPublicKey());
-        context.setServerEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getServerEcPublicKey());
+        config.setDefaultServerEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultServerEcPublicKey());
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
+        context.setServerEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
     }
 
     /**
