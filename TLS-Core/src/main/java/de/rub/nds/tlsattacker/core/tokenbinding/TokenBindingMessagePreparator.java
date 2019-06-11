@@ -64,8 +64,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
-            ParametersWithRandom params = new ParametersWithRandom(new ECPrivateKeyParameters(
-                    privateKey, generateEcParameters()), new BadRandom(new Random(0), new byte[0]));
+            ParametersWithRandom params = new ParametersWithRandom(new ECPrivateKeyParameters(privateKey,
+                    generateEcParameters()), new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
             MessageDigest dig = null;
@@ -96,10 +96,10 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedGroup[] groups = new NamedGroup[]{NamedGroup.SECP256R1};
-        ECPointFormat[] formats = new ECPointFormat[]{ECPointFormat.UNCOMPRESSED};
+        NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
+        ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[]{EllipticCurveType.NAMED_CURVE.getValue()}, NamedGroup.SECP256R1.getValue()));
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
@@ -113,8 +113,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     private byte[] generateToBeSigned() {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            stream.write(new byte[]{message.getTokenbindingType().getValue()});
-            stream.write(new byte[]{message.getKeyParameter().getValue()});
+            stream.write(new byte[] { message.getTokenbindingType().getValue() });
+            stream.write(new byte[] { message.getKeyParameter().getValue() });
             stream.write(TokenCalculator.calculateEKM(chooser, 32));
             return stream.toByteArray();
         } catch (IOException | CryptoException ex) {
