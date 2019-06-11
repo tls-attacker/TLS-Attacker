@@ -47,6 +47,18 @@ public class PointFormatter {
         }
     }
 
+    public static byte[] toRawFormat(Point point) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        int elementLenght = ArrayConverter.bigIntegerToByteArray(point.getX().getModulus()).length;
+        try {
+            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLenght));
+            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(), elementLenght));
+        } catch (IOException ex) {
+            throw new PreparationException("Could not serialize ec point", ex);
+        }
+        return stream.toByteArray();
+    }
+
     public static Point formatFromByteArray(NamedGroup group, byte[] compressedPoint) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(compressedPoint);
         EllipticCurve curve = CurveFactory.getCurve(group);
