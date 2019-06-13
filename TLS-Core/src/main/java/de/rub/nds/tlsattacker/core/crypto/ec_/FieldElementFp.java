@@ -9,10 +9,15 @@
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
 import java.math.BigInteger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An element of the field F_p (with p being a prime number).
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FieldElementFp extends FieldElement {
 
     /**
@@ -21,6 +26,10 @@ public class FieldElementFp extends FieldElement {
      */
     public FieldElementFp(BigInteger data, BigInteger modulus) {
         super(data.mod(modulus), modulus);
+    }
+
+    private FieldElementFp() {
+        super(null, null);
     }
 
     @Override

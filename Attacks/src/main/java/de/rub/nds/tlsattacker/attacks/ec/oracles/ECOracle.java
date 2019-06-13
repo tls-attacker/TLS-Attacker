@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +27,12 @@ public abstract class ECOracle {
     /*
      * number of queries issued to oracle
      */
-    long numberOfQueries;
+    protected long numberOfQueries;
 
     /**
      * curve used by the oracle
      */
-    Curve curve;
+    protected EllipticCurve curve;
 
     /**
      * Takes an ec point and a guessed secret and returns true, in case the
@@ -77,7 +77,7 @@ public abstract class ECOracle {
      *
      * @return
      */
-    public Curve getCurve() {
+    public EllipticCurve getCurve() {
         return curve;
     }
 
@@ -85,7 +85,7 @@ public abstract class ECOracle {
      *
      * @param curve
      */
-    public void setCurve(Curve curve) {
+    public void setCurve(EllipticCurve curve) {
         this.curve = curve;
     }
 }

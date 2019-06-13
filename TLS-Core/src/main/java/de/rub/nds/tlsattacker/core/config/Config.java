@@ -40,6 +40,8 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -1114,14 +1116,12 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = Point.createPoint(new BigInteger(
-                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
-                defaultSelectedNamedGroup);
-        defaultServerEcPublicKey = Point.createPoint(new BigInteger(
-                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
-                defaultSelectedNamedGroup);
+        EllipticCurve curve = CurveFactory.getCurve(defaultSelectedNamedGroup);
+        defaultClientEcPublicKey = curve.mult(defaultClientEcPrivateKey, curve.getBasePoint());
+        defaultServerEcPublicKey = curve.mult(defaultServerEcPrivateKey, curve.getBasePoint());
+        EllipticCurve secp256R1Curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
+        defaultTokenBindingECPublicKey = secp256R1Curve.mult(defaultTokenBindingEcPrivateKey,
+                secp256R1Curve.getBasePoint());
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);

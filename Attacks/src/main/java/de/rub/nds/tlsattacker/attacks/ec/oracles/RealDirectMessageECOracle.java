@@ -16,10 +16,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -53,19 +51,14 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private byte[] checkPMS;
 
-    private final ECComputer computer;
-
     /**
      *
      * @param config
      * @param curve
      */
-    public RealDirectMessageECOracle(Config config, Curve curve) {
+    public RealDirectMessageECOracle(Config config, EllipticCurve curve) {
         this.config = config;
         this.curve = curve;
-        this.computer = new ECComputer();
-        this.computer.setCurve(curve);
-
         executeValidWorkflowAndExtractCheckValues();
 
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);

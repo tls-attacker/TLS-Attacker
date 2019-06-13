@@ -98,7 +98,8 @@ public class CertificateUtils {
         } else if (key instanceof ECPublicKey) {
             LOGGER.trace("Found an EC PublicKey");
             ECPublicKey pubKey = (ECPublicKey) key;
-            return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), NamedGroup.NONE);
+            return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(),
+                    NamedGroup.getNamedGroup(pubKey));
         } else {
             throw new UnsupportedOperationException("This public key is not supported:" + key);
         }

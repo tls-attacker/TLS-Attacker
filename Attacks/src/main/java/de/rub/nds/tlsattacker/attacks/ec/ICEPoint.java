@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 
 /**

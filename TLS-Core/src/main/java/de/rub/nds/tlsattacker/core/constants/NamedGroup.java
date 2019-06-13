@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -140,6 +143,26 @@ public enum NamedGroup {
 
     public static NamedGroup getNamedGroup(byte[] value) {
         return MAP.get(valueToInt(value));
+    }
+
+    public static NamedGroup getNamedGroup(ECPublicKey publicKey) {
+        for (NamedGroup group : getImplemented()) {
+            // TODO: X25519 and X448 not supported for classic java curves
+            if (group.isCurve() && group.isStandardCurve()) {
+                try {
+                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
+                    if (publicKey.getParams().getGenerator().getAffineX()
+                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                            && publicKey.getParams().getGenerator().getAffineY()
+                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        return group;
+                    }
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                }
+            }
+        }
+        return null;
     }
 
     public byte[] getValue() {

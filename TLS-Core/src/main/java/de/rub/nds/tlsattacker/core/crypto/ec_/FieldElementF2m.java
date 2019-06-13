@@ -9,6 +9,9 @@
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
 import java.math.BigInteger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An element of a galois field F_{2^m}.<br />
@@ -17,11 +20,13 @@ import java.math.BigInteger;
  * These polynomials are represented by BigInteger bit-strings, where the i-th
  * bit represents the i-th coefficient.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FieldElementF2m extends FieldElement {
 
     /**
      * Instantiates an element of a galois field F{2^m}.
-     * 
+     *
      * @param data
      *            The binary polynomial representing the element.<br />
      *            The degree must be smaller than the reduction polynomial's
@@ -31,6 +36,10 @@ public class FieldElementF2m extends FieldElement {
      */
     public FieldElementF2m(BigInteger data, BigInteger modulus) {
         super(data, modulus);
+    }
+
+    private FieldElementF2m() {
+        super(null, null);
     }
 
     @Override
@@ -108,7 +117,6 @@ public class FieldElementF2m extends FieldElement {
         } while (!r1.equals(BigInteger.ONE));
 
         // t1 * this.getData() == 1
-
         return new FieldElementF2m(t1, this.getModulus());
     }
 
@@ -116,12 +124,12 @@ public class FieldElementF2m extends FieldElement {
      * Polynomial division f/p.<br />
      * Returns an BigInteger array representing the polynomials q and r with: <br />
      * q * p + r = f.
-     * 
+     *
      * @param f
      *            A BigInteger representing a binary polynomial.
      * @param p
      *            A BigInteger representing a binary polynomial.
-     * 
+     *
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
         int modLength = p.bitLength();
@@ -139,14 +147,13 @@ public class FieldElementF2m extends FieldElement {
 
         // q is the quotient.
         // f is the remainder.
-
         BigInteger[] result = { q, f };
         return result;
     }
 
     /**
      * Returns f mod this.getModulus().
-     * 
+     *
      * @param f
      *            A BigInteger representing a binary polynomial.
      */

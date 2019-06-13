@@ -90,7 +90,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
-                if (extensionMessage instanceof HRRKeyShareExtensionMessage) { 
+                if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
                     // TODO fix design flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
