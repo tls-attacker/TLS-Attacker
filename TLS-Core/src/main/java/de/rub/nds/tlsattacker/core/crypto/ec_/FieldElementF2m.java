@@ -129,22 +129,24 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
         int modLength = p.bitLength();
+        if (modLength > 0) {
+            BigInteger q = new BigInteger("0");
 
-        BigInteger q = new BigInteger("0");
+            while (f.bitLength() >= modLength) {
+                BigInteger tmp = new BigInteger("1");
+                tmp = tmp.shiftLeft(f.bitLength() - modLength);
+                q = q.xor(tmp);
 
-        while (f.bitLength() >= modLength) {
-            BigInteger tmp = new BigInteger("1");
-            tmp = tmp.shiftLeft(f.bitLength() - modLength);
-            q = q.xor(tmp);
-
-            BigInteger shift = p.multiply(tmp);
-            f = f.xor(shift);
+                BigInteger shift = p.multiply(tmp);
+                f = f.xor(shift);
+            }
+            // q is the quotient.
+            // f is the remainder.
+            BigInteger[] result = { q, f };
+            return result;
+        } else {
+            throw new RuntimeException("Oppps");
         }
-
-        // q is the quotient.
-        // f is the remainder.
-        BigInteger[] result = { q, f };
-        return result;
     }
 
     /**

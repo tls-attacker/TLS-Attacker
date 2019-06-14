@@ -726,27 +726,7 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("1e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a"));
 
-    private BigInteger defaultClientGost01PrivateKey = new BigInteger(
-            "26785099399492638393392560259033438651994544664321975859026404506460241468938");
-
-    private BigInteger defaultServerGost01PrivateKey = defaultClientGost01PrivateKey;
-
-    private Point defaultClientGost01PublicKey;
-
-    private Point defaultServerGost01PublicKey;
-
-    private GOSTCurve defaultGost01Curve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
-
-    private BigInteger defaultClientGost12PrivateKey = new BigInteger(
-            "12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324");
-
-    private BigInteger defaultServerGost12PrivateKey = defaultClientGost12PrivateKey;
-
-    private Point defaultClientGost12PublicKey;
-
-    private Point defaultServerGost12PublicKey;
-
-    private GOSTCurve defaultGost12Curve = GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
+    private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
     private String defaultApplicationMessageData = "Test";
 
@@ -1072,20 +1052,6 @@ public class Config implements Serializable {
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     Config() {
-
-        this.defaultClientGost12PublicKey = Point
-                .createPoint(
-                        new BigInteger(
-                                "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
-                        new BigInteger(
-                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
-                        NamedGroup.SECP256R1);
-        this.defaultServerGost12PublicKey = defaultClientGost12PublicKey;
-
-        this.defaultServerGost01PublicKey = defaultClientGost01PublicKey;
-        this.defaultClientGost01PublicKey = Point.createPoint(new BigInteger(
-                "22747378382093562937677152450590993403550984164767919046558575083163178129198"), new BigInteger(
-                "45951448325373922676609101796150321769091242179379405625463804456279006527922"), NamedGroup.SECP256R1);
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -1349,22 +1315,6 @@ public class Config implements Serializable {
 
     public void setDefaultTokenBindingType(TokenBindingType defaultTokenBindingType) {
         this.defaultTokenBindingType = defaultTokenBindingType;
-    }
-
-    public void setDefaultServerGost01PrivateKey(BigInteger defaultServerGost01PrivateKey) {
-        this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
-    }
-
-    public void setDefaultServerGost01PublicKey(Point defaultServerGost01PublicKey) {
-        this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
-    }
-
-    public void setDefaultServerGost12PrivateKey(BigInteger defaultServerGost12PrivateKey) {
-        this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
-    }
-
-    public void setDefaultServerGost12PublicKey(Point defaultServerGost12PublicKey) {
-        this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
     }
 
     public byte[] getDefaultClientHandshakeTrafficSecret() {
@@ -1660,68 +1610,12 @@ public class Config implements Serializable {
         this.defaultServerDhPrivateKey = defaultServerDhPrivateKey;
     }
 
-    public BigInteger getDefaultClientGost01PrivateKey() {
-        return defaultClientGost01PrivateKey;
+    public GOSTCurve getDefaultSelectedGostCurve() {
+        return defaultSelectedGostCurve;
     }
 
-    public Point getDefaultClientGost01PublicKey() {
-        return defaultClientGost01PublicKey;
-    }
-
-    public BigInteger getDefaultServerGost01PrivateKey() {
-        return defaultServerGost01PrivateKey;
-    }
-
-    public Point getDefaultServerGost01PublicKey() {
-        return defaultServerGost01PublicKey;
-    }
-
-    public GOSTCurve getDefaultGost01Curve() {
-        return defaultGost01Curve;
-    }
-
-    public void setDefaultClientGost01PrivateKey(BigInteger defaultClientGost01PrivateKey) {
-        this.defaultClientGost01PrivateKey = defaultClientGost01PrivateKey;
-    }
-
-    public void setDefaultClientGost01PublicKey(Point defaultClientGost01PublicKey) {
-        this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
-    }
-
-    public void setDefaultGost01Curve(GOSTCurve defaultGost01Curve) {
-        this.defaultGost01Curve = defaultGost01Curve;
-    }
-
-    public void setDefaultClientGost12PrivateKey(BigInteger defaultClientGost12PrivateKey) {
-        this.defaultClientGost12PrivateKey = defaultClientGost12PrivateKey;
-    }
-
-    public void setDefaultClientGost12PublicKey(Point defaultClientGost12PublicKey) {
-        this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
-    }
-
-    public void setDefaultGost12Curve(GOSTCurve defaultGost12Curve) {
-        this.defaultGost12Curve = defaultGost12Curve;
-    }
-
-    public BigInteger getDefaultClientGostEc12PrivateKey() {
-        return defaultClientGost12PrivateKey;
-    }
-
-    public Point getDefaultClientGostEc12PublicKey() {
-        return defaultClientGost12PublicKey;
-    }
-
-    public BigInteger getDefaultServerGostEc12PrivateKey() {
-        return defaultServerGost12PrivateKey;
-    }
-
-    public Point getDefaultServerGost12EcPublicKey() {
-        return defaultServerGost12PublicKey;
-    }
-
-    public GOSTCurve getDefaultGost12Curve() {
-        return defaultGost12Curve;
+    public void setDefaultSelectedGostCurve(GOSTCurve defaultSelectedGostCurve) {
+        this.defaultSelectedGostCurve = defaultSelectedGostCurve;
     }
 
     public BigInteger getDefaultServerDsaPrivateKey() {

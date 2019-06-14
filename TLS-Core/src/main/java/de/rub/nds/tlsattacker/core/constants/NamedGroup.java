@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,10 +81,7 @@ public enum NamedGroup {
     GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }, "GREASE", null),
     GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE", null),
     GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }, "GREASE", null),
-    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null),
-    NONE(new byte[] { (byte) 0, (byte) 0 }, "", null),
-    GOST3410(new byte[] { 0, 0 }, "", null),
-    GOST3410_2012(new byte[] { 0, 0 }, "", null);
+    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -154,6 +152,26 @@ public enum NamedGroup {
                     if (publicKey.getParams().getGenerator().getAffineX()
                             .equals(tlsAttackerCurve.getBasePoint().getX().getData())
                             && publicKey.getParams().getGenerator().getAffineY()
+                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        return group;
+                    }
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                }
+            }
+        }
+        return null;
+    }
+
+    public static NamedGroup getNamedGroup(ECPrivateKey privateKey) {
+        for (NamedGroup group : getImplemented()) {
+            // TODO: X25519 and X448 not supported for classic java curves
+            if (group.isCurve() && group.isStandardCurve()) {
+                try {
+                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
+                    if (privateKey.getParams().getGenerator().getAffineX()
+                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                            && privateKey.getParams().getGenerator().getAffineY()
                                     .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
                         return group;
                     }

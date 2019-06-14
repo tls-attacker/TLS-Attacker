@@ -52,7 +52,7 @@ public class GOSTClientKeyExchangePreparatorTest {
         BCECGOST3410_2012PublicKey publicKey = (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter().getPublicKey(cert
                 .getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
-        tlsContext.setServerGost12Curve(curve);
+        tlsContext.setSelectedGostCurve(curve);
         tlsContext
                 .setClientEcPublicKey(Point
                         .createPoint(
@@ -60,10 +60,9 @@ public class GOSTClientKeyExchangePreparatorTest {
                                         "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
                                 new BigInteger(
                                         "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
-                                NamedGroup.GOST3410_2012));
+                                curve));
         ECPoint q = publicKey.getQ();
-        Point ecPoint = Point.createPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(),
-                NamedGroup.GOST3410_2012);
+        Point ecPoint = Point.createPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(), curve);
 
         tlsContext.setServerEcPublicKey(ecPoint);
 

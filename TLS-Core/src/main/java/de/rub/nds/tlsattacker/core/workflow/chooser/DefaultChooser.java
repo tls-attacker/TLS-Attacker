@@ -553,38 +553,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public GOSTCurve getServerGost01Curve() {
-        if (context.getServerGost01Curve() != null) {
-            return context.getServerGost01Curve();
+    public GOSTCurve getSelectedGostCurve() {
+        if (context.getSelectedGostCurve() != null) {
+            return context.getSelectedGostCurve();
         } else {
-            return config.getDefaultGost01Curve();
-        }
-    }
-
-    @Override
-    public GOSTCurve getClientGost01Curve() {
-        if (context.getClientGost01Curve() != null) {
-            return context.getClientGost01Curve();
-        } else {
-            return config.getDefaultGost01Curve();
-        }
-    }
-
-    @Override
-    public GOSTCurve getServerGost12Curve() {
-        if (context.getServerGost12Curve() != null) {
-            return context.getServerGost12Curve();
-        } else {
-            return config.getDefaultGost12Curve();
-        }
-    }
-
-    @Override
-    public GOSTCurve getClientGost12Curve() {
-        if (context.getClientGost12Curve() != null) {
-            return context.getClientGost12Curve();
-        } else {
-            return config.getDefaultGost12Curve();
+            return config.getDefaultSelectedGostCurve();
         }
     }
 

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -51,6 +52,11 @@ public class Point implements Serializable {
     }
 
     public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
+    }
+
+    public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         return curve.getPoint(x, y);
     }

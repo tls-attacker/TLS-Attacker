@@ -421,29 +421,7 @@ public class TlsContext {
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
 
-    private GOSTCurve serverGost01Curve;
-
-    private Point serverGostEc01PublicKey;
-
-    private BigInteger serverGostEc01PrivateKey;
-
-    private GOSTCurve clientGost01Curve;
-
-    private Point clientGostEc01PublicKey;
-
-    private BigInteger clientGostEc01PrivateKey;
-
-    private GOSTCurve serverGost12Curve;
-
-    private Point serverGostEc12PublicKey;
-
-    private BigInteger serverGostEc12PrivateKey;
-
-    private GOSTCurve clientGost12Curve;
-
-    private Point clientGostEc12PublicKey;
-
-    private BigInteger clientGostEc12PrivateKey;
+    private GOSTCurve selectedGostCurve;
 
     /**
      * the currently used type of keySet by the client
@@ -1027,67 +1005,11 @@ public class TlsContext {
     }
 
     public GOSTCurve getServerGost01Curve() {
-        return serverGost01Curve;
+        return selectedGostCurve;
     }
 
     public void setServerGost01Curve(GOSTCurve serverGost01Curve) {
-        this.serverGost01Curve = serverGost01Curve;
-    }
-
-    public Point getServerGostEc01PublicKey() {
-        return serverGostEc01PublicKey;
-    }
-
-    public void setServerGostEc01PublicKey(Point serverGostEc01PublicKey) {
-        this.serverGostEc01PublicKey = serverGostEc01PublicKey;
-    }
-
-    public BigInteger getServerGostEc01PrivateKey() {
-        return serverGostEc01PrivateKey;
-    }
-
-    public void setServerGostEc01PrivateKey(BigInteger serverGostEc01PrivateKey) {
-        this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getClientGost01Curve() {
-        return clientGost01Curve;
-    }
-
-    public void setClientGost01Curve(GOSTCurve clientGost01Curve) {
-        this.clientGost01Curve = clientGost01Curve;
-    }
-
-    public Point getClientGostEc01PublicKey() {
-        return clientGostEc01PublicKey;
-    }
-
-    public void setClientGostEc01PublicKey(Point clientGostEc01PublicKey) {
-        this.clientGostEc01PublicKey = clientGostEc01PublicKey;
-    }
-
-    public BigInteger getClientGostEc01PrivateKey() {
-        return clientGostEc01PrivateKey;
-    }
-
-    public void setClientGostEc01PrivateKey(BigInteger clientGostEc01PrivateKey) {
-        this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getServerGost12Curve() {
-        return serverGost12Curve;
-    }
-
-    public void setServerGost12Curve(GOSTCurve serverGost12Curve) {
-        this.serverGost12Curve = serverGost12Curve;
-    }
-
-    public GOSTCurve getClientGost12Curve() {
-        return clientGost12Curve;
-    }
-
-    public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
-        this.clientGost12Curve = clientGost12Curve;
+        this.selectedGostCurve = serverGost01Curve;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
@@ -2292,6 +2214,14 @@ public class TlsContext {
 
     public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
         this.clientDsaGenerator = clientDsaGenerator;
+    }
+
+    public GOSTCurve getSelectedGostCurve() {
+        return selectedGostCurve;
+    }
+
+    public void setSelectedGostCurve(GOSTCurve selectedGostCurve) {
+        this.selectedGostCurve = selectedGostCurve;
     }
 
 }

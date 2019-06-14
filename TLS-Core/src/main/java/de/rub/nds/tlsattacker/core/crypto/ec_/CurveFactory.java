@@ -16,7 +16,8 @@ public class CurveFactory {
     /**
      * Returns a named elliptic curve.
      *
-     * @param name The name of the curve, that should be returned.
+     * @param name
+     *            The name of the curve, that should be returned.
      */
     public static EllipticCurve getCurve(NamedGroup name) {
 
@@ -86,7 +87,9 @@ public class CurveFactory {
     /**
      * Returns a named gost curve.
      *
-     * @param curve The name of the curve, that should be returned.
+     * @param curve
+     *            The name of the curve, that should be returned.
+     * @return
      */
     public static EllipticCurve getCurve(GOSTCurve curve) {
         switch (curve) {

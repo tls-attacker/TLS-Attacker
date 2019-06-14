@@ -10,24 +10,18 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
 import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.ECPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
@@ -36,6 +30,14 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 public class GOSTUtils {
 
     private static final Logger LOGGER = LogManager.getLogger(GOSTUtils.class.getName());
+
+    public static byte[] getGostSBox(CipherSuite cipherSuite) {
+        return GOST28147Engine.getSBox(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");
+    }
+
+    public static GOST28147ParameterSpec getGostSpec(CipherSuite cipherSuite) {
+        return new GOST28147ParameterSpec(getGostSBox(cipherSuite));
+    }
 
     public static BCECGOST3410PrivateKey generate01PrivateKey(GOSTCurve curve, BigInteger s) {
         LOGGER.debug("Generating GOST01 private key for " + curve.name());
@@ -58,40 +60,9 @@ public class GOSTUtils {
         }
     }
 
-    public static BCECGOST3410PublicKey generate01PublicKey(GOSTCurve curve, Point point) {
-        LOGGER.debug("Generating GOST01 public key for " + curve.name());
-        return (BCECGOST3410PublicKey) generateEcPublicKey(curve, point, "ECGOST3410");
-    }
-
-    public static BCECGOST3410_2012PublicKey generate12PublicKey(GOSTCurve curve, Point point) {
-        LOGGER.debug("Generating GOST12 public key for " + curve.name());
-        return (BCECGOST3410_2012PublicKey) generateEcPublicKey(curve, point, "ECGOST3410-2012");
-    }
-
-    private static PublicKey generateEcPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
-        try {
-            ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
-            ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
-            ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
-            return KeyFactory.getInstance(keyFactoryAlg).generatePublic(privateKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            LOGGER.error("Could not generate GOST public key", e);
-            return null;
-        }
-    }
-
     public static ECNamedCurveSpec getEcParameterSpec(GOSTCurve curve) {
         String curveName = curve.getJavaName();
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
         return new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
     }
-
-    public static GOST28147ParameterSpec getGostSpec(CipherSuite cipherSuite) {
-        return new GOST28147ParameterSpec(getGostSBox(cipherSuite));
-    }
-
-    public static byte[] getGostSBox(CipherSuite cipherSuite) {
-        return GOST28147Engine.getSBox(cipherSuite.usesGOSTR34112012() ? "Param-Z" : "E-A");
-    }
-
 }

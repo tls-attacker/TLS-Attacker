@@ -75,7 +75,7 @@ public class CertificateUtils {
         } else if (key instanceof ECPrivateKey) {
             ECPrivateKey privKey = (ECPrivateKey) key;
 
-            return new CustomECPrivateKey(privKey.getS(), NamedGroup.NONE);
+            return new CustomECPrivateKey(privKey.getS(), NamedGroup.getNamedGroup(privKey));
         } else {
             throw new UnsupportedOperationException("This private key is not supporter:" + key.toString());
         }

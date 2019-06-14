@@ -142,13 +142,7 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
-    public abstract GOSTCurve getServerGost01Curve();
-
-    public abstract GOSTCurve getClientGost01Curve();
-
-    public abstract GOSTCurve getServerGost12Curve();
-
-    public abstract GOSTCurve getClientGost12Curve();
+    public abstract GOSTCurve getSelectedGostCurve();
 
     public abstract BigInteger getSRPModulus();
 
