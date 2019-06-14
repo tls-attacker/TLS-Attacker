@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 
 public class CurveFactory {
@@ -15,8 +16,7 @@ public class CurveFactory {
     /**
      * Returns a named elliptic curve.
      *
-     * @param name
-     *            The name of the curve, that should be returned.
+     * @param name The name of the curve, that should be returned.
      */
     public static EllipticCurve getCurve(NamedGroup name) {
 
@@ -77,10 +77,39 @@ public class CurveFactory {
                 return new EllipticCurveSECT571K1();
             case SECT571R1:
                 return new EllipticCurveSECT571R1();
-            case GOST3410:
-            case GOST3410_2012:
             default:
                 throw new UnsupportedOperationException("The provided curve '" + name + "' is not supported.");
+
+        }
+    }
+
+    /**
+     * Returns a named gost curve.
+     *
+     * @param curve The name of the curve, that should be returned.
+     */
+    public static EllipticCurve getCurve(GOSTCurve curve) {
+        switch (curve) {
+            case GostR3410_2001_CryptoPro_A:
+                return new EllipticCurveGost2001SetA();
+            case GostR3410_2001_CryptoPro_B:
+                return new EllipticCurveGost2001SetB();
+            case GostR3410_2001_CryptoPro_C:
+                return new EllipticCurveGost2001SetC();
+            case GostR3410_2001_CryptoPro_XchA:
+                return new EllipticCurveGost2001SetXchA();
+            case GostR3410_2001_CryptoPro_XchB:
+                return new EllipticCurveGost2001SetXchB();
+            case Tc26_Gost_3410_12_256_paramSetA:
+                return new EllipticCurveGost2012SetA256();
+            case Tc26_Gost_3410_12_512_paramSetA:
+                return new EllipticCurveGost2012SetA512();
+            case Tc26_Gost_3410_12_512_paramSetB:
+                return new EllipticCurveGost2012SetB512();
+            case Tc26_Gost_3410_12_512_paramSetC:
+                return new EllipticCurveGost2012SetC512();
+            default:
+                throw new UnsupportedOperationException("The provided curve '" + curve + "' is not supported.");
 
         }
     }
