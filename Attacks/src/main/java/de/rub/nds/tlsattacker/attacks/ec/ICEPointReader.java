@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,12 +33,13 @@ public class ICEPointReader {
      * Reads points for the attack on elliptic curves from a file specific for
      * this named curve
      *
-     * @param namedCurve
+     * @param group
      *            The NamedCurve as a String
      * @return the deserialized Points
      */
-    public static List<ICEPoint> readPoints(String namedCurve) {
-        String namedCurveLow = namedCurve.toLowerCase();
+    public static List<ICEPoint> readPoints(NamedGroup group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        String namedCurveLow = group.name().toLowerCase();
         String fileName = "points_" + namedCurveLow + ".txt";
 
         BufferedReader br = new BufferedReader(new InputStreamReader(ICEPointReader.class.getClassLoader()
@@ -49,19 +53,26 @@ public class ICEPointReader {
                     int order = Integer.parseInt(nums[0]);
                     BigInteger x = new BigInteger(nums[1], 16);
                     BigInteger y = new BigInteger(nums[2], 16);
-                    points.add(new ICEPoint(order, x, y));
+                    points.add(new ICEPoint(x, y, curve, order));
                 }
             }
             Collections.sort(points, new ICEPointCopmparator());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Using the following curves and points");
                 for (ICEPoint p : points) {
-                    LOGGER.debug(p.getOrder() + " , " + p.getX().toString(16) + " , " + p.getY().toString(16));
+                    LOGGER.debug(p.getOrder() + " , " + p.getX().getData().toString(16) + " , "
+                            + p.getY().getData().toString(16));
                 }
             }
             return points;
         } catch (IOException | NumberFormatException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                LOGGER.error("Failed to close stream", ex);
+            }
         }
     }
 

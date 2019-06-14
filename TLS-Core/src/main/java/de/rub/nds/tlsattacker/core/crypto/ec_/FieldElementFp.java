@@ -8,17 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import java.io.Serializable;
 import java.math.BigInteger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An element of the field F_p (with p being a prime number).
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class FieldElementFp extends FieldElement {
+public class FieldElementFp extends FieldElement implements Serializable {
 
     /**
      * Instantiates the element data in the field F_modulus. With modulus being

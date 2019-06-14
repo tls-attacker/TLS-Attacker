@@ -206,4 +206,7 @@ public abstract class EllipticCurve {
     public BigInteger getModulus() {
         return this.modulus;
     }
+
+    public abstract FieldElement createFieldElement(BigInteger value);
+
 }

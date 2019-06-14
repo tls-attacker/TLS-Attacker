@@ -8,10 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import java.io.Serializable;
 import java.math.BigInteger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An element of a galois field F_{2^m}.<br />
@@ -20,9 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * These polynomials are represented by BigInteger bit-strings, where the i-th
  * bit represents the i-th coefficient.
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class FieldElementF2m extends FieldElement {
+public class FieldElementF2m extends FieldElement implements Serializable {
 
     /**
      * Instantiates an element of a galois field F{2^m}.
@@ -160,5 +156,4 @@ public class FieldElementF2m extends FieldElement {
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];
     }
-
 }

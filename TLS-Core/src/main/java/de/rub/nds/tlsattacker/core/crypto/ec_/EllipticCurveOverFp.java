@@ -20,7 +20,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
     /**
      * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br />
-     * 
+     *
      * @param a
      *            The coefficient a in the equation of the curve.
      * @param b
@@ -38,7 +38,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     /**
      * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br />
      * With base point (x,y) and base point order q. p must be prime.
-     * 
+     *
      * @param a
      *            The coefficient a in the equation of the curve.
      * @param b
@@ -134,6 +134,11 @@ public class EllipticCurveOverFp extends EllipticCurve {
         } catch (ArithmeticException e) {
             return new Point();
         }
+    }
+
+    @Override
+    public FieldElement createFieldElement(BigInteger value) {
+        return new FieldElementFp(value, this.getModulus());
     }
 
 }

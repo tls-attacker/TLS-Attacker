@@ -9,61 +9,9 @@
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ApplyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ConnectionBoundAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyContextFieldAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBufferedRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FindReceivedProtocolMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesWithPrepareAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MultiReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintProposedExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -85,11 +33,11 @@ public class Point implements Serializable {
      * Point objects are immutable. This should make deep copies in the methods
      * of the EllipticCurve class unnecessary.
      */
-    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "FieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "FieldElementFp") })
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
+            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
     private final FieldElement x;
-    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "FieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "FieldElementFp") })
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
+            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
     private final FieldElement y;
     private final boolean infinity;
 
@@ -141,18 +89,36 @@ public class Point implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || this.getClass() != obj.getClass()) {
-            return false;
-        } else {
-            Point p = (Point) obj;
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.x);
+        hash = 89 * hash + Objects.hashCode(this.y);
+        hash = 89 * hash + (this.infinity ? 1 : 0);
+        return hash;
+    }
 
-            if (this.isAtInfinity() || p.isAtInfinity()) {
-                return this.isAtInfinity() == p.isAtInfinity();
-            } else {
-                return this.x.equals(p.getX()) && this.y.equals(p.getY());
-            }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Point other = (Point) obj;
+        if (this.infinity != other.infinity) {
+            return false;
+        }
+        if (!Objects.equals(this.x, other.x)) {
+            return false;
+        }
+        if (!Objects.equals(this.y, other.y)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

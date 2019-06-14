@@ -8,58 +8,24 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 
 /**
  *
+ * @author robert
  */
 public class ICEPoint extends Point {
 
-    private int order;
+    private final int order;
 
-    /**
-     *
-     */
-    public ICEPoint() {
-
-    }
-
-    /**
-     *
-     * @param order
-     * @param x
-     * @param y
-     */
-    public ICEPoint(int order, BigInteger x, BigInteger y) {
-        super(x, y);
+    public ICEPoint(BigInteger x, BigInteger y, EllipticCurve curve, int order) {
+        super(curve.createFieldElement(x), curve.createFieldElement(y));
         this.order = order;
     }
 
-    /**
-     *
-     * @return
-     */
     public int getOrder() {
         return order;
     }
-
-    /**
-     *
-     * @param order
-     */
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Point order: ").append(order).append("\nX: ").append(x).append("\nY: ").append(y);
-        return sb.toString();
-    }
-
 }

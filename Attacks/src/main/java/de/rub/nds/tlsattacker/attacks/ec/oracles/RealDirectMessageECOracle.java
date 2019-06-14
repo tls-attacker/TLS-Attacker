@@ -79,18 +79,18 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX()));
+        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX().getData()));
         message.getComputations().setPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY()));
+        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY().getData()));
         message.getComputations().setPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, secret);
+        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
@@ -122,23 +122,9 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
-        // BigInteger correct = new
-        // BigInteger("25091756309879652045519159642875354611257005804552159157");
-        // if (correct.compareTo(guessedSecret) == 0) {
-        // return true;
-        // } else {
-        // return false;
-        // }
-
-        computer.setSecret(guessedSecret);
-        try {
-            Point p = computer.mul(checkPoint);
-            byte[] pms = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, p.getX());
-            return Arrays.equals(checkPMS, pms);
-        } catch (DivisionException ex) {
-            LOGGER.debug(ex);
-            return false;
-        }
+        Point p = curve.mult(guessedSecret, checkPoint);
+        byte[] pms = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, p.getX().getData());
+        return Arrays.equals(checkPMS, pms);
     }
 
     /**
@@ -161,7 +147,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         // get public point base X and Y coordinates
         BigInteger x = message.getComputations().getPublicKeyX().getValue();
         BigInteger y = message.getComputations().getPublicKeyY().getValue();
-        checkPoint = new Point(x, y);
+        checkPoint = Point.createPoint(x, y, state.getTlsContext().getSelectedGroup());
         checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
 }

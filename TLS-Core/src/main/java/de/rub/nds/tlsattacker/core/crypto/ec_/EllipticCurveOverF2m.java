@@ -17,12 +17,13 @@ import java.math.BigInteger;
  * coefficient.
  */
 public class EllipticCurveOverF2m extends EllipticCurve {
+
     private final FieldElementF2m a;
     private final FieldElementF2m b;
 
     /**
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
-     * 
+     *
      * @param a
      *            A BigInteger representing the binary polynomial a in the
      *            equation of the curve.
@@ -43,7 +44,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
      * polynomial is the reduction polynomial of the field.<br />
      * With base point (x, y) and base point order q.
-     * 
+     *
      * @param a
      *            A BigInteger representing the binary polynomial a in the
      *            equation of the curve.
@@ -150,4 +151,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         }
     }
 
+    @Override
+    public FieldElement createFieldElement(BigInteger value) {
+        return new FieldElementF2m(value, this.getModulus());
+    }
 }

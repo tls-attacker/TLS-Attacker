@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -25,16 +24,15 @@ public class TestECOracle extends ECOracle {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ECComputer computer;
+    private final BigInteger privateKey;
 
     /**
      *
      * @param namedCurve
      */
-    public TestECOracle(String namedCurve) {
-        curve = CurveFactory.getNamedCurve(namedCurve);
-        BigInteger privateKey = new BigInteger(curve.getKeyBits(), new Random());
-        computer = new ECComputer(curve, privateKey);
+    public TestECOracle(NamedGroup namedCurve) {
+        curve = CurveFactory.getCurve(namedCurve);
+        privateKey = new BigInteger(curve.getModulus().bitLength(), new Random());
     }
 
     @Override
@@ -43,30 +41,21 @@ public class TestECOracle extends ECOracle {
         if (numberOfQueries % 100 == 0) {
             LOGGER.debug("Number of queries so far: {}", numberOfQueries);
         }
-        Point result;
-        try {
-            result = computer.mul(ecPoint, true);
-        } catch (DivisionException ex) {
-            result = null;
-        }
+        Point result = curve.mult(guessedSecret, ecPoint);
 
-        if (result == null || result.isInfinity()) {
+        if (result.isAtInfinity()) {
             return false;
         } else {
-            return (result.getX().compareTo(guessedSecret) == 0);
+            return (result.getX().getData().compareTo(guessedSecret) == 0);
         }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ECComputer getComputer() {
-        return computer;
     }
 
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
-        return guessedSecret.equals(computer.getSecret());
+        return guessedSecret.equals(privateKey);
+    }
+
+    public BigInteger getPrivateKey() {
+        return privateKey;
     }
 }
