@@ -383,6 +383,10 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM(0xC0AD),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8(0xC0AE),
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8(0xC0AF),
+    TLS_ECCPWD_WITH_AES_128_GCM_SHA256(0xC0B0),
+    TLS_ECCPWD_WITH_AES_256_GCM_SHA384(0xC0B1),
+    TLS_ECCPWD_WITH_AES_128_CCM_SHA256(0xC0B2),
+    TLS_ECCPWD_WITH_AES_256_CCM_SHA384(0xC0B3),
     // *************************************************************************
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     // These Ciphersuite are from a Draft and also dont have a mac algorithm
@@ -502,7 +506,7 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon();
+        return this.name().contains("DHE_") || this.isAnon() || this.isPWD();
     }
 
     public boolean isPskOrDhPsk() {
@@ -642,7 +646,9 @@ public enum CipherSuite {
                     TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_RSA_WITH_DES_CBC_SHA,
                     TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
                     TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
-                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA)));
+                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA, TLS_ECCPWD_WITH_AES_128_CCM_SHA256,
+                    TLS_ECCPWD_WITH_AES_128_GCM_SHA256, TLS_ECCPWD_WITH_AES_256_CCM_SHA384,
+                    TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();
@@ -947,6 +953,10 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
         list.add(TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
+        list.add(TLS_ECCPWD_WITH_AES_256_CCM_SHA384);
         return list;
     }
 
@@ -991,6 +1001,10 @@ public enum CipherSuite {
 
     public boolean isNull() {
         return this.name().toLowerCase().contains("null");
+    }
+
+    public boolean isPWD() {
+        return this.name().contains("PWD");
     }
 
     // Note: We don't consider DES as weak for these purposes.

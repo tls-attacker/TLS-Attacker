@@ -261,4 +261,10 @@ public abstract class Chooser {
     public abstract BigInteger getDsaGenerator();
 
     public abstract byte[] getHandshakeSecret();
+
+    public abstract String getClientPWDUsername();
+
+    public abstract byte[] getServerPWDSalt();
+
+    public abstract String getPWDPassword();
 }

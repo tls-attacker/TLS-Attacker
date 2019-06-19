@@ -12,7 +12,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
@@ -37,9 +41,36 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     @Override
     public void prepare() {
         LOGGER.debug("Preparing KeySharePairExtension");
-        prepareKeyShare();
+        if (chooser.getSelectedCipherSuite().isPWD()) {
+            try {
+                preparePWDKeyShare();
+            } catch (CryptoException e) {
+                throw new PreparationException("Failed to generate password element", e);
+            }
+        } else {
+            prepareKeyShare();
+        }
+
         prepareKeyShareType();
         prepareKeyShareLength();
+    }
+
+    private void preparePWDKeyShare() throws CryptoException {
+        ECCurve curve = ECNamedCurveTable.getParameterSpec(entry.getGroupConfig().getJavaName()).getCurve();
+        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, curve);
+        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, passwordElement,
+                chooser);
+        int curveSize = curve.getFieldSize() / 8;
+        entry.setPrivateKey(keyMaterial.privateKeyScalar);
+        byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
+        entry.setPublicKey(ArrayConverter.concatenate(
+                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getXCoord().toBigInteger(), curveSize, true),
+                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getYCoord().toBigInteger(), curveSize, true),
+                ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
+        LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
+        LOGGER.debug("PasswordElement.x: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
+                        .toBigInteger())));
     }
 
     private void prepareKeyShare() {

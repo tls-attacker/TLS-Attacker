@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.math.ec.ECPoint;
 
 public class TlsContext {
 
@@ -534,6 +535,20 @@ public class TlsContext {
     private ProtocolVersion highestProtocolVersion;
 
     private Boolean clientAuthentication;
+
+    private String clientPWDUsername;
+
+    private byte[] serverPWDSalt;
+
+    private ECPoint PWDPE;
+
+    private BigInteger clientPWDPrivate;
+
+    private BigInteger serverPWDPrivate;
+
+    private BigInteger serverPWDScalar;
+
+    private ECPoint serverPWDElement;
 
     /**
      * Last application message data received/send by this context. This is
@@ -2294,4 +2309,62 @@ public class TlsContext {
         this.clientDsaGenerator = clientDsaGenerator;
     }
 
+    public void setClientPWDUsername(String username) {
+        this.clientPWDUsername = username;
+    }
+
+    public String getClientPWDUsername() {
+        return clientPWDUsername;
+    }
+
+    public void setServerPWDSalt(byte[] salt) {
+        this.serverPWDSalt = salt;
+    }
+
+    public byte[] getServerPWDSalt() {
+        return serverPWDSalt;
+    }
+
+    /**
+     * Password Element for TLS_ECCPWD
+     */
+    public ECPoint getPWDPE() {
+        return PWDPE;
+    }
+
+    public void setPWDPE(ECPoint PWDPE) {
+        this.PWDPE = PWDPE;
+    }
+
+    public BigInteger getClientPWDPrivate() {
+        return clientPWDPrivate;
+    }
+
+    public void setClientPWDPrivate(BigInteger clientPWDPrivate) {
+        this.clientPWDPrivate = clientPWDPrivate;
+    }
+
+    public BigInteger getServerPWDPrivate() {
+        return serverPWDPrivate;
+    }
+
+    public void setServerPWDPrivate(BigInteger serverPWDPrivate) {
+        this.serverPWDPrivate = serverPWDPrivate;
+    }
+
+    public BigInteger getServerPWDScalar() {
+        return serverPWDScalar;
+    }
+
+    public void setServerPWDScalar(BigInteger serverPWDScalar) {
+        this.serverPWDScalar = serverPWDScalar;
+    }
+
+    public ECPoint getServerPWDElement() {
+        return serverPWDElement;
+    }
+
+    public void setServerPWDElement(ECPoint serverPWDElement) {
+        this.serverPWDElement = serverPWDElement;
+    }
 }
