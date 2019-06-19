@@ -178,6 +178,9 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
+    // TODO for DTLS we should memorize the cipher (states) for every epoch
+    // which would allow us to select the cipher depending on the cipher in the
+    // epoch
     public void decryptRecord(AbstractRecord record) {
         if (record instanceof Record) {
             try {

@@ -252,6 +252,8 @@ public abstract class Chooser {
 
     public abstract BigInteger getDsaServerPublicKey();
 
+    public abstract BigInteger getDsaServerPrivateKey();
+
     public abstract BigInteger getDsaPrimeP();
 
     public abstract BigInteger getDsaPrimeQ();
@@ -259,4 +261,10 @@ public abstract class Chooser {
     public abstract BigInteger getDsaGenerator();
 
     public abstract byte[] getHandshakeSecret();
+
+    public abstract String getClientPWDUsername();
+
+    public abstract byte[] getServerPWDSalt();
+
+    public abstract String getPWDPassword();
 }

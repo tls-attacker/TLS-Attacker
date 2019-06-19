@@ -446,8 +446,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetDtlsCookie() {
         byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
-        config.setDefaultDtlsCookie(cookie);
-        assertArrayEquals(cookie, config.getDefaultDtlsCookie());
+        config.setDtlsDefaultCookie(cookie);
+        assertArrayEquals(cookie, config.getDtlsDefaultCookie());
         assertArrayEquals(cookie, chooser.getDtlsCookie());
         context.setDtlsCookie(cookie);
         assertArrayEquals(cookie, chooser.getDtlsCookie());
@@ -771,4 +771,40 @@ public class DefaultChooserTest {
         assertArrayEquals(secret2, chooser.getClientHandshakeTrafficSecret());
     }
 
+    /**
+     * Test of getPWDClientUsername method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDClientUsername() {
+        context.setClientPWDUsername(null);
+        config.setDefaultClientPWDUsername("Jake");
+        assertEquals("Jake", config.getDefaultClientPWDUsername());
+        assertEquals("Jake", chooser.getClientPWDUsername());
+        context.setClientPWDUsername("Brian");
+        assertEquals("Brian", chooser.getClientPWDUsername());
+    }
+
+    /**
+     * Test of getServerPWDSalt method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetServerPWDSalt() {
+        byte[] salt = ArrayConverter.hexStringToByteArray("12");
+        byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
+        context.setServerPWDSalt(null);
+        config.setDefaultServerPWDSalt(salt);
+        assertEquals(salt, config.getDefaultServerPWDSalt());
+        assertEquals(null, chooser.getServerPWDSalt());
+        context.setServerPWDSalt(salt2);
+        assertEquals(salt2, chooser.getServerPWDSalt());
+    }
+
+    /**
+     * Test of getPWDPassword method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDPassword() {
+        config.setDefaultPWDPassword("Jake");
+        assertEquals("Jake", chooser.getPWDPassword());
+    }
 }

@@ -23,8 +23,18 @@ public class RecordByteLength {
      * protocol version byte length
      */
     public static final int PROTOCOL_VERSION = 2;
-    public static final int EPOCH = 2;
+
     public static final int SEQUENCE_NUMBER = 8;
+
+    /**
+     * epoch for DTLS
+     */
+    public static final int DTLS_EPOCH = 2;
+
+    /**
+     * sequence number for DTLS
+     */
+    public static final int DTLS_SEQUENCE_NUMBER = 6;
 
     private RecordByteLength() {
     }

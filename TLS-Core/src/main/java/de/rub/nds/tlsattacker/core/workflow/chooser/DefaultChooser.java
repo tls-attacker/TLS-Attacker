@@ -282,7 +282,7 @@ public class DefaultChooser extends Chooser {
         if (context.getDtlsCookie() != null) {
             return copy(context.getDtlsCookie());
         } else {
-            return config.getDefaultDtlsCookie();
+            return config.getDtlsDefaultCookie();
         }
     }
 
@@ -884,6 +884,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getDsaServerPrivateKey() {
+        if (context.getServerDsaPrivateKey() != null) {
+            return context.getServerDsaPrivateKey();
+        } else {
+            return config.getDefaultServerDsaPrivateKey();
+        }
+    }
+
+    @Override
     public BigInteger getDsaServerPublicKey() {
         if (context.getServerDsaPublicKey() != null) {
             return context.getServerDsaPublicKey();
@@ -930,5 +939,24 @@ public class DefaultChooser extends Chooser {
 
     private byte[] copy(byte[] array) {
         return Arrays.copyOf(array, array.length);
+    }
+
+    @Override
+    public String getClientPWDUsername() {
+        if (context.getClientPWDUsername() != null) {
+            return context.getClientPWDUsername();
+        } else {
+            return config.getDefaultClientPWDUsername();
+        }
+    }
+
+    @Override
+    public byte[] getServerPWDSalt() {
+        return context.getServerPWDSalt();
+    }
+
+    @Override
+    public String getPWDPassword() {
+        return config.getDefaultPWDPassword();
     }
 }

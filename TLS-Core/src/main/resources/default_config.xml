@@ -417,6 +417,10 @@
     <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECCPWD_WITH_AES_128_GCM_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECCPWD_WITH_AES_256_GCM_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECCPWD_WITH_AES_128_CCM_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECCPWD_WITH_AES_256_CCM_SHA384</defaultClientSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultServerSupportedCiphersuites>
@@ -718,6 +722,10 @@
     <defaultServerSupportedCiphersuites>TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECCPWD_WITH_AES_128_GCM_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECCPWD_WITH_AES_256_GCM_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECCPWD_WITH_AES_128_CCM_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECCPWD_WITH_AES_256_CCM_SHA384</defaultServerSupportedCiphersuites>
     <defaultClientNamedGroups>SECP192R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP256R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP384R1</defaultClientNamedGroups>
@@ -798,6 +806,8 @@
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
+    <addPWDClearExtension>false</addPWDClearExtension>
+    <addPWDProtectExtension>false</addPWDProtectExtension>
     <addPSKKeyExchangeModesExtension>false</addPSKKeyExchangeModesExtension>
     <addPreSharedKeyExtension>false</addPreSharedKeyExtension>
     <addPaddingExtension>false</addPaddingExtension>
@@ -882,7 +892,6 @@
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
-    <doDTLSRetransmits>false</doDTLSRetransmits>
     <defaultServerDhGenerator>2</defaultServerDhGenerator>
     <defaultServerDhModulus>5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807</defaultServerDhModulus>
     <defaultClientDhGenerator>2</defaultClientDhGenerator>
@@ -924,13 +933,15 @@
     </defaultServerGost12PublicKey>
     <defaultGost12Curve>Tc26_Gost_3410_12_512_paramSetA</defaultGost12Curve>
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
-    <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
     <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
     <heartbeatPaddingLength>256</heartbeatPaddingLength>
-    <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
+    <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
+    <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
+    <dtlsOnlyFitting>true</dtlsOnlyFitting>
+    <dtlsDtlsExcludeOutOfOrder>false</dtlsDtlsExcludeOutOfOrder>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
@@ -940,7 +951,7 @@
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
-    <stopRecievingAfterFatal>false</stopRecievingAfterFatal>
+    <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
@@ -987,7 +998,7 @@
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
-    <defaultDtlsCookie/>
+    <dtlsDefaultCookie/>
     <defaultCertificateRequestContext/>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
     <defaultAlertDescription>0</defaultAlertDescription>
@@ -1077,4 +1088,35 @@
     </defaultSessionTicketIdentity>
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
+    <defaultClientPWDUsername>fred</defaultClientPWDUsername>
+    <defaultPWDProtectGroup>SECP256R1</defaultPWDProtectGroup>
+    <defaultServerPWDProtectPublicKey>
+        <x>18331185786522319349444255540874590232255475110717040504630785378857839293510</x>
+        <y>77016287303447444409379355974404854219241223376914775755121063765271326101171</y>
+    </defaultServerPWDProtectPublicKey>
+    <defaultServerPWDProtectPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultServerPWDProtectPrivateKey>
+    <defaultServerPWDProtectRandomSecret>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</defaultServerPWDProtectRandomSecret>
+    <defaultPWDPassword>barney</defaultPWDPassword>
+    <defaultPWDIterations>40</defaultPWDIterations>
+    <defaultServerPWDPrivate>
+        21 D9 9D 34 1C 97 97 B3  AE 72 DF D2 89 97 1F 1B
+        74 CE 9D E6 8A D4 B9 AB  F5 48 88 D8 F6 C5 04 3C
+    </defaultServerPWDPrivate>
+    <defaultServerPWDMask>
+        0D 96 AB 62 4D 08 2C 71  25 5B E3 64 8D CD 30 3F
+        6A B0 CA 61 A9 50 34 A5  53 E3 30 8D 1D 37 44 E5
+    </defaultServerPWDMask>
+    <defaultClientPWDPrivate>
+        17 1D E8 CA A5 35 2D 36  EE 96 A3 99 79 B5 B7 2F
+        A1 89 AE 7A 6A 09 C7 7F  7B 43 8A F1 6D F4 A8 8B
+    </defaultClientPWDPrivate>
+    <defaultClientPWDMask>
+        4F 74 5B DF C2 95 D3 B3  84 29 F7 EB 30 25 A4 88
+        83 72 8B 07 D8 86 05 C0  EE 20 23 16 A0 72 D1 BD
+    </defaultClientPWDMask>
+    <defaultServerPWDSalt>
+        96 3C 77 CD C1 3A 2A 8D  75 CD DD D1 E0 44 99 29
+        84 37 11 C2 1D 47 CE 6E  63 83 CD DA 37 E4 7D A3
+    </defaultServerPWDSalt>
+    <parseInvalidRecordNormally>false</parseInvalidRecordNormally>
 </config>

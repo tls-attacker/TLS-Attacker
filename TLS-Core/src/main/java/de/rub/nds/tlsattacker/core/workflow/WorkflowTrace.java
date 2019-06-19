@@ -130,11 +130,12 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = SendAction.class, name = "Send"),
-            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
-            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
+            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
+            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
+            @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
             @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
@@ -376,7 +377,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()) {
+                LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
                 return false;
+            } else {
+                LOGGER.debug("Action " + action.toCompactString() + " executed as planned");
             }
         }
         return true;

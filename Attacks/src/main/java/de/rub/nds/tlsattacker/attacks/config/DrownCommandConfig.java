@@ -12,6 +12,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 
@@ -28,6 +29,9 @@ public class DrownCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
 
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
+
     /**
      *
      * @param delegate
@@ -35,7 +39,9 @@ public class DrownCommandConfig extends AttackConfig {
     public DrownCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     /**

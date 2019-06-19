@@ -84,7 +84,7 @@ public class KeyGenerator {
             // TODO
             throw new UnsupportedOperationException("DSA currently only supported for Servers");
         } else {
-            return new CustomDSAPrivateKey(chooser.getConfig().getDefaultServerDsaPrivateKey(), chooser.getDsaPrimeP(),
+            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaPrimeP(),
                     chooser.getDsaPrimeQ(), chooser.getDsaGenerator());
         }
     }

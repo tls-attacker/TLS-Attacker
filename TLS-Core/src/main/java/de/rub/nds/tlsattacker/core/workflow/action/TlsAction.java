@@ -69,7 +69,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
         this.singleConnectionWorkflow = singleConnectionWorkflow;
     }
 
-    public abstract void execute(State state) throws WorkflowExecutionException, IOException;
+    public abstract void execute(State state) throws WorkflowExecutionException;
 
     public abstract void reset();
 

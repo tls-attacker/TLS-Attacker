@@ -472,6 +472,16 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
+     * If we generate ClientHello with the PWDClear extension
+     */
+    private Boolean addPWDClearExtension = false;
+
+    /**
+     * If we generate ClientHello with the PWDProtect extension
+     */
+    private Boolean addPWDProtectExtension = false;
+
+    /**
      * If we generate ClientHello with the PSKKeyExchangeModes extension
      */
     private Boolean addPSKKeyExchangeModesExtension = false;
@@ -673,8 +683,6 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
-    private Boolean doDTLSRetransmits = false;
-
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -769,13 +777,6 @@ public class Config implements Serializable {
 
     private String defaultApplicationMessageData = "Test";
 
-    /**
-     * If this is set TLS-Attacker only waits for the expected messages in the
-     * ReceiveActions This is interesting for DTLS since this prevents the
-     * server from retransmitting
-     */
-    private Boolean waitOnlyForExpectedDTLS = true;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
@@ -784,11 +785,6 @@ public class Config implements Serializable {
     private Integer heartbeatPayloadLength = 256;
 
     private Integer heartbeatPaddingLength = 256;
-
-    /**
-     * How long should our DTLSCookies be by default
-     */
-    private Integer defaultDTLSCookieLength = 6;
 
     /**
      * How much data we should put into a record by default
@@ -800,6 +796,29 @@ public class Config implements Serializable {
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+
+    /**
+     * How long should our DTLSCookies be by default
+     */
+    private Integer dtlsDefaultCookieLength = 6;
+
+    /**
+     * Configures the maximum fragment length. This should not be confused with
+     * MTU (which includes the IP, UDP, record and DTLS headers).
+     */
+    private Integer dtlsMaximumFragmentLength = 1400;
+
+    /**
+     * Enables a check on DTLS fragments ensuring that messages are formed only
+     * from fragments with consistent field values. Fields checked are type,
+     * message length and message seq.
+     */
+    private boolean dtlsOnlyFitting = true;
+
+    /**
+     * Exclude out of order messages from the output received.
+     */
+    private boolean dtlsDtlsExcludeOutOfOrder = false;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -816,7 +835,7 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
     /**
      * When "Null" records are defined to be send, every message will be sent in
-     * atleast one individual record
+     * at least one individual record
      */
     private Boolean createIndividualRecords = true;
 
@@ -848,7 +867,7 @@ public class Config implements Serializable {
      */
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean stopRecievingAfterFatal = false;
+    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
     /**
@@ -905,7 +924,7 @@ public class Config implements Serializable {
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultDtlsCookie = new byte[0];
+    private byte[] dtlsDefaultCookie = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -1078,10 +1097,63 @@ public class Config implements Serializable {
     private Boolean tls13BackwardsCompatibilityMode = true;
 
     /**
-     * TLS-Attacker will parse encrypted messages with invalid MAC or padding
-     * as unknown if this option is set.
+     * Use username from the example of RFC8492
      */
-    private Boolean doNotParseInvalidMacOrPadMessages = false;
+    private String defaultClientPWDUsername = "fred";
+
+    /**
+     * Group used to encrypt the username in TLS_ECCPWD
+     */
+    private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
+
+    private CustomECPoint defaultServerPWDProtectPublicKey = new CustomECPoint(new BigInteger(
+            "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
+            "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
+
+    private BigInteger defaultServerPWDProtectPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
+            "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+
+    /**
+     * Use password from the example of RFC8492
+     */
+    private String defaultPWDPassword = "barney";
+
+    /**
+     * Min iterations for finding the PWD password element
+     */
+    private int defaultPWDIterations = 40;
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDPrivate = ArrayConverter
+            .hexStringToByteArray("21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDMask = ArrayConverter
+            .hexStringToByteArray("0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDPrivate = ArrayConverter
+            .hexStringToByteArray("171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDMask = ArrayConverter
+            .hexStringToByteArray("4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
+
+    /**
+     * Use salt from the example of RFC8492, should be 32 octets
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDSalt = ArrayConverter
+            .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+
+    /**
+     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
+     * unknown if this option is set.
+     */
+    private Boolean parseInvalidRecordNormally = false;
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -1405,12 +1477,12 @@ public class Config implements Serializable {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public Boolean isStopRecievingAfterFatal() {
-        return stopRecievingAfterFatal;
+    public Boolean isStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
-        this.stopRecievingAfterFatal = stopRecievingAfterFatal;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
@@ -1738,12 +1810,44 @@ public class Config implements Serializable {
         this.defaultPRFAlgorithm = defaultPRFAlgorithm;
     }
 
-    public byte[] getDefaultDtlsCookie() {
-        return Arrays.copyOf(defaultDtlsCookie, defaultDtlsCookie.length);
+    public byte[] getDtlsDefaultCookie() {
+        return Arrays.copyOf(dtlsDefaultCookie, dtlsDefaultCookie.length);
     }
 
-    public void setDefaultDtlsCookie(byte[] defaultDtlsCookie) {
-        this.defaultDtlsCookie = defaultDtlsCookie;
+    public void setDtlsDefaultCookie(byte[] defaultDtlsCookie) {
+        this.dtlsDefaultCookie = defaultDtlsCookie;
+    }
+
+    public Integer getDtlsDefaultCookieLength() {
+        return dtlsDefaultCookieLength;
+    }
+
+    public void setDtlsDefaultCookieLength(Integer dtlsDefaultCookieLength) {
+        this.dtlsDefaultCookieLength = dtlsDefaultCookieLength;
+    }
+
+    public Integer getDtlsMaximumFragmentLength() {
+        return dtlsMaximumFragmentLength;
+    }
+
+    public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
+        this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public boolean isDtlsExcludeOutOfOrder() {
+        return dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
+        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsOnlyFitting() {
+        return dtlsOnlyFitting;
+    }
+
+    public void setDtlsOnlyFitting(boolean dtlsOnlyFitting) {
+        this.dtlsOnlyFitting = dtlsOnlyFitting;
     }
 
     public byte[] getDefaultClientSessionId() {
@@ -2111,24 +2215,8 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public Boolean isWaitOnlyForExpectedDTLS() {
-        return waitOnlyForExpectedDTLS;
-    }
-
-    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
-        this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
-    }
-
     public String getDefaultApplicationMessageData() {
         return defaultApplicationMessageData;
-    }
-
-    public Boolean isDoDTLSRetransmits() {
-        return doDTLSRetransmits;
-    }
-
-    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
-        this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
     public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {
@@ -2402,6 +2490,10 @@ public class Config implements Serializable {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
+    public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
+        this.addPWDClearExtension = addPWDClearExtension;
+    }
+
     public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
@@ -2414,6 +2506,10 @@ public class Config implements Serializable {
         return addPreSharedKeyExtension;
     }
 
+    public Boolean isAddPWDClearExtension() {
+        return addPWDClearExtension;
+    }
+
     public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
@@ -2424,14 +2520,6 @@ public class Config implements Serializable {
 
     public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
         return pskKeyExchangeModes;
-    }
-
-    public Integer getDefaultDTLSCookieLength() {
-        return defaultDTLSCookieLength;
-    }
-
-    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
-        this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
     public Integer getPaddingLength() {
@@ -3274,11 +3362,115 @@ public class Config implements Serializable {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
     }
 
-    public Boolean getDoNotParseInvalidMacOrPadMessages() {
-        return doNotParseInvalidMacOrPadMessages;
+    public Boolean getParseInvalidRecordNormally() {
+        return parseInvalidRecordNormally;
     }
 
-    public void setDoNotParseInvalidMacOrPadMessages(Boolean doNotParseInvalidMacOrPadMessages) {
-        this.doNotParseInvalidMacOrPadMessages = doNotParseInvalidMacOrPadMessages;
+    public void setParseInvalidRecordNormally(Boolean parseInvalidRecordNormally) {
+        this.parseInvalidRecordNormally = parseInvalidRecordNormally;
+    }
+
+    public String getDefaultClientPWDUsername() {
+        return defaultClientPWDUsername;
+    }
+
+    public void setDefaultClientPWDUsername(String username) {
+        this.defaultClientPWDUsername = username;
+    }
+
+    public byte[] getDefaultServerPWDSalt() {
+        return defaultServerPWDSalt;
+    }
+
+    public void setDefaultServerPWDSalt(byte[] salt) {
+        this.defaultServerPWDSalt = salt;
+    }
+
+    public String getDefaultPWDPassword() {
+        return defaultPWDPassword;
+    }
+
+    public void setDefaultPWDPassword(String password) {
+        this.defaultPWDPassword = password;
+    }
+
+    public int getDefaultPWDIterations() {
+        return defaultPWDIterations;
+    }
+
+    public void setDefaultPWDIterations(int defaultPWDIterations) {
+        this.defaultPWDIterations = defaultPWDIterations;
+    }
+
+    public byte[] getDefaultServerPWDPrivate() {
+        return defaultServerPWDPrivate;
+    }
+
+    public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
+        this.defaultServerPWDPrivate = defaultServerPWDPrivate;
+    }
+
+    public byte[] getDefaultServerPWDMask() {
+        return defaultServerPWDMask;
+    }
+
+    public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
+        this.defaultServerPWDMask = defaultServerPWDMask;
+    }
+
+    public byte[] getDefaultClientPWDPrivate() {
+        return defaultClientPWDPrivate;
+    }
+
+    public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
+        this.defaultClientPWDPrivate = defaultClientPWDPrivate;
+    }
+
+    public byte[] getDefaultClientPWDMask() {
+        return defaultClientPWDMask;
+    }
+
+    public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
+        this.defaultClientPWDMask = defaultClientPWDMask;
+    }
+
+    public NamedGroup getDefaultPWDProtectGroup() {
+        return defaultPWDProtectGroup;
+    }
+
+    public void setDefaultPWDProtectGroup(NamedGroup defaultPWDProtectGroup) {
+        this.defaultPWDProtectGroup = defaultPWDProtectGroup;
+    }
+
+    public CustomECPoint getDefaultServerPWDProtectPublicKey() {
+        return defaultServerPWDProtectPublicKey;
+    }
+
+    public void setDefaultServerPWDProtectPublicKey(CustomECPoint defaultServerPWDProtectPublicKey) {
+        this.defaultServerPWDProtectPublicKey = defaultServerPWDProtectPublicKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectPrivateKey() {
+        return defaultServerPWDProtectPrivateKey;
+    }
+
+    public void setDefaultServerPWDProtectPrivateKey(BigInteger defaultServerPWDProtectPrivateKey) {
+        this.defaultServerPWDProtectPrivateKey = defaultServerPWDProtectPrivateKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectRandomSecret() {
+        return defaultServerPWDProtectRandomSecret;
+    }
+
+    public void setDefaultServerPWDProtectRandomSecret(BigInteger defaultServerPWDProtectRandomSecret) {
+        this.defaultServerPWDProtectRandomSecret = defaultServerPWDProtectRandomSecret;
+    }
+
+    public Boolean isAddPWDProtectExtension() {
+        return addPWDProtectExtension;
+    }
+
+    public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
+        this.addPWDProtectExtension = addPWDProtectExtension;
     }
 }
