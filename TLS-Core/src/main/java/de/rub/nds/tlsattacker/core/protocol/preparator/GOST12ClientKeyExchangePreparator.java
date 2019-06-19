@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.GOST3411_2012_256Digest;
 
 public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePreparator {
 
@@ -20,8 +22,8 @@ public class GOST12ClientKeyExchangePreparator extends GOSTClientKeyExchangePrep
     }
 
     @Override
-    protected String getKeyAgreementAlgorithm() {
-        return "ECGOST3410-2012-256";
+    protected Digest getKeyAgreementDigestAlgorithm() {
+        return new GOST3411_2012_256Digest();
     }
 
     @Override

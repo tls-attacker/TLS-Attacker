@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -171,10 +172,10 @@ public class SignatureCalculatorTest {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
         keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("Tc26-Gost-3410-12-512-paramSetA"),
                 context.getBadSecureRandom());
+        context.getConfig().setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_512_paramSetA);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         BCECGOST3410_2012PrivateKey privateKey = (BCECGOST3410_2012PrivateKey) keyPair.getPrivate();
         context.setServerEcPrivateKey(privateKey.getS());
-
         byte[] signature = SignatureCalculator.generateSignature(algorithm, context.getChooser(), data);
         Signature instance = Signature.getInstance(algorithm.getJavaName());
         instance.initVerify(keyPair.getPublic());

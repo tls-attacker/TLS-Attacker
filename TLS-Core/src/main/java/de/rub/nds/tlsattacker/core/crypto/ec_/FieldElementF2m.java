@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.crypto.ec_;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br />
@@ -19,6 +21,8 @@ import java.math.BigInteger;
  * bit represents the i-th coefficient.
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     /**
      * Instantiates an element of a galois field F{2^m}.
@@ -91,7 +95,6 @@ public class FieldElementF2m extends FieldElement implements Serializable {
 
         do {
             BigInteger[] division = this.polynomialDivision(r2, r1);
-
             // r = r2 mod r1
             BigInteger r = division[1];
             // q = (r2 - r) / r1
@@ -110,7 +113,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
             r2 = r1;
             r1 = r;
 
-        } while (!r1.equals(BigInteger.ONE));
+        } while (!r1.equals(BigInteger.ONE) && !r1.equals(BigInteger.ZERO));
 
         // t1 * this.getData() == 1
         return new FieldElementF2m(t1, this.getModulus());
@@ -129,24 +132,19 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
         int modLength = p.bitLength();
-        if (modLength > 0) {
-            BigInteger q = new BigInteger("0");
+        BigInteger q = new BigInteger("0");
+        while (f.bitLength() >= modLength && modLength != 0) {
+            BigInteger tmp = new BigInteger("1");
+            tmp = tmp.shiftLeft(f.bitLength() - modLength);
+            q = q.xor(tmp);
 
-            while (f.bitLength() >= modLength) {
-                BigInteger tmp = new BigInteger("1");
-                tmp = tmp.shiftLeft(f.bitLength() - modLength);
-                q = q.xor(tmp);
-
-                BigInteger shift = p.multiply(tmp);
-                f = f.xor(shift);
-            }
-            // q is the quotient.
-            // f is the remainder.
-            BigInteger[] result = { q, f };
-            return result;
-        } else {
-            throw new RuntimeException("Oppps");
+            BigInteger shift = p.multiply(tmp);
+            f = f.xor(shift);
         }
+        // q is the quotient.
+        // f is the remainder.
+        BigInteger[] result = { q, f };
+        return result;
     }
 
     /**

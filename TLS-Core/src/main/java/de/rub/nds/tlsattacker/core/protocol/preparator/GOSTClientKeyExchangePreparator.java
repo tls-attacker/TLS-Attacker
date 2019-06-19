@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
@@ -22,6 +19,7 @@ import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -42,6 +40,7 @@ import org.bouncycastle.asn1.cryptopro.GostR3410TransportParameters;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithSBox;
@@ -86,11 +85,11 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
             if (clientMode) {
                 preparePms();
                 msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
-
+                prepareEphemeralKey();
                 prepareKek(msg.getComputations().getPrivateKey().getValue(), chooser.getServerEcPublicKey());
                 prepareEncryptionParams();
                 prepareCek();
-                prepareKeyBlob(chooser.getSelectedNamedGroup());
+                prepareKeyBlob();
             } else {
                 TLSGostKeyTransportBlob transportBlob = TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob()
                         .getValue());
@@ -141,10 +140,11 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     private void prepareKek(BigInteger privateKey, Point publicKey) throws GeneralSecurityException {
         EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedGostCurve());
         Point sharedPoint = curve.mult(privateKey, publicKey);
-        byte[] kek = PointFormatter.formatToByteArray(sharedPoint, ECPointFormat.UNCOMPRESSED); // TODO
-        // MIGHT
-        // BE
-        // WRONG
+        byte[] pms = PointFormatter.toRawFormat(sharedPoint);
+        Digest digest = getKeyAgreementDigestAlgorithm();
+        digest.update(pms, 0, pms.length);
+        byte[] kek = new byte[digest.getDigestSize()];
+        digest.doFinal(kek, 0);
         msg.getComputations().setKeyEncryptionKey(kek);
         LOGGER.debug("KEK: " + ArrayConverter.bytesToHexString(msg.getComputations().getKeyEncryptionKey()));
     }
@@ -210,10 +210,11 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         msg.getComputations().setEncryptionParamSet(getEncryptionParameters());
     }
 
-    private void prepareKeyBlob(NamedGroup group) throws IOException {
-        SubjectPublicKeyInfo ephemeralKey = null;
+    private void prepareKeyBlob() throws IOException {
         Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg.getComputations()
-                .getClientPublicKeyY().getValue(), group);
+                .getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
+        SubjectPublicKeyInfo ephemeralKey = SubjectPublicKeyInfo.getInstance(GOSTUtils.generatePublicKey(
+                chooser.getSelectedGostCurve(), ecPoint).getEncoded());
 
         Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey()
                 .getValue(), getMaskKey(), msg.getComputations().getMacKey().getValue());
@@ -247,7 +248,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     protected abstract ASN1ObjectIdentifier getEncryptionParameters();
 
-    protected abstract String getKeyAgreementAlgorithm();
+    protected abstract Digest getKeyAgreementDigestAlgorithm();
 
     protected abstract String getKeyPairGeneratorAlgorithm();
 }

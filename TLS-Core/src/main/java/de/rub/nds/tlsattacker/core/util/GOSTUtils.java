@@ -10,18 +10,24 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPoint;
 import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.ECPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
@@ -64,5 +70,37 @@ public class GOSTUtils {
         String curveName = curve.getJavaName();
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
         return new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
+    }
+
+    public static PublicKey generatePublicKey(GOSTCurve curve, Point point) {
+        switch (curve) {
+            case GostR3410_2001_CryptoPro_A:
+            case GostR3410_2001_CryptoPro_B:
+            case GostR3410_2001_CryptoPro_C:
+            case GostR3410_2001_CryptoPro_XchA:
+            case GostR3410_2001_CryptoPro_XchB:
+                LOGGER.debug("Generating GOST01 public key for " + curve.name());
+                return (BCECGOST3410PublicKey) convertPointToPublicKey(curve, point, "ECGOST3410");
+            case Tc26_Gost_3410_12_256_paramSetA:
+            case Tc26_Gost_3410_12_512_paramSetA:
+            case Tc26_Gost_3410_12_512_paramSetB:
+            case Tc26_Gost_3410_12_512_paramSetC:
+                LOGGER.debug("Generating GOST12 public key for " + curve.name());
+                return (BCECGOST3410_2012PublicKey) convertPointToPublicKey(curve, point, "ECGOST3410-2012");
+        }
+        throw new UnsupportedOperationException("Gost Curve " + curve + " is not supported");
+    }
+
+    private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
+        try {
+            System.out.println(curve);
+            ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
+            ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
+            ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
+            return KeyFactory.getInstance(keyFactoryAlg).generatePublic(privateKeySpec);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            LOGGER.error("Could not generate GOST public key", e);
+            return null;
+        }
     }
 }
