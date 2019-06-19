@@ -1153,7 +1153,7 @@ public class Config implements Serializable {
      * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
      * unknown if this option is set.
      */
-    private Boolean parseInvalidRecordNormally = false;
+    private Boolean parseInvalidRecordNormally = true;
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
