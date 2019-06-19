@@ -49,6 +49,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.Objects;
 
 public class ReceiveMessageHelper {
 
@@ -286,9 +287,9 @@ public class ReceiveMessageHelper {
             for (AbstractRecord record : recordGroup.getRecords()) {
                 if (record instanceof Record) {
                     RecordCryptoComputations computations = ((Record) record).getComputations();
-                    if ((computations.getMacValid() != Boolean.TRUE && (layer.getDecryptorCipher() instanceof RecordStreamCipher || layer
+                    if ((!Objects.equals(computations.getMacValid(), Boolean.TRUE) && (layer.getDecryptorCipher() instanceof RecordStreamCipher || layer
                             .getDecryptorCipher() instanceof RecordBlockCipher))
-                            || (computations.getPaddingValid() != Boolean.TRUE && layer.getDecryptorCipher() instanceof RecordBlockCipher)) {
+                            || (!Objects.equals(computations.getPaddingValid(), Boolean.TRUE) && layer.getDecryptorCipher() instanceof RecordBlockCipher)) {
                         return false;
                     }
                 }
