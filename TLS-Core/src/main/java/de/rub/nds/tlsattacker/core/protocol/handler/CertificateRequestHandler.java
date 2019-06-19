@@ -8,18 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
@@ -52,10 +55,12 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
-        List<SignatureAndHashAlgorithm> algoList = convertSignatureAndHashAlgorithms(message
-                .getSignatureHashAlgorithms().getValue());
-        tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
-        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgortihms to " + algoList.toString());
+        if( !ProtocolVersion.TLS11.equals( tlsContext.getSelectedProtocolVersion() ) ) {
+            List<SignatureAndHashAlgorithm> algoList = convertSignatureAndHashAlgorithms(message
+                    .getSignatureHashAlgorithms().getValue());
+            tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
+            LOGGER.debug("Set ServerSupportedSignatureAndHashAlgortihms to " + algoList.toString());
+        }
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {

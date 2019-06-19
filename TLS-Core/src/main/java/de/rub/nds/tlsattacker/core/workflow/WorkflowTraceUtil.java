@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -17,10 +23,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceUtil {
 
@@ -274,7 +276,7 @@ public class WorkflowTraceUtil {
         return sendingActions.get(sendingActions.size() - 1);
     }
 
-    private WorkflowTraceUtil() {
+    public WorkflowTraceUtil() {
     }
 
 }
