@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.math.ec.ECPoint;
 
 public class TlsContext {
 
@@ -513,6 +514,23 @@ public class TlsContext {
 
     private Boolean clientAuthentication;
 
+    private String clientPWDUsername;
+
+    private byte[] serverPWDSalt;
+
+    /**
+     * Password Element for TLS_ECCPWD
+     */
+    private Point PWDPE;
+
+    private BigInteger clientPWDPrivate;
+
+    private BigInteger serverPWDPrivate;
+
+    private BigInteger serverPWDScalar;
+
+    private Point serverPWDElement;
+
     /**
      * Last application message data received/send by this context. This is
      * especially useful for forwarding application messages via ForwardAction.
@@ -601,8 +619,7 @@ public class TlsContext {
      * end. This is usually used when working with the default connection end in
      * single context scenarios.
      *
-     * @param config
-     *            The Config for which the TlsContext should be created
+     * @param config The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         RunningModeType mode = config.getDefaultRunningMode();
@@ -1781,8 +1798,7 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was proposed by the client.
      *
-     * @param ext
-     *            The ExtensionType to check for
+     * @param ext The ExtensionType to check for
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
@@ -1801,8 +1817,7 @@ public class TlsContext {
     /**
      * Mark the given TLS extension type as client proposed extension.
      *
-     * @param ext
-     *            The ExtensionType that is proposed
+     * @param ext The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1811,8 +1826,7 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was sent by the server.
      *
-     * @param ext
-     *            The ExtensionType to check for
+     * @param ext The ExtensionType to check for
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
@@ -1822,8 +1836,7 @@ public class TlsContext {
     /**
      * Mark the given TLS extension type as server negotiated extension.
      *
-     * @param ext
-     *            The ExtensionType to add
+     * @param ext The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
@@ -1916,8 +1929,7 @@ public class TlsContext {
     }
 
     /**
-     * @param clientEarlyTrafficSecret
-     *            the clientEarlyTrafficSecret to set
+     * @param clientEarlyTrafficSecret the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
         this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
@@ -1931,8 +1943,7 @@ public class TlsContext {
     }
 
     /**
-     * @param maxEarlyDataSize
-     *            the maxEarlyDataSize to set
+     * @param maxEarlyDataSize the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(long maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
@@ -1946,8 +1957,7 @@ public class TlsContext {
     }
 
     /**
-     * @param psk
-     *            the psk to set
+     * @param psk the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
@@ -1961,8 +1971,7 @@ public class TlsContext {
     }
 
     /**
-     * @param earlySecret
-     *            the earlySecret to set
+     * @param earlySecret the earlySecret to set
      */
     public void setEarlySecret(byte[] earlySecret) {
         this.earlySecret = earlySecret;
@@ -1976,8 +1985,7 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataCipherSuite
-     *            the earlyDataCipherSuite to set
+     * @param earlyDataCipherSuite the earlyDataCipherSuite to set
      */
     public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
         this.earlyDataCipherSuite = earlyDataCipherSuite;
@@ -1991,8 +1999,7 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataPSKIdentity
-     *            the earlyDataPSKIdentity to set
+     * @param earlyDataPSKIdentity the earlyDataPSKIdentity to set
      */
     public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
         this.earlyDataPSKIdentity = earlyDataPSKIdentity;
@@ -2006,8 +2013,7 @@ public class TlsContext {
     }
 
     /**
-     * @param selectedIdentityIndex
-     *            the selectedIdentityIndex to set
+     * @param selectedIdentityIndex the selectedIdentityIndex to set
      */
     public void setSelectedIdentityIndex(int selectedIdentityIndex) {
         this.selectedIdentityIndex = selectedIdentityIndex;
@@ -2021,8 +2027,7 @@ public class TlsContext {
     }
 
     /**
-     * @param clientPskKeyExchangeModes
-     *            the clientPskKeyExchangeModes to set
+     * @param clientPskKeyExchangeModes the clientPskKeyExchangeModes to set
      */
     public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
         this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
@@ -2036,8 +2041,7 @@ public class TlsContext {
     }
 
     /**
-     * @param pskSets
-     *            the pskSets to set
+     * @param pskSets the pskSets to set
      */
     public void setPskSets(List<PskSet> pskSets) {
         this.pskSets = pskSets;
@@ -2051,8 +2055,7 @@ public class TlsContext {
     }
 
     /**
-     * @param activeClientKeySetType
-     *            the activeClientKeySetType to set
+     * @param activeClientKeySetType the activeClientKeySetType to set
      */
     public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
         this.activeClientKeySetType = activeClientKeySetType;
@@ -2066,8 +2069,7 @@ public class TlsContext {
     }
 
     /**
-     * @param activeServerKeySetType
-     *            the activeServerKeySetType to set
+     * @param activeServerKeySetType the activeServerKeySetType to set
      */
     public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
         this.activeServerKeySetType = activeServerKeySetType;
@@ -2097,8 +2099,7 @@ public class TlsContext {
     }
 
     /**
-     * @param earlyDataPsk
-     *            the earlyDataPsk to set
+     * @param earlyDataPsk the earlyDataPsk to set
      */
     public void setEarlyDataPsk(byte[] earlyDataPsk) {
         this.earlyDataPsk = earlyDataPsk;
@@ -2214,6 +2215,62 @@ public class TlsContext {
 
     public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
         this.clientDsaGenerator = clientDsaGenerator;
+    }
+
+    public void setClientPWDUsername(String username) {
+        this.clientPWDUsername = username;
+    }
+
+    public String getClientPWDUsername() {
+        return clientPWDUsername;
+    }
+
+    public void setServerPWDSalt(byte[] salt) {
+        this.serverPWDSalt = salt;
+    }
+
+    public byte[] getServerPWDSalt() {
+        return serverPWDSalt;
+    }
+
+    public Point getPWDPE() {
+        return PWDPE;
+    }
+
+    public void setPWDPE(Point PWDPE) {
+        this.PWDPE = PWDPE;
+    }
+
+    public BigInteger getClientPWDPrivate() {
+        return clientPWDPrivate;
+    }
+
+    public void setClientPWDPrivate(BigInteger clientPWDPrivate) {
+        this.clientPWDPrivate = clientPWDPrivate;
+    }
+
+    public BigInteger getServerPWDPrivate() {
+        return serverPWDPrivate;
+    }
+
+    public void setServerPWDPrivate(BigInteger serverPWDPrivate) {
+        this.serverPWDPrivate = serverPWDPrivate;
+    }
+
+    public BigInteger getServerPWDScalar() {
+        return serverPWDScalar;
+    }
+
+    public void setServerPWDScalar(BigInteger serverPWDScalar) {
+        this.serverPWDScalar = serverPWDScalar;
+    }
+
+    public Point getServerPWDElement() {
+        return serverPWDElement;
+    }
+
+    public void setServerPWDElement(Point serverPWDElement) {
+        this.serverPWDElement = serverPWDElement;
     }
 
     public GOSTCurve getSelectedGostCurve() {

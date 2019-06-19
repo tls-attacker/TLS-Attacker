@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
@@ -216,7 +217,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret = new byte[macLength];
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
+                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
+                } else {
+                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
+                }
+
             } else {
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
@@ -229,7 +235,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
                     pos = 0;
                 }
-                sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                } else {
+                    sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
+                }
             }
             byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);
             tlsContext.setHandshakeSecret(handshakeSecret);
@@ -298,5 +308,31 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
         }
+    }
+
+    private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
+        Chooser chooser = tlsContext.getChooser();
+        EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+        int curveSize = curve.getModulus().bitLength();
+        byte[] xPos = Arrays.copyOfRange(keyShare.getPublicKey(), 0, curveSize);
+        byte[] yPos = Arrays.copyOfRange(keyShare.getPublicKey(), curveSize, curveSize * 2);
+        byte scalarLength = keyShare.getPublicKey()[curveSize * 2];
+        BigInteger scalar = new BigInteger(1, Arrays.copyOfRange(keyShare.getPublicKey(), curveSize * 2 + 1, curveSize
+                * 2 + 1 + scalarLength));
+        Point element = curve.getPoint(new BigInteger(1, xPos), new BigInteger(1, yPos));
+        Point passwordElement = PWDComputations.computePasswordElement(tlsContext.getChooser(), curve);
+        BigInteger privateKeyScalar;
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
+                    .mod(curve.getBasePointOrder());
+        } else {
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
+                    .mod(curve.getBasePointOrder());
+        }
+        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(element)));
+        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
+
+        Point sharedSecret = curve.mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), element));
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize, true);
     }
 }

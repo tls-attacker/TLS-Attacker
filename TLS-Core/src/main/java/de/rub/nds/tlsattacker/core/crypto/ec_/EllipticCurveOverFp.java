@@ -19,15 +19,13 @@ public class EllipticCurveOverFp extends EllipticCurve {
     private final FieldElementFp b;
 
     /**
-     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br />
+     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be
+     * prime.<br />
      *
-     * @param a
-     *            The coefficient a in the equation of the curve.
-     * @param b
-     *            The coefficient b in the equation of the curve.
-     * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
+     * @param a The coefficient a in the equation of the curve.
+     * @param b The coefficient b in the equation of the curve.
+     * @param p The prime order of the field over which the curve shall be
+     * defined.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p) {
         super(p);
@@ -39,19 +37,13 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br />
      * With base point (x,y) and base point order q. p must be prime.
      *
-     * @param a
-     *            The coefficient a in the equation of the curve.
-     * @param b
-     *            The coefficient b in the equation of the curve.
-     * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
-     * @param x
-     *            The x-coordinate of the base point.
-     * @param y
-     *            The y-coordinate of the base point.
-     * @param q
-     *            The order of the base point.
+     * @param a The coefficient a in the equation of the curve.
+     * @param b The coefficient b in the equation of the curve.
+     * @param p The prime order of the field over which the curve shall be
+     * defined.
+     * @param x The x-coordinate of the base point.
+     * @param y The y-coordinate of the base point.
+     * @param q The order of the base point.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
         super(p, x, y, q);
@@ -141,4 +133,14 @@ public class EllipticCurveOverFp extends EllipticCurve {
         return new FieldElementFp(value, this.getModulus());
     }
 
+    @Override
+    public Point createAPointOnCurve(BigInteger x) {
+        if (getModulus().mod(new BigInteger("4")).equals(new BigInteger("3"))) {
+            System.out.println("ok this cannnot work :(");
+        }
+        //     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be
+        BigInteger ySquared = x.modPow(new BigInteger("3"), getModulus()).add(a.getData().multiply(x).mod(getModulus())).add(b.getData()).mod(getModulus());
+        BigInteger y = ySquared.modPow(getModulus().add(BigInteger.ONE).divide(new BigInteger("4")), getModulus());
+        return getPoint(x, y);
+    }
 }

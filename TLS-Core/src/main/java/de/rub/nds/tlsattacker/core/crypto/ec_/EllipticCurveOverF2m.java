@@ -155,4 +155,9 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     public FieldElement createFieldElement(BigInteger value) {
         return new FieldElementF2m(value, this.getModulus());
     }
+
+    @Override
+    public Point createAPointOnCurve(BigInteger x) {
+        //Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
+    }
 }

@@ -461,6 +461,16 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
+     * If we generate ClientHello with the PWDClear extension
+     */
+    private Boolean addPWDClearExtension = false;
+
+    /**
+     * If we generate ClientHello with the PWDProtect extension
+     */
+    private Boolean addPWDProtectExtension = false;
+
+    /**
      * If we generate ClientHello with the PSKKeyExchangeModes extension
      */
     private Boolean addPSKKeyExchangeModesExtension = false;
@@ -1049,6 +1059,54 @@ public class Config implements Serializable {
      */
     private Boolean tls13BackwardsCompatibilityMode = true;
 
+    /**
+     * Use username from the example of RFC8492
+     */
+    private String defaultClientPWDUsername = "fred";
+
+    /**
+     * Group used to encrypt the username in TLS_ECCPWD
+     */
+    private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
+
+    private Point defaultServerPWDProtectPublicKey;
+
+    private BigInteger defaultServerPWDProtectPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
+            "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+
+    /**
+     * Use password from the example of RFC8492
+     */
+    private String defaultPWDPassword = "barney";
+
+    private int defaultPWDIterations = 40;
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDPrivate = ArrayConverter
+            .hexStringToByteArray("21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDMask = ArrayConverter
+            .hexStringToByteArray("0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDPrivate = ArrayConverter
+            .hexStringToByteArray("171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDMask = ArrayConverter
+            .hexStringToByteArray("4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
+
+    /**
+     * Use salt from the example of RFC8492, should be 32 octets
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDSalt = ArrayConverter
+            .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     Config() {
@@ -1088,6 +1146,7 @@ public class Config implements Serializable {
         EllipticCurve secp256R1Curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
         defaultTokenBindingECPublicKey = secp256R1Curve.mult(defaultTokenBindingEcPrivateKey,
                 secp256R1Curve.getBasePoint());
+        this.defaultServerPWDProtectPublicKey = curve.mult(defaultServerPWDProtectPrivateKey, curve.getBasePoint());
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
@@ -2298,6 +2357,10 @@ public class Config implements Serializable {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
+    public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
+        this.addPWDClearExtension = addPWDClearExtension;
+    }
+
     public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
@@ -2308,6 +2371,10 @@ public class Config implements Serializable {
 
     public Boolean isAddPreSharedKeyExtension() {
         return addPreSharedKeyExtension;
+    }
+
+    public Boolean isAddPWDClearExtension() {
+        return addPWDClearExtension;
     }
 
     public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
@@ -3160,5 +3227,112 @@ public class Config implements Serializable {
 
     public void setDefaultHandshakeSecret(byte[] defaultHandshakeSecret) {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
+    }
+
+    public String getDefaultClientPWDUsername() {
+        return defaultClientPWDUsername;
+    }
+
+    public void setDefaultClientPWDUsername(String username) {
+        this.defaultClientPWDUsername = username;
+    }
+
+    public byte[] getDefaultServerPWDSalt() {
+        return defaultServerPWDSalt;
+    }
+
+    public void setDefaultServerPWDSalt(byte[] salt) {
+        this.defaultServerPWDSalt = salt;
+    }
+
+    public String getDefaultPWDPassword() {
+        return defaultPWDPassword;
+    }
+
+    public void setDefaultPWDPassword(String password) {
+        this.defaultPWDPassword = password;
+    }
+
+    /**
+     * Min iterations for finding the PWD password element
+     */
+    public int getDefaultPWDIterations() {
+        return defaultPWDIterations;
+    }
+
+    public void setDefaultPWDIterations(int defaultPWDIterations) {
+        this.defaultPWDIterations = defaultPWDIterations;
+    }
+
+    public byte[] getDefaultServerPWDPrivate() {
+        return defaultServerPWDPrivate;
+    }
+
+    public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
+        this.defaultServerPWDPrivate = defaultServerPWDPrivate;
+    }
+
+    public byte[] getDefaultServerPWDMask() {
+        return defaultServerPWDMask;
+    }
+
+    public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
+        this.defaultServerPWDMask = defaultServerPWDMask;
+    }
+
+    public byte[] getDefaultClientPWDPrivate() {
+        return defaultClientPWDPrivate;
+    }
+
+    public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
+        this.defaultClientPWDPrivate = defaultClientPWDPrivate;
+    }
+
+    public byte[] getDefaultClientPWDMask() {
+        return defaultClientPWDMask;
+    }
+
+    public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
+        this.defaultClientPWDMask = defaultClientPWDMask;
+    }
+
+    public NamedGroup getDefaultPWDProtectGroup() {
+        return defaultPWDProtectGroup;
+    }
+
+    public void setDefaultPWDProtectGroup(NamedGroup defaultPWDProtectGroup) {
+        this.defaultPWDProtectGroup = defaultPWDProtectGroup;
+    }
+
+    public Point getDefaultServerPWDProtectPublicKey() {
+        return defaultServerPWDProtectPublicKey;
+    }
+
+    public void setDefaultServerPWDProtectPublicKey(Point defaultServerPWDProtectPublicKey) {
+        this.defaultServerPWDProtectPublicKey = defaultServerPWDProtectPublicKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectPrivateKey() {
+        return defaultServerPWDProtectPrivateKey;
+    }
+
+    public void setDefaultServerPWDProtectPrivateKey(BigInteger defaultServerPWDProtectPrivateKey) {
+        this.defaultServerPWDProtectPrivateKey = defaultServerPWDProtectPrivateKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectRandomSecret() {
+        return defaultServerPWDProtectRandomSecret;
+    }
+
+    public void setDefaultServerPWDProtectRandomSecret(BigInteger defaultServerPWDProtectRandomSecret) {
+        this.defaultServerPWDProtectRandomSecret = defaultServerPWDProtectRandomSecret;
+    }
+
+    public Boolean isAddPWDProtectExtension() {
+        return addPWDProtectExtension;
+    }
+
+    public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
+        this.addPWDProtectExtension = addPWDProtectExtension;
     }
 }

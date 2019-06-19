@@ -131,6 +131,12 @@ public class ExtensionParserFactory {
             case USE_SRTP:
                 parser = new SrtpExtensionParser(pointer, extensionBytes);
                 break;
+            case PWD_PROTECT:
+                parser = new PWDProtectExtensionParser(pointer, extensionBytes);
+                break;
+            case PWD_CLEAR:
+                parser = new PWDClearExtensionParser(pointer, extensionBytes);
+                break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);
                 break;

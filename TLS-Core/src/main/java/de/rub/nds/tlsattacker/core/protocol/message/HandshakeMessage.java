@@ -56,12 +56,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
+
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,6 +130,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
+            @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
+            @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
+            @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
             @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
             @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
     @HoldsModifiableVariable
