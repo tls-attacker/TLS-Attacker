@@ -35,7 +35,7 @@ public class DoubleLengthParserTest {
             Assert.fail("Expected ParserException");
         } catch (ParserException e) {
             Assert.assertEquals(
-                    "Attempt to parse over boundary Message Length of current context, boundary only has 63 bytes left, but parse request was for 602 bytes in MessageParserBoundaryContext [boundary=100, boundaryQualifier=Message Length, pointerOffset=4]",
+                    "Attempt to parse over boundary Message Length while in context Message, boundary only has 63 bytes left, but parse request was for 602 bytes in MessageParserBoundaryContext [boundary=100, boundaryQualifier=Message Length, pointerOffset=4]",
                     e.getMessage());
         } finally {
             MessageParserBoundaryVerificationContext.THROWING = false;

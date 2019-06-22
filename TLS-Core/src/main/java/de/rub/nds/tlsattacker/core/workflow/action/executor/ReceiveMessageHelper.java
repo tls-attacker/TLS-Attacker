@@ -36,11 +36,13 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
@@ -275,6 +277,12 @@ public class ReceiveMessageHelper {
             boolean handleHandshakeAsDtlsFragments) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
+		/*
+		 * empty application data message
+		 */
+    	if(cleanProtocolMessageBytes.length == 0 && typeFromRecord == ProtocolMessageType.APPLICATION_DATA) {
+    		receivedMessages.add(new ApplicationMessage());
+    	}
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
             try {
