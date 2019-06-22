@@ -12,6 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public interface ParserContext {
 
-    ParserContextResult beforeParse(Parser p, int length);
+    ParserContextResult beforeParse(Parser p, int length, ParserContext previous);
 
 }

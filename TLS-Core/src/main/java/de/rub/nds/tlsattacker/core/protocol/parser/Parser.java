@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.context.ParserContext;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
@@ -244,7 +245,13 @@ public abstract class Parser<T> {
 
     private void beforeParseRequest(int length) {
         if (!context.isEmpty()) {
-            context.peek().beforeParse(this, length).evaluate();
+        	ListIterator<ParserContext> listIterator = context.listIterator(context.size());
+        	ParserContext prev = null;
+        	while (listIterator.hasPrevious()) {
+        		ParserContext ctx = listIterator.previous();
+        		ctx.beforeParse(this, length, prev).evaluate();
+        		prev = ctx;
+        	}
         }
     }
 
