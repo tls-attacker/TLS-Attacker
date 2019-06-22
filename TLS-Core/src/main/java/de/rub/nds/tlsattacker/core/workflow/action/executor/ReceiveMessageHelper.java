@@ -276,12 +276,12 @@ public class ReceiveMessageHelper {
             boolean handleHandshakeAsDtlsFragments) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
-		/*
-		 * empty application data message
-		 */
-    	if(cleanProtocolMessageBytes.length == 0 && typeFromRecord == ProtocolMessageType.APPLICATION_DATA) {
-    		receivedMessages.add(new ApplicationMessage());
-    	}
+        /*
+         * empty application data message
+         */
+        if (cleanProtocolMessageBytes.length == 0 && typeFromRecord == ProtocolMessageType.APPLICATION_DATA) {
+            receivedMessages.add(new ApplicationMessage());
+        }
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
             try {

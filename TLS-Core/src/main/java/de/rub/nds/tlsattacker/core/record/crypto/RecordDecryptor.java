@@ -83,7 +83,7 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setInitialisationVector(result.getInitialisationVector());
         LOGGER.debug("PlainRecordBytes: "
                 + ArrayConverter.bytesToHexString(record.getComputations().getPlainRecordBytes().getValue()));
-        if (recordCipher.isUsingPadding() && result.isSuccessful()  && ! Arrays.equals(encrypted, decrypted)) {
+        if (recordCipher.isUsingPadding() && result.isSuccessful() && !Arrays.equals(encrypted, decrypted)) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
                     && context.getActiveKeySetTypeRead() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
                 adjustPaddingTLS(record);
@@ -292,7 +292,6 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private byte[] removeMac(byte[] unpadded) {
-    	LOGGER.debug("remove MAC of unpadded bytes (l) {}: new Length: {} ", unpadded.length, unpadded.length - recordCipher.getMacLength());
         return Arrays.copyOf(unpadded, (unpadded.length - recordCipher.getMacLength()));
     }
 

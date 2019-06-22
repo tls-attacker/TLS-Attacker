@@ -245,13 +245,13 @@ public abstract class Parser<T> {
 
     private void beforeParseRequest(int length) {
         if (!context.isEmpty()) {
-        	ListIterator<ParserContext> listIterator = context.listIterator(context.size());
-        	ParserContext prev = null;
-        	while (listIterator.hasPrevious()) {
-        		ParserContext ctx = listIterator.previous();
-        		ctx.beforeParse(this, length, prev).evaluate();
-        		prev = ctx;
-        	}
+            ListIterator<ParserContext> listIterator = context.listIterator(context.size());
+            ParserContext prev = null;
+            while (listIterator.hasPrevious()) {
+                ParserContext ctx = listIterator.previous();
+                ctx.beforeParse(this, length, prev).evaluate();
+                prev = ctx;
+            }
         }
     }
 
