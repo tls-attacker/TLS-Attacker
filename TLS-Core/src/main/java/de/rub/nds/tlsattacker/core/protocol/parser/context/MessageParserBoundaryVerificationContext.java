@@ -49,13 +49,12 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
                 public void evaluate() {
                     String message = String.format("Attempt to parse over boundary %s while in context %s, "
                             + "boundary only has %d bytes left, but parse request was for %d bytes in %s",
-                            boundaryQualifier,
-                            previous != null ? previous.toString() : "Message",
-                            MessageParserBoundaryVerificationContext.this.boundary
-                                    - (p.getPointer() - pointerOffset), requestedLength,
-                            MessageParserBoundaryVerificationContext.this);
+                            boundaryQualifier, previous != null ? previous.toString() : "Message",
+                            MessageParserBoundaryVerificationContext.this.boundary - (p.getPointer() - pointerOffset),
+                            requestedLength, MessageParserBoundaryVerificationContext.this);
                     if (THROWING) {
-                        throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this, previous);
+                        throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this,
+                                previous);
                     } else {
                         LOGGER.info(message);
                     }
