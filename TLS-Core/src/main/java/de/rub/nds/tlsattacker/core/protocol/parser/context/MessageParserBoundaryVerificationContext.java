@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.context;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +23,7 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final int messageBoundary;
+    private final int boundary;
 
     private final String boundaryQualifier;
 
@@ -28,30 +31,31 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
 
     public MessageParserBoundaryVerificationContext(int boundary, String boundaryQualifier, int pointerOffset) {
         super();
-        this.messageBoundary = boundary;
+        this.boundary = boundary;
         this.boundaryQualifier = boundaryQualifier;
         this.pointerOffset = pointerOffset;
     }
 
     @Override
-    public ParserContextResult beforeParse(final Parser p, final int requestedLength) {
+    public ParserContextResult beforeParse(final Parser p, final int requestedLength, final ParserContext previous) {
         int requestedBoundary = (p.getPointer() - pointerOffset) + requestedLength;
         LOGGER.trace("verify requested boundary {} against boundary {} {}", requestedBoundary, boundaryQualifier,
-                messageBoundary);
-        if (requestedBoundary <= this.messageBoundary) {
+                boundary);
+        if (requestedBoundary <= this.boundary) {
             return ParserContextResult.NULL_RESULT;
         } else {
             return new ParserContextResult() {
                 @Override
                 public void evaluate() {
-                    String message = String.format("Attempt to parse over boundary %s of current context, "
+                    String message = String.format("Attempt to parse over boundary %s while in context %s, "
                             + "boundary only has %d bytes left, but parse request was for %d bytes in %s",
                             boundaryQualifier,
-                            MessageParserBoundaryVerificationContext.this.messageBoundary
+                            previous != null ? previous.toString() : "Message",
+                            MessageParserBoundaryVerificationContext.this.boundary
                                     - (p.getPointer() - pointerOffset), requestedLength,
                             MessageParserBoundaryVerificationContext.this);
                     if (THROWING) {
-                        throw new ParserException(message);
+                        throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this, previous);
                     } else {
                         LOGGER.info(message);
                     }
@@ -62,7 +66,7 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
 
     @Override
     public String toString() {
-        return "MessageParserBoundaryContext [boundary=" + messageBoundary + ", boundaryQualifier=" + boundaryQualifier
+        return "MessageParserBoundaryContext [boundary=" + boundary + ", boundaryQualifier=" + boundaryQualifier
                 + ", pointerOffset=" + pointerOffset + "]";
     }
 }
