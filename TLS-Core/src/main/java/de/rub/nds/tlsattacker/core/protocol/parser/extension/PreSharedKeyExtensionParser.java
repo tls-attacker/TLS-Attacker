@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;

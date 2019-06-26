@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.message.suppData;
+package de.rub.nds.tlsattacker.core.protocol.message.supplementaldata;
 
 import java.util.HashMap;
 import java.util.Map;
