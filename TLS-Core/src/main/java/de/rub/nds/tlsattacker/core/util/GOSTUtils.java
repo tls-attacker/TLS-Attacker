@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;

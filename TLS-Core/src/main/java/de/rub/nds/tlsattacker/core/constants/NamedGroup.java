@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

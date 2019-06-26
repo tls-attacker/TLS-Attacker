@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension.KS;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import java.math.BigInteger;

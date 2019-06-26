@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;

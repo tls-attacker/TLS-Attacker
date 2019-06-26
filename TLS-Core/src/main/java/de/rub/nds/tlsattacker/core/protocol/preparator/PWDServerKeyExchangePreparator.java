@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurveOverFp;
-import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

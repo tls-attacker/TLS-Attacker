@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec_;
 
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
 import java.util.Random;
