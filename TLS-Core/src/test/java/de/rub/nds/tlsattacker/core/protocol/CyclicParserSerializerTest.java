@@ -141,6 +141,7 @@ public class CyclicParserSerializerTest {
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     fail("Could not execute " + testName + " - " + version.name());
                 }
                 /*

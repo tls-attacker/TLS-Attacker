@@ -158,6 +158,6 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     public Point createAPointOnCurve(BigInteger x) {
-        //Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
+        throw new UnsupportedOperationException("Currently not supported");
     }
 }

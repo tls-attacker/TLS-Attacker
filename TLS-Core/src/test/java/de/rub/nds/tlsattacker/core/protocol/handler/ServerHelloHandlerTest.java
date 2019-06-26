@@ -128,14 +128,10 @@ public class ServerHelloHandlerTest {
         message.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256.getByteValue());
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.BRAINPOOLP256R1, ArrayConverter
-                .hexStringToByteArray(("9E E1 7F 2E  CF 74 02 8F 6C 1F D7 0D\n"
-                        + "A1 D0 5A 4A 85 97 5D 7D  27 0C AA 6B 86 05 F1 C6\n"
-                        + "EB B8 75 BA 87 57 91 67  40 8F 7C 9E 77 84 2C 2B\n"
-                        + "3F 33 68 A2 5F D1 65 63  7E 9B 5D 57 76 0B 0B 70\n"
-                        + "46 59 B8 74 20 66 92 44  AA 67 CB 00 EA 72 C0 9B\n"
-                        + "84 A9 DB 5B B8 24 FC 39  82 42 8F CD 40 69 63 AE\n" + "08 0E 67 7A 48").replaceAll("\\s+",
-                        ""))));
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(
+                NamedGroup.BRAINPOOLP256R1,
+                ArrayConverter
+                        .hexStringToByteArray("9EE17F2ECF74028F6C1FD70DA1D05A4A85975D7D270CAA6B8605F1C6EBB875BA87579167408F7C9E77842C2B3F3368A25FD165637E9B5D57760B0B704659B87420669244AA67CB00EA72C09B84A9DB5BB824FC3982428FCD406963AE080E677A48")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         handler.adjustTLSContext(message);

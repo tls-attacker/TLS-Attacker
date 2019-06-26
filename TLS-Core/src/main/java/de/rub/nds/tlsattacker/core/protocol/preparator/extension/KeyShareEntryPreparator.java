@@ -69,7 +69,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
         LOGGER.debug("PasswordElement.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData())));
+                + ArrayConverter.bytesToHexString(ArrayConverter
+                        .bigIntegerToByteArray(passwordElement.getX().getData())));
     }
 
     private void prepareKeyShare() {

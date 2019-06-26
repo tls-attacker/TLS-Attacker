@@ -51,7 +51,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         prepareScalarElement(msg);
         byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(), msg
-                .getComputations().getPrivateKeyScalar(),msg.getComputations().getCurve());
+                .getComputations().getPrivateKeyScalar(), msg.getComputations().getCurve());
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -61,7 +61,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (!clientMode) {
             msg.prepareComputations();
             byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(), chooser.getContext()
-                    .getServerPWDPrivate(),msg.getComputations().getCurve());
+                    .getServerPWDPrivate(), msg.getComputations().getCurve());
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
@@ -72,7 +72,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData())));
+                + ArrayConverter.bytesToHexString(ArrayConverter
+                        .bigIntegerToByteArray(passwordElement.getX().getData())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -141,7 +142,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement = PointFormatter.toRawFormat(element);
+        byte[] serializedElement = PointFormatter.formatToByteArray(element, chooser.getConfig()
+                .getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }
@@ -158,14 +160,16 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             peerElement = chooser.getContext().getServerPWDElement();
             peerScalar = chooser.getContext().getServerPWDScalar();
         } else {
-            peerElement = PointFormatter.formatFromByteArray(chooser.getSelectedNamedGroup(), msg.getElement().getValue()); //TODO wrong group
+            peerElement = PointFormatter.formatFromByteArray(chooser.getSelectedNamedGroup(), msg.getElement()
+                    .getValue()); // TODO wrong group
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }
         if (peerElement == null || peerScalar == null) {
             LOGGER.warn("Missing peer element or scalar, returning empty premaster secret");
             return new byte[0];
         }
-        Point sharedSecret = curve.mult(privateKeyScalar, curve.add(curve.mult(peerScalar, passwordElement), peerElement));
+        Point sharedSecret = curve.mult(privateKeyScalar,
+                curve.add(curve.mult(peerScalar, passwordElement), peerElement));
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData());
     }
 

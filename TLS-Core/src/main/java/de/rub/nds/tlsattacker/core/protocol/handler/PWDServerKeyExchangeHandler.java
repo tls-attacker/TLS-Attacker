@@ -44,7 +44,8 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
     public void adjustTLSContext(PWDServerKeyExchangeMessage message) {
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
-        tlsContext.setServerPWDElement(PointFormatter.formatFromByteArray(tlsContext.getChooser().getSelectedNamedGroup(), message.getElement().getValue()));
+        tlsContext.setServerPWDElement(PointFormatter.formatFromByteArray(tlsContext.getChooser()
+                .getSelectedNamedGroup(), message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
             tlsContext.setPWDPE(message.getComputations().getPasswordElement());

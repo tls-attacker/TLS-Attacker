@@ -9,16 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.math.ec.ECCurve;
@@ -67,7 +63,6 @@ public class PWDServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
-        ECCurve curve = ECNamedCurveTable.getParameterSpec("brainpoolP256r1").getCurve();
         message.setNamedGroup(NamedGroup.BRAINPOOLP256R1.getValue());
         byte[] element = ArrayConverter
                 .hexStringToByteArray("0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1");
@@ -79,8 +74,10 @@ public class PWDServerKeyExchangeHandlerTest {
         message.setSalt(salt);
         handler.adjustTLSContext(message);
 
-        assertArrayEquals(ArrayConverter.bigIntegerToByteArray(curve.decodePoint(element).getXCoord().toBigInteger()),
-                ArrayConverter.bigIntegerToByteArray(context.getServerPWDElement().getXCoord().toBigInteger()));
+        assertArrayEquals(
+                ArrayConverter.bigIntegerToByteArray(PointFormatter
+                        .formatFromByteArray(NamedGroup.BRAINPOOLP256R1, element).getX().getData()),
+                ArrayConverter.bigIntegerToByteArray(context.getServerPWDElement().getX().getData()));
         assertArrayEquals(salt, context.getServerPWDSalt());
         assertArrayEquals(scalar.toByteArray(), context.getServerPWDScalar().toByteArray());
         assertEquals(NamedGroup.BRAINPOOLP256R1, context.getSelectedGroup());

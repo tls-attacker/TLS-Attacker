@@ -10,12 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec_.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.math.ec.ECCurve;
-import org.bouncycastle.math.ec.ECPoint;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -35,18 +36,17 @@ public class PWDComputationsTest {
                 .hexStringToByteArray("528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
-
-        ECCurve curve = ECNamedCurveTable.getParameterSpec("brainpoolP256r1").getCurve();
-        ECPoint passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
+        EllipticCurve curve = CurveFactory.getCurve(NamedGroup.BRAINPOOLP256R1);
+        Point passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         BigInteger expectedX = new BigInteger("686B0D3FC49894DD621EC04F925E029B2B1528EDEDCA46007254281E9A6EDC", 16);
         assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-                ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord().toBigInteger()));
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData()));
 
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         expectedX = new BigInteger("0BA387CE8123BEA05A4327520F5A2A66B038F2024F239F330038DA0A2744F79B", 16);
         assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-                ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord().toBigInteger()));
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData()));
     }
 
 }

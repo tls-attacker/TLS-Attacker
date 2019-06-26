@@ -82,7 +82,8 @@ public class PWDComputations extends KeyExchangeComputations {
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
      * @param chooser
-     * @param curve The curve that the generated point should fall on
+     * @param curve
+     *            The curve that the generated point should fall on
      * @return
      * @throws CryptoException
      */
@@ -126,31 +127,25 @@ public class PWDComputations extends KeyExchangeComputations {
                     ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
-            // (tmp mod (p - 1)) + 1
             BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
-            // y^2 = (x^3 + x*val + b) mod p
-            BigInteger tmpY = tmpX.pow(3).add(tmpX.multiply(curve.getA().toBigInteger()))
-                    .add(curve.getB().toBigInteger()).mod(prime);
-            Point tempPoint = curve.getPoint(tmpX,tmpY);
-            if (curve.isOnCurve(tempPoint) && !found) {
+            Point tempPoint = curve.createAPointOnCurve(tmpX);
+
+            if (!found && curve.isOnCurve(tempPoint)) {
                 createdPoint = tempPoint;
                 savedSeed = seed.clone();
                 found = true;
                 chooser.getContext().getBadSecureRandom().nextBytes(base);
             }
         } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
-        // y = y^((p+1)/4) mod p = sqrt(y)
-        BigInteger y = createdPoint.getY().getData().modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
-        Point passwordElement = curve.getPoint(createdPoint.getX().getData(), y);
 
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
         int lsbSeed = savedSeed[0] & 1;
-        int lsbY = y.getLowestSetBit() == 0 ? 1 : 0;
+        int lsbY = createdPoint.getY().getData().getLowestSetBit() == 0 ? 1 : 0;
         if (lsbSeed == lsbY) {
-            passwordElement = curve.inverse(passwordElement);
+            createdPoint = curve.inverse(createdPoint);
         }
-        return passwordElement;
+        return createdPoint;
     }
 
     protected static MacAlgorithm getMacAlgorithm(CipherSuite suite) {

@@ -65,8 +65,10 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
             throw new CryptoException("Missing HKDF algorithm for curves larger than 384 bits");
         }
 
-        BigInteger clientPublicKey = curve.mult(config.getDefaultServerPWDProtectRandomSecret(),generator).getX().getData();
-        BigInteger sharedSecret = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getX().getData();
+        BigInteger clientPublicKey = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), generator).getX()
+                .getData();
+        BigInteger sharedSecret = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getX()
+                .getData();
 
         byte[] key = HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),

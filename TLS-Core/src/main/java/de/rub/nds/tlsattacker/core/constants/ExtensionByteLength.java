@@ -241,6 +241,8 @@ public class ExtensionByteLength {
      */
     public static final int PWD_NAME = 1;
 
+    public static final int PWD_SCALAR = 1;
+
     /**
      * PASSWORD_SALT length field of the password_salt extension message
      *

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
@@ -75,9 +76,10 @@ public class PWDClientKeyExchangeHandlerTest {
                 .hexStringToByteArray("528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
-        ECCurve curve = ECNamedCurveTable.getParameterSpec("brainpoolP256r1").getCurve();
-        context.setServerPWDElement(curve.decodePoint(ArrayConverter
-                .hexStringToByteArray("0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1")));
+        context.setServerPWDElement(PointFormatter.formatFromByteArray(
+                NamedGroup.BRAINPOOLP256R1,
+                ArrayConverter
+                        .hexStringToByteArray("0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1")));
         context.setServerPWDScalar(new BigInteger("2f704896699fc424d3cec33717644f5adf7f68483424ee51492bb96613fc4921",
                 16));
 

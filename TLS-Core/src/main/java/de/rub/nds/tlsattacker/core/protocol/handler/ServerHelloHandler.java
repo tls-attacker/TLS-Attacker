@@ -28,8 +28,10 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.KS.DragonFlyKeyShareEntryParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -313,26 +315,28 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
         EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+        DragonFlyKeyShareEntryParser parser = new DragonFlyKeyShareEntryParser(keyShare.getPublicKey(),
+                keyShare.getGroup());
+        DragonFlyKeyShareEntry dragonFlyKeyShareEntry = parser.parse();
         int curveSize = curve.getModulus().bitLength();
-        byte[] xPos = Arrays.copyOfRange(keyShare.getPublicKey(), 0, curveSize);
-        byte[] yPos = Arrays.copyOfRange(keyShare.getPublicKey(), curveSize, curveSize * 2);
-        byte scalarLength = keyShare.getPublicKey()[curveSize * 2];
-        BigInteger scalar = new BigInteger(1, Arrays.copyOfRange(keyShare.getPublicKey(), curveSize * 2 + 1, curveSize
-                * 2 + 1 + scalarLength));
-        Point element = curve.getPoint(new BigInteger(1, xPos), new BigInteger(1, yPos));
+        Point keySharePoint = PointFormatter.fromRawFormat(keyShare.getGroup(),
+                dragonFlyKeyShareEntry.getRawPublicKey());
+
+        BigInteger scalar = dragonFlyKeyShareEntry.getScalar();
         Point passwordElement = PWDComputations.computePasswordElement(tlsContext.getChooser(), curve);
         BigInteger privateKeyScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
-                    .mod(curve.getBasePointOrder());
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve
+                    .getBasePointOrder());
         } else {
-            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
-                    .mod(curve.getBasePointOrder());
+            privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve
+                    .getBasePointOrder());
         }
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(element)));
+        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(keySharePoint)));
         LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
 
-        Point sharedSecret = curve.mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), element));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize, true);
+        Point sharedSecret = curve
+                .mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / 8, true);
     }
 }

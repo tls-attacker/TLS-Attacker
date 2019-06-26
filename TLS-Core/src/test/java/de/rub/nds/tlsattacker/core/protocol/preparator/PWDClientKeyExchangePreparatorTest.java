@@ -10,10 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec_.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.math.ec.ECCurve;
@@ -59,7 +58,7 @@ public class PWDClientKeyExchangePreparatorTest {
         tlsContext.getConfig().setDefaultClientPWDUsername("fred");
         tlsContext.getConfig().setDefaultPWDPassword("barney");
         tlsContext.setServerPWDScalar(new BigInteger(scalar));
-        tlsContext.setServerPWDElement(curve.decodePoint(element));
+        tlsContext.setServerPWDElement(PointFormatter.formatFromByteArray(NamedGroup.BRAINPOOLP256R1, element));
         tlsContext
                 .getConfig()
                 .setDefaultClientPWDMask(
