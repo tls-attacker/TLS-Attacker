@@ -70,6 +70,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
                 serverSocket = new ServerSocket(port);
             }
             socket = serverSocket.accept();
+            socket.setSoTimeout( (int )getTimeout() );
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }

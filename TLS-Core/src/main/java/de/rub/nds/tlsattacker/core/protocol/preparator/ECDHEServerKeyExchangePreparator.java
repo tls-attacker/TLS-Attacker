@@ -173,7 +173,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void generateNamedGroupList(T msg) {
         List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getClientSupportedNamedGroups());
         List<NamedGroup> unsupportedGroups = new ArrayList<>();
-        if (!chooser.getConfig().isEnforceSettings()) {
+        // TODO: SRC Adatapion? Aber ist das so korrekt?
+        if (chooser.getConfig().isEnforceSettings()) {
 
             List<NamedGroup> clientGroups = chooser.getServerSupportedNamedGroups();
             for (NamedGroup c : sharedGroups) {

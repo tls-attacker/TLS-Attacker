@@ -60,6 +60,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         socket = new Socket();
         socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
+        socket.setSoTimeout( (int )getTimeout() );
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }

@@ -66,7 +66,6 @@ public abstract class TransportHandler {
                     return stream.toByteArray();
                 } catch (Exception E) {
                 }
-
             }
         }
         return stream.toByteArray();
