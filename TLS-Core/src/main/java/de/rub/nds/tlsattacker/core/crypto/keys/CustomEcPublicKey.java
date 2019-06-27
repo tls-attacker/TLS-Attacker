@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
@@ -37,19 +38,30 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     private final NamedGroup group;
 
+    private final GOSTCurve gostCurve;
+
     private CustomEcPublicKey() {
         this.point = null;
         this.group = null;
+        this.gostCurve = null;
     }
 
     private CustomEcPublicKey(Point point, NamedGroup group) {
         this.point = point;
         this.group = group;
+        this.gostCurve = null;
     }
 
     public CustomEcPublicKey(BigInteger x, BigInteger y, NamedGroup group) {
         this.group = group;
+        this.gostCurve = null;
         point = CurveFactory.getCurve(group).getPoint(x, y);
+    }
+
+    public CustomEcPublicKey(BigInteger x, BigInteger y, GOSTCurve gostCurve) {
+        group = null;
+        this.gostCurve = gostCurve;
+        point = CurveFactory.getCurve(gostCurve).getPoint(x, y);
     }
 
     @Override

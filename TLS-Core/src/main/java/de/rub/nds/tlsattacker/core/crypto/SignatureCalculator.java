@@ -67,6 +67,9 @@ public class SignatureCalculator {
             } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
                     .contains("ECDSA")) {
                 algoName = "SHA1withECDSA";
+            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
+                    .contains("DSS")) {
+                algoName = "SHA1withDSA";
             } else {
                 throw new UnsupportedOperationException("Ciphersuite not supported - Check Debug Log");
             }

@@ -265,11 +265,11 @@ public class CertificateKeyPair implements Serializable {
         try {
             X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
             if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                LOGGER.warn("Could not determine EC public key group (GOST 2001)");
+                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2001)");
                 return null;
             }
             if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                LOGGER.warn("Could not determine EC public key group (GOST 2012)");
+                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2012)");
                 return null;
             }
             BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();
@@ -296,11 +296,11 @@ public class CertificateKeyPair implements Serializable {
         try {
             X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
             if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                LOGGER.warn("Could not determine EC public key group (GOST 2001)");
+                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2001)");
                 return null;
             }
             if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                LOGGER.warn("Could not determine EC public key group (GOST 2012)");
+                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2012)");
                 return null;
             }
             BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();

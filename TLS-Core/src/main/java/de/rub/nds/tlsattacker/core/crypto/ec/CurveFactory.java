@@ -20,7 +20,6 @@ public class CurveFactory {
      *            The name of the curve, that should be returned.
      */
     public static EllipticCurve getCurve(NamedGroup name) {
-
         switch (name) {
             case BRAINPOOLP256R1:
                 return new EllipticCurveBrainpoolP256R1();
