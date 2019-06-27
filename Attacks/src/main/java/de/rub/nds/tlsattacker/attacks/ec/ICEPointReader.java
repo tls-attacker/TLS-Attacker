@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec_.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec_.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
