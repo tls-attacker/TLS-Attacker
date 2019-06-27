@@ -27,7 +27,7 @@ public enum CipherAlgorithm {
     CAMELLIA_128_GCM(16, 16, 8, 16, "Camellia/GCM/NoPadding"),
     CAMELLIA_256_GCM(32, 16, 8, 16, "Camellia/GCM/NoPadding"),
     IDEA_128(16, 8, 0, 8, "IDEA/CBC/NoPadding"),
-    SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"), // TODO this is not verified
+    SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"),
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
     ChaCha20Poly1305(32, 12, 0, 0, "ChaCha20Poly1305"),
