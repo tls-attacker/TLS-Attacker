@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -243,9 +241,12 @@ public class ReceiveMessageHelper {
                             group.getProtocolMessageType(), context, false, true);
                     for (ProtocolMessage parsedMessage : parsedMessages) {
                         // we need this check since there might be
-                        // "unknown messages"
+                        // "unknown messages", note, we do not maintain ordering
+                        // between fragment and non-fragment messages
                         if (parsedMessage.isDtlsHandshakeMessageFragment()) {
                             messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
+                        } else {
+                            messages.add(parsedMessage);
                         }
                     }
                     List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
@@ -406,50 +407,54 @@ public class ReceiveMessageHelper {
 
     /*
      * Processes a list of arbitrary-ordered fragments. The idea is: 1. we
-     * assemble fragments into "fragmented messages" 2. we extract the messages
-     * from fragments but only update the context for fragments whose message
+     * assemble fragments into "fragmented messages", which are fragments
+     * carrying each a single handshake message. 2. we extract the messages from
+     * fragments but only update the context for fragments whose message
      * sequence is next for processing.
      */
     private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, Integer epoch,
             TlsContext context) {
-        // the fragment manager stores all the received message fragments
+
+        // the fragment manager stores all the message fragments received
         FragmentManager manager = context.getDtlsFragmentManager();
         List<ProtocolMessage> messages = new LinkedList<>();
 
-        // we first add the fragments to the manager
         for (DtlsHandshakeMessageFragment fragment : fragments) {
+
+            // we first add the fragment to the manager
             manager.addMessageFragment(fragment, epoch);
-        }
 
-        // we then process all the fragmented messages with increasing message
-        // seq until we until we arrive at a message seq for which no fragmented
-        // message was formed.
-        if (epoch == context.getDtlsNextReceiveEpoch()) {
-            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(
-                    context.getDtlsNextReceiveSequenceNumber(), epoch);
-            while (fragmentedMessage != null) {
-                manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-                messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-                fragmentedMessage = manager.getFragmentedMessage(context.getDtlsNextReceiveSequenceNumber(), epoch);
-            }
-        }
+            // we retrieve the corresponding fragmented message (or null if the
+            // message is incomplete)
+            DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
+                    .getValue(), epoch);
 
-        // we finally process fragmented messages whose sequence number is
-        // out-of-order note that we do not update the TLS context for
-        // these messages since it might invalidate the context.
-        // (for example, we could update the digest with the contents of a
-        // retransmission, causing the subsequent FINISHED verify_data check to
-        // fail)
-        if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
-            Set<Integer> fragmentSeq = new HashSet<Integer>();
-            for (DtlsHandshakeMessageFragment fragment : fragments) {
-                DtlsHandshakeMessageFragment fragmentedMessage = manager.getFragmentedMessage(fragment.getMessageSeq()
-                        .getValue(), epoch);
-                if (fragmentedMessage != null && !fragmentSeq.contains(fragmentedMessage.getMessageSeq().getValue())) {
-                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
-                    messages.add(message);
+            // we only act if the addition of the fragment completed the
+            // fragmented message
+            // meaning a handshake message can be parsed from it
+            if (fragmentedMessage != null) {
+
+                // we check if the assembled fragment is in-order, and if so,
+                // process it (aka parse message, add it to list, remove
+                // fragment
+                // from manager) and update the context
+                if (epoch == context.getDtlsNextReceiveEpoch()
+                        && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
+                    manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                    messages.add(processFragmentedMessage(fragmentedMessage, context, true));
                 }
-                fragmentSeq.add(fragment.getMessageSeq().getValue());
+
+                // if the fragment is out of order we only process it but DO NOT
+                // update the context we also handle the dtlsExcludeOutOfOrder
+                // option which allows TLS-Attacker to omit out-of-order
+                // messages
+                else {
+                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
+                    manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+                    if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
+                        messages.add(message);
+                    }
+                }
             }
         }
 
