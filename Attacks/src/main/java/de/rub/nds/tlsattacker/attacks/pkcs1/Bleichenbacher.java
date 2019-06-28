@@ -76,8 +76,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            m = new Interval[]{new Interval(BigInteger.valueOf(2).multiply(bigB),
-                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE))};
+            m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+                    (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
             stepOne();
         }
@@ -121,8 +121,8 @@ public class Bleichenbacher extends Pkcs1Attack {
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        m = new Interval[]{new Interval(BigInteger.valueOf(2).multiply(bigB),
-            (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE))};
+        m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
         LOGGER.debug(" Found s0 : " + si);
     }

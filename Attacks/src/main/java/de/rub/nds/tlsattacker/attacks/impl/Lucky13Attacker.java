@@ -199,7 +199,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                     for (int j = i + 1; j < paddings.length; j++) {
                         String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-"
                                 + suite.name() + ".csv";
-                        String[] delimiters = {(";" + paddings[i] + ";"), (";" + paddings[j] + ";")};
+                        String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
                         String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
                                 + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"

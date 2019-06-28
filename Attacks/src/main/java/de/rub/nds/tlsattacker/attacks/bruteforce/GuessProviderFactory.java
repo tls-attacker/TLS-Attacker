@@ -21,10 +21,12 @@ public class GuessProviderFactory {
      * GuessProvider require an InputSource to create their guesses. If the
      * GuessProvider does not use an InputStream, the InputStream is ignored
      *
-     * @param type Type of the GuessProvider which should be created
-     * @param guessSource An InputStream as an input source for the
-     * GuessProvider. If the GuessProvider does not use an InputStream the
-     * guessSource is ignored.
+     * @param type
+     *            Type of the GuessProvider which should be created
+     * @param guessSource
+     *            An InputStream as an input source for the GuessProvider. If
+     *            the GuessProvider does not use an InputStream the guessSource
+     *            is ignored.
      * @return A new GuessProvider object.
      */
     public static GuessProvider createGuessProvider(GuessProviderType type, InputStream guessSource) {

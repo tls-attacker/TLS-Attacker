@@ -75,7 +75,7 @@ public class MangerAttackPlaintextTest {
                 message, solution.toByteArray());
 
         // test with a message not starting with 0x00
-        message = ArrayConverter.concatenate(new byte[]{1}, message);
+        message = ArrayConverter.concatenate(new byte[] { 1 }, message);
         LOGGER.debug(ArrayConverter.bytesToHexString(message));
         attacker = new Manger(message, oracle);
         attacker.attack();

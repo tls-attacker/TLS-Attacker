@@ -29,7 +29,8 @@ public class GeneralAttackDelegate extends GeneralDelegate {
     /**
      * Adjusts the Config according to the specified values.
      *
-     * @param config Config to adjust
+     * @param config
+     *            Config to adjust
      */
     @Override
     public void applyDelegate(Config config) {

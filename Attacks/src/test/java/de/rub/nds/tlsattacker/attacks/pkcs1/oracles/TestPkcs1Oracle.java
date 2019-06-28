@@ -234,8 +234,10 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * Checks, if 0x00 is defined on a good position and if before this 0x00
      * byte is no other 0x00
      *
-     * @param keySize the length of the key included in the PKCS1 message
-     * @param msg message
+     * @param keySize
+     *            the length of the key included in the PKCS1 message
+     * @param msg
+     *            message
      * @return
      */
     private boolean hasCorrectKeySize(final int keySize, final byte[] msg) {

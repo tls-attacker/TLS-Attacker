@@ -132,7 +132,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
                 ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
-        byte[] serialized = ArrayConverter.concatenate(new byte[]{4}, points);
+        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();

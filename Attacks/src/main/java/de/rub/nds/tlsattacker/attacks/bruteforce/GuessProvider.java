@@ -20,7 +20,8 @@ public abstract class GuessProvider {
     /**
      * Constructor
      *
-     * @param type Type of the GuessProvider
+     * @param type
+     *            Type of the GuessProvider
      */
     public GuessProvider(GuessProviderType type) {
         this.type = type;

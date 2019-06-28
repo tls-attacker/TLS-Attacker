@@ -37,8 +37,10 @@ public class Pkcs1VectorGenerator {
     /**
      * Generates different encrypted PKCS1 vectors
      *
-     * @param publicKey The publickey
-     * @param type the type
+     * @param publicKey
+     *            The publickey
+     * @param type
+     *            the type
      * @param protocolVersion
      * @return encrypted pkcs1Vectors
      */
@@ -85,8 +87,10 @@ public class Pkcs1VectorGenerator {
     /**
      * Generates different plain PKCS1 vectors
      *
-     * @param publicKeyBitLength The publicKeyBitLength
-     * @param type the type
+     * @param publicKeyBitLength
+     *            The publicKeyBitLength
+     * @param type
+     *            the type
      * @param protocolVersion
      * @return pkcs1Vectors
      */
@@ -145,8 +149,10 @@ public class Pkcs1VectorGenerator {
     /**
      * Generates a validly padded message
      *
-     * @param rsaKeyLength rsa key length in bytes
-     * @param symmetricKey symmetric key to be padded
+     * @param rsaKeyLength
+     *            rsa key length in bytes
+     * @param symmetricKey
+     *            symmetric key to be padded
      * @return padded key
      */
     private static byte[] getPaddedKey(int rsaKeyLength, byte[] symmetricKey) {
@@ -234,8 +240,10 @@ public class Pkcs1VectorGenerator {
     }
 
     /**
-     * @param rsaKeyLength rsakeylength
-     * @param symmetricKey symmetric key
+     * @param rsaKeyLength
+     *            rsakeylength
+     * @param symmetricKey
+     *            symmetric key
      * @return Pkcs1Vectors
      */
     private static List<Pkcs1Vector> getEK_DifferentPositionsOf0x00(int rsaKeyLength, byte[] symmetricKey) {
