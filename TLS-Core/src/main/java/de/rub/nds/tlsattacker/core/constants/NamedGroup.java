@@ -278,6 +278,9 @@ public enum NamedGroup {
         list.add(SECT571R1);
         list.add(ECDH_X25519);
         list.add(ECDH_X448);
+        list.add(BRAINPOOLP256R1);
+        list.add(BRAINPOOLP384R1);
+        list.add(BRAINPOOLP512R1);
         return list;
     }
 
