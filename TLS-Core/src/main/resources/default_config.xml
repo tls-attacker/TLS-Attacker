@@ -792,6 +792,9 @@
     <defaultClientNamedGroups>SECT571R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>ECDH_X25519</defaultClientNamedGroups>
     <defaultClientNamedGroups>ECDH_X448</defaultClientNamedGroups>
+    <defaultClientNamedGroups>BRAINPOOLP256R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>BRAINPOOLP384R1</defaultClientNamedGroups>
+    <defaultClientNamedGroups>BRAINPOOLP512R1</defaultClientNamedGroups>
     <defaultServerNamedGroups>SECP160K1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP160R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>SECP160R2</defaultServerNamedGroups>
@@ -819,6 +822,9 @@
     <defaultServerNamedGroups>SECT571R1</defaultServerNamedGroups>
     <defaultServerNamedGroups>ECDH_X25519</defaultServerNamedGroups>
     <defaultServerNamedGroups>ECDH_X448</defaultServerNamedGroups>
+    <defaultServerNamedGroups>BRAINPOOLP256R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>BRAINPOOLP384R1</defaultServerNamedGroups>
+    <defaultServerNamedGroups>BRAINPOOLP512R1</defaultServerNamedGroups>
     <supportedVersions>TLS13</supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <paddingLength>0</paddingLength>

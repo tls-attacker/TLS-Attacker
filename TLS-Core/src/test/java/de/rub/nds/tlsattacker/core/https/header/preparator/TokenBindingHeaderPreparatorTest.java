@@ -8,17 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 public class TokenBindingHeaderPreparatorTest {
 
