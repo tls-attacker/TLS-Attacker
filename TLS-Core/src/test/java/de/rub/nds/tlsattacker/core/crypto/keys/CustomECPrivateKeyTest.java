@@ -33,7 +33,7 @@ public class CustomECPrivateKeyTest {
         for (NamedGroup curve : NamedGroup.getImplemented()) {
             if (curve.isStandardCurve() && !curve.name().contains("BRAIN")) {
                 // TODO do not skip brainpool once asn1 tool is integrated
-                testValues.add(new Object[]{curve});
+                testValues.add(new Object[] { curve });
 
             }
         }
