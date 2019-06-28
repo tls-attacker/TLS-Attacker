@@ -65,7 +65,7 @@ public class JavaCipherTest {
             try {
                 cipher.encrypt(key, plaintext);
             } catch (Exception ex) {
-                LOGGER.error(ex);
+                LOGGER.error("Algorithm: " + algo, ex);
             }
         }
     }
