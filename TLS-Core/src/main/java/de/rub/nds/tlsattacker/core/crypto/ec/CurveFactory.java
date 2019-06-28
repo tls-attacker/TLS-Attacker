@@ -8,37 +8,115 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import java.math.BigInteger;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 
 public class CurveFactory {
 
-    public static Curve getNamedCurve(String namedCurve) {
-        BigInteger p, a, b;
-        int bits;
-        String namedCurveLow = namedCurve.toLowerCase();
-
-        switch (namedCurveLow) {
-            case "secp192r1":
-                p = new BigInteger("6277101735386680763835789423207666416083908700390324961279");
-                a = new BigInteger("6277101735386680763835789423207666416083908700390324961276");
-                b = new BigInteger("2455155546008943817740293915197451784769108058161191238065");
-                bits = 192;
-                break;
-
-            case "secp256r1":
-                p = new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853951");
-                a = new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853948");
-                b = new BigInteger("41058363725152142129326129780047268409114441015993725554835256314039467401291");
-                bits = 256;
-                break;
+    /**
+     * Returns a named elliptic curve.
+     *
+     * @param name
+     *            The name of the curve, that should be returned.
+     */
+    public static EllipticCurve getCurve(NamedGroup name) {
+        switch (name) {
+            case BRAINPOOLP256R1:
+                return new EllipticCurveBrainpoolP256R1();
+            case BRAINPOOLP384R1:
+                return new EllipticCurveBrainpoolP384R1();
+            case BRAINPOOLP512R1:
+                return new EllipticCurveBrainpoolP512R1();
+            case SECP160K1:
+                return new EllipticCurveSECP160K1();
+            case SECP160R1:
+                return new EllipticCurveSECP160R1();
+            case SECP160R2:
+                return new EllipticCurveSECP160R2();
+            case SECP192K1:
+                return new EllipticCurveSECP192K1();
+            case SECP192R1:
+                return new EllipticCurveSECP192R1();
+            case SECP224K1:
+                return new EllipticCurveSECP224K1();
+            case SECP224R1:
+                return new EllipticCurveSECP224R1();
+            case SECP256K1:
+                return new EllipticCurveSECP256K1();
+            case SECP256R1:
+                return new EllipticCurveSECP256R1();
+            case SECP384R1:
+                return new EllipticCurveSECP384R1();
+            case SECP521R1:
+                return new EllipticCurveSECP521R1();
+            case SECT163K1:
+                return new EllipticCurveSECT163K1();
+            case SECT163R1:
+                return new EllipticCurveSECT163R1();
+            case SECT163R2:
+                return new EllipticCurveSECT163R2();
+            case SECT193R1:
+                return new EllipticCurveSECT193R1();
+            case SECT193R2:
+                return new EllipticCurveSECT193R2();
+            case SECT233K1:
+                return new EllipticCurveSECT233K1();
+            case SECT233R1:
+                return new EllipticCurveSECT233R1();
+            case SECT239K1:
+                return new EllipticCurveSECT239K1();
+            case SECT283K1:
+                return new EllipticCurveSECT283K1();
+            case SECT283R1:
+                return new EllipticCurveSECT283R1();
+            case SECT409K1:
+                return new EllipticCurveSECT409K1();
+            case SECT409R1:
+                return new EllipticCurveSECT409R1();
+            case SECT571K1:
+                return new EllipticCurveSECT571K1();
+            case SECT571R1:
+                return new EllipticCurveSECT571R1();
             default:
-                throw new UnsupportedOperationException("The provided curve " + namedCurve + " not supported yet");
+                throw new UnsupportedOperationException("The provided curve '" + name + "' is not supported.");
+
         }
-        return new Curve(namedCurveLow, p, a, b, bits);
+    }
+
+    /**
+     * Returns a named gost curve.
+     *
+     * @param curve
+     *            The name of the curve, that should be returned.
+     * @return
+     */
+    public static EllipticCurve getCurve(GOSTCurve curve) {
+        switch (curve) {
+            case GostR3410_2001_CryptoPro_A:
+                return new EllipticCurveGost2001SetA();
+            case GostR3410_2001_CryptoPro_B:
+                return new EllipticCurveGost2001SetB();
+            case GostR3410_2001_CryptoPro_C:
+                return new EllipticCurveGost2001SetC();
+            case GostR3410_2001_CryptoPro_XchA:
+                return new EllipticCurveGost2001SetXchA();
+            case GostR3410_2001_CryptoPro_XchB:
+                return new EllipticCurveGost2001SetXchB();
+            case Tc26_Gost_3410_12_256_paramSetA:
+                return new EllipticCurveGost2012SetA256();
+            case Tc26_Gost_3410_12_512_paramSetA:
+                return new EllipticCurveGost2012SetA512();
+            case Tc26_Gost_3410_12_512_paramSetB:
+                return new EllipticCurveGost2012SetB512();
+            case Tc26_Gost_3410_12_512_paramSetC:
+                return new EllipticCurveGost2012SetC512();
+            default:
+                throw new UnsupportedOperationException("The provided curve '" + curve + "' is not supported.");
+
+        }
     }
 
     private CurveFactory() {
-
     }
 
 }

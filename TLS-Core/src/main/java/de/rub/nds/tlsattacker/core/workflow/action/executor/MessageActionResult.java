@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MessageActionResult {
 

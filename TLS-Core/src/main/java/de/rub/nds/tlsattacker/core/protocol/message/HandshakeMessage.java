@@ -21,15 +21,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
-
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
-
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,6 +71,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
+            @XmlElement(type = DraftKeyShareExtensionMessage.class, name = "DraftKeyShareExtension"),
             @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),

@@ -15,12 +15,9 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.Connection;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PWDServerKeyExchangePreparatorTest {
 
@@ -34,17 +31,15 @@ public class PWDServerKeyExchangePreparatorTest {
     private byte[] scalar = ArrayConverter
             .hexStringToByteArray("46D60B797558FACE1E8243463DC0C16D3324FEA8BE7C0BEC87FB1E1D4EB7CE59");
 
-    private byte[] element = ArrayConverter.hexStringToByteArray(("04 46 E2 DA 64 A0 BB 0E  2A 48 5C EC 20 89 FD 47\n"
-            + "96 2C D8 8D FA 7F 06 B0  4A 00 84 1D 19 EA B3 7B\n"
-            + "6A 01 27 F3 25 2A 21 9D  02 9C 28 B1 0F A1 12 A0\n"
-            + "B7 16 F3 84 37 FA 56 B9  4B EB 3D 3D D5 8D ED 94\n" + "7B").replaceAll("\\s+", ""));
+    private byte[] element = ArrayConverter
+            .hexStringToByteArray(("0446E2DA64A0BB0E2A485CEC2089FD47962CD88DFA7F06B04A00841D19EAB37B6A0127F3252A219D029C28B10FA112A0B716F38437FA56B94BEB3D3DD58DED947B"));
 
     @Before
     public void setUp() throws Exception {
         this.tlsContext = new TlsContext();
 
         tlsContext.setClientNamedGroupsList(NamedGroup.BRAINPOOLP256R1);
-        tlsContext.setServerNamedGroupsList(NamedGroup.BRAINPOOLP256R1);
+        tlsContext.getConfig().setDefaultServerNamedGroups(NamedGroup.BRAINPOOLP256R1);
         tlsContext.setClientRandom(ArrayConverter
                 .hexStringToByteArray("528fbf52175de2c869845fdbfa8344f7d732712ebfa679d8643cd31a880e043d"));
         tlsContext.setServerRandom(ArrayConverter

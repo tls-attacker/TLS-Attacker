@@ -8,13 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -23,6 +16,10 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ReceiveMessageHelperTest {
 
@@ -57,6 +54,7 @@ public class ReceiveMessageHelperTest {
     @Before
     public void setUp() throws IOException {
         context = new TlsContext();
+        context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
         context.setRecordLayer(new TlsRecordLayer(context));
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
         context.setTransportHandler(transportHandler);
@@ -87,7 +85,6 @@ public class ReceiveMessageHelperTest {
 
     @Test
     public void testReceiveDTLSFragment() {
-        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1);
         assertEquals(result.getMessageFragmentList().size(), 1);
         DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) result.getMessageFragmentList().get(0);
@@ -96,7 +93,6 @@ public class ReceiveMessageHelperTest {
 
     @Test
     public void testReceiveDTLSMessages() {
-        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         context.setDtlsNextReceiveSequenceNumber(1);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
                 DTLS.REC_SERVER_HELLO_DONE);
@@ -107,13 +103,12 @@ public class ReceiveMessageHelperTest {
 
     @Test
     public void testReceiveDTLSMessagesDisorderly() {
-        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         context.setDtlsNextReceiveSequenceNumber(1);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_DONE,
                 DTLS.REC_SERVER_HELLO_F2);
         assertEquals(3, result.getMessageFragmentList().size());
         assertEquals(2, result.getMessageList().size());
-        checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
+        checkMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
     }
 
     @Test
@@ -130,7 +125,7 @@ public class ReceiveMessageHelperTest {
         assertEquals(1, result.getMessageList().size());
         checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         // the digest shouldn't have been updated since the message is received
-        // out of order
+        // out-of-order
         assertEquals(0, context.getDigest().getRawBytes().length);
     }
 
@@ -142,6 +137,19 @@ public class ReceiveMessageHelperTest {
     public void testReceiveDTLSMessagesManyRepeats() {
         context.setDtlsNextReceiveSequenceNumber(0);
         context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
+                DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2, DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2);
+        assertEquals(6, result.getMessageFragmentList().size());
+        assertEquals(3, result.getMessageList().size());
+    }
+
+    /**
+     * Same test, but now with ignore disorderly messages option
+     */
+    @Test
+    public void testReceiveDTLSMessagesManyRepeatsIgnoreDisorderly() {
+        context.setDtlsNextReceiveSequenceNumber(1);
+        context.getConfig().setDtlsExcludeOutOfOrder(true);
         MessageActionResult result = receive(DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2,
                 DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2, DTLS.REC_SERVER_HELLO_F1, DTLS.REC_SERVER_HELLO_F2);
         assertEquals(6, result.getMessageFragmentList().size());

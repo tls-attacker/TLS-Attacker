@@ -11,14 +11,10 @@ package de.rub.nds.tlsattacker.core.workflow;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author Pierre Tilhaus <Pierre.TIlhaus@rub.de>
- */
 public class BouncyCastleProviderCheckerTest {
     @Before
     public void setUp() {

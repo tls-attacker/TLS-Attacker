@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
-import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,32 +40,13 @@ public class ICEAttackerTest {
     @Category(SlowTests.class)
     public void testAttack() {
         CONSOLE.info("Starting ICEAttacker test... this may take some time");
-        TestECOracle oracle = new TestECOracle("secp256r1");
-        ICEAttacker attacker = new ICEAttacker(oracle);
-        attacker.attack();
-        BigInteger result = attacker.getResult();
+        TestECOracle oracle = new TestECOracle(NamedGroup.SECP256R1);
+        ICEAttacker attacker = new ICEAttacker(oracle, ICEAttacker.ServerType.ORACLE, 4, NamedGroup.SECP256R1);
+        BigInteger result = attacker.attack();
 
         LOGGER.debug(result);
-        LOGGER.debug(oracle.getComputer().getSecret());
+        LOGGER.debug(oracle.getPrivateKey());
 
-        assertEquals(oracle.getComputer().getSecret(), result);
+        assertEquals(oracle.getPrivateKey(), result);
     }
-
-    /**
-     * Test of attack method, of class ICEAttacker.
-     */
-    @Ignore("This attack test would work only against an old vulnerable SUN implementation")
-    @Test
-    public void testSunAttack() {
-        TestECSunOracle oracle = new TestECSunOracle("secp256r1");
-        ICEAttacker attacker = new ICEAttacker(oracle, ICEAttacker.ServerType.ORACLE, 4);
-        attacker.attack();
-        BigInteger result = attacker.getResult();
-
-        LOGGER.debug(result);
-        LOGGER.debug(oracle.getComputer().getSecret());
-
-        assertEquals(oracle.getComputer().getSecret(), result);
-    }
-
 }

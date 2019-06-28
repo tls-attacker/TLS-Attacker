@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class PWDClientKeyExchangeMessageTest {
 

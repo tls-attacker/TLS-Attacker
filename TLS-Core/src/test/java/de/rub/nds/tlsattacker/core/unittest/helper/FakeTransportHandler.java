@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.unittest.helper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.lang.reflect.*;
 
 public class FakeTransportHandler extends TransportHandler {
     /**

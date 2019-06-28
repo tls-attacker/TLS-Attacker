@@ -10,25 +10,26 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.math.ec.ECCurve;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECPoint;
-
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<PWDServerKeyExchangeMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final PWDServerKeyExchangeMessage msg;
@@ -43,7 +44,9 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         LOGGER.debug("Preparing PWDServerKeyExchangeMessage");
         msg.prepareComputations();
         prepareCurveType(msg);
-        prepareNamedGroup(msg);
+        NamedGroup group = selectNamedGroup(msg);
+        msg.getComputations().setCurve(CurveFactory.getCurve(group));
+        msg.setNamedGroup(group.getValue());
         prepareSalt(msg);
         prepareSaltLength(msg);
 
@@ -56,41 +59,52 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
-        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
-                        .toBigInteger())));
+                + ArrayConverter.bytesToHexString(ArrayConverter
+                        .bigIntegerToByteArray(passwordElement.getX().getData())));
     }
 
-    protected void prepareNamedGroup(PWDServerKeyExchangeMessage msg) {
-        List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getClientSupportedNamedGroups());
-        List<NamedGroup> unsupportedGroups = new ArrayList<>();
-        if (!chooser.getConfig().isEnforceSettings()) {
-
-            List<NamedGroup> clientGroups = chooser.getServerSupportedNamedGroups();
-            for (NamedGroup c : sharedGroups) {
-                ECCurve curve = ECNamedCurveTable.getParameterSpec(c.getJavaName()).getCurve();
-                if (!clientGroups.contains(c) || curve.getCofactor().compareTo(BigInteger.ONE) != 0
-                        || curve instanceof ECCurve.F2m) {
-                    unsupportedGroups.add(c);
+    protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
+        NamedGroup namedGroup;
+        if (chooser.getConfig().isEnforceSettings()) {
+            namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
+        } else {
+            Set<NamedGroup> serverSet = new HashSet<>();
+            Set<NamedGroup> clientSet = new HashSet<>();
+            for (int i = 0; i < chooser.getClientSupportedNamedGroups().size(); i++) {
+                NamedGroup group = chooser.getClientSupportedNamedGroups().get(i);
+                if (group.isStandardCurve()) {
+                    EllipticCurve curve = CurveFactory.getCurve(group);
+                    if (curve instanceof EllipticCurveOverFp) {
+                        clientSet.add(group);
+                    }
                 }
             }
-            sharedGroups.removeAll(unsupportedGroups);
-            if (sharedGroups.isEmpty()) {
-                if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+            for (int i = 0; i < chooser.getConfig().getDefaultServerNamedGroups().size(); i++) {
+                NamedGroup group = chooser.getConfig().getDefaultServerNamedGroups().get(i);
+                if (group.isStandardCurve()) {
+                    EllipticCurve curve = CurveFactory.getCurve(group);
+                    if (curve instanceof EllipticCurveOverFp) {
+                        serverSet.add(group);
+                    }
+                }
+            }
+            serverSet.retainAll(clientSet);
+            if (serverSet.isEmpty()) {
+                LOGGER.warn("No common NamedGroup - falling back to default");
+                namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
+            } else {
+                if (serverSet.contains(chooser.getConfig().getDefaultSelectedNamedGroup())) {
+                    namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
                 } else {
-                    sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultServerNamedGroups());
+                    namedGroup = (NamedGroup) serverSet.toArray()[0];
                 }
             }
         }
-        msg.setNamedGroup(sharedGroups.get(0).getValue());
-        msg.getComputations()
-                .setCurve(ECNamedCurveTable.getParameterSpec(sharedGroups.get(0).getJavaName()).getCurve());
-
-        LOGGER.debug("NamedGroup: " + sharedGroups.get(0).getJavaName());
+        return namedGroup;
     }
 
     protected void prepareSalt(PWDServerKeyExchangeMessage msg) {
@@ -135,7 +149,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
-        ECCurve curve = msg.getComputations().getCurve();
+        EllipticCurve curve = msg.getComputations().getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 
@@ -160,16 +174,11 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         LOGGER.debug("ScalarLength: " + msg.getScalarLength());
     }
 
-    protected void prepareElement(PWDServerKeyExchangeMessage msg, ECPoint element) {
-        List<ECPointFormat> ecPointFormats = getPointFormatList();
-        try {
-            byte[] serializedElement = ECCUtilsBCWrapper.serializeECPoint(ecPointFormats.toArray(new ECPointFormat[0]),
-                    element);
-            msg.setElement(serializedElement);
-            LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
-        } catch (IOException ex) {
-            throw new PreparationException("Could not serialize PWD element", ex);
-        }
+    protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
+        byte[] serializedElement = PointFormatter.formatToByteArray(element, chooser.getConfig()
+                .getDefaultSelectedPointFormat());
+        msg.setElement(serializedElement);
+        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }
 
     protected void prepareElementLength(PWDServerKeyExchangeMessage msg) {

@@ -112,7 +112,7 @@ public class EllipticCurveDelegateTest {
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         Config config = Config.createConfig();
-        config.setDefaultSelectedNamedGroup(NamedGroup.NONE);
+        config.setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         config.setDefaultClientSupportedPointFormats(new ECPointFormat[0]);
         config.setDefaultServerSupportedPointFormats(new ECPointFormat[0]);
         jcommander.parse(args);

@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
@@ -26,9 +28,6 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
