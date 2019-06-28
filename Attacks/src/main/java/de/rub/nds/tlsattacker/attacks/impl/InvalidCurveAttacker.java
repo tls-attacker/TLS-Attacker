@@ -94,7 +94,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 if (premasterSecret == null) {
                     premasterSecret = BigInteger.ZERO;
                 }
-                LOGGER.debug(premasterSecret.toString());
+                LOGGER.debug("PMS: " + premasterSecret.toString());
             }
             try {
                 WorkflowTrace trace = executeProtocolFlow();
@@ -110,7 +110,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     return true;
                 }
             } catch (WorkflowExecutionException ex) {
-                LOGGER.debug(ex.getLocalizedMessage());
+                LOGGER.warn(ex);
             }
         }
         return false;
@@ -132,7 +132,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
                 ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
-        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
+        byte[] serialized = ArrayConverter.concatenate(new byte[]{4}, points);
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
@@ -140,7 +140,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        LOGGER.info("working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
+        LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
     }
