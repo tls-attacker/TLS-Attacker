@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 
-/**
- *
- * @author robert
- */
 public class EllipticCurveGost2001SetA extends EllipticCurveOverF2m {
 
     public EllipticCurveGost2001SetA() {

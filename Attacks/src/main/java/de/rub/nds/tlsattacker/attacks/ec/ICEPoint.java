@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 
-/**
- *
- * @author robert
- */
 public class ICEPoint extends Point {
 
     private final int order;

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- *
- * @author ic0ns
- */
 public class UnparseablePointException extends RuntimeException {
 
     public UnparseablePointException() {

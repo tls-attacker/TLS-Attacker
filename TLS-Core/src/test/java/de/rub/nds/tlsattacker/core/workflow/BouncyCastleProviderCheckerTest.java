@@ -15,10 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Pierre Tilhaus <Pierre.TIlhaus@rub.de>
- */
 public class BouncyCastleProviderCheckerTest {
     @Before
     public void setUp() {

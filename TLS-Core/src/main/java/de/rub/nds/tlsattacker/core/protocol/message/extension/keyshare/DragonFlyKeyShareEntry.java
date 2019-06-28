@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare;
 
 import java.math.BigInteger;
 
-/**
- *
- * @author ic0ns
- */
 public class DragonFlyKeyShareEntry {
 
     private byte[] rawPublicKey;

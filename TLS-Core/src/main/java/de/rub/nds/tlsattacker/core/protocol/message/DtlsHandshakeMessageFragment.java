@@ -19,10 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 @XmlRootElement
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 

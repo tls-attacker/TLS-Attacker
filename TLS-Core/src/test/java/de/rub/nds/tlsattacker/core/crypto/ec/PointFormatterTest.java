@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
@@ -24,10 +19,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author robert
- */
 public class PointFormatterTest {
 
     public PointFormatterTest() {

@@ -11,15 +11,9 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.*;
 
-/**
- *
- * @author root
- */
 public class RecordDecompressor extends Decompressor<AbstractRecord> {
 
     private CompressionAlgorithm algorithm;
