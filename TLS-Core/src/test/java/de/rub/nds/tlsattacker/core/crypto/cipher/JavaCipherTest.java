@@ -54,7 +54,6 @@ public class JavaCipherTest {
 
     @Test
     public void generalTest() {
-        Random r = new Random(0);
         List<CipherAlgorithm> algos = new LinkedList<>();
         algos.add(CipherAlgorithm.AES_128_CBC);
         algos.add(CipherAlgorithm.AES_128_CCM);
@@ -77,19 +76,8 @@ public class JavaCipherTest {
         algos.add(CipherAlgorithm.RC4_128);
         algos.add(CipherAlgorithm.SEED_CBC);
         for (CipherAlgorithm algo : algos) {
-
             byte[] key = new byte[algo.getKeySize()];
-            r.nextBytes(key);
             JavaCipher cipher = new JavaCipher(algo, key);
-
-            byte[] plaintext = new byte[algo.getBlocksize()];
-            r.nextBytes(plaintext);
-
-            try {
-                cipher.encrypt(key, plaintext);
-            } catch (Exception ex) {
-                LOGGER.error("Algorithm: " + algo, ex);
-            }
         }
     }
 }
