@@ -38,10 +38,8 @@ public abstract class ECOracle {
      * Takes an ec point and a guessed secret and returns true, in case the
      * secret was guessed correctly.
      *
-     * @param ecPoint
-     *            The Point
-     * @param guessedSecret
-     *            The guessed Secret
+     * @param ecPoint The Point
+     * @param guessedSecret The guessed Secret
      * @return True if the secret is guessed correctly
      */
     public abstract boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret);
@@ -51,8 +49,7 @@ public abstract class ECOracle {
      * attack. The oracle responds with true, in case the guessed key was
      * correct.
      *
-     * @param guessedSecret
-     *            The guessed Secret
+     * @param guessedSecret The guessed Secret
      * @return True if the Solution is correct
      */
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);

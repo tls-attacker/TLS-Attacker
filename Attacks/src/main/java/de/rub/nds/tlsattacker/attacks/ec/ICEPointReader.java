@@ -33,8 +33,7 @@ public class ICEPointReader {
      * Reads points for the attack on elliptic curves from a file specific for
      * this named curve
      *
-     * @param group
-     *            The NamedCurve as a String
+     * @param group The NamedCurve as a String
      * @return the deserialized Points
      */
     public static List<ICEPoint> readPoints(NamedGroup group) {

@@ -74,7 +74,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         // last byte.
         // Therefore, we flip just the most significant bit of the first byte in
         // the padding.
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { (byte) 0x80 }, 0);
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[]{(byte) 0x80}, 0);
         padding.setModification(modifier);
         Record finishedMessageRecord = new Record();
         finishedMessageRecord.prepareComputations();

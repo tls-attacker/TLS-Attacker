@@ -75,12 +75,10 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param m
-     *            original message to be changed
-     * @param si
-     *            factor
+     * @param m original message to be changed
+     * @param si factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in
-     *         a byte array
+     * a byte array
      */
     protected byte[] prepareMsg(BigInteger m, BigInteger si) {
         byte[] msg;
@@ -90,10 +88,8 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param m
-     *            original message to be changed
-     * @param si
-     *            factor
+     * @param m original message to be changed
+     * @param si factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type
      */
     protected BigInteger multiply(BigInteger m, BigInteger si) {

@@ -172,14 +172,10 @@ public class ICEAttacker {
      * Creates recursively all possible combinations of equations and tries to
      * compute the server private key with CRT.
      *
-     * @param usedOracleEquations
-     *            The used oracle equations
-     * @param congs
-     *            The congruences
-     * @param modulis
-     *            The modulis
-     * @param pointer
-     *            the pointer
+     * @param usedOracleEquations The used oracle equations
+     * @param congs The congruences
+     * @param modulis The modulis
+     * @param pointer the pointer
      * @return
      */
     public BigInteger bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
@@ -209,12 +205,9 @@ public class ICEAttacker {
     /**
      * Computes CRT from a given combination of congs and modulis
      *
-     * @param usedOracleEquations
-     *            The used oracle equations
-     * @param congs
-     *            The congruences
-     * @param modulis
-     *            The modulis
+     * @param usedOracleEquations The used oracle equations
+     * @param congs The congruences
+     * @param modulis The modulis
      * @return CRTF
      */
     private BigInteger computeCRTFromCombination(int[] usedOracleEquations, BigInteger[] congs, BigInteger[] modulis) {
@@ -238,8 +231,7 @@ public class ICEAttacker {
     /**
      * Uses the oracle to get a congruence for a specific point
      *
-     * @param point
-     *            A Point
+     * @param point A Point
      * @return The Congruence
      */
     private BigInteger getCongruence(ICEPoint point) {

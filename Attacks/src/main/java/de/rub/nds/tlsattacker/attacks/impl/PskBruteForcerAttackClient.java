@@ -104,8 +104,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                                             "%d min, %d sec",
                                             TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime),
                                             TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
-                                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-                                                            .toMinutes(stopStime - startTime))));
+                                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+                                                    .toMinutes(stopStime - startTime))));
                             CONSOLE.info("Guessed " + counter + " times");
                         }
                     } catch (NoSuchAlgorithmException ex) {

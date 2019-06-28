@@ -26,8 +26,7 @@ public class WordListGuessProvider extends GuessProvider {
     /**
      * Constructor
      *
-     * @param stream
-     *            An Inputstream to read Guesses from
+     * @param stream An Inputstream to read Guesses from
      */
     public WordListGuessProvider(InputStream stream) {
         super(GuessProviderType.WORDLIST);
@@ -39,7 +38,7 @@ public class WordListGuessProvider extends GuessProvider {
      * in InputStream null is returned.
      *
      * @return The next word from the inputstream. If no more words are in the
-     *         in InputStream null is returned.
+     * in InputStream null is returned.
      */
     @Override
     public byte[] getGuess() {
