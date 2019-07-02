@@ -114,12 +114,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         Message parsedMessage = parser.parse();
         try {
             if (!onlyParse) {
-
-                if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
-                        && parsedMessage.isHandshakeMessage() && !parsedMessage.isDtlsHandshakeMessageFragment()) {
-                    tlsContext.setDtlsCurrentReceiveSequenceNumber(tlsContext.getDtlsNextReceiveSequenceNumber());
-                    tlsContext.increaseDtlsNextReceiveSequenceNumber();
-                }
                 prepareAfterParse(parsedMessage);
                 updateDigest(parsedMessage);
                 adjustTLSContext(parsedMessage);

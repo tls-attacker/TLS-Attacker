@@ -236,7 +236,7 @@ public class ReceiveMessageHelper {
                 // in fragments.
                 if (group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, false, true);
+                            group.getProtocolMessageType(), context, true, true);
                     for (ProtocolMessage parsedMessage : parsedMessages) {
                         // we need this check since there might be
                         // "unknown messages", note, we do not maintain ordering
@@ -431,6 +431,7 @@ public class ReceiveMessageHelper {
             // fragmented message
             // meaning a handshake message can be parsed from it
             if (fragmentedMessage != null) {
+                context.setDtlsCurrentReceiveSequenceNumber(fragmentedMessage.getMessageSeq().getValue());
 
                 // we check if the assembled fragment is in-order, and if so,
                 // process it (aka parse message, add it to list, remove
@@ -440,6 +441,7 @@ public class ReceiveMessageHelper {
                         && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     messages.add(processFragmentedMessage(fragmentedMessage, context, true));
+                    context.increaseDtlsNextReceiveSequenceNumber();
                 }
 
                 // if the fragment is out of order we only process it but DO NOT
