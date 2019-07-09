@@ -1009,7 +1009,8 @@
     <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
     <dtlsOnlyFitting>true</dtlsOnlyFitting>
-    <dtlsDtlsExcludeOutOfOrder>false</dtlsDtlsExcludeOutOfOrder>
+    <dtlsExcludeOutOfOrder>false</dtlsExcludeOutOfOrder>
+    <dtlsUpdateOnOutOfOrder>false</dtlsUpdateOnOutOfOrder>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
