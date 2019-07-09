@@ -445,11 +445,13 @@ public class ReceiveMessageHelper {
                 }
 
                 // if the fragment is out of order we only process it but DO NOT
-                // update the context we also handle the dtlsExcludeOutOfOrder
-                // option which allows TLS-Attacker to omit out-of-order
-                // messages
+                // update the context unless explicitly configured. we also
+                // handle
+                // the dtlsExcludeOutOfOrder option which allows TLS-Attacker to
+                // omit messages out-of-order
                 else {
-                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, false);
+                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, context.getConfig()
+                            .isDtlsUpdateOnOutOfOrder());
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.add(message);
