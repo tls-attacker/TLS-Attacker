@@ -60,7 +60,8 @@ public class SignatureCalculator {
         String algoName;
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3
                 || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11) {
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
             if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name().contains("RSA")) {
                 algoName = "NONEwithRSA";
                 toBeSigned = ArrayConverter.concatenate(MD5Utils.MD5(toBeSigned), SHA1Utils.sha1(toBeSigned));
