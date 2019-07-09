@@ -781,7 +781,13 @@ public class Config implements Serializable {
     /**
      * Exclude out of order messages from the output received.
      */
-    private boolean dtlsDtlsExcludeOutOfOrder = false;
+    private boolean dtlsExcludeOutOfOrder = false;
+
+    /**
+     * Updates the context also when receiving out of order messages. This
+     * should not be used in environments were retransmissions are expected.
+     */
+    private boolean dtlsUpdateOnOutOfOrder = false;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -1718,11 +1724,19 @@ public class Config implements Serializable {
     }
 
     public boolean isDtlsExcludeOutOfOrder() {
-        return dtlsDtlsExcludeOutOfOrder;
+        return dtlsExcludeOutOfOrder;
     }
 
     public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
-        this.dtlsDtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+        this.dtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsUpdateOnOutOfOrder() {
+        return dtlsUpdateOnOutOfOrder;
+    }
+
+    public void setDtlsUpdateOnOutOfOrder(boolean dtlsUpdateOnOutOfOrder) {
+        this.dtlsUpdateOnOutOfOrder = true;
     }
 
     public boolean isDtlsOnlyFitting() {
