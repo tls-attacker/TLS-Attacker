@@ -76,7 +76,6 @@ public class ClientDelegate extends Delegate {
         } else {
             con.setPort(uri.getPort());
         }
-
         if (IPAddress.isValid(uri.getHost())) {
             con.setIp(uri.getHost());
             if (sniHostname != null) {
@@ -100,7 +99,7 @@ public class ClientDelegate extends Delegate {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.error("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
             return host;
         }
     }
