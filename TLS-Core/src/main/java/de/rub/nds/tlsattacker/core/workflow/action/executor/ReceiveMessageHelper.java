@@ -253,9 +253,12 @@ public class ReceiveMessageHelper {
                 } else {
                     boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsNextReceiveEpoch();
                     // we only update the context for in order records (with
-                    // epoch == current)
+                    // epoch == current) unless the update on ooo was set, in
+                    // which case we always update
+                    boolean onlyParse = isInOrder ? false : context.getConfig().isDtlsUpdateOnOutOfOrder() ? false
+                            : true;
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, !isInOrder, false);
+                            group.getProtocolMessageType(), context, onlyParse, false);
                     if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.addAll(parsedMessages);
                     }
