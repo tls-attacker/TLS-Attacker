@@ -257,7 +257,6 @@ public class ReceiveMessageHelper {
                     // which case we always update
                     boolean onlyParse = isInOrder ? false : context.getConfig().isDtlsUpdateOnOutOfOrder() ? false
                             : true;
-                    System.err.println(onlyParse);
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, onlyParse, false);
                     if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
