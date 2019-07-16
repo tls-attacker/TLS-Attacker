@@ -52,11 +52,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setReadSequenceNumber(0);
         tlsContext.setWriteSequenceNumber(0);
         LOGGER.info("Resetting DTLS numbers and cookie");
-        tlsContext.setDtlsCookie(new byte[]{});
-		tlsContext.setDtlsNextReceiveSequenceNumber(0);
-		tlsContext.setDtlsNextSendSequenceNumber(0);
-		tlsContext.setDtlsSendEpoch(0);
-		tlsContext.setDtlsNextReceiveEpoch(0);
+        tlsContext.setDtlsCookie(new byte[] {});
+        tlsContext.setDtlsNextReceiveSequenceNumber(0);
+        tlsContext.setDtlsNextSendSequenceNumber(0);
+        tlsContext.setDtlsSendEpoch(0);
+        tlsContext.setDtlsNextReceiveEpoch(0);
         LOGGER.info("Reopening Connection");
         try {
             tlsContext.getTransportHandler().initialize();
