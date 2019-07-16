@@ -257,6 +257,7 @@ public class ReceiveMessageHelper {
                     // which case we always update
                     boolean onlyParse = isInOrder ? false : context.getConfig().isDtlsUpdateOnOutOfOrder() ? false
                             : true;
+                    System.err.println(onlyParse);
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, onlyParse, false);
                     if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
@@ -443,8 +444,13 @@ public class ReceiveMessageHelper {
                 if (epoch == context.getDtlsNextReceiveEpoch()
                         && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-                    messages.add(processFragmentedMessage(fragmentedMessage, context, true));
-                    context.increaseDtlsNextReceiveSequenceNumber();
+                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, true);
+                    messages.add(message);
+                    if (message.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
+                        context.setDtlsNextReceiveSequenceNumber(0);
+                    } else {
+                        context.increaseDtlsNextReceiveSequenceNumber();
+                    }
                 }
 
                 // if the fragment is out of order we only process it but DO NOT
