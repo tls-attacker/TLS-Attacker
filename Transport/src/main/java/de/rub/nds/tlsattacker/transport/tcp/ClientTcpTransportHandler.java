@@ -44,7 +44,6 @@ public class ClientTcpTransportHandler extends TransportHandler {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         System.out.println("Ctor 2: Got hostname: " + this.hostname);
-        new Exception().printStackTrace(System.out);
         this.port = port;
         this.connectionTimeout = timeout;
     }
