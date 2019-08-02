@@ -29,14 +29,22 @@ public class ClientTcpTransportHandler extends TransportHandler {
 
     public ClientTcpTransportHandler(Connection connection) {
         super(connection.getTimeout(), ConnectionEndType.CLIENT);
-        this.hostname = connection.getHostname();
+        this.hostname = connection.getIp();
+        System.out.println("Ctor 1: Got hostname: " + this.hostname);
         this.port = connection.getPort();
         this.connectionTimeout = 60000;
+    }
+
+    public ClientTcpTransportHandler(Connection connection, long timeout) {
+        this(connection);
+        this.connectionTimeout = timeout;
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
+        System.out.println("Ctor 2: Got hostname: " + this.hostname);
+        new Exception().printStackTrace(System.out);
         this.port = port;
         this.connectionTimeout = timeout;
     }
@@ -44,6 +52,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
+        System.out.println("Ctor 3: Got hostname: " + this.hostname);
         this.port = port;
         this.connectionTimeout = connectionTimeout;
     }
@@ -59,6 +68,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new Socket();
+        System.out.println("Connecting to " + hostname);
         socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");

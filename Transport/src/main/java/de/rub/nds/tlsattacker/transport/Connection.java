@@ -57,6 +57,8 @@ public abstract class Connection implements Serializable {
     }
 
     public void setIp(String ip) {
+        System.out.println("Setting IP: " + ip);
+        new Exception().printStackTrace(System.out);
         this.ip = ip;
     }
 
