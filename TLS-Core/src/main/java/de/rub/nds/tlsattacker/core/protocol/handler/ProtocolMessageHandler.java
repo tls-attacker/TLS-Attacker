@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -72,22 +74,27 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             Serializer serializer = getSerializer(message);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
-            if (message instanceof HandshakeMessage) {
-                if (((HandshakeMessage) message).getIncludeInDigest()) {
-                    tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
-                }
-            }
         }
         try {
             if (message.getAdjustContext()) {
+                // we update the current and next send sequence numbers for DTLS
+                // we only do this for full fledged messages (not for fragments)
+                if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && message.isHandshakeMessage()
+                        && !message.isDtlsHandshakeMessageFragment()) {
+                    tlsContext.setDtlsCurrentSendSequenceNumber(tlsContext.getDtlsNextSendSequenceNumber());
+                    tlsContext.increaseDtlsNextSendSequenceNumber();
+                }
+            }
+            updateDigest(message);
+            if (message.getAdjustContext()) {
+
                 adjustTLSContext(message);
-            } else {
-                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
             }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
+
         return message.getCompleteResultingMessage().getValue();
     }
 
@@ -102,23 +109,35 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      *            The pointer (startposition) into the message bytes
      * @return The Parser result
      */
-    public ParserResult parseMessage(byte[] message, int pointer) {
+    public ParserResult parseMessage(byte[] message, int pointer, boolean onlyParse) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
         try {
-            prepareAfterParse(parsedMessage);
-            if (parsedMessage instanceof HandshakeMessage) {
-                if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                    tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-                }
+            if (!onlyParse) {
+                prepareAfterParse(parsedMessage);
+                updateDigest(parsedMessage);
+                adjustTLSContext(parsedMessage);
             }
-            adjustTLSContext(parsedMessage);
+
         } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
-
         return new ParserResult(parsedMessage, parser.getPointer());
+    }
+
+    private void updateDigest(ProtocolMessage message) {
+        if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
+                        .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
+                LOGGER.debug("Included in digest fragmented version of: " + message.toCompactString());
+                tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
+            } else {
+                LOGGER.debug("Included in digest: " + message.toCompactString());
+                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+            }
+        }
     }
 
     @Override

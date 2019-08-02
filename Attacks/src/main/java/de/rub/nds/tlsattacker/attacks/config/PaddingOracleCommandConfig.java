@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -45,13 +44,26 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+
+    /**
+     * How many rescans should be done to confirm vulnerabilities
+     */
+    private int mapListDepth = 3;
+
+    /**
+     * When a false positive or shaky scan orrcurs stop the evaluation
+     */
+    private boolean rescanNotVulnerable = true;
+
+    /**
+     * Do not rescan servers which appear not vulnerable on first try
+     */
+    private boolean abortRescansOnFailure = true;
 
     /**
      *
@@ -60,12 +72,10 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     public PaddingOracleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(starttlsDelegate);
@@ -143,7 +153,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(false);
+        config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
         boolean containsEc = false;
@@ -159,4 +169,29 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
         return config;
     }
+
+    public int getMapListDepth() {
+        return mapListDepth;
+    }
+
+    public void setMapListDepth(int mapListDepth) {
+        this.mapListDepth = mapListDepth;
+    }
+
+    public boolean isAbortRescansOnFailure() {
+        return rescanNotVulnerable;
+    }
+
+    public void setAbortRescansOnFailure(boolean abortRescansOnFailure) {
+        this.rescanNotVulnerable = abortRescansOnFailure;
+    }
+
+    public boolean isRescanNotVulnerable() {
+        return rescanNotVulnerable;
+    }
+
+    public void setRescanNotVulnerable(boolean rescanNotVulnerable) {
+        this.rescanNotVulnerable = rescanNotVulnerable;
+    }
+
 }

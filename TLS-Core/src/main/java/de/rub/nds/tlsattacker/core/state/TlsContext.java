@@ -35,15 +35,17 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
@@ -199,6 +201,10 @@ public class TlsContext {
      */
     private Certificate clientCertificate;
 
+    /**
+     * Collects messages for computation of the Finished and CertificateVerify
+     * hashes
+     */
     private MessageDigestCollector digest;
 
     private RecordLayer recordLayer;
@@ -353,9 +359,9 @@ public class TlsContext {
 
     private NamedGroup ecCertificateCurve;
 
-    private CustomECPoint clientEcPublicKey;
+    private Point clientEcPublicKey;
 
-    private CustomECPoint serverEcPublicKey;
+    private Point serverEcPublicKey;
 
     private BigInteger serverEcPrivateKey;
 
@@ -415,29 +421,7 @@ public class TlsContext {
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
 
-    private GOSTCurve serverGost01Curve;
-
-    private CustomECPoint serverGostEc01PublicKey;
-
-    private BigInteger serverGostEc01PrivateKey;
-
-    private GOSTCurve clientGost01Curve;
-
-    private CustomECPoint clientGostEc01PublicKey;
-
-    private BigInteger clientGostEc01PrivateKey;
-
-    private GOSTCurve serverGost12Curve;
-
-    private CustomECPoint serverGostEc12PublicKey;
-
-    private BigInteger serverGostEc12PrivateKey;
-
-    private GOSTCurve clientGost12Curve;
-
-    private CustomECPoint clientGostEc12PublicKey;
-
-    private BigInteger clientGostEc12PrivateKey;
+    private GOSTCurve selectedGostCurve;
 
     /**
      * the currently used type of keySet by the client
@@ -453,10 +437,48 @@ public class TlsContext {
      * sequence number used for the encryption
      */
     private long writeSequenceNumber = 0;
+
     /**
      * sequence number used for the decryption
      */
     private long readSequenceNumber = 0;
+
+    /**
+     * the sequence number to be used in the fragments of the next message sent
+     */
+    private int dtlsNextSendSequenceNumber = 0;
+
+    /**
+     * the sequence number used in fragments
+     */
+    private int dtlsCurrentSendSequenceNumber = 0;
+
+    /**
+     * the sequence number expected in the fragments of the next message
+     * received
+     */
+    private int dtlsNextReceiveSequenceNumber = 0;
+
+    /**
+     * the sequence number expected in the fragments of the current message
+     */
+    private int dtlsCurrentReceiveSequenceNumber = 0;
+
+    /**
+     * the epoch applied to transmitted DTLS records
+     */
+    private int dtlsSendEpoch = 0;
+
+    /**
+     * the epoch expected in the next record
+     */
+    private int dtlsNextReceiveEpoch = 0;
+
+    /**
+     * a fragment manager assembles DTLS fragments into corresponding messages.
+     */
+    private FragmentManager dtlsFragmentManager;
+
     /**
      * supported protocol versions
      */
@@ -490,6 +512,23 @@ public class TlsContext {
     private ProtocolVersion highestProtocolVersion;
 
     private Boolean clientAuthentication;
+
+    private String clientPWDUsername;
+
+    private byte[] serverPWDSalt;
+
+    /**
+     * Password Element for TLS_ECCPWD
+     */
+    private Point PWDPE;
+
+    private BigInteger clientPWDPrivate;
+
+    private BigInteger serverPWDPrivate;
+
+    private BigInteger serverPWDScalar;
+
+    private Point serverPWDElement;
 
     /**
      * Last application message data received/send by this context. This is
@@ -615,6 +654,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        dtlsFragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {
@@ -789,19 +829,19 @@ public class TlsContext {
         this.selectedGroup = selectedCurve;
     }
 
-    public CustomECPoint getClientEcPublicKey() {
+    public Point getClientEcPublicKey() {
         return clientEcPublicKey;
     }
 
-    public void setClientEcPublicKey(CustomECPoint clientEcPublicKey) {
+    public void setClientEcPublicKey(Point clientEcPublicKey) {
         this.clientEcPublicKey = clientEcPublicKey;
     }
 
-    public CustomECPoint getServerEcPublicKey() {
+    public Point getServerEcPublicKey() {
         return serverEcPublicKey;
     }
 
-    public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
+    public void setServerEcPublicKey(Point serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
     }
 
@@ -982,67 +1022,11 @@ public class TlsContext {
     }
 
     public GOSTCurve getServerGost01Curve() {
-        return serverGost01Curve;
+        return selectedGostCurve;
     }
 
     public void setServerGost01Curve(GOSTCurve serverGost01Curve) {
-        this.serverGost01Curve = serverGost01Curve;
-    }
-
-    public CustomECPoint getServerGostEc01PublicKey() {
-        return serverGostEc01PublicKey;
-    }
-
-    public void setServerGostEc01PublicKey(CustomECPoint serverGostEc01PublicKey) {
-        this.serverGostEc01PublicKey = serverGostEc01PublicKey;
-    }
-
-    public BigInteger getServerGostEc01PrivateKey() {
-        return serverGostEc01PrivateKey;
-    }
-
-    public void setServerGostEc01PrivateKey(BigInteger serverGostEc01PrivateKey) {
-        this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getClientGost01Curve() {
-        return clientGost01Curve;
-    }
-
-    public void setClientGost01Curve(GOSTCurve clientGost01Curve) {
-        this.clientGost01Curve = clientGost01Curve;
-    }
-
-    public CustomECPoint getClientGostEc01PublicKey() {
-        return clientGostEc01PublicKey;
-    }
-
-    public void setClientGostEc01PublicKey(CustomECPoint clientGostEc01PublicKey) {
-        this.clientGostEc01PublicKey = clientGostEc01PublicKey;
-    }
-
-    public BigInteger getClientGostEc01PrivateKey() {
-        return clientGostEc01PrivateKey;
-    }
-
-    public void setClientGostEc01PrivateKey(BigInteger clientGostEc01PrivateKey) {
-        this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getServerGost12Curve() {
-        return serverGost12Curve;
-    }
-
-    public void setServerGost12Curve(GOSTCurve serverGost12Curve) {
-        this.serverGost12Curve = serverGost12Curve;
-    }
-
-    public GOSTCurve getClientGost12Curve() {
-        return clientGost12Curve;
-    }
-
-    public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
-        this.clientGost12Curve = clientGost12Curve;
+        this.selectedGostCurve = serverGost01Curve;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
@@ -1061,7 +1045,7 @@ public class TlsContext {
         this.clientNamedGroupsList = clientNamedGroupsList;
     }
 
-    public void setClientNamedGroupsList(NamedGroup... clientNamedCurvesList) {
+    public void setClientNamedGroupsList(NamedGroup... clientNamedGroupsList) {
         this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
     }
 
@@ -1222,6 +1206,82 @@ public class TlsContext {
 
     public void increaseReadSequenceNumber() {
         this.readSequenceNumber++;
+    }
+
+    public int getDtlsNextSendSequenceNumber() {
+        return dtlsNextSendSequenceNumber;
+    }
+
+    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
+        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
+    }
+
+    public void increaseDtlsNextSendSequenceNumber() {
+        this.dtlsNextSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentSendSequenceNumber() {
+        return dtlsCurrentSendSequenceNumber;
+    }
+
+    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
+        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentSendSequenceNumber() {
+        this.dtlsCurrentSendSequenceNumber++;
+    }
+
+    public int getDtlsCurrentReceiveSequenceNumber() {
+        return dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
+        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
+    }
+
+    public void increaseDtlsCurrentReceiveSequenceNumber() {
+        dtlsCurrentReceiveSequenceNumber++;
+    }
+
+    public int getDtlsNextReceiveSequenceNumber() {
+        return dtlsNextReceiveSequenceNumber;
+    }
+
+    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
+        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
+    }
+
+    public int getDtlsSendEpoch() {
+        return dtlsSendEpoch;
+    }
+
+    public void increaseDtlsSendEpoch() {
+        dtlsSendEpoch++;
+    }
+
+    public void setDtlsSendEpoch(int sendEpoch) {
+        this.dtlsSendEpoch = sendEpoch;
+    }
+
+    public int getDtlsNextReceiveEpoch() {
+        return dtlsNextReceiveEpoch;
+    }
+
+    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
+        this.dtlsNextReceiveEpoch = receiveEpoch;
+    }
+
+    public void increaseDtlsNextReceiveEpoch() {
+        dtlsNextReceiveEpoch++;
+    }
+
+    public FragmentManager getDtlsFragmentManager() {
+        return dtlsFragmentManager;
+    }
+
+    public void increaseDtlsNextReceiveSequenceNumber() {
+        dtlsNextReceiveSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -1832,7 +1892,7 @@ public class TlsContext {
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
-            throw new ConfigurationException("Unable to initialize the transport handler with: "
+            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
                     + connection.toString(), ex);
         }
     }
@@ -2171,6 +2231,70 @@ public class TlsContext {
 
     public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
         this.clientDsaGenerator = clientDsaGenerator;
+    }
+
+    public void setClientPWDUsername(String username) {
+        this.clientPWDUsername = username;
+    }
+
+    public String getClientPWDUsername() {
+        return clientPWDUsername;
+    }
+
+    public void setServerPWDSalt(byte[] salt) {
+        this.serverPWDSalt = salt;
+    }
+
+    public byte[] getServerPWDSalt() {
+        return serverPWDSalt;
+    }
+
+    public Point getPWDPE() {
+        return PWDPE;
+    }
+
+    public void setPWDPE(Point PWDPE) {
+        this.PWDPE = PWDPE;
+    }
+
+    public BigInteger getClientPWDPrivate() {
+        return clientPWDPrivate;
+    }
+
+    public void setClientPWDPrivate(BigInteger clientPWDPrivate) {
+        this.clientPWDPrivate = clientPWDPrivate;
+    }
+
+    public BigInteger getServerPWDPrivate() {
+        return serverPWDPrivate;
+    }
+
+    public void setServerPWDPrivate(BigInteger serverPWDPrivate) {
+        this.serverPWDPrivate = serverPWDPrivate;
+    }
+
+    public BigInteger getServerPWDScalar() {
+        return serverPWDScalar;
+    }
+
+    public void setServerPWDScalar(BigInteger serverPWDScalar) {
+        this.serverPWDScalar = serverPWDScalar;
+    }
+
+    public Point getServerPWDElement() {
+        return serverPWDElement;
+    }
+
+    public void setServerPWDElement(Point serverPWDElement) {
+        this.serverPWDElement = serverPWDElement;
+    }
+
+    public GOSTCurve getSelectedGostCurve() {
+        return selectedGostCurve;
+    }
+
+    public void setSelectedGostCurve(GOSTCurve selectedGostCurve) {
+        this.selectedGostCurve = selectedGostCurve;
     }
 
 }

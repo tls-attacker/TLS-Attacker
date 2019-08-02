@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.config;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-/**
- *
- * @author robert
- */
 public class ConfigCache {
 
     private final Config cachedConfig;

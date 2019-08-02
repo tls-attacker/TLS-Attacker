@@ -39,6 +39,8 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
             @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
+            @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
+            @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
@@ -141,8 +143,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         if (waitTillMessage != null) {
             sb.append(" (");
             sb.append(waitTillMessage.toCompactString());
-
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            if (sb.lastIndexOf(",") > 0) {
+                sb.deleteCharAt(sb.lastIndexOf(","));
+            }
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }

@@ -9,19 +9,20 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.IOException;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECPoint;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
@@ -37,9 +38,36 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     @Override
     public void prepare() {
         LOGGER.debug("Preparing KeySharePairExtension");
-        prepareKeyShare();
+        if (chooser.getSelectedCipherSuite().isPWD()) {
+            try {
+                preparePWDKeyShare();
+            } catch (CryptoException e) {
+                throw new PreparationException("Failed to generate password element", e);
+            }
+        } else {
+            prepareKeyShare();
+        }
+
         prepareKeyShareType();
         prepareKeyShareLength();
+    }
+
+    private void preparePWDKeyShare() throws CryptoException {
+        EllipticCurve curve = CurveFactory.getCurve(entry.getGroupConfig());
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
+        PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, passwordElement,
+                chooser);
+        int curveSize = curve.getModulus().bitLength() / 8;
+        entry.setPrivateKey(keyMaterial.privateKeyScalar);
+        byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
+        entry.setPublicKey(ArrayConverter.concatenate(
+                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getX().getData(), curveSize, true),
+                ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getY().getData(), curveSize, true),
+                ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
+        LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
+        LOGGER.debug("PasswordElement.x: "
+                + ArrayConverter.bytesToHexString(ArrayConverter
+                        .bigIntegerToByteArray(passwordElement.getX().getData())));
     }
 
     private void prepareKeyShare() {
@@ -52,19 +80,14 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             }
         }
         if (entry.getGroupConfig().isStandardCurve()) {
-            ECPoint ecPublicKey = KeyShareCalculator
-                    .createClassicEcPoint(entry.getGroupConfig(), entry.getPrivateKey());
-            List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
-            ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-            byte[] serializedPoint;
-            try {
-                serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, ecPublicKey);
-            } catch (IOException ex) {
-                throw new PreparationException("Could not serialize clientPublicKey", ex);
-            }
+            Point ecPublicKey = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey());
+            // TODO We currently just use the default point format
+            byte[] serializedPoint = PointFormatter.formatToByteArray(ecPublicKey, chooser.getConfig()
+                    .getDefaultSelectedPointFormat());
             entry.setPublicKey(serializedPoint);
         } else if (entry.getGroupConfig().isCurve() && !entry.getGroupConfig().isStandardCurve()) {
-            byte[] publicKey = KeyShareCalculator.createX25519KeyShare(entry.getGroupConfig(), entry.getPrivateKey());
+            byte[] publicKey = KeyShareCalculator.createMontgomeryKeyShare(entry.getGroupConfig(),
+                    entry.getPrivateKey());
             entry.setPublicKey(publicKey);
         } else {
             throw new UnsupportedOperationException("The group \"" + entry.getGroupConfig().name()

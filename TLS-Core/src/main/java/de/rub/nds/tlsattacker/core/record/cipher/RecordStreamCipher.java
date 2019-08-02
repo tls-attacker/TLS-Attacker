@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,11 +68,11 @@ public class RecordStreamCipher extends RecordCipher {
     @Override
     public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
         try {
-            return new DecryptionResult(null, decryptCipher.decrypt(decryptionRequest.getCipherText()), null);
+            return new DecryptionResult(null, decryptCipher.decrypt(decryptionRequest.getCipherText()), null, true);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
             LOGGER.debug(E);
-            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false, false);
         }
     }
 

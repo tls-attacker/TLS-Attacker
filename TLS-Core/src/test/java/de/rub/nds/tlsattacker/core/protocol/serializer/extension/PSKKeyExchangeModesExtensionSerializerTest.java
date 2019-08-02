@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import static org.junit.Assert.*;
 import org.junit.Test;

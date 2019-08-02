@@ -30,6 +30,18 @@ public abstract class TransportHandler {
 
     private final ConnectionEndType type;
 
+    /**
+     * True {@link inStream} is expected to reach the End of Stream, meaning
+     * read will return -1.
+     */
+    private boolean isInStreamTerminating = true;
+
+    public TransportHandler(long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+        this.timeout = timeout;
+        this.type = type;
+        this.isInStreamTerminating = isInStreamTerminating;
+    }
+
     public TransportHandler(long timeout, ConnectionEndType type) {
         this.timeout = timeout;
         this.type = type;
@@ -49,22 +61,24 @@ public abstract class TransportHandler {
                     stream.write(read);
                 }
             } else {
-                try {
-                    // dont ask - the java api does not allow this otherwise...
-                    Thread.currentThread().sleep(1);
-                    int read = inStream.read();
-                    if (read == -1) {
-                        // TCP FIN
+                if (isInStreamTerminating) {
+                    try {
+                        // dont ask - the java api does not allow this
+                        // otherwise...
+                        Thread.sleep(1);
+                        int read = inStream.read();
+                        if (read == -1) {
+                            // TCP FIN
+                            return stream.toByteArray();
+                        }
+                        inStream.unread(read);
+
+                    } catch (SocketException E) {
+                        // TCP RST received
                         return stream.toByteArray();
+                    } catch (Exception E) {
                     }
-                    inStream.unread(read);
-
-                } catch (SocketException E) {
-                    // TCP RST received
-                    return stream.toByteArray();
-                } catch (Exception E) {
                 }
-
             }
         }
         return stream.toByteArray();

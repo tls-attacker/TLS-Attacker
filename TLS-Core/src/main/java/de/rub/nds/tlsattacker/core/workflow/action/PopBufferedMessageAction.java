@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.IOException;
 
 public class PopBufferedMessageAction extends ConnectionBoundAction {
 
@@ -24,7 +23,7 @@ public class PopBufferedMessageAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext ctx = state.getTlsContext(getConnectionAlias());
         ctx.getMessageBuffer().pop();
         setExecuted(Boolean.TRUE);

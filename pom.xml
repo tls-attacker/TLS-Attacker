@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>2.8</version>
+    <version>3.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -141,6 +141,11 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cryptomator</groupId>
+            <artifactId>siv-mode</artifactId>
+            <version>1.3.1</version>
         </dependency>
     </dependencies>
     <build>

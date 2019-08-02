@@ -29,7 +29,7 @@ public abstract class PaddingVectorGenerator {
 
     /**
      * Creates an array of (padding+1) padding bytes.
-     * 
+     *
      * Example for padding 03: [03 03 03 03]
      *
      * @param padding

@@ -13,10 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author robert
- */
 public class TrippleVectorTest {
 
     private Record r;
