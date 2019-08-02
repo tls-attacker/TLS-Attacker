@@ -42,6 +42,9 @@ public class UdpInputStream extends InputStream {
         if (index == packetSize) {
             receive();
         }
+        if (packetSize == 0) {
+            return -1;
+        }
         index++;
         return dataBuffer[index - 1] & 0xff;
     }
@@ -57,8 +60,9 @@ public class UdpInputStream extends InputStream {
     private void receive() throws IOException {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
         try {
-            socket.receive(packet);
             index = 0;
+            packetSize = 0;
+            socket.receive(packet);
             packetSize = packet.getLength();
         } catch (SocketTimeoutException E) {
             packet = null;
