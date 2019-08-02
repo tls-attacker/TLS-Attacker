@@ -77,7 +77,6 @@ public class ClientDelegate extends Delegate {
             con.setPort(uri.getPort());
         }
         if (IPAddress.isValid(uri.getHost())) {
-            System.out.println("Setting IP: " + uri.getHost());
             con.setIp(uri.getHost());
             if (sniHostname != null) {
                 con.setHostname(sniHostname);
