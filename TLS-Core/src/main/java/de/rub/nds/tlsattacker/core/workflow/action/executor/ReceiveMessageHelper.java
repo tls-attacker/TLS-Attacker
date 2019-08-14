@@ -209,16 +209,18 @@ public class ReceiveMessageHelper {
             return context.getRecordLayer().parseRecords(recordBytes);
         } catch (ParserException ex) {
             LOGGER.debug(ex);
-            LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
-            byte[] extraBytes = new byte[0];
-            try {
-                extraBytes = receiveByteArray(context);
-            } catch (IOException ex2) {
-                LOGGER.warn("Could not receive more Bytes", ex2);
-                context.setReceivedTransportHandlerException(true);
-            }
-            if (extraBytes != null && extraBytes.length > 0) {
-                return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
+            if (context.getTransportHandler() != null) {
+                LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
+                byte[] extraBytes = new byte[0];
+                try {
+                    extraBytes = receiveByteArray(context);
+                } catch (IOException ex2) {
+                    LOGGER.warn("Could not receive more Bytes", ex2);
+                    context.setReceivedTransportHandlerException(true);
+                }
+                if (extraBytes != null && extraBytes.length > 0) {
+                    return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
+                }
             }
             LOGGER.debug("Did not receive more Bytes. Parsing records softly");
             return context.getRecordLayer().parseRecordsSoftly(recordBytes);
@@ -391,7 +393,9 @@ public class ReceiveMessageHelper {
             throw new ParserException("Cannot parse cleanBytes as SSL2 messages. Not enough data present");
         }
 
-        if (cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
+        if (cleanProtocolMessageBytes.length > (dataPointer + typeOffset)
+                && cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO
+                        .getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
             handler = new SSL2ServerVerifyHandler(context);
