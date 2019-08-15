@@ -81,10 +81,14 @@ public class ForensicAnalyzer {
             context.getConfig().setDefaultClientRSAPrivateKey(rsaPrivateKey);
             context.getConfig().setDefaultServerRSAPrivateKey(rsaPrivateKey);
         } else {
-            context.getConfig().setDefaultClientRSAPrivateKey(
-                    context.getConfig().getDefaultClientRSAPrivateKey().add(BigInteger.ONE));
-            context.getConfig().setDefaultServerRSAPrivateKey(
-                    context.getConfig().getDefaultServerRSAPrivateKey().add(BigInteger.ONE));
+            /*
+             * context.getConfig().setDefaultClientRSAPrivateKey(
+             * context.getConfig
+             * ().getDefaultClientRSAPrivateKey().add(BigInteger.ONE));
+             * context.getConfig().setDefaultServerRSAPrivateKey(
+             * context.getConfig
+             * ().getDefaultServerRSAPrivateKey().add(BigInteger.ONE));
+             */
         }
         context.setRecordLayer(new TlsRecordLayer(context));
         adjustPrivateKeys(state, executedWorkflow);

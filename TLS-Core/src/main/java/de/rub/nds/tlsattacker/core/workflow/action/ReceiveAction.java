@@ -344,4 +344,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return options;
         }
     }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
+    }
 }
