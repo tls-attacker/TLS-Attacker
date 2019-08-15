@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class ClearBuffersAction extends MessageAction {
+public class ClearBuffersAction extends ConnectionBoundAction {
 
     public ClearBuffersAction() {
         super();

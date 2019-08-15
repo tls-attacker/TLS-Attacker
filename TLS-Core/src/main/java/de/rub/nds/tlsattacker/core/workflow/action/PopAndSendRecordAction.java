@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,4 +96,8 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         return records;
     }
 
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }
