@@ -43,7 +43,7 @@ public class HandlerFactory {
                 case HEARTBEAT:
                     return new HeartbeatMessageHandler(context);
                 default:
-                    return new UnknownHandler(context);
+                    return new UnknownHandler(context, protocolType);
             }
         } catch (UnsupportedOperationException E) {
             // Could not get the correct handler, getting an

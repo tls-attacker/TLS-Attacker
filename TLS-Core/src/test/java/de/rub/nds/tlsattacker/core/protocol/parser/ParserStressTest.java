@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -84,7 +85,7 @@ public class ParserStressTest {
             case 18:
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

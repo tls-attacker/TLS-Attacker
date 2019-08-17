@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownPreparator;
@@ -16,13 +17,16 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class UnknownHandler extends ProtocolMessageHandler<UnknownMessage> {
 
-    public UnknownHandler(TlsContext tlsContext) {
+	private final ProtocolMessageType recordContentMessageType;
+	
+    public UnknownHandler(TlsContext tlsContext, ProtocolMessageType recordContentMessageType) {
         super(tlsContext);
+        this.recordContentMessageType = recordContentMessageType;
     }
 
     @Override
     public UnknownParser getParser(byte[] message, int pointer) {
-        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), recordContentMessageType);
     }
 
     @Override

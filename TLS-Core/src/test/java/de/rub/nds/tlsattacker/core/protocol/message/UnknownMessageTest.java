@@ -13,13 +13,15 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+
 public class UnknownMessageTest {
 
     UnknownMessage message;
 
     @Before
     public void setUp() {
-        message = new UnknownMessage();
+        message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
     }
 
     @After
