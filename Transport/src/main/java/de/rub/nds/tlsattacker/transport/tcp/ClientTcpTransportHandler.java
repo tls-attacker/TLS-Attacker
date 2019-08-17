@@ -22,28 +22,18 @@ import java.net.SocketTimeoutException;
 
 public class ClientTcpTransportHandler extends TransportHandler {
 
-    protected Socket socket;
+    private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
+	protected Socket socket;
     protected String hostname;
     protected int port;
     protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
-        super(connection.getTimeout(), ConnectionEndType.CLIENT);
-        this.hostname = connection.getIp();
-        this.port = connection.getPort();
-        this.connectionTimeout = 60000;
-    }
-
-    public ClientTcpTransportHandler(Connection connection, long timeout) {
-        this(connection);
-        this.connectionTimeout = timeout;
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getTimeout(), connection.getIp(), connection.getPort());
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, ConnectionEndType.CLIENT);
-        this.hostname = hostname;
-        this.port = port;
-        this.connectionTimeout = timeout;
+        this(timeout, timeout, hostname, port);
     }
 
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
