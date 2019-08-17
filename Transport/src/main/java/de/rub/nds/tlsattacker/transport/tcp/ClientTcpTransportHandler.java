@@ -23,7 +23,7 @@ import java.net.SocketTimeoutException;
 public class ClientTcpTransportHandler extends TransportHandler {
 
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
-	protected Socket socket;
+    protected Socket socket;
     protected String hostname;
     protected int port;
     protected long connectionTimeout;
