@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import static org.junit.Assert.*;
@@ -21,7 +22,7 @@ public class UnknownSerializerTest {
 
     @Before
     public void setUp() {
-        msg = new UnknownMessage();
+        msg = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         serializer = new UnknownSerializer(msg, ProtocolVersion.TLS12);
     }
 

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
@@ -133,7 +134,7 @@ public class SerializationFullTest {
         messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());
         messages.add(new UnknownHandshakeMessage());
-        messages.add(new UnknownMessage());
+        messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
         HttpsRequestMessage message = new HttpsRequestMessage();
         message.setRequestPath("someString");

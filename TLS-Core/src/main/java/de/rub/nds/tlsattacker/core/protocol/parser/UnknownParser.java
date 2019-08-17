@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    
+    private final ProtocolMessageType recordContentMessageType;
 
     /**
      * Constructor for the Parser class
@@ -29,8 +32,9 @@ public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
      * @param version
      *            Version of the Protocol
      */
-    public UnknownParser(int startposition, byte[] array, ProtocolVersion version) {
+    public UnknownParser(int startposition, byte[] array, ProtocolVersion version, ProtocolMessageType recordContentMessageType) {
         super(startposition, array, version);
+        this.recordContentMessageType = recordContentMessageType;
     }
 
     /**
@@ -45,7 +49,7 @@ public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
     @Override
     protected UnknownMessage parseMessageContent() {
         LOGGER.debug("Parsing UnknownMessage");
-        UnknownMessage msg = new UnknownMessage();
+        UnknownMessage msg = new UnknownMessage(recordContentMessageType);
         parseCompleteMessage(msg);
         return msg;
     }

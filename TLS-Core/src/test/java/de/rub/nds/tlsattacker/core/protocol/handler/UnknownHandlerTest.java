@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownPreparator;
@@ -25,7 +26,7 @@ public class UnknownHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new UnknownHandler(context);
+        handler = new UnknownHandler(context, ProtocolMessageType.UNKNOWN);
     }
 
     /**
@@ -41,7 +42,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new UnknownMessage()) instanceof UnknownPreparator);
+        assertTrue(handler.getPreparator(new UnknownMessage(ProtocolMessageType.UNKNOWN)) instanceof UnknownPreparator);
     }
 
     /**
@@ -49,7 +50,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new UnknownMessage()) instanceof UnknownSerializer);
+        assertTrue(handler.getSerializer(new UnknownMessage(ProtocolMessageType.UNKNOWN)) instanceof UnknownSerializer);
     }
 
     /**
@@ -57,7 +58,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        UnknownMessage message = new UnknownMessage();
+        UnknownMessage message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         handler.adjustTLSContext(message);
     }
 

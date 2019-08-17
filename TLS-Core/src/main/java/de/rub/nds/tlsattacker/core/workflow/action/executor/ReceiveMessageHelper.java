@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -305,7 +306,7 @@ public class ReceiveMessageHelper {
                     if (cleanProtocolMessageBytes.length > 2) {
                         result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                     } else {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
                     }
                 }
             } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
@@ -318,7 +319,7 @@ public class ReceiveMessageHelper {
                                 typeFromRecord, context);
                     } else {
                         try {
-                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
                         } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                             LOGGER.warn("Could not parse Message as UnknownMessage");
                             LOGGER.debug(exUnknownHMsg);
@@ -330,7 +331,7 @@ public class ReceiveMessageHelper {
                     LOGGER.debug(exUnknownHandshakeMsg);
 
                     try {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
                     } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                         LOGGER.warn("Could not parse Message as UnknownMessage");
                         LOGGER.debug(exUnknownHMsg);
@@ -407,10 +408,12 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
-    private ParserResult tryHandleAsUnknownMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
-            throws ParserException, AdjustmentException {
-        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null);
-        return pmh.parseMessage(protocolMessageBytes, pointer, false);
+    private ParserResult tryHandleAsUnknownMessage(byte[] protocolMessageBytes, int pointer, TlsContext context, ProtocolMessageType recordContentMessageType)
+            throws ParserException, AdjustmentException {    	
+        // ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null);
+        // return pmh.parseMessage(protocolMessageBytes, pointer, false);
+        UnknownHandler unknownHandler = new UnknownHandler(context, recordContentMessageType);
+        return unknownHandler.parseMessage(protocolMessageBytes, pointer, false);
     }
 
     /*

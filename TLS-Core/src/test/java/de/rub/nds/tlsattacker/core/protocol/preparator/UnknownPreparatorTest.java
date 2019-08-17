@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
@@ -23,7 +24,7 @@ public class UnknownPreparatorTest {
     @Before
     public void setUp() {
         this.context = new TlsContext();
-        this.message = new UnknownMessage();
+        this.message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
         this.preparator = new UnknownPreparator(context.getChooser(), message);
     }
 

@@ -20,14 +20,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;
-
+    
+    private ProtocolMessageType recordContentMessageType;
+    
     public UnknownMessage() {
+    	this(ProtocolMessageType.UNKNOWN);
+    }
+
+    public UnknownMessage(ProtocolMessageType recordContentMessageType) {
         super();
+        this.recordContentMessageType = recordContentMessageType;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
-    public UnknownMessage(Config config) {
+    public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
         super();
+        this.recordContentMessageType = recordContentMessageType;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
@@ -39,6 +47,14 @@ public class UnknownMessage extends ProtocolMessage {
         this.dataConfig = dataConfig;
     }
 
+	public ProtocolMessageType getRecordContentMessageType() {
+		return recordContentMessageType;
+	}
+
+	public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
+		this.recordContentMessageType = recordContentMessageType;
+	}    
+    
     @Override
     public String toCompactString() {
         return "UNKNOWN_MESSAGE";
@@ -46,7 +62,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new UnknownHandler(context);
+        return new UnknownHandler(context, recordContentMessageType);
     }
 
     @Override
