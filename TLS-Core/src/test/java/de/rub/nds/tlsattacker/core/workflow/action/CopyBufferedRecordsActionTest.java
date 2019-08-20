@@ -14,7 +14,6 @@ import org.junit.Test;
 
 public class CopyBufferedRecordsActionTest {
     private CopyBufferedRecordsAction action = new CopyBufferedRecordsAction("src", "dst");
-    private TlsContext context = new TlsContext();
 
     //@Before
     public void setUp(){
