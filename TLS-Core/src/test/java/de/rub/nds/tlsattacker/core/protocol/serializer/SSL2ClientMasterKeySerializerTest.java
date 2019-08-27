@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 @RunWith(Parameterized.class)
 public class SSL2ClientMasterKeySerializerTest {
 
-	final private ProtocolVersion VERSION  = ProtocolVersion.SSL2;
+	private final ProtocolVersion version  = ProtocolVersion.SSL2;
 	private SSL2ClientMasterKeyMessage message;
 	private byte[] expectedClientMasterKeyMessage;
 	
@@ -34,14 +34,14 @@ public class SSL2ClientMasterKeySerializerTest {
     	byte[] cipher = BigInteger.valueOf(SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5.getValue()).toByteArray();
         
     	return Arrays.asList(new Object[][] {{
-    		138,													// Length : 138
-    		HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue(),	// Type: Client Master Key (2)
-    		cipher, 												// Cipher Spec : SSL2_RC4_128_WITH_MD5 (0x010080)
-    		0,	 													// Clear Key Data Length : 0
-    		128,													// Encrypted Key Data Length: 128
-    		0,														// Key Argument Length: 0
-    		new byte[0],  											// Clear Key: -
-    		encryptedKey,											// Encrypted Key
+    		138,
+    		HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue(),
+    		cipher,
+    		0,
+    		128,
+    		0,
+    		new byte[0],
+    		encryptedKey,
     		expectedClientMasterKeyMessage
         }});   	
     }
@@ -50,7 +50,7 @@ public class SSL2ClientMasterKeySerializerTest {
     		int encryptedKeyLength, int keyArgLength, byte[] clearKeyData,byte[] encryptedKey, byte[] expectedClientMasterKeyMessage) {    	
     	this.expectedClientMasterKeyMessage = expectedClientMasterKeyMessage;
     	this.message = new SSL2ClientMasterKeyMessage();
-		this.message.setMessageLength(138);
+		this.message.setMessageLength(messageLength);
 		this.message.setType(messageType);
 		this.message.setCipherKind(cipher);
 		this.message.setClearKeyLength(clearKeyLength);
@@ -62,7 +62,7 @@ public class SSL2ClientMasterKeySerializerTest {
     
 	@Test
 	public void test() {
-		SSL2ClientMasterKeySerializer serializer = new SSL2ClientMasterKeySerializer(this.message, this.VERSION);
+		SSL2ClientMasterKeySerializer serializer = new SSL2ClientMasterKeySerializer(this.message, this.version);
 		byte[] result = serializer.serializeProtocolMessageContent();			
 		assertArrayEquals(this.expectedClientMasterKeyMessage,result);
 	}
