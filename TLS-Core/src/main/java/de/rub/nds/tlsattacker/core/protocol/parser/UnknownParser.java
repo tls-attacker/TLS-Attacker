@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     private final ProtocolMessageType recordContentMessageType;
 
     /**
@@ -32,7 +32,8 @@ public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
      * @param version
      *            Version of the Protocol
      */
-    public UnknownParser(int startposition, byte[] array, ProtocolVersion version, ProtocolMessageType recordContentMessageType) {
+    public UnknownParser(int startposition, byte[] array, ProtocolVersion version,
+            ProtocolMessageType recordContentMessageType) {
         super(startposition, array, version);
         this.recordContentMessageType = recordContentMessageType;
     }

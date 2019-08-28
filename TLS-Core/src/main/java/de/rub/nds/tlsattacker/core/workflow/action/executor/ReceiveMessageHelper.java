@@ -305,7 +305,8 @@ public class ReceiveMessageHelper {
                     if (cleanProtocolMessageBytes.length > 2) {
                         result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                     } else {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                typeFromRecord);
                     }
                 }
             } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
@@ -318,7 +319,8 @@ public class ReceiveMessageHelper {
                                 typeFromRecord, context);
                     } else {
                         try {
-                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                    typeFromRecord);
                         } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                             LOGGER.warn("Could not parse Message as UnknownMessage");
                             LOGGER.debug(exUnknownHMsg);
@@ -330,7 +332,8 @@ public class ReceiveMessageHelper {
                     LOGGER.debug(exUnknownHandshakeMsg);
 
                     try {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context, typeFromRecord);
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                typeFromRecord);
                     } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                         LOGGER.warn("Could not parse Message as UnknownMessage");
                         LOGGER.debug(exUnknownHMsg);
@@ -410,9 +413,10 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
-    private ParserResult tryHandleAsUnknownMessage(byte[] protocolMessageBytes, int pointer, TlsContext context, ProtocolMessageType recordContentMessageType)
-            throws ParserException, AdjustmentException {    	
-        // ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null);
+    private ParserResult tryHandleAsUnknownMessage(byte[] protocolMessageBytes, int pointer, TlsContext context,
+            ProtocolMessageType recordContentMessageType) throws ParserException, AdjustmentException {
+        // ProtocolMessageHandler pmh = HandlerFactory.getHandler(context,
+        // ProtocolMessageType.UNKNOWN, null);
         // return pmh.parseMessage(protocolMessageBytes, pointer, false);
         UnknownHandler unknownHandler = new UnknownHandler(context, recordContentMessageType);
         return unknownHandler.parseMessage(protocolMessageBytes, pointer, false);
