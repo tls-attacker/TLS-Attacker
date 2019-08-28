@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class UnknownHandler extends ProtocolMessageHandler<UnknownMessage> {
 
-	private final ProtocolMessageType recordContentMessageType;
-	
+    private final ProtocolMessageType recordContentMessageType;
+
     public UnknownHandler(TlsContext tlsContext, ProtocolMessageType recordContentMessageType) {
         super(tlsContext);
         this.recordContentMessageType = recordContentMessageType;
@@ -26,7 +26,8 @@ public class UnknownHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     @Override
     public UnknownParser getParser(byte[] message, int pointer) {
-        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), recordContentMessageType);
+        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                recordContentMessageType);
     }
 
     @Override

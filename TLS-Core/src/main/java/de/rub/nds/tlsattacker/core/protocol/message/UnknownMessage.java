@@ -20,11 +20,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;
-    
+
     private ProtocolMessageType recordContentMessageType;
-    
+
     public UnknownMessage() {
-    	this(ProtocolMessageType.UNKNOWN);
+        this(ProtocolMessageType.UNKNOWN);
     }
 
     public UnknownMessage(ProtocolMessageType recordContentMessageType) {
@@ -47,14 +47,14 @@ public class UnknownMessage extends ProtocolMessage {
         this.dataConfig = dataConfig;
     }
 
-	public ProtocolMessageType getRecordContentMessageType() {
-		return recordContentMessageType;
-	}
+    public ProtocolMessageType getRecordContentMessageType() {
+        return recordContentMessageType;
+    }
 
-	public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
-		this.recordContentMessageType = recordContentMessageType;
-	}    
-    
+    public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
+        this.recordContentMessageType = recordContentMessageType;
+    }
+
     @Override
     public String toCompactString() {
         return "UNKNOWN_MESSAGE";
