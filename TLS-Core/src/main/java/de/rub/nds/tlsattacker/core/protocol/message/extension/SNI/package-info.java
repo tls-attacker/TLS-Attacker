@@ -10,3 +10,4 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.sni;
 
 import javax.xml.bind.annotation.XmlNsForm;
+
