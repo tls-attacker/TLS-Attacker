@@ -8,24 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRetryRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
+import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
+
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
@@ -33,12 +29,14 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import static org.junit.Assert.*;
 
 public class HelloRetryRequestHandlerTest {
-    private TlsContext context = new TlsContext();
-    private HelloRetryRequestHandler handler = new HelloRetryRequestHandler(context);
+    private TlsContext context;
+    private HelloRetryRequestHandler handler;
 
-    //@Before
+
+    @Before
     public void setUp() {
-
+        context = new TlsContext();
+        handler = new HelloRetryRequestHandler(context);
     }
 
     @Test
@@ -58,29 +56,32 @@ public class HelloRetryRequestHandlerTest {
 
     @Test
     public void testAdjustTLSContext(){
-        List<ExtensionMessage> extensionMessages = MessageFactory.generateExtensionMessages();
         HelloRetryRequestMessage message = new HelloRetryRequestMessage();
+        ProtocolVersion protocolVersion = ProtocolVersion.SSL2;
+        CipherSuite cipherSuite = CipherSuite.TLS_DH_DSS_WITH_DES_CBC_SHA;
+        ExtensionType extensionType = ExtensionType.SERVER_NAME_INDICATION;
+        List<ExtensionMessage> extensionMessages = MessageFactory.generateExtensionMessages();
 
-        message.setProtocolVersion(new byte[] { (byte) 0x00, (byte) 0x02 });
-        message.setSelectedCipherSuite(new byte[]{(byte) 0x0C});
-        message.setExtensionBytes(new byte[] { (byte) 0, (byte) 0 });
+        message.setProtocolVersion(protocolVersion.getValue());
+        message.setSelectedCipherSuite(cipherSuite.getByteValue());
+        message.setExtensionBytes(extensionType.getValue());
+
         message.addExtension(extensionMessages.get(0));
 
-
         handler.adjustTLSContext(message);
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         ExtensionType type = ExtensionType.getExtensionType(message.getExtensions().get(0).getExtensionTypeConstant().getValue());
 
 
-        assertSame(context.getSelectedProtocolVersion(), version);
-        assertSame(context.getSelectedCipherSuite(), suite);
-        assertEquals(context.getProposedExtensions().toString(), "["+type+"]");
+        assertSame(context.getSelectedProtocolVersion(),protocolVersion);
+        assertSame(context.getSelectedCipherSuite(), cipherSuite);
+        assertEquals(context.getProposedExtensions().toString(),"["+type+"]");
+
+        if(context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT){
+            assertTrue(context.isExtensionProposed(type));
+        }else if(context.getTalkingConnectionEndType() == ConnectionEndType.SERVER){
+            assertTrue(context.isExtensionNegotiated(type));
+        }
 
     }
 
-    //@After
-    public void tearDown() {
-
-    }
 }
