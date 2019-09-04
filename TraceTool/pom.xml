@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>3.1</version>
+        <version>3.2</version>
     </parent>
     <artifactId>TraceTool</artifactId>
     <packaging>jar</packaging>
