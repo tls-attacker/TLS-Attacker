@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
@@ -17,19 +18,15 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRetryRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-
 
 import static org.junit.Assert.*;
 
 public class HelloRetryRequestHandlerTest {
+
     private TlsContext context;
     private HelloRetryRequestHandler handler;
-
 
     @Before
     public void setUp() {
@@ -38,28 +35,27 @@ public class HelloRetryRequestHandlerTest {
     }
 
     @Test
-    public void testGetParser(){
+    public void testGetParser() {
         assertTrue(handler.getParser(new byte[1], 0) instanceof HelloRetryRequestParser);
     }
 
     @Test
-    public void testGetPreparator(){
+    public void testGetPreparator() {
         assertTrue(handler.getPreparator(new HelloRetryRequestMessage()) instanceof HelloRetryRequestPreparator);
     }
 
     @Test
-    public void testGetSerializer(){
+    public void testGetSerializer() {
         assertTrue(handler.getSerializer(new HelloRetryRequestMessage()) instanceof HelloRetryRequestSerializer);
     }
 
     @Test
-    public void testAdjustTLSContext(){
+    public void testAdjustTLSContext() {
         HelloRetryRequestMessage message = new HelloRetryRequestMessage();
         ExtensionMessage extensionMessage = new EncryptThenMacExtensionMessage();
         ProtocolVersion protocolVersion = ProtocolVersion.SSL2;
         CipherSuite cipherSuite = CipherSuite.TLS_DH_DSS_WITH_DES_CBC_SHA;
         ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
-
 
         message.setProtocolVersion(protocolVersion.getValue());
         message.setSelectedCipherSuite(cipherSuite.getByteValue());
@@ -67,11 +63,9 @@ public class HelloRetryRequestHandlerTest {
         message.addExtension(extensionMessage);
 
         handler.adjustTLSContext(message);
-
-        assertSame(context.getSelectedProtocolVersion(),protocolVersion);
+        assertSame(context.getSelectedProtocolVersion(), protocolVersion);
         assertSame(context.getSelectedCipherSuite(), cipherSuite);
         assertTrue(context.isExtensionProposed(extensionType));
-
     }
 
 }

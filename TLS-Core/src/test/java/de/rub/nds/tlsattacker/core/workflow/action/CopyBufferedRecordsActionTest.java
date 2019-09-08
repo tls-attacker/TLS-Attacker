@@ -1,8 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -13,24 +13,24 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
 
-public class CopyBufferedRecordsActionTest {
-    private CopyBufferedRecordsAction action;
+import static org.junit.Assert.*;
 
+public class CopyBufferedRecordsActionTest {
+
+    private CopyBufferedRecordsAction action;
 
     @Before
     public void setUp() {
-        action  = new CopyBufferedRecordsAction("src", "dst");
+        action = new CopyBufferedRecordsAction("src", "dst");
     }
 
     @Test
-    public void testCopyField(){
+    public void testCopyField() {
         TlsContext src = new TlsContext();
         TlsContext dst = new TlsContext();
         ModifiableByteArray byteArray = new ModifiableByteArray();
@@ -42,27 +42,23 @@ public class CopyBufferedRecordsActionTest {
         record.setMaxRecordLengthConfig(18);
         record.setCleanProtocolMessageBytes(new byte[1]);
         record.setCompleteRecordBytes(new byte[1]);
-
         recordBuffer.add(record);
         src.setRecordBuffer(recordBuffer);
 
-        action.copyField(src , dst);
+        action.copyField(src, dst);
         assertSame(src.getRecordBuffer(), dst.getRecordBuffer());
-
-
     }
 
     @Test
-    public void testExecutedAsPlanned(){
+    public void testExecutedAsPlanned() {
         action.setExecuted(true);
         assertTrue(action.executedAsPlanned());
         action.setExecuted(false);
         assertFalse(action.executedAsPlanned());
     }
 
-
     @Test
-    public void testReset(){
+    public void testReset() {
         action.setExecuted(true);
         action.reset();
         assertFalse(action.isExecuted());
