@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
-import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,10 +28,6 @@ public class SrpServerKeyExchangeHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new SrpServerKeyExchangeHandler(context);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -74,7 +69,15 @@ public class SrpServerKeyExchangeHandlerTest {
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustTLSContext(message);
+
+        assertEquals(BigInteger.TEN, context.getSRPModulus());
+        assertEquals(BigInteger.ONE, context.getSRPGenerator());
+        assertArrayEquals(BigInteger.TEN.toByteArray(), context.getSRPServerSalt());
+        assertEquals(new BigInteger(new byte[] { 0, 1, 2, 3 }), context.getServerSRPPublicKey());
+        assertEquals(BigInteger.ZERO, context.getServerSRPPrivateKey());
+
         assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 
     @Test
@@ -85,6 +88,13 @@ public class SrpServerKeyExchangeHandlerTest {
         message.setSalt(BigInteger.TEN.toByteArray());
         message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
+
+        assertEquals(BigInteger.TEN, context.getSRPModulus());
+        assertEquals(BigInteger.ONE, context.getSRPGenerator());
+        assertArrayEquals(BigInteger.TEN.toByteArray(), context.getSRPServerSalt());
+        assertEquals(new BigInteger(new byte[] { 0, 1, 2, 3 }), context.getServerSRPPublicKey());
+        assertNull(context.getServerSRPPrivateKey());
+
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());
     }
