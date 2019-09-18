@@ -58,7 +58,7 @@ public class SendDynamicClientKeyExchangeActionTest {
         // we're client)
         config = Config.createConfig();
         // This isn't a typo on my side, but a "bug" in the code
-        config.setDefaulRunningMode(RunningModeType.CLIENT);
+        config.setDefaultRunningMode(RunningModeType.CLIENT);
 
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);

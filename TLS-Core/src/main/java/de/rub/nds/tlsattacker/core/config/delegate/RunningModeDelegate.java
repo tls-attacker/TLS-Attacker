@@ -31,7 +31,7 @@ public class RunningModeDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        config.setDefaulRunningMode(runningMode);
+        config.setDefaultRunningMode(runningMode);
     }
 
 }
