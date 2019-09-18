@@ -8,35 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
-
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import static org.junit.Assert.*;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  *
@@ -57,7 +45,6 @@ public class SendDynamicClientKeyExchangeActionTest {
         // create Config to not overly rely on default values (aka. make sure
         // we're client)
         config = Config.createConfig();
-        // This isn't a typo on my side, but a "bug" in the code
         config.setDefaultRunningMode(RunningModeType.CLIENT);
 
         WorkflowTrace trace = new WorkflowTrace();
@@ -70,10 +57,6 @@ public class SendDynamicClientKeyExchangeActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testExecute() {
         action.execute(state);
@@ -81,12 +64,12 @@ public class SendDynamicClientKeyExchangeActionTest {
         assertTrue(action.isExecuted());
         try {
             action.execute(state);
-            assertTrue(false); // Code shouldn't be reached at all
+            fail(); // Code shouldn't be reached at all
         } catch (WorkflowExecutionException e) {
             assertTrue(e.getMessage().equals("Action already executed!"));
         } catch (Exception e) {
             // any other Exception than what should have been thrown appeared
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -134,9 +117,7 @@ public class SendDynamicClientKeyExchangeActionTest {
 
     @Test
     public void testToString() {
-        // Should it really be Send Action? Or Send Dynamic Client Key Exchange
-        // Action: ?
-        assertTrue(action.toString().equals("Send Action: (not executed)\n\tMessages:\n"));
+        assertTrue(action.toString().equals("Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n"));
     }
 
     @Test
