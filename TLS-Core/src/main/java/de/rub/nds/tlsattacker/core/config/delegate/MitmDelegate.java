@@ -57,7 +57,7 @@ public class MitmDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
 
-        config.setDefaulRunningMode(RunningModeType.MITM);
+        config.setDefaultRunningMode(RunningModeType.MITM);
 
         if (inboundConnectionStr != null) {
             setInboundConnection(config);
