@@ -12,11 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
-import org.bouncycastle.math.ec.ECPoint;
 
 public class ECCUtilsBCWrapper {
 
@@ -65,37 +62,13 @@ public class ECCUtilsBCWrapper {
     }
 
     /**
-     * Reads ECC domain parameters from an InputStream, all named formats and
-     * point formats are allowed. Then, it also reads the public key provided in
-     * the input stream.
-     *
-     * @param input
-     *            The InputStream to read from
-     * @return ECPublicKeyParameters
-     * @throws IOException
-     *             If something goes wrong while reading from the Stream
-     */
-    public static ECPublicKeyParameters readECParametersWithPublicKey(InputStream input) throws IOException {
-        ECDomainParameters domainParameters = readECParameters(input);
-
-        // read the length byte for the ec point
-        int length = input.read();
-        byte[] point = new byte[length];
-        // read the point bytes
-        input.read(point);
-
-        short[] pointFormats = convertPointFormats(ECPointFormat.values());
-        return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
-    }
-
-    /**
      * Converts named curves into BC style notation
      *
      * @param namedGroups
      *            The NamedCurves to convert
      * @return int[] of the NamedCurves in BC Style
      */
-    public static int[] convertNamedCurves(NamedGroup[] namedGroups) {
+    private static int[] convertNamedCurves(NamedGroup[] namedGroups) {
         if (namedGroups == null || namedGroups.length == 0) {
             return new int[0];
         }
@@ -113,7 +86,7 @@ public class ECCUtilsBCWrapper {
      *            The pointFormats to convert
      * @return The converted PointFormats
      */
-    public static short[] convertPointFormats(ECPointFormat[] pointFormats) {
+    private static short[] convertPointFormats(ECPointFormat[] pointFormats) {
         if (pointFormats == null || pointFormats.length == 0) {
             return new short[0];
         }
@@ -122,27 +95,6 @@ public class ECCUtilsBCWrapper {
             pf[i] = pointFormats[i].getShortValue();
         }
         return pf;
-    }
-
-    /**
-     * Serializes an ec point and returns its encoded version, consisting of one
-     * byte encoding information and ec coordinates
-     *
-     * @param ecPointFormats
-     *            The EcPointFormats
-     * @param point
-     *            The Point that should be converted
-     * @return The serialized ECPoint
-     * @throws IOException
-     *             If something goes wrong during Serialisation
-     */
-    public static byte[] serializeECPoint(ECPointFormat[] ecPointFormats, ECPoint point) throws IOException {
-        short[] pf = convertPointFormats(ecPointFormats);
-        return TlsECCUtils.serializeECPoint(pf, point);
-    }
-
-    public static byte[] serializeEcFieldElement(int fieldSize, BigInteger element) throws IOException {
-        return TlsECCUtils.serializeECFieldElement(fieldSize, element);
     }
 
     private ECCUtilsBCWrapper() {

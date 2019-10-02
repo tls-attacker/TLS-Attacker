@@ -10,14 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.math.ec.ECCurve;
-
 import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDServerKeyExchangeMessage> {
@@ -44,9 +42,9 @@ public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDSer
     @Override
     public void adjustTLSContext(PWDServerKeyExchangeMessage message) {
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
-        ECCurve curve = ECNamedCurveTable.getParameterSpec(tlsContext.getSelectedGroup().getJavaName()).getCurve();
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
-        tlsContext.setServerPWDElement(curve.decodePoint(message.getElement().getValue()));
+        tlsContext.setServerPWDElement(PointFormatter.formatFromByteArray(tlsContext.getChooser()
+                .getSelectedNamedGroup(), message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {
             tlsContext.setPWDPE(message.getComputations().getPasswordElement());

@@ -35,17 +35,17 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
@@ -67,7 +67,6 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.math.ec.ECPoint;
 
 public class TlsContext {
 
@@ -360,9 +359,9 @@ public class TlsContext {
 
     private NamedGroup ecCertificateCurve;
 
-    private CustomECPoint clientEcPublicKey;
+    private Point clientEcPublicKey;
 
-    private CustomECPoint serverEcPublicKey;
+    private Point serverEcPublicKey;
 
     private BigInteger serverEcPrivateKey;
 
@@ -422,29 +421,7 @@ public class TlsContext {
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
 
-    private GOSTCurve serverGost01Curve;
-
-    private CustomECPoint serverGostEc01PublicKey;
-
-    private BigInteger serverGostEc01PrivateKey;
-
-    private GOSTCurve clientGost01Curve;
-
-    private CustomECPoint clientGostEc01PublicKey;
-
-    private BigInteger clientGostEc01PrivateKey;
-
-    private GOSTCurve serverGost12Curve;
-
-    private CustomECPoint serverGostEc12PublicKey;
-
-    private BigInteger serverGostEc12PrivateKey;
-
-    private GOSTCurve clientGost12Curve;
-
-    private CustomECPoint clientGostEc12PublicKey;
-
-    private BigInteger clientGostEc12PrivateKey;
+    private GOSTCurve selectedGostCurve;
 
     /**
      * the currently used type of keySet by the client
@@ -540,7 +517,10 @@ public class TlsContext {
 
     private byte[] serverPWDSalt;
 
-    private ECPoint PWDPE;
+    /**
+     * Password Element for TLS_ECCPWD
+     */
+    private Point PWDPE;
 
     private BigInteger clientPWDPrivate;
 
@@ -548,7 +528,7 @@ public class TlsContext {
 
     private BigInteger serverPWDScalar;
 
-    private ECPoint serverPWDElement;
+    private Point serverPWDElement;
 
     /**
      * Last application message data received/send by this context. This is
@@ -849,19 +829,19 @@ public class TlsContext {
         this.selectedGroup = selectedCurve;
     }
 
-    public CustomECPoint getClientEcPublicKey() {
+    public Point getClientEcPublicKey() {
         return clientEcPublicKey;
     }
 
-    public void setClientEcPublicKey(CustomECPoint clientEcPublicKey) {
+    public void setClientEcPublicKey(Point clientEcPublicKey) {
         this.clientEcPublicKey = clientEcPublicKey;
     }
 
-    public CustomECPoint getServerEcPublicKey() {
+    public Point getServerEcPublicKey() {
         return serverEcPublicKey;
     }
 
-    public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
+    public void setServerEcPublicKey(Point serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
     }
 
@@ -1042,67 +1022,11 @@ public class TlsContext {
     }
 
     public GOSTCurve getServerGost01Curve() {
-        return serverGost01Curve;
+        return selectedGostCurve;
     }
 
     public void setServerGost01Curve(GOSTCurve serverGost01Curve) {
-        this.serverGost01Curve = serverGost01Curve;
-    }
-
-    public CustomECPoint getServerGostEc01PublicKey() {
-        return serverGostEc01PublicKey;
-    }
-
-    public void setServerGostEc01PublicKey(CustomECPoint serverGostEc01PublicKey) {
-        this.serverGostEc01PublicKey = serverGostEc01PublicKey;
-    }
-
-    public BigInteger getServerGostEc01PrivateKey() {
-        return serverGostEc01PrivateKey;
-    }
-
-    public void setServerGostEc01PrivateKey(BigInteger serverGostEc01PrivateKey) {
-        this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getClientGost01Curve() {
-        return clientGost01Curve;
-    }
-
-    public void setClientGost01Curve(GOSTCurve clientGost01Curve) {
-        this.clientGost01Curve = clientGost01Curve;
-    }
-
-    public CustomECPoint getClientGostEc01PublicKey() {
-        return clientGostEc01PublicKey;
-    }
-
-    public void setClientGostEc01PublicKey(CustomECPoint clientGostEc01PublicKey) {
-        this.clientGostEc01PublicKey = clientGostEc01PublicKey;
-    }
-
-    public BigInteger getClientGostEc01PrivateKey() {
-        return clientGostEc01PrivateKey;
-    }
-
-    public void setClientGostEc01PrivateKey(BigInteger clientGostEc01PrivateKey) {
-        this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
-    }
-
-    public GOSTCurve getServerGost12Curve() {
-        return serverGost12Curve;
-    }
-
-    public void setServerGost12Curve(GOSTCurve serverGost12Curve) {
-        this.serverGost12Curve = serverGost12Curve;
-    }
-
-    public GOSTCurve getClientGost12Curve() {
-        return clientGost12Curve;
-    }
-
-    public void setClientGost12Curve(GOSTCurve clientGost12Curve) {
-        this.clientGost12Curve = clientGost12Curve;
+        this.selectedGostCurve = serverGost01Curve;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
@@ -2325,14 +2249,11 @@ public class TlsContext {
         return serverPWDSalt;
     }
 
-    /**
-     * Password Element for TLS_ECCPWD
-     */
-    public ECPoint getPWDPE() {
+    public Point getPWDPE() {
         return PWDPE;
     }
 
-    public void setPWDPE(ECPoint PWDPE) {
+    public void setPWDPE(Point PWDPE) {
         this.PWDPE = PWDPE;
     }
 
@@ -2360,11 +2281,20 @@ public class TlsContext {
         this.serverPWDScalar = serverPWDScalar;
     }
 
-    public ECPoint getServerPWDElement() {
+    public Point getServerPWDElement() {
         return serverPWDElement;
     }
 
-    public void setServerPWDElement(ECPoint serverPWDElement) {
+    public void setServerPWDElement(Point serverPWDElement) {
         this.serverPWDElement = serverPWDElement;
     }
+
+    public GOSTCurve getSelectedGostCurve() {
+        return selectedGostCurve;
+    }
+
+    public void setSelectedGostCurve(GOSTCurve selectedGostCurve) {
+        this.selectedGostCurve = selectedGostCurve;
+    }
+
 }

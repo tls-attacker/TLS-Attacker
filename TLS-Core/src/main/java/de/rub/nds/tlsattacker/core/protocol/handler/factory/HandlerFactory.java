@@ -85,6 +85,8 @@ public class HandlerFactory {
                     return new ServerHelloDoneHandler(context);
                 case SERVER_KEY_EXCHANGE:
                     return getServerKeyExchangeHandler(context);
+                case SUPPLEMENTAL_DATA:
+                    return new SupplementalDataHandler(context);
                 case UNKNOWN:
                     return new UnknownHandshakeHandler(context);
             }
@@ -139,7 +141,7 @@ public class HandlerFactory {
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
                         return new HrrKeyShareExtensionHandler(context);
                     }
-                    return new KeyShareExtensionHandler(context);
+                    return new KeyShareExtensionHandler(context, type);
                 case MAX_FRAGMENT_LENGTH:
                     return new MaxFragmentLengthExtensionHandler(context);
                 case PADDING:

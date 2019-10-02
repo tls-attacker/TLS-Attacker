@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import org.bouncycastle.util.Arrays;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import org.bouncycastle.util.Arrays;
-
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 
 public class FragmentUtils {
     public static final int DEFAULT_MESSAGE_LENGTH = 10;

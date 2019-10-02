@@ -8,16 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bouncycastle.util.Arrays;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.LinkedList;
+import java.util.List;
+import org.bouncycastle.util.Arrays;
 
 /**
  * Class used to split HandshakeMessages into DTLS fragments.

@@ -10,25 +10,24 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.math.ec.ECCurve;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECPoint;
-
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<PWDClientKeyExchangeMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final PWDClientKeyExchangeMessage msg;
@@ -42,8 +41,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDClientKeyExchangeMessage");
         msg.prepareComputations();
-        msg.getComputations().setCurve(
-                ECNamedCurveTable.getParameterSpec(chooser.getSelectedNamedGroup().getJavaName()).getCurve());
+        msg.getComputations().setCurve(CurveFactory.getCurve(chooser.getSelectedNamedGroup()));
         LOGGER.debug(chooser.getSelectedNamedGroup().getJavaName());
 
         try {
@@ -53,7 +51,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         prepareScalarElement(msg);
         byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(), msg
-                .getComputations().getPrivateKeyScalar());
+                .getComputations().getPrivateKeyScalar(), msg.getComputations().getCurve());
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -63,19 +61,19 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (!clientMode) {
             msg.prepareComputations();
             byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(), chooser.getContext()
-                    .getServerPWDPrivate());
+                    .getServerPWDPrivate(), msg.getComputations().getCurve());
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
     }
 
     protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {
-        ECPoint passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getXCoord()
-                        .toBigInteger())));
+                + ArrayConverter.bytesToHexString(ArrayConverter
+                        .bigIntegerToByteArray(passwordElement.getX().getData())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -118,7 +116,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
-        ECCurve curve = msg.getComputations().getCurve();
+        EllipticCurve curve = msg.getComputations().getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 
@@ -143,16 +141,11 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("ScalarLength: " + msg.getScalarLength());
     }
 
-    protected void prepareElement(PWDClientKeyExchangeMessage msg, ECPoint element) {
-        List<ECPointFormat> ecPointFormats = getPointFormatList();
-        try {
-            byte[] serializedElement = ECCUtilsBCWrapper.serializeECPoint(ecPointFormats.toArray(new ECPointFormat[0]),
-                    element);
-            msg.setElement(serializedElement);
-            LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
-        } catch (IOException ex) {
-            throw new PreparationException("Could not serialize PWD element", ex);
-        }
+    protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
+        byte[] serializedElement = PointFormatter.formatToByteArray(element, chooser.getConfig()
+                .getDefaultSelectedPointFormat());
+        msg.setElement(serializedElement);
+        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }
 
     protected void prepareElementLength(PWDClientKeyExchangeMessage msg) {
@@ -160,24 +153,24 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("ElementLength: " + msg.getElementLength());
     }
 
-    private byte[] generatePremasterSecret(ECPoint passwordElement, BigInteger privateKeyScalar) {
-        ECCurve curve = passwordElement.getCurve();
-        ECPoint peerElement;
+    private byte[] generatePremasterSecret(Point passwordElement, BigInteger privateKeyScalar, EllipticCurve curve) {
+        Point peerElement;
         BigInteger peerScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             peerElement = chooser.getContext().getServerPWDElement();
             peerScalar = chooser.getContext().getServerPWDScalar();
         } else {
-            peerElement = curve.decodePoint(msg.getElement().getValue());
+            peerElement = PointFormatter.formatFromByteArray(chooser.getSelectedNamedGroup(), msg.getElement()
+                    .getValue()); // TODO wrong group
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }
         if (peerElement == null || peerScalar == null) {
             LOGGER.warn("Missing peer element or scalar, returning empty premaster secret");
             return new byte[0];
         }
-        ECPoint sharedSecret = passwordElement.multiply(peerScalar).add(peerElement).multiply(privateKeyScalar)
-                .normalize();
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getXCoord().toBigInteger());
+        Point sharedSecret = curve.mult(privateKeyScalar,
+                curve.add(curve.mult(peerScalar, passwordElement), peerElement));
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData());
     }
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {

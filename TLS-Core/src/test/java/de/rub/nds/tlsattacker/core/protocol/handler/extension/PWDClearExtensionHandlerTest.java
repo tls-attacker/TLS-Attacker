@@ -14,10 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionPa
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PWDClearExtensionHandlerTest {
     private PWDClearExtensionHandler handler;

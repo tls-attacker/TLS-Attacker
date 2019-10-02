@@ -8,24 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 
 /**
  * Manages multiple message fragment collectors. A user can add fragments, check
  * if the message corresponding to a fragment is complete, and construct the
  * message.
- *
- * @author Robert Merget <robert.merget@rub.de> Paul Fiterau
- *         <fiteraup@yahoo.com>
  */
 public class FragmentManager {
 

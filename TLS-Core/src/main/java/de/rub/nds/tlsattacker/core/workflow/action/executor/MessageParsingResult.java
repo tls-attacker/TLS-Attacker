@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import java.util.List;
-
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import java.util.List;
 
 public class MessageParsingResult {
     private List<ProtocolMessage> messages;

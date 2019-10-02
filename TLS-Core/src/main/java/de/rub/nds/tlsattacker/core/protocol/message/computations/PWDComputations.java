@@ -13,29 +13,28 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.tls.HashAlgorithm;
-import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.math.ec.ECCurve;
-import org.bouncycastle.math.ec.ECPoint;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.tls.HashAlgorithm;
+import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
 
-    private ECCurve curve;
+    private EllipticCurve curve;
 
     /**
      * shared secret derived from the shared password between server and client
      */
-    private ECPoint passwordElement;
+    private Point passwordElement;
 
     /**
      * private secret used to calculate the premaster secret and part of the
@@ -44,28 +43,29 @@ public class PWDComputations extends KeyExchangeComputations {
     private BigInteger privateKeyScalar;
 
     public static class PWDKeyMaterial {
+
         public BigInteger privateKeyScalar;
         public BigInteger scalar;
-        public ECPoint element;
+        public Point element;
     }
 
     @Override
     public void setSecretsInConfig(Config config) {
     }
 
-    public void setCurve(ECCurve curve) {
+    public void setCurve(EllipticCurve curve) {
         this.curve = curve;
     }
 
-    public ECCurve getCurve() {
+    public EllipticCurve getCurve() {
         return curve;
     }
 
-    public ECPoint getPasswordElement() {
+    public Point getPasswordElement() {
         return passwordElement;
     }
 
-    public void setPasswordElement(ECPoint passwordElement) {
+    public void setPasswordElement(Point passwordElement) {
         this.passwordElement = passwordElement;
     }
 
@@ -79,17 +79,17 @@ public class PWDComputations extends KeyExchangeComputations {
 
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
-     * 
+     *
      * @param chooser
      * @param curve
      *            The curve that the generated point should fall on
      * @return
      * @throws CryptoException
      */
-    public static ECPoint computePasswordElement(Chooser chooser, ECCurve curve) throws CryptoException {
+    public static Point computePasswordElement(Chooser chooser, EllipticCurve curve) throws CryptoException {
         MacAlgorithm randomFunction = getMacAlgorithm(chooser.getSelectedCipherSuite());
 
-        BigInteger prime = curve.getField().getCharacteristic();
+        BigInteger prime = curve.getModulus();
 
         byte[] base;
         byte[] salt = chooser.getServerPWDSalt();
@@ -109,7 +109,7 @@ public class PWDComputations extends KeyExchangeComputations {
 
         boolean found = false;
         int counter = 0;
-        int n = (curve.getFieldSize() + 64) / 8;
+        int n = (curve.getModulus().bitLength() + 64) / 8;
         byte[] context;
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             context = chooser.getClientRandom();
@@ -117,8 +117,7 @@ public class PWDComputations extends KeyExchangeComputations {
             context = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         }
 
-        BigInteger x = null;
-        BigInteger y = null;
+        Point createdPoint = null;
         byte[] savedSeed = null;
 
         do {
@@ -127,34 +126,25 @@ public class PWDComputations extends KeyExchangeComputations {
                     ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
-            // (tmp mod (p - 1)) + 1
             BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
-            // y^2 = (x^3 + x*val + b) mod p
-            BigInteger tmpY = tmpX.pow(3).add(tmpX.multiply(curve.getA().toBigInteger()))
-                    .add(curve.getB().toBigInteger()).mod(prime);
-            // y^((p-1)/2) mod p to test if y is a quadratic residue
-            BigInteger legendre = tmpY.modPow(prime.subtract(BigInteger.ONE).shiftRight(1), prime);
-            boolean isQuadraticResidue = legendre.compareTo(BigInteger.ONE) == 0;
-            if (isQuadraticResidue && !found) {
-                x = tmpX;
-                y = tmpY;
+            Point tempPoint = curve.createAPointOnCurve(tmpX);
+
+            if (!found && curve.isOnCurve(tempPoint)) {
+                createdPoint = tempPoint;
                 savedSeed = seed.clone();
                 found = true;
                 chooser.getContext().getBadSecureRandom().nextBytes(base);
             }
         } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
-        // y = y^((p+1)/4) mod p = sqrt(y)
-        y = y.modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
-        ECPoint passwordElement = curve.createPoint(x, y);
 
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
         int lsbSeed = savedSeed[0] & 1;
-        int lsbY = y.getLowestSetBit() == 0 ? 1 : 0;
+        int lsbY = createdPoint.getY().getData().getLowestSetBit() == 0 ? 1 : 0;
         if (lsbSeed == lsbY) {
-            passwordElement = passwordElement.negate();
+            createdPoint = curve.inverse(createdPoint);
         }
-        return passwordElement;
+        return createdPoint;
     }
 
     protected static MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -207,23 +197,22 @@ public class PWDComputations extends KeyExchangeComputations {
         }
     }
 
-    public static PWDKeyMaterial generateKeyMaterial(ECCurve curve, ECPoint passwordElement, Chooser chooser) {
+    public static PWDKeyMaterial generateKeyMaterial(EllipticCurve curve, Point passwordElement, Chooser chooser) {
         BigInteger mask;
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getOrder());
+            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
-                    .mod(curve.getOrder());
+                    .mod(curve.getBasePointOrder());
         } else {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getOrder());
+            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar = new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
-                    .mod(curve.getOrder());
+                    .mod(curve.getBasePointOrder());
         }
 
-        keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getOrder());
+        keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getBasePointOrder());
 
-        keyMaterial.element = passwordElement.multiply(mask).negate().normalize();
-
+        keyMaterial.element = curve.inverse(curve.mult(mask, passwordElement));
         return keyMaterial;
     }
 }

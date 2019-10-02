@@ -12,9 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class PWDClientKeyExchangeParserTest {
 

@@ -14,10 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PasswordSaltExtensionHandlerTest {
     private PasswordSaltExtensionHandler handler;

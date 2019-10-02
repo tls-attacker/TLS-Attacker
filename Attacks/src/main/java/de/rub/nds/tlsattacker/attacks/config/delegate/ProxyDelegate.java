@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
-/**
- *
- * @author ic0ns
- */
 public class ProxyDelegate extends Delegate {
 
     @Parameter(names = "-proxyData", description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")

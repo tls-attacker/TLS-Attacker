@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>3.0</version>
+        <version>3.2</version>
     </parent>
     <artifactId>TLS-Core</artifactId>
     <packaging>jar</packaging>
@@ -73,7 +73,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>0.8.4</version>
                 <reportSets>
                     <reportSet>
                         <reports>

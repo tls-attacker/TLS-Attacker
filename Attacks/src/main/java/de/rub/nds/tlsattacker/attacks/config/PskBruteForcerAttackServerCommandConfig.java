@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.io.File;
@@ -39,9 +38,6 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
-
-    @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
 
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
@@ -71,12 +67,10 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     public PskBruteForcerAttackServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         addDelegate(clientDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);

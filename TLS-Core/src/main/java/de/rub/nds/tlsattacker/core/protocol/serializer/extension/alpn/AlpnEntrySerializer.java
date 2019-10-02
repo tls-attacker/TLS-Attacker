@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 public class AlpnEntrySerializer extends Serializer<AlpnEntry> {
