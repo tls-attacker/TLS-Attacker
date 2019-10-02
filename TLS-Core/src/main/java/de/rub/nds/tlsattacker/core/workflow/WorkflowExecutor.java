@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -17,6 +18,11 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class WorkflowExecutor {
 
+    static {
+        if (!BouncyCastleProviderChecker.isLoaded()) {
+            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
+        }
+    }
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final WorkflowExecutorType type;

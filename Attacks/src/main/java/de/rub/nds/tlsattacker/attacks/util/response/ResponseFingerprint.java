@@ -285,10 +285,70 @@ public class ResponseFingerprint {
         if (this.numberRecordsReceived != other.numberRecordsReceived) {
             return false;
         }
+        if (!this.recordClasses.equals(other.recordClasses)) {
+            return false;
+        }
+        if (!this.messageClasses.equals(other.messageClasses)) {
+            return false;
+        }
+        if (this.messageList.size() == other.messageList.size()) {
+            for (int i = 0; i < this.messageList.size(); i++) {
+                if (!this.messageList.get(i).toCompactString().equals(other.messageList.get(i).toCompactString())) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
         if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
             return false;
         }
         return this.socketState == other.socketState;
+    }
+
+    /**
+     * //TODO, this does not check record layer compatibility
+     *
+     * @param fingerprint
+     * @return
+     */
+    public boolean areCompatible(ResponseFingerprint fingerprint) {
+        if (socketState != SocketState.TIMEOUT && fingerprint.getSocketState() != SocketState.TIMEOUT) {
+            if (fingerprint.getSocketState() != socketState) {
+                return false;
+            }
+        }
+        int minNumberOfMessages = fingerprint.getNumberOfMessageReceived();
+        if (getNumberRecordsReceived() < minNumberOfMessages) {
+            minNumberOfMessages = this.getNumberRecordsReceived();
+        }
+        for (int i = 0; i < minNumberOfMessages; i++) {
+            ProtocolMessage messageOne = this.getMessageList().get(i);
+            ProtocolMessage messageTwo = fingerprint.getMessageList().get(i);
+            if (!checkMessagesAreRoughlyEqual(messageOne, messageTwo)) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    private boolean checkMessagesAreRoughlyEqual(ProtocolMessage messageOne, ProtocolMessage messageTwo) {
+        if (!messageOne.getClass().equals(messageTwo.getClass())) {
+            return false;
+        }
+        if (messageOne instanceof AlertMessage && messageTwo instanceof AlertMessage) {
+            // Both are alerts
+            AlertMessage alertOne = (AlertMessage) messageOne;
+            AlertMessage alertTwo = (AlertMessage) messageTwo;
+            if (alertOne.getDescription().getValue() != alertTwo.getDescription().getValue()
+                    || alertOne.getLevel().getValue() != alertTwo.getLevel().getValue()) {
+                return false;
+            }
+        }
+        // nothing more to check?
+        return true;
+
     }
 
 }

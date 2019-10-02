@@ -34,10 +34,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class CertificateFetcherTest {
 
     private static final Logger LOGGER = LogManager.getLogger();

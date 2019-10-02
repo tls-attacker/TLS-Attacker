@@ -231,6 +231,21 @@ public class HandshakeByteLength {
      */
     public static final int SUPPLEMENTAL_DATA_ENTRY_LENGTH = 2;
 
+    /**
+     * Length of the salt in PWD
+     */
+    public static final int PWD_SALT_LENGTH = 1;
+
+    /**
+     * Length of the element in PWD
+     */
+    public static final int PWD_ELEMENT_LENGTH = 1;
+
+    /**
+     * Length of the scalar in PWD
+     */
+    public static final int PWD_SCALAR_LENGTH = 1;
+
     private HandshakeByteLength() {
     }
 }

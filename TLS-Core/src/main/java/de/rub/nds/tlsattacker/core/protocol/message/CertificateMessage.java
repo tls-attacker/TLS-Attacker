@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -50,7 +52,10 @@ public class CertificateMessage extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray certificatesListBytes;
 
+    // this allows users to also send empty certificates
     @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElement(name = "certificatesList")
     private List<CertificatePair> certificatesList;
 
     @HoldsModifiableVariable
@@ -62,7 +67,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
-        certificatesList = new LinkedList<>();
     }
 
     public CertificateMessage(Config tlsConfig) {

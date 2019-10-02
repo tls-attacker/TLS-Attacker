@@ -43,7 +43,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         this.msg = message;
     }
 
-    private void prepareMessageLength(int length) {
+    protected void prepareMessageLength(int length) {
         msg.setLength(length);
         LOGGER.debug("Length: " + msg.getLength().getValue());
     }
@@ -56,38 +56,12 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     @Override
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
-        // Ugly but only temporary
         serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
-
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
-        if (isDTLS()) {
-            prepareFragmentLenth(msg);
-            prepareFragmentOffset(msg);
-            prepareMessageSeq(msg);
-        }
         prepareMessageType(msg.getHandshakeMessageType());
     }
 
     protected abstract void prepareHandshakeMessageContents();
-
-    private void prepareFragmentLenth(HandshakeMessage msg) {
-        msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
-        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
-    }
-
-    private void prepareFragmentOffset(HandshakeMessage msg) {
-        msg.setFragmentOffset(0);
-        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
-    }
-
-    private void prepareMessageSeq(HandshakeMessage msg) {
-        msg.setMessageSeq((int) chooser.getContext().getWriteSequenceNumber());
-        LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
-    }
-
-    private boolean isDTLS() {
-        return chooser.getSelectedProtocolVersion().isDTLS();
-    }
 
     protected void prepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -116,10 +90,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
-                if (extensionMessage instanceof HRRKeyShareExtensionMessage) { // TODO
-                    // fix
-                    // design
-                    // flaw
+                if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
+                    // TODO fix design flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
@@ -145,5 +117,4 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
         LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
     }
-
 }

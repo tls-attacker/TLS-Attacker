@@ -10,14 +10,22 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -25,21 +33,12 @@ import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.core.constants.NameType;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import java.util.Random;
 
 public class DefaultChooserTest {
 
@@ -446,8 +445,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetDtlsCookie() {
         byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
-        config.setDefaultDtlsCookie(cookie);
-        assertArrayEquals(cookie, config.getDefaultDtlsCookie());
+        config.setDtlsDefaultCookie(cookie);
+        assertArrayEquals(cookie, config.getDtlsDefaultCookie());
         assertArrayEquals(cookie, chooser.getDtlsCookie());
         context.setDtlsCookie(cookie);
         assertArrayEquals(cookie, chooser.getDtlsCookie());
@@ -659,11 +658,14 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientEcPublicKey() {
         context.setClientEcPublicKey(null);
-        config.setDefaultClientEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultClientEcPublicKey());
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getClientEcPublicKey());
-        context.setClientEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getClientEcPublicKey());
+        config.setDefaultClientEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultClientEcPublicKey());
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
+        context.setClientEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
     }
 
     /**
@@ -672,11 +674,14 @@ public class DefaultChooserTest {
     @Test
     public void testGetServerEcPublicKey() {
         context.setServerEcPublicKey(null);
-        config.setDefaultServerEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultServerEcPublicKey());
-        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getServerEcPublicKey());
-        context.setServerEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
-        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getServerEcPublicKey());
+        config.setDefaultServerEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultServerEcPublicKey());
+        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
+        context.setServerEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
     }
 
     /**
@@ -771,4 +776,40 @@ public class DefaultChooserTest {
         assertArrayEquals(secret2, chooser.getClientHandshakeTrafficSecret());
     }
 
+    /**
+     * Test of getPWDClientUsername method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDClientUsername() {
+        context.setClientPWDUsername(null);
+        config.setDefaultClientPWDUsername("Jake");
+        assertEquals("Jake", config.getDefaultClientPWDUsername());
+        assertEquals("Jake", chooser.getClientPWDUsername());
+        context.setClientPWDUsername("Brian");
+        assertEquals("Brian", chooser.getClientPWDUsername());
+    }
+
+    /**
+     * Test of getServerPWDSalt method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetServerPWDSalt() {
+        byte[] salt = ArrayConverter.hexStringToByteArray("12");
+        byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
+        context.setServerPWDSalt(null);
+        config.setDefaultServerPWDSalt(salt);
+        assertEquals(salt, config.getDefaultServerPWDSalt());
+        assertEquals(null, chooser.getServerPWDSalt());
+        context.setServerPWDSalt(salt2);
+        assertEquals(salt2, chooser.getServerPWDSalt());
+    }
+
+    /**
+     * Test of getPWDPassword method, of class DefaultChooser.
+     */
+    @Test
+    public void testGetPWDPassword() {
+        config.setDefaultPWDPassword("Jake");
+        assertEquals("Jake", chooser.getPWDPassword());
+    }
 }

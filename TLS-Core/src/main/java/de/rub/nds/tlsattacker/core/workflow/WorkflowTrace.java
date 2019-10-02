@@ -130,11 +130,12 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = SendAction.class, name = "Send"),
-            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
-            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
+            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
+            @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
+            @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
             @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
@@ -287,7 +288,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public MessageAction getLastMessageAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof MessageAction) {
                 return (MessageAction) (tlsActions.get(i));
             }
@@ -302,7 +303,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public SendingAction getLastSendingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {
                 return (SendingAction) (tlsActions.get(i));
             }
@@ -317,7 +318,7 @@ public class WorkflowTrace implements Serializable {
      *         receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof ReceivingAction) {
                 return (ReceivingAction) (tlsActions.get(i));
             }
@@ -376,7 +377,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()) {
+                LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
                 return false;
+            } else {
+                LOGGER.debug("Action " + action.toCompactString() + " executed as planned");
             }
         }
         return true;

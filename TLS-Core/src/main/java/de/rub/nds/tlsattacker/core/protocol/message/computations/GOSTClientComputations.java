@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 public class GOSTClientComputations extends KeyExchangeComputations {
@@ -47,17 +47,9 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     }
 
-    public CustomECPoint getClientPublicKey() {
-        if (clientPublicKeyX != null && clientPublicKeyY != null) {
-            return new CustomECPoint(clientPublicKeyX.getValue(), clientPublicKeyY.getValue());
-        } else {
-            return null;
-        }
-    }
-
-    public void setClientPublicKey(CustomECPoint point) {
-        this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX());
-        this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY());
+    public void setClientPublicKey(Point point) {
+        this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX().getData());
+        this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY().getData());
     }
 
     public ModifiableBigInteger getClientPublicKeyX() {

@@ -41,7 +41,7 @@ public class FakeReceiveMessageHelper extends ReceiveMessageHelper {
 
     @Override
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
-        return new MessageActionResult(recordsToReturn, messagesToReturn);
+        return new MessageActionResult(recordsToReturn, messagesToReturn, null);
     }
 
     public List<ProtocolMessage> getMessagesToReturn() {

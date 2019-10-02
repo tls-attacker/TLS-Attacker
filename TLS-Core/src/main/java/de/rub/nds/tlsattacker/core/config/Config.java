@@ -40,14 +40,16 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -242,20 +244,7 @@ public class Config implements Serializable {
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;
 
-    /**
-     * Hostname in SNI Extension
-     */
-    private String sniHostname = "localhost";
-
-    /**
-     * SNI HostnameType
-     */
     private NameType sniType = NameType.HOST_NAME;
-
-    /**
-     * Should we terminate the connection on a wrong SNI ?
-     */
-    private Boolean sniHostnameFatal = false;
 
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
@@ -472,6 +461,16 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
+     * If we generate ClientHello with the PWDClear extension
+     */
+    private Boolean addPWDClearExtension = false;
+
+    /**
+     * If we generate ClientHello with the PWDProtect extension
+     */
+    private Boolean addPWDProtectExtension = false;
+
+    /**
      * If we generate ClientHello with the PSKKeyExchangeModes extension
      */
     private Boolean addPSKKeyExchangeModesExtension = false;
@@ -673,8 +672,6 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
-    private Boolean doDTLSRetransmits = false;
-
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -739,42 +736,9 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("1e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a"));
 
-    private BigInteger defaultClientGost01PrivateKey = new BigInteger(
-            "26785099399492638393392560259033438651994544664321975859026404506460241468938");
-
-    private BigInteger defaultServerGost01PrivateKey = defaultClientGost01PrivateKey;
-
-    private CustomECPoint defaultClientGost01PublicKey = new CustomECPoint(new BigInteger(
-            "22747378382093562937677152450590993403550984164767919046558575083163178129198"), new BigInteger(
-            "45951448325373922676609101796150321769091242179379405625463804456279006527922"));
-
-    private CustomECPoint defaultServerGost01PublicKey = defaultClientGost01PublicKey;
-
-    private GOSTCurve defaultGost01Curve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
-
-    private BigInteger defaultClientGost12PrivateKey = new BigInteger(
-            "12134115625695198935150401541480355747891954578909056544846131851468969358302804399536713377333589264480599426822387081634848568131735685886734287377253324");
-
-    private BigInteger defaultServerGost12PrivateKey = defaultClientGost12PrivateKey;
-
-    private CustomECPoint defaultClientGost12PublicKey = new CustomECPoint(
-            new BigInteger(
-                    "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
-            new BigInteger(
-                    "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"));
-
-    private CustomECPoint defaultServerGost12PublicKey = defaultClientGost12PublicKey;
-
-    private GOSTCurve defaultGost12Curve = GOSTCurve.Tc26_Gost_3410_12_512_paramSetA;
+    private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
     private String defaultApplicationMessageData = "Test";
-
-    /**
-     * If this is set TLS-Attacker only waits for the expected messages in the
-     * ReceiveActions This is interesting for DTLS since this prevents the
-     * server from retransmitting
-     */
-    private Boolean waitOnlyForExpectedDTLS = true;
 
     private List<ClientCertificateType> clientCertificateTypes;
 
@@ -786,11 +750,6 @@ public class Config implements Serializable {
     private Integer heartbeatPaddingLength = 256;
 
     /**
-     * How long should our DTLSCookies be by default
-     */
-    private Integer defaultDTLSCookieLength = 6;
-
-    /**
      * How much data we should put into a record by default
      */
     private Integer defaultMaxRecordData = 1048576;
@@ -800,6 +759,35 @@ public class Config implements Serializable {
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+
+    /**
+     * How long should our DTLSCookies be by default
+     */
+    private Integer dtlsDefaultCookieLength = 6;
+
+    /**
+     * Configures the maximum fragment length. This should not be confused with
+     * MTU (which includes the IP, UDP, record and DTLS headers).
+     */
+    private Integer dtlsMaximumFragmentLength = 1400;
+
+    /**
+     * Enables a check on DTLS fragments ensuring that messages are formed only
+     * from fragments with consistent field values. Fields checked are type,
+     * message length and message seq.
+     */
+    private boolean dtlsOnlyFitting = true;
+
+    /**
+     * Exclude out of order messages from the output received.
+     */
+    private boolean dtlsExcludeOutOfOrder = false;
+
+    /**
+     * Updates the context also when receiving out of order messages. This
+     * should not be used in environments were retransmissions are expected.
+     */
+    private boolean dtlsUpdateOnOutOfOrder = false;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -816,7 +804,7 @@ public class Config implements Serializable {
     private Boolean createRecordsDynamically = true;
     /**
      * When "Null" records are defined to be send, every message will be sent in
-     * atleast one individual record
+     * at least one individual record
      */
     private Boolean createIndividualRecords = true;
 
@@ -848,7 +836,7 @@ public class Config implements Serializable {
      */
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean stopRecievingAfterFatal = false;
+    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
     /**
@@ -905,7 +893,7 @@ public class Config implements Serializable {
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultDtlsCookie = new byte[0];
+    private byte[] dtlsDefaultCookie = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -918,9 +906,9 @@ public class Config implements Serializable {
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
-    private CustomECPoint defaultClientEcPublicKey;
+    private Point defaultClientEcPublicKey;
 
-    private CustomECPoint defaultServerEcPublicKey;
+    private Point defaultServerEcPublicKey;
 
     private BigInteger defaultServerEcPrivateKey = new BigInteger(
             "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
@@ -1017,7 +1005,7 @@ public class Config implements Serializable {
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
-    private CustomECPoint defaultTokenBindingECPublicKey = null;
+    private Point defaultTokenBindingECPublicKey = null;
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
@@ -1077,10 +1065,60 @@ public class Config implements Serializable {
      */
     private Boolean tls13BackwardsCompatibilityMode = true;
 
+    /**
+     * Use username from the example of RFC8492
+     */
+    private String defaultClientPWDUsername = "fred";
+
+    /**
+     * Group used to encrypt the username in TLS_ECCPWD
+     */
+    private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
+
+    private Point defaultServerPWDProtectPublicKey;
+
+    private BigInteger defaultServerPWDProtectPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
+            "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+
+    /**
+     * Use password from the example of RFC8492
+     */
+    private String defaultPWDPassword = "barney";
+
+    private int defaultPWDIterations = 40;
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDPrivate = ArrayConverter
+            .hexStringToByteArray("21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDMask = ArrayConverter
+            .hexStringToByteArray("0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDPrivate = ArrayConverter
+            .hexStringToByteArray("171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultClientPWDMask = ArrayConverter
+            .hexStringToByteArray("4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
+
+    /**
+     * Use salt from the example of RFC8492, should be 32 octets
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerPWDSalt = ArrayConverter
+            .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+
+    private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
-        defaultServerConnection = new InboundConnection("server", 443);
-        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
+        defaultServerConnection = new InboundConnection("server", 443, "localhost");
+        workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
@@ -1092,16 +1130,8 @@ public class Config implements Serializable {
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCiphersuites = new LinkedList<>();
         defaultServerSupportedCiphersuites.addAll(CipherSuite.getImplemented());
-        defaultClientNamedGroups = new LinkedList<>();
-        defaultClientNamedGroups.add(NamedGroup.SECP192R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP256R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP384R1);
-        defaultClientNamedGroups.add(NamedGroup.SECP521R1);
-        defaultServerNamedGroups = new LinkedList<>();
-        defaultServerNamedGroups.add(NamedGroup.SECP192R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP256R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP384R1);
-        defaultServerNamedGroups.add(NamedGroup.SECP521R1);
+        defaultClientNamedGroups = NamedGroup.getImplemented();
+        defaultServerNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
@@ -1116,12 +1146,13 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = new CustomECPoint(new BigInteger(
-                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
-        defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
-                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
-                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
+        EllipticCurve curve = CurveFactory.getCurve(defaultSelectedNamedGroup);
+        defaultClientEcPublicKey = curve.mult(defaultClientEcPrivateKey, curve.getBasePoint());
+        defaultServerEcPublicKey = curve.mult(defaultServerEcPrivateKey, curve.getBasePoint());
+        EllipticCurve secp256R1Curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
+        defaultTokenBindingECPublicKey = secp256R1Curve.mult(defaultTokenBindingEcPrivateKey,
+                secp256R1Curve.getBasePoint());
+        this.defaultServerPWDProtectPublicKey = curve.mult(defaultServerPWDProtectPrivateKey, curve.getBasePoint());
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
@@ -1189,6 +1220,14 @@ public class Config implements Serializable {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ConfigIO.write(this, stream);
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
+    }
+
+    public ECPointFormat getDefaultSelectedPointFormat() {
+        return defaultSelectedPointFormat;
+    }
+
+    public void setDefaultSelectedPointFormat(ECPointFormat defaultSelectedPointFormat) {
+        this.defaultSelectedPointFormat = defaultSelectedPointFormat;
     }
 
     public Boolean getStopActionsAfterIOException() {
@@ -1295,11 +1334,11 @@ public class Config implements Serializable {
         this.earlyStop = earlyStop;
     }
 
-    public CustomECPoint getDefaultTokenBindingECPublicKey() {
+    public Point getDefaultTokenBindingECPublicKey() {
         return defaultTokenBindingECPublicKey;
     }
 
-    public void setDefaultTokenBindingECPublicKey(CustomECPoint defaultTokenBindingECPublicKey) {
+    public void setDefaultTokenBindingECPublicKey(Point defaultTokenBindingECPublicKey) {
         this.defaultTokenBindingECPublicKey = defaultTokenBindingECPublicKey;
     }
 
@@ -1343,22 +1382,6 @@ public class Config implements Serializable {
         this.defaultTokenBindingType = defaultTokenBindingType;
     }
 
-    public void setDefaultServerGost01PrivateKey(BigInteger defaultServerGost01PrivateKey) {
-        this.defaultServerGost01PrivateKey = defaultServerGost01PrivateKey;
-    }
-
-    public void setDefaultServerGost01PublicKey(CustomECPoint defaultServerGost01PublicKey) {
-        this.defaultServerGost01PublicKey = defaultServerGost01PublicKey;
-    }
-
-    public void setDefaultServerGost12PrivateKey(BigInteger defaultServerGost12PrivateKey) {
-        this.defaultServerGost12PrivateKey = defaultServerGost12PrivateKey;
-    }
-
-    public void setDefaultServerGost12PublicKey(CustomECPoint defaultServerGost12PublicKey) {
-        this.defaultServerGost12PublicKey = defaultServerGost12PublicKey;
-    }
-
     public byte[] getDefaultClientHandshakeTrafficSecret() {
         return Arrays.copyOf(defaultClientHandshakeTrafficSecret, defaultClientHandshakeTrafficSecret.length);
     }
@@ -1399,12 +1422,12 @@ public class Config implements Serializable {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public Boolean isStopRecievingAfterFatal() {
-        return stopRecievingAfterFatal;
+    public Boolean isStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
-        this.stopRecievingAfterFatal = stopRecievingAfterFatal;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
@@ -1596,19 +1619,19 @@ public class Config implements Serializable {
         this.defaultClientEcPrivateKey = defaultClientEcPrivateKey;
     }
 
-    public CustomECPoint getDefaultClientEcPublicKey() {
+    public Point getDefaultClientEcPublicKey() {
         return defaultClientEcPublicKey;
     }
 
-    public void setDefaultClientEcPublicKey(CustomECPoint defaultClientEcPublicKey) {
+    public void setDefaultClientEcPublicKey(Point defaultClientEcPublicKey) {
         this.defaultClientEcPublicKey = defaultClientEcPublicKey;
     }
 
-    public CustomECPoint getDefaultServerEcPublicKey() {
+    public Point getDefaultServerEcPublicKey() {
         return defaultServerEcPublicKey;
     }
 
-    public void setDefaultServerEcPublicKey(CustomECPoint defaultServerEcPublicKey) {
+    public void setDefaultServerEcPublicKey(Point defaultServerEcPublicKey) {
         this.defaultServerEcPublicKey = defaultServerEcPublicKey;
     }
 
@@ -1652,68 +1675,12 @@ public class Config implements Serializable {
         this.defaultServerDhPrivateKey = defaultServerDhPrivateKey;
     }
 
-    public BigInteger getDefaultClientGost01PrivateKey() {
-        return defaultClientGost01PrivateKey;
+    public GOSTCurve getDefaultSelectedGostCurve() {
+        return defaultSelectedGostCurve;
     }
 
-    public CustomECPoint getDefaultClientGost01PublicKey() {
-        return defaultClientGost01PublicKey;
-    }
-
-    public BigInteger getDefaultServerGost01PrivateKey() {
-        return defaultServerGost01PrivateKey;
-    }
-
-    public CustomECPoint getDefaultServerGost01PublicKey() {
-        return defaultServerGost01PublicKey;
-    }
-
-    public GOSTCurve getDefaultGost01Curve() {
-        return defaultGost01Curve;
-    }
-
-    public void setDefaultClientGost01PrivateKey(BigInteger defaultClientGost01PrivateKey) {
-        this.defaultClientGost01PrivateKey = defaultClientGost01PrivateKey;
-    }
-
-    public void setDefaultClientGost01PublicKey(CustomECPoint defaultClientGost01PublicKey) {
-        this.defaultClientGost01PublicKey = defaultClientGost01PublicKey;
-    }
-
-    public void setDefaultGost01Curve(GOSTCurve defaultGost01Curve) {
-        this.defaultGost01Curve = defaultGost01Curve;
-    }
-
-    public void setDefaultClientGost12PrivateKey(BigInteger defaultClientGost12PrivateKey) {
-        this.defaultClientGost12PrivateKey = defaultClientGost12PrivateKey;
-    }
-
-    public void setDefaultClientGost12PublicKey(CustomECPoint defaultClientGost12PublicKey) {
-        this.defaultClientGost12PublicKey = defaultClientGost12PublicKey;
-    }
-
-    public void setDefaultGost12Curve(GOSTCurve defaultGost12Curve) {
-        this.defaultGost12Curve = defaultGost12Curve;
-    }
-
-    public BigInteger getDefaultClientGostEc12PrivateKey() {
-        return defaultClientGost12PrivateKey;
-    }
-
-    public CustomECPoint getDefaultClientGostEc12PublicKey() {
-        return defaultClientGost12PublicKey;
-    }
-
-    public BigInteger getDefaultServerGostEc12PrivateKey() {
-        return defaultServerGost12PrivateKey;
-    }
-
-    public CustomECPoint getDefaultServerGost12EcPublicKey() {
-        return defaultServerGost12PublicKey;
-    }
-
-    public GOSTCurve getDefaultGost12Curve() {
-        return defaultGost12Curve;
+    public void setDefaultSelectedGostCurve(GOSTCurve defaultSelectedGostCurve) {
+        this.defaultSelectedGostCurve = defaultSelectedGostCurve;
     }
 
     public BigInteger getDefaultServerDsaPrivateKey() {
@@ -1732,12 +1699,52 @@ public class Config implements Serializable {
         this.defaultPRFAlgorithm = defaultPRFAlgorithm;
     }
 
-    public byte[] getDefaultDtlsCookie() {
-        return Arrays.copyOf(defaultDtlsCookie, defaultDtlsCookie.length);
+    public byte[] getDtlsDefaultCookie() {
+        return Arrays.copyOf(dtlsDefaultCookie, dtlsDefaultCookie.length);
     }
 
-    public void setDefaultDtlsCookie(byte[] defaultDtlsCookie) {
-        this.defaultDtlsCookie = defaultDtlsCookie;
+    public void setDtlsDefaultCookie(byte[] defaultDtlsCookie) {
+        this.dtlsDefaultCookie = defaultDtlsCookie;
+    }
+
+    public Integer getDtlsDefaultCookieLength() {
+        return dtlsDefaultCookieLength;
+    }
+
+    public void setDtlsDefaultCookieLength(Integer dtlsDefaultCookieLength) {
+        this.dtlsDefaultCookieLength = dtlsDefaultCookieLength;
+    }
+
+    public Integer getDtlsMaximumFragmentLength() {
+        return dtlsMaximumFragmentLength;
+    }
+
+    public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
+        this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public boolean isDtlsExcludeOutOfOrder() {
+        return dtlsExcludeOutOfOrder;
+    }
+
+    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
+        this.dtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsUpdateOnOutOfOrder() {
+        return dtlsUpdateOnOutOfOrder;
+    }
+
+    public void setDtlsUpdateOnOutOfOrder(boolean dtlsUpdateOnOutOfOrder) {
+        this.dtlsUpdateOnOutOfOrder = true;
+    }
+
+    public boolean isDtlsOnlyFitting() {
+        return dtlsOnlyFitting;
+    }
+
+    public void setDtlsOnlyFitting(boolean dtlsOnlyFitting) {
+        this.dtlsOnlyFitting = dtlsOnlyFitting;
     }
 
     public byte[] getDefaultClientSessionId() {
@@ -2105,24 +2112,8 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public Boolean isWaitOnlyForExpectedDTLS() {
-        return waitOnlyForExpectedDTLS;
-    }
-
-    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
-        this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
-    }
-
     public String getDefaultApplicationMessageData() {
         return defaultApplicationMessageData;
-    }
-
-    public Boolean isDoDTLSRetransmits() {
-        return doDTLSRetransmits;
-    }
-
-    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
-        this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
     public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {
@@ -2230,28 +2221,12 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public Boolean isSniHostnameFatal() {
-        return sniHostnameFatal;
-    }
-
-    public void setSniHostnameFatal(Boolean sniHostnameFatal) {
-        this.sniHostnameFatal = sniHostnameFatal;
-    }
-
     public MaxFragmentLength getMaxFragmentLength() {
         return maxFragmentLength;
     }
 
     public void setMaxFragmentLength(MaxFragmentLength maxFragmentLengthConfig) {
         this.maxFragmentLength = maxFragmentLengthConfig;
-    }
-
-    public String getSniHostname() {
-        return sniHostname;
-    }
-
-    public void setSniHostname(String SniHostname) {
-        this.sniHostname = SniHostname;
     }
 
     public NamedGroup getDefaultSelectedNamedGroup() {
@@ -2396,6 +2371,10 @@ public class Config implements Serializable {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
+    public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
+        this.addPWDClearExtension = addPWDClearExtension;
+    }
+
     public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
@@ -2408,6 +2387,10 @@ public class Config implements Serializable {
         return addPreSharedKeyExtension;
     }
 
+    public Boolean isAddPWDClearExtension() {
+        return addPWDClearExtension;
+    }
+
     public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
@@ -2418,14 +2401,6 @@ public class Config implements Serializable {
 
     public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
         return pskKeyExchangeModes;
-    }
-
-    public Integer getDefaultDTLSCookieLength() {
-        return defaultDTLSCookieLength;
-    }
-
-    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
-        this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
     public Integer getPaddingLength() {
@@ -2851,8 +2826,8 @@ public class Config implements Serializable {
         return defaultRunningMode;
     }
 
-    public void setDefaulRunningMode(RunningModeType defaulRunningMode) {
-        this.defaultRunningMode = defaulRunningMode;
+    public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
+        this.defaultRunningMode = defaultRunningMode;
     }
 
     public Boolean isStopActionsAfterFatal() {
@@ -3268,4 +3243,110 @@ public class Config implements Serializable {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
     }
 
+    public String getDefaultClientPWDUsername() {
+        return defaultClientPWDUsername;
+    }
+
+    public void setDefaultClientPWDUsername(String username) {
+        this.defaultClientPWDUsername = username;
+    }
+
+    public byte[] getDefaultServerPWDSalt() {
+        return defaultServerPWDSalt;
+    }
+
+    public void setDefaultServerPWDSalt(byte[] salt) {
+        this.defaultServerPWDSalt = salt;
+    }
+
+    public String getDefaultPWDPassword() {
+        return defaultPWDPassword;
+    }
+
+    public void setDefaultPWDPassword(String password) {
+        this.defaultPWDPassword = password;
+    }
+
+    /**
+     * Min iterations for finding the PWD password element
+     */
+    public int getDefaultPWDIterations() {
+        return defaultPWDIterations;
+    }
+
+    public void setDefaultPWDIterations(int defaultPWDIterations) {
+        this.defaultPWDIterations = defaultPWDIterations;
+    }
+
+    public byte[] getDefaultServerPWDPrivate() {
+        return defaultServerPWDPrivate;
+    }
+
+    public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
+        this.defaultServerPWDPrivate = defaultServerPWDPrivate;
+    }
+
+    public byte[] getDefaultServerPWDMask() {
+        return defaultServerPWDMask;
+    }
+
+    public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
+        this.defaultServerPWDMask = defaultServerPWDMask;
+    }
+
+    public byte[] getDefaultClientPWDPrivate() {
+        return defaultClientPWDPrivate;
+    }
+
+    public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
+        this.defaultClientPWDPrivate = defaultClientPWDPrivate;
+    }
+
+    public byte[] getDefaultClientPWDMask() {
+        return defaultClientPWDMask;
+    }
+
+    public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
+        this.defaultClientPWDMask = defaultClientPWDMask;
+    }
+
+    public NamedGroup getDefaultPWDProtectGroup() {
+        return defaultPWDProtectGroup;
+    }
+
+    public void setDefaultPWDProtectGroup(NamedGroup defaultPWDProtectGroup) {
+        this.defaultPWDProtectGroup = defaultPWDProtectGroup;
+    }
+
+    public Point getDefaultServerPWDProtectPublicKey() {
+        return defaultServerPWDProtectPublicKey;
+    }
+
+    public void setDefaultServerPWDProtectPublicKey(Point defaultServerPWDProtectPublicKey) {
+        this.defaultServerPWDProtectPublicKey = defaultServerPWDProtectPublicKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectPrivateKey() {
+        return defaultServerPWDProtectPrivateKey;
+    }
+
+    public void setDefaultServerPWDProtectPrivateKey(BigInteger defaultServerPWDProtectPrivateKey) {
+        this.defaultServerPWDProtectPrivateKey = defaultServerPWDProtectPrivateKey;
+    }
+
+    public BigInteger getDefaultServerPWDProtectRandomSecret() {
+        return defaultServerPWDProtectRandomSecret;
+    }
+
+    public void setDefaultServerPWDProtectRandomSecret(BigInteger defaultServerPWDProtectRandomSecret) {
+        this.defaultServerPWDProtectRandomSecret = defaultServerPWDProtectRandomSecret;
+    }
+
+    public Boolean isAddPWDProtectExtension() {
+        return addPWDProtectExtension;
+    }
+
+    public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
+        this.addPWDProtectExtension = addPWDProtectExtension;
+    }
 }

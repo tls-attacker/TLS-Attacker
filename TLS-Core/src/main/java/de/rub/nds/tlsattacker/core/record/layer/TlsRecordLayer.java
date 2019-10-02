@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
+import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
@@ -26,9 +28,6 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
-import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -178,6 +177,9 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
+    // TODO for DTLS we should memorize the cipher (states) for every epoch
+    // which would allow us to select the cipher depending on the cipher in the
+    // epoch
     public void decryptRecord(AbstractRecord record) {
         if (record instanceof Record) {
             try {

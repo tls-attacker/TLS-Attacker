@@ -13,14 +13,10 @@ import java.util.Arrays;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-/**
- *
- * @author root
- */
 public class DeflateCompression extends CompressionAlgorithm {
 
-    public static int MAX_COMPRESSION_TEXT_LENGTH = 0x4400;
-    public static int MAX_PLAIN_TEXT_LENGTH = 0x4000;
+    private final static int MAX_COMPRESSION_TEXT_LENGTH = 0x4400;
+    private final static int MAX_PLAIN_TEXT_LENGTH = 0x4000;
     private Boolean secondPacketFlagCompression;
     private Boolean secondPacketFlagDecompression;
 

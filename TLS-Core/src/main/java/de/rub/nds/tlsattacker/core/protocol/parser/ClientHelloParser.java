@@ -42,6 +42,13 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);
+        if (getVersion().isDTLS()) {
+            msg.setCookieLength(parseByteField(1));
+            msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
+            if (msg.getCookieLength().getValue() == 0) {
+                msg.setIncludeInDigest(false);
+            }
+        }
         parseCipherSuiteLength(msg);
         parseCipherSuites(msg);
         parseCompressionLength(msg);

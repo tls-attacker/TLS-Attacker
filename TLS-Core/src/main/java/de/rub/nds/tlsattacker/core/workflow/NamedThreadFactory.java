@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-/**
- *
- * @author robert
- */
 public class NamedThreadFactory implements ThreadFactory {
 
     private int number;

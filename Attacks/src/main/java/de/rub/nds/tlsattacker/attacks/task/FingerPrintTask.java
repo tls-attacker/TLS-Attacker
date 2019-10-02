@@ -32,8 +32,9 @@ public class FingerPrintTask extends TlsTask {
         this.state = state;
     }
 
-    public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions) {
-        super(reexecutions, additionalTimeout, increasingTimeout);
+    public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions,
+            long additionalTcpTimeout) {
+        super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.state = state;
     }
 
@@ -42,13 +43,15 @@ public class FingerPrintTask extends TlsTask {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
+
             if (!state.getWorkflowTrace().executedAsPlanned()) {
-                throw new FingerprintExtractionException("Could not extract fingerprint.");
+                throw new FingerprintExtractionException(
+                        "Could not extract fingerprint. Not all actions executed as planned");
             }
             fingerprint = ResponseExtractor.getFingerprint(state);
 
             if (fingerprint == null) {
-                throw new FingerprintExtractionException("Could not extract fingerprint.");
+                throw new FingerprintExtractionException("Could not extract fingerprint. Fingerprint is null");
             }
         } finally {
             try {

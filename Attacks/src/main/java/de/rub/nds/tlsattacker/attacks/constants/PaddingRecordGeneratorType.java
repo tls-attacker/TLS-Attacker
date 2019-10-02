@@ -17,17 +17,14 @@ public enum PaddingRecordGeneratorType {
      *
      */
     VERY_SHORT,
-
     /**
      *
      */
     SHORT,
-
     /**
      *
      */
     MEDIUM,
-
     /**
      *
      */

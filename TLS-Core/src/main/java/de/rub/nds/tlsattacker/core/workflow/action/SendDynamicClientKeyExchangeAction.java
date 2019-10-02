@@ -73,9 +73,9 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     public String toString() {
         StringBuilder sb;
         if (isExecuted()) {
-            sb = new StringBuilder("Send Action:\n");
+            sb = new StringBuilder("Send Dynamic Client Key Exchange Action:\n");
         } else {
-            sb = new StringBuilder("Send Action: (not executed)\n");
+            sb = new StringBuilder("Send Dynamic Client Key Exchange Action: (not executed)\n");
         }
         sb.append("\tMessages:");
         if (messages != null) {

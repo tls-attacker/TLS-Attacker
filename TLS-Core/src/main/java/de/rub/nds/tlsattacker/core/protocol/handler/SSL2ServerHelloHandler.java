@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.bouncycastle.crypto.tls.Certificate;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -22,8 +17,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHelloMessage> {
 
