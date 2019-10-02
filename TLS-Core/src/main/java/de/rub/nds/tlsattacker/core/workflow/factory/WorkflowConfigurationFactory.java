@@ -50,6 +50,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -199,8 +200,7 @@ public class WorkflowConfigurationFactory {
             messages.add(new FinishedMessage(config));
         } else {
             CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-            if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk() && !selectedCipherSuite.isAnon()
-                    && !selectedCipherSuite.isPWD()) {
+            if (shouldServerSendACertificate(selectedCipherSuite)) {
                 if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
@@ -219,6 +219,11 @@ public class WorkflowConfigurationFactory {
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
         return workflowTrace;
+    }
+
+    public boolean shouldServerSendACertificate(CipherSuite suite) {
+        return !suite.isSrpSha() && !suite.isPskOrDhPsk() && !suite.isAnon() && !suite.isPWD();
+
     }
 
     /**
@@ -870,14 +875,7 @@ public class WorkflowConfigurationFactory {
 
             } else {
                 trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
-                messages = new LinkedList<>();
-                CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-                if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk()
-                        && !selectedCipherSuite.isAnon()) {
-                    messages.add(new CertificateMessage(config));
-                }
-                // TODO This actually need a dynamic certificate message
-                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new SendDynamicServerCertificateAction());
                 trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
                 messages = new LinkedList<>();
 
