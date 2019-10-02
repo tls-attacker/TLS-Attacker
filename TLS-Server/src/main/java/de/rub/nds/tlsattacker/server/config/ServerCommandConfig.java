@@ -115,9 +115,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public Config createConfig() {
         Config config = super.createConfig();
 
-        // Run FULL trace if no workflow trace (type) is set explicitly
         if (config.getWorkflowTraceType() == null) {
-            config.setWorkflowTraceType(WorkflowTraceType.FULL);
+            config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;
     }

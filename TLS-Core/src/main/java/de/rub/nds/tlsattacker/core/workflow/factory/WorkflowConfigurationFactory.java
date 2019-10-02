@@ -43,11 +43,15 @@ import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -64,7 +68,7 @@ public class WorkflowConfigurationFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
-    RunningModeType mode;
+    private RunningModeType mode;
 
     public WorkflowConfigurationFactory(Config config) {
         this.config = config;
@@ -105,6 +109,8 @@ public class WorkflowConfigurationFactory {
                 return createFalseStartWorkflow();
             case RSA_SYNC_PROXY:
                 return createSyncProxyWorkflow();
+            case DYNAMIC_HANDSHAKE:
+                return createDynamicHandshakeWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -194,8 +200,7 @@ public class WorkflowConfigurationFactory {
             messages.add(new FinishedMessage(config));
         } else {
             CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-            if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk() && !selectedCipherSuite.isAnon()
-                    && !selectedCipherSuite.isPWD()) {
+            if (shouldServerSendACertificate(selectedCipherSuite)) {
                 if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
@@ -214,6 +219,11 @@ public class WorkflowConfigurationFactory {
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
         return workflowTrace;
+    }
+
+    public boolean shouldServerSendACertificate(CipherSuite suite) {
+        return !suite.isSrpSha() && !suite.isPskOrDhPsk() && !suite.isAnon() && !suite.isPWD();
+
     }
 
     /**
@@ -825,5 +835,60 @@ public class WorkflowConfigurationFactory {
             }
         }
         return workflowTrace;
+    }
+
+    private WorkflowTrace createDynamicHandshakeWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            }
+            trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+            trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+
+        } else {
+            List<ProtocolMessage> messages = new LinkedList<>();
+            messages.add(new ServerHelloMessage(config));
+
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                    messages.add(new ChangeCipherSpecMessage());
+                }
+                messages.add(new EncryptedExtensionsMessage(config));
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+                messages.add(new FinishedMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+
+            } else {
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new SendDynamicServerCertificateAction());
+                trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
+                messages = new LinkedList<>();
+
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new ServerHelloDoneMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            }
+        }
+        return trace;
     }
 }

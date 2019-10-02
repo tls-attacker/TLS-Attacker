@@ -85,6 +85,8 @@ public class HandlerFactory {
                     return new ServerHelloDoneHandler(context);
                 case SERVER_KEY_EXCHANGE:
                     return getServerKeyExchangeHandler(context);
+                case SUPPLEMENTAL_DATA:
+                    return new SupplementalDataHandler(context);
                 case UNKNOWN:
                     return new UnknownHandshakeHandler(context);
             }

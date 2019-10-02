@@ -43,6 +43,7 @@ public class FingerPrintTask extends TlsTask {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
+
             if (!state.getWorkflowTrace().executedAsPlanned()) {
                 throw new FingerprintExtractionException(
                         "Could not extract fingerprint. Not all actions executed as planned");

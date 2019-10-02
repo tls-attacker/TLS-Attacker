@@ -2826,8 +2826,8 @@ public class Config implements Serializable {
         return defaultRunningMode;
     }
 
-    public void setDefaulRunningMode(RunningModeType defaulRunningMode) {
-        this.defaultRunningMode = defaulRunningMode;
+    public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
+        this.defaultRunningMode = defaultRunningMode;
     }
 
     public Boolean isStopActionsAfterFatal() {
