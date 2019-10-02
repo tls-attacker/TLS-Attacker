@@ -44,8 +44,6 @@ public class Lucky13CommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -61,13 +59,11 @@ public class Lucky13CommandConfig extends AttackConfig {
     public Lucky13CommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         proxyDelegate = new ProxyDelegate();
         addDelegate(clientDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(starttlsDelegate);

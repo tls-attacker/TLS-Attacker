@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -25,9 +26,7 @@ public class ICEPointReaderTest {
      */
     @Test
     public void testReadPoints() throws Exception {
-        String namedCurve = "secp192r1";
-        List<ICEPoint> result = ICEPointReader.readPoints(namedCurve);
-
+        List<ICEPoint> result = ICEPointReader.readPoints(NamedGroup.SECP192R1);
         assertEquals(5, result.get(0).getOrder());
     }
 

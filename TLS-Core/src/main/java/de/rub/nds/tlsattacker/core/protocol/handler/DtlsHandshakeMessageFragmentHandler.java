@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragm
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
 
     public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {

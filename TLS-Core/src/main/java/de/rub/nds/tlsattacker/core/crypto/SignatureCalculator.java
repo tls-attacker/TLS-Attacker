@@ -60,13 +60,17 @@ public class SignatureCalculator {
         String algoName;
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3
                 || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11) {
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
             if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name().contains("RSA")) {
                 algoName = "NONEwithRSA";
                 toBeSigned = ArrayConverter.concatenate(MD5Utils.MD5(toBeSigned), SHA1Utils.sha1(toBeSigned));
             } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
                     .contains("ECDSA")) {
                 algoName = "SHA1withECDSA";
+            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
+                    .contains("DSS")) {
+                algoName = "SHA1withDSA";
             } else {
                 throw new UnsupportedOperationException("Ciphersuite not supported - Check Debug Log");
             }

@@ -153,6 +153,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECMQV_ECDSA;
         } else if (cipher.contains("ECDH_ECNRA")) {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
+        } else if (cipher.contains("ECCPWD")) {
+            return KeyExchangeAlgorithm.ECCPWD;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {

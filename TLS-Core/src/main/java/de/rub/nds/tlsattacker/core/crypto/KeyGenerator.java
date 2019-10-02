@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
@@ -51,22 +50,18 @@ public class KeyGenerator {
 
     public static BCECGOST3410PrivateKey getGost01PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate01PrivateKey(chooser.getClientGost01Curve(), chooser.getClientEcPrivateKey());
+            return GOSTUtils.generate01PrivateKey(chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate01PrivateKey(chooser.getServerGost01Curve(), chooser.getServerEcPrivateKey());
+            return GOSTUtils.generate01PrivateKey(chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
         }
     }
 
     public static BCECGOST3410_2012PrivateKey getGost12PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate12PrivateKey(chooser.getClientGost12Curve(), chooser.getClientEcPrivateKey());
+            return GOSTUtils.generate12PrivateKey(chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate12PrivateKey(chooser.getServerGost12Curve(), chooser.getServerEcPrivateKey());
+            return GOSTUtils.generate12PrivateKey(chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
         }
-    }
-
-    public static ECPrivateKey getTokenBindingECPrivateKey(Chooser chooser) {
-        return new CustomECPrivateKey(chooser.getConfig().getDefaultTokenBindingEcPrivateKey(), NamedGroup.SECP256R1);
     }
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {

@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSerializer<DtlsHandshakeMessageFragment> {
 
     private static final Logger LOGGER = LogManager.getLogger();

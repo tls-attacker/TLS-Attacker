@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.record.compressor.compression.CompressionAlgo
 import de.rub.nds.tlsattacker.core.record.compressor.compression.DeflateCompression;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.NullCompression;
 
-/**
- *
- * @author root
- */
 public class AlgorithmFactory {
     public CompressionAlgorithm getAlgorithm(ProtocolVersion version, CompressionMethod method) {
         CompressionAlgorithm algorithm;

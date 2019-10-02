@@ -23,10 +23,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -142,13 +142,7 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
-    public abstract GOSTCurve getServerGost01Curve();
-
-    public abstract GOSTCurve getClientGost01Curve();
-
-    public abstract GOSTCurve getServerGost12Curve();
-
-    public abstract GOSTCurve getClientGost12Curve();
+    public abstract GOSTCurve getSelectedGostCurve();
 
     public abstract BigInteger getSRPModulus();
 
@@ -188,9 +182,9 @@ public abstract class Chooser {
 
     public abstract NamedGroup getEcCertificateCurve();
 
-    public abstract CustomECPoint getClientEcPublicKey();
+    public abstract Point getClientEcPublicKey();
 
-    public abstract CustomECPoint getServerEcPublicKey();
+    public abstract Point getServerEcPublicKey();
 
     public abstract EllipticCurveType getEcCurveType();
 
@@ -261,4 +255,10 @@ public abstract class Chooser {
     public abstract BigInteger getDsaGenerator();
 
     public abstract byte[] getHandshakeSecret();
+
+    public abstract String getClientPWDUsername();
+
+    public abstract byte[] getServerPWDSalt();
+
+    public abstract String getPWDPassword();
 }

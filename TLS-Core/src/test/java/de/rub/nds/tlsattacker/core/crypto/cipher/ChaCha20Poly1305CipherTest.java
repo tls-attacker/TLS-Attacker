@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.crypto.cipher.ChaCha20Poly1305Cipher;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

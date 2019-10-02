@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- *
- * @author Pierre Tilhaus <Pierre.TIlhaus@rub.de>
- */
 public class BouncyCastleNotLoadedException extends RuntimeException {
     public BouncyCastleNotLoadedException() {
         super();

@@ -40,6 +40,7 @@ public class OutboundConnection extends AliasedConnection {
     public OutboundConnection(OutboundConnection other) {
         this.alias = other.alias;
         this.hostname = other.hostname;
+        this.ip = other.ip;
         this.port = other.port;
         this.proxyDataHostname = other.proxyDataHostname;
         this.proxyDataPort = other.proxyDataPort;

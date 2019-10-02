@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -25,15 +24,5 @@ public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchange
 
     public ServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
-    }
-
-    protected void adjustPremasterSecret(ServerKeyExchangeMessage message) {
-        if (message.getComputations().getPremasterSecret() != null) {
-            byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
-            tlsContext.setPreMasterSecret(premasterSecret);
-            LOGGER.debug("Set PremasterSecret in Context to " + ArrayConverter.bytesToHexString(premasterSecret));
-        } else {
-            LOGGER.debug("Did not set in Context PremasterSecret");
-        }
     }
 }

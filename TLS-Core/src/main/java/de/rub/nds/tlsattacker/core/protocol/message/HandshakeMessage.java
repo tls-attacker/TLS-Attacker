@@ -20,41 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -105,6 +71,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
+            @XmlElement(type = DraftKeyShareExtensionMessage.class, name = "DraftKeyShareExtension"),
             @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
@@ -124,6 +91,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
             @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
+            @XmlElement(type = PWDClearExtensionMessage.class, name = "PWDClear"),
+            @XmlElement(type = PWDProtectExtensionMessage.class, name = "PWDProtect"),
+            @XmlElement(type = PasswordSaltExtensionMessage.class, name = "PasswordSalt"),
             @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension"),
             @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"), })
     @HoldsModifiableVariable
