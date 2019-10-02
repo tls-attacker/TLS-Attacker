@@ -121,7 +121,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         Config config = super.createConfig();
 
         if (config.getWorkflowTraceType() == null) {
-            config.setWorkflowTraceType(WorkflowTraceType.DYNAMIC_HANDSHAKE);
+            config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;
     }
