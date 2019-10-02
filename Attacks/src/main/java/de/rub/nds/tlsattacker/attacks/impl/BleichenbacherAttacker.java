@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherVulnerabilityMap;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
@@ -128,12 +129,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         LOGGER.debug("Testing: " + config.getWorkflowType());
-        errorType = isVulnerable(pkcs1Vectors);
+        errorType = isVulnerable(pkcs1Vectors, publicKey);
         return errorType;
     }
 
-    public EqualityError isVulnerable(List<Pkcs1Vector> pkcs1Vectors) {
-        fingerprintPairList = getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors);
+    public EqualityError isVulnerable(List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
+        fingerprintPairList = getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
         if (fingerprintPairList.isEmpty()) {
             LOGGER.warn("Could not extract Fingerprints");
             return null;
@@ -146,14 +147,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
             List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
-                    pkcs1Vectors);
+                    pkcs1Vectors, publicKey);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
             BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
             BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
                     error2);
             if (mapOne.looksIdentical(mapTwo)) {
                 List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(
-                        config.getWorkflowType(), pkcs1Vectors);
+                        config.getWorkflowType(), pkcs1Vectors, publicKey);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
                 BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
                         thirdBleichenbacherVectorMap, error3);
@@ -202,7 +203,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
-            List<Pkcs1Vector> pkcs1Vectors) {
+            List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
         List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
@@ -224,6 +225,17 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             for (StateVectorPair stateVectorPair : stateVectorPairList) {
                 executor.bulkExecuteStateTasks(stateVectorPair.getState());
                 processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
+            }
+        }
+        // Check that the public key send by the server is actually the public
+        // key used to generate
+        // the vectors. This is currently a limitation of our script as the
+        // attack vectors are
+        // generated statically and not dynamically. We will adjust this in
+        // future versions.
+        for (StateVectorPair pair : stateVectorPairList) {
+            if (!pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+                throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
             }
         }
 

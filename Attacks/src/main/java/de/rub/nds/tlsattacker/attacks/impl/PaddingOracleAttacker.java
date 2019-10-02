@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
-import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
@@ -165,7 +165,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
         boolean result = true;
         if (responseVectorListOne.size() != responseVectorListTwo.size()) {
-            throw new PaddingOracleUnstableException(
+            throw new OracleUnstableException(
                     "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
         }
 
@@ -243,7 +243,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     LOGGER.fatal("Could not find ServerHello after successful extraction");
-                    throw new PaddingOracleUnstableException("Fatal Extraction error");
+                    throw new OracleUnstableException("Fatal Extraction error");
                 }
                 fingerprint = pair.getFingerPrintTask().getFingerprint();
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
