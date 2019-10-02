@@ -191,7 +191,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 continue;
             }
             if (equivalentVector.getFingerprint() == null) {
-                LOGGER.error("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
+                LOGGER.warn("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 equivalentVector.setErrorDuringHandshake(true);
                 result = false;
                 continue;
@@ -200,7 +200,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
                     equivalentVector.getFingerprint(), true);
             if (error != EqualityError.NONE) {
-                LOGGER.error("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
+                LOGGER.warn("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setShaky(true);
             }
@@ -231,13 +231,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             ResponseFingerprint fingerprint = null;
             if (pair.getFingerPrintTask().isHasError()) {
                 errornousScans = true;
-                LOGGER.error("Could not extract fingerprint for " + pair.toString());
+                LOGGER.warn("Could not extract fingerprint for " + pair.toString());
                 VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
                         tlsConfig.getDefaultApplicationMessageData().getBytes().length);
                 vectorResponse.setErrorDuringHandshake(true);
                 tempResponseVectorList.add(vectorResponse);
-                LOGGER.error("Could not execute whole workflow: " + testedSuite + " - " + testedVersion);
-
             } else {
                 testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
                 testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();

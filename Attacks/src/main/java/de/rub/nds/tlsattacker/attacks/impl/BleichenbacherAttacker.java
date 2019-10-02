@@ -248,7 +248,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
             bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
         } else {
-            LOGGER.error("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         clearConnections(stateVectorPair.getState());
 
