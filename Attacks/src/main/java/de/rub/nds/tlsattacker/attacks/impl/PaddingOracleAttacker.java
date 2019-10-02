@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
-import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
@@ -165,7 +165,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
         boolean result = true;
         if (responseVectorListOne.size() != responseVectorListTwo.size()) {
-            throw new PaddingOracleUnstableException(
+            throw new OracleUnstableException(
                     "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
         }
 
@@ -191,7 +191,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 continue;
             }
             if (equivalentVector.getFingerprint() == null) {
-                LOGGER.error("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
+                LOGGER.warn("Equivalent vector has no fingerprint:" + testedSuite + " - " + testedVersion);
                 equivalentVector.setErrorDuringHandshake(true);
                 result = false;
                 continue;
@@ -200,7 +200,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
                     equivalentVector.getFingerprint(), true);
             if (error != EqualityError.NONE) {
-                LOGGER.error("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
+                LOGGER.warn("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
                 result = false;
                 vectorResponseOne.setShaky(true);
             }
@@ -231,19 +231,17 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             ResponseFingerprint fingerprint = null;
             if (pair.getFingerPrintTask().isHasError()) {
                 errornousScans = true;
-                LOGGER.error("Could not extract fingerprint for " + pair.toString());
+                LOGGER.warn("Could not extract fingerprint for " + pair.toString());
                 VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null, testedVersion, testedSuite,
                         tlsConfig.getDefaultApplicationMessageData().getBytes().length);
                 vectorResponse.setErrorDuringHandshake(true);
                 tempResponseVectorList.add(vectorResponse);
-                LOGGER.error("Could not execute whole workflow: " + testedSuite + " - " + testedVersion);
-
             } else {
                 testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
                 testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
                 if (testedSuite == null || testedVersion == null) {
                     LOGGER.fatal("Could not find ServerHello after successful extraction");
-                    throw new PaddingOracleUnstableException("Fatal Extraction error");
+                    throw new OracleUnstableException("Fatal Extraction error");
                 }
                 fingerprint = pair.getFingerPrintTask().getFingerprint();
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint, testedVersion,
