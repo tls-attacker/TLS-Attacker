@@ -141,7 +141,7 @@ public class RecordDecryptor extends Decryptor {
         if (mac != null && mac.getValue() != null && mac.getValue().length > 0) {
             byte[] toBeMaced;
             toBeMaced = ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
-                    record.getComputations().getNonMetaDataMaced().getValue());
+                    record.getComputations().getAuthenticatedNonMetaData().getValue());
             if (Arrays.equals(recordCipher.calculateMac(toBeMaced, context.getChooser().getMyConnectionPeer()),
                     mac.getValue())) {
                 LOGGER.debug("Mac is valid");
@@ -161,21 +161,6 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
     }
 
-    private void prepareNonMetaDataMaced(Record record, byte[] payload) throws CryptoException {
-        if (recordCipher.isUsingTags() && !context.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            if (payload.length < recordCipher.getTagSize()) {
-                throw new CryptoException("Ciphertext contains no tag");
-            } else {
-                record.getComputations().setNonMetaDataMaced(
-                        Arrays.copyOfRange(payload, recordCipher.getTagSize(), payload.length));
-            }
-        } else {
-            record.getComputations().setNonMetaDataMaced(payload);
-        }
-        LOGGER.debug("Setting NonMetaData Maced:"
-                + ArrayConverter.bytesToHexString(record.getComputations().getNonMetaDataMaced()));
-    }
-
     private boolean isEncryptThenMac(CipherSuite cipherSuite) {
         return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
                 && recordCipher.isUsingMac();
@@ -192,12 +177,6 @@ public class RecordDecryptor extends Decryptor {
     private void useNoMac(Record record) {
         record.getComputations().setMac(new byte[0]);
         record.setCleanProtocolMessageBytes(record.getComputations().getUnpaddedRecordBytes().getValue());
-    }
-
-    private void useNoPadding(Record record) {
-        record.getComputations().setPaddingLength(0);
-        record.getComputations().setPadding(new byte[0]);
-        record.getComputations().setUnpaddedRecordBytes(record.getComputations().getPlainRecordBytes());
     }
 
     private void adjustPaddingTLS13(Record record) throws CryptoException {
@@ -221,13 +200,13 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setPadding(padding);
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getComputations().getPadding().getValue()));
         record.getComputations().setPaddingLength(record.getComputations().getPadding().getValue().length);
-        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
+        LOGGER.debug("PaddingLength: " + record.getComputations().getAdditionalPaddingLength().getValue());
     }
 
     private void adjustPaddingTLS(Record record) throws CryptoException {
         int paddingLength = parsePaddingLength(record.getComputations().getPlainRecordBytes().getValue());
         record.getComputations().setPaddingLength(paddingLength);
-        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
+        LOGGER.debug("PaddingLength: " + record.getComputations().getAdditionalPaddingLength().getValue());
         byte[] unpadded = parseUnpadded(record.getComputations().getPlainRecordBytes().getValue(), paddingLength);
         record.getComputations().setUnpaddedRecordBytes(unpadded);
         LOGGER.debug("UnpaddedRecordBytes: "
@@ -303,7 +282,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  * They share the following characteristics: 1. they are of the same type (blob
  * or real records); 2. they use the same cipher state (for DTLS, this means
  * they have the same epoch); 3. their content is of the same type.
- * 
+ *
  * The class also provides functionality for grouping records into RecordGroups,
  * decrypting and parsing them.
  */
@@ -69,6 +69,39 @@ public class RecordGroup {
             return ProtocolMessageType.getContentType(records.get(0).getContentMessageType().getValue());
         }
         return null;
+    }
+
+    public boolean isValid() {
+        for (AbstractRecord abstractRecord : records) {
+            // We only check real records here - blobrecords are considerd
+            // always
+            // valid for us
+            if (abstractRecord instanceof Record) {
+                Record record = (Record) abstractRecord;
+                if (record.getComputations().getMac() != null && record.getComputations().getMac().getValue() != null) {
+                    // There is an HMAC - we need to check that it is correct
+                    if (!Objects.equals(record.getComputations().getMacValid(), Boolean.TRUE)) {
+                        return false;
+                    }
+                }
+                if (record.getComputations().getPadding() != null
+                        && record.getComputations().getPadding().getValue() != null) {
+                    // There is padding - we need to check that it is correct
+                    if (!Objects.equals(record.getComputations().getPaddingValid(), Boolean.TRUE)) {
+                        return false;
+                    }
+                }
+
+                if (record.getComputations().getTag() != null && record.getComputations().getTag().getValue() != null) {
+                    // There is padding - we need to check that it is correct
+                    if (!Objects.equals(record.getComputations().getTagValid(), Boolean.TRUE)) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return true;
     }
 
     public Integer getDtlsEpoch() {

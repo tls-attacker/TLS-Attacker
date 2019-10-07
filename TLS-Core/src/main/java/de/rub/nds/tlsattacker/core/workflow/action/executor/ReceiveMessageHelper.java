@@ -254,13 +254,23 @@ public class ReceiveMessageHelper {
                             messages.add(parsedMessage);
                         }
                     }
+                    List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
+                            recordGroup.getDtlsEpoch(), context);
+                    messages.addAll(parsedFragmentedMessages);
                 } else {
+                    boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsNextReceiveEpoch();
+                    // we only update the context for in order records (with
+                    // epoch == current)
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, false, false);
-                    messages.addAll(parsedMessages);
+                            group.getProtocolMessageType(), context, !isInOrder, false);
+                    if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
+                        messages.addAll(parsedMessages);
+                    }
                 }
             } else {
-                messages.add(tryHandleAsUnknownMessage(cleanProtocolMessageBytes, 0, context).getMessage());
+                List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                        group.getProtocolMessageType(), context, false, false);
+                messages.addAll(parsedMessages);
             }
         }
         return new MessageParsingResult(messages, messageFragments);
@@ -459,13 +469,13 @@ public class ReceiveMessageHelper {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     messages.add(processFragmentedMessage(fragmentedMessage, context, true));
                     context.increaseDtlsNextReceiveSequenceNumber();
-                }
-
-                // if the fragment is out of order we only process it but DO NOT
-                // update the context unless explicitly configured. we also
-                // handle
-                // the dtlsExcludeOutOfOrder option which allows TLS-Attacker to
-                // omit messages out-of-order
+                } // if the fragment is out of order we only process it but DO
+                  // NOT
+                  // update the context unless explicitly configured. we also
+                  // handle
+                  // the dtlsExcludeOutOfOrder option which allows TLS-Attacker
+                  // to
+                  // omit messages out-of-order
                 else {
                     HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, context.getConfig()
                             .isDtlsUpdateOnOutOfOrder());

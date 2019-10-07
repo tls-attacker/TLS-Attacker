@@ -60,7 +60,7 @@ public class RecordPreparatorTest {
     public void testPrepare() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        context.getConfig().setPaddingLength(0);
+        context.getConfig().setDefaultAdditionalPadding(0);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
@@ -77,7 +77,7 @@ public class RecordPreparatorTest {
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
         assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
-        assertTrue(record.getComputations().getPaddingLength().getValue() == 0);
+        assertTrue(record.getComputations().getAdditionalPaddingLength().getValue() == 0);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());
     }

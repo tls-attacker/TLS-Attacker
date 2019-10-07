@@ -50,7 +50,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareSequenceNumber(record);
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            preparePaddingLength(record);
+            prepareAdditionalPaddingLength(record);
         }
 
         if (isDTLS()) {
@@ -112,8 +112,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         LOGGER.debug("Length: " + record.getLength().getValue());
     }
 
-    private void preparePaddingLength(Record record) {
-        record.getComputations().setPaddingLength(chooser.getConfig().getPaddingLength());
-        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
+    private void prepareAdditionalPaddingLength(Record record) {
+        record.getComputations().setAdditionalPaddingLength(chooser.getConfig().getDefaultAdditionalPadding());
+        LOGGER.debug("Additional PaddingLength: " + record.getComputations().getAdditionalPaddingLength().getValue());
     }
 }

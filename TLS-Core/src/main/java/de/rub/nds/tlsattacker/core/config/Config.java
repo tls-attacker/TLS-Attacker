@@ -230,7 +230,7 @@ public class Config implements Serializable {
     /**
      * Padding length for TLS 1.3 messages
      */
-    private Integer paddingLength = 0;
+    private Integer defaultAdditionalPadding = 0;
 
     /**
      * Key type for KeyShareExtension
@@ -2412,12 +2412,12 @@ public class Config implements Serializable {
         return pskKeyExchangeModes;
     }
 
-    public Integer getPaddingLength() {
-        return paddingLength;
+    public Integer getDefaultAdditionalPadding() {
+        return defaultAdditionalPadding;
     }
 
-    public void setPaddingLength(Integer paddingLength) {
-        this.paddingLength = paddingLength;
+    public void setDefaultAdditionalPadding(Integer defaultAdditionalPadding) {
+        this.defaultAdditionalPadding = defaultAdditionalPadding;
     }
 
     public BigInteger getKeySharePrivate() {

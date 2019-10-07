@@ -47,12 +47,6 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
-    /**
-     * protocol message bytes after decryption
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_RECORD)
-    private ModifiableByteArray fragment;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -148,14 +142,6 @@ public class Record extends AbstractRecord {
     public void adjustContext(TlsContext context) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
         context.setLastRecordVersion(version);
-    }
-
-    public ModifiableByteArray getFragment() {
-        return fragment;
-    }
-
-    public void setFragment(ModifiableByteArray fragment) {
-        this.fragment = fragment;
     }
 
     public RecordCryptoComputations getComputations() {
