@@ -844,6 +844,10 @@ public class Config implements Serializable {
      */
     private CipherSuite defaultSelectedCipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
 
+    private CertificateType defaultSelectedServerCertificateType = CertificateType.X509;
+
+    private CertificateType defaultSelectedClientCertificateType = CertificateType.X509;
+
     private List<ECPointFormat> defaultServerSupportedPointFormats;
 
     private List<ECPointFormat> defaultClientSupportedPointFormats;
@@ -1220,6 +1224,22 @@ public class Config implements Serializable {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ConfigIO.write(this, stream);
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
+    }
+
+    public CertificateType getDefaultSelectedServerCertificateType() {
+        return defaultSelectedServerCertificateType;
+    }
+
+    public void setDefaultSelectedServerCertificateType(CertificateType defaultSelectedServerCertificateType) {
+        this.defaultSelectedServerCertificateType = defaultSelectedServerCertificateType;
+    }
+
+    public CertificateType getDefaultSelectedClientCertificateType() {
+        return defaultSelectedClientCertificateType;
+    }
+
+    public void setDefaultSelectedClientCertificateType(CertificateType defaultSelectedClientCertificateType) {
+        this.defaultSelectedClientCertificateType = defaultSelectedClientCertificateType;
     }
 
     public ECPointFormat getDefaultSelectedPointFormat() {

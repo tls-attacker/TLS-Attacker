@@ -1023,6 +1023,8 @@
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
+    <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
+    <defaultSelectedClientCertificateType>X509</defaultSelectedClientCertificateType>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
     <defaultClientSupportedPointFormats>UNCOMPRESSED</defaultClientSupportedPointFormats>
     <defaultServerSupportedSignatureAndHashAlgorithms>DSA_MD5</defaultServerSupportedSignatureAndHashAlgorithms>
