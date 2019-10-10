@@ -96,27 +96,27 @@
     </defaultServerConnection>
     <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>
-    <supportedSignatureAndHashAlgorithms>DSA_MD5</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>DSA_SHA1</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>DSA_SHA224</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>DSA_SHA256</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>DSA_SHA384</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>DSA_SHA512</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_MD5</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_SHA1</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_SHA224</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_SHA256</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_SHA384</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>RSA_SHA512</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_MD5</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_SHA1</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_SHA224</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_SHA256</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_SHA384</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>ECDSA_SHA512</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</supportedSignatureAndHashAlgorithms>
-    <supportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</supportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_MD5</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_SHA224</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_SHA384</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>DSA_SHA512</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_MD5</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_SHA224</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_SHA384</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_SHA512</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_MD5</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA224</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA384</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA512</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>

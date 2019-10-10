@@ -195,7 +195,7 @@ public class Config implements Serializable {
     /**
      * Which Signature and Hash algorithms we support
      */
-    private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+    private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
      * Which Ciphersuites we support by default
@@ -852,8 +852,6 @@ public class Config implements Serializable {
 
     private List<ECPointFormat> defaultClientSupportedPointFormats;
 
-    private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
-
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
     private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
@@ -1124,8 +1122,8 @@ public class Config implements Serializable {
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
-        supportedSignatureAndHashAlgorithms = new LinkedList<>();
-        supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultClientSupportedSignatureAndHashAlgorithms = new LinkedList<>();
+        defaultClientSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1938,21 +1936,6 @@ public class Config implements Serializable {
         this.defaultClientSNIEntryList = new ArrayList(Arrays.asList(defaultClientSNIEntryList));
     }
 
-    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
-        return defaultClientSupportedSignatureAndHashAlgorithms;
-    }
-
-    public void setDefaultClientSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
-    }
-
-    public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... defaultClientSupportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = Arrays
-                .asList(defaultClientSupportedSignatureAndHashAlgorithms);
-    }
-
     public List<ECPointFormat> getDefaultServerSupportedPointFormats() {
         return defaultServerSupportedPointFormats;
     }
@@ -2285,18 +2268,19 @@ public class Config implements Serializable {
         this.clientAuthentication = clientAuthentication;
     }
 
-    public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-        return supportedSignatureAndHashAlgorithms;
+    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
+        return defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
-    public void setSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
-        this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
+    public void setDefaultClientSupportedSignatureAndHashAlgorithms(
+            List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
     public final void setSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
-        this.supportedSignatureAndHashAlgorithms = new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+        this.defaultClientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {

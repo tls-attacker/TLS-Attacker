@@ -82,8 +82,10 @@ public class SignatureAndHashAlgorithmDelegateTest {
         assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
         delegate.applyDelegate(config);
         assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.RSA_SHA512));
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.DSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
+                SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
+                SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test

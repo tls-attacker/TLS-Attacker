@@ -55,7 +55,7 @@ public class DHEServerKeyExchangePreparatorTest {
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
         SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA1);
         SigAndHashList.add(SignatureAndHashAlgorithm.DSA_MD5);
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(SigAndHashList);
+        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(SigAndHashList);
         // Test
         preparator.prepareHandshakeMessageContents();
 
