@@ -113,6 +113,17 @@ public class RecordGroup {
             record.adjustContext(context);
         }
     }
+    
+    public boolean isMacOrPadInvalid(TlsContext context) {
+    	for (AbstractRecord record : getRecords()) {
+    		if (record instanceof Record) {
+    			if (Boolean.FALSE.equals(((Record) record).getComputations().getMacValid())
+    					|| Boolean.FALSE.equals(((Record) record).getComputations().getPaddingValid())) 
+    				return true;
+    		}
+        }
+    	return false;
+    }
 
     private boolean addRecord(AbstractRecord record) {
         boolean isFitting = false;

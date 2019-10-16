@@ -30,7 +30,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -224,19 +227,24 @@ public class ReceiveMessageHelper {
     }
 
     public MessageParsingResult parseMessages(RecordGroup recordGroup, TlsContext context) {
-        byte[] cleanProtocolMessageBytes = recordGroup.getCleanBytes();
+        
         // Due to TLS 1.3 Encrypted Type it might be necessary to look for
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = new LinkedList<>();
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
+        	boolean parseAsUnknown = false; 
+        	if ( context.getConfig().isDoNotParseInvalidMacOrPadMessages() ) {
+        		parseAsUnknown = group.isMacOrPadInvalid(context);
+        	}
+        	byte[] cleanProtocolMessageBytes = recordGroup.getCleanBytes();
 
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 // if the protocol is DTLS, parsing HANDSHAKE messages results
                 // in fragments.
                 if (group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, true, true);
+                            group.getProtocolMessageType(), context, true, true, parseAsUnknown);
                     for (ProtocolMessage parsedMessage : parsedMessages) {
                         // we need this check since there might be
                         // "unknown messages", note, we do not maintain ordering
@@ -258,14 +266,14 @@ public class ReceiveMessageHelper {
                     boolean onlyParse = isInOrder ? false : context.getConfig().isDtlsUpdateOnOutOfOrder() ? false
                             : true;
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, onlyParse, false);
+                            group.getProtocolMessageType(), context, onlyParse, false, parseAsUnknown);
                     if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.addAll(parsedMessages);
                     }
                 }
             } else {
                 List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                        group.getProtocolMessageType(), context, false, false);
+                        group.getProtocolMessageType(), context, false, false, parseAsUnknown);
                 messages.addAll(parsedMessages);
             }
         }
@@ -273,10 +281,15 @@ public class ReceiveMessageHelper {
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
-            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse,
-            boolean handleHandshakeAsDtlsFragments) {
+            ProtocolMessageType typeFromRecord, TlsContext context, 
+            boolean onlyParse, boolean handleHandshakeAsDtlsFragments, boolean parseAsUnknown) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
+        if (parseAsUnknown) {
+            ParserResult result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, 0, context);
+            receivedMessages.add(result.getMessage());
+            return receivedMessages;
+        }
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
             try {
