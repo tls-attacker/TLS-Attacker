@@ -142,8 +142,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement = PointFormatter.formatToByteArray(element, chooser.getConfig()
-                .getDefaultSelectedPointFormat());
+        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
+                element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }

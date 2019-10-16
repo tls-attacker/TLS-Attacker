@@ -92,7 +92,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         } else if (namedGroup.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(namedGroup);
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
-            publicKeyBytes = PointFormatter.formatToByteArray(publicKey, pointFormat);
+            publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);

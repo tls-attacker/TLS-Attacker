@@ -51,9 +51,9 @@ public class PointFormatterTest {
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     Point point = curve.getPoint(new BigInteger(i % 257, new Random(i)), new BigInteger(i % 257,
                             new Random(i)));
-                    byte[] byteArray1 = PointFormatter.formatToByteArray(point, ECPointFormat.UNCOMPRESSED);
+                    byte[] byteArray1 = PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     point = PointFormatter.formatFromByteArray(group, byteArray1);
-                    byte[] byteArray2 = PointFormatter.formatToByteArray(point, ECPointFormat.UNCOMPRESSED);
+                    byte[] byteArray2 = PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     assertArrayEquals(byteArray1, byteArray2);
                 }
             }

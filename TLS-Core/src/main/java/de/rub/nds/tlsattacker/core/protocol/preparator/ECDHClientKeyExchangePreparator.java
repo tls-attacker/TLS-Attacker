@@ -131,7 +131,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             msg.getComputations().setPublicKeyY(publicKey.getY().getData());
             publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
                     .getPublicKeyY().getValue());
-            publicKeyBytes = PointFormatter.formatToByteArray(publicKey, pointFormat);
+            publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);
     }
