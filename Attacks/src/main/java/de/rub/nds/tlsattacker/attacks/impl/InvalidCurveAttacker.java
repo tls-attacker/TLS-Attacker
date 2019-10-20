@@ -89,10 +89,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             if (config.getPremasterSecret() != null) {
                 premasterSecret = config.getPremasterSecret();
             } else {
-                Point sharedPoint = curve.mult(new BigInteger("" + i + 1), point);
-                premasterSecret = sharedPoint.getX().getData();
-                if (premasterSecret == null) {
+                Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);          
+                if (sharedPoint.getX() == null) {
                     premasterSecret = BigInteger.ZERO;
+                }
+                else {
+                    premasterSecret = sharedPoint.getX().getData();
                 }
                 LOGGER.debug("PMS: " + premasterSecret.toString());
             }
@@ -103,7 +105,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
                     return null;
                 }
-                if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
+                if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) { 
                     LOGGER.info("Received no finished Message in Protocolflow:" + i);
                 } else {
                     LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
