@@ -82,7 +82,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
-        EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
+        EllipticCurve curve;
+        if(config.isCurveTwistAttack()) {
+            curve = config.getTwistedCurve();
+        }
+        else {
+            curve = CurveFactory.getCurve(config.getNamedGroup());
+        }
         Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
                 config.getNamedGroup());
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
@@ -93,8 +99,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 if (sharedPoint.getX() == null) {
                     premasterSecret = BigInteger.ZERO;
                 }
-                else {
+                else { 
                     premasterSecret = sharedPoint.getX().getData();
+                    if(config.isCurveTwistAttack()) {
+                        // transform back from simulated x-only ladder
+                        premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus())).mod(curve.getModulus());
+                    }
                 }
                 LOGGER.debug("PMS: " + premasterSecret.toString());
             }

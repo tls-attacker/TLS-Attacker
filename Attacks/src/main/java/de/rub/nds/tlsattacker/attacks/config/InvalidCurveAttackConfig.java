@@ -22,6 +22,8 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -84,6 +86,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+    
+    // Use twisted curve to simulate server's x-only ladder
+    private EllipticCurveOverFp twistedCurve;
+    
+    private boolean curveTwistAttack = false;
+    
+    private BigInteger curveTwistD;
 
     /**
      *
@@ -163,7 +172,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      *
      * @param namedGroup
      */
-    public void setNamedCurve(NamedGroup namedGroup) {
+    public void setNamedGroup(NamedGroup namedGroup) {
         this.namedGroup = namedGroup;
     }
 
@@ -257,6 +266,34 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
+     * @return the curveTwistAttack
+     */
+    public boolean isCurveTwistAttack() {
+        return curveTwistAttack;
+    }
+
+    /**
+     * @param curveTwistAttack the curveTwistAttack to set
+     */
+    public void setCurveTwistAttack(boolean curveTwistAttack) {
+        this.curveTwistAttack = curveTwistAttack;
+    }
+
+    /**
+     * @return the twistedCurve
+     */
+    public EllipticCurveOverFp getTwistedCurve() {
+        return twistedCurve;
+    }
+
+    /**
+     * @param twistedCurve the twistedCurve to set
+     */
+    public void setTwistedCurve(EllipticCurveOverFp twistedCurve) {
+        this.twistedCurve = twistedCurve;
+    }
+    
+    /**
      *
      * @return
      */
@@ -302,5 +339,19 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setDefaultClientNamedGroups(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
+    }
+
+    /**
+     * @return the curveTwistD
+     */
+    public BigInteger getCurveTwistD() {
+        return curveTwistD;
+    }
+
+    /**
+     * @param curveTwistD the curveTwistD to set
+     */
+    public void setCurveTwistD(BigInteger curveTwistD) {
+        this.curveTwistD = curveTwistD;
     }
 }
