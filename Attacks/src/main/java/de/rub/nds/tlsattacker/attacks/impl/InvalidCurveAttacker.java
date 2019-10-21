@@ -17,11 +17,15 @@ import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.FieldElement;
+import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -141,14 +145,14 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
+        EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
-                ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
-        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
+        Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()), new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
+        byte[] serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint, config.getPointCompressionFormat());
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(config.getCurveFieldSize(), premasterSecret);
+        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);

@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
@@ -93,6 +94,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private boolean curveTwistAttack = false;
     
     private BigInteger curveTwistD;
+    
+    // Ignore server's preferences and use the following PointFormat instead
+    private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
 
     /**
      *
@@ -353,5 +357,19 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public void setCurveTwistD(BigInteger curveTwistD) {
         this.curveTwistD = curveTwistD;
+    }
+
+    /**
+     * @return the pointCompressionFormat
+     */
+    public ECPointFormat getPointCompressionFormat() {
+        return pointCompressionFormat;
+    }
+
+    /**
+     * @param pointCompressionFormat the pointCompressionFormat to set
+     */
+    public void setPointCompressionFormat(ECPointFormat pointCompressionFormat) {
+        this.pointCompressionFormat = pointCompressionFormat;
     }
 }
