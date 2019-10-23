@@ -223,6 +223,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
+                    
+                    // This is a workaround for Tls1.3 InvalidCurve attacks 
+                    if(tlsContext.getConfig().getDefaultPreMasterSecret().length != 1)
+                    {
+                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+                    }
                 }
 
             } else {
