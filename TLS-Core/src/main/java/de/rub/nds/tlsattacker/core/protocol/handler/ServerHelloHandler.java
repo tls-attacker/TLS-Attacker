@@ -230,7 +230,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
                     }
                 }
-
+                tlsContext.setServerEcPublicKey(PointFormatter.formatFromByteArray(tlsContext.getChooser().getServerKeyShare().getGroup(), tlsContext.getChooser().getServerKeyShare().getPublicKey()));
+            
             } else {
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
