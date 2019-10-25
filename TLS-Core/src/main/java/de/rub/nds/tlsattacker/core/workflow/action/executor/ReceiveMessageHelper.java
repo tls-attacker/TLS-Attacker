@@ -227,17 +227,17 @@ public class ReceiveMessageHelper {
     }
 
     public MessageParsingResult parseMessages(RecordGroup recordGroup, TlsContext context) {
-        
+
         // Due to TLS 1.3 Encrypted Type it might be necessary to look for
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = new LinkedList<>();
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
-        	boolean parseAsUnknown = false; 
-        	if ( context.getConfig().isDoNotParseInvalidMacOrPadMessages() ) {
-        		parseAsUnknown = group.isMacOrPadInvalid(context);
-        	}
-        	byte[] cleanProtocolMessageBytes = recordGroup.getCleanBytes();
+            boolean parseAsUnknown = false;
+            if (context.getConfig().isDoNotParseInvalidMacOrPadMessages()) {
+                parseAsUnknown = group.isMacOrPadInvalid(context);
+            }
+            byte[] cleanProtocolMessageBytes = recordGroup.getCleanBytes();
 
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 // if the protocol is DTLS, parsing HANDSHAKE messages results
@@ -281,8 +281,8 @@ public class ReceiveMessageHelper {
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
-            ProtocolMessageType typeFromRecord, TlsContext context, 
-            boolean onlyParse, boolean handleHandshakeAsDtlsFragments, boolean parseAsUnknown) {
+            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse,
+            boolean handleHandshakeAsDtlsFragments, boolean parseAsUnknown) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         if (parseAsUnknown) {

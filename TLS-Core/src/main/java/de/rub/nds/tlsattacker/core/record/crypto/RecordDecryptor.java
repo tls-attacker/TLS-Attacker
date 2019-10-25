@@ -64,7 +64,11 @@ public class RecordDecryptor extends Decryptor {
             record.getComputations().setCipherKey(
                     recordCipher.getKeySet().getReadKey(context.getChooser().getConnectionEndType()));
         }
-        record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            record.getComputations().setSequenceNumber(record.getSequenceNumber().getValue());
+        } else {
+            record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+        }
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         prepareNonMetaDataMaced(record, encrypted);
