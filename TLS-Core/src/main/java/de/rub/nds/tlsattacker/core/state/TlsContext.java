@@ -239,6 +239,10 @@ public class TlsContext {
 
     private List<RequestItemV2> statusRequestV2RequestList;
 
+    private CertificateType selectedClientCertificateType;
+
+    private CertificateType selectedServerCertificateType;
+
     /**
      * These are the padding bytes as used in the padding extension.
      */
@@ -662,6 +666,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public CertificateType getSelectedClientCertificateType() {
+        return selectedClientCertificateType;
+    }
+
+    public void setSelectedClientCertificateType(CertificateType selectedClientCertificateType) {
+        this.selectedClientCertificateType = selectedClientCertificateType;
+    }
+
+    public CertificateType getSelectedServerCertificateType() {
+        return selectedServerCertificateType;
+    }
+
+    public void setSelectedServerCertificateType(CertificateType selectedServerCertificateType) {
+        this.selectedServerCertificateType = selectedServerCertificateType;
     }
 
     public boolean isTls13SoftDecryption() {

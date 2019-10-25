@@ -195,7 +195,7 @@ public class Config implements Serializable {
     /**
      * Which Signature and Hash algorithms we support
      */
-    private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+    private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
      * Which Ciphersuites we support by default
@@ -844,11 +844,13 @@ public class Config implements Serializable {
      */
     private CipherSuite defaultSelectedCipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
 
+    private CertificateType defaultSelectedServerCertificateType = CertificateType.X509;
+
+    private CertificateType defaultSelectedClientCertificateType = CertificateType.X509;
+
     private List<ECPointFormat> defaultServerSupportedPointFormats;
 
     private List<ECPointFormat> defaultClientSupportedPointFormats;
-
-    private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
@@ -1126,8 +1128,8 @@ public class Config implements Serializable {
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
-        supportedSignatureAndHashAlgorithms = new LinkedList<>();
-        supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
+        defaultClientSupportedSignatureAndHashAlgorithms = new LinkedList<>();
+        defaultClientSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1226,6 +1228,22 @@ public class Config implements Serializable {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ConfigIO.write(this, stream);
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
+    }
+
+    public CertificateType getDefaultSelectedServerCertificateType() {
+        return defaultSelectedServerCertificateType;
+    }
+
+    public void setDefaultSelectedServerCertificateType(CertificateType defaultSelectedServerCertificateType) {
+        this.defaultSelectedServerCertificateType = defaultSelectedServerCertificateType;
+    }
+
+    public CertificateType getDefaultSelectedClientCertificateType() {
+        return defaultSelectedClientCertificateType;
+    }
+
+    public void setDefaultSelectedClientCertificateType(CertificateType defaultSelectedClientCertificateType) {
+        this.defaultSelectedClientCertificateType = defaultSelectedClientCertificateType;
     }
 
     public ECPointFormat getDefaultSelectedPointFormat() {
@@ -1924,21 +1942,6 @@ public class Config implements Serializable {
         this.defaultClientSNIEntryList = new ArrayList(Arrays.asList(defaultClientSNIEntryList));
     }
 
-    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
-        return defaultClientSupportedSignatureAndHashAlgorithms;
-    }
-
-    public void setDefaultClientSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
-    }
-
-    public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
-            SignatureAndHashAlgorithm... defaultClientSupportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = Arrays
-                .asList(defaultClientSupportedSignatureAndHashAlgorithms);
-    }
-
     public List<ECPointFormat> getDefaultServerSupportedPointFormats() {
         return defaultServerSupportedPointFormats;
     }
@@ -2271,18 +2274,19 @@ public class Config implements Serializable {
         this.clientAuthentication = clientAuthentication;
     }
 
-    public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-        return supportedSignatureAndHashAlgorithms;
+    public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
+        return defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
-    public void setSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
-        this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
+    public void setDefaultClientSupportedSignatureAndHashAlgorithms(
+            List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
     public final void setSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
-        this.supportedSignatureAndHashAlgorithms = new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+        this.defaultClientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
