@@ -1116,10 +1116,10 @@ public class Config implements Serializable {
             .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
-    
+
     /**
-     * TLS-Attacker will parse encrypted messages with invalid MAC or padding
-     * as unknown if this option is set.
+     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
+     * unknown if this option is set.
      */
     private Boolean doNotParseInvalidMacOrPadMessages = false;
 
@@ -3359,12 +3359,12 @@ public class Config implements Serializable {
     public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
         this.addPWDProtectExtension = addPWDProtectExtension;
     }
-    
+
     public Boolean isDoNotParseInvalidMacOrPadMessages() {
-    	return doNotParseInvalidMacOrPadMessages;
+        return doNotParseInvalidMacOrPadMessages;
     }
-    
+
     public void setDoNotParseInvalidMacOrPadMessages(Boolean doNotParseInvalidMacOrPadMessages) {
-    	this.doNotParseInvalidMacOrPadMessages = doNotParseInvalidMacOrPadMessages;
+        this.doNotParseInvalidMacOrPadMessages = doNotParseInvalidMacOrPadMessages;
     }
 }

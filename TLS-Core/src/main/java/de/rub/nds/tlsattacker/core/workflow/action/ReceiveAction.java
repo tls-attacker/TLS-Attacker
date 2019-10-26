@@ -152,6 +152,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
+        System.out.println(result.getMessageInformationList());
         if (hasDefaultAlias()) {
             LOGGER.info("Received Messages: " + received);
         } else {

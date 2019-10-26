@@ -176,7 +176,8 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] nonce;
         byte[] data;
         if (cipherSuite.usesStrictExplicitIv()) {
-        	// TODO In the case of DTLS, we should get the sequence number from the record
+            // TODO In the case of DTLS, we should get the sequence number from
+            // the record
             nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
             data = decryptionRequest.getCipherText();
         } else {

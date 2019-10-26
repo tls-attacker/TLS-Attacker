@@ -117,7 +117,8 @@ public class SendMessageHelper {
         if (fragmentMessages.isEmpty()) {
             fragmentMessages = null;
         }
-        return new MessageActionResult(records, messages, fragmentMessages);
+        // TODO add message information
+        return new MessageActionResult(records, messages, fragmentMessages, null);
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {

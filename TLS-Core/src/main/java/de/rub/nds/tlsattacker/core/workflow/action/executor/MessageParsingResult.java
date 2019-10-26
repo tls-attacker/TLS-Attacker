@@ -15,11 +15,14 @@ import java.util.List;
 public class MessageParsingResult {
     private List<ProtocolMessage> messages;
     private List<DtlsHandshakeMessageFragment> messageFragments;
+    private List<DtlsMessageInformation> messageInfos;
 
-    public MessageParsingResult(List<ProtocolMessage> messages, List<DtlsHandshakeMessageFragment> messageFragments) {
+    public MessageParsingResult(List<ProtocolMessage> messages, List<DtlsHandshakeMessageFragment> messageFragments,
+            List<DtlsMessageInformation> messageInfos) {
         super();
         this.messages = messages;
         this.messageFragments = messageFragments;
+        this.messageInfos = messageInfos;
     }
 
     public List<ProtocolMessage> getMessages() {
@@ -28,6 +31,10 @@ public class MessageParsingResult {
 
     public List<DtlsHandshakeMessageFragment> getMessageFragments() {
         return messageFragments;
+    }
+
+    public List<DtlsMessageInformation> getMessageInfos() {
+        return messageInfos;
     }
 
 }

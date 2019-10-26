@@ -23,11 +23,14 @@ public class MessageActionResult {
 
     private final List<DtlsHandshakeMessageFragment> messageFragmentList;
 
+    private final List<DtlsMessageInformation> messageInformationList;
+
     public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
-            List<DtlsHandshakeMessageFragment> messageFragmentList) {
+            List<DtlsHandshakeMessageFragment> messageFragmentList, List<DtlsMessageInformation> messageInformationList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
+        this.messageInformationList = messageInformationList;
     }
 
     /**
@@ -36,7 +39,7 @@ public class MessageActionResult {
      */
     public MessageActionResult() {
         this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(),
-                new LinkedList<DtlsHandshakeMessageFragment>());
+                new LinkedList<DtlsHandshakeMessageFragment>(), new LinkedList<DtlsMessageInformation>());
     }
 
     public List<AbstractRecord> getRecordList() {
@@ -52,6 +55,13 @@ public class MessageActionResult {
     }
 
     /**
+     * Returns message information corresponding to DTLS messages.
+     */
+    public List<DtlsMessageInformation> getMessageInformationList() {
+        return messageInformationList;
+    }
+
+    /**
      * Merger this with other results, forming a new result.
      */
     public MessageActionResult merge(MessageActionResult... other) {
@@ -59,14 +69,16 @@ public class MessageActionResult {
         results.add(0, this);
         List<AbstractRecord> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = new LinkedList<>();
+        List<DtlsMessageInformation> messageInfoList = new LinkedList<>();
         List<ProtocolMessage> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
             recordList.addAll(result.getRecordList());
             messageFragmentList.addAll(result.getMessageFragmentList());
+            messageInfoList.addAll(result.getMessageInformationList());
             messageList.addAll(result.getMessageList());
         }
 
-        return new MessageActionResult(recordList, messageList, messageFragmentList);
+        return new MessageActionResult(recordList, messageList, messageFragmentList, messageInfoList);
     }
 }

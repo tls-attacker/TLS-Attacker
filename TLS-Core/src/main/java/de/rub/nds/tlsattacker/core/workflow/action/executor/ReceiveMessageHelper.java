@@ -8,6 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -30,18 +38,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
@@ -136,7 +135,7 @@ public class ReceiveMessageHelper {
         MessageParsingResult messageParsingResult = parseMessages(recordGroup, context);
 
         return new MessageActionResult(recordGroup.getRecords(), messageParsingResult.getMessages(),
-                messageParsingResult.getMessageFragments());
+                messageParsingResult.getMessageFragments(), messageParsingResult.getMessageInfos());
     }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
@@ -232,6 +231,7 @@ public class ReceiveMessageHelper {
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = new LinkedList<>();
+        List<DtlsMessageInformation> dtlsMessageInfos = new LinkedList<>();
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
             boolean parseAsUnknown = false;
             if (context.getConfig().isDoNotParseInvalidMacOrPadMessages()) {
@@ -252,13 +252,21 @@ public class ReceiveMessageHelper {
                         if (parsedMessage.isDtlsHandshakeMessageFragment()) {
                             messageFragments.add((DtlsHandshakeMessageFragment) parsedMessage);
                         } else {
+                            dtlsMessageInfos.add(new DtlsMessageInformation(recordGroup.getDtlsEpoch()));
                             messages.add(parsedMessage);
                         }
                     }
                     List<ProtocolMessage> parsedFragmentedMessages = processDtlsFragments(messageFragments,
-                            recordGroup.getDtlsEpoch(), context);
+                            recordGroup.getDtlsEpoch(), dtlsMessageInfos, context);
                     messages.addAll(parsedFragmentedMessages);
                 } else {
+                    // TODO Normally, retransmission handling should only be
+                    // applied to CCS and HANDSHAKE messages,
+                    // and not to other message types. I am unsure if we should
+                    // adapt the code based on that.
+                    // (so that, reordering options apply only to CCS, and not
+                    // to other message types).
+
                     boolean isInOrder = recordGroup.getDtlsEpoch() == context.getDtlsNextReceiveEpoch();
                     // we only update the context for in order records (with
                     // epoch == current) unless the update on ooo was set, in
@@ -267,8 +275,12 @@ public class ReceiveMessageHelper {
                             : true;
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             group.getProtocolMessageType(), context, onlyParse, false, parseAsUnknown);
+
                     if (isInOrder || !context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.addAll(parsedMessages);
+                        for (int i = 0; i < parsedMessages.size(); i++) {
+                            dtlsMessageInfos.add(new DtlsMessageInformation(recordGroup.getDtlsEpoch()));
+                        }
                     }
                 }
             } else {
@@ -277,7 +289,8 @@ public class ReceiveMessageHelper {
                 messages.addAll(parsedMessages);
             }
         }
-        return new MessageParsingResult(messages, messageFragments);
+
+        return new MessageParsingResult(messages, messageFragments, dtlsMessageInfos);
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
@@ -427,7 +440,7 @@ public class ReceiveMessageHelper {
      * sequence is next for processing.
      */
     private List<ProtocolMessage> processDtlsFragments(List<DtlsHandshakeMessageFragment> fragments, Integer epoch,
-            TlsContext context) {
+            List<DtlsMessageInformation> dtlsInfos, TlsContext context) {
 
         // the fragment manager stores all the message fragments received
         FragmentManager manager = context.getDtlsFragmentManager();
@@ -458,6 +471,7 @@ public class ReceiveMessageHelper {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, true);
                     messages.add(message);
+                    dtlsInfos.add(new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq().getValue()));
                     if (message.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
                         context.setDtlsNextReceiveSequenceNumber(0);
                     } else {
@@ -476,6 +490,7 @@ public class ReceiveMessageHelper {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
                         messages.add(message);
+                        dtlsInfos.add(new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq().getValue()));
                     }
                 }
             }
