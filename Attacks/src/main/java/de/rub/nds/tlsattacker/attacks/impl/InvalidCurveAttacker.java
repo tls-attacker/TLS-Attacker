@@ -32,7 +32,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -98,6 +97,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             return null;
         }
         responseFingerprints = new LinkedList<>();
+        receivedEcPublicKeys = new LinkedList<>();
         
         EllipticCurve curve;
         if(config.isCurveTwistAttack()) {
@@ -188,8 +188,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 RunningModeType.CLIENT);
        if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
         {
-            trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig)));
-            trace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
             ClientHelloMessage cHello = (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_HELLO, trace); 
             KeyShareExtensionMessage ksExt;
