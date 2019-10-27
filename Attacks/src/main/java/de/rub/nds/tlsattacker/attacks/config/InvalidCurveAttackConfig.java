@@ -97,6 +97,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     
     // Ignore server's preferences and use the following PointFormat instead
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
+    
+    private boolean attackInRenegotiation = false;
 
     /**
      *
@@ -371,5 +373,19 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public void setPointCompressionFormat(ECPointFormat pointCompressionFormat) {
         this.pointCompressionFormat = pointCompressionFormat;
+    }
+
+    /**
+     * @return the attackInRenegotiation
+     */
+    public boolean isAttackInRenegotiation() {
+        return attackInRenegotiation;
+    }
+
+    /**
+     * @param attackInRenegotiation the attackInRenegotiation to set
+     */
+    public void setAttackInRenegotiation(boolean attackInRenegotiation) {
+        this.attackInRenegotiation = attackInRenegotiation;
     }
 }

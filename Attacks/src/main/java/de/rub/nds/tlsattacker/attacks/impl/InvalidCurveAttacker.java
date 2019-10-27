@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -32,6 +33,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -126,13 +129,30 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 LOGGER.debug("PMS: " + premasterSecret.toString());
             }
             try {
-                WorkflowTrace trace = executeProtocolFlow();                             
-                if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace) && getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+                WorkflowTrace trace = executeProtocolFlow(); 
+                
+                //expect 2 of each for successfull attack in renegotiation
+                int receivedServerHellos = 0;
+                int receivedServerFins = 0; 
+                
+                for(ProtocolMessage msg : WorkflowTraceUtil.getAllReceivedMessages(trace, ProtocolMessageType.HANDSHAKE))
+                {
+                    HandshakeMessage hMsg = (HandshakeMessage)msg;
+                    if(hMsg.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO)
+                    {
+                        receivedServerHellos++;
+                    }
+                    else if(hMsg.getHandshakeMessageType() == HandshakeMessageType.FINISHED)
+                    {
+                       receivedServerFins++; 
+                    }
+                }
+                if (getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13 && (receivedServerHellos < 1 || (config.isAttackInRenegotiation() && receivedServerHellos < 2))) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
 
                     return null;
                 }
-                if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) { 
+                if (receivedServerFins < 1 || ((config.isAttackInRenegotiation() && receivedServerFins < 2))) { 
                     LOGGER.info("Received no finished Message in Protocolflow:" + i);
                 } else {
                     LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
@@ -223,13 +243,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION,
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
                 RunningModeType.CLIENT);
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage)WorkflowTraceUtil.getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         message.setPublicKey(serializedPublicKey);
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        
+
         return trace;
     }
 
