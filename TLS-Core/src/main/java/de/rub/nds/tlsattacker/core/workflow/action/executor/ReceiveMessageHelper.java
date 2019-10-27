@@ -470,8 +470,11 @@ public class ReceiveMessageHelper {
                         && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, true);
+                    DtlsMessageInformation info = new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq()
+                            .getValue());
+                    context.getDtlsMessageCache().addMessage(message, info);
                     messages.add(message);
-                    dtlsInfos.add(new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq().getValue()));
+                    dtlsInfos.add(info);
                     if (message.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
                         context.setDtlsNextReceiveSequenceNumber(0);
                     } else {
@@ -489,8 +492,18 @@ public class ReceiveMessageHelper {
                             .isDtlsUpdateOnOutOfOrder());
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
-                        messages.add(message);
-                        dtlsInfos.add(new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq().getValue()));
+                        DtlsMessageInformation info = new DtlsMessageInformation(epoch, fragmentedMessage
+                                .getMessageSeq().getValue());
+
+                        // if the exclude duplicate option is disabled, or the
+                        // message is not a duplicate
+                        // w.r.t. bytes, epoch and sequence number
+                        if (!context.getConfig().isDtlsExcludeDuplicates()
+                                || !context.getDtlsMessageCache().hasMessage(message, info)) {
+                            context.getDtlsMessageCache().addMessage(message, info);
+                            messages.add(message);
+                            dtlsInfos.add(info);
+                        }
                     }
                 }
             }

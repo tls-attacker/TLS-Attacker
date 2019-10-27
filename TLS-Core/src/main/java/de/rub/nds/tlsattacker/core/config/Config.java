@@ -789,6 +789,11 @@ public class Config implements Serializable {
      */
     private boolean dtlsUpdateOnOutOfOrder = false;
 
+    /**
+     * Exclude messages with same
+     */
+    private boolean dtlsExcludeDuplicates = false;
+
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
@@ -1753,6 +1758,14 @@ public class Config implements Serializable {
 
     public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
         this.dtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
+    }
+
+    public boolean isDtlsExcludeDuplicates() {
+        return dtlsExcludeDuplicates;
+    }
+
+    public void setDtlsExcludeDuplicates(boolean dtlsExcludeDuplicates) {
+        this.dtlsExcludeDuplicates = dtlsExcludeDuplicates;
     }
 
     public boolean isDtlsUpdateOnOutOfOrder() {

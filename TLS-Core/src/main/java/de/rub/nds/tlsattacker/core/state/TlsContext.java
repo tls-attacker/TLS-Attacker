@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
+import de.rub.nds.tlsattacker.core.dtls.MessageCache;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -484,6 +485,11 @@ public class TlsContext {
     private FragmentManager dtlsFragmentManager;
 
     /**
+     * message cache used for duplication detection;
+     */
+    private MessageCache dtlsMessageCache;
+
+    /**
      * supported protocol versions
      */
     private List<ProtocolVersion> clientSupportedProtocolVersions;
@@ -659,6 +665,7 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         dtlsFragmentManager = new FragmentManager(config);
+        dtlsMessageCache = new MessageCache();
     }
 
     public Chooser getChooser() {
@@ -1298,6 +1305,10 @@ public class TlsContext {
 
     public FragmentManager getDtlsFragmentManager() {
         return dtlsFragmentManager;
+    }
+
+    public MessageCache getDtlsMessageCache() {
+        return dtlsMessageCache;
     }
 
     public void increaseDtlsNextReceiveSequenceNumber() {
