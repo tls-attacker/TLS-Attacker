@@ -461,6 +461,16 @@ public class ReceiveMessageHelper {
             // meaning a handshake message can be parsed from it
             if (fragmentedMessage != null) {
                 context.setDtlsCurrentReceiveSequenceNumber(fragmentedMessage.getMessageSeq().getValue());
+                
+                // we update the message cache with the fragmented message and information to detect duplicates
+                DtlsMessageInformation info = new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq()
+                        .getValue());                
+                boolean isDuplicate = context.getDtlsMessageCache().hasMessage(fragmentedMessage, info);
+                if (!isDuplicate) {
+                	// in the cache we keep complete fragmented messages in order to determine whether 
+                	// a fragment is a duplicate
+                	context.getDtlsMessageCache().addMessage(fragmentedMessage, info);
+                }
 
                 // we check if the assembled fragment is in-order, and if so,
                 // process it (aka parse message, add it to list, remove
@@ -470,9 +480,6 @@ public class ReceiveMessageHelper {
                         && fragment.getMessageSeq().getValue() == context.getDtlsNextReceiveSequenceNumber()) {
                     manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
                     HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, true);
-                    DtlsMessageInformation info = new DtlsMessageInformation(epoch, fragmentedMessage.getMessageSeq()
-                            .getValue());
-                    context.getDtlsMessageCache().addMessage(message, info);
                     messages.add(message);
                     dtlsInfos.add(info);
                     if (message.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
@@ -488,23 +495,21 @@ public class ReceiveMessageHelper {
                 // the dtlsExcludeOutOfOrder option which allows TLS-Attacker to
                 // omit messages out-of-order
                 else {
-                    HandshakeMessage message = processFragmentedMessage(fragmentedMessage, context, context.getConfig()
-                            .isDtlsUpdateOnOutOfOrder());
-                    manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
-                    if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
-                        DtlsMessageInformation info = new DtlsMessageInformation(epoch, fragmentedMessage
-                                .getMessageSeq().getValue());
-
-                        // if the exclude duplicate option is disabled, or the
-                        // message is not a duplicate
-                        // w.r.t. bytes, epoch and sequence number
-                        if (!context.getConfig().isDtlsExcludeDuplicates()
-                                || !context.getDtlsMessageCache().hasMessage(message, info)) {
-                            context.getDtlsMessageCache().addMessage(message, info);
-                            messages.add(message);
-                            dtlsInfos.add(info);
-                        }
-                    }
+                    // we process the message if the exclude duplicate option is disabled or the message is not a duplicate
+                    // w.r.t. bytes, epoch and sequence number
+                	// otherwise we ignore it 
+                	if (!context.getConfig().isDtlsExcludeDuplicates() || !isDuplicate) {
+	                    HandshakeMessage message = 
+	                    		processFragmentedMessage(fragmentedMessage, context, 
+	                    				context.getConfig().isDtlsUpdateOnOutOfOrder());
+	                    manager.clearFragmentedMessage(fragmentedMessage.getMessageSeq().getValue(), epoch);
+	                    if (!context.getConfig().isDtlsExcludeOutOfOrder()) {
+	                    	messages.add(message);
+	                    	dtlsInfos.add(info);
+	                    }
+                	} else {
+                		// ignore duplicate
+                	}
                 }
             }
         }
