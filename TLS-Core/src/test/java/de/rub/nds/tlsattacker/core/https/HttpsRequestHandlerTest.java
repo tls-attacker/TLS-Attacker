@@ -24,7 +24,6 @@ public class HttpsRequestHandlerTest {
     private HttpsRequestMessage message;
     private HttpsRequestHandler handler;
 
-
     @Before
     public void setUp() {
         context = new TlsContext();
