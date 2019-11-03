@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
+import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -96,8 +97,10 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private BigInteger curveTwistD;
     
     // Ignore server's preferences and use the following PointFormat instead
+    @Parameter(names = "-point_format", description = "The format used for the public key", converter=PointFormatConverter.class)
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
     
+    @Parameter(names = "-renegotiation", description = "If set to true, the attack will be carried out in a renegotiation handshake")
     private boolean attackInRenegotiation = false;
 
     /**
