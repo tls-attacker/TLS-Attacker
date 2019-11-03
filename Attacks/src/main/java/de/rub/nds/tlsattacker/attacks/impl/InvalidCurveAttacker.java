@@ -112,14 +112,19 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         receivedEcPublicKeys = new LinkedList<>();
         
         EllipticCurve curve;
+        Point point;
         if(config.isCurveTwistAttack()) {
             curve = config.getTwistedCurve();
+            BigInteger transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD()).mod(curve.getModulus());
+            point = Point.createPoint(transformedX, config.getPublicPointBaseY(),
+                config.getNamedGroup());
         }
         else {
             curve = CurveFactory.getCurve(config.getNamedGroup());
-        }
-        Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
+            point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
                 config.getNamedGroup());
+        }
+        
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
             if (config.getPremasterSecret() != null) {
                 premasterSecret = config.getPremasterSecret();
