@@ -22,9 +22,9 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -59,8 +59,8 @@ public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getConfig().getDefaultPreMasterSecret();
         tlsContext.getConfig().setDefaultPreMasterSecret(newValue);
-        LOGGER.info("Changed DefaultPreMasterSecret from " + ArrayConverter.bytesToHexString(oldValue) + " in config to "
-                + ArrayConverter.bytesToHexString(newValue));
+        LOGGER.info("Changed DefaultPreMasterSecret from " + ArrayConverter.bytesToHexString(oldValue)
+                + " in config to " + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 
