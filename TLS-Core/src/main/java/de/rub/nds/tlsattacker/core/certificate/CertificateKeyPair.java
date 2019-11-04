@@ -353,9 +353,8 @@ public class CertificateKeyPair implements Serializable {
     }
 
     public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
-        if(context.getSelectedProtocolVersion() != ProtocolVersion.TLS13)
-        {
-           publicKey.adjustInContext(context, connectionEnd); 
+        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            publicKey.adjustInContext(context, connectionEnd);
         }
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
