@@ -225,13 +225,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
 
                     // This is a workaround for Tls1.3 InvalidCurve attacks
-                    if(tlsContext.getConfig().getDefaultPreMasterSecret().length > 0)
-                    {
+                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
                         sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
                     }
                 }
-                tlsContext.setServerEcPublicKey(PointFormatter.formatFromByteArray(tlsContext.getChooser().getServerKeyShare().getGroup(), tlsContext.getChooser().getServerKeyShare().getPublicKey()));
-
             } else {
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
@@ -313,6 +310,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 privateKey = tlsContext.getConfig().getDefaultKeySharePrivateKey();
                 Point sharedPoint = curve.mult(privateKey, publicPoint);
                 int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
+                tlsContext.setServerEcPublicKey(publicPoint);
                 return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
