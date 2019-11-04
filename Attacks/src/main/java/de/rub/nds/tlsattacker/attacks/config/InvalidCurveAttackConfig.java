@@ -88,18 +88,18 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
-    
+
     // Use twisted curve to simulate server's x-only ladder
     private EllipticCurveOverFp twistedCurve;
-    
+
     private boolean curveTwistAttack = false;
-    
+
     private BigInteger curveTwistD;
-    
+
     // Ignore server's preferences and use the following PointFormat instead
-    @Parameter(names = "-point_format", description = "The format used for the public key", converter=PointFormatConverter.class)
+    @Parameter(names = "-point_format", description = "The format used for the public key", converter = PointFormatConverter.class)
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
-    
+
     @Parameter(names = "-renegotiation", description = "If set to true, the attack will be carried out in a renegotiation handshake")
     private boolean attackInRenegotiation = false;
 
@@ -282,7 +282,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
-     * @param curveTwistAttack the curveTwistAttack to set
+     * @param curveTwistAttack
+     *            the curveTwistAttack to set
      */
     public void setCurveTwistAttack(boolean curveTwistAttack) {
         this.curveTwistAttack = curveTwistAttack;
@@ -296,12 +297,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
-     * @param twistedCurve the twistedCurve to set
+     * @param twistedCurve
+     *            the twistedCurve to set
      */
     public void setTwistedCurve(EllipticCurveOverFp twistedCurve) {
         this.twistedCurve = twistedCurve;
     }
-    
+
     /**
      *
      * @return
@@ -358,7 +360,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
-     * @param curveTwistD the curveTwistD to set
+     * @param curveTwistD
+     *            the curveTwistD to set
      */
     public void setCurveTwistD(BigInteger curveTwistD) {
         this.curveTwistD = curveTwistD;
@@ -372,7 +375,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
-     * @param pointCompressionFormat the pointCompressionFormat to set
+     * @param pointCompressionFormat
+     *            the pointCompressionFormat to set
      */
     public void setPointCompressionFormat(ECPointFormat pointCompressionFormat) {
         this.pointCompressionFormat = pointCompressionFormat;
@@ -386,7 +390,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
-     * @param attackInRenegotiation the attackInRenegotiation to set
+     * @param attackInRenegotiation
+     *            the attackInRenegotiation to set
      */
     public void setAttackInRenegotiation(boolean attackInRenegotiation) {
         this.attackInRenegotiation = attackInRenegotiation;

@@ -260,23 +260,23 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
-            
-            //next ClientHello needs a PSKExtension
+
+            // next ClientHello needs a PSKExtension
             tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
-            
+
             WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
-            
-            //subsequent ClientHellos don't need a PSKExtension
+
+            // subsequent ClientHellos don't need a PSKExtension
             tlsConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
-            
-            //make sure no explicit PreMasterSecret is set at this point
+
+            // make sure no explicit PreMasterSecret is set at this point
             tlsConfig.setDefaultPreMasterSecret(new byte[0]);
-            
-            //set explicit PreMasterSecret later on using an action
+
+            // set explicit PreMasterSecret later on using an action
             ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
             cPMS.setNewValue(explicitPMS);
             trace.addTlsAction(cPMS);
-            
+
             for (TlsAction action : secondHandshake.getTlsActions()) {
                 trace.addTlsAction(action);
             }
