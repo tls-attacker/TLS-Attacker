@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
-import de.rub.nds.tlsattacker.attacks.ec.EcPemCreator;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -37,10 +36,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
@@ -74,16 +69,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 tlsConfig.getDefaultSelectedNamedGroup());
         BigInteger result = attacker.attack();
         LOGGER.info("Result found: {}", result);
-
-        try {
-            String pem = EcPemCreator.createPemFromPrivateEcKey(tlsConfig.getDefaultSelectedNamedGroup().getJavaName(),
-                    result);
-            LOGGER.info("Resulting private key in PEM format:\n{}", pem);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException
-                | InvalidParameterSpecException e) {
-            LOGGER.info("Creating a PEM privte key object failed: ", e);
-        }
-
     }
 
     /**
