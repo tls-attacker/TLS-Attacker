@@ -124,23 +124,25 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     config.getNamedGroup());
         }
 
-        for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
-            if (config.getPremasterSecret() != null) {
-                premasterSecret = config.getPremasterSecret();
+        int protocolFlows = getConfig().getProtocolFlows();
+        if (config.getPremasterSecret() != null) {
+            protocolFlows = 1;
+        }
+        for (int i = 0; i < protocolFlows; i++) {
+            setPremasterSecret(curve, i, point);
+            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            if (sharedPoint.getX() == null) {
+                premasterSecret = BigInteger.ZERO;
             } else {
-                Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
-                if (sharedPoint.getX() == null) {
-                    premasterSecret = BigInteger.ZERO;
-                } else {
-                    premasterSecret = sharedPoint.getX().getData();
-                    if (config.isCurveTwistAttack()) {
-                        // transform back from simulated x-only ladder
-                        premasterSecret = premasterSecret.multiply(
-                                config.getCurveTwistD().modInverse(curve.getModulus())).mod(curve.getModulus());
-                    }
+                premasterSecret = sharedPoint.getX().getData();
+                if (config.isCurveTwistAttack()) {
+                    // transform back from simulated x-only ladder
+                    premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
+                            .mod(curve.getModulus());
                 }
-                LOGGER.debug("PMS: " + premasterSecret.toString());
             }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
+
             try {
                 WorkflowTrace trace = executeProtocolFlow();
 
@@ -160,7 +162,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 if (getTlsConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13
                         && (receivedServerHellos < 1 || (config.isAttackInRenegotiation() && receivedServerHellos < 2))) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
-
                     return null;
                 }
                 if (receivedServerFins < 1 || ((config.isAttackInRenegotiation() && receivedServerFins < 2))) {
@@ -174,6 +175,19 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             }
         }
         return false;
+    }
+
+    private void setPremasterSecret(EllipticCurve curve, int i, Point point) {
+        if (config.getPremasterSecret() != null) {
+            premasterSecret = config.getPremasterSecret();
+        } else {
+            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            premasterSecret = sharedPoint.getX().getData();
+            if (premasterSecret == null) {
+                premasterSecret = BigInteger.ZERO;
+            }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
+        }
     }
 
     private WorkflowTrace executeProtocolFlow() {
