@@ -129,20 +129,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             protocolFlows = 1;
         }
         for (int i = 0; i < protocolFlows; i++) {
-            setPremasterSecret(curve, i, point);
-            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
-            if (sharedPoint.getX() == null) {
-                premasterSecret = BigInteger.ZERO;
-            } else {
-                premasterSecret = sharedPoint.getX().getData();
-                if (config.isCurveTwistAttack()) {
-                    // transform back from simulated x-only ladder
-                    premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
-                            .mod(curve.getModulus());
-                }
-            }
-            LOGGER.debug("PMS: " + premasterSecret.toString());
-
+            setPremasterSecret(curve, i, point);     
             try {
                 WorkflowTrace trace = executeProtocolFlow();
 
@@ -182,11 +169,17 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             premasterSecret = config.getPremasterSecret();
         } else {
             Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
-            premasterSecret = sharedPoint.getX().getData();
-            if (premasterSecret == null) {
+            if (sharedPoint.getX() == null) {
                 premasterSecret = BigInteger.ZERO;
-            }
+            } else {
+                premasterSecret = sharedPoint.getX().getData();
+                if (config.isCurveTwistAttack()) {
+                    // transform back from simulated x-only ladder
+                    premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
+                            .mod(curve.getModulus());
+                }
             LOGGER.debug("PMS: " + premasterSecret.toString());
+            }
         }
     }
 
