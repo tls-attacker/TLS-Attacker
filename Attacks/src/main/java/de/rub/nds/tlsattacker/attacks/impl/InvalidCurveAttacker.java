@@ -178,8 +178,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
                             .mod(curve.getModulus());
                 }
-            LOGGER.debug("PMS: " + premasterSecret.toString());
             }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
         }
     }
 
