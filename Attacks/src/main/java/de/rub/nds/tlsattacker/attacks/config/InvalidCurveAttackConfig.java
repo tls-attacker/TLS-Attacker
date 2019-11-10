@@ -94,6 +94,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     private boolean curveTwistAttack = false;
 
+    @Parameter(names = "-curve_twist_d", hidden = true, description = "Non quadratic residue used to obtain twisted curve", converter = BigIntegerConverter.class)
     private BigInteger curveTwistD;
 
     // Ignore server's preferences and use the following PointFormat instead

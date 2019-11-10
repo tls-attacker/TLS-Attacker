@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
@@ -114,7 +115,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         EllipticCurve curve;
         Point point;
         if (config.isCurveTwistAttack()) {
-            curve = config.getTwistedCurve();
+            curve = buildTwistedCurve();
             BigInteger transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD())
                     .mod(curve.getModulus());
             point = Point.createPoint(transformedX, config.getPublicPointBaseY(), config.getNamedGroup());
@@ -129,7 +130,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             protocolFlows = 1;
         }
         for (int i = 0; i < protocolFlows; i++) {
-            setPremasterSecret(curve, i, point);     
+            setPremasterSecret(curve, i, point);
             try {
                 WorkflowTrace trace = executeProtocolFlow();
 
@@ -321,5 +322,17 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
      */
     public List<Point> getReceivedEcPublicKeys() {
         return receivedEcPublicKeys;
+    }
+
+    public EllipticCurveOverFp buildTwistedCurve() {
+        EllipticCurveOverFp intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
+        BigInteger modA = intendedCurve.getA().getData().multiply(config.getCurveTwistD().pow(2))
+                .mod(intendedCurve.getModulus());
+        BigInteger modB = intendedCurve.getB().getData().multiply(config.getCurveTwistD().pow(3))
+                .mod(intendedCurve.getModulus());
+        EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
+
+        config.setTwistedCurve(twistedCurve);
+        return twistedCurve;
     }
 }
