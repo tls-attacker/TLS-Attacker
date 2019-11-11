@@ -89,7 +89,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    // Use twisted curve to simulate server's x-only ladder
+    /**
+    * The twisted curve to simulate server's x-only ladder
+    */
     private EllipticCurveOverFp twistedCurve;
 
     private boolean curveTwistAttack = false;
@@ -97,7 +99,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @Parameter(names = "-curve_twist_d", hidden = true, description = "Non quadratic residue used to obtain twisted curve", converter = BigIntegerConverter.class)
     private BigInteger curveTwistD;
 
-    // Ignore server's preferences and use the following PointFormat instead
+    /**
+    * Ignore server's preferences and use the specified PointFormat instead
+    */
     @Parameter(names = "-point_format", description = "The format used for the public key", converter = PointFormatConverter.class)
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
 
