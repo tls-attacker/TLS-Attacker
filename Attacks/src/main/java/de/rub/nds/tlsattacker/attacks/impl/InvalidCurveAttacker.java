@@ -263,7 +263,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         WorkflowTrace trace;
         Config tlsConfig = getTlsConfig();
         if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
             trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                     RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(new NewSessionTicketMessage(false)));
@@ -289,7 +288,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 trace.addTlsAction(action);
             }
         } else {
-            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
             trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                     WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
