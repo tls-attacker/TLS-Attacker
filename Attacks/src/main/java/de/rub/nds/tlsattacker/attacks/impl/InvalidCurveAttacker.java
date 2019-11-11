@@ -117,8 +117,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             premasterSecret = config.getPremasterSecret();
         } else {
             Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
-            premasterSecret = sharedPoint.getX().getData();
-            if (premasterSecret == null) {
+            if (sharedPoint.getX() != null) {
+                premasterSecret = sharedPoint.getX().getData();
+            } else {
                 premasterSecret = BigInteger.ZERO;
             }
             LOGGER.debug("PMS: " + premasterSecret.toString());

@@ -15,6 +15,7 @@ import java.math.BigInteger;
  * fields.
  */
 public abstract class EllipticCurve {
+
     private Point basePoint;
     private BigInteger basePointOrder;
     /**
@@ -26,7 +27,7 @@ public abstract class EllipticCurve {
      * Every child class must define its own public constructor. These
      * constructors must be able to set the coefficients for the curve. They can
      * use this constructor to set the value of modulus.
-     * 
+     *
      * @param modulus
      *            The modulus of the field over which the curve is defined.
      */
@@ -39,7 +40,7 @@ public abstract class EllipticCurve {
      * constructors must be able to set the coefficients for the curve. They can
      * use this constructor to set the values of modulus, basePoint and
      * basePointOrder.
-     * 
+     *
      * @param modulus
      *            The modulus of the field over which the curve is defined.
      * @param basePointX
@@ -60,7 +61,7 @@ public abstract class EllipticCurve {
      * result will be null. If one point is not on the curve and the
      * calculations would require dividing by 0, the result will be the point at
      * infinity.
-     * 
+     *
      * @param p
      *            A point which's coordinates are elements of the field over
      *            which the curve is defined or the point at infinity.
@@ -69,83 +70,70 @@ public abstract class EllipticCurve {
      *            which the curve is defined or the point at infinity.
      */
     public Point add(Point p, Point q) {
-
-        if (p == null || q == null) {
-            return null;
-        } else {
-            if (p.isAtInfinity()) {
-                // O + q == q
-                return q;
-            }
-
-            if (q.isAtInfinity()) {
-                // p + O == p
-                return p;
-            }
-
-            if (this.inverse(p).equals(q)) {
-                // p == -q <=> -p == q
-                // => p + q = O
-                return new Point();
-            }
-
-            return this.additionFormular(p, q);
+        if (p.isAtInfinity()) {
+            // O + q == q
+            return q;
         }
+
+        if (q.isAtInfinity()) {
+            // p + O == p
+            return p;
+        }
+
+        if (this.inverse(p).equals(q)) {
+            // p == -q <=> -p == q
+            // => p + q = O
+            return new Point();
+        }
+
+        return this.additionFormular(p, q);
     }
 
     /**
      * Returns k*p on this curve. If k or p is null, the result will be null. If
      * the point is not on the curve and the calculations would require dividing
      * by 0, the result will be the point at infinity.
-     * 
+     *
      * @param p
      *            A point which's coordinates are elements of the field over
      *            which the curve is defined or the point at infinity.
      */
     public Point mult(BigInteger k, Point p) {
-        if (k == null || p == null) {
-            return null;
-        } else {
-            if (k.compareTo(BigInteger.ZERO) < 0) {
-                k = k.negate();
-                p = this.inverse(p);
-            }
-
-            // Double-and-add
-
-            Point q = new Point(); // q == O
-
-            for (int i = k.bitLength(); i > 0; i--) {
-
-                q = this.add(q, q);
-
-                if (k.testBit(i - 1)) {
-                    q = this.add(q, p);
-                }
-            }
-
-            return q;
+        if (k.compareTo(BigInteger.ZERO) < 0) {
+            k = k.negate();
+            p = this.inverse(p);
         }
+
+        // Double-and-add
+        Point q = new Point(); // q == O
+
+        for (int i = k.bitLength(); i > 0; i--) {
+
+            q = this.add(q, q);
+
+            if (k.testBit(i - 1)) {
+                q = this.add(q, p);
+            }
+        }
+
+        return q;
     }
 
     /**
      * Returns the unique point q with the property p + q = O on this curve. If
      * p is null the result will be null.
-     * 
+     *
      * @param p
      *            A point which's coordinates are elements of the field over
      *            which the curve is defined or the point at infinity.
      */
     public Point inverse(Point p) {
-        if (p == null) {
-            return null;
+
+        if (p.isAtInfinity()) {
+            // -O == O
+            return p;
         } else {
-            if (p.isAtInfinity()) {
-                // -O == O
-                return p;
-            } else {
-                return this.inverseAffine(p);
-            }
+            return this.inverseAffine(p);
         }
     }
 
@@ -154,7 +142,7 @@ public abstract class EllipticCurve {
      * are elements of the field over which this curve is defined. Whenever
      * possible, this method should be used instead of creating a point via its
      * own constructor.
-     * 
+     *
      * @param x
      *            The x coordinate of the point.
      * @param y
@@ -164,7 +152,7 @@ public abstract class EllipticCurve {
 
     /**
      * Returns true iff the point p is on the curve.
-     * 
+     *
      * @param p
      *            An affine point which's coordinates are elements of the field
      *            over which the curve is defined or the point at infinity.
@@ -174,7 +162,7 @@ public abstract class EllipticCurve {
     /**
      * Returns the unique (affine) point q with the property p + q = O on this
      * curve.
-     * 
+     *
      * @param p
      *            An affine point which's coordinates are elements of the field
      *            over which the curve is defined.
@@ -185,7 +173,7 @@ public abstract class EllipticCurve {
      * Returns p+q for two affine points p and q, with p != -q. If one point is
      * not on the curve and the calculations would require dividing by 0, the
      * result will be the point at infinity.
-     * 
+     *
      * @param p
      *            An affine point which's coordinates are elements of the field
      *            over which the curve is defined.

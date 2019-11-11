@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
@@ -17,6 +19,8 @@ import java.math.BigInteger;
  * coefficient.
  */
 public class EllipticCurveOverF2m extends EllipticCurve {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final FieldElementF2m a;
     private final FieldElementF2m b;
@@ -147,7 +151,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            return new Point();
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
 
