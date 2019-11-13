@@ -290,6 +290,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 trace.addTlsAction(action);
             }
         } else {
+            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
             trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                     WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
@@ -297,6 +298,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
+            
+            // replace specific receive action with generic
+            trace.removeTlsAction(trace.getTlsActions().size() - 1);
+            trace.addTlsAction(new GenericReceiveAction());
         }
 
         return trace;
