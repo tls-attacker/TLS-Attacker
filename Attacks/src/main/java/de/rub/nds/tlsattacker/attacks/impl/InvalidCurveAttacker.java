@@ -135,16 +135,18 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             try {
                 WorkflowTrace trace = executeProtocolFlow();
 
-                if(config.isAttackInRenegotiation() && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13)
-                {
+                if (config.isAttackInRenegotiation()
+                        && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
                     allowTls13CCS(trace);
-                } 
-                
+                }
+
                 if (!trace.executedAsPlanned()) {
                     LOGGER.info("Trace failed to execute before attack vector was sent");
                     return null;
                 }
-                if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage)WorkflowTraceUtil.getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
+                if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
+                        && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
+                            .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
                     LOGGER.info("Received no finished Message in Protocolflow:" + i);
                 } else {
                     LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
@@ -214,18 +216,17 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
             byte[] explicitPMS) {
         Config tlsConfig = getTlsConfig();
-        if(tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13)
-        {
+        if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
         }
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
         if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-            
-            //replace specific receive action with generic
+
+            // replace specific receive action with generic
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
             trace.addTlsAction(new GenericReceiveAction());
-       
+
             ClientHelloMessage cHello = (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(
                     HandshakeMessageType.CLIENT_HELLO, trace);
             KeyShareExtensionMessage ksExt;
@@ -273,7 +274,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
 
             WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
-            
+
             // subsequent ClientHellos don't need a PSKExtension
             tlsConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
 
@@ -287,7 +288,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
             for (TlsAction action : secondHandshake.getTlsActions()) {
                 trace.addTlsAction(action);
-            }          
+            }
         } else {
             trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                     WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
@@ -297,7 +298,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
         }
-        
+
         return trace;
     }
 
@@ -334,18 +335,15 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
     }
-    
-    private void allowTls13CCS(WorkflowTrace trace)
-    {
-        ReceiveAction firstServerMessages = (ReceiveAction)trace.getTlsActions().get(1); 
-        if(!firstServerMessages.executedAsPlanned() && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage)
-        {
+
+    private void allowTls13CCS(WorkflowTrace trace) {
+        ReceiveAction firstServerMessages = (ReceiveAction) trace.getTlsActions().get(1);
+        if (!firstServerMessages.executedAsPlanned()
+                && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage) {
             LinkedList<ProtocolMessage> newExpectedList = new LinkedList<>();
-            for(int i = 0; i < firstServerMessages.getExpectedMessages().size(); i++)
-            {
-                if(i == 1)
-                {
-                  newExpectedList.add(new ChangeCipherSpecMessage());  
+            for (int i = 0; i < firstServerMessages.getExpectedMessages().size(); i++) {
+                if (i == 1) {
+                    newExpectedList.add(new ChangeCipherSpecMessage());
                 }
                 newExpectedList.add(firstServerMessages.getExpectedMessages().get(i));
             }
