@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
@@ -48,7 +49,10 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     public void adjustTLSContext(CertificateRequestMessage message) {
         adjustClientCertificateTypes(message);
         adjustDistinguishedNames(message);
-        adjustServerSupportedSignatureAndHashAlgorithms(message);
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+            adjustServerSupportedSignatureAndHashAlgorithms(message);
+        }
     }
 
     private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
