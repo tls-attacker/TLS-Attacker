@@ -16,7 +16,7 @@ public class BouncyCastleProviderChecker {
 
     static boolean isLoaded() {
         for (Provider p : Security.getProviders()) {
-            if (p.getClass().equals(BouncyCastleProvider.class)) {
+            if (p.getClass().getName().equals(BouncyCastleProvider.class.getName())) {
                 return true;
             }
         }
