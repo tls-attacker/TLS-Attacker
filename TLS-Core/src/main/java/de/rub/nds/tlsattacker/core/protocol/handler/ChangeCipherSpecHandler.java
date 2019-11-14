@@ -50,7 +50,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             // and that we should not increase the next receive epoch, as we
             // still
             // have messages left to process in the current epoch.
-            tlsContext.increaseDtlsNextReceiveEpoch();
+            tlsContext.increaseDtlsReadEpoch();
         }
     }
 
@@ -62,7 +62,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateCompressor();
             // DTLS
-            tlsContext.increaseDtlsSendEpoch();
+            tlsContext.increaseDtlsWriteEpoch();
         }
     }
 

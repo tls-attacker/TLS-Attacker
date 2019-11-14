@@ -81,8 +81,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 // we only do this for full fledged messages (not for fragments)
                 if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && message.isHandshakeMessage()
                         && !message.isDtlsHandshakeMessageFragment()) {
-                    tlsContext.setDtlsCurrentSendSequenceNumber(tlsContext.getDtlsNextSendSequenceNumber());
-                    tlsContext.increaseDtlsNextSendSequenceNumber();
+                    tlsContext.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }
             updateDigest(message);

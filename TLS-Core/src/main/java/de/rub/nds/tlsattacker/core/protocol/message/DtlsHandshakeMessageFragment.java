@@ -35,6 +35,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
+    private ModifiableInteger epoch = null;
+
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
@@ -113,6 +115,18 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public void setFragmentLength(ModifiableInteger fragmentLength) {
         this.fragmentLength = fragmentLength;
+    }
+
+    public ModifiableInteger getEpoch() {
+        return epoch;
+    }
+
+    public void setEpoch(ModifiableInteger epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
     }
 
     @Override

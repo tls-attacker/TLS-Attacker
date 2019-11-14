@@ -58,12 +58,17 @@ public class MessageActionResult {
         LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
         results.add(0, this);
         List<AbstractRecord> recordList = new LinkedList<>();
-        List<DtlsHandshakeMessageFragment> messageFragmentList = new LinkedList<>();
+        List<DtlsHandshakeMessageFragment> messageFragmentList = null;
         List<ProtocolMessage> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
             recordList.addAll(result.getRecordList());
-            messageFragmentList.addAll(result.getMessageFragmentList());
+            if (result.getMessageFragmentList() != null) {
+                if (messageFragmentList == null) {
+                    messageFragmentList = new LinkedList<>();
+                }
+                messageFragmentList.addAll(result.getMessageFragmentList());
+            }
             messageList.addAll(result.getMessageList());
         }
 

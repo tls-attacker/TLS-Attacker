@@ -56,20 +56,12 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
     }
 
     private void prepareFragmentOffset(DtlsHandshakeMessageFragment msg) {
-        msg.setFragmentOffset(0);
+        msg.setFragmentOffset(0); // TODO this is incorrect
         LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
     }
 
     private void prepareMessageSeq(DtlsHandshakeMessageFragment msg) {
-        // sending
-        if (chooser.getContext().getTalkingConnectionEndType() == chooser.getContext().getChooser()
-                .getConnectionEndType()) {
-            msg.setMessageSeq((int) chooser.getContext().getDtlsCurrentSendSequenceNumber());
-        }
-        // receiving
-        else {
-            msg.setMessageSeq((int) chooser.getContext().getDtlsCurrentReceiveSequenceNumber());
-        }
+        msg.setMessageSeq((int) chooser.getContext().getDtlsWriteHandshakeMessageSequence());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 }

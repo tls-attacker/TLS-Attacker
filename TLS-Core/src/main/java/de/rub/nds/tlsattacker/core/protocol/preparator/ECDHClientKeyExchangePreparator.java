@@ -47,7 +47,13 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
+        LOGGER.debug("Using curve:" + curve.toString());
+        LOGGER.debug("publickey:" + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(publicKey)));
+
+        LOGGER.debug("Using PrivateKey:" + privateKey.toString());
         Point sharedPoint = curve.mult(privateKey, publicKey);
+        LOGGER.debug("SharedPoint:" + ArrayConverter.bytesToHexString(PointFormatter.toRawFormat(sharedPoint)));
+
         int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
         return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
     }
