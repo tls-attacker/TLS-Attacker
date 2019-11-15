@@ -49,9 +49,6 @@ public class FragmentUtils {
         assertNotNull(fragment);
         assertEquals(expectedOffset, fragment.getFragmentOffset().getValue().intValue());
         assertEquals(expectedLength, fragment.getFragmentLength().getValue().intValue());
-        System.out.println("Expected:" + ArrayConverter.bytesToHexString(expectedContent, false, false));
-        System.out.println("Actual  :"
-                + ArrayConverter.bytesToHexString(fragment.getContent().getValue(), false, false));
         assertArrayEquals(expectedContent, fragment.getContent().getValue());
     }
 }

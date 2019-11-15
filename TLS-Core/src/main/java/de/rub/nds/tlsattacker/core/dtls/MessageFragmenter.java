@@ -60,7 +60,6 @@ public class MessageFragmenter {
         do {
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
                     Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
-            System.out.println(ArrayConverter.bytesToHexString(fragmentBytes));
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
                     fragmentBytes, message.getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);

@@ -117,10 +117,6 @@ public class ReceiveMessageHelperTest {
                 DTLS.REC_SERVER_HELLO_F2);
         assertEquals(3, result.getMessageFragmentList().size());
         assertEquals(2, result.getMessageList().size());
-        System.out.println("MSG0:"
-                + ArrayConverter.bytesToHexString(result.getMessageList().get(0).getCompleteResultingMessage()));
-        System.out.println("MSG0:"
-                + ArrayConverter.bytesToHexString(result.getMessageList().get(1).getCompleteResultingMessage()));
         checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         checkMessage(result.getMessageList().get(1), DTLS.MSG_SERVER_HELLO_DONE_ASSEMBLED);
     }
@@ -134,7 +130,6 @@ public class ReceiveMessageHelperTest {
         result = receive(DTLS.REC_SERVER_HELLO_DONE);
         assertEquals(1, result.getMessageFragmentList().size());
         assertEquals(1, result.getMessageList().size());
-        System.out.println(ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
         Assert.assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT), context
                 .getDigest().getRawBytes());
         result = receive(DTLS.REC_SERVER_HELLO_F2);
@@ -143,10 +138,6 @@ public class ReceiveMessageHelperTest {
         // If the messages are received disorderly in two distinct receive
         // events it should be
         // processed disorderly in the finished (worhty of a discussion)
-        System.out.println("Actual  : " + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
-        System.out.println("Expected: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.concatenate(
-                        DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT, DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT)));
         Assert.assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT,
                 DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT), context.getDigest().getRawBytes());
     }
