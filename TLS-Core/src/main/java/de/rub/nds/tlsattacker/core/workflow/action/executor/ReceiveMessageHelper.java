@@ -258,18 +258,28 @@ public class ReceiveMessageHelper {
                         true, group.getDtlsEpoch());
                 if (isListOnlyDtlsHandshakeMessageFragments(messageList)) {
                     messageFragments = convertToDtlsFragmentList(messageList);
-                    cleanProtocolMessageBytes = defragmentHandshakeMessageFragments(messageFragments, context);
+                    List<DtlsHandshakeMessageFragment> defragmentedReorderdFragments = defragmentAndReorder(
+                            messageFragments, context);
+                    for (DtlsHandshakeMessageFragment fragment : defragmentedReorderdFragments) {
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(fragment.getContent().getValue(),
+                                group.getProtocolMessageType(), context, false);
+                        messages.addAll(parsedMessages);
+                    }
                 } else {
                     LOGGER.warn("Receive non DTLS-Handshake message Fragment - Not trying to defragment this - passing as is (probably wrong)");
                     cleanProtocolMessageBytes = group.getCleanBytes();
+                    List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            group.getProtocolMessageType(), context, false);
+                    messages.addAll(parsedMessages);
                 }
 
             } else {
                 cleanProtocolMessageBytes = group.getCleanBytes();
+                List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                        group.getProtocolMessageType(), context, false);
+                messages.addAll(parsedMessages);
             }
-            List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                    group.getProtocolMessageType(), context, false);
-            messages.addAll(parsedMessages);
+
         }
         return new MessageParsingResult(messages, messageFragments);
     }
@@ -488,14 +498,8 @@ public class ReceiveMessageHelper {
         return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
-    /*
-     * Processes a list of arbitrary-ordered fragments. The idea is: 1. we
-     * assemble fragments into "fragmented messages", which are fragments
-     * carrying each a single handshake message. 2. we extract the messages from
-     * fragments but only update the context for fragments whose message
-     * sequence is next for processing.
-     */
-    private byte[] defragmentHandshakeMessageFragments(List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+    private List<DtlsHandshakeMessageFragment> defragmentAndReorder(List<DtlsHandshakeMessageFragment> fragments,
+            TlsContext context) {
 
         FragmentManager fragmentManager = context.getDtlsFragmentManager();
         for (DtlsHandshakeMessageFragment fragment : fragments) {
@@ -503,17 +507,8 @@ public class ReceiveMessageHelper {
         }
         List<DtlsHandshakeMessageFragment> orderedCombinedUninterpretedMessageFragments = fragmentManager
                 .getOrderedCombinedUninterpretedMessageFragments(true);
+        return orderedCombinedUninterpretedMessageFragments;
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (DtlsHandshakeMessageFragment fragment : orderedCombinedUninterpretedMessageFragments) {
-            try {
-                stream.write(convertDtlsFragmentToCleanTlsBytes(fragment));
-            } catch (IOException ex) {
-                LOGGER.error("Could not write bytes to output stream", ex);
-            }
-        }
-
-        return stream.toByteArray();
     }
 
     /*

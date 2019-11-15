@@ -82,6 +82,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
                 if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && message.isHandshakeMessage()
                         && !message.isDtlsHandshakeMessageFragment()) {
                     tlsContext.increaseDtlsWriteHandshakeMessageSequence();
+                    LOGGER.error("Preparing:" + message.toCompactString() + " increaseing msg sqn to "
+                            + tlsContext.getDtlsWriteHandshakeMessageSequence());
                 }
             }
             updateDigest(message);

@@ -105,6 +105,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
 
+    private ModifiableInteger messageSequence;
+
+    private ModifiableInteger epoch = null;
+
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -214,6 +218,18 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     public ModifiableBoolean getIncludeInDigestModifiableBoolean() {
         return this.includeInDigest;
+    }
+
+    public ModifiableInteger getMessageSequence() {
+        return messageSequence;
+    }
+
+    public void setMessageSequence(ModifiableInteger messageSequence) {
+        this.messageSequence = messageSequence;
+    }
+
+    public void setMessageSequence(int messageSequence) {
+        this.messageSequence = ModifiableVariableFactory.safelySetValue(this.messageSequence, messageSequence);
     }
 
     @Override

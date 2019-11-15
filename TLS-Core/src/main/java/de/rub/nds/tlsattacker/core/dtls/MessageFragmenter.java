@@ -21,6 +21,7 @@ import org.bouncycastle.util.Arrays;
  * Class used to split HandshakeMessages into DTLS fragments.
  */
 public class MessageFragmenter {
+
     private Integer maxFragmentLength;
 
     public MessageFragmenter(Config config) {
@@ -55,18 +56,14 @@ public class MessageFragmenter {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
+            System.out.println("Fragmenting:");
+            System.out.println("Type" + message.toCompactString());
+            System.out.println("Fragmenting:" + message.getMessageSequence().getValue());
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
                     Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
-                    fragmentBytes);
+                    fragmentBytes, message.getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);
-            // TODO it is unfortunate we need to resort to this
-            // an option would be to add variables to the context for storing
-            // the current fragment offset/message length
-            fragment.setFragmentOffset(currentOffset);
-            fragment.setLength(handshakeBytes.length);
-            byte[] bytes = fragment.getHandler(context).getSerializer(fragment).serialize();
-            fragment.setCompleteResultingMessage(bytes);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);

@@ -37,33 +37,16 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        // receiving
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
-            tlsContext.getRecordLayer().updateDecryptionCipher();
-            tlsContext.setReadSequenceNumber(0);
-            tlsContext.getRecordLayer().updateDecompressor();
-            // DTLS
-            // TODO check that prior handshake-related messages have been
-            // received
-            // If they haven't, it means that this message has arrived out of
-            // order.
-            // and that we should not increase the next receive epoch, as we
-            // still
-            // have messages left to process in the current epoch.
-            tlsContext.increaseDtlsReadEpoch();
-        }
-    }
-
-    @Override
-    public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
-        // sending
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateCompressor();
-            // DTLS
             tlsContext.increaseDtlsWriteEpoch();
+        } else {
+            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.setReadSequenceNumber(0);
+            tlsContext.getRecordLayer().updateDecompressor();
+            tlsContext.increaseDtlsReadEpoch();
         }
     }
-
 }

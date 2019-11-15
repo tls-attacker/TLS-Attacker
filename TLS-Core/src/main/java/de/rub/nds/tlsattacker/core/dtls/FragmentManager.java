@@ -114,6 +114,10 @@ public class FragmentManager {
      * Returns the stored fragmented message with the given messageSeq and
      * epoch, as a single combined fragment. Returns null if no message was
      * stored with this messageSeq, or if the message is incomplete.
+     * 
+     * @param messageSeq
+     * @param epoch
+     * @return
      */
     public DtlsHandshakeMessageFragment getCombinedMessageFragment(Integer messageSeq, Integer epoch) {
         FragmentKey key = new FragmentKey(messageSeq, epoch);
