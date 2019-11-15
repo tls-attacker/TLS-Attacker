@@ -261,8 +261,10 @@ public class ReceiveMessageHelper {
                     List<DtlsHandshakeMessageFragment> defragmentedReorderdFragments = defragmentAndReorder(
                             messageFragments, context);
                     for (DtlsHandshakeMessageFragment fragment : defragmentedReorderdFragments) {
-                        List<ProtocolMessage> parsedMessages = handleCleanBytes(fragment.getContent().getValue(),
-                                group.getProtocolMessageType(), context, false);
+                        context.setDtlsReadHandshakeMessageSequence(fragment.getMessageSeq().getValue());
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(
+                                convertDtlsFragmentToCleanTlsBytes(fragment), group.getProtocolMessageType(), context,
+                                false);
                         messages.addAll(parsedMessages);
                     }
                 } else {
@@ -306,9 +308,9 @@ public class ReceiveMessageHelper {
                 Record r1 = (Record) o1;
                 Record r2 = (Record) o2;
                 if (r1.getEpoch().getValue() > r2.getEpoch().getValue()) {
-                    return -1;
-                } else if (r1.getEpoch().getValue() < r2.getEpoch().getValue()) {
                     return 1;
+                } else if (r1.getEpoch().getValue() < r2.getEpoch().getValue()) {
+                    return -1;
                 } else {
                     return r1.getSequenceNumber().getValue().compareTo(r2.getSequenceNumber().getValue());
                 }
@@ -336,11 +338,13 @@ public class ReceiveMessageHelper {
             try {
                 result = tryHandleAsDtlsHandshakeMessageFragments(recocordBytes, dataPointer, context);
             } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
-                LOGGER.warn("Could not parse Message as DtlsHandshakeMessageFragment", exCorrectMsg);
+                LOGGER.warn("Could not parse Message as DtlsHandshakeMessageFragment");
+                LOGGER.debug(exCorrectMsg);
                 try {
                     result = tryHandleAsUnknownMessage(recocordBytes, dataPointer, context);
                 } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
-                    LOGGER.warn("Could not parse Message as UnknownMessage", exUnknownHMsg);
+                    LOGGER.warn("Could not parse Message as UnknownMessage");
+                    LOGGER.debug(exUnknownHMsg);
                     break;
                 }
             }

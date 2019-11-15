@@ -446,7 +446,7 @@ public class TlsContext {
     /**
      * the latest epoch the peer used
      */
-    private int dtlsReceiveEpoch = 0;
+    private int dtlsReadEpoch = 0;
 
     /**
      * the epoch applied to transmitted DTLS records
@@ -1216,7 +1216,7 @@ public class TlsContext {
     }
 
     public void increaseDtlsReadEpoch() {
-        this.dtlsWriteEpoch++;
+        this.dtlsReadEpoch++;
     }
 
     public void increaseDtlsWriteEpoch() {
@@ -1228,11 +1228,11 @@ public class TlsContext {
     }
 
     public int getDtlsReceiveEpoch() {
-        return dtlsReceiveEpoch;
+        return dtlsReadEpoch;
     }
 
     public void setDtlsReceiveEpoch(int sendEpoch) {
-        this.dtlsReceiveEpoch = sendEpoch;
+        this.dtlsReadEpoch = sendEpoch;
     }
 
     public FragmentManager getDtlsFragmentManager() {

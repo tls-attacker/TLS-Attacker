@@ -56,9 +56,6 @@ public class MessageFragmenter {
         List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
         int currentOffset = 0;
         do {
-            System.out.println("Fragmenting:");
-            System.out.println("Type" + message.toCompactString());
-            System.out.println("Fragmenting:" + message.getMessageSequence().getValue());
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
                     Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
