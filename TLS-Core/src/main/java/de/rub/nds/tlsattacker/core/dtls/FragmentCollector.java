@@ -72,7 +72,8 @@ public class FragmentCollector {
      * Tests if a Fragment would be added into the fragmentStream. The test
      * depends on config flags and if the fragment is fitting into the stream.
      *
-     * @param fragment the fragment that should be tested.
+     * @param fragment
+     *            the fragment that should be tested.
      * @return True if it would be added, false otherwise
      */
     public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
@@ -111,7 +112,8 @@ public class FragmentCollector {
      * Tests if the fragment if added to the fragmentStream would rewrite
      * previously received messages
      *
-     * @param fragment Fragment that should betested
+     * @param fragment
+     *            Fragment that should betested
      * @return True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {

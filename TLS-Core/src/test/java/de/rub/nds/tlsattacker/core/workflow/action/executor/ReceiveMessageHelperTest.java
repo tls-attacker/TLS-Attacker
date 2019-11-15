@@ -48,7 +48,7 @@ public class ReceiveMessageHelperTest {
                         + "0100010000230000000b00020100");
 
         private static final byte[] MSG_SERVER_HELLO_SINGLE_FRAGMENT = ArrayConverter
-                .hexStringToByteArray("0200005B000000000000005BFEFD5C83E461A9320674E42D4CB1E05191C7C416E1DA6551E71E9A8B39CDBF3D393F20844F60860755D38EF42247163793DAD66E12E3EAD668107E783796C24C48C28BC03000001300170000FF0100010000230000000B00020100");
+                .hexStringToByteArray("0200005B000100000000005BFEFD5C83E461A9320674E42D4CB1E05191C7C416E1DA6551E71E9A8B39CDBF3D393F20844F60860755D38EF42247163793DAD66E12E3EAD668107E783796C24C48C28BC03000001300170000FF0100010000230000000B00020100");
 
         // DTLS 1.2 Server Hello Done mseq 4, length 12, f. offset 0, f. length
         // 0
@@ -57,7 +57,7 @@ public class ReceiveMessageHelperTest {
 
         // what is expected when assembling the SERVER_HELLO message
         private static final byte[] MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT = ArrayConverter
-                .hexStringToByteArray("0E0000000000000000000000");
+                .hexStringToByteArray("0e0000000004000000000000");
 
         // what is expected when assembling the SERVER_HELLO message
         private static final byte[] MSG_SERVER_HELLO_DONE_ASSEMBLED = ArrayConverter.hexStringToByteArray("0E000000");
@@ -142,8 +142,11 @@ public class ReceiveMessageHelperTest {
         checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         // If the messages are received disorderly in two distinct receive
         // events it should be
-        // processed disorderly in the finished (worty of a discussion)
-        System.out.println(ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
+        // processed disorderly in the finished (worhty of a discussion)
+        System.out.println("Actual  : " + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
+        System.out.println("Expected: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.concatenate(
+                        DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT, DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT)));
         Assert.assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT,
                 DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT), context.getDigest().getRawBytes());
     }
