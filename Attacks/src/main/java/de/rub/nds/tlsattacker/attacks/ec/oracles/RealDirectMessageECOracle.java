@@ -76,6 +76,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        message.prepareComputations();
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
@@ -92,7 +93,6 @@ public class RealDirectMessageECOracle extends ECOracle {
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
-        message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {

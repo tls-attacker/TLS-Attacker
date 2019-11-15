@@ -8,12 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_p, where p is a prime number.
  */
 public class EllipticCurveOverFp extends EllipticCurve {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final FieldElementFp a;
     private final FieldElementFp b;
@@ -132,7 +137,8 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            return new Point();
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
 
