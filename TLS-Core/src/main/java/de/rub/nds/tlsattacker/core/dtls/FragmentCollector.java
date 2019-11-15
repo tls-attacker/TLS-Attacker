@@ -23,22 +23,10 @@ public class FragmentCollector {
 
     protected static final Logger LOGGER = LogManager.getLogger(FragmentCollector.class.getName());
 
-    /**
-     * The message length of fragments stored by the collector, as as determined
-     * by the message length of the first fragment stored.
-     */
     private Integer messageLength;
 
-    /**
-     * The message sequence of fragments stored by the collector, as as
-     * determined by the message sequence of the first fragment stored.
-     */
     private Integer messageSeq;
 
-    /**
-     * The type of fragments stored by the collector, as determined by the type
-     * of the first fragment stored.
-     */
     private Byte type;
 
     private boolean interpreted = false;
@@ -56,18 +44,14 @@ public class FragmentCollector {
     }
 
     /**
-     * Adds a fragment to the collection, unless the fragment is already
-     * contained, or the fragment doesn't fit and
-     * {@link FragmentCollector#onlyFitting} is set to true. In case the
-     * collector is empty, also updates the "type" (given by type, message
-     * sequence, message length) of the collector with that of the fragment.
+     * Adds a fragment into the fragmentStream. If the would not be added an
+     * IllegalDtlsFragmentException is thrown. This can for example be the case
+     * if the fragment is not fitting into the data stream. If a fragment would
+     * be added but is rewriting previous messages in the stream, these messages
+     * are marked as not interpreted. and the parameters of the
+     * fragmentCollector are rewritten.
      *
-     * @return true if the fragment was added or false if it wasn't.
      */
-    // TODO perhaps it would make sense to extract this "type" to a separate
-    // internal class?
-    // instance of this class could be then extracted from the collector and
-    // from the fragment
     public void addFragment(DtlsHandshakeMessageFragment fragment) {
         if (wouldAdd(fragment)) {
             if (isFragmentOverwritingContent(fragment)) {
@@ -84,6 +68,13 @@ public class FragmentCollector {
         }
     }
 
+    /**
+     * Tests if a Fragment would be added into the fragmentStream. The test
+     * depends on config flags and if the fragment is fitting into the stream.
+     *
+     * @param fragment the fragment that should be tested.
+     * @return True if it would be added, false otherwise
+     */
     public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
         if (config.isAcceptContentRewritingDtlsFragments() || !isFragmentOverwritingContent(fragment)) {
             if (!config.isAcceptOnlyFittingDtlsFragments() || isFitting(fragment)) {
@@ -116,6 +107,13 @@ public class FragmentCollector {
         }
     }
 
+    /**
+     * Tests if the fragment if added to the fragmentStream would rewrite
+     * previously received messages
+     *
+     * @param fragment Fragment that should betested
+     * @return True if the fragment would overwrite paste messages
+     */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
         return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
                 .getValue());
@@ -161,10 +159,21 @@ public class FragmentCollector {
         return fragmentStream.isComplete(messageLength);
     }
 
+    /**
+     * Returns true if the message from this fragment stream has already been
+     * handled by the calling layer
+     *
+     * @return
+     */
     public boolean isInterpreted() {
         return interpreted;
     }
 
+    /**
+     * Marks this message as already handled by the calling layer
+     *
+     * @param interpreted
+     */
     public void setInterpreted(boolean interpreted) {
         this.interpreted = interpreted;
     }
