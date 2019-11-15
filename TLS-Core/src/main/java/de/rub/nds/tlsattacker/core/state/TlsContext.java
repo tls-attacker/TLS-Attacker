@@ -676,7 +676,7 @@ public class TlsContext {
     }
 
     public void increaseDtlsWriteHandshakeMessageSequence() {
-        this.dtlsReadHandshakeMessageSequence++;
+        this.dtlsWriteHandshakeMessageSequence++;
     }
 
     public int getDtlsWriteHandshakeMessageSequence() {
