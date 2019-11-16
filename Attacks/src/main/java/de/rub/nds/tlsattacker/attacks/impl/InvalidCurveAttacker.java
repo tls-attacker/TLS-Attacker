@@ -274,6 +274,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             trace.addTlsAction(new ReceiveAction(ReceiveOption.CHECK_ONLY_EXPECTED ,new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
 
+            // make sure no explicit PreMasterSecret is set upon execution
+            ChangeDefaultPreMasterSecretAction noPMS = new ChangeDefaultPreMasterSecretAction();
+            noPMS.setNewValue(new byte[0]);
+            trace.getTlsActions().add(0, noPMS);
+            
             // next ClientHello needs a PSKExtension
             individualConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
 
@@ -282,8 +287,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             // subsequent ClientHellos don't need a PSKExtension
             individualConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
 
-            // make sure no explicit PreMasterSecret is set at this point
-            individualConfig.setDefaultPreMasterSecret(new byte[0]);
 
             // set explicit PreMasterSecret later on using an action
             ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
