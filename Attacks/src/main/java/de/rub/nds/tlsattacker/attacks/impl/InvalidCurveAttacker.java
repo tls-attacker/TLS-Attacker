@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
+import de.rub.nds.tlsattacker.attacks.task.InvalidCurveTask;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerprintSecretPair;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -42,6 +44,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -51,11 +54,14 @@ import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction.ReceiveOption;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -73,9 +79,25 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private BigInteger premasterSecret;
 
-    private List<ResponseFingerprint> responseFingerprints;
+    private List<FingerprintSecretPair> responsePairs;
 
     private List<Point> receivedEcPublicKeys;
+    
+    /**
+     * All keys we received from a server in handshakes that lead
+     * to a ServerFinished - we can use these to mitigate the impact
+     * of false positives in scans.
+     */
+    private List<Point> finishedKeys;
+    
+    private final ParallelExecutor executor;
+    
+    /**
+     * Indicates if there is a higher chance that the keys we extracted might
+     * have been sent by a TLS accelerator and a TLS server behind it
+     * at the same time. (See evaluateExecutedTask)
+     */
+    private boolean dirtyKeysWarning;
 
     /**
      *
@@ -84,6 +106,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
      */
     public InvalidCurveAttacker(InvalidCurveAttackConfig config, Config baseConfig) {
         super(config, baseConfig);
+        executor = new ParallelExecutor(1, 3);
     }
 
     @Override
@@ -110,8 +133,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
-        responseFingerprints = new LinkedList<>();
+        responsePairs = new LinkedList<>();
         receivedEcPublicKeys = new LinkedList<>();
+        finishedKeys = new LinkedList<>(); 
+        dirtyKeysWarning = false;
 
         EllipticCurve curve;
         Point point;
@@ -130,40 +155,25 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         if (config.getPremasterSecret() != null) {
             protocolFlows = 1;
         }
-        for (int i = 0; i < protocolFlows; i++) {
+        
+        List<TlsTask> taskList = new LinkedList<>();
+        for (int i = 1; i <= protocolFlows; i++) {
             setPremasterSecret(curve, i, point);
-            try {
-                WorkflowTrace trace = executeProtocolFlow();
-
-                if (config.isAttackInRenegotiation()
-                        && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-                    allowTls13CCS(trace);
-                }
-
-                if (!trace.executedAsPlanned()) {
-                    LOGGER.info("Trace failed to execute before attack vector was sent");
-                    return null;
-                }
-                if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
-                        && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
-                            .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
-                    LOGGER.info("Received no finished Message in Protocolflow:" + i);
-                } else {
-                    LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
-                    return true;
-                }
-            } catch (WorkflowExecutionException ex) {
-                LOGGER.warn(ex);
+            InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i);
+            if(config.isAttackInRenegotiation() && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+                taskToAdd.setResolveTls13CCSdiscrepancy(true);
             }
+            taskList.add(taskToAdd);    
         }
-        return false;
+        executor.bulkExecuteTasks(taskList);
+        return evaluateExecutedTasks(taskList);
     }
 
     private void setPremasterSecret(EllipticCurve curve, int i, Point point) {
         if (config.getPremasterSecret() != null) {
             premasterSecret = config.getPremasterSecret();
         } else {
-            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            Point sharedPoint = curve.mult(new BigInteger("" + i), point);
             if (sharedPoint.getX() == null) {
                 premasterSecret = BigInteger.ZERO;
             } else {
@@ -174,11 +184,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                             .mod(curve.getModulus());
                 }
             }
-            LOGGER.debug("PMS: " + premasterSecret.toString());
+            LOGGER.debug("PMS for scheduled Workflow Trace with secret " + i + ": " + premasterSecret.toString());
         }
     }
 
-    private WorkflowTrace executeProtocolFlow() {
+    private State buildState() {
         Config tlsConfig = getTlsConfig();
 
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
@@ -194,34 +204,29 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
 
         WorkflowTrace trace;
+        
+        //we're modifying the config at runtime so all parallel workflow traces
+        //need unique configs
+        Config individualConfig = tlsConfig.createCopy();
+        
         if (config.isAttackInRenegotiation()) {
-            trace = prepareRenegotiationTrace(serializedPublicKey, pms, explicitPMS);
+            trace = prepareRenegotiationTrace(serializedPublicKey, pms, explicitPMS, individualConfig);
         } else {
-            trace = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
+            trace = prepareRegularTrace(serializedPublicKey, pms, explicitPMS, individualConfig);
         }
-        LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
 
-        State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
-        workflowExecutor.executeWorkflow();
-
-        responseFingerprints.add(ResponseExtractor.getFingerprint(state));
-        if (state.getTlsContext().getServerEcPublicKey() != null) {
-            getReceivedEcPublicKeys().add(state.getTlsContext().getServerEcPublicKey());
-        }
-        return trace;
+        State state = new State(individualConfig, trace);
+        return state;
     }
 
     private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
-            byte[] explicitPMS) {
-        Config tlsConfig = getTlsConfig();
-        if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
+            byte[] explicitPMS, Config individualConfig) {
+        if (individualConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCiphersuites().get(0));
         }
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+        WorkflowTrace trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
-        if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (individualConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
 
             // replace specific receive action with generic
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
@@ -244,10 +249,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
             // TODO: use action / modification to influence key derivation for
             // TLS 1.3
-            getTlsConfig().setDefaultPreMasterSecret(explicitPMS);
+            individualConfig.setDefaultPreMasterSecret(explicitPMS);
         } else {
-            trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
-                    tlsConfig), new FinishedMessage(tlsConfig)));
+            trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(individualConfig), new ChangeCipherSpecMessage(
+                    individualConfig), new FinishedMessage(individualConfig)));
             trace.addTlsAction(new GenericReceiveAction());
 
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
@@ -261,25 +266,24 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
-            byte[] explicitPMS) {
+            byte[] explicitPMS, Config individualConfig) {
         WorkflowTrace trace;
-        Config tlsConfig = getTlsConfig();
-        if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+        if (individualConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+            trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                     RunningModeType.CLIENT);
-            trace.addTlsAction(new ReceiveAction(new NewSessionTicketMessage(false)));
+            trace.addTlsAction(new ReceiveAction(ReceiveOption.CHECK_ONLY_EXPECTED ,new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
 
             // next ClientHello needs a PSKExtension
-            tlsConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
+            individualConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
 
-            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS);
+            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS, individualConfig);
 
             // subsequent ClientHellos don't need a PSKExtension
-            tlsConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
+            individualConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
 
             // make sure no explicit PreMasterSecret is set at this point
-            tlsConfig.setDefaultPreMasterSecret(new byte[0]);
+            individualConfig.setDefaultPreMasterSecret(new byte[0]);
 
             // set explicit PreMasterSecret later on using an action
             ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
@@ -290,8 +294,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 trace.addTlsAction(action);
             }
         } else {
-            tlsConfig.setDefaultSelectedCipherSuite(tlsConfig.getDefaultClientSupportedCiphersuites().get(0));
-            trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCiphersuites().get(0));
+            trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
                     WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
                     HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
@@ -305,21 +309,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         }
 
         return trace;
-    }
-
-    /**
-     * @return the responseFingerprints
-     */
-    public List<ResponseFingerprint> getResponseFingerprints() {
-        return responseFingerprints;
-    }
-
-    /**
-     * @param responseFingerprints
-     *            the responseFingerprints to set
-     */
-    public void setResponseFingerprints(List<ResponseFingerprint> responseFingerprints) {
-        this.responseFingerprints = responseFingerprints;
     }
 
     /**
@@ -340,20 +329,99 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
     }
-
-    private void allowTls13CCS(WorkflowTrace trace) {
-        ReceiveAction firstServerMessages = (ReceiveAction) trace.getTlsActions().get(1);
-        if (!firstServerMessages.executedAsPlanned()
-                && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage) {
-            LinkedList<ProtocolMessage> newExpectedList = new LinkedList<>();
-            for (int i = 0; i < firstServerMessages.getExpectedMessages().size(); i++) {
-                if (i == 1) {
-                    newExpectedList.add(new ChangeCipherSpecMessage());
+    
+    private Boolean evaluateExecutedTasks(List<TlsTask> taskList)
+    {
+        boolean foundExecutedAsPlanned = false;
+        boolean foundServerFinished = false;
+        
+        boolean tookKeyFromSuccessfullTrace = false;
+        boolean tookKeyFromUnsuccessfullTrace = false;
+        for(TlsTask tlsTask : taskList)
+        {
+            InvalidCurveTask task = (InvalidCurveTask) tlsTask;
+            WorkflowTrace trace = task.getState().getWorkflowTrace();
+            if(!task.isHasError())
+            {
+                foundExecutedAsPlanned = true;
+                if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
+                        && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
+                            .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
+                    LOGGER.info("Received no finished Message using secret" + task.getAppliedSecret());
+                } else {
+                    LOGGER.info("Received a finished Message using secret: " + task.getAppliedSecret() + "! Server is vulnerable!");
+                    finishedKeys.add(task.getReceivedEcKey());
+                    foundServerFinished = true;
                 }
-                newExpectedList.add(firstServerMessages.getExpectedMessages().get(i));
+                
+                if(task.getReceivedEcKey() != null)
+                {
+                    tookKeyFromSuccessfullTrace = true;
+                    getReceivedEcPublicKeys().add(task.getReceivedEcKey());
+                }
             }
-            LOGGER.debug("Tried to resolve workflow trace discrepancy for unexpected CCS in TLS 1.3 handshake");
-            firstServerMessages.setExpectedMessages(newExpectedList);
+            else {
+                if(task.getReceivedEcKey() != null)
+                {
+                    tookKeyFromUnsuccessfullTrace = true;
+                    getReceivedEcPublicKeys().add(task.getReceivedEcKey());
+                }
+            }
+            responsePairs.add(new FingerprintSecretPair(task.getFingerprint(), task.getAppliedSecret()));
         }
+        
+        if(config.isAttackInRenegotiation() && tookKeyFromSuccessfullTrace && tookKeyFromUnsuccessfullTrace)
+        {
+            /*keys from an unsuccessfull trace might have been extracted
+            from the first handshake of a renegotiation workflow trace - it
+            *could* be more probable that this is not the same TLS server as
+            the server, which answered the 2nd handshake
+            while we can't ensure that were talking to the same TLS server all
+            the time anyway, it is more important to keep an eye on this case
+            since we're running attacks in renegotiation because we assume that
+            we can bypass a TLS accelerator like this*/
+            dirtyKeysWarning = true;
+        }
+        
+        if(foundExecutedAsPlanned){
+            if(foundServerFinished){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else
+        {
+            return null;
+        }     
+    }
+
+    /**
+     * @return the responsePairs
+     */
+    public List<FingerprintSecretPair> getResponsePairs() {
+        return responsePairs;
+    }
+
+    /**
+     * @param responsePairs the responsePairs to set
+     */
+    public void setResponsePairs(List<FingerprintSecretPair> responsePairs) {
+        this.responsePairs = responsePairs;
+    }
+
+    /**
+     * @return the dirtyKeysWarning
+     */
+    public boolean isDirtyKeysWarning() {
+        return dirtyKeysWarning;
+    }
+
+    /**
+     * @return the finishedKeys
+     */
+    public List<Point> getFinishedKeys() {
+        return finishedKeys;
     }
 }
