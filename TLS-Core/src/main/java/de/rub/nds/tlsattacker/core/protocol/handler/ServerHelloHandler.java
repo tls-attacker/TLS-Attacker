@@ -226,6 +226,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
                     // This is a workaround for Tls1.3 InvalidCurve attacks
                     if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                        LOGGER.debug("Using specified PMS instead of computed PMS");
                         sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
                     }
                 }
