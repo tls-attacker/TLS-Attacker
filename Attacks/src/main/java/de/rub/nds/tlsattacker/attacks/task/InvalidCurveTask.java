@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -112,19 +113,20 @@ public class InvalidCurveTask extends TlsTask {
      */
     private void allowTls13CCS(State state)
     {
+        ReceiveAction firstServerMessages = null;
         WorkflowTrace trace = state.getWorkflowTrace();
-        ReceiveAction firstServerMessages = (ReceiveAction) trace.getTlsActions().get(1);
-        if (!firstServerMessages.executedAsPlanned()
-                && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage) {
-            LinkedList<ProtocolMessage> newExpectedList = new LinkedList<>();
-            for (int i = 0; i < firstServerMessages.getExpectedMessages().size(); i++) {
-                if (i == 1) {
-                    newExpectedList.add(new ChangeCipherSpecMessage());
-                }
-                newExpectedList.add(firstServerMessages.getExpectedMessages().get(i));
+        for(TlsAction action : trace.getTlsActions())
+        {
+            if(action instanceof ReceiveAction)
+            {
+                firstServerMessages = (ReceiveAction) action;
+                break;
             }
+        }
+        if (firstServerMessages != null && !firstServerMessages.executedAsPlanned()
+                && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage) {
+            firstServerMessages.getExpectedMessages().add(1, new ChangeCipherSpecMessage());
             LOGGER.debug("Tried to resolve workflow trace discrepancy for unexpected CCS in TLS 1.3 handshake");
-            firstServerMessages.setExpectedMessages(newExpectedList);
         }
     }       
 
