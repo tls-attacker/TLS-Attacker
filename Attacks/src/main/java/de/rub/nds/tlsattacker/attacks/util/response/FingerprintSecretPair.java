@@ -12,12 +12,11 @@ package de.rub.nds.tlsattacker.attacks.util.response;
  *
  */
 public class FingerprintSecretPair {
-    
+
     private final ResponseFingerprint fingerprint;
     private final int appliedSecret;
-    
-    public FingerprintSecretPair(ResponseFingerprint fingerprint, int appliedSecret)
-    {
+
+    public FingerprintSecretPair(ResponseFingerprint fingerprint, int appliedSecret) {
         this.fingerprint = fingerprint;
         this.appliedSecret = appliedSecret;
     }

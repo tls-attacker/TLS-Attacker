@@ -30,19 +30,19 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class InvalidCurveTask extends TlsTask {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
-    
-    private final int appliedSecret;     
+
+    private final int appliedSecret;
 
     private final State state;
 
     private ResponseFingerprint fingerprint;
-    
+
     private Point receivedEcKey;
-    
+
     private boolean resolveTls13CCSdiscrepancy;
-    
+
     public InvalidCurveTask(State state, int reexecutions, int appliedSecret) {
         super(reexecutions);
         this.appliedSecret = appliedSecret;
@@ -59,11 +59,11 @@ public class InvalidCurveTask extends TlsTask {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(getState());
             executor.executeWorkflow();
-            
-            if(resolveTls13CCSdiscrepancy) {
+
+            if (resolveTls13CCSdiscrepancy) {
                 allowTls13CCS(getState());
             }
-            
+
             if (getState().getTlsContext().getServerEcPublicKey() != null) {
                 receivedEcKey = getState().getTlsContext().getServerEcPublicKey();
             }
@@ -85,7 +85,7 @@ public class InvalidCurveTask extends TlsTask {
             }
         }
     }
-    
+
     /**
      * @return the receivedEcKey
      */
@@ -101,24 +101,22 @@ public class InvalidCurveTask extends TlsTask {
     }
 
     /**
-     * @param resolveTls13CCSdiscrepancy the resolveTls13CCSdiscrepancy to set
+     * @param resolveTls13CCSdiscrepancy
+     *            the resolveTls13CCSdiscrepancy to set
      */
     public void setResolveTls13CCSdiscrepancy(boolean resolveTls13CCSdiscrepancy) {
         this.resolveTls13CCSdiscrepancy = resolveTls13CCSdiscrepancy;
     }
-    
+
     /**
-     * Tries to resolve a Workflow Trace conflict when a server sent a
-     * CCS message to maintain backward compatibility in a TLS 1.3 handshake
+     * Tries to resolve a Workflow Trace conflict when a server sent a CCS
+     * message to maintain backward compatibility in a TLS 1.3 handshake
      */
-    private void allowTls13CCS(State state)
-    {
+    private void allowTls13CCS(State state) {
         ReceiveAction firstServerMessages = null;
         WorkflowTrace trace = state.getWorkflowTrace();
-        for(TlsAction action : trace.getTlsActions())
-        {
-            if(action instanceof ReceiveAction)
-            {
+        for (TlsAction action : trace.getTlsActions()) {
+            if (action instanceof ReceiveAction) {
                 firstServerMessages = (ReceiveAction) action;
                 break;
             }
@@ -128,7 +126,7 @@ public class InvalidCurveTask extends TlsTask {
             firstServerMessages.getExpectedMessages().add(1, new ChangeCipherSpecMessage());
             LOGGER.debug("Tried to resolve workflow trace discrepancy for unexpected CCS in TLS 1.3 handshake");
         }
-    }       
+    }
 
     /**
      * @return the state
@@ -150,5 +148,5 @@ public class InvalidCurveTask extends TlsTask {
     public int getAppliedSecret() {
         return appliedSecret;
     }
-    
+
 }
