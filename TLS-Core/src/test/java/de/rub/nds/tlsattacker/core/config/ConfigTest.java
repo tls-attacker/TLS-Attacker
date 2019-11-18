@@ -2811,7 +2811,7 @@ public class ConfigTest {
      * Test of setDefaulRunningMode method, of class Config.
      */
     @Test
-    public void testSetDefaulRunningMode() {
+    public void testSetDefaultRunningMode() {
     }
 
     /**

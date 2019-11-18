@@ -25,7 +25,6 @@ public class PskEcDheServerKeyExchangePreparator extends
     public void prepareHandshakeMessageContents() {
         msg.setIdentityHint(chooser.getPSKIdentityHint());
         msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
-        super.setEcDhParams();
-        super.prepareEcDhParams();
+        super.prepareHandshakeMessageContents();
     }
 }

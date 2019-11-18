@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -23,15 +21,13 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.net.Socket;
-import java.net.ServerSocket;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import de.rub.nds.tlsattacker.transport.*;
-
-import static org.junit.Assert.*;
 
 public class ResetConnectionActionTest {
 

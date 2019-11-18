@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -32,11 +32,11 @@ public class EarlyCCSCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     /**
      *
@@ -45,13 +45,13 @@ public class EarlyCCSCommandConfig extends AttackConfig {
     public EarlyCCSCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     /**
@@ -75,7 +75,7 @@ public class EarlyCCSCommandConfig extends AttackConfig {
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {

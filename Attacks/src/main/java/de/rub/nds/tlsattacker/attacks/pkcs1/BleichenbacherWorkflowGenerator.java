@@ -41,21 +41,20 @@ public class BleichenbacherWorkflowGenerator {
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
-        trace.addTlsAction(new SendAction(cke));
         if (null != type) {
             switch (type) {
                 case CKE:
-                    // introduced for readability
+                    trace.addTlsAction(new SendAction(cke));
                     break;
                 case CKE_CCS:
-                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage(tlsConfig)));
                     break;
                 case CKE_CCS_FIN:
-                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig)));
-                    trace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(
+                            tlsConfig)));
                     break;
                 case CKE_FIN:
-                    trace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
+                    trace.addTlsAction(new SendAction(cke, new FinishedMessage(tlsConfig)));
                     break;
                 default:
                     break;

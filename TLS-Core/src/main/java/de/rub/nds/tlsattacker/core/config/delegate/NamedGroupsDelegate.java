@@ -54,6 +54,7 @@ public class NamedGroupsDelegate extends Delegate {
         if (namedGroups != null) {
             config.setDefaultClientNamedGroups(namedGroups);
             config.setDefaultServerNamedGroups(namedGroups);
+            config.setDefaultSelectedNamedGroup(namedGroups.get(0));
         }
         if (pointFormats != null) {
             config.setDefaultServerSupportedPointFormats(pointFormats);

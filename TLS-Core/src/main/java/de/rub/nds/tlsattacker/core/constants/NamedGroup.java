@@ -8,11 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,34 +55,16 @@ public enum NamedGroup {
     SECP256R1(new byte[] { (byte) 0, (byte) 23 }, "secp256r1", 256),
     SECP384R1(new byte[] { (byte) 0, (byte) 24 }, "secp384r1", 384),
     SECP521R1(new byte[] { (byte) 0, (byte) 25 }, "secp521r1", 521),
-    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256), // incorrect
-    // java
-    // name
-    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1", 384), // incorrect
-    // java
-    // name
-    BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1", 512), // incorrect
-    // java
-    // name
-    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256), // incorrect
-    // java name
-    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448", 448), // incorrect
-    // java name
-    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048), // incorrect
-                                                                     // java
-    // name
-    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072), // incorrect
-                                                                     // java
-    // name
-    FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096), // incorrect
-                                                                     // java
-    // name
-    FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144), // incorrect
-                                                                     // java
-    // name
-    FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192), // incorrect
-                                                                     // java
-    // name
+    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256),
+    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1", 384),
+    BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1", 512),
+    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256),
+    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448", 448),
+    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048),
+    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072),
+    FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096),
+    FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
+    FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
@@ -95,10 +81,7 @@ public enum NamedGroup {
     GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }, "GREASE", null),
     GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE", null),
     GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }, "GREASE", null),
-    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null),
-    NONE(new byte[] { (byte) 0, (byte) 0 }, "", null),
-    GOST3410(new byte[] { 0, 0 }, "", null),
-    GOST3410_2012(new byte[] { 0, 0 }, "", null);
+    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -158,6 +141,46 @@ public enum NamedGroup {
 
     public static NamedGroup getNamedGroup(byte[] value) {
         return MAP.get(valueToInt(value));
+    }
+
+    public static NamedGroup getNamedGroup(ECPublicKey publicKey) {
+        for (NamedGroup group : getImplemented()) {
+            // TODO: X25519 and X448 not supported for classic java curves
+            if (group.isCurve() && group.isStandardCurve()) {
+                try {
+                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
+                    if (publicKey.getParams().getGenerator().getAffineX()
+                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                            && publicKey.getParams().getGenerator().getAffineY()
+                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        return group;
+                    }
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                }
+            }
+        }
+        return null;
+    }
+
+    public static NamedGroup getNamedGroup(ECPrivateKey privateKey) {
+        for (NamedGroup group : getImplemented()) {
+            // TODO: X25519 and X448 not supported for classic java curves
+            if (group.isCurve() && group.isStandardCurve()) {
+                try {
+                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
+                    if (privateKey.getParams().getGenerator().getAffineX()
+                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                            && privateKey.getParams().getGenerator().getAffineY()
+                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        return group;
+                    }
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                }
+            }
+        }
+        return null;
     }
 
     public byte[] getValue() {
@@ -254,6 +277,10 @@ public enum NamedGroup {
         list.add(SECT571K1);
         list.add(SECT571R1);
         list.add(ECDH_X25519);
+        list.add(ECDH_X448);
+        list.add(BRAINPOOLP256R1);
+        list.add(BRAINPOOLP384R1);
+        list.add(BRAINPOOLP512R1);
         return list;
     }
 

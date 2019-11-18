@@ -85,13 +85,13 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateAsciiAction() {
-        MessageAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "");
+        AsciiAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "", "");
         assertEquals(action.getClass(), SendAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "");
-        assertEquals(action.getClass(), ReceiveAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "");
-        assertEquals(action.getClass(), ReceiveAsciiAction.class);
-        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "");
+        action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "", "");
+        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
+        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "", "");
+        assertEquals(action.getClass(), GenericReceiveAsciiAction.class);
+        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "", "");
         assertEquals(action.getClass(), SendAsciiAction.class);
     }
 }

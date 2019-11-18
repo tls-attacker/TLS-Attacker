@@ -51,7 +51,7 @@ public class KeyShareExtensionSerializerTest {
      */
     @Test
     public void testSerializeExtensionContent() {
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);
         msg.setKeyShareListBytes(keyShareList);

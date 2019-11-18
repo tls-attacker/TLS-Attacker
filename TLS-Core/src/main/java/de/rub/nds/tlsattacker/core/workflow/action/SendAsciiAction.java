@@ -15,23 +15,23 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendAsciiAction extends MessageAction {
+public class SendAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private String asciiString;
-
-    public SendAsciiAction(String asciiString) {
-        super();
-        this.asciiString = asciiString;
+    private SendAsciiAction() {
     }
 
-    public SendAsciiAction() {
-        super();
+    public SendAsciiAction(String asciiString, String encoding) {
+        super(asciiString, encoding);
+    }
+
+    public SendAsciiAction(String encoding) {
+        super(encoding);
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext();
 
         if (isExecuted()) {
@@ -39,8 +39,8 @@ public class SendAsciiAction extends MessageAction {
         }
 
         try {
-            LOGGER.info("Sending ASCII message: " + asciiString);
-            tlsContext.getTransportHandler().sendData(asciiString.getBytes());
+            LOGGER.info("Sending ASCII message: " + getAsciiText());
+            tlsContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);
@@ -56,13 +56,5 @@ public class SendAsciiAction extends MessageAction {
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    public String getAsciiString() {
-        return asciiString;
-    }
-
-    public void setAsciiString(String asciiString) {
-        this.asciiString = asciiString;
     }
 }

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.Security;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;

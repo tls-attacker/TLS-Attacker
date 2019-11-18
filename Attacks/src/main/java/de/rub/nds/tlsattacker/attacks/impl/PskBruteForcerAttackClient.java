@@ -213,7 +213,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     }
 
     private State executeClientHelloWorkflow(Config tlsConfig) {
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(tlsConfig.getDefaultClientConnection());
         trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(

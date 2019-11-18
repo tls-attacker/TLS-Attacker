@@ -33,7 +33,7 @@ public class ServerDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
 
-        config.setDefaulRunningMode(RunningModeType.SERVER);
+        config.setDefaultRunningMode(RunningModeType.SERVER);
 
         int parsedPort = parsePort(port);
         InboundConnection inboundConnection = config.getDefaultServerConnection();

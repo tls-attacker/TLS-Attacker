@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SendAsciiActionTest {
+
     private State state;
     private TlsContext tlsContext;
     private final String expString = "STARTTLS";
@@ -29,7 +30,7 @@ public class SendAsciiActionTest {
 
     @Before
     public void setUp() {
-        action = new SendAsciiAction(expString);
+        action = new SendAsciiAction(expString, "US-ASCII");
 
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
@@ -78,6 +79,7 @@ public class SendAsciiActionTest {
     @Test
     public void testExecutedAsPlanned() {
         assertFalse(action.executedAsPlanned());
+        action.execute(state);
         // TODO add assertTrue after execute
     }
 
@@ -86,6 +88,6 @@ public class SendAsciiActionTest {
      */
     @Test
     public void testGetAsciiString() {
-        assertEquals(action.getAsciiString(), expString);
+        assertEquals(expString, action.getAsciiText());
     }
 }

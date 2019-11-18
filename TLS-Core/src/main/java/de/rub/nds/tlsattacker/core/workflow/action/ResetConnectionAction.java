@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,15 +22,21 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private Boolean asPlanned;
+
     public ResetConnectionAction() {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         LOGGER.info("Terminating Connection");
-        tlsContext.getTransportHandler().closeClientConnection();
+        try {
+            tlsContext.getTransportHandler().closeClientConnection();
+        } catch (IOException ex) {
+            LOGGER.debug("Could not close client connection", ex);
+        }
         LOGGER.info("Resseting Cipher");
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
@@ -45,18 +52,25 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setReadSequenceNumber(0);
         tlsContext.setWriteSequenceNumber(0);
         LOGGER.info("Reopening Connection");
-        tlsContext.getTransportHandler().initialize();
+        try {
+            tlsContext.getTransportHandler().initialize();
+            asPlanned = true;
+        } catch (IOException ex) {
+            LOGGER.debug("Could not initialize TransportHandler", ex);
+            asPlanned = false;
+        }
         setExecuted(true);
     }
 
     @Override
     public void reset() {
         setExecuted(false);
+        asPlanned = null;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
     }
 
 }

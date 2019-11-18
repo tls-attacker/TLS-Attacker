@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 public class RequestItemV2Serializer extends Serializer<RequestItemV2> {

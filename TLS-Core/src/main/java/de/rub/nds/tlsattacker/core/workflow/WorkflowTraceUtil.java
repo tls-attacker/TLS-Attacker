@@ -101,8 +101,21 @@ public class WorkflowTraceUtil {
         return filterHandshakeMessagesFromList(getAllSendMessages(trace));
     }
 
+    public static List<HandshakeMessage> getAllReceivedHandshakeMessages(WorkflowTrace trace) {
+        return filterHandshakeMessagesFromList(getAllReceivedMessages(trace));
+    }
+
     public static List<ExtensionMessage> getAllSendExtensions(WorkflowTrace trace) {
         List<HandshakeMessage> handshakeMessageList = getAllSendHandshakeMessages(trace);
+        List<ExtensionMessage> extensionList = new LinkedList<>();
+        for (HandshakeMessage message : handshakeMessageList) {
+            extensionList.addAll(message.getExtensions());
+        }
+        return extensionList;
+    }
+
+    public static List<ExtensionMessage> getAllReceivedExtensions(WorkflowTrace trace) {
+        List<HandshakeMessage> handshakeMessageList = getAllReceivedHandshakeMessages(trace);
         List<ExtensionMessage> extensionList = new LinkedList<>();
         for (HandshakeMessage message : handshakeMessageList) {
             extensionList.addAll(message.getExtensions());

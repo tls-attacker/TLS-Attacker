@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public class AlpnEntryParser extends Parser<AlpnEntry> {

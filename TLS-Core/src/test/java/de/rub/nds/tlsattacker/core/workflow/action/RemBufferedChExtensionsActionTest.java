@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
@@ -72,7 +73,10 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(false);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
-
+        config.setDefaultClientNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
+                NamedGroup.SECP521R1);
+        config.setDefaultServerNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
+                NamedGroup.SECP521R1);
         action = new RemBufferedChExtensionsAction();
         trace = new WorkflowTrace();
         trace.addTlsAction(action);

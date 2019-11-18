@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +25,7 @@ public class FlushSessionCacheAction extends TlsAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         LOGGER.info("Resseting Connection Cache");
         state.getTlsContext().getSessionList().clear();
         state.getTlsContext().setClientSessionId(new byte[0]);

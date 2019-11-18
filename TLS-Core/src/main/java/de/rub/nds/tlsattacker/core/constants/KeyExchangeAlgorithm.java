@@ -36,7 +36,8 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECDSA,
     ECMQV_ECNRA,
     ECDH_ECNRA,
-    CECPQ1_ECDSA;
+    CECPQ1_ECDSA,
+    ECCPWD;
 
     public CertificateKeyType getRequiredCertPublicKeyType() {
         switch (this) {
@@ -66,11 +67,13 @@ public enum KeyExchangeAlgorithm {
             case ECDH_ANON:
             case PSK:
             case SRP_SHA:
+            case ECCPWD:
                 return CertificateKeyType.NONE;
             case VKO_GOST01:
                 return CertificateKeyType.GOST01;
             case VKO_GOST12:
                 return CertificateKeyType.GOST12;
+
             case ECMQV_ECNRA:
             case FORTEZZA_KEA:
             case KRB5:

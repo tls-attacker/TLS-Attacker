@@ -51,7 +51,6 @@ public class UdpOutputStream extends OutputStream {
         DatagramPacket packet = new DatagramPacket(outData, index);
         socket.send(packet);
         index = 0;
-        byte[] dataBuffer = new byte[BUFFER_SIZE];
     }
 
 }

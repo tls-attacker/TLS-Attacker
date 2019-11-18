@@ -16,9 +16,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class EncryptedExtensionsHandlerTest {
 

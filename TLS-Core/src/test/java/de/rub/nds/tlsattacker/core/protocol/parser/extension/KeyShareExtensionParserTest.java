@@ -63,7 +63,7 @@ public class KeyShareExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        KeyShareExtensionParser parser = new KeyShareExtensionParser(start, extension);
+        KeyShareExtensionParser parser = new KeyShareExtensionParser(start, extension, ExtensionType.KEY_SHARE);
         KeyShareExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

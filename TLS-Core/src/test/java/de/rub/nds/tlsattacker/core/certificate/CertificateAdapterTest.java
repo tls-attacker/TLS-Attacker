@@ -26,14 +26,10 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
-/**
- *
- * @author jkruse
- */
 public class CertificateAdapterTest {
 
     private static Certificate certificate;

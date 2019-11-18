@@ -24,12 +24,10 @@ public class HelloVerifyRequestParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] { {
-                        ArrayConverter
-                                .hexStringToByteArray("030000170000000000000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
-                        HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
-                        ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381"), 0, 23, 0 } });
+        return Arrays.asList(new Object[][] { {
+                ArrayConverter.hexStringToByteArray("03000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
+                HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
+                ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381") } });
     }
 
     private final byte[] message;
@@ -41,21 +39,14 @@ public class HelloVerifyRequestParserTest {
     private final byte cookieLength;
     private final byte[] cookie;
 
-    private final int fragmentOffset;
-    private final int fragmentLength;
-    private final int messageSeq;
-
     public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
-            byte cookieLength, byte[] cookie, int fragmentOffset, int fragmentLength, int messageSeq) {
+            byte cookieLength, byte[] cookie) {
         this.message = message;
         this.type = type;
         this.length = length;
         this.protocolVersion = protocolVersion;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
-        this.fragmentLength = fragmentLength;
-        this.fragmentOffset = fragmentOffset;
-        this.messageSeq = messageSeq;
     }
 
     /**
@@ -71,8 +62,5 @@ public class HelloVerifyRequestParserTest {
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());
         assertArrayEquals(cookie, msg.getCookie().getValue());
         assertTrue(cookieLength == msg.getCookieLength().getValue());
-        assertTrue(messageSeq == msg.getMessageSeq().getValue());
-        assertTrue(fragmentLength == msg.getFragmentLength().getValue());
-        assertTrue(fragmentOffset == msg.getFragmentOffset().getValue());
     }
 }

@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -75,9 +74,6 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
-
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
@@ -96,13 +92,11 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
@@ -296,7 +290,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
@@ -309,5 +303,4 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
     }
-
 }

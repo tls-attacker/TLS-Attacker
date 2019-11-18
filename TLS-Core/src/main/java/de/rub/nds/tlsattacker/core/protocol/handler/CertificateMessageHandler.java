@@ -88,10 +88,14 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Found a certificate key pair. Adjusting in context");
             message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
         } else if (cert != null) {
-            LOGGER.debug("No CertificatekeyPair found, creating new one");
-            CertificateKeyPair pair = new CertificateKeyPair(cert);
-            message.setCertificateKeyPair(pair);
-            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            if (cert.isEmpty()) {
+                LOGGER.debug("Certificate is empty - no adjustments");
+            } else {
+                LOGGER.debug("No CertificatekeyPair found, creating new one");
+                CertificateKeyPair pair = new CertificateKeyPair(cert);
+                message.setCertificateKeyPair(pair);
+                message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
+            }
 
         } else {
             LOGGER.debug("Ceritificate not parseable - no adjustments");

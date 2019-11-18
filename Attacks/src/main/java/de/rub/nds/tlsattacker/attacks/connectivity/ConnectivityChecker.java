@@ -9,26 +9,29 @@
 package de.rub.nds.tlsattacker.attacks.connectivity;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.AsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,9 +83,9 @@ public class ConnectivityChecker {
     }
 
     public boolean speaksTls(Config config) {
-        config.setHttpsParsingEnabled(Boolean.TRUE);
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
+        trace.removeTlsAction(trace.getTlsActions().size() - 1);
         ReceiveTillAction receiveTillAction = new ReceiveTillAction(new ServerHelloDoneMessage());
         trace.addTlsAction(receiveTillAction);
         State state = new State(config, trace);
@@ -103,5 +106,26 @@ public class ConnectivityChecker {
         } else {
             return false;
         }
+    }
+
+    public boolean speaksStartTls(Config config) {
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+        State state = new State(config, trace);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+        executor.executeWorkflow();
+        if (trace.allActionsExecuted()) {
+            for (TlsAction action : trace.getTlsActions()) {
+                if (action instanceof AsciiAction || !(action instanceof SendAsciiAction)) {
+                    AsciiAction asciiAction = (AsciiAction) action;
+                    if (asciiAction.getAsciiText() != null) {
+                        if (asciiAction.getAsciiText().toLowerCase().contains("TLS negotiation".toLowerCase())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

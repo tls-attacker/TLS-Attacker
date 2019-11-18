@@ -19,6 +19,9 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    private ModifiableByteArray premasterSecretProtocolVersion;
+
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray plainPaddedPremasterSecret;
 
@@ -51,6 +54,19 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     public void setPadding(byte[] padding) {
         this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    }
+
+    public ModifiableByteArray getPremasterSecretProtocolVersion() {
+        return premasterSecretProtocolVersion;
+    }
+
+    public void setPremasterSecretProtocolVersion(ModifiableByteArray premasterSecretProtocolVersion) {
+        this.premasterSecretProtocolVersion = premasterSecretProtocolVersion;
+    }
+
+    public void setPremasterSecretProtocolVersion(byte[] premasterSecretProtocolVersion) {
+        this.premasterSecretProtocolVersion = ModifiableVariableFactory.safelySetValue(
+                this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
 
     @Override

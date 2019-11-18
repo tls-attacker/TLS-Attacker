@@ -74,7 +74,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
             try {
                 action.execute(state);
-            } catch (IOException | PreparationException ex) {
+            } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
         }

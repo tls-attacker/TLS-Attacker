@@ -32,7 +32,9 @@ public class ServerHelloMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ServerHelloMessage:");
+        sb.append("HandshakeMessage:");
+        sb.append("\n  Type: ").append("null");
+        sb.append("\n  Length: ").append("null");
         sb.append("\n  Protocol Version: ").append("null");
         sb.append("\n  Server Unix Time: ").append("null");
         sb.append("\n  Server Random: ").append("null");
@@ -41,7 +43,7 @@ public class ServerHelloMessageTest {
         sb.append("\n  Selected Compression Method: ").append("null");
         sb.append("\n  Extensions: ").append("null");
 
-        assertEquals(message.toString(), sb.toString());
+        assertEquals(sb.toString(), message.toString());
     }
 
 }

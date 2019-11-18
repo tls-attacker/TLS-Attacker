@@ -36,10 +36,24 @@ public class RecordParser extends AbstractRecordParser<Record> {
         }
         record.setContentMessageType(protocolMessageType);
         parseVersion(record);
+        if (version.isDTLS()) {
+            parseEpoch(record);
+            parseSequenceNumber(record);
+        }
         parseLength(record);
         parseProtocolMessageBytes(record);
         record.setCompleteRecordBytes(getAlreadyParsed());
         return record;
+    }
+
+    private void parseEpoch(Record record) {
+        record.setEpoch(parseIntField(RecordByteLength.DTLS_EPOCH));
+        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
+    }
+
+    private void parseSequenceNumber(Record record) {
+        record.setSequenceNumber(parseBigIntField(RecordByteLength.DTLS_SEQUENCE_NUMBER));
+        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
     private void parseContentType(Record record) {

@@ -43,12 +43,30 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
         prepareCipherSuitesLength(msg);
-        if (hasHandshakeCookie()) {
-            prepareCookie(msg);
-            prepareCookieLength(msg);
+        if (isDTLS()) {
+            // in the case of DTLS, we only include ClientHello in the digest if
+            // it has a non-empty cookie
+            if (hasHandshakeCookie()) {
+                prepareCookie(msg);
+                prepareCookieLength(msg);
+                msg.setIncludeInDigest(true);
+            } else {
+                msg.setIncludeInDigest(false);
+            }
         }
         prepareExtensions();
         prepareExtensionLength();
+    }
+
+    // for DTLS, the random value of a second ClientHello message should be
+    // the same as that of the first (at least in case the first prompted
+    // HelloVerifyResponse from server)
+    protected void prepareRandom() {
+        if (isDTLS() && hasClientRandom()) {
+            msg.setRandom(chooser.getClientRandom());
+        } else {
+            super.prepareRandom();
+        }
     }
 
     private void prepareSessionID() {
@@ -62,6 +80,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
             }
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+    }
+
+    private boolean isDTLS() {
+        return chooser.getSelectedProtocolVersion().isDTLS();
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
@@ -121,6 +143,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     private void prepareCipherSuitesLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
         LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+    }
+
+    private boolean hasClientRandom() {
+        return chooser.getContext().getClientRandom() != null;
     }
 
     private boolean hasHandshakeCookie() {

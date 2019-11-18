@@ -11,46 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -79,6 +40,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
             @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
+            @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
+            @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),

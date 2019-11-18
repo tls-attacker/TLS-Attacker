@@ -29,11 +29,9 @@ public abstract class Pkcs1Oracle {
     /*
      * number of queries issued to oracle
      */
-
     /**
      *
      */
-
     protected long numberOfQueries;
     /*
      * block size of the encryption algorithm
@@ -42,7 +40,6 @@ public abstract class Pkcs1Oracle {
     /**
      *
      */
-
     protected int blockSize;
     /*
      * public key of the oracle
@@ -51,7 +48,6 @@ public abstract class Pkcs1Oracle {
     /**
      *
      */
-
     protected RSAPublicKey publicKey;
     /*
      * a boolean value indicating if the oracle is a plaintext oracle (oracle
@@ -62,7 +58,6 @@ public abstract class Pkcs1Oracle {
     /**
      *
      */
-
     protected boolean isPlaintextOracle = false;
     /**
      * oracle type according to the Crypto'12 paper
@@ -153,42 +148,34 @@ public abstract class Pkcs1Oracle {
          *
          */
         TTT,
-
         /**
          *
          */
         TFT,
-
         /**
          *
          */
         FTT,
-
         /**
          *
          */
         FFT,
-
         /**
          *
          */
         FFF,
-
         /**
          *
          */
         JSSE,
-
         /**
          *
          */
         XMLENC,
-
         /**
          *
          */
         BigIP,
-
         /**
          *
          */

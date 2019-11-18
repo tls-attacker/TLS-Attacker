@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author root
- */
 public abstract class Decompressor<T> {
 
     protected static final Logger LOGGER = LogManager.getLogger(Compressor.class.getName());

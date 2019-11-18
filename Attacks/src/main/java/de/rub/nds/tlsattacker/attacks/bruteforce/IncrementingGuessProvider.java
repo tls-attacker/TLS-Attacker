@@ -29,7 +29,7 @@ public class IncrementingGuessProvider extends GuessProvider {
 
     /**
      * Returns the last Guess incremented by 1.
-     * 
+     *
      * @return
      */
     @Override

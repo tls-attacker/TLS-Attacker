@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;

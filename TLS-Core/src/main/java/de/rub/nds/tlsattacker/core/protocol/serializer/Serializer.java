@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,6 +64,29 @@ public abstract class Serializer<T> {
                     + length + " bytes.");
         }
         appendBytes(ArrayConverter.intToBytes(i, length));
+    }
+
+    /**
+     * Adds a byte[] representation of a BigInteger to the final byte[] minus
+     * the sign byte. If the BigInteger is greater than the specified length
+     * only the lower length bytes are serialized.
+     *
+     * @param i
+     *            The BigInteger that should be appended
+     * @param length
+     *            The number of bytes which should be reserved for this
+     *            BigInteger
+     */
+    protected final void appendBigInteger(BigInteger i, int length) {
+        byte[] bytes;
+        // special case for which bigIntegerToByteArray
+        // wrongly returns an empty array
+        if (i.equals(new BigInteger("0"))) {
+            bytes = ArrayConverter.intToBytes(0, length);
+        } else {
+            bytes = ArrayConverter.bigIntegerToByteArray(i, length, true);
+        }
+        appendBytes(bytes);
     }
 
     /**

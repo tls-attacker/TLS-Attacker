@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import java.io.IOException;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 public class WaitAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private Boolean asPlanned;
 
     /**
      * Default waiting time in milliseconds
@@ -39,22 +40,22 @@ public class WaitAction extends TlsAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
-        Boolean success;
+    public void execute(State state) throws WorkflowExecutionException {
         LOGGER.info("Waiting " + time + "ms...");
         try {
             Thread.sleep(time);
-            success = true;
+            asPlanned = true;
         } catch (InterruptedException ex) {
             LOGGER.error(ex);
-            success = false;
+            asPlanned = false;
         }
-        this.setExecuted(success);
+        this.setExecuted(true);
     }
 
     @Override
     public void reset() {
         this.setExecuted(false);
+        asPlanned = null;
     }
 
     public long getTime() {
@@ -68,7 +69,7 @@ public class WaitAction extends TlsAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
     }
 
     private void assertValidTime(long time) {

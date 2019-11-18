@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class Connection implements Serializable {
 
     protected Integer port = null;
+    protected String ip = null;
     protected String hostname = null;
     protected Integer proxyDataPort = null;
     protected String proxyDataHostname = null;
@@ -41,6 +42,7 @@ public abstract class Connection implements Serializable {
 
     public Connection(Connection other) {
         port = other.port;
+        this.ip = other.ip;
         hostname = other.hostname;
         proxyDataPort = other.proxyDataPort;
         proxyDataHostname = other.proxyDataHostname;
@@ -48,6 +50,14 @@ public abstract class Connection implements Serializable {
         proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public Integer getPort() {
@@ -124,11 +134,16 @@ public abstract class Connection implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.port);
-        hash = 41 * hash + Objects.hashCode(this.transportHandlerType);
-        hash = 41 * hash + Objects.hashCode(this.timeout);
-        hash = 41 * hash + Objects.hashCode(this.getLocalConnectionEndType());
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.port);
+        hash = 83 * hash + Objects.hashCode(this.ip);
+        hash = 83 * hash + Objects.hashCode(this.hostname);
+        hash = 83 * hash + Objects.hashCode(this.proxyDataPort);
+        hash = 83 * hash + Objects.hashCode(this.proxyDataHostname);
+        hash = 83 * hash + Objects.hashCode(this.proxyControlPort);
+        hash = 83 * hash + Objects.hashCode(this.proxyControlHostname);
+        hash = 83 * hash + Objects.hashCode(this.transportHandlerType);
+        hash = 83 * hash + Objects.hashCode(this.timeout);
         return hash;
     }
 
@@ -144,7 +159,25 @@ public abstract class Connection implements Serializable {
             return false;
         }
         final Connection other = (Connection) obj;
+        if (!Objects.equals(this.ip, other.ip)) {
+            return false;
+        }
+        if (!Objects.equals(this.hostname, other.hostname)) {
+            return false;
+        }
+        if (!Objects.equals(this.proxyDataHostname, other.proxyDataHostname)) {
+            return false;
+        }
+        if (!Objects.equals(this.proxyControlHostname, other.proxyControlHostname)) {
+            return false;
+        }
         if (!Objects.equals(this.port, other.port)) {
+            return false;
+        }
+        if (!Objects.equals(this.proxyDataPort, other.proxyDataPort)) {
+            return false;
+        }
+        if (!Objects.equals(this.proxyControlPort, other.proxyControlPort)) {
             return false;
         }
         if (this.transportHandlerType != other.transportHandlerType) {
@@ -153,6 +186,7 @@ public abstract class Connection implements Serializable {
         if (!Objects.equals(this.timeout, other.timeout)) {
             return false;
         }
-        return Objects.equals(this.getLocalConnectionEndType(), other.getLocalConnectionEndType());
+        return true;
     }
+
 }

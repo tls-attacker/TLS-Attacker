@@ -86,7 +86,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
