@@ -30,7 +30,7 @@ public class AttackDelegate extends Delegate {
 
     /**
      * Returns true if an attack should be executed
-     * 
+     *
      * @return true if an attack should be executed
      */
     public boolean isExecuteAttack() {
@@ -39,7 +39,7 @@ public class AttackDelegate extends Delegate {
 
     /**
      * Sets executeAttack flag to the specified value
-     * 
+     *
      * @param executeAttack
      *            the value to set executeAttack to
      */
@@ -49,7 +49,7 @@ public class AttackDelegate extends Delegate {
 
     /**
      * Does nothing
-     * 
+     *
      * @param config
      *            Ignored
      * @throws ConfigurationException

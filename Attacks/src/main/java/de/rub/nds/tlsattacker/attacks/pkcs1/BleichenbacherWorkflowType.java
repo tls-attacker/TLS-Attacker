@@ -18,17 +18,14 @@ public enum BleichenbacherWorkflowType {
      *
      */
     CKE_CCS_FIN("Complete TLS protocol flow with CCS and Finished messages"),
-
     /**
      *
      */
     CKE("TLS protocol flow with missing CCS and Finished messages"),
-
     /**
      *
      */
     CKE_CCS("TLS protocol flow with missing Finished message"),
-
     /**
      *
      */

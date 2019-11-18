@@ -126,7 +126,7 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] usedIv;
             if (decryptionRequest.getCipherText().length % decryptCipher.getBlocksize() != 0) {
                 LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
-                return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
+                return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv, false);
             }
             if (useExplicitIv) {
                 byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
@@ -142,10 +142,10 @@ public final class RecordBlockCipher extends RecordCipher {
                 // Set next IV
             }
 
-            return new DecryptionResult(usedIv, plaintext, useExplicitIv);
+            return new DecryptionResult(usedIv, plaintext, useExplicitIv, true);
         } catch (CryptoException | UnsupportedOperationException ex) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", ex);
-            return new DecryptionResult(null, decryptionRequest.getCipherText(), useExplicitIv);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), useExplicitIv, false);
         }
     }
 

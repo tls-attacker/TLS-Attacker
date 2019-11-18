@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public abstract class ExtensionMessage extends ModifiableVariableHolder implements Serializable {
 
-    private ExtensionType extensionTypeConstant;
+    protected ExtensionType extensionTypeConstant;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray extensionType;

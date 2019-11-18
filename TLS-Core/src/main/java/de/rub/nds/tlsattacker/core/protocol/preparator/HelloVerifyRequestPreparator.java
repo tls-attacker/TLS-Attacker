@@ -35,7 +35,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private byte[] generateCookie() {
-        byte[] cookie = new byte[chooser.getConfig().getDefaultDTLSCookieLength()];
+        byte[] cookie = new byte[chooser.getConfig().getDtlsDefaultCookieLength()];
         chooser.getContext().getRandom().nextBytes(cookie);
         return cookie;
     }

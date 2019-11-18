@@ -72,7 +72,6 @@ public class ServerTcpTransportHandler extends TransportHandler {
             }
             socket = serverSocket.accept();
             socket.setSoTimeout(1);
-            socket.setPerformancePreferences(0, 1, 5);
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }

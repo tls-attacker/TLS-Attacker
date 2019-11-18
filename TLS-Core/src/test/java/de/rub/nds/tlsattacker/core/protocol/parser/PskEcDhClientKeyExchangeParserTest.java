@@ -20,10 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author jkruse
- */
 @RunWith(Parameterized.class)
 public class PskEcDhClientKeyExchangeParserTest {
 

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,21 +54,30 @@ public class JavaCipherTest {
 
     @Test
     public void generalTest() {
-        Random r = new Random(0);
-        for (CipherAlgorithm algo : CipherAlgorithm.values()) {
-
+        List<CipherAlgorithm> algos = new LinkedList<>();
+        algos.add(CipherAlgorithm.AES_128_CBC);
+        algos.add(CipherAlgorithm.AES_128_CCM);
+        algos.add(CipherAlgorithm.AES_128_GCM);
+        algos.add(CipherAlgorithm.AES_256_CBC);
+        algos.add(CipherAlgorithm.AES_256_CCM);
+        algos.add(CipherAlgorithm.AES_256_GCM);
+        algos.add(CipherAlgorithm.ARIA_128_CBC);
+        algos.add(CipherAlgorithm.ARIA_128_GCM);
+        algos.add(CipherAlgorithm.ARIA_256_CBC);
+        algos.add(CipherAlgorithm.ARIA_256_GCM);
+        algos.add(CipherAlgorithm.CAMELLIA_128_CBC);
+        algos.add(CipherAlgorithm.CAMELLIA_128_GCM);
+        algos.add(CipherAlgorithm.CAMELLIA_256_CBC);
+        algos.add(CipherAlgorithm.CAMELLIA_256_GCM);
+        algos.add(CipherAlgorithm.DES_CBC);
+        algos.add(CipherAlgorithm.DES_EDE_CBC);
+        algos.add(CipherAlgorithm.IDEA_128);
+        algos.add(CipherAlgorithm.RC2_128);
+        algos.add(CipherAlgorithm.RC4_128);
+        algos.add(CipherAlgorithm.SEED_CBC);
+        for (CipherAlgorithm algo : algos) {
             byte[] key = new byte[algo.getKeySize()];
-            r.nextBytes(key);
             JavaCipher cipher = new JavaCipher(algo, key);
-
-            byte[] plaintext = new byte[algo.getBlocksize()];
-            r.nextBytes(plaintext);
-
-            try {
-                cipher.encrypt(key, plaintext);
-            } catch (Exception ex) {
-                LOGGER.error(ex);
-            }
         }
     }
 }

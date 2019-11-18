@@ -9,11 +9,15 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -33,9 +37,8 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context, boolean prepareMessages) throws IOException {
-
+        List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
-
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
@@ -45,6 +48,7 @@ public class SendMessageHelper {
         ProtocolMessageType lastType = null;
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig());
         for (ProtocolMessage message : messages) {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
@@ -54,17 +58,33 @@ public class SendMessageHelper {
             }
             lastMessage = message;
             lastType = message.getProtocolMessageType();
-            byte[] protocolMessageBytes;
             if (prepareMessages) {
                 LOGGER.debug("Preparing " + message.toCompactString());
-                protocolMessageBytes = handleProtocolMessage(message, context);
-            } else {
-                protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
             }
+
+            byte[] protocolMessageBytes = handleProtocolMessage(message, context, prepareMessages);
             if (message.isGoingToBeSent()) {
-                messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
-            } else {
-                LOGGER.debug("Not adding message bytes for " + message.toCompactString() + " - goingToBeSent is false!");
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    if (message.isHandshakeMessage()) {
+                        List<DtlsHandshakeMessageFragment> messageFragments;
+                        if (message.isDtlsHandshakeMessageFragment()) {
+                            messageFragments = Collections.singletonList((DtlsHandshakeMessageFragment) message);
+                        } else {
+                            messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
+                        }
+                        // TODO a fragment can span records currently, which
+                        // should not be allowed
+                        for (DtlsHandshakeMessageFragment fragment : messageFragments) {
+                            messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
+                                    .getValue());
+                            fragmentMessages.add(fragment);
+                        }
+                    } else {
+                        messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+                    }
+                } else {
+                    messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+                }
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
@@ -94,7 +114,10 @@ public class SendMessageHelper {
                 current++;
             }
         }
-        return new MessageActionResult(records, messages);
+        if (fragmentMessages.isEmpty()) {
+            fragmentMessages = null;
+        }
+        return new MessageActionResult(records, messages, fragmentMessages);
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
@@ -107,7 +130,6 @@ public class SendMessageHelper {
         }
 
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        sendData(messageBytesCollector, context);
 
         for (AbstractRecord record : records) {
             messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
@@ -166,15 +188,9 @@ public class SendMessageHelper {
         collector.flushRecordBytes();
     }
 
-    private byte[] handleProtocolMessageWithoutPrepare(ProtocolMessage message, TlsContext context) {
+    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context, boolean withPrepare) {
         ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message, false);
-        return protocolMessageBytes;
-    }
-
-    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
-        ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message);
+        byte[] protocolMessageBytes = handler.prepareMessage(message, withPrepare);
         return protocolMessageBytes;
     }
 }

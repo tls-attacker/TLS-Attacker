@@ -64,12 +64,10 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
     /*
      * Always execute attack.
      */
-
     /**
      *
      * @return
      */
-
     @Override
     public boolean isExecuteAttack() {
         return true;

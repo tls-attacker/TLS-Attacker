@@ -12,8 +12,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.DraftKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +26,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private List<KeyShareEntry> entryList;
 
-    public KeyShareExtensionParser(int startposition, byte[] array) {
+    private final ExtensionType type;
+
+    public KeyShareExtensionParser(int startposition, byte[] array, ExtensionType type) {
         super(startposition, array);
+        this.type = type;
     }
 
     @Override
@@ -58,7 +62,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     @Override
     protected KeyShareExtensionMessage createExtensionMessage() {
-        return new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
+        if (type == ExtensionType.KEY_SHARE) {
+            return new KeyShareExtensionMessage();
+        } else {
+            return new DraftKeyShareExtensionMessage();
+        }
     }
 
     /**

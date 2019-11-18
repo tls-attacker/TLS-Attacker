@@ -26,24 +26,17 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import de.rub.nds.tlsattacker.util.ConsoleLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- */
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     *
-     * @param config
-     * @param baseConfig
-     */
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
     }
@@ -53,42 +46,32 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Boolean isVulnerable() {
-        EarlyFinishedVulnerabilityType vulnerabilityType = getVulnerabilityType();
-        switch (vulnerabilityType) {
+        EarlyFinishedVulnerabilityType earlyFinVulnerabilityType = performCheck();
+        switch (earlyFinVulnerabilityType) {
             case VULNERABLE:
                 return true;
+            case NOT_VULNERABLE_PROBABBlY:
             case NOT_VULNERABLE:
-            case UNKNOWN:
                 return false;
+            case UNKNOWN:
+                return null;
         }
         return null;
     }
 
-    /**
-     *
-     * @return
-     */
-    public EarlyFinishedVulnerabilityType getVulnerabilityType() {
+    public EarlyFinishedVulnerabilityType performCheck() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
 
         WorkflowConfigurationFactory workflowConfigurationFactory = new WorkflowConfigurationFactory(tlsConfig);
         OutboundConnection connection = tlsConfig.getDefaultClientConnection();
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createHelloWorkflow(connection);
-
-        // TODO: Both the test and WorkflowConfigurationFactory are duplicates
-        // of this code.
+        workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
         List<ProtocolMessage> messages = new LinkedList<>();
-        workflowConfigurationFactory.addClientKeyExchangeMessage(messages);
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
-
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         messages.add(new FinishedMessage(tlsConfig));
@@ -99,16 +82,19 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
 
-        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
-            CONSOLE.info("Not vulnerable (definitely), Alert message found");
-            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
-        } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
-            CONSOLE.info("Vulnerable (definitely), Finished message found");
-            return EarlyFinishedVulnerabilityType.VULNERABLE;
-        } else {
-            CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
+        if (!workflowTrace.allActionsExecuted()) {
+            ConsoleLogger.CONSOLE.warn("Could not complete Workflow - Vulnerability unknown");
             return EarlyFinishedVulnerabilityType.UNKNOWN;
         }
+        if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
+            ConsoleLogger.CONSOLE.info("Not vulnerable (definitely), Alert message found");
+            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE;
+        } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, workflowTrace)) {
+            ConsoleLogger.CONSOLE.error("Vulnerable (definitely), Finished message found");
+            return EarlyFinishedVulnerabilityType.VULNERABLE;
+        } else {
+            ConsoleLogger.CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
+            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE_PROBABBlY;
+        }
     }
-
 }

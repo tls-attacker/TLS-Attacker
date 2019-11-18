@@ -63,8 +63,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()));
             }
-            byte[] result = cipher.doFinal(someBytes);
-            return result;
+            return cipher.doFinal(someBytes);
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException
                 | NoSuchPaddingException ex) {
             throw new CryptoException("Could not initialize JavaCipher", ex);

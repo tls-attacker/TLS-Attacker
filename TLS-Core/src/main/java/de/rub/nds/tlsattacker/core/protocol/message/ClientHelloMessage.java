@@ -15,51 +15,17 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-// @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
 
@@ -111,7 +77,8 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes(Charset.forName("ASCII")));
+            pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
+                    .getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
             addExtension(extension);
@@ -125,9 +92,9 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddKeyShareExtension()) {
             if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
                     && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
-                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE_OLD, tlsConfig));
+                addExtension(new DraftKeyShareExtensionMessage(tlsConfig));
             } else {
-                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE, tlsConfig));
+                addExtension(new KeyShareExtensionMessage(tlsConfig));
             }
         }
         if (tlsConfig.isAddEarlyDataExtension()) {
@@ -201,6 +168,12 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
             addExtension(new CertificateStatusRequestV2ExtensionMessage());
+        }
+        if (tlsConfig.isAddPWDProtectExtension()) {
+            addExtension(new PWDProtectExtensionMessage());
+        }
+        if (tlsConfig.isAddPWDClearExtension()) {
+            addExtension(new PWDClearExtensionMessage());
         }
         if (tlsConfig.isAddPreSharedKeyExtension()) {
             addExtension(new PreSharedKeyExtensionMessage(tlsConfig));

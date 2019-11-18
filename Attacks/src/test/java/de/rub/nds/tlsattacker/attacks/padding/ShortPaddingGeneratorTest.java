@@ -26,10 +26,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author robert
- */
 public class ShortPaddingGeneratorTest {
 
     private ShortPaddingGenerator generator;
@@ -205,7 +201,6 @@ public class ShortPaddingGeneratorTest {
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         // TODO Add intermidiate tests
-
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(6));
         expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
                 (byte) 0xBB, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,

@@ -57,7 +57,7 @@ public class ExtensionParserFactory {
                 break;
             case KEY_SHARE_OLD: // Extension was moved
             case KEY_SHARE:
-                parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
+                parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, type);
                 break;
             case STATUS_REQUEST:
                 parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes);
@@ -108,7 +108,7 @@ public class ExtensionParserFactory {
                 parser = new ServerAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_CERTIFICATE_TYPE:
-                parser = new ServerCertificateTypeExtensionParser(pointer, typeBytes);
+                parser = new ServerCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case SESSION_TICKET:
                 parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes);
@@ -131,6 +131,12 @@ public class ExtensionParserFactory {
             case USE_SRTP:
                 parser = new SrtpExtensionParser(pointer, extensionBytes);
                 break;
+            case PWD_PROTECT:
+                parser = new PWDProtectExtensionParser(pointer, extensionBytes);
+                break;
+            case PWD_CLEAR:
+                parser = new PWDClearExtensionParser(pointer, extensionBytes);
+                break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);
                 break;
@@ -143,13 +149,14 @@ public class ExtensionParserFactory {
         return parser;
     }
 
-    private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type) {
+    private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type,
+            ExtensionType extensionType) {
         switch (type) {
             case HELLO_RETRY_REQUEST:
                 return new HRRKeyShareExtensionParser(pointer, extensionBytes);
             case CLIENT_HELLO:
             case SERVER_HELLO:
-                return new KeyShareExtensionParser(pointer, extensionBytes);
+                return new KeyShareExtensionParser(pointer, extensionBytes, extensionType);
             default:
                 throw new UnsupportedOperationException("KeyShareExtension for following " + type
                         + " message NOT supported yet.");

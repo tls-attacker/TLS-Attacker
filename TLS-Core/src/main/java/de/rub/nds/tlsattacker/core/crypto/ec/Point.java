@@ -8,84 +8,131 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @version 0.1
+ * Can be used to store a point of an elliptic curve.
+ *
+ * Affine points store their x and y coordinates. The projective z-coordinate
+ * (equal to 1) will not be stored. The point at infinity [0:1:0] (the only
+ * point with z-coordinate 0) does not store any of it's coordinates.
  */
-public class Point {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Point implements Serializable {
 
-    protected BigInteger x;
-    protected BigInteger y;
-    private boolean infinity;
+    /*
+     * Point objects are immutable. This should make deep copies in the methods
+     * of the EllipticCurve class unnecessary.
+     */
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
+            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
+    private final FieldElement x;
+    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
+            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
+    private final FieldElement y;
+    private final boolean infinity;
 
+    /**
+     * Instantiates the point at infinity.
+     */
     public Point() {
+        this.infinity = true;
+        this.x = null;
+        this.y = null;
     }
 
-    public Point(boolean infinity) {
-        this.infinity = infinity;
+    public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
     }
 
-    public Point(BigInteger x, BigInteger y) {
+    public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
+    }
+
+    /**
+     * Instantiates an affine point with coordinates x and y. Calling
+     * EllipticCurve.getPoint() should always be preferred over using this
+     * constructor.
+     *
+     * @param x
+     *            A FieldElement representing the x-coordinate of the point.
+     * @param y
+     *            A FieldElement representing the y-coordinate of the point. x
+     *            and y must be elements of the same field.
+     */
+    public Point(FieldElement x, FieldElement y) {
         this.x = x;
         this.y = y;
+        this.infinity = false;
     }
 
-    public Point(String x, String y) {
-        this.x = new BigInteger(x);
-        this.y = new BigInteger(y);
+    /**
+     * Returns true if the point is the point at infinity. Returns false if the
+     * point is an affine point.
+     */
+    public boolean isAtInfinity() {
+        return this.infinity;
     }
 
-    public BigInteger getX() {
-        return x;
+    public FieldElement getX() {
+        return this.x;
     }
 
-    public void setX(BigInteger x) {
-        this.x = x;
+    public FieldElement getY() {
+        return this.y;
     }
 
-    public BigInteger getY() {
-        return y;
-    }
-
-    public void setY(BigInteger y) {
-        this.y = y;
-    }
-
-    public boolean isInfinity() {
-        return infinity;
-    }
-
-    public void setInfinity(boolean infinity) {
-        this.infinity = infinity;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.x);
+        hash = 89 * hash + Objects.hashCode(this.y);
+        hash = 89 * hash + (this.infinity ? 1 : 0);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Point p = (Point) obj;
-        if (p.isInfinity() == true && this.isInfinity() == true) {
-            return true;
+        final Point other = (Point) obj;
+        if (this.infinity != other.infinity) {
+            return false;
         }
-        return p.getX().equals(this.getX()) && p.getY().equals(this.getY());
-    }
-
-    @Override
-    public int hashCode() {
-        if (isInfinity()) {
-            return 0;
-        } else {
-            return this.getX().mod(new BigInteger(Integer.toString(Integer.MAX_VALUE))).intValue();
+        if (!Objects.equals(this.x, other.x)) {
+            return false;
         }
+        if (!Objects.equals(this.y, other.y)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "x: " + x + "\ny: " + y;
+        if (this.isAtInfinity()) {
+            return "Point: Infinity";
+        } else {
+            return "Point: (" + this.getX().toString() + ", " + this.getY().toString() + ")";
+        }
     }
 }

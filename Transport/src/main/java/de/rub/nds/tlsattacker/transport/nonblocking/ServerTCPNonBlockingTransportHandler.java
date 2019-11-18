@@ -67,6 +67,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             if (task.isDone()) {
                 try {
                     clientSocket = task.get();
+                    clientSocket.setSoTimeout(1);
                     setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
                 } catch (InterruptedException | ExecutionException ex) {
                     LOGGER.warn("Could not retrieve clientSocket");

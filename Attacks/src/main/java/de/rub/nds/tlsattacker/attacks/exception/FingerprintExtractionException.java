@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.exception;
 
-/**
- *
- * @author ic0ns
- */
 public class FingerprintExtractionException extends RuntimeException {
 
     public FingerprintExtractionException() {

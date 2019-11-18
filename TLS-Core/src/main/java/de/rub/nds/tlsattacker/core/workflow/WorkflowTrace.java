@@ -132,6 +132,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = SendAction.class, name = "Send"),
             @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
             @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
+            @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
@@ -288,7 +289,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public MessageAction getLastMessageAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof MessageAction) {
                 return (MessageAction) (tlsActions.get(i));
             }
@@ -303,7 +304,7 @@ public class WorkflowTrace implements Serializable {
      *         actions are defined
      */
     public SendingAction getLastSendingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {
                 return (SendingAction) (tlsActions.get(i));
             }
@@ -318,7 +319,7 @@ public class WorkflowTrace implements Serializable {
      *         receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
-        for (int i = tlsActions.size() - 1; i > 0; i--) {
+        for (int i = tlsActions.size() - 1; i >= 0; i--) {
             if (tlsActions.get(i) instanceof ReceivingAction) {
                 return (ReceivingAction) (tlsActions.get(i));
             }

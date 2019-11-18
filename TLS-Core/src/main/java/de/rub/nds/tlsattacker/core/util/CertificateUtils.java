@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
@@ -55,6 +56,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class CertificateUtils {
@@ -75,7 +77,7 @@ public class CertificateUtils {
         } else if (key instanceof ECPrivateKey) {
             ECPrivateKey privKey = (ECPrivateKey) key;
 
-            return new CustomECPrivateKey(privKey.getS(), NamedGroup.NONE);
+            return new CustomECPrivateKey(privKey.getS(), NamedGroup.getNamedGroup(privKey));
         } else {
             throw new UnsupportedOperationException("This private key is not supporter:" + key.toString());
         }
@@ -98,7 +100,13 @@ public class CertificateUtils {
         } else if (key instanceof ECPublicKey) {
             LOGGER.trace("Found an EC PublicKey");
             ECPublicKey pubKey = (ECPublicKey) key;
-            return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), NamedGroup.NONE);
+            NamedGroup group = NamedGroup.getNamedGroup(pubKey);
+            if (group == null) {
+                return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(),
+                        GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
+            } else {
+                return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), group);
+            }
         } else {
             throw new UnsupportedOperationException("This public key is not supported:" + key);
         }

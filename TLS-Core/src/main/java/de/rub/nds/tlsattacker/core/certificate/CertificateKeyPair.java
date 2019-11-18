@@ -265,10 +265,12 @@ public class CertificateKeyPair implements Serializable {
         try {
             X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
             if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                return NamedGroup.GOST3410;
+                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2001)");
+                return null;
             }
             if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                return NamedGroup.GOST3410_2012;
+                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2012)");
+                return null;
             }
             BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();
             ECNamedCurveSpec spec = (ECNamedCurveSpec) ecKey.getParams();
@@ -294,10 +296,12 @@ public class CertificateKeyPair implements Serializable {
         try {
             X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
             if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                return NamedGroup.GOST3410;
+                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2001)");
+                return null;
             }
             if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                return NamedGroup.GOST3410_2012;
+                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2012)");
+                return null;
             }
             BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();
             ECNamedCurveSpec spec = (ECNamedCurveSpec) ecKey.getParams();
@@ -343,8 +347,7 @@ public class CertificateKeyPair implements Serializable {
         }
         config.setDefaultExplicitCertificateKeyPair(this);
         if (gostCurve != null) {
-            config.setDefaultGost01Curve(gostCurve);
-            config.setDefaultGost12Curve(gostCurve);
+            config.setDefaultSelectedGostCurve(gostCurve);
         }
     }
 
@@ -371,13 +374,9 @@ public class CertificateKeyPair implements Serializable {
                 case GOST01:
                     signatureAlgorithm = SignatureAlgorithm.GOSTR34102001;
                     hashAlgorithm = HashAlgorithm.GOSTR3411;
-                    if (connectionEnd == ConnectionEndType.CLIENT) {
-                        context.setClientGost01Curve(gostCurve);
-                        LOGGER.debug("Adjusting client gost 01 curve:" + gostCurve);
-                    } else {
-                        context.setServerGost01Curve(gostCurve);
-                        LOGGER.debug("Adjusting server gost 01 curve:" + gostCurve);
-                    }
+                    context.setSelectedGostCurve(gostCurve);
+                    LOGGER.debug("Adjusting selected gost curve:" + gostCurve);
+
                     break;
                 case GOST12:
                     if (gostCurve.is512bit2012()) {
@@ -387,13 +386,8 @@ public class CertificateKeyPair implements Serializable {
                         signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
                         hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
                     }
-                    if (connectionEnd == ConnectionEndType.CLIENT) {
-                        context.setClientGost12Curve(gostCurve);
-                        LOGGER.debug("Adjusting client gost 12 curve:" + gostCurve);
-                    } else {
-                        context.setServerGost12Curve(gostCurve);
-                        LOGGER.debug("Adjusting server gost 12 curve:" + gostCurve);
-                    }
+                    context.setSelectedGostCurve(gostCurve);
+                    LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
                     break;
             }
             SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(

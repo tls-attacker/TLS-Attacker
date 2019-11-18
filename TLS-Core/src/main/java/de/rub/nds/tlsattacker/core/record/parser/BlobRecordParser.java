@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,7 @@ public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
     public BlobRecord parse() {
         LOGGER.debug("Parsing BlobRecord");
         BlobRecord record = new BlobRecord();
+        record.setContentMessageType(ProtocolMessageType.UNKNOWN);
         parseProtocolMessageBytes(record);
         record.setCompleteRecordBytes(getAlreadyParsed());
         return record;

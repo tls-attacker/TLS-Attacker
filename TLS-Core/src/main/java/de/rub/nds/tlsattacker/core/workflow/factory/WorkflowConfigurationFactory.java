@@ -14,49 +14,13 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -79,11 +43,15 @@ import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -100,7 +68,7 @@ public class WorkflowConfigurationFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Config config;
-    RunningModeType mode;
+    private RunningModeType mode;
 
     public WorkflowConfigurationFactory(Config config) {
         this.config = config;
@@ -141,6 +109,8 @@ public class WorkflowConfigurationFactory {
                 return createFalseStartWorkflow();
             case RSA_SYNC_PROXY:
                 return createSyncProxyWorkflow();
+            case DYNAMIC_HANDSHAKE:
+                return createDynamicHandshakeWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -195,76 +165,65 @@ public class WorkflowConfigurationFactory {
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
+
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ClientHelloMessage(config)));
+        }
+
         List<ProtocolMessage> messages = new LinkedList<>();
-        ClientHelloMessage clientHello = null;
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
-                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
-            clientHello = new ClientHelloMessage(config);
-            clientHello.setIncludeInDigest(false);
-        } else {
-            clientHello = new ClientHelloMessage(config);
-        }
-        messages.add(clientHello);
-
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
-                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
-
-            HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
-            helloVerifyRequestMessage.setIncludeInDigest(false);
-            messages = new LinkedList<>();
-
-            messages.add(helloVerifyRequestMessage);
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, messages));
-            clientHello = new ClientHelloMessage(config);
-            messages = new LinkedList<>();
-            messages.add(clientHello);
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, messages));
-        }
-        messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
-
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
                 messages.add(new ChangeCipherSpecMessage());
             }
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
-                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-                messages.add(certRequest);
+                messages.add(new CertificateRequestMessage(config));
             }
-            if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                messages.add(new CertificateMessage());
-            } else {
-                messages.add(new CertificateMessage(config));
+            CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
+            if (!selectedCipherSuite.isPWD()) {
+                if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                    messages.add(new CertificateMessage());
+                } else {
+                    messages.add(new CertificateMessage(config));
+                }
+
+                messages.add(new CertificateVerifyMessage(config));
             }
-            messages.add(new CertificateVerifyMessage(config));
+
             messages.add(new FinishedMessage(config));
         } else {
             CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-            if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk() && !selectedCipherSuite.isAnon()) {
+            if (shouldServerSendACertificate(selectedCipherSuite)) {
                 if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
                     messages.add(new CertificateMessage(config));
                 }
             }
-
             if (selectedCipherSuite.isEphemeral() || selectedCipherSuite.isSrp()) {
                 addServerKeyExchangeMessage(messages);
             }
 
             if (config.isClientAuthentication()) {
-                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-                messages.add(certRequest);
+                messages.add(new CertificateRequestMessage(config));
             }
             messages.add(new ServerHelloDoneMessage(config));
         }
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
         return workflowTrace;
+    }
+
+    public boolean shouldServerSendACertificate(CipherSuite suite) {
+        return !suite.isSrpSha() && !suite.isPskOrDhPsk() && !suite.isAnon() && !suite.isPWD();
+
     }
 
     /**
@@ -302,12 +261,8 @@ public class WorkflowConfigurationFactory {
         messages.add(new FinishedMessage(config));
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
         if (!config.getHighestProtocolVersion().isTLS13()) {
-            messages = new LinkedList<>();
-            messages.add(new ChangeCipherSpecMessage(config));
-            messages.add(new FinishedMessage(config));
-
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         }
 
         return workflowTrace;
@@ -323,26 +278,19 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getConnection();
 
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
-        List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isServerSendsApplicationData()) {
-            messages.add(new ApplicationMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, messages));
-            messages = new LinkedList<>();
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new ApplicationMessage(config)));
         }
-        messages.add(new ApplicationMessage(config));
 
         if (config.isAddHeartbeatExtension()) {
-            messages.add(new HeartbeatMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, messages));
-            messages = new LinkedList<>();
-            messages.add(new HeartbeatMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ApplicationMessage(config), new HeartbeatMessage(config)));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HeartbeatMessage(config)));
         } else {
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.CLIENT, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ApplicationMessage(config)));
         }
         return workflowTrace;
     }
@@ -381,6 +329,7 @@ public class WorkflowConfigurationFactory {
                 new ApplicationMessage(config));
 
         // Client CKE, CCS, Fin
+        // TODO weired
         TlsAction lastClientAction;
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             lastClientAction = (TlsAction) workflowTrace.getLastSendingAction();
@@ -425,10 +374,18 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getConnection();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
-
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config));
         trace.addTlsAction(action);
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage(config));
+            trace.addTlsAction(action);
+            action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, new ClientHelloMessage(
+                    config));
+            trace.addTlsAction(action);
+
+        }
         action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
         trace.addTlsAction(action);
@@ -761,6 +718,8 @@ public class WorkflowConfigurationFactory {
                 case VKO_GOST01:
                 case VKO_GOST12:
                     return new GOSTClientKeyExchangeMessage(config);
+                case ECCPWD:
+                    return new PWDClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not creating ClientKeyExchange Message");
@@ -796,6 +755,8 @@ public class WorkflowConfigurationFactory {
                 case SRP_SHA_RSA:
                 case SRP_SHA:
                     return new SrpServerKeyExchangeMessage(config);
+                case ECCPWD:
+                    return new PWDServerKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not creating ServerKeyExchange Message");
@@ -874,5 +835,60 @@ public class WorkflowConfigurationFactory {
             }
         }
         return workflowTrace;
+    }
+
+    private WorkflowTrace createDynamicHandshakeWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            }
+            trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+            trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+
+        } else {
+            List<ProtocolMessage> messages = new LinkedList<>();
+            messages.add(new ServerHelloMessage(config));
+
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                    messages.add(new ChangeCipherSpecMessage());
+                }
+                messages.add(new EncryptedExtensionsMessage(config));
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+                messages.add(new FinishedMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+
+            } else {
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new SendDynamicServerCertificateAction());
+                trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
+                messages = new LinkedList<>();
+
+                if (config.isClientAuthentication()) {
+                    CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                    messages.add(certRequest);
+                }
+                messages.add(new ServerHelloDoneMessage(config));
+                trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            }
+        }
+        return trace;
     }
 }

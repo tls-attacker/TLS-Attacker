@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -40,8 +39,6 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @ParametersDelegate
     private CiphersuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
-    @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
     /**
@@ -56,11 +53,9 @@ public class Cve20162107CommandConfig extends AttackConfig {
         versions.add(ProtocolVersion.TLS12);
         clientDelegate = new ClientDelegate();
         cipherSuiteDelegate = new CiphersuiteDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(cipherSuiteDelegate);
-        addDelegate(hostnameExtensionDelegate);
         addDelegate(starttlsDelegate);
 
     }
@@ -102,7 +97,7 @@ public class Cve20162107CommandConfig extends AttackConfig {
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
-        config.setStopRecievingAfterFatal(true);
+        config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         if (cipherSuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();

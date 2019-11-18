@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
@@ -116,5 +116,27 @@ public class ServerHelloHandlerTest {
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
                 context.getServerHandshakeTrafficSecret());
+    }
+
+    @Test
+    public void testAdjustTLSContextTls13PWD() {
+        ServerHelloMessage message = new ServerHelloMessage();
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        message.setUnixTime(new byte[] { 0, 1, 2 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
+        message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
+        message.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256.getByteValue());
+        message.setSessionId(new byte[] { 6, 6, 6 });
+        message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(
+                NamedGroup.BRAINPOOLP256R1,
+                ArrayConverter
+                        .hexStringToByteArray("9EE17F2ECF74028F6C1FD70DA1D05A4A85975D7D270CAA6B8605F1C6EBB875BA87579167408F7C9E77842C2B3F3368A25FD165637E9B5D57760B0B704659B87420669244AA67CB00EA72C09B84A9DB5BB824FC3982428FCD406963AE080E677A48")));
+        context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
+        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
+        handler.adjustTLSContext(message);
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("09E4B18F6B4F59BD8ADED8E875CD9B9A7694A8C5345EDB3381A47D1F860BF209"),
+                context.getHandshakeSecret());
     }
 }

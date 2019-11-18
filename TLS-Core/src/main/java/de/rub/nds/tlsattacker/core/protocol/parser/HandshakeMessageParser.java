@@ -91,11 +91,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         T msg = createHandshakeMessage();
         parseType(msg);
         parseLength(msg);
-        if (version.isDTLS()) {
-            parseMessageSequence(msg);
-            parseFragmentOffset(msg);
-            parseFragmentLength(msg);
-        }
         parseHandshakeMessageContent(msg);
         return msg;
     }
@@ -103,21 +98,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     protected abstract void parseHandshakeMessageContent(T msg);
 
     protected abstract T createHandshakeMessage();
-
-    private void parseFragmentOffset(T msg) {
-        msg.setFragmentOffset(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_OFFSET));
-        LOGGER.debug("FragmentOffset:" + msg.getFragmentOffset().getValue());
-    }
-
-    private void parseFragmentLength(T msg) {
-        msg.setFragmentLength(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
-        LOGGER.debug("FragmentLength:" + msg.getFragmentLength().getValue());
-    }
-
-    private void parseMessageSequence(T msg) {
-        msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
-        LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
-    }
 
     /**
      * Reads the next bytes as the ExtensionLength and writes them in the

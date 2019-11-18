@@ -39,7 +39,7 @@ public class HelloVerifyRequestPreparatorTest {
      */
     @Test
     public void testPrepare() {
-        context.getConfig().setDefaultDTLSCookieLength(10);
+        context.getConfig().setDtlsDefaultCookieLength(10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();
         LOGGER.info(ArrayConverter.bytesToHexString(message.getCookie().getValue(), false));

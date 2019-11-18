@@ -40,7 +40,7 @@ public class RecordNullCipher extends RecordCipher {
      */
     @Override
     public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
-        return new DecryptionResult(null, decryptionRequest.getCipherText(), null);
+        return new DecryptionResult(null, decryptionRequest.getCipherText(), null, true);
     }
 
     @Override

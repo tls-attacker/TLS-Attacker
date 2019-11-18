@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,12 @@ public class SerializerTest {
         serializer.serializeBytes();
         byte[] result = serializer.getAlreadySerialized();
         assertArrayEquals(result, new byte[] { 0, 1, 2, 3, });
+    }
+
+    @Test
+    public void testSerializeBigInteger() {
+        serializer.appendBigInteger(BigInteger.ZERO, 6);
+        assertArrayEquals(new byte[6], serializer.getAlreadySerialized());
     }
 
     /**

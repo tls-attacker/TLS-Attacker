@@ -52,11 +52,16 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             LOGGER.debug("Using preset PreMasterSecret from context.");
             return tempPremasterSecret;
         }
-        tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
-        tempPremasterSecret[0] = chooser.getHighestClientProtocolVersion().getMajor();
-        tempPremasterSecret[1] = chooser.getHighestClientProtocolVersion().getMinor();
-        return tempPremasterSecret;
+        msg.getComputations().setPremasterSecretProtocolVersion(chooser.getHighestClientProtocolVersion().getValue());
+        if (msg.getComputations().getPremasterSecretProtocolVersion().getValue().length > HandshakeByteLength.PREMASTER_SECRET) {
+            return msg.getComputations().getPlainPaddedPremasterSecret().getValue();
+        } else {
+            tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET
+                    - msg.getComputations().getPremasterSecretProtocolVersion().getValue().length];
+            chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
+            return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
+                    tempPremasterSecret);
+        }
     }
 
     protected RSAPublicKey generateFreshKey() {
@@ -158,6 +163,11 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                         paddedPremasterSecret.length);
                 premasterSecret = manipulatePremasterSecret(premasterSecret);
                 preparePremasterSecret(msg);
+                if (premasterSecret.length > 2) {
+                    msg.getComputations().setPremasterSecretProtocolVersion(Arrays.copyOfRange(premasterSecret, 0, 2));
+                } else {
+                    LOGGER.warn("Decrypted PMS is not long enough to contain protocol version bytes");
+                }
             } else {
                 LOGGER.warn("RandomByteLength too short! Using empty premasterSecret!");
                 premasterSecret = new byte[0];

@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import java.util.LinkedList;
 import java.util.List;
 

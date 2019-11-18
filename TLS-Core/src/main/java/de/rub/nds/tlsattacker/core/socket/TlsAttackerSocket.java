@@ -104,16 +104,16 @@ public class TlsAttackerSocket {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
         action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
         action.execute(state);
-        List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
+        List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 
-        List<ApplicationMessage> recievedAppMessages = new LinkedList<>();
-        for (ProtocolMessage message : recievedMessages) {
+        List<ApplicationMessage> receivedAppMessages = new LinkedList<>();
+        for (ProtocolMessage message : receivedMessages) {
             if (message instanceof ApplicationMessage) {
-                recievedAppMessages.add((ApplicationMessage) message);
+                receivedAppMessages.add((ApplicationMessage) message);
             }
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ApplicationMessage message : recievedAppMessages) {
+        for (ApplicationMessage message : receivedAppMessages) {
             stream.write(message.getData().getValue());
         }
         return stream.toByteArray();

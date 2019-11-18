@@ -44,6 +44,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
  */
+/**
+ * Deprecated 18.4.2019 - There is no need for this class. it is completly
+ * integrated into the padding oracle attacker
+ */
+@Deprecated
 public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();

@@ -59,7 +59,7 @@ public class TlsAttackerSocketTest {
     }
 
     /**
-     * Test of recieveRawBytes method, of class TlsAttackerSocket.
+     * Test of receiveRawBytes method, of class TlsAttackerSocket.
      * 
      * @throws java.lang.Exception
      */
