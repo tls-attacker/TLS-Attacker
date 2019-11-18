@@ -85,22 +85,18 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         Point point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
                 config.getNamedGroup());
-        for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
-            if (config.getPremasterSecret() != null) {
-                premasterSecret = config.getPremasterSecret();
-            } else {
-                Point sharedPoint = curve.mult(new BigInteger("" + i + 1), point);
-                premasterSecret = sharedPoint.getX().getData();
-                if (premasterSecret == null) {
-                    premasterSecret = BigInteger.ZERO;
-                }
-                LOGGER.debug("PMS: " + premasterSecret.toString());
-            }
+
+        int protocolFlows = getConfig().getProtocolFlows();
+        if (config.getPremasterSecret() != null) {
+            protocolFlows = 1;
+        }
+
+        for (int i = 0; i < protocolFlows; i++) {
+            setPremasterSecret(curve, i, point);
             try {
                 WorkflowTrace trace = executeProtocolFlow();
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
-
                     return null;
                 }
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
@@ -114,6 +110,20 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             }
         }
         return false;
+    }
+
+    private void setPremasterSecret(EllipticCurve curve, int i, Point point) {
+        if (config.getPremasterSecret() != null) {
+            premasterSecret = config.getPremasterSecret();
+        } else {
+            Point sharedPoint = curve.mult(new BigInteger("" + (i + 1)), point);
+            if (sharedPoint.getX() != null) {
+                premasterSecret = sharedPoint.getX().getData();
+            } else {
+                premasterSecret = BigInteger.ZERO;
+            }
+            LOGGER.debug("PMS: " + premasterSecret.toString());
+        }
     }
 
     private WorkflowTrace executeProtocolFlow() {
