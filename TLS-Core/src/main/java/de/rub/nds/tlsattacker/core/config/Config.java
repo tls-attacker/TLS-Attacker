@@ -441,6 +441,8 @@ public class Config implements Serializable {
      */
     private Boolean addServerNameIndicationExtension = false;
 
+    private Boolean addEncryptedServerNameIndicationExtension = false;
+
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
@@ -3348,5 +3350,13 @@ public class Config implements Serializable {
 
     public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
         this.addPWDProtectExtension = addPWDProtectExtension;
+    }
+
+    public Boolean isAddEncryptedServerNameIndicationExtension() {
+        return addEncryptedServerNameIndicationExtension;
+    }
+
+    public void setAddEncryptedServerNameIndicationExtension(Boolean addEncryptedServerNameIndicationExtension) {
+        this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
     }
 }

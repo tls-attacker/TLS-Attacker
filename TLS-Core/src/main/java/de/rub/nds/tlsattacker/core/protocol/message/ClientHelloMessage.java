@@ -26,9 +26,13 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     /**
      * compression length
      */
@@ -81,8 +85,18 @@ public class ClientHelloMessage extends HelloMessage {
                     .getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
-            addExtension(extension);
+            this.addExtension(extension);
         }
+
+        if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
+            LOGGER.warn("ESNI not completely implemented yet.");
+            EncryptedServerNameIndicationExtensionMessage encryptedServerNameIndicationExtensionMessage = new EncryptedServerNameIndicationExtensionMessage();
+            ServerNamePair serverNamePair = new ServerNamePair();
+            serverNamePair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
+                    .getBytes(Charset.forName("ASCII")));
+            this.addExtension(encryptedServerNameIndicationExtensionMessage);
+        }
+
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }

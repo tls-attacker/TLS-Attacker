@@ -15,6 +15,7 @@ import java.util.Map;
 
 public enum ExtensionType {
 
+    ENCRYPTED_SERVER_NAME_INDICATION(new byte[] { (byte) 0xFF, (byte) 0xCE }),
     SERVER_NAME_INDICATION(new byte[] { (byte) 0, (byte) 0 }),
     MAX_FRAGMENT_LENGTH(new byte[] { (byte) 0, (byte) 1 }),
     CLIENT_CERTIFICATE_URL(new byte[] { (byte) 0, (byte) 2 }),

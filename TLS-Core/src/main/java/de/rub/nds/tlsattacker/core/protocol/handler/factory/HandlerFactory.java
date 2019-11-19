@@ -112,6 +112,8 @@ public class HandlerFactory {
             HandshakeMessageType handshakeMessageType) {
         try {
             switch (type) {
+                case ENCRYPTED_SERVER_NAME_INDICATION:
+                    return new EncryptedServerNameIndicationExtensionHandler(context);
                 case ALPN:
                     return new AlpnExtensionHandler(context);
                 case CACHED_INFO:
