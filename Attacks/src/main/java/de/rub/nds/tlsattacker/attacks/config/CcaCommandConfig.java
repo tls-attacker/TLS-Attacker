@@ -49,13 +49,6 @@ public class CcaCommandConfig extends AttackConfig {
     @Override
     public Config createConfig(Config config) {
         super.createConfig(config);
-        // if (ciphersuiteDelegate.getCipherSuites() == null) {
-        // List<CipherSuite> cipherSuites = new
-        // LinkedList<>(CipherSuite.getImplemented());
-        // cipherSuites.remove(CipherSuite.TLS_FALLBACK_SCSV);
-        // cipherSuites.remove(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
-        // config.setDefaultClientSupportedCiphersuites(cipherSuites);
-        // }
         config.setAutoSelectCertificate(false);
         config.setAddServerNameIndicationExtension(true);
         config.setStopActionsAfterFatal(true);

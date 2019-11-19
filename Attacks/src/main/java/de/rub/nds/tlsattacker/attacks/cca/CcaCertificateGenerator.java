@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.cca;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
-import de.rub.nds.tlsattacker.attacks.config.CcaCommandConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
