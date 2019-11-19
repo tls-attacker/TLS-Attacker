@@ -27,33 +27,48 @@ public class PointFormatter {
     public static byte[] formatToByteArray(NamedGroup group, Point point, ECPointFormat format) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int elementLength = ArrayConverter.bigIntegerToByteArray(point.getX().getModulus()).length;
-        switch (format) {
-            case UNCOMPRESSED:
-                stream.write(0x04);
-                try {
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLength));
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(), elementLength));
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not serialize ec point", ex);
-                }
-                return stream.toByteArray();
-            case ANSIX962_COMPRESSED_CHAR2:
-            case ANSIX962_COMPRESSED_PRIME:
-                EllipticCurve curve = CurveFactory.getCurve(group);
-                if (curve.createAPointOnCurve(point.getX().getData()).getY().getData().equals(point.getY().getData())) {
-                    stream.write(0x03);
-                } else {
-                    stream.write(0x02);
-                }
-                try {
-                    stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLength));
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not serialize ec point", ex);
-                }
-                return stream.toByteArray();
-            default:
-                throw new UnsupportedOperationException("Unnsupported PointFormat: " + format);
+        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+            switch (format) {
+                case UNCOMPRESSED:
+                    stream.write(0x04);
+                    try {
+                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
+                                elementLength));
+                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(),
+                                elementLength));
+                    } catch (IOException ex) {
+                        throw new PreparationException("Could not serialize ec point", ex);
+                    }
+                    return stream.toByteArray();
+                case ANSIX962_COMPRESSED_CHAR2:
+                case ANSIX962_COMPRESSED_PRIME:
+                    EllipticCurve curve = CurveFactory.getCurve(group);
+                    if (curve.createAPointOnCurve(point.getX().getData()).getY().getData()
+                            .equals(point.getY().getData())) {
+                        stream.write(0x03);
+                    } else {
+                        stream.write(0x02);
+                    }
+                    try {
+                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
+                                elementLength));
+                    } catch (IOException ex) {
+                        throw new PreparationException("Could not serialize ec point", ex);
+                    }
+                    return stream.toByteArray();
+                default:
+                    throw new UnsupportedOperationException("Unnsupported PointFormat: " + format);
 
+            }
+        } else {
+            try {
+                byte[] coordinate = ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
+                        elementLength);
+                stream.write(coordinate);
+            } catch (IOException ex) {
+                throw new PreparationException("Could not serialize ec point", ex);
+            }
+            return stream.toByteArray();
         }
     }
 
@@ -106,46 +121,63 @@ public class PointFormatter {
         if (compressedPoint.length == 0) {
             throw new UnparseablePointException("Could not parse point. Point is empty");
         }
-        int pointFormat = inputStream.read();
-        byte[] xCoordinate = new byte[elementLength];
-        switch (pointFormat) {
-            case 2:
-            case 3:
-                if (compressedPoint.length != elementLength + 1) {
-                    throw new UnparseablePointException("Could not parse point. Point needs to be "
-                            + (elementLength + 1) + " bytes long, but was " + compressedPoint.length + "bytes long");
-                }
-                try {
-                    inputStream.read(xCoordinate);
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
-                    return curve.getBasePoint();
-                }
-                Point decompressedPoint = curve.createAPointOnCurve(new BigInteger(1, xCoordinate));
-                if (pointFormat == 2) {
-                    decompressedPoint = curve.inverseAffine(decompressedPoint);
-                }
-                return decompressedPoint;
+        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+            int pointFormat = inputStream.read();
+            byte[] xCoordinate = new byte[elementLength];
+            switch (pointFormat) {
+                case 2:
+                case 3:
+                    if (compressedPoint.length != elementLength + 1) {
+                        throw new UnparseablePointException("Could not parse point. Point needs to be "
+                                + (elementLength + 1) + " bytes long, but was " + compressedPoint.length + "bytes long");
+                    }
+                    try {
+                        inputStream.read(xCoordinate);
+                    } catch (IOException ex) {
+                        LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
+                        return curve.getBasePoint();
+                    }
+                    Point decompressedPoint = curve.createAPointOnCurve(new BigInteger(1, xCoordinate));
+                    if (pointFormat == 2) {
+                        decompressedPoint = curve.inverseAffine(decompressedPoint);
+                    }
+                    return decompressedPoint;
 
-            case 4:
-                if (compressedPoint.length != elementLength * 2 + 1) {
-                    throw new UnparseablePointException("Could not parse point. Point needs to be "
-                            + (elementLength * 2 + 1) + " bytes long, but was " + compressedPoint.length + "bytes long");
-                }
+                case 4:
+                    if (compressedPoint.length != elementLength * 2 + 1) {
+                        throw new UnparseablePointException("Could not parse point. Point needs to be "
+                                + (elementLength * 2 + 1) + " bytes long, but was " + compressedPoint.length
+                                + "bytes long");
+                    }
 
-                byte[] yCoordinate = new byte[elementLength];
-                try {
-                    inputStream.read(xCoordinate);
-                    inputStream.read(yCoordinate);
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
-                    return curve.getBasePoint();
-                }
-                return curve.getPoint(new BigInteger(1, xCoordinate), new BigInteger(1, yCoordinate));
+                    byte[] yCoordinate = new byte[elementLength];
+                    try {
+                        inputStream.read(xCoordinate);
+                        inputStream.read(yCoordinate);
+                    } catch (IOException ex) {
+                        LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
+                        return curve.getBasePoint();
+                    }
+                    return curve.getPoint(new BigInteger(1, xCoordinate), new BigInteger(1, yCoordinate));
 
-            default:
-                throw new UnsupportedOperationException("Unnsupported PointFormat: " + pointFormat);
+                default:
+                    throw new UnsupportedOperationException("Unnsupported PointFormat: " + pointFormat);
 
+            }
+        } else {
+            if (compressedPoint.length != elementLength) {
+                throw new UnparseablePointException("Could not parse point. Point needs to be " + elementLength
+                        + " bytes long, but was " + compressedPoint.length + "bytes long");
+            }
+            byte[] xCoordinate = new byte[elementLength];
+            try {
+                inputStream.read(xCoordinate);
+            } catch (IOException ex) {
+                LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
+                return curve.getBasePoint();
+            }
+            RFC7748Curve computation = (RFC7748Curve) curve;
+            return curve.createAPointOnCurve(computation.decodeCoordinate(new BigInteger(1, xCoordinate)));
         }
     }
 
