@@ -95,7 +95,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         super(config, baseConfig);
         executor = new ParallelExecutor(1, 3);
     }
-    
+
     public InvalidCurveAttacker(InvalidCurveAttackConfig config, Config baseConfig, ParallelExecutor executor) {
         super(config, baseConfig);
         this.executor = executor;
