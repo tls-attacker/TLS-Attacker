@@ -18,15 +18,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CcaCertificateGenerator {
+
     /**
      *
-     * @param config
-     *            the CcaCommandConfig config, mainly to access the command line
-     *            switches
+     * @param ccaDelegate
      * @param type
-     *            the type of workflow to execute
+     * @return
      */
-    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCommandConfig config,
+    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate,
             CcaCertificateType type) {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (type != null) {
