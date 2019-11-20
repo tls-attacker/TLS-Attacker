@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerprintSecretPair;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -134,8 +136,16 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         Point point;
         if (config.isCurveTwistAttack()) {
             curve = buildTwistedCurve();
-            BigInteger transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD())
-                    .mod(curve.getModulus());
+            BigInteger transformedX;
+            if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
+                Point montgPoint = rfcCurve.getPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY());
+                Point weierPoint = rfcCurve.toWeierstrass(montgPoint);
+                transformedX = weierPoint.getX().getData().multiply(config.getCurveTwistD()).mod(curve.getModulus());
+            } else {
+                transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD()).mod(curve.getModulus());
+            }
+
             point = Point.createPoint(transformedX, config.getPublicPointBaseY(), config.getNamedGroup());
         } else {
             curve = CurveFactory.getCurve(config.getNamedGroup());
@@ -165,6 +175,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         if (config.getPremasterSecret() != null) {
             premasterSecret = config.getPremasterSecret();
         } else {
+            // note that we're testing the congruences of the DECODED scalar
+            // for RFC7748 curves
             Point sharedPoint = curve.mult(new BigInteger("" + i), point);
             if (sharedPoint.getX() == null) {
                 premasterSecret = BigInteger.ZERO;
@@ -174,6 +186,19 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     // transform back from simulated x-only ladder
                     premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
                             .mod(curve.getModulus());
+                    if (config.getNamedGroup() == NamedGroup.ECDH_X25519
+                            || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                        // transform to Montgomery domain
+                        RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
+                        Point weierPoint = rfcCurve.getPoint(premasterSecret, sharedPoint.getY().getData());
+                        Point montPoint = rfcCurve.toMontgomery(weierPoint);
+                        premasterSecret = montPoint.getX().getData();
+                    }
+                }
+                if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                    // apply RFC7748 encoding
+                    RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
+                    premasterSecret = new BigInteger(1, rfcCurve.encodeCoordinate(premasterSecret));
                 }
             }
             LOGGER.debug("PMS for scheduled Workflow Trace with secret " + i + ": " + premasterSecret.toString());
@@ -187,8 +212,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
         Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()),
                 new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
-        byte[] serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint,
-                config.getPointCompressionFormat());
+        byte[] serialized;
+        if (curve instanceof RFC7748Curve) {
+            serialized = ((RFC7748Curve) curve).encodeCoordinate(basepoint.getX().getData());
+        } else {
+            serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint,
+                    config.getPointCompressionFormat());
+        }
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitPMS = BigIntegers.asUnsignedByteArray(
@@ -315,13 +345,17 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private EllipticCurveOverFp buildTwistedCurve() {
-        EllipticCurveOverFp intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
+        EllipticCurveOverFp intendedCurve;
+        if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+            intendedCurve = ((RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup())).getWeierstrassEquivalent();
+        } else {
+            intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
+        }
         BigInteger modA = intendedCurve.getA().getData().multiply(config.getCurveTwistD().pow(2))
                 .mod(intendedCurve.getModulus());
         BigInteger modB = intendedCurve.getB().getData().multiply(config.getCurveTwistD().pow(3))
                 .mod(intendedCurve.getModulus());
         EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
-
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
     }

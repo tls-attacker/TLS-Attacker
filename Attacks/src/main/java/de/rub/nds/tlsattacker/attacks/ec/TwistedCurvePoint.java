@@ -103,14 +103,33 @@ public enum TwistedCurvePoint {
             NamedGroup.BRAINPOOLP512R1,
             new BigInteger(
                     "40B0D551038B96AD5557B4F4DBEA9CA80EDE1CAB267D90581D92EB7C40D1CA4F2C6C0543A283A87FD19BD7EA24E4908AD2B589589549F7015898DC99D6F43EDD",
+                    16)),
+    // X-Curves use point of order 4 for evaluation of server behavior
+    X25519Twist(
+            new BigInteger("2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2450", 16),
+            new BigInteger("5B8545C0F22DFADE38855A5CD1228352F134A9E655D637C03704BDE426506941", 16),
+            new BigInteger("4"),
+            NamedGroup.ECDH_X25519,
+            new BigInteger("CA6648A697DC4F37B1BB5C5809E9F265332D9C6138371C0809B54D69C303AC7", 16)),
+    X448Twist(
+            new BigInteger(
+                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0000000000000000000000000000000000000000000000000000CB8D",
+                    16),
+            new BigInteger(
+                    "9A6A7C05A0FA5E28F5804F2A40D7E9D4411FAA289AD9C54ACEFA9D5EAD8C5E1A0041CFBCA155921E66D4BDEC85414FFE42C18EFFEF918CB5",
+                    16),
+            new BigInteger("4"),
+            NamedGroup.ECDH_X448,
+            new BigInteger(
+                    "F151DA48F37BACE95DEE7E0F6F2477C60C131264C2A5B900D214C76115C10CC86A22E33E6C07933F6369E8544580C6780F256EE77F8F3513",
                     16));
-
     private BigInteger publicPointBaseX;
 
     /**
      * An appropriate coordinate used to fill bytes when no compression is used
      * The attack does not require an Y-coordinate as we are targeting X-only
-     * ladders
+     * ladders To save computations, this coordinate is the y-coordinate of the
+     * point obtained from the transformed twisted curve
      */
     private BigInteger publicPointBaseY;
 
@@ -226,6 +245,8 @@ public enum TwistedCurvePoint {
             case SECP521R1:
             case BRAINPOOLP384R1:
             case BRAINPOOLP512R1:
+            case ECDH_X25519:
+            case ECDH_X448:
                 return false; // attack complexity > 2^100
             default:
                 return true;
