@@ -1247,6 +1247,10 @@ public class TlsContext {
         return dtlsWriteEpoch;
     }
 
+    public void setDtlsWriteEpoch(int dtlsWriteEpoch) {
+        this.dtlsWriteEpoch = dtlsWriteEpoch;
+    }
+
     public int getDtlsReceiveEpoch() {
         return dtlsReadEpoch;
     }

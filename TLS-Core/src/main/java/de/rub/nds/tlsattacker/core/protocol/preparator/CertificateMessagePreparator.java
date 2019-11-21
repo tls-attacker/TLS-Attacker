@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -82,10 +83,11 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     } else {
                         ecPointToEncode = chooser.getServerEcPublicKey();
                     }
+                    //TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(new DLSequence(new ASN1Encodable[] {
                             new DLSequence(new ASN1Encodable[] { new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7") }),
-                            new DERBitString(PointFormatter.formatToByteArray(ecPointToEncode,
+                            new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
                                     ECPointFormat.UNCOMPRESSED)) }));
                     asn1OutputStream.flush();
                     asn1OutputStream.close();

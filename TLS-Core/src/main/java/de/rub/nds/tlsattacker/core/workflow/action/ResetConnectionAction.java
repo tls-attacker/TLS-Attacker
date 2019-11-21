@@ -53,10 +53,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setWriteSequenceNumber(0);
         LOGGER.info("Resetting DTLS numbers and cookie");
         tlsContext.setDtlsCookie(new byte[] {});
-        tlsContext.setDtlsNextReceiveSequenceNumber(0);
-        tlsContext.setDtlsNextSendSequenceNumber(0);
-        tlsContext.setDtlsSendEpoch(0);
-        tlsContext.setDtlsNextReceiveEpoch(0);
+        tlsContext.setDtlsReadHandshakeMessageSequence(0);
+        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        tlsContext.setDtlsReceiveEpoch(0);
+        tlsContext.setDtlsWriteEpoch(0);
+
         LOGGER.info("Reopening Connection");
         try {
             tlsContext.getTransportHandler().initialize();
