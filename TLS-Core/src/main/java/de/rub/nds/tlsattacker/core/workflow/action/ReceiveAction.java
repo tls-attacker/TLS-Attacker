@@ -207,20 +207,22 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (messages == null) {
             return false;
         }
-
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (expectedMessages.size() > messages.size()) {
+        int j = 0;
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
                 return false;
-            }
-        } else {
-            if (messages.size() != expectedMessages.size()) {
-                return false;
+            } else if (j < messages.size()) {
+                if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
+                        && expectedMessages.get(i).isRequired()) {
+                    return false;
+                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
+                    j++;
+                }
             }
         }
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
-                return false;
-            }
+
+        if (j < messages.size() && !checkOnlyExpected) {
+            return false; // additional messages are not allowed
         }
 
         return true;
