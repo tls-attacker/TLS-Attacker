@@ -444,40 +444,23 @@ public class TlsContext {
     private long readSequenceNumber = 0;
 
     /**
-     * the sequence number to be used in the fragments of the next message sent
+     * the latest epoch the peer used
      */
-    private int dtlsNextSendSequenceNumber = 0;
-
-    /**
-     * the sequence number used in fragments
-     */
-    private int dtlsCurrentSendSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the next message
-     * received
-     */
-    private int dtlsNextReceiveSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the current message
-     */
-    private int dtlsCurrentReceiveSequenceNumber = 0;
+    private int dtlsReadEpoch = 0;
 
     /**
      * the epoch applied to transmitted DTLS records
      */
-    private int dtlsSendEpoch = 0;
+    private int dtlsWriteEpoch = 0;
 
-    /**
-     * the epoch expected in the next record
-     */
-    private int dtlsNextReceiveEpoch = 0;
+    private int dtlsReadHandshakeMessageSequence = 0;
+
+    private int dtlsWriteHandshakeMessageSequence = 0;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
-    private FragmentManager dtlsFragmentManager;
+    private FragmentManager globalDtlsFragmentManager;
 
     /**
      * supported protocol versions
@@ -654,7 +637,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
-        dtlsFragmentManager = new FragmentManager(config);
+        globalDtlsFragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {
@@ -678,6 +661,30 @@ public class TlsContext {
 
     public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
         this.reversePrepareAfterParse = reversePrepareAfterParse;
+    }
+
+    public int getDtlsReadHandshakeMessageSequence() {
+        return dtlsReadHandshakeMessageSequence;
+    }
+
+    public void setDtlsReadHandshakeMessageSequence(int dtlsReadHandshakeMessageSequence) {
+        this.dtlsReadHandshakeMessageSequence = dtlsReadHandshakeMessageSequence;
+    }
+
+    public void increaseDtlsReadHandshakeMessageSequence() {
+        this.dtlsReadHandshakeMessageSequence++;
+    }
+
+    public void increaseDtlsWriteHandshakeMessageSequence() {
+        this.dtlsWriteHandshakeMessageSequence++;
+    }
+
+    public int getDtlsWriteHandshakeMessageSequence() {
+        return dtlsWriteHandshakeMessageSequence;
+    }
+
+    public void setDtlsWriteHandshakeMessageSequence(int dtlsWriteHandshakeMessageSequence) {
+        this.dtlsWriteHandshakeMessageSequence = dtlsWriteHandshakeMessageSequence;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {
@@ -1208,80 +1215,28 @@ public class TlsContext {
         this.readSequenceNumber++;
     }
 
-    public int getDtlsNextSendSequenceNumber() {
-        return dtlsNextSendSequenceNumber;
+    public void increaseDtlsReadEpoch() {
+        this.dtlsReadEpoch++;
     }
 
-    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
-        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
+    public void increaseDtlsWriteEpoch() {
+        this.dtlsWriteEpoch++;
     }
 
-    public void increaseDtlsNextSendSequenceNumber() {
-        this.dtlsNextSendSequenceNumber++;
+    public int getDtlsWriteEpoch() {
+        return dtlsWriteEpoch;
     }
 
-    public int getDtlsCurrentSendSequenceNumber() {
-        return dtlsCurrentSendSequenceNumber;
+    public int getDtlsReceiveEpoch() {
+        return dtlsReadEpoch;
     }
 
-    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
-        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
-    }
-
-    public void increaseDtlsCurrentSendSequenceNumber() {
-        this.dtlsCurrentSendSequenceNumber++;
-    }
-
-    public int getDtlsCurrentReceiveSequenceNumber() {
-        return dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
-        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void increaseDtlsCurrentReceiveSequenceNumber() {
-        dtlsCurrentReceiveSequenceNumber++;
-    }
-
-    public int getDtlsNextReceiveSequenceNumber() {
-        return dtlsNextReceiveSequenceNumber;
-    }
-
-    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
-        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
-    }
-
-    public int getDtlsSendEpoch() {
-        return dtlsSendEpoch;
-    }
-
-    public void increaseDtlsSendEpoch() {
-        dtlsSendEpoch++;
-    }
-
-    public void setDtlsSendEpoch(int sendEpoch) {
-        this.dtlsSendEpoch = sendEpoch;
-    }
-
-    public int getDtlsNextReceiveEpoch() {
-        return dtlsNextReceiveEpoch;
-    }
-
-    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
-        this.dtlsNextReceiveEpoch = receiveEpoch;
-    }
-
-    public void increaseDtlsNextReceiveEpoch() {
-        dtlsNextReceiveEpoch++;
+    public void setDtlsReceiveEpoch(int sendEpoch) {
+        this.dtlsReadEpoch = sendEpoch;
     }
 
     public FragmentManager getDtlsFragmentManager() {
-        return dtlsFragmentManager;
-    }
-
-    public void increaseDtlsNextReceiveSequenceNumber() {
-        dtlsNextReceiveSequenceNumber++;
+        return globalDtlsFragmentManager;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

@@ -30,7 +30,6 @@ public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry>
         if (group.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
             int elementLength = curve.getModulus().bitLength();
-            System.out.println(elementLength);
             byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / 8);
             int scalarLength = parseIntField(ExtensionByteLength.PWD_SCALAR);
             BigInteger scalar = parseBigIntField(scalarLength);

@@ -93,7 +93,6 @@ public class GOSTUtils {
 
     private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
-            System.out.println(curve);
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
