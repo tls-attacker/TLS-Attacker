@@ -85,4 +85,19 @@ public class ClientUdpTransportHandlerTest {
             udpTH.closeConnection();
         }
     }
+
+    @Test
+    public void testFetchTimeout() throws Exception {
+        ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(), 12345);
+        udpTH.initialize();
+        udpTH.setTimeout(1);
+
+        byte[] rxData;
+        rxData = udpTH.fetchData();
+        assertEquals(0, rxData.length);
+        rxData = udpTH.fetchData();
+        assertEquals(0, rxData.length);
+        udpTH.closeConnection();
+
+    }
 }

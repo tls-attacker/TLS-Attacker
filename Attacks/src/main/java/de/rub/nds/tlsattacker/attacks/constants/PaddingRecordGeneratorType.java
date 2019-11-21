@@ -28,5 +28,7 @@ public enum PaddingRecordGeneratorType {
     /**
      *
      */
-    LONG
+    LONG,
+
+    LONG_RECORD
 }

@@ -43,7 +43,7 @@ public class ClientDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        config.setDefaulRunningMode(RunningModeType.CLIENT);
+        config.setDefaultRunningMode(RunningModeType.CLIENT);
 
         if (host == null) {
             // Though host is a required parameter we can get here if

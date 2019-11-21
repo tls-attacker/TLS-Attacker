@@ -119,7 +119,7 @@ public class StateTest {
     public void settingSingleContextWorkflowWithUnsupportedModeFails() {
 
         Config config = Config.createConfig();
-        config.setDefaulRunningMode(RunningModeType.MITM);
+        config.setDefaultRunningMode(RunningModeType.MITM);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         exception.expect(ConfigurationException.class);

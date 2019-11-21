@@ -356,11 +356,11 @@ public class WorkflowConfigurationFactoryTest {
                         config.setDefaultServerSupportedCiphersuites(suite);
                         config.setDefaultClientSupportedCiphersuites(suite);
                         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-                        config.setDefaulRunningMode(RunningModeType.CLIENT);
+                        config.setDefaultRunningMode(RunningModeType.CLIENT);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
-                        config.setDefaulRunningMode(RunningModeType.SERVER);
+                        config.setDefaultRunningMode(RunningModeType.SERVER);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
-                        config.setDefaulRunningMode(RunningModeType.MITM);
+                        config.setDefaultRunningMode(RunningModeType.MITM);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.MITM);
                     } catch (ConfigurationException E) {
                         // Those are ok

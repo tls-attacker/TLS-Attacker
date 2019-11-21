@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.attacks.exception;
 /**
  *
  */
-public class PaddingOracleUnstableException extends RuntimeException {
+public class OracleUnstableException extends RuntimeException {
 
     /**
      *
      * @param string
      */
-    public PaddingOracleUnstableException(String string) {
+    public OracleUnstableException(String string) {
         super(string);
     }
 

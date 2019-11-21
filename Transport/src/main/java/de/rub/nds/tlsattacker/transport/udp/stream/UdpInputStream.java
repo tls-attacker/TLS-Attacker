@@ -68,7 +68,6 @@ public class UdpInputStream extends InputStream {
             } catch (InterruptedException _) {
             }
         }
-
         index++;
         return dataBuffer[index - 1] & 0xff;
     }

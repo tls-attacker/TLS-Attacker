@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementF2m;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -57,7 +58,10 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             LOGGER.debug("Adjusting Montgomery EC PublicKey");
-            tlsContext.setClientEcPublicKey(Point.createPoint(new BigInteger(serializedPoint), null, usedGroup));
+            // TODO This is only a temporary solution. Montgomory Curves need to
+            // be integrated into the new EC framework
+            tlsContext.setClientEcPublicKey(new Point(new FieldElementF2m(new BigInteger(serializedPoint), null),
+                    new FieldElementF2m(new BigInteger(serializedPoint), null)));
         } else {
             LOGGER.debug("Adjusting EC Point");
             Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);

@@ -10,9 +10,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -27,15 +30,15 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendDynamicClientKeyExchangeAction extends MessageAction implements SendingAction {
+public class SendDynamicServerCertificateAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SendDynamicClientKeyExchangeAction() {
+    public SendDynamicServerCertificateAction() {
         super();
     }
 
-    public SendDynamicClientKeyExchangeAction(String connectionAlias) {
+    public SendDynamicServerCertificateAction(String connectionAlias) {
         super(connectionAlias);
     }
 
@@ -47,14 +50,16 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = new LinkedList<>();
-        messages.add(new WorkflowConfigurationFactory(state.getConfig())
-                .createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser()
-                        .getSelectedCipherSuite())));
+        WorkflowConfigurationFactory workflowFactory = new WorkflowConfigurationFactory(state.getConfig());
+        CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
+        if (workflowFactory.shouldServerSendACertificate(selectedCipherSuite)) {
+            messages.add(new CertificateMessage());
+        }
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Sending DynamicKeyExchange: " + sending);
+            LOGGER.info("Sending Dynamic Certificate: " + sending);
         } else {
-            LOGGER.info("Sending DynamicKeyExchange (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
         }
 
         try {
@@ -73,9 +78,9 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     public String toString() {
         StringBuilder sb;
         if (isExecuted()) {
-            sb = new StringBuilder("Send Dynamic Client Key Exchange Action:\n");
+            sb = new StringBuilder("Send Dynamic Certificate Action:\n");
         } else {
-            sb = new StringBuilder("Send Dynamic Client Key Exchange Action: (not executed)\n");
+            sb = new StringBuilder("Send Dynamic Certificate: (not executed)\n");
         }
         sb.append("\tMessages:");
         if (messages != null) {

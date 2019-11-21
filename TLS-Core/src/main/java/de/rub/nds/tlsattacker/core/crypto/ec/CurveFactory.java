@@ -18,6 +18,7 @@ public class CurveFactory {
      *
      * @param name
      *            The name of the curve, that should be returned.
+     * @return EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
         switch (name) {
@@ -78,7 +79,8 @@ public class CurveFactory {
             case SECT571R1:
                 return new EllipticCurveSECT571R1();
             default:
-                throw new UnsupportedOperationException("The provided curve '" + name + "' is not supported.");
+                throw new UnsupportedOperationException("The provided group '" + name
+                        + "' is not supported by this method.");
 
         }
     }
