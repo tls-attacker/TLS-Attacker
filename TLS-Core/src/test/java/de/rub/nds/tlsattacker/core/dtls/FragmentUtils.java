@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.bouncycastle.util.Arrays;
@@ -16,10 +17,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class FragmentUtils {
+
     public static final int DEFAULT_MESSAGE_LENGTH = 10;
 
     public static DtlsHandshakeMessageFragment fragment(int messageSeq, int fragmentOffset, int fragmentLength,
-            byte content[]) {
+            byte content[], int epoch) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setFragmentOffset(fragmentOffset);
         fragment.setFragmentLength(fragmentLength);
@@ -27,17 +29,19 @@ public class FragmentUtils {
         fragment.setContent(content);
         fragment.setLength(DEFAULT_MESSAGE_LENGTH);
         fragment.setType(HandshakeMessageType.UNKNOWN.getValue());
+        fragment.setEpoch(epoch);
         return fragment;
     }
 
-    public static DtlsHandshakeMessageFragment fragment(int messageSeq, int fragmentOffset, int fragmentLength) {
-        return fragment(messageSeq, fragmentOffset, fragmentLength, new byte[fragmentLength]);
+    public static DtlsHandshakeMessageFragment fragment(int messageSeq, int fragmentOffset, int fragmentLength,
+            int epoch) {
+        return fragment(messageSeq, fragmentOffset, fragmentLength, new byte[fragmentLength], epoch);
     }
 
     public static DtlsHandshakeMessageFragment fragmentOfMsg(int messageSeq, int fragmentOffset, int fragmentLength,
-            byte msgContent[]) {
+            byte msgContent[], int epoch) {
         byte content[] = Arrays.copyOfRange(msgContent, fragmentOffset, fragmentOffset + fragmentLength);
-        return fragment(messageSeq, fragmentOffset, fragmentLength, content);
+        return fragment(messageSeq, fragmentOffset, fragmentLength, content, epoch);
     }
 
     public static void checkFragment(DtlsHandshakeMessageFragment fragment, int expectedOffset, int expectedLength,

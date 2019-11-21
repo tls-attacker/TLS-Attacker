@@ -46,8 +46,8 @@ public class RecordDecryptor extends Decryptor {
     @Override
     public void decrypt(BlobRecord record) {
         LOGGER.debug("Decrypting BlobRecord");
-        DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(null, record.getProtocolMessageBytes()
-                .getValue()));
+        DecryptionResult result = getRecordMostRecentCipher().decrypt(
+                new DecryptionRequest(null, record.getProtocolMessageBytes().getValue()));
         byte[] decrypted = result.getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(decrypted);
         LOGGER.debug("CleanProtocolMessageBytes: "
@@ -57,6 +57,12 @@ public class RecordDecryptor extends Decryptor {
     @Override
     public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record");
+        RecordCipher recordCipher;
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            recordCipher = getRecordCipher(record.getEpoch().getValue());
+        } else {
+            recordCipher = getRecordMostRecentCipher();
+        }
         record.prepareComputations();
         if (recordCipher.getKeySet() != null) {
             record.getComputations().setMacKey(
@@ -67,13 +73,13 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        prepareNonMetaDataMaced(record, encrypted);
+        prepareNonMetaDataMaced(record, encrypted, recordCipher);
         prepareAdditionalMetadata(record);
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.trace("EncryptThenMac is active");
-            byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
+            byte[] mac = parseMac(record.getProtocolMessageBytes().getValue(), recordCipher.getMacLength());
             record.getComputations().setMac(mac);
-            encrypted = removeMac(record.getProtocolMessageBytes().getValue());
+            encrypted = removeMac(record.getProtocolMessageBytes().getValue(), recordCipher.getMacLength());
         }
         LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
         DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(record.getComputations()
@@ -96,11 +102,11 @@ public class RecordDecryptor extends Decryptor {
         if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac() && result.isSuccessful()) {
             LOGGER.trace("EncryptThenMac is not active");
             if (cipherSuite.isUsingMac()) {
-                adjustMac(record);
+                adjustMac(record, recordCipher.getMacLength());
             } else {
                 useNoMac(record);
             }
-            prepareNonMetaDataMaced(record, record.getCleanProtocolMessageBytes().getValue());
+            prepareNonMetaDataMaced(record, record.getCleanProtocolMessageBytes().getValue(), recordCipher);
             prepareAdditionalMetadata(record);
 
         } else {
@@ -113,7 +119,7 @@ public class RecordDecryptor extends Decryptor {
         }
         if (result.isSuccessful()) {
             record.getComputations().setPaddingValid(isPaddingValid(record));
-            record.getComputations().setMacValid(isMacValid(record));
+            record.getComputations().setMacValid(isMacValid(record, recordCipher));
         }
     }
 
@@ -136,7 +142,7 @@ public class RecordDecryptor extends Decryptor {
         }
     }
 
-    private Boolean isMacValid(Record record) {
+    private Boolean isMacValid(Record record, RecordCipher recordCipher) {
         ModifiableByteArray mac = record.getComputations().getMac();
         if (mac != null && mac.getValue() != null && mac.getValue().length > 0) {
             byte[] toBeMaced;
@@ -161,7 +167,8 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
     }
 
-    private void prepareNonMetaDataMaced(Record record, byte[] payload) throws CryptoException {
+    private void prepareNonMetaDataMaced(Record record, byte[] payload, RecordCipher recordCipher)
+            throws CryptoException {
         if (recordCipher.isUsingTags() && !context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (payload.length < recordCipher.getTagSize()) {
                 throw new CryptoException("Ciphertext contains no tag");
@@ -177,15 +184,14 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private boolean isEncryptThenMac(CipherSuite cipherSuite) {
-        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
-                && recordCipher.isUsingMac();
+        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC();
     }
 
-    private void adjustMac(Record record) throws CryptoException {
+    private void adjustMac(Record record, int macLength) throws CryptoException {
         byte[] cleanBytes;
-        byte[] mac = parseMac(record.getComputations().getUnpaddedRecordBytes().getValue());
+        byte[] mac = parseMac(record.getComputations().getUnpaddedRecordBytes().getValue(), macLength);
         record.getComputations().setMac(mac);
-        cleanBytes = removeMac(record.getComputations().getUnpaddedRecordBytes().getValue());
+        cleanBytes = removeMac(record.getComputations().getUnpaddedRecordBytes().getValue(), macLength);
         record.setCleanProtocolMessageBytes(cleanBytes);
     }
 
@@ -284,15 +290,15 @@ public class RecordDecryptor extends Decryptor {
         return Arrays.copyOfRange(decrypted, paddingStart, decrypted.length);
     }
 
-    private byte[] parseMac(byte[] unpadded) throws CryptoException {
-        if (unpadded.length - recordCipher.getMacLength() < 0) {
+    private byte[] parseMac(byte[] unpadded, int macLength) throws CryptoException {
+        if (unpadded.length - macLength < 0) {
             throw new CryptoException("Could not parse MAC, not enough bytes left");
         }
-        return Arrays.copyOfRange(unpadded, (unpadded.length - recordCipher.getMacLength()), unpadded.length);
+        return Arrays.copyOfRange(unpadded, (unpadded.length - macLength), unpadded.length);
     }
 
-    private byte[] removeMac(byte[] unpadded) {
-        return Arrays.copyOf(unpadded, (unpadded.length - recordCipher.getMacLength()));
+    private byte[] removeMac(byte[] unpadded, int macLength) {
+        return Arrays.copyOf(unpadded, (unpadded.length - macLength));
     }
 
     private byte parseContentMessageType(byte[] unpadded) throws CryptoException {

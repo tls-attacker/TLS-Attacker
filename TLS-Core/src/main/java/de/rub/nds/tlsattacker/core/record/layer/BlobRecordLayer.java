@@ -110,12 +110,12 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public void updateEncryptionCipher() {
-        encryptor.setRecordCipher(cipher);
+        encryptor.addNewRecordCipher(cipher);
     }
 
     @Override
     public void updateDecryptionCipher() {
-        decryptor.setRecordCipher(cipher);
+        decryptor.addNewRecordCipher(cipher);
     }
 
     @Override
@@ -125,12 +125,12 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public RecordCipher getEncryptor() {
-        return encryptor.getRecordCipher();
+        return encryptor.getRecordMostRecentCipher();
     }
 
     @Override
     public RecordCipher getDecryptor() {
-        return decryptor.getRecordCipher();
+        return decryptor.getRecordMostRecentCipher();
     }
 
 }

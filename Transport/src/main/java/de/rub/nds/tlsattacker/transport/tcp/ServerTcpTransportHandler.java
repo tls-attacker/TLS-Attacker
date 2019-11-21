@@ -42,6 +42,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
         super(timeout, ConnectionEndType.SERVER);
         this.port = socket.getLocalPort();
         this.socket = socket;
+        socket.setSoTimeout(1);
         externalServerSocket = true;
     }
 

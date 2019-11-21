@@ -83,6 +83,7 @@
     <outputFilters>DEFAULT</outputFilters>
     <applyFiltersInPlace>false</applyFiltersInPlace>
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
+    <reorderReceivedDtlsRecords>true</reorderReceivedDtlsRecords>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <defaultClientConnection>
         <alias>client</alias>
@@ -1006,11 +1007,8 @@
     <heartbeatPaddingLength>256</heartbeatPaddingLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
-    <dtlsDefaultCookieLength>6</dtlsDefaultCookieLength>
+    <dtlsDefaultCookieLength>20</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
-    <dtlsOnlyFitting>true</dtlsOnlyFitting>
-    <dtlsExcludeOutOfOrder>false</dtlsExcludeOutOfOrder>
-    <dtlsUpdateOnOutOfOrder>false</dtlsUpdateOnOutOfOrder>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
@@ -1222,4 +1220,6 @@
         84 37 11 C2 1D 47 CE 6E  63 83 CD DA 37 E4 7D A3
     </defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
+    <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
 </config>

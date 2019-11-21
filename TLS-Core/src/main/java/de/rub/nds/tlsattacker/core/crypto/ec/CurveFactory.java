@@ -78,6 +78,10 @@ public class CurveFactory {
                 return new EllipticCurveSECT571K1();
             case SECT571R1:
                 return new EllipticCurveSECT571R1();
+            case ECDH_X25519:
+                return new EllipticCurveX25519();
+            case ECDH_X448:
+                return new EllipticCurveX448();
             default:
                 throw new UnsupportedOperationException("The provided group '" + name
                         + "' is not supported by this method.");

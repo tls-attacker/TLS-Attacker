@@ -34,9 +34,9 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
-        byte[] encrypted = recordCipher.encrypt(
-                getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue(), null))
-                .getCompleteEncryptedCipherText();
+        byte[] encrypted = getRecordMostRecentCipher().encrypt(
+                getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue(), null,
+                        getRecordMostRecentCipher())).getCompleteEncryptedCipherText();
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
@@ -46,6 +46,12 @@ public class RecordEncryptor extends Encryptor {
     public void encrypt(Record record) {
 
         LOGGER.debug("Encrypting Record:");
+        RecordCipher recordCipher;
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            recordCipher = getRecordCipher(record.getEpoch().getValue());
+        } else {
+            recordCipher = getRecordMostRecentCipher();
+        }
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         // initialising mac
         record.getComputations().setMac(new byte[0]);
@@ -57,10 +63,10 @@ public class RecordEncryptor extends Encryptor {
             // Encrypted length
             int cleanLength = record.getCleanProtocolMessageBytes().getValue().length;
             int length = cleanLength + recordCipher.getTagSize() + 1; // +1 for
-                                                                      // the
-                                                                      // encrypted
-                                                                      // record
-                                                                      // type
+            // the
+            // encrypted
+            // record
+            // type
             record.setLength(length);
         }
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
@@ -102,7 +108,8 @@ public class RecordEncryptor extends Encryptor {
         setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(
                 getEncryptionRequest(record.getComputations().getPlainRecordBytes().getValue(), record
-                        .getComputations().getAuthenticatedMetaData().getValue())).getCompleteEncryptedCipherText();
+                        .getComputations().getAuthenticatedMetaData().getValue(), recordCipher))
+                .getCompleteEncryptedCipherText();
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.getComputations().setNonMetaDataMaced(encrypted);
@@ -119,8 +126,7 @@ public class RecordEncryptor extends Encryptor {
     }
 
     private boolean isEncryptThenMac(CipherSuite cipherSuite) {
-        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
-                && recordCipher.isUsingMac();
+        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC();
     }
 
     private void setMac(Record record, byte[] mac) {
@@ -157,7 +163,8 @@ public class RecordEncryptor extends Encryptor {
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 
-    private EncryptionRequest getEncryptionRequest(byte[] data, byte[] additionalAuthenticatedData) {
+    private EncryptionRequest getEncryptionRequest(byte[] data, byte[] additionalAuthenticatedData,
+            RecordCipher recordCipher) {
         return new EncryptionRequest(data, recordCipher.getEncryptionIV(), additionalAuthenticatedData);
     }
 }
