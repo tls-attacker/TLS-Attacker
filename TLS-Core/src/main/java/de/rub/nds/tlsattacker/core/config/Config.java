@@ -171,6 +171,11 @@ public class Config implements Serializable {
     private Boolean filtersKeepUserSettings = true;
 
     /**
+     * If we receive records in the wrong order we will reorder them
+     */
+    private Boolean reorderReceivedDtlsRecords = true;
+
+    /**
      * Default value for ProtocolVerionFields
      */
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
@@ -763,31 +768,13 @@ public class Config implements Serializable {
     /**
      * How long should our DTLSCookies be by default
      */
-    private Integer dtlsDefaultCookieLength = 6;
+    private Integer dtlsDefaultCookieLength = 20;
 
     /**
      * Configures the maximum fragment length. This should not be confused with
      * MTU (which includes the IP, UDP, record and DTLS headers).
      */
     private Integer dtlsMaximumFragmentLength = 1400;
-
-    /**
-     * Enables a check on DTLS fragments ensuring that messages are formed only
-     * from fragments with consistent field values. Fields checked are type,
-     * message length and message seq.
-     */
-    private boolean dtlsOnlyFitting = true;
-
-    /**
-     * Exclude out of order messages from the output received.
-     */
-    private boolean dtlsExcludeOutOfOrder = false;
-
-    /**
-     * Updates the context also when receiving out of order messages. This
-     * should not be used in environments were retransmissions are expected.
-     */
-    private boolean dtlsUpdateOnOutOfOrder = false;
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -1115,6 +1102,10 @@ public class Config implements Serializable {
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
+    private boolean acceptOnlyFittingDtlsFragments = false;
+
+    private boolean acceptContentRewritingDtlsFragments = true;
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -1214,6 +1205,30 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+    }
+
+    public boolean isAcceptOnlyFittingDtlsFragments() {
+        return acceptOnlyFittingDtlsFragments;
+    }
+
+    public void setAcceptOnlyFittingDtlsFragments(boolean acceptOnlyFittingDtlsFragments) {
+        this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
+    }
+
+    public boolean isAcceptContentRewritingDtlsFragments() {
+        return acceptContentRewritingDtlsFragments;
+    }
+
+    public void setAcceptContentRewritingDtlsFragments(boolean acceptContentRewritingDtlsFragments) {
+        this.acceptContentRewritingDtlsFragments = acceptContentRewritingDtlsFragments;
+    }
+
+    public Boolean getReorderReceivedDtlsRecords() {
+        return reorderReceivedDtlsRecords;
+    }
+
+    public void setReorderReceivedDtlsRecords(Boolean reorderReceivedDtlsRecords) {
+        this.reorderReceivedDtlsRecords = reorderReceivedDtlsRecords;
     }
 
     public Config createCopy() {
@@ -1721,30 +1736,6 @@ public class Config implements Serializable {
 
     public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
         this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
-    }
-
-    public boolean isDtlsExcludeOutOfOrder() {
-        return dtlsExcludeOutOfOrder;
-    }
-
-    public void setDtlsExcludeOutOfOrder(boolean dtlsDtlsExcludeOutOfOrder) {
-        this.dtlsExcludeOutOfOrder = dtlsDtlsExcludeOutOfOrder;
-    }
-
-    public boolean isDtlsUpdateOnOutOfOrder() {
-        return dtlsUpdateOnOutOfOrder;
-    }
-
-    public void setDtlsUpdateOnOutOfOrder(boolean dtlsUpdateOnOutOfOrder) {
-        this.dtlsUpdateOnOutOfOrder = true;
-    }
-
-    public boolean isDtlsOnlyFitting() {
-        return dtlsOnlyFitting;
-    }
-
-    public void setDtlsOnlyFitting(boolean dtlsOnlyFitting) {
-        this.dtlsOnlyFitting = dtlsOnlyFitting;
     }
 
     public byte[] getDefaultClientSessionId() {

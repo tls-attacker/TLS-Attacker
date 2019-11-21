@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
-    private byte[] contentConfig;
-
     @ModifiableVariableProperty
     private ModifiableByteArray content;
 
@@ -35,10 +33,28 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
+    private ModifiableInteger epoch = null;
+
+    private byte[] fragmentContentConfig = new byte[0];
+    private int messageSequenceConfig = 0;
+    private int offsetConfig = 0;
+    private int handshakeMessageLengthConfig = 0;
+
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
         ADJUST_CONTEXT_DEFAULT = false;
+    }
+
+    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] fragmentContentConfig,
+            int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
+        super(handshakeMessageType);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
+        ADJUST_CONTEXT_DEFAULT = false;
+        this.fragmentContentConfig = fragmentContentConfig;
+        this.messageSequenceConfig = messageSequenceConfig;
+        this.offsetConfig = offsetConfig;
+        this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
     }
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
@@ -47,9 +63,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         ADJUST_CONTEXT_DEFAULT = false;
     }
 
-    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] contentConfig) {
+    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
-        this.contentConfig = contentConfig;
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
         ADJUST_CONTEXT_DEFAULT = false;
     }
@@ -59,12 +74,36 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         return new DtlsHandshakeMessageFragmentHandler(context);
     }
 
-    public byte[] getContentConfig() {
-        return contentConfig;
+    public byte[] getFragmentContentConfig() {
+        return fragmentContentConfig;
     }
 
-    public void setContentConfig(byte[] contentConfig) {
-        this.contentConfig = contentConfig;
+    public void setFragmentContentConfig(byte[] fragmentContentConfig) {
+        this.fragmentContentConfig = fragmentContentConfig;
+    }
+
+    public int getMessageSequenceConfig() {
+        return messageSequenceConfig;
+    }
+
+    public void setMessageSequenceConfig(int messageSequenceConfig) {
+        this.messageSequenceConfig = messageSequenceConfig;
+    }
+
+    public int getOffsetConfig() {
+        return offsetConfig;
+    }
+
+    public void setOffsetConfig(int offsetConfig) {
+        this.offsetConfig = offsetConfig;
+    }
+
+    public int getHandshakeMessageLengthConfig() {
+        return handshakeMessageLengthConfig;
+    }
+
+    public void setHandshakeMessageLengthConfig(int handshakeMessageLengthConfig) {
+        this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
     }
 
     public ModifiableByteArray getContent() {
@@ -113,6 +152,18 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public void setFragmentLength(ModifiableInteger fragmentLength) {
         this.fragmentLength = fragmentLength;
+    }
+
+    public ModifiableInteger getEpoch() {
+        return epoch;
+    }
+
+    public void setEpoch(ModifiableInteger epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
     }
 
     @Override

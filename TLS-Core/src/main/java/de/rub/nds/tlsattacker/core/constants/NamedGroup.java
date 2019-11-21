@@ -234,7 +234,6 @@ public enum NamedGroup {
 
     public boolean isStandardCurve() {
         return this.isCurve() && this != ECDH_X25519 && this != ECDH_X448;
-
     }
 
     public boolean isCurve() {

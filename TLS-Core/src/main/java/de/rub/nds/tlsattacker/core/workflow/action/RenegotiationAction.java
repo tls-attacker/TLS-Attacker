@@ -26,6 +26,7 @@ public class RenegotiationAction extends ConnectionBoundAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         tlsContext.getDigest().reset();
+        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
         setExecuted(true);
         LOGGER.info("Resetting Digest for Renegotiation");
     }
