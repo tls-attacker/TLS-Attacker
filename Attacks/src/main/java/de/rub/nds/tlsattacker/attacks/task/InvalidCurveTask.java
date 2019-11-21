@@ -41,8 +41,6 @@ public class InvalidCurveTask extends TlsTask {
 
     private Point receivedEcKey;
 
-    private boolean resolveTls13CCSdiscrepancy;
-
     public InvalidCurveTask(State state, int reexecutions, int appliedSecret) {
         super(reexecutions);
         this.appliedSecret = appliedSecret;
@@ -59,10 +57,6 @@ public class InvalidCurveTask extends TlsTask {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(getState());
             executor.executeWorkflow();
-
-            if (resolveTls13CCSdiscrepancy) {
-                allowTls13CCS(getState());
-            }
 
             if (getState().getTlsContext().getServerEcPublicKey() != null) {
                 receivedEcKey = getState().getTlsContext().getServerEcPublicKey();
@@ -91,41 +85,6 @@ public class InvalidCurveTask extends TlsTask {
      */
     public Point getReceivedEcKey() {
         return receivedEcKey;
-    }
-
-    /**
-     * @return the resolveTls13CCSdiscrepancy
-     */
-    public boolean isResolveTls13CCSdiscrepancy() {
-        return resolveTls13CCSdiscrepancy;
-    }
-
-    /**
-     * @param resolveTls13CCSdiscrepancy
-     *            the resolveTls13CCSdiscrepancy to set
-     */
-    public void setResolveTls13CCSdiscrepancy(boolean resolveTls13CCSdiscrepancy) {
-        this.resolveTls13CCSdiscrepancy = resolveTls13CCSdiscrepancy;
-    }
-
-    /**
-     * Tries to resolve a Workflow Trace conflict when a server sent a CCS
-     * message to maintain backward compatibility in a TLS 1.3 handshake
-     */
-    private void allowTls13CCS(State state) {
-        ReceiveAction firstServerMessages = null;
-        WorkflowTrace trace = state.getWorkflowTrace();
-        for (TlsAction action : trace.getTlsActions()) {
-            if (action instanceof ReceiveAction) {
-                firstServerMessages = (ReceiveAction) action;
-                break;
-            }
-        }
-        if (firstServerMessages != null && !firstServerMessages.executedAsPlanned()
-                && firstServerMessages.getReceivedMessages().get(1) instanceof ChangeCipherSpecMessage) {
-            firstServerMessages.getExpectedMessages().add(1, new ChangeCipherSpecMessage());
-            LOGGER.debug("Tried to resolve workflow trace discrepancy for unexpected CCS in TLS 1.3 handshake");
-        }
     }
 
     /**

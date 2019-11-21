@@ -162,9 +162,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         for (int i = 1; i <= protocolFlows; i++) {
             setPremasterSecret(curve, i, point);
             InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i);
-            if (config.isAttackInRenegotiation() && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-                taskToAdd.setResolveTls13CCSdiscrepancy(true);
-            }
             taskList.add(taskToAdd);
         }
         executor.bulkExecuteTasks(taskList);
