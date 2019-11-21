@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -223,6 +224,10 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract CertificateType getSelectedClientCertificateType();
+
+    public abstract CertificateType getSelectedServerCertificateType();
 
     public abstract String getHttpsCookieName();
 

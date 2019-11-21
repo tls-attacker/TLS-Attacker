@@ -47,7 +47,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (SignatureAndHashAlgorithm algo : chooser.getConfig().getSupportedSignatureAndHashAlgorithms()) {
+        for (SignatureAndHashAlgorithm algo : chooser.getConfig().getDefaultClientSupportedSignatureAndHashAlgorithms()) {
             try {
                 stream.write(algo.getByteValue());
             } catch (IOException ex) {

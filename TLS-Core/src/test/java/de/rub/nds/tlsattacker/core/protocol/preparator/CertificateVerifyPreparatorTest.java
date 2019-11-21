@@ -117,7 +117,7 @@ public class CertificateVerifyPreparatorTest {
         algoList.add(SignatureAndHashAlgorithm.RSA_MD5);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA1);
         algoList.add(SignatureAndHashAlgorithm.RSA_SHA1);
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(algoList);
+        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 1, 1, }, message.getSignatureHashAlgorithm().getValue());
         // TODO I dont check if the signature is correctly calcualted or
@@ -137,7 +137,7 @@ public class CertificateVerifyPreparatorTest {
         algoList.add(SignatureAndHashAlgorithm.RSA_MD5);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA1);
         algoList.add(SignatureAndHashAlgorithm.RSA_SHA1);
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(algoList);
+        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         LOGGER.info(ArrayConverter.bytesToHexString(message.getSignature().getValue(), false));
 

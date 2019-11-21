@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -40,6 +41,24 @@ public class DefaultChooser extends Chooser {
 
     DefaultChooser(TlsContext context, Config config) {
         super(context, config);
+    }
+
+    @Override
+    public CertificateType getSelectedClientCertificateType() {
+        if (context.getSelectedClientCertificateType() != null) {
+            return context.getSelectedClientCertificateType();
+        } else {
+            return config.getDefaultSelectedClientCertificateType();
+        }
+    }
+
+    @Override
+    public CertificateType getSelectedServerCertificateType() {
+        if (context.getSelectedServerCertificateType() != null) {
+            return context.getSelectedServerCertificateType();
+        } else {
+            return config.getDefaultSelectedServerCertificateType();
+        }
     }
 
     @Override
