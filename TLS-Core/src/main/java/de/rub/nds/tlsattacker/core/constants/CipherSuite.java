@@ -508,7 +508,7 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon() || this.isPWD();
+        return this.name().contains("DHE_") || this.isAnon() || this.isPWD() || this.isTLS13();
     }
 
     public boolean isPskOrDhPsk() {

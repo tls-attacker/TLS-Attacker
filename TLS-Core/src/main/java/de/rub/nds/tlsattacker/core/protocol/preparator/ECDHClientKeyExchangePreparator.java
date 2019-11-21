@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
@@ -80,27 +81,18 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg, clientMode);
         }
-
-        if (usedGroup == NamedGroup.ECDH_X25519) {
+        EllipticCurve curve = CurveFactory.getCurve(usedGroup);
+        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             if (clientMode) {
-                premasterSecret = ForgivingX25519Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), ArrayConverter.bigIntegerToNullPaddedByteArray(chooser.getServerEcPublicKey()
-                        .getX().getData(), ForgivingX25519Curve.ELEMENT_SIZE));
+                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
+                        chooser.getServerEcPublicKey());
             } else {
-                premasterSecret = ForgivingX25519Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), msg.getPublicKey().getValue());
-            }
-        } else if (usedGroup == NamedGroup.ECDH_X448) {
-            if (clientMode) {
-                premasterSecret = ForgivingX448Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), ArrayConverter.bigIntegerToNullPaddedByteArray(chooser.getServerEcPublicKey()
-                        .getX().getData(), ForgivingX448Curve.ELEMENT_SIZE));
-            } else {
-                premasterSecret = ForgivingX448Curve.computeSharedSecret(msg.getComputations().getPrivateKey()
-                        .getValue(), msg.getPublicKey().getValue());
+                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(), msg
+                        .getPublicKey().getValue());
             }
         } else {
-            EllipticCurve curve = CurveFactory.getCurve(usedGroup);
+
             Point publicKey;
             if (clientMode) {
                 publicKey = chooser.getServerEcPublicKey();
@@ -120,19 +112,17 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setComputationPrivateKey(msg, true);
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-
-        if (usedGroup == NamedGroup.ECDH_X25519) {
-            publicKeyBytes = ForgivingX25519Curve.computePublicKey(privateKey);
-        } else if (usedGroup == NamedGroup.ECDH_X448) {
-            publicKeyBytes = ForgivingX448Curve.computePublicKey(privateKey);
+        EllipticCurve curve = CurveFactory.getCurve(usedGroup);
+        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+            publicKeyBytes = rfcCurve.computePublicKey(privateKey);
         } else {
-            EllipticCurve curve = CurveFactory.getCurve(usedGroup);
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
             msg.getComputations().setPublicKeyX(publicKey.getX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getY().getData());
             publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
                     .getPublicKeyY().getValue());
-            publicKeyBytes = PointFormatter.formatToByteArray(publicKey, pointFormat);
+            publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);
     }
