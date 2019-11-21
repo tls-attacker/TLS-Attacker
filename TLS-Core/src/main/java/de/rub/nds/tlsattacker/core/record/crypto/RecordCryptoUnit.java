@@ -44,7 +44,7 @@ public abstract class RecordCryptoUnit {
         }
     }
 
-    public void addNewRecentRecordCipher(RecordCipher recordCipher) {
+    public void addNewRecordCipher(RecordCipher recordCipher) {
         this.recordCipherList.add(recordCipher);
     }
 

@@ -168,12 +168,12 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public void updateEncryptionCipher() {
-        encryptor.addNewRecentRecordCipher(cipher);
+        encryptor.addNewRecordCipher(cipher);
     }
 
     @Override
     public void updateDecryptionCipher() {
-        decryptor.addNewRecentRecordCipher(cipher);
+        decryptor.addNewRecordCipher(cipher);
     }
 
     @Override
