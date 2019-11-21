@@ -83,7 +83,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     } else {
                         ecPointToEncode = chooser.getServerEcPublicKey();
                     }
-                    //TODO this needs to be adjusted for different curves
+                    // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(new DLSequence(new ASN1Encodable[] {
                             new DLSequence(new ASN1Encodable[] { new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7") }),
