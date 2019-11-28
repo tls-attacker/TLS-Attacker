@@ -78,6 +78,7 @@ public abstract class RecordCipher {
     public final KeySet getKeySet() {
         return keySet;
     }
+
     /**
      * This function collects data needed for computing MACs and other
      * authentication tags in CBC/CCM/GCM cipher suites.

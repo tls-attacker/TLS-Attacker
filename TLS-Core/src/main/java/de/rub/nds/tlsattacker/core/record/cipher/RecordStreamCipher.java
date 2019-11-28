@@ -162,7 +162,7 @@ public class RecordStreamCipher extends RecordCipher {
 
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
                     .getAuthenticatedMetaData().getValue(), record.getComputations().getAuthenticatedNonMetaData()
-                            .getValue()), context.getChooser().getConnectionEndType());
+                    .getValue()), context.getChooser().getConnectionEndType());
             setMac(record, mac);
         }
 

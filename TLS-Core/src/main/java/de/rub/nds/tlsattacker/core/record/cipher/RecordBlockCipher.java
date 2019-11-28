@@ -135,8 +135,8 @@ public final class RecordBlockCipher extends RecordCipher {
         if (useExplicitIv) {
             byte[] decryptIv = Arrays.copyOf(ciphertext, decryptCipher.getBlocksize());
             LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-            plaintext = decryptCipher.decrypt(decryptIv, Arrays.copyOfRange(ciphertext,
-                    decryptCipher.getBlocksize(), ciphertext.length));
+            plaintext = decryptCipher.decrypt(decryptIv,
+                    Arrays.copyOfRange(ciphertext, decryptCipher.getBlocksize(), ciphertext.length));
             usedIv = decryptIv;
         } else {
             byte[] decryptIv = iv;
@@ -214,53 +214,58 @@ public final class RecordBlockCipher extends RecordCipher {
     @Override
     public void encrypt(Record record) {
         if (record.getComputations() == null) {
-            LOGGER.warn("Record computations are not preapred.");
+            LOGGER.warn("Record computations are not prepared.");
             record.prepareComputations();
         }
         LOGGER.debug("Encrypting Record:");
-        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         RecordCryptoComputations computations = record.getComputations();
 
         record.getComputations().setMacKey(getKeySet().getWriteMacSecret(context.getChooser().getConnectionEndType()));
         record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
-        //TODO UPDATE CIPHER
+        // TODO UPDATE CIPHER
 
         byte[] iv = getEncryptionIV();
 
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
             computations.setUnpaddedRecordBytes(cleanBytes);
-            computations.setPadding(calculatePadding(calculatePaddingLength(computations.getUnpaddedRecordBytes().getValue().length)));
-            computations.setPlainRecordBytes(ArrayConverter.concatenate(computations.getUnpaddedRecordBytes().getValue(), computations.getPadding().getValue()));
+            computations.setPadding(calculatePadding(calculatePaddingLength(computations.getUnpaddedRecordBytes()
+                    .getValue().length)));
+            computations.setPlainRecordBytes(ArrayConverter.concatenate(computations.getUnpaddedRecordBytes()
+                    .getValue(), computations.getPadding().getValue()));
             try {
                 computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
             } catch (CryptoException ex) {
                 LOGGER.warn("Could not encrypt data, using unencrypted data instead", ex);
                 computations.setCiphertext(record.getComputations().getPlainRecordBytes().getValue());
             }
-            computations.setMac(calculateMac(ArrayConverter.concatenate(collectAdditionalAuthenticatedData(record, version), computations.getCiphertext().getValue()), context.getConnection().getLocalConnectionEndType()));
-            if (useExplicitIv) {
-                record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext().getValue(), computations.getMac().getValue()));
-            } else {
-                record.setProtocolMessageBytes(ArrayConverter.concatenate(computations.getCiphertext().getValue(), computations.getMac().getValue()));
-            }
+            computations.setMac(calculateMac(ArrayConverter.concatenate(
+                    collectAdditionalAuthenticatedData(record, version), computations.getCiphertext().getValue()),
+                    context.getConnection().getLocalConnectionEndType()));
         } else {
-            computations.setMac(calculateMac(ArrayConverter.concatenate(collectAdditionalAuthenticatedData(record, version), cleanBytes), context.getConnection().getLocalConnectionEndType()));
-            computations.setPadding(calculatePadding(calculatePaddingLength(computations.getUnpaddedRecordBytes().getValue().length)));
+            computations.setMac(calculateMac(
+                    ArrayConverter.concatenate(collectAdditionalAuthenticatedData(record, version), cleanBytes),
+                    context.getConnection().getLocalConnectionEndType()));
+            computations.setPadding(calculatePadding(calculatePaddingLength(computations.getUnpaddedRecordBytes()
+                    .getValue().length)));
 
-            record.getComputations().setPlainRecordBytes(ArrayConverter.concatenate(computations.getUnpaddedRecordBytes().getValue(), computations.getPadding().getValue()));
+            record.getComputations().setPlainRecordBytes(
+                    ArrayConverter.concatenate(computations.getUnpaddedRecordBytes().getValue(), computations
+                            .getPadding().getValue()));
             try {
                 computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
             } catch (CryptoException ex) {
                 LOGGER.warn("Could not encrypt data, using unencrypted data instead", ex);
                 computations.setCiphertext(record.getComputations().getPlainRecordBytes().getValue());
             }
+
+        }
+        if (useExplicitIv) {
             if (useExplicitIv) {
-                if (useExplicitIv) {
-                    record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext().getValue()));
-                } else {
-                    record.setProtocolMessageBytes(computations.getCiphertext());
-                }
+                record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext()
+                        .getValue()));
+            } else {
+                record.setProtocolMessageBytes(computations.getCiphertext());
             }
         }
     }
@@ -276,45 +281,61 @@ public final class RecordBlockCipher extends RecordCipher {
 
         computations.setMacKey(getKeySet().getReadMacSecret(context.getChooser().getConnectionEndType()));
         computations.setCipherKey(getKeySet().getReadKey(context.getChooser().getConnectionEndType()));
-        //TODO UPDATE CIPHER
+        // TODO UPDATE CIPHER
 
         byte[] protocolBytes = record.getProtocolMessageBytes().getValue();
         DecryptionParser parser = new DecryptionParser(0, protocolBytes);
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] iv = null;
         if (useExplicitIv) {
-            //extract IV
+            // extract IV
             CipherAlgorithm cipherAlgorithm = AlgorithmResolver.getCipher(cipherSuite);
-            parser.parseByteArrayField(cipherAlgorithm.getNonceBytesFromHandshake()); //TODO check length?
+            parser.parseByteArrayField(cipherAlgorithm.getNonceBytesFromHandshake()); // TODO check length?
         } else {
-            //use last iv
+            // use last iv
             iv = decryptCipher.getIv();
         }
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
-            MacAlgorithm macAlgorithm = AlgorithmResolver.getMacAlgorithm(version, this.cipherSuite);
-            int macLength = macAlgorithm.getSize();
+            int macLength = readMac.getMacLength();
             int toParseCiphertextLenght = parser.getBytesLeft() - macLength;
-            //TODO if inParseCiphertextLength is >= 0
+            // TODO if inParseCiphertextLength is >= 0
             byte[] ciphertext = parser.parseByteArrayField(toParseCiphertextLenght);
             byte[] hmac = parser.parseByteArrayField(macLength);
             computations.setCiphertext(ciphertext);
             computations.setMac(hmac);
 
-            byte[] plainData = null;
+            byte[] plainData;
             try {
                 plainData = decrypt(ciphertext, iv);
             } catch (CryptoException ex) {
-                //TODO
-                java.util.logging.Logger.getLogger(RecordBlockCipher.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.warn("Could not decrypt ciphertext - using as it is");
+                plainData = ciphertext;
             }
-
             computations.setPlainRecordBytes(plainData);
-            //Depad
+
+            // Depad
             byte[] padding = depad(plainData);
             computations.setPadding(padding);
             byte[] plaintext = Arrays.copyOfRange(plainData, 0, plainData.length - padding.length);
             record.setCleanProtocolMessageBytes(plaintext);
         } else {
+            byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
+            byte[] plainData;
+            try {
+                plainData = decrypt(ciphertext, iv);
+            } catch (CryptoException ex) {
+                LOGGER.warn("Could not decrypt ciphertext - using as it is");
+                plainData = ciphertext;
+            }
+            computations.setPlainRecordBytes(plainData);
+            byte[] padding;
+            try {
+                padding = depad(plainData);
+            } catch (CryptoException ex) {
+                LOGGER.warn("Could not depad", ex); //TODO
+                padding = new byte[0];
+            }
+            computations.setPadding(padding);
 
         }
 

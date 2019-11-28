@@ -26,5 +26,4 @@ public abstract class RecordCryptoUnit {
         this.recordCipher = recordCipher;
     }
 
-    
 }

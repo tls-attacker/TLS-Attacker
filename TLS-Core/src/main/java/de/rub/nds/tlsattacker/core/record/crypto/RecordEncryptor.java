@@ -61,10 +61,10 @@ public class RecordEncryptor extends Encryptor {
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-        
+
         recordCipher.encrypt(record);
-        record.getComputations().setNonMetaDataMaced(cleanBytes);
-        
+        record.getComputations().setNonMetaDataMaced(record.getCleanProtocolMessageBytes());
+
         context.increaseWriteSequenceNumber();
     }
 

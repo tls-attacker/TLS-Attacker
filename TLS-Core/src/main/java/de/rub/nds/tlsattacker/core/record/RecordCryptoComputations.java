@@ -219,7 +219,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAdditionalPaddingLength(Integer paddingLength) {
-        this.additionalPaddingLength = ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength, paddingLength);
+        this.additionalPaddingLength = ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength,
+                paddingLength);
     }
 
     public Boolean getPaddingValid() {

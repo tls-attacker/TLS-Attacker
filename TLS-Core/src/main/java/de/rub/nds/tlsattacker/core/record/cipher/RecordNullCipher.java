@@ -77,7 +77,7 @@ public class RecordNullCipher extends RecordCipher {
 
     @Override
     public void encrypt(Record record) {
-        
+
         LOGGER.debug("Encrypting Record:");
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         // initialising mac
@@ -214,5 +214,4 @@ public class RecordNullCipher extends RecordCipher {
         }
     }
 
-    
 }

@@ -40,7 +40,7 @@ public class RecordAEADCipher extends RecordCipher {
     /**
      * AEAD tag length in bytes for regular ciphers
      */
-public static final int AEAD_TAG_LENGTH = 16;
+    public static final int AEAD_TAG_LENGTH = 16;
 
     /**
      * AEAD tag length in bytes for CCM_8 ciphers
@@ -264,7 +264,7 @@ public static final int AEAD_TAG_LENGTH = 16;
 
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
                     .getAuthenticatedMetaData().getValue(), record.getComputations().getAuthenticatedNonMetaData()
-                            .getValue()), context.getChooser().getConnectionEndType());
+                    .getValue()), context.getChooser().getConnectionEndType());
             setMac(record, mac);
         }
 
@@ -313,7 +313,7 @@ public static final int AEAD_TAG_LENGTH = 16;
 
     @Override
     public void decrypt(Record record) {
-    LOGGER.debug("Decrypting Record");
+        LOGGER.debug("Decrypting Record");
         record.prepareComputations();
         if (recordCipher.getKeySet() != null) {
             record.getComputations().setMacKey(
