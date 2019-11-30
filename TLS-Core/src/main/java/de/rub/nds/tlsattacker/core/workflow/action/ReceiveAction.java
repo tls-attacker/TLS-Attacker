@@ -221,7 +221,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             }
         }
 
-        if (j < messages.size() && !checkOnlyExpected) {
+        if (j < messages.size() && (checkOnlyExpected == null || checkOnlyExpected == false)) {
             return false; // additional messages are not allowed
         }
 
