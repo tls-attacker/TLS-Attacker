@@ -15,14 +15,19 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -90,11 +95,45 @@ public class ClientHelloMessage extends HelloMessage {
 
         if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
             LOGGER.warn("ESNI not completely implemented yet.");
-            EncryptedServerNameIndicationExtensionMessage encryptedServerNameIndicationExtensionMessage = new EncryptedServerNameIndicationExtensionMessage();
-            ServerNamePair serverNamePair = new ServerNamePair();
-            serverNamePair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
-                    .getBytes(Charset.forName("ASCII")));
-            this.addExtension(encryptedServerNameIndicationExtensionMessage);
+            LOGGER.warn("Sending ESNI message with test values.");
+            EncryptedServerNameIndicationExtensionMessage extensionMsg = new EncryptedServerNameIndicationExtensionMessage();
+            byte[] cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
+            String hostname = "baz.example.com";
+            byte nameType = (byte) 0x00;
+
+            byte[] namedGroup = NamedGroup.ECDH_X25519.getValue();
+
+            byte[] keyShareEntry = ArrayConverter
+                    .hexStringToByteArray("41f2f4bcb69a924d3b90d815d8bbe19f5aa68926f6538626737c30bd814d5400");
+
+            byte[] sk = ArrayConverter
+                    .hexStringToByteArray("b0b658b2287a55d9c261bb3feb0c55954be29366eb353b54f986acaa62f81e5A");
+            byte[] pk = ArrayConverter
+                    .hexStringToByteArray("41f2f4bcb69a924d3b90d815d8bbe19f5aa68926f6538626737c30bd814d5400");
+
+            byte[] clientHelloRandom = ArrayConverter
+                    .hexStringToByteArray("e6aef9c483abf499f6a1c3befa5f16f854482072a0d3d29476c51f5c3d4d5709");
+            byte[] keyShareClientHello = ArrayConverter
+                    .hexStringToByteArray("0069001d002033f34944dd62f7d40388729b584e5eb108e29b34c739af29ec5113fb2b8d5714001700410401e31149fb03eee9a101c3660bb29db586d1a347414f0c28011a5fe4805a355d37edfec598888d76083580f0394e754a4666f9a66678c23ae2058ac2fa55a459");
+            byte[] recordBytes = ArrayConverter
+                    .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
+
+            ServerNamePair pair = new ServerNamePair();
+            pair.setServerNameTypeConfig(nameType);
+            pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
+            extensionMsg.getClientEsniInner().getServerNameList().add(pair);
+            extensionMsg.setCipherSuiteConfig(cipherSuite);
+            extensionMsg.getKeyShareEntry().setNamedGroup(namedGroup);
+            extensionMsg.getKeyShareEntry().setKeyExchange(keyShareEntry);
+
+            extensionMsg.getEncryptedSniComputation().setSk(sk);
+            extensionMsg.getEncryptedSniComputation().setPk(pk);
+            extensionMsg.getEncryptedSniComputation().setClientHelloRandom(clientHelloRandom);
+            extensionMsg.getEncryptedSniComputation().setClientHelloKeyShare(keyShareClientHello);
+            extensionMsg.getEncryptedSniComputation().setRecordBytes(recordBytes);
+
+            extensionMsg.getCipherSuite();
+            this.addExtension(extensionMsg);
         }
 
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {

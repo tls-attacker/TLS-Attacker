@@ -261,4 +261,38 @@ public abstract class Chooser {
     public abstract byte[] getServerPWDSalt();
 
     public abstract String getPWDPassword();
+
+    // ESNI:
+    public abstract byte[] getEsniKeysVersion();
+
+    public abstract void setEsniKeysVersion(byte[] esniKeysVersion);
+
+    public abstract byte[] getEsniKeysChecksum();
+
+    public abstract void setEsniKeysChecksum(byte[] esniKeysChecksum);
+
+    public abstract byte[] getEsniKeyList();
+
+    public abstract void setEsniCipherSuite(byte[] esniCipherSuite);
+
+    public abstract byte[] getEsniCipherSuite();
+
+    public abstract void setEsniKeyList(byte[] esniKeyList);
+
+    public abstract byte[] getEsniKeysPaddedLength();
+
+    public abstract void setEsniKeysPaddedLength(byte[] esniKeysPaddedLength);
+
+    public abstract byte[] getEsniKeysNotBefore();
+
+    public abstract void setEsniKeysNotBefore(byte[] esniKeysNotBefore);
+
+    public abstract byte[] getEsniKeysNotAfter();
+
+    public abstract void setEsniKeysNotAfter(byte[] esniKeysNotAfter);
+
+    public abstract byte[] getEsniExtensions();
+
+    public abstract void setEsniExtensions(byte[] esniExtensions);
+
 }

@@ -932,4 +932,86 @@ public class DefaultChooser extends Chooser {
     public String getPWDPassword() {
         return config.getDefaultPWDPassword();
     }
+
+    // ESNI :///////////////////////////////////////////////////
+
+    @Override
+    public byte[] getEsniKeysVersion() {
+        return context.getEsniKeysVersion();
+    }
+
+    @Override
+    public void setEsniKeysVersion(byte[] esniKeysVersion) {
+        this.context.setEsniKeysVersion(esniKeysVersion);
+    }
+
+    @Override
+    public byte[] getEsniKeysChecksum() {
+        return this.context.getEsniKeysChecksum();
+    }
+
+    @Override
+    public void setEsniKeysChecksum(byte[] esniKeysChecksum) {
+        this.context.setEsniKeysChecksum(esniKeysChecksum);
+    }
+
+    @Override
+    public byte[] getEsniKeyList() {
+        return this.context.getEsniKeyList();
+    }
+
+    @Override
+    public void setEsniCipherSuite(byte[] esniCipherSuite) {
+        this.context.setEsniCipherSuite(esniCipherSuite);
+    }
+
+    @Override
+    public byte[] getEsniCipherSuite() {
+        return this.context.getEsniCipherSuite();
+    }
+
+    @Override
+    public void setEsniKeyList(byte[] esniKeyList) {
+        this.context.setEsniKeyList(esniKeyList);
+    }
+
+    @Override
+    public byte[] getEsniKeysPaddedLength() {
+        return this.context.getEsniKeysPaddedLength();
+    }
+
+    @Override
+    public void setEsniKeysPaddedLength(byte[] esniKeysPaddedLength) {
+        this.context.setEsniKeysPaddedLength(esniKeysPaddedLength);
+    }
+
+    @Override
+    public byte[] getEsniKeysNotBefore() {
+        return this.context.getEsniKeysNotBefore();
+    }
+
+    @Override
+    public void setEsniKeysNotBefore(byte[] esniKeysNotBefore) {
+        this.context.setEsniKeysNotBefore(esniKeysNotBefore);
+    }
+
+    @Override
+    public byte[] getEsniKeysNotAfter() {
+        return this.context.getEsniKeysNotAfter();
+    }
+
+    @Override
+    public void setEsniKeysNotAfter(byte[] esniKeysNotAfter) {
+        this.context.setEsniKeysNotAfter(esniKeysNotAfter);
+    }
+
+    @Override
+    public byte[] getEsniExtensions() {
+        return this.context.getEsniExtensions();
+    }
+
+    @Override
+    public void setEsniExtensions(byte[] esniExtensions) {
+        this.context.setEsniExtensions(esniExtensions);
+    }
 }

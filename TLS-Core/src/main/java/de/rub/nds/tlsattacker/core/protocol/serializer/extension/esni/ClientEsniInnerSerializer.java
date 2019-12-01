@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension.esni;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
@@ -26,9 +27,32 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
 
     @Override
     protected byte[] serializeBytes() {
-        // TODO Auto-generated method stub
+        LOGGER.debug("Serializing ClientEsniInner");
+        this.writeNonce(this.clientEsniInner);
+        this.writeServerNameListLength(this.clientEsniInner);
+        this.writeServerNameListBytes(this.clientEsniInner);
+        this.writePadding(this.clientEsniInner);
+        return getAlreadySerialized();
+    }
 
-        // ClientEsniInnerBytes := Serializer(ClientEsniInner)
-        return null;
+    private void writeNonce(ClientEsniInner msg) {
+        appendBytes(msg.getNonce().getValue());
+        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getNonce().getValue()));
+    }
+
+    private void writeServerNameListLength(ClientEsniInner msg) {
+        // TODO: Use constant instead of literal"2"
+        appendInt(clientEsniInner.getServerNameListLength().getValue(), 2);
+        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+    }
+
+    private void writeServerNameListBytes(ClientEsniInner msg) {
+        appendBytes(clientEsniInner.getServerNameListBytes().getValue());
+        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+    }
+
+    private void writePadding(ClientEsniInner msg) {
+        appendBytes(clientEsniInner.getPadding().getValue());
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
 }

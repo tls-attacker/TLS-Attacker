@@ -2297,4 +2297,89 @@ public class TlsContext {
         this.selectedGostCurve = selectedGostCurve;
     }
 
+    /**
+     * PubESNIKeys for ESNI /////////////////////////////////////////////
+     */
+
+    private byte[] esniKeysVersion; // uint16 version;
+
+    private byte[] esniKeysChecksum; // uint8 checksum[4];
+
+    private byte[] esniKeyList; // KeyShareEntry keys<4..2^16-1> {NamedGroup
+                                // group; opaque key_exchange<1..2^16-1>;}
+
+    private byte[] esniCipherSuite; // CipherSuite cipher_suites<2..2^16-2>;
+
+    private byte[] esniKeysPaddedLength; // uint16 padded_length;
+
+    private byte[] esniKeysNotBefore; // uint64 not_before;
+
+    private byte[] esniKeysNotAfter; // uint64 not_before;
+
+    private byte[] esniExtensions; // Extension
+
+    public byte[] getEsniKeysVersion() {
+        return esniKeysVersion;
+    }
+
+    public void setEsniKeysVersion(byte[] esniKeysVersion) {
+        this.esniKeysVersion = esniKeysVersion;
+    }
+
+    public byte[] getEsniKeysChecksum() {
+        return esniKeysChecksum;
+    }
+
+    public void setEsniKeysChecksum(byte[] esniKeysChecksum) {
+        this.esniKeysChecksum = esniKeysChecksum;
+    }
+
+    public byte[] getEsniKeyList() {
+        return esniKeyList;
+    }
+
+    public byte[] getEsniCipherSuite() {
+        return esniCipherSuite;
+    }
+
+    public void setEsniCipherSuite(byte[] esniCipherSuite) {
+        this.esniCipherSuite = esniCipherSuite;
+    }
+
+    public void setEsniKeyList(byte[] esniKeyList) {
+        this.esniKeyList = esniKeyList;
+    }
+
+    public byte[] getEsniKeysPaddedLength() {
+        return esniKeysPaddedLength;
+    }
+
+    public void setEsniKeysPaddedLength(byte[] esniKeysPaddedLength) {
+        this.esniKeysPaddedLength = esniKeysPaddedLength;
+    }
+
+    public byte[] getEsniKeysNotBefore() {
+        return esniKeysNotBefore;
+    }
+
+    public void setEsniKeysNotBefore(byte[] esniKeysNotBefore) {
+        this.esniKeysNotBefore = esniKeysNotBefore;
+    }
+
+    public byte[] getEsniKeysNotAfter() {
+        return esniKeysNotAfter;
+    }
+
+    public void setEsniKeysNotAfter(byte[] esniKeysNotAfter) {
+        this.esniKeysNotAfter = esniKeysNotAfter;
+    }
+
+    public byte[] getEsniExtensions() {
+        return esniExtensions;
+    }
+
+    public void setEsniExtensions(byte[] esniExtensions) {
+        this.esniExtensions = esniExtensions;
+    }
+
 }

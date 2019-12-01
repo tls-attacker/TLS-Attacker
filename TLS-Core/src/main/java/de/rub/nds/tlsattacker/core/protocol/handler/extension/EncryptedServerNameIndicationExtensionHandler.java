@@ -26,35 +26,27 @@ public class EncryptedServerNameIndicationExtensionHandler extends
 
     public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
-        // TODO Auto-generated constructor stub
         LOGGER.warn("EncryptedServerNameIndicationExtensionHandler called. - ESNI not implemented yet.");
     }
 
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ExtensionPreparator getPreparator(EncryptedServerNameIndicationExtensionMessage message) {
-        // TODO Auto-generated method stub
         return new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), message,
                 getSerializer(message));
-        // return null;
     }
 
     @Override
     public ExtensionSerializer getSerializer(EncryptedServerNameIndicationExtensionMessage message) {
-        // TODO Auto-generated method stub
         return new EncryptedServerNameIndicationExtensionSerializer(message);
-        // return null;
     }
 
     @Override
     public void adjustTLSExtensionContext(EncryptedServerNameIndicationExtensionMessage message) {
-        // TODO Auto-generated method stub
-
     }
 
 }

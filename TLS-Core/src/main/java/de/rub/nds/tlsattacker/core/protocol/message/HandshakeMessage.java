@@ -56,6 +56,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
      */
     @XmlElementWrapper
     @XmlElements(value = {
+            @XmlElement(type = EncryptedServerNameIndicationExtensionMessage.class, name = "EncryptedServerNameIndicationExtension"),
+
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
