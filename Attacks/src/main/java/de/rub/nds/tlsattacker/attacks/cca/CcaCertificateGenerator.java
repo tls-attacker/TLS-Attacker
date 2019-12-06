@@ -22,10 +22,12 @@ public class CcaCertificateGenerator {
      *
      * @param ccaDelegate
      * @param type
-     * @return
+     * @return TODO: I might need access to a trust store. Or seperate
+     *         directories for keys and certificates. It's likely that TODO: any
+     *         integration of multiple certificates, partially with keys, will
+     *         be implemented with x509 attacker.
      */
-    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate,
-            CcaCertificateType type) {
+    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type) {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (type != null) {
             switch (type) {

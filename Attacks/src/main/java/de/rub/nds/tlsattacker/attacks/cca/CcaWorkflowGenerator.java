@@ -52,9 +52,9 @@ public class CcaWorkflowGenerator {
                 case CRT_CKE_ZFIN:
                     trace.addTlsAction(new SendAction(certMessage));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-                    FinishedMessage fin = new FinishedMessage(tlsConfig);
-                    fin.setVerifyData(Modifiable.explicit(new byte[HandshakeByteLength.VERIFY_DATA]));
-                    trace.addTlsAction(new SendAction(fin));
+                    FinishedMessage crt_cke_zfin = new FinishedMessage(tlsConfig);
+                    crt_cke_zfin.setVerifyData(Modifiable.explicit(new byte[HandshakeByteLength.VERIFY_DATA]));
+                    trace.addTlsAction(new SendAction(crt_cke_zfin));
                     break;
                 case CKE_CCS_FIN:
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
@@ -65,6 +65,18 @@ public class CcaWorkflowGenerator {
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig), certMessage,
                             new FinishedMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig), certMessage));
+                    break;
+                case CRT_FIN:
+                    trace.addTlsAction(new SendAction(certMessage, new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT_ZFIN:
+                    FinishedMessage crt_zfin = new FinishedMessage(tlsConfig);
+                    crt_zfin.setVerifyData(Modifiable.explicit(new byte[HandshakeByteLength.VERIFY_DATA]));
+                    trace.addTlsAction(new SendAction(certMessage, crt_zfin));
+                    break;
+                case CRT_CCS_FIN:
+                    trace.addTlsAction(new SendAction(certMessage, new ChangeCipherSpecMessage(tlsConfig),
+                            new FinishedMessage(tlsConfig)));
                     break;
                 default:
                     break;
