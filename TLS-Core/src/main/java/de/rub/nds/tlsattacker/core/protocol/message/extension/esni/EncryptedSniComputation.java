@@ -35,12 +35,7 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     private ModifiableByteArray namedGroup;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray pk;
-
-    @ModifiableVariableProperty
-    private ModifiableByteArray sk;
-
-    //
+    private ModifiableByteArray serverPublicKey;
 
     @ModifiableVariableProperty
     private ModifiableByteArray esniContentsHash;
@@ -117,28 +112,16 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
         this.namedGroup = ModifiableVariableFactory.safelySetValue(namedGroup, bytes);
     }
 
-    public ModifiableByteArray getPk() {
-        return pk;
+    public ModifiableByteArray getServerPublicKey() {
+        return serverPublicKey;
     }
 
-    public void setPk(ModifiableByteArray pk) {
-        this.pk = pk;
+    public void setServerPublicKey(ModifiableByteArray pk) {
+        this.serverPublicKey = pk;
     }
 
-    public void setPk(byte[] bytes) {
-        this.pk = ModifiableVariableFactory.safelySetValue(pk, bytes);
-    }
-
-    public ModifiableByteArray getSk() {
-        return sk;
-    }
-
-    public void setSk(ModifiableByteArray sk) {
-        this.sk = sk;
-    }
-
-    public void setSk(byte[] bytes) {
-        this.sk = ModifiableVariableFactory.safelySetValue(sk, bytes);
+    public void setServerPublicKey(byte[] bytes) {
+        this.serverPublicKey = ModifiableVariableFactory.safelySetValue(serverPublicKey, bytes);
     }
 
     public ModifiableByteArray getEsniContentsHash() {

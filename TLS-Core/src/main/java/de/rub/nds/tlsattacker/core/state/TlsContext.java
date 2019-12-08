@@ -2298,25 +2298,57 @@ public class TlsContext {
     }
 
     /**
-     * PubESNIKeys for ESNI /////////////////////////////////////////////
+     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * ******************************** ESNI ******************************** :
      */
+
+    // KeyRecord structure :
+    private byte[] esniRecordBytes;
+
+    // KeyRecord structure fields:
 
     private byte[] esniKeysVersion; // uint16 version;
 
     private byte[] esniKeysChecksum; // uint8 checksum[4];
 
-    private byte[] esniKeyList; // KeyShareEntry keys<4..2^16-1> {NamedGroup
-                                // group; opaque key_exchange<1..2^16-1>;}
+    private List<byte[]> esniServerKeyShareEntryList;
+    // {NamedGroup group; opaque key_exchange<1..2^16-1>;}
+    // KeyShareEntry // keys<4..2^16-1>
 
     private byte[] esniCipherSuite; // CipherSuite cipher_suites<2..2^16-2>;
 
-    private byte[] esniKeysPaddedLength; // uint16 padded_length;
+    private Integer esniKeysPaddedLength; // uint16 padded_length;
 
     private byte[] esniKeysNotBefore; // uint64 not_before;
 
     private byte[] esniKeysNotAfter; // uint64 not_before;
 
     private byte[] esniExtensions; // Extension
+
+    // Esni values
+
+    private byte[] esniClientNonce;
+
+    public byte[] getEsniRecordBytes() {
+        return esniRecordBytes;
+    }
+
+    public void setEsniRecordBytes(byte[] esniRecordBytes) {
+        this.esniRecordBytes = esniRecordBytes;
+    }
 
     public byte[] getEsniKeysVersion() {
         return esniKeysVersion;
@@ -2334,8 +2366,12 @@ public class TlsContext {
         this.esniKeysChecksum = esniKeysChecksum;
     }
 
-    public byte[] getEsniKeyList() {
-        return esniKeyList;
+    public List<byte[]> getEsniServerKeyShareEntryList() {
+        return this.esniServerKeyShareEntryList;
+    }
+
+    public void setEsniServerKeyShareEntryList(List<byte[]> esniServerKeyShareEntryList) {
+        this.esniServerKeyShareEntryList = esniServerKeyShareEntryList;
     }
 
     public byte[] getEsniCipherSuite() {
@@ -2346,15 +2382,11 @@ public class TlsContext {
         this.esniCipherSuite = esniCipherSuite;
     }
 
-    public void setEsniKeyList(byte[] esniKeyList) {
-        this.esniKeyList = esniKeyList;
-    }
-
-    public byte[] getEsniKeysPaddedLength() {
+    public Integer getEsniKeysPaddedLength() {
         return esniKeysPaddedLength;
     }
 
-    public void setEsniKeysPaddedLength(byte[] esniKeysPaddedLength) {
+    public void setEsniKeysPaddedLength(Integer esniKeysPaddedLength) {
         this.esniKeysPaddedLength = esniKeysPaddedLength;
     }
 
@@ -2382,4 +2414,12 @@ public class TlsContext {
         this.esniExtensions = esniExtensions;
     }
 
+    public byte[] getEsniClientNonce() {
+        return this.esniClientNonce;
+    }
+
+    public void setEsniClientNonce(byte[] esniClientNonce) {
+        this.esniClientNonce = esniClientNonce;
+
+    }
 }

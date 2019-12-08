@@ -26,7 +26,7 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     public EncryptedServerNameIndicationExtensionSerializer(EncryptedServerNameIndicationExtensionMessage message) {
         super(message);
         this.msg = message;
-        LOGGER.warn("EncryptedServerNameIndicationExtensionSerializer called. - ESNI implemented yet");
+        // LOGGER.warn("EncryptedServerNameIndicationExtensionSerializer called. - ESNI implemented yet");
     }
 
     @Override
@@ -54,27 +54,27 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     }
 
     private void writeNamedGroup(EncryptedServerNameIndicationExtensionMessage msg) {
-        appendBytes(msg.getKeyShareEntry().getNamedGroup().getValue());
-        LOGGER.debug("NamedGroup: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getNamedGroup().getValue()));
+        appendBytes(msg.getKeyShareEntry().getGroup().getValue());
+        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getGroup().getValue()));
     }
 
     private void writeKeyExchangeLength(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO: Use constant instead of literal"2". Exmp:
-        // ExtensionByteLength.SERVER_NAME_LIST
-        appendInt(msg.getKeyShareEntry().getKeyExchangeLength().getValue(), 2);
-        LOGGER.debug("KeyExchangeLength: " + msg.getKeyShareEntry().getKeyExchangeLength().getValue());
+        // TODO: use constant
+        appendInt(msg.getKeyShareEntry().getPublicKeyLength().getValue(), 2);
+        LOGGER.debug("KeyExchangeLength: " + msg.getKeyShareEntry().getPublicKeyLength().getValue());
+
     }
 
     private void writeKeyExchange(EncryptedServerNameIndicationExtensionMessage msg) {
-        appendBytes(msg.getKeyShareEntry().getKeyExchange().getValue());
+        appendBytes(msg.getKeyShareEntry().getPublicKey().getValue());
         LOGGER.debug("KeyKeyShareEntry: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getKeyExchange().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
+
     }
 
     private void writeRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
+        // TODO: use constant
         appendInt(msg.getRecordDigestLength().getValue(), 2);
-        // TODO: Use constant instead of literal "2".
         LOGGER.debug("RecordDigestLength: " + msg.getRecordDigestLength().getValue());
     }
 
@@ -84,7 +84,7 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     }
 
     private void writeEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO: Use constant instead of literal "2".
+        // TODO: use constant
         appendInt(msg.getEncryptedSniLength().getValue(), 2);
         LOGGER.debug("EncryptedSniLength: " + msg.getEncryptedSniLength().getValue());
     }

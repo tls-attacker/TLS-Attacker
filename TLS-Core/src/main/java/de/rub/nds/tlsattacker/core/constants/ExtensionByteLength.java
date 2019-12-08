@@ -11,6 +11,18 @@ package de.rub.nds.tlsattacker.core.constants;
 public class ExtensionByteLength {
 
     /**
+     * PaddedLength in the ClientEsniInner of the
+     * EncryptedServerNameIndicationExtension
+     */
+    public static final int PADDED_LEMGTH = 2;
+
+    /**
+     * recordDdigestLength in EncryptedServerNameIndicationExtension
+     */
+
+    public static final int RECORD_DIGEST_LENGTH = 2;
+
+    /**
      * extensions byte length
      */
     public static final int EXTENSIONS_LENGTH = 2;

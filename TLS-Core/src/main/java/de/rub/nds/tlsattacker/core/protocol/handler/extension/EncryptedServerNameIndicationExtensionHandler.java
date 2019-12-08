@@ -26,7 +26,6 @@ public class EncryptedServerNameIndicationExtensionHandler extends
 
     public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
-        LOGGER.warn("EncryptedServerNameIndicationExtensionHandler called. - ESNI not implemented yet.");
     }
 
     @Override

@@ -28,11 +28,13 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EncryptedSniComputation;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.PublicKeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 
 public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    // TODO : remove and use context variable instead
     private byte[] cipherSuiteConfig;
 
     // @ModifiableVariableProperty(type =
@@ -41,7 +43,9 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
     private ModifiableByteArray cipherSuite;
 
     @HoldsModifiableVariable
-    private PublicKeyShareEntry keyShareEntry; // Client keyShareEntry
+    private KeyShareEntry keyShareEntry;
+
+    // private PublicKeyShareEntry keyShareEntry; // Client keyShareEntry
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger recordDigestLength;
@@ -64,12 +68,16 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
     @HoldsModifiableVariable
     private EncryptedSniComputation encryptedSniComputation;
 
+    @ModifiableVariableProperty
+    private ModifiableByteArray serverEsniNonce;
+
     public EncryptedServerNameIndicationExtensionMessage() {
         super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
-        this.keyShareEntry = new PublicKeyShareEntry();
+        // this.keyShareEntry = new PublicKeyShareEntry();
+        this.keyShareEntry = new KeyShareEntry();
         this.clientEsniInner = new ClientEsniInner();
         this.encryptedSniComputation = new EncryptedSniComputation();
-        LOGGER.warn("EncryptedServerNameIndicationExtensionMessage called. - ESNI not implemented yet.");
+        // LOGGER.warn("EncryptedServerNameIndicationExtensionMessage called. - ESNI not implemented yet.");
     }
 
     public byte[] getCipherSuiteConfig() {
@@ -92,11 +100,17 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.cipherSuite = ModifiableVariableFactory.safelySetValue(cipherSuite, bytes);
     }
 
-    public PublicKeyShareEntry getKeyShareEntry() {
+    /*
+     * public PublicKeyShareEntry getKeyShareEntry() { return keyShareEntry; }
+     * public void setKeyShareEntry(PublicKeyShareEntry keyShareEntry) {
+     * this.keyShareEntry = keyShareEntry; }
+     */
+
+    public KeyShareEntry getKeyShareEntry() {
         return keyShareEntry;
     }
 
-    public void setKeyShareEntry(PublicKeyShareEntry keyShareEntry) {
+    public void setKeyShareEntry(KeyShareEntry keyShareEntry) {
         this.keyShareEntry = keyShareEntry;
     }
 
@@ -174,5 +188,17 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
 
     public void setEncryptedSniComputation(EncryptedSniComputation encryptedSniComputation) {
         this.encryptedSniComputation = encryptedSniComputation;
+    }
+
+    public ModifiableByteArray getServerEsniNonce() {
+        return serverEsniNonce;
+    }
+
+    public void setServerEsniNonce(ModifiableByteArray serverEsniNonce) {
+        this.serverEsniNonce = serverEsniNonce;
+    }
+
+    public void setServerEsniNonce(byte[] bytes) {
+        this.serverEsniNonce = ModifiableVariableFactory.safelySetValue(serverEsniNonce, bytes);
     }
 }

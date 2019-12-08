@@ -15,17 +15,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNamePairPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.esni.ClientEsniInnerSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
@@ -36,7 +34,6 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     public ClientEsniInnerPreparator(Chooser chooser, ClientEsniInner message) {
         super(chooser, message);
         this.msg = message;
-        LOGGER.warn("EncryptedServerNameIndicationExtensionPreparator called. - ESNI not fully implemented yet");
     }
 
     @Override
@@ -50,8 +47,9 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     }
 
     private void prepareNonce(ClientEsniInner msg) {
-        // TODO: Read from Config
-        msg.setNonce(ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657"));
+
+        byte[] nonce = chooser.getEsniClientNonce();
+        msg.setNonce(nonce);
         LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getNonce().getValue()));
     }
 
@@ -81,13 +79,16 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     }
 
     private void preparePadding(ClientEsniInner msg) {
-        // TODO: Read from Context / Config / DNS // KeyRecord ?
-        int paddedLength = 260;
-        // TODO: Use constant instead ofliteral"2".
-        int paddingLength = paddedLength - msg.getServerNameListBytes().getValue().length - 2;
-        byte[] padding = new byte[paddingLength];
+        byte[] padding;
+        int paddedLength = ((DefaultChooser) chooser).getEsniKeysPaddedLength();
+        int paddingLength = paddedLength - msg.getServerNameListBytes().getValue().length
+                - ExtensionByteLength.PADDED_LEMGTH;
+        if (paddingLength > 0) {
+            padding = new byte[paddingLength];
+        } else {
+            padding = new byte[0];
+        }
         msg.setPadding(padding);
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
-
 }
