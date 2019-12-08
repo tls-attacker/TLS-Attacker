@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -47,6 +48,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final Chooser chooser;
+    private ClientHelloMessage clientHelloMessage;
+
     private final EncryptedServerNameIndicationExtensionMessage msg;
     private ByteArrayOutputStream streamClientEsniInnerBytes;
 
@@ -57,6 +60,14 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         this.msg = message;
         this.chooser = chooser;
         this.streamClientEsniInnerBytes = new ByteArrayOutputStream();
+    }
+
+    public ClientHelloMessage getClientHelloMessage() {
+        return clientHelloMessage;
+    }
+
+    public void setClientHelloMessage(ClientHelloMessage clientHelloMessage) {
+        this.clientHelloMessage = clientHelloMessage;
     }
 
     @Override
@@ -76,7 +87,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         prepareRecordDigest(msg);
         prepareRecordDigestLength(msg);
 
-        prepateClientRandom(msg);
+        prepareClientRandom(msg);
         prepareEsniContents(msg);
         prepareEsniContentsHash(msg);
         prepareSharedSecret(msg);
@@ -93,7 +104,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     @Override
     public void afterPrepareExtensionContent() {
         LOGGER.debug("Afterpreparing EncryptedServerNameIndicationExtension");
-        prepateClientRandom(msg);
+        prepareClientRandom(msg);
         prepareEsniContents(msg);
         prepareEsniContentsHash(msg);
         prepareSharedSecret(msg);
@@ -187,8 +198,12 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         LOGGER.debug("RecordDigestLength: " + msg.getRecordDigestLength().getValue());
     }
 
-    private void prepateClientRandom(EncryptedServerNameIndicationExtensionMessage msg) {
+    private void prepareClientRandom(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] clienRandom = chooser.getClientRandom();
+        if (clientHelloMessage != null)
+            clienRandom = clientHelloMessage.getRandom().getValue();
+        else
+            clienRandom = chooser.getClientRandom();
         msg.getEncryptedSniComputation().setClientHelloRandom(clienRandom);
         LOGGER.debug("ClientHello: " + ArrayConverter.bytesToHexString(clienRandom));
     }
@@ -373,4 +388,5 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         }
         return contentsStream.toByteArray();
     }
+
 }
