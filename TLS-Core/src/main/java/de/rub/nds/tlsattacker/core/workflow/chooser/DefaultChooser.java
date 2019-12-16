@@ -958,29 +958,26 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<byte[]> getEsniServerKeyShareEntryList() {
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntryList() {
         if (context.getEsniServerKeyShareEntryList() != null && context.getEsniServerKeyShareEntryList().size() > 0) {
             return context.getEsniServerKeyShareEntryList();
         } else {
             // TODO: move to default config:
-            List<byte[]> defaultEsniServerKeyShareEntryList = new LinkedList<>();
-            byte[] defaultEsniServerKeyShareEntry = ArrayConverter
-                    .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412");
-            defaultEsniServerKeyShareEntryList.add(defaultEsniServerKeyShareEntry);
+            List<KeyShareStoreEntry> defaultEsniServerKeyShareEntryList = new LinkedList<>();
+            KeyShareStoreEntry defaultEntry = new KeyShareStoreEntry();
+            defaultEntry.setGroup(NamedGroup.ECDH_X25519);
+            defaultEntry.setPublicKey(ArrayConverter
+                    .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
+            defaultEsniServerKeyShareEntryList.add(defaultEntry);
             return defaultEsniServerKeyShareEntryList;
         }
     }
 
     @Override
-    public byte[] getEsniCipherSuite() {
-        return this.context.getEsniCipherSuite();
-    }
+    public Integer getEsniPaddedLength() {
 
-    @Override
-    public Integer getEsniKeysPaddedLength() {
-
-        if (context.getEsniKeysPaddedLength() != null) {
-            return context.getEsniKeysPaddedLength();
+        if (context.getEsniPaddedLength() != null) {
+            return context.getEsniPaddedLength();
         } else {
             // TODO: move to default config::
             return 260;
@@ -988,13 +985,13 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniKeysNotBefore() {
+    public byte[] getEsniNotBefore() {
         return this.context.getEsniKeysNotBefore();
     }
 
     @Override
-    public byte[] getEsniKeysNotAfter() {
-        return this.context.getEsniKeysNotAfter();
+    public byte[] getEsniNotAfter() {
+        return this.context.getEsniNotAfter();
     }
 
     @Override
@@ -1002,6 +999,7 @@ public class DefaultChooser extends Chooser {
         return this.context.getEsniExtensions();
     }
 
+    //
     @Override
     public byte[] getEsniClientNonce() {
         if (context.getEsniClientNonce() != null) {

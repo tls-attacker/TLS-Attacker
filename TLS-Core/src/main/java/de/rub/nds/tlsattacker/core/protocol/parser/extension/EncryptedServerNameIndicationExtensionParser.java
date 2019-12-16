@@ -17,7 +17,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 
 public class EncryptedServerNameIndicationExtensionParser extends
         ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
@@ -25,7 +24,9 @@ public class EncryptedServerNameIndicationExtensionParser extends
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array) {
+
         super(startposition, array);
+        LOGGER.debug("EncryptedServerNameIndicationExtensionParser");
 
     }
 
@@ -44,9 +45,8 @@ public class EncryptedServerNameIndicationExtensionParser extends
     }
 
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
-        int NONCE_LEN = 16;
-        byte[] nonce = parseByteArrayField(NONCE_LEN); // TODO
+        byte[] nonce = parseByteArrayField(ExtensionByteLength.NONCE);
         msg.setServerEsniNonce(nonce);
-        LOGGER.warn("Recived Nonce: " + ArrayConverter.bytesToHexString(nonce));
+        LOGGER.info("Recived Nonce: " + ArrayConverter.bytesToHexString(nonce));
     }
 }

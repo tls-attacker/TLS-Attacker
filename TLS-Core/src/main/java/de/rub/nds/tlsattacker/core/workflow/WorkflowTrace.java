@@ -84,7 +84,8 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
+    @XmlElements(value = { @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
+            @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
             @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
             @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
             @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),

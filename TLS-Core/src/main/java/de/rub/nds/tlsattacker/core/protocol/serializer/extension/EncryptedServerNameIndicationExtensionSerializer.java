@@ -26,7 +26,6 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     public EncryptedServerNameIndicationExtensionSerializer(EncryptedServerNameIndicationExtensionMessage message) {
         super(message);
         this.msg = message;
-        // LOGGER.warn("EncryptedServerNameIndicationExtensionSerializer called. - ESNI implemented yet");
     }
 
     @Override
@@ -59,22 +58,21 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     }
 
     private void writeKeyExchangeLength(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO: use constant
-        appendInt(msg.getKeyShareEntry().getPublicKeyLength().getValue(), 2);
+        appendInt(msg.getKeyShareEntry().getPublicKeyLength().getValue(), ExtensionByteLength.KEY_SHARE_LENGTH);
         LOGGER.debug("KeyExchangeLength: " + msg.getKeyShareEntry().getPublicKeyLength().getValue());
 
     }
 
     private void writeKeyExchange(EncryptedServerNameIndicationExtensionMessage msg) {
         appendBytes(msg.getKeyShareEntry().getPublicKey().getValue());
+        // Thread.getAllStackTraces();
+        // Thread.dumpStack();
         LOGGER.debug("KeyKeyShareEntry: "
                 + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
-
     }
 
     private void writeRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO: use constant
-        appendInt(msg.getRecordDigestLength().getValue(), 2);
+        appendInt(msg.getRecordDigestLength().getValue(), ExtensionByteLength.RECORD_DIGEST_LENGTH);
         LOGGER.debug("RecordDigestLength: " + msg.getRecordDigestLength().getValue());
     }
 
@@ -84,8 +82,7 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     }
 
     private void writeEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO: use constant
-        appendInt(msg.getEncryptedSniLength().getValue(), 2);
+        appendInt(msg.getEncryptedSniLength().getValue(), ExtensionByteLength.ENCRYPTED_SNI_LENGTH);
         LOGGER.debug("EncryptedSniLength: " + msg.getEncryptedSniLength().getValue());
     }
 

@@ -92,14 +92,10 @@ public class ClientHelloMessage extends HelloMessage {
         }
 
         if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
-            LOGGER.warn("ESNI not completely implemented yet.");
             EncryptedServerNameIndicationExtensionMessage extensionMsg = new EncryptedServerNameIndicationExtensionMessage();
 
-            String hostname = "baz.example.com";
+            String hostname = tlsConfig.getDefaultClientConnection().getHostname();
             byte nameType = (byte) 0x00;
-
-            byte[] cipherSuiteConfig = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
-            NamedGroup namedGroupConfig = NamedGroup.ECDH_X25519;
 
             ServerNamePair pair = new ServerNamePair();
             pair.setServerNameTypeConfig(nameType);
@@ -107,9 +103,11 @@ public class ClientHelloMessage extends HelloMessage {
             extensionMsg.getClientEsniInner().getServerNameList().add(pair);
 
             // TODO: use context variable for selectEsniCipherSuite instead
+            byte[] cipherSuiteConfig = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
             extensionMsg.setCipherSuiteConfig(cipherSuiteConfig);
 
             // TODO: maybe use context variable for selectEsniNamedGroup instead
+            NamedGroup namedGroupConfig = NamedGroup.ECDH_X25519;
             extensionMsg.getKeyShareEntry().setGroupConfig(namedGroupConfig);
 
             this.addExtension(extensionMsg);

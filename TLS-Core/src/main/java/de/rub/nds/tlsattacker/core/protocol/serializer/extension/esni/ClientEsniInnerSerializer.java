@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
@@ -41,8 +42,7 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
     }
 
     private void writeServerNameListLength(ClientEsniInner msg) {
-        // TODO: Use constant instead of literal"2"
-        appendInt(clientEsniInner.getServerNameListLength().getValue(), 2);
+        appendInt(clientEsniInner.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST);
         LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
     }
 

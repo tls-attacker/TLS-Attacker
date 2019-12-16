@@ -23,6 +23,44 @@ public class ExtensionByteLength {
     public static final int RECORD_DIGEST_LENGTH = 2;
 
     /**
+     * Nonce in EncryptedServerNameIndicationExtension
+     */
+
+    public static final int NONCE = 16;
+
+    /**
+     * Length of encryptedSni in the EncryptedServerNameIndicationExtension
+     */
+
+    public static final int ENCRYPTED_SNI_LENGTH = 2;
+
+    /**
+     * Fields in the DNS Record of the EncryptedServerNameIndicationExtension
+     */
+
+    public static final int ESNI_RECORD_VERSION = 2;
+
+    public static final int ESNI_RECORD_CHECKSUM = 4;
+
+    public static final int ESNI_RECORD_KEYS_LENGTH = 2;
+
+    public static final int ESNI_RECORD_NAMEDGROUP = 2;
+
+    public static final int ESNI_RECORD_KEY_LENGTH = 2;
+
+    public static final int ESNI_RECORD_CIPHER_SUITES_LENGTH = 2;
+
+    public static final int ESNI_RECORD_CIPHER_SUITE = 2;
+
+    public static final int ESNI_RECORD_PADDED_LENGTH = 2;
+
+    public static final int ESNI_RECORD_NOT_BEFORE = 8;
+
+    public static final int ESNI_RECORD_NOT_AFTER = 8;
+
+    public static final int ESNI_RECORD_EXTENSIONS = 2;
+
+    /**
      * extensions byte length
      */
     public static final int EXTENSIONS_LENGTH = 2;

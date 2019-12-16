@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
@@ -34,6 +35,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.esni.ClientEsniInnerPreparator;
@@ -78,9 +80,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         prepareClientEsniInnerBytes(msg);
 
         prepareCipherSuite(msg);
-        prepareServerPublicKey(msg);
 
         // TODO: Add support for additional groups
+        prepareServerPublicKey(msg);
         prepareKeyShareEntry(msg);
 
         prepareRecordBytes(msg);
@@ -139,10 +141,24 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareServerPublicKey(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] serverPublicKey = ((DefaultChooser) chooser).getEsniServerKeyShareEntryList().get(0);
+        byte[] serverPublicKey = ((DefaultChooser) chooser).getEsniServerKeyShareEntryList().get(0).getPublicKey();
         msg.getEncryptedSniComputation().setServerPublicKey(serverPublicKey);
         LOGGER.debug("ServerPublicKey: "
                 + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getServerPublicKey().getValue()));
+    }
+
+    private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
+        KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
+
+        byte[] group = ((DefaultChooser) chooser).getEsniServerKeyShareEntryList().get(0).getGroup().getValue();
+        keyShareEntry.setGroupConfig(NamedGroup.getNamedGroup(group));
+
+        KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
+        keyShareEntryPreparator.prepare();
+        LOGGER.debug("ClientPrivateKey: "
+                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPrivateKey().toByteArray()));
+        LOGGER.debug("ClientPublicKey: "
+                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
     }
 
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -151,22 +167,10 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareRecordBytes(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO read form context
         byte[] recordBytes = chooser.getEsniRecordBytes();
         msg.getEncryptedSniComputation().setRecordBytes(recordBytes);
         LOGGER.debug("RecordBytes: "
                 + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getRecordBytes()));
-    }
-
-    private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
-        KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
-        KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
-        keyShareEntryPreparator.prepare();
-        LOGGER.debug("ClientPrivateKey: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPrivateKey().toByteArray()));
-        LOGGER.debug("ClientPublicKey: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
-
     }
 
     private void prepareRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -316,6 +320,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             entry.setGroup(pair.getGroup().getValue());
             entry.setPublicKeyLength(pair.getPublicKey().length);
             entry.setPublicKey(pair.getPublicKey());
+            // TODO:Refactor?
             try {
                 clientKeyShareStream.write(serializer.serialize());
             } catch (IOException e) {

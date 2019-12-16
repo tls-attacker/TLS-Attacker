@@ -80,7 +80,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void preparePadding(ClientEsniInner msg) {
         byte[] padding;
-        int paddedLength = ((DefaultChooser) chooser).getEsniKeysPaddedLength();
+        int paddedLength = ((DefaultChooser) chooser).getEsniPaddedLength();
         int paddingLength = paddedLength - msg.getServerNameListBytes().getValue().length
                 - ExtensionByteLength.PADDED_LEMGTH;
         if (paddingLength > 0) {
@@ -89,6 +89,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
             padding = new byte[0];
         }
         msg.setPadding(padding);
+        LOGGER.debug("paddedLength: " + paddedLength);
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
 }

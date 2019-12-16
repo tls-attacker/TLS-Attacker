@@ -32,9 +32,6 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     private ModifiableByteArray clientHelloKeyShare;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray namedGroup;
-
-    @ModifiableVariableProperty
     private ModifiableByteArray serverPublicKey;
 
     @ModifiableVariableProperty
@@ -98,18 +95,6 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
 
     public void setClientHelloKeyShare(byte[] bytes) {
         this.clientHelloKeyShare = ModifiableVariableFactory.safelySetValue(clientHelloKeyShare, bytes);
-    }
-
-    public ModifiableByteArray getNamedGroup() {
-        return namedGroup;
-    }
-
-    public void setNamedGroup(ModifiableByteArray namedGroup) {
-        this.namedGroup = namedGroup;
-    }
-
-    public void setNamedGroup(byte[] bytes) {
-        this.namedGroup = ModifiableVariableFactory.safelySetValue(namedGroup, bytes);
     }
 
     public ModifiableByteArray getServerPublicKey() {

@@ -52,7 +52,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
     @Test
     public void test() {
-        // Def parameters:
+        // Define parameters:
         byte[] cipherSuiteConfig = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
         String hostnameConfig = "baz.example.com";
 
@@ -101,8 +101,11 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         clientHelloKeyShareList.add(clientHelloKeySharePair);
         context.setClientKeyShareStoreEntryList(clientHelloKeyShareList);
 
-        List<byte[]> serverKeyShareEntryList = new LinkedList<>();
-        serverKeyShareEntryList.add(serverPublicKey);
+        List<KeyShareStoreEntry> serverKeyShareEntryList = new LinkedList<>();
+        KeyShareStoreEntry entry = new KeyShareStoreEntry();
+        entry.setGroup(NamedGroup.ECDH_X25519);
+        entry.setPublicKey(serverPublicKey);
+        serverKeyShareEntryList.add(entry);
         context.setEsniServerKeyShareEntryList(serverKeyShareEntryList);
 
         msg.getEncryptedSniComputation().setClientHelloRandom(clientRandom);

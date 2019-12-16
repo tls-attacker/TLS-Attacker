@@ -270,17 +270,17 @@ public abstract class Chooser {
 
     public abstract byte[] getEsniKeysChecksum();
 
-    public abstract List<byte[]> getEsniServerKeyShareEntryList();
+    public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntryList();
 
-    public abstract byte[] getEsniCipherSuite();
+    public abstract Integer getEsniPaddedLength();
 
-    public abstract Integer getEsniKeysPaddedLength();
+    public abstract byte[] getEsniNotBefore();
 
-    public abstract byte[] getEsniKeysNotBefore();
-
-    public abstract byte[] getEsniKeysNotAfter();
+    public abstract byte[] getEsniNotAfter();
 
     public abstract byte[] getEsniExtensions();
+
+    //
 
     public abstract byte[] getEsniClientNonce();
 }
