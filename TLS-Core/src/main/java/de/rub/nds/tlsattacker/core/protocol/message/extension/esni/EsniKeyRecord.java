@@ -18,13 +18,12 @@ public class EsniKeyRecord {
 
     private byte[] version;
     private byte[] checksum;
-
     private List<KeyShareStoreEntry> keyList = new LinkedList();
-    private List<byte[]> CipherSuiteList = new LinkedList();
+    private List<CipherSuite> cipherSuiteList = new LinkedList();
     private int paddedLength;
     private byte[] notBefore;
     private byte[] notAfter;
-    private byte[] ExtensionBytes;
+    private byte[] extensionBytes;
 
     public byte[] getVersion() {
         return version;
@@ -50,12 +49,12 @@ public class EsniKeyRecord {
         this.keyList = keyList;
     }
 
-    public List<byte[]> getCipherSuiteList() {
-        return CipherSuiteList;
+    public List<CipherSuite> getCipherSuiteList() {
+        return cipherSuiteList;
     }
 
-    public void setCipherSuiteList(List<byte[]> cipherSuiteList) {
-        CipherSuiteList = cipherSuiteList;
+    public void setCipherSuiteList(List<CipherSuite> cipherSuiteList) {
+        this.cipherSuiteList = cipherSuiteList;
     }
 
     public int getPaddedLength() {
@@ -83,10 +82,10 @@ public class EsniKeyRecord {
     }
 
     public byte[] getExtensionBytes() {
-        return ExtensionBytes;
+        return extensionBytes;
     }
 
     public void setExtensionBytes(byte[] extensionBytes) {
-        ExtensionBytes = extensionBytes;
+        this.extensionBytes = extensionBytes;
     }
 }

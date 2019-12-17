@@ -41,7 +41,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
     private Chooser chooser;
-    TlsContext context;
+    private TlsContext context;
 
     @Before
     public void setUp() {
@@ -53,11 +53,12 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
     @Test
     public void test() {
         // Define parameters:
-        byte[] cipherSuiteConfig = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
-        String hostnameConfig = "baz.example.com";
+        CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+        NamedGroup namedGroup = NamedGroup.ECDH_X25519;
 
         byte nameTypeConfig = (byte) 0x00;
-        NamedGroup groupConfig = NamedGroup.ECDH_X25519;
+        String hostnameConfig = "baz.example.com";
+
         BigInteger privateKey = new BigInteger(
                 ArrayConverter
                         .hexStringToByteArray("04DF647234F375CB38137C6775B04A40950C932E180620717F802B21FE868479987D990383D908E19B683F412ECDF397E1"));
@@ -87,9 +88,8 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         pair.setServerNameConfig(hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);
 
-        msg.setCipherSuiteConfig(cipherSuiteConfig);
-
-        msg.getKeyShareEntry().setGroupConfig(groupConfig);
+        context.getConfig().getClientSupportedEsniCiphersuites().add(cipherSuite);
+        context.getConfig().getClientSupportedEsniNamedGroups().add(namedGroup);
         msg.getKeyShareEntry().setPrivateKey(privateKey);
 
         context.setEsniRecordBytes(recordBytes);
@@ -137,11 +137,11 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         byte[] expectedContentsHash = ArrayConverter
                 .hexStringToByteArray("9D72DC675D37D3336E5C5D4C3B1F528C8B01D913AFB1105BE56CD1F293030574");
 
-        byte[] resultSharedSecret = msg.getEncryptedSniComputation().getSharedSecret().getValue();
+        byte[] resultSharedSecret = msg.getEncryptedSniComputation().getEsniSharedSecret().getValue();
         byte[] expectedSharedSecret = ArrayConverter
                 .hexStringToByteArray("D96C9A005C0897F5988FAAF671750AB4CEE1F60F2E965E9BDEEEE79F8B2AB06B");
 
-        byte[] resultMasterSecret = msg.getEncryptedSniComputation().getMasterSecret().getValue();
+        byte[] resultMasterSecret = msg.getEncryptedSniComputation().getEsniMasterSecret().getValue();
         byte[] expectedMasterSecret = ArrayConverter
                 .hexStringToByteArray("AFEA7067E50CC72025C0AF44900AE00C3ED32277D8888EEA2C2FAAF724C942D4");
 

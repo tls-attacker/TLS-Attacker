@@ -24,7 +24,7 @@ import org.xbill.DNS.Type;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EsniKeyRecord;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -45,7 +45,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         }
         String hostname = "_esni." + tlsConfig.getDefaultClientConnection().getHostname();
         Lookup lookup;
-        LOGGER.debug("Sending DNS request to obtain ESNI Resource Record for: " + hostname);
+        LOGGER.debug("Sending DNS request to get ESNI Resource Record for: " + hostname);
         List<String> esniKeyRecords = new LinkedList();
         try {
             lookup = new Lookup(hostname, Type.TXT);
@@ -83,26 +83,29 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
         LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
 
-        EsniKeyParser esniKeyParser = new EsniKeyParser(0, esniKeyRecordBytes);
+        EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(0, esniKeyRecordBytes);
         EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
 
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
         tlsContext.setEsniKeysVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniKeysChecksum(esniKeyRecord.getChecksum());
         tlsContext.setEsniServerKeyShareEntryList(esniKeyRecord.getKeyList());
+        tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuiteList());
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
+        tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
+        tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
+        tlsContext.setEsniExtensions(esniKeyRecord.getExtensionBytes());
         setExecuted(true);
     }
 
     @Override
     public void reset() {
-        // TODO Auto-generated method stub
+        setExecuted(false);
 
     }
 
     @Override
     public boolean executedAsPlanned() {
-        // TODO Auto-generated method stub
-        return false;
+        return isExecuted();
     }
 }

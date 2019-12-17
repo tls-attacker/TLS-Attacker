@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
@@ -51,6 +54,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     private static final Logger LOGGER = LogManager.getLogger();
     private final Chooser chooser;
     private ClientHelloMessage clientHelloMessage;
+    private final List<CipherSuite> implementedCiphersuites;
+    private final List<NamedGroup> implementedNamedGroups;
 
     private final EncryptedServerNameIndicationExtensionMessage msg;
     private ByteArrayOutputStream streamClientEsniInnerBytes;
@@ -62,6 +67,15 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         this.msg = message;
         this.chooser = chooser;
         this.streamClientEsniInnerBytes = new ByteArrayOutputStream();
+
+        // TODO: Add support for additional ciphersuite
+        this.implementedCiphersuites = new LinkedList();
+        this.implementedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+
+        // TODO: Add support for additional groups
+        this.implementedNamedGroups = new LinkedList();
+        this.implementedNamedGroups.add(NamedGroup.ECDH_X25519);
+        // this.implementedNamedGroups.add(NamedGroup.SECP256R1); // (P-256)
     }
 
     public ClientHelloMessage getClientHelloMessage() {
@@ -81,9 +95,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
         prepareCipherSuite(msg);
 
-        // TODO: Add support for additional groups
-        prepareServerPublicKey(msg);
+        prepareNamedGroup(msg);
         prepareKeyShareEntry(msg);
+        prepareServerPublicKey(msg);
 
         prepareRecordBytes(msg);
         prepareRecordDigest(msg);
@@ -92,10 +106,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         prepareClientRandom(msg);
         prepareEsniContents(msg);
         prepareEsniContentsHash(msg);
-        prepareSharedSecret(msg);
-        prepareMasterSecret(msg);
+        prepareEsniSharedSecret(msg);
+        prepareEsniMasterSecret(msg);
 
-        // TODO: Add support for additional CipherSuite
         prepareKey(msg);
         prepareIv(msg);
         prepareClientHelloKeyShare(msg);
@@ -109,8 +122,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         prepareClientRandom(msg);
         prepareEsniContents(msg);
         prepareEsniContentsHash(msg);
-        prepareSharedSecret(msg);
-        prepareMasterSecret(msg);
+        prepareEsniSharedSecret(msg);
+        prepareEsniMasterSecret(msg);
         prepareKey(msg);
         prepareIv(msg);
         prepareClientHelloKeyShare(msg);
@@ -141,18 +154,47 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareServerPublicKey(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] serverPublicKey = ((DefaultChooser) chooser).getEsniServerKeyShareEntryList().get(0).getPublicKey();
+        byte[] serverPublicKey = chooser.getEsniServerKeyShareEntries().get(0).getPublicKey();
+        for (KeyShareStoreEntry entry : chooser.getEsniServerKeyShareEntries()) {
+            if (Arrays.equals(entry.getGroup().getValue(), msg.getKeyShareEntry().getGroup().getValue())) {
+                serverPublicKey = entry.getPublicKey();
+                break;
+            }
+        }
         msg.getEncryptedSniComputation().setServerPublicKey(serverPublicKey);
         LOGGER.debug("ServerPublicKey: "
                 + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getServerPublicKey().getValue()));
     }
 
+    private void prepareNamedGroup(EncryptedServerNameIndicationExtensionMessage msg) {
+        List<NamedGroup> clientSupportedNamedGroups = chooser.getConfig().getClientSupportedEsniNamedGroups();
+        List<NamedGroup> serverSupportedNamedGroups = new LinkedList();
+        for (KeyShareStoreEntry entry : chooser.getEsniServerKeyShareEntries())
+            serverSupportedNamedGroups.add(entry.getGroup());
+        NamedGroup selectedNamedGroup;
+
+        selectedNamedGroup = implementedNamedGroups.get(0);
+        boolean isFoundSharedNamedGroup = false;
+        for (NamedGroup g : clientSupportedNamedGroups) {
+            if (implementedNamedGroups.contains(g)) {
+                selectedNamedGroup = g;
+                if (serverSupportedNamedGroups.contains(g)) {
+                    isFoundSharedNamedGroup = true;
+                    break;
+                }
+            }
+        }
+        if (!isFoundSharedNamedGroup)
+            LOGGER.warn("Found no shared named group. Using " + selectedNamedGroup);
+
+        msg.getKeyShareEntry().setGroupConfig(selectedNamedGroup);
+        LOGGER.debug("NamedGroup: "
+                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getGroupConfig().getValue()));
+
+    }
+
     private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
         KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
-
-        byte[] group = ((DefaultChooser) chooser).getEsniServerKeyShareEntryList().get(0).getGroup().getValue();
-        keyShareEntry.setGroupConfig(NamedGroup.getNamedGroup(group));
-
         KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
         keyShareEntryPreparator.prepare();
         LOGGER.debug("ClientPrivateKey: "
@@ -162,8 +204,24 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
-        // TODO read form context
-        msg.setCipherSuite(msg.getCipherSuiteConfig());
+        List<CipherSuite> clientSupportedCiphersuites = chooser.getConfig().getClientSupportedEsniCiphersuites();
+        List<CipherSuite> serverSupportedCiphersuites = ((DefaultChooser) chooser).getEsniServerCiphersuites();
+        CipherSuite selectedCiphersuite = implementedCiphersuites.get(0);
+        boolean isFoundSharedCipher = false;
+        for (CipherSuite c : clientSupportedCiphersuites) {
+            if (implementedCiphersuites.contains(c)) {
+                selectedCiphersuite = c;
+                if (serverSupportedCiphersuites.contains(c)) {
+                    isFoundSharedCipher = true;
+                    break;
+                }
+            }
+        }
+        if (!isFoundSharedCipher)
+            LOGGER.warn("Found no shared cipher. Using " + selectedCiphersuite);
+
+        msg.setCipherSuite(selectedCiphersuite.getByteValue());
+        LOGGER.debug("CipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuite().getValue()));
     }
 
     private void prepareRecordBytes(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -175,11 +233,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     private void prepareRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] cipherSuite = msg.getCipherSuite().getValue();
-        if (!Arrays.equals(cipherSuite, CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue())) {
-            LOGGER.error("CipherSuite not supported. Only TLS_AES_128_GCM_SHA256 is supportet yet.");
-            throw new PreparationException("CipherSuite not supported yet.");
-        }
-        byte[] recordHash = null;
+        byte[] recordDigest = null;
         byte[] record = msg.getEncryptedSniComputation().getRecordBytes().getValue();
 
         DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
@@ -192,8 +246,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare RecordDigest", e);
         }
-        recordHash = messageDigest.digest(record);
-        msg.setRecordDigest(recordHash);
+        recordDigest = messageDigest.digest(record);
+        msg.setRecordDigest(recordDigest);
         LOGGER.debug("RecordDigest: " + ArrayConverter.bytesToHexString(msg.getRecordDigest().getValue()));
     }
 
@@ -239,42 +293,37 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
                 + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniContentsHash().getValue()));
     }
 
-    private void prepareSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
+    private void prepareEsniSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] group = msg.getKeyShareEntry().getGroup().getValue();
-        if (!Arrays.equals(group, new byte[] { (byte) 0x00, (byte) 0x1d })) {
-            LOGGER.error("NamedGroup not supported. Only DHEC Curve X25519 is supportet yet.");
-            throw new PreparationException("NamedGroup not supported yet.");
-        }
-
         byte[] sk = msg.getKeyShareEntry().getPrivateKey().toByteArray();
         byte[] pk = msg.getEncryptedSniComputation().getServerPublicKey().getValue();
-        byte[] sharedSecret = ForgivingX25519Curve.computeSharedSecret(sk, pk);
-        msg.getEncryptedSniComputation().setSharedSecret(sharedSecret);
+        byte[] esniSharedSecret = ForgivingX25519Curve.computeSharedSecret(sk, pk);
+        msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug("SharedSecret: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getSharedSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
     }
 
-    private void prepareMasterSecret(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] masterSecret = null;
-        byte[] sharedSecret = msg.getEncryptedSniComputation().getSharedSecret().getValue();
+    private void prepareEsniMasterSecret(EncryptedServerNameIndicationExtensionMessage msg) {
+        byte[] esniMasterSecret = null;
+        byte[] esniSharedSecret = msg.getEncryptedSniComputation().getEsniSharedSecret().getValue();
         CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         try {
-            masterSecret = HKDFunction.extract(hkdfAlgortihm, null, sharedSecret);
+            esniMasterSecret = HKDFunction.extract(hkdfAlgortihm, null, esniSharedSecret);
         } catch (CryptoException e) {
             e.printStackTrace();
             // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare MasterSecret", e);
 
         }
-        msg.getEncryptedSniComputation().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getMasterSecret().getValue()));
+        msg.getEncryptedSniComputation().setEsniMasterSecret(esniMasterSecret);
+        LOGGER.debug("esniMasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getEsniMasterSecret().getValue()));
     }
 
     private void prepareKey(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] key = null;
-        byte[] masterSecret = msg.getEncryptedSniComputation().getMasterSecret().getValue();
+        byte[] masterSecret = msg.getEncryptedSniComputation().getEsniMasterSecret().getValue();
         String labelIn = "esni key";
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
@@ -293,14 +342,14 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     private void prepareIv(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] iv = null;
-        byte[] masterSecret = msg.getEncryptedSniComputation().getMasterSecret().getValue();
+        byte[] esniMasterSecret = msg.getEncryptedSniComputation().getEsniMasterSecret().getValue();
         String labelIn = "esni iv";
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         int ivLen = 12;
         try {
-            iv = HKDFunction.expandLabel(hkdfAlgortihm, masterSecret, labelIn, hashIn, ivLen);
+            iv = HKDFunction.expandLabel(hkdfAlgortihm, esniMasterSecret, labelIn, hashIn, ivLen);
         } catch (CryptoException e) {
             e.printStackTrace();
             // System.err.println(e.getMessage());
@@ -320,7 +369,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             entry.setGroup(pair.getGroup().getValue());
             entry.setPublicKeyLength(pair.getPublicKey().length);
             entry.setPublicKey(pair.getPublicKey());
-            // TODO:Refactor?
             try {
                 clientKeyShareStream.write(serializer.serialize());
             } catch (IOException e) {
@@ -393,5 +441,4 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         }
         return contentsStream.toByteArray();
     }
-
 }

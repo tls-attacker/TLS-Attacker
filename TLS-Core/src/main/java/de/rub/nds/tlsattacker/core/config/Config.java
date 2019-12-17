@@ -1118,6 +1118,11 @@ public class Config implements Serializable {
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     Config() {
+        // ESNI:
+        defaultEsniServerKeyShareEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
+                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412")));
+        defaultEsniServerCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -3352,6 +3357,8 @@ public class Config implements Serializable {
         this.addPWDProtectExtension = addPWDProtectExtension;
     }
 
+    // ESNI:
+
     public Boolean isAddEncryptedServerNameIndicationExtension() {
         return addEncryptedServerNameIndicationExtension;
     }
@@ -3359,4 +3366,132 @@ public class Config implements Serializable {
     public void setAddEncryptedServerNameIndicationExtension(Boolean addEncryptedServerNameIndicationExtension) {
         this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
     }
+
+    private List<CipherSuite> clientSupportedEsniCiphersuites = new LinkedList();
+
+    public List<CipherSuite> getClientSupportedEsniCiphersuites() {
+        return this.clientSupportedEsniCiphersuites;
+    }
+
+    public void setClientSupportedEsniCiphersuites(List<CipherSuite> clientSupportedEsniCiphersuites) {
+        this.clientSupportedEsniCiphersuites = clientSupportedEsniCiphersuites;
+    }
+
+    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
+
+    public List<NamedGroup> getClientSupportedEsniNamedGroups() {
+        return this.clientSupportedEsniNamedGroups;
+    }
+
+    public void setClientSupportedEsniNamedGroups(List<NamedGroup> clientSupportedEsniNamedGroups) {
+        this.clientSupportedEsniNamedGroups = clientSupportedEsniNamedGroups;
+    }
+
+    public final void setClientSupportedEsniNamedGroups(NamedGroup... clientSupportedEsniNamedGroups) {
+        this.clientSupportedEsniNamedGroups = new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
+    }
+
+    // ESNI Default Values:
+
+    private byte[] defaultEsniRecordBytes = ArrayConverter
+            .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
+
+    private byte[] defaultEsniVersion = new byte[] { (byte) 0xff, (byte) 0x01 };
+
+    private byte[] defaultEsniKeysChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
+
+    private List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries = new LinkedList<>();
+
+    private List<CipherSuite> defaultEsniServerCiphersuites = new LinkedList();
+
+    private int defaultEsniPaddedLength = 260;
+
+    private byte[] defaultEsniNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
+
+    private byte[] defaultEsniNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
+
+    private byte[] defaultEsniExtensions = new byte[0];
+
+    private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+
+    public byte[] getDefaultEsniRecordBytes() {
+        return defaultEsniRecordBytes;
+    }
+
+    public void setDefaultEsniRecordBytes(byte[] defaultEsniRecordBytes) {
+        this.defaultEsniRecordBytes = defaultEsniRecordBytes;
+    }
+
+    public byte[] getDefaultEsniVersion() {
+        return defaultEsniVersion;
+    }
+
+    public void setDefaultEsniVersion(byte[] defaultEsniVersion) {
+        this.defaultEsniVersion = defaultEsniVersion;
+    }
+
+    public byte[] getDefaultEsniKeysChecksum() {
+        return defaultEsniKeysChecksum;
+    }
+
+    public void setDefaultEsniKeysChecksum(byte[] defualtEsniKeysChecksum) {
+        this.defaultEsniKeysChecksum = defualtEsniKeysChecksum;
+    }
+
+    public List<KeyShareStoreEntry> getDefaultEsniServerKeyShareEntries() {
+        return defaultEsniServerKeyShareEntries;
+    }
+
+    public void setDefaultEsniServerKeyShareEntries(List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries) {
+        this.defaultEsniServerKeyShareEntries = defaultEsniServerKeyShareEntries;
+    }
+
+    public List<CipherSuite> getDefaultEsniServerCiphersuites() {
+        return defaultEsniServerCiphersuites;
+    }
+
+    public void setDefaultEsniServerCiphersuites(List<CipherSuite> defaultEsniServerCiphersuites) {
+        this.defaultEsniServerCiphersuites = defaultEsniServerCiphersuites;
+    }
+
+    public int getDefaultEsniPaddedLength() {
+        return defaultEsniPaddedLength;
+    }
+
+    public void setDefaultEsniPaddedLength(int defaultEsniPaddedLength) {
+        this.defaultEsniPaddedLength = defaultEsniPaddedLength;
+    }
+
+    public byte[] getDefaultEsniNotBefore() {
+        return defaultEsniNotBefore;
+    }
+
+    public void setDefaultEsniNotBefore(byte[] defaultEsniNotBefore) {
+        this.defaultEsniNotBefore = defaultEsniNotBefore;
+    }
+
+    public byte[] getDefaultEsniNotAfter() {
+        return defaultEsniNotAfter;
+    }
+
+    public void setDefaultEsniNotAfter(byte[] defaultEsniNotAfter) {
+        this.defaultEsniNotAfter = defaultEsniNotAfter;
+    }
+
+    public byte[] getDefaultEsniExtensions() {
+        return defaultEsniExtensions;
+    }
+
+    public void setDefaultEsniExtensions(byte[] defaultEsniExtensions) {
+        this.defaultEsniExtensions = defaultEsniExtensions;
+    }
+
+    public byte[] getDefaultEsniClientNonce() {
+        return defaultEsniClientNonce;
+    }
+
+    public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
+        this.defaultEsniClientNonce = defaultEsniClientNonce;
+    }
+
 }

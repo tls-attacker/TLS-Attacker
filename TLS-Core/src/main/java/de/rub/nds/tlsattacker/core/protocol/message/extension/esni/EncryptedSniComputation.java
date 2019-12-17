@@ -38,10 +38,10 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     private ModifiableByteArray esniContentsHash;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray sharedSecret;
+    private ModifiableByteArray esniSharedSecret;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray masterSecret;
+    private ModifiableByteArray esniMasterSecret;
 
     @ModifiableVariableProperty
     private ModifiableByteArray key;
@@ -121,28 +121,28 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
         this.esniContentsHash = ModifiableVariableFactory.safelySetValue(esniContentsHash, bytes);
     }
 
-    public ModifiableByteArray getSharedSecret() {
-        return sharedSecret;
+    public ModifiableByteArray getEsniSharedSecret() {
+        return esniSharedSecret;
     }
 
-    public void setSharedSecret(ModifiableByteArray sharedSecret) {
-        this.sharedSecret = sharedSecret;
+    public void setEsniSharedSecret(ModifiableByteArray esniSharedSecret) {
+        this.esniSharedSecret = esniSharedSecret;
     }
 
-    public void setSharedSecret(byte[] bytes) {
-        this.sharedSecret = ModifiableVariableFactory.safelySetValue(sharedSecret, bytes);
+    public void setEsniSharedSecret(byte[] bytes) {
+        this.esniSharedSecret = ModifiableVariableFactory.safelySetValue(esniSharedSecret, bytes);
     }
 
-    public ModifiableByteArray getMasterSecret() {
-        return masterSecret;
+    public ModifiableByteArray getEsniMasterSecret() {
+        return esniMasterSecret;
     }
 
-    public void setMasterSecret(ModifiableByteArray masterSecret) {
-        this.masterSecret = masterSecret;
+    public void setEsniMasterSecret(ModifiableByteArray esniMasterSecret) {
+        this.esniMasterSecret = esniMasterSecret;
     }
 
-    public void setMasterSecret(byte[] bytes) {
-        this.masterSecret = ModifiableVariableFactory.safelySetValue(masterSecret, bytes);
+    public void setEsniMasterSecret(byte[] bytes) {
+        this.esniMasterSecret = ModifiableVariableFactory.safelySetValue(esniMasterSecret, bytes);
     }
 
     public ModifiableByteArray getKey() {

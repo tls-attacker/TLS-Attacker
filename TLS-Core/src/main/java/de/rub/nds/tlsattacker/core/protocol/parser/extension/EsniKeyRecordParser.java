@@ -12,49 +12,50 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-public class EsniKeyParser extends Parser<EsniKeyRecord> {
+public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private EsniKeyRecord esniKeys;
+    private EsniKeyRecord record;
 
-    public EsniKeyParser(int startposition, byte[] array) {
+    public EsniKeyRecordParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
     public EsniKeyRecord parse() {
-        esniKeys = new EsniKeyRecord();
-        parseVersion(esniKeys);
-        parseChecksum(esniKeys);
-        parseKeys(esniKeys);
-        parseCipherSuites(esniKeys);
-        parsePaddedLength(esniKeys);
-        parseNotBefore(esniKeys);
-        parseNotAfter(esniKeys);
-        parsenotExtensions(esniKeys);
-        return esniKeys;
+        record = new EsniKeyRecord();
+        parseVersion(record);
+        parseChecksum(record);
+        parseKeys(record);
+        parseCipherSuites(record);
+        parsePaddedLength(record);
+        parseNotBefore(record);
+        parseNotAfter(record);
+        parsenotExtensions(record);
+        return record;
     }
 
-    private void parseVersion(EsniKeyRecord esniKeys) {
+    private void parseVersion(EsniKeyRecord record) {
         byte[] version = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_VERSION);
-        esniKeys.setVersion(version);
-        LOGGER.debug("Version: " + ArrayConverter.bytesToHexString(version));
+        record.setVersion(version);
+        LOGGER.debug("Version: " + ArrayConverter.bytesToHexString(record.getVersion()));
 
     }
 
-    private void parseChecksum(EsniKeyRecord esniKeys) {
+    private void parseChecksum(EsniKeyRecord record) {
         byte[] checksum = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_CHECKSUM);
-        esniKeys.setChecksum(checksum);
-        LOGGER.debug("Checksum: " + ArrayConverter.bytesToHexString(checksum));
+        record.setChecksum(checksum);
+        LOGGER.debug("Checksum: " + ArrayConverter.bytesToHexString(record.getChecksum()));
     }
 
-    private void parseKeys(EsniKeyRecord esniKeys) {
+    private void parseKeys(EsniKeyRecord record) {
         int keysLen = this.parseIntField(ExtensionByteLength.ESNI_RECORD_KEYS_LENGTH);
         LOGGER.debug("KeysLength: " + keysLen);
         KeyShareStoreEntry entry;
@@ -66,44 +67,48 @@ public class EsniKeyParser extends Parser<EsniKeyRecord> {
             entry = new KeyShareStoreEntry();
             entry.setGroup(NamedGroup.getNamedGroup(namedGroup));
             entry.setPublicKey(keyExchange);
-            esniKeys.getKeyList().add(entry);
+            record.getKeyList().add(entry);
             i += ExtensionByteLength.ESNI_RECORD_NAMEDGROUP + ExtensionByteLength.ESNI_RECORD_KEY_LENGTH
                     + keyExchangeLen;
             LOGGER.debug("namedGroup: " + ArrayConverter.bytesToHexString(namedGroup));
             LOGGER.debug("keyExchange: " + ArrayConverter.bytesToHexString(keyExchange));
+
         }
     }
 
-    private void parseCipherSuites(EsniKeyRecord esniKeys) {
+    private void parseCipherSuites(EsniKeyRecord record) {
         int cipherSuitesLen = this.parseIntField(ExtensionByteLength.ESNI_RECORD_CIPHER_SUITES_LENGTH);
         for (int i = 0; i < cipherSuitesLen; i += ExtensionByteLength.ESNI_RECORD_CIPHER_SUITE) {
             byte[] cipherSuite = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_CIPHER_SUITE);
-            esniKeys.getCipherSuiteList().add(cipherSuite);
+            record.getCipherSuiteList().add(CipherSuite.getCipherSuite(cipherSuite));
             LOGGER.debug("cipherSuite: " + ArrayConverter.bytesToHexString(cipherSuite));
         }
     }
 
-    private void parsePaddedLength(EsniKeyRecord esniKeys) {
+    private void parsePaddedLength(EsniKeyRecord record) {
         int paddedLength = this.parseIntField(ExtensionByteLength.ESNI_RECORD_PADDED_LENGTH);
-        esniKeys.setPaddedLength(paddedLength);
-        LOGGER.debug("paddedLen: " + paddedLength);
+        record.setPaddedLength(paddedLength);
+        LOGGER.debug("paddedLen: " + record.getPaddedLength());
     }
 
-    private void parseNotBefore(EsniKeyRecord esniKeys) {
+    private void parseNotBefore(EsniKeyRecord record) {
         byte[] notBefore = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
-        LOGGER.debug("notBefore: " + ArrayConverter.bytesToHexString(notBefore));
+        record.setNotBefore(notBefore);
+        LOGGER.debug("notBefore: " + ArrayConverter.bytesToHexString(record.getNotBefore()));
     }
 
-    private void parseNotAfter(EsniKeyRecord esniKeys) {
+    private void parseNotAfter(EsniKeyRecord record) {
         byte[] notAfter = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
-        LOGGER.debug("notAfter: " + ArrayConverter.bytesToHexString(notAfter));
+        record.setNotAfter(notAfter);
+        LOGGER.debug("notAfter: " + ArrayConverter.bytesToHexString(record.getNotAfter()));
     }
 
-    private void parsenotExtensions(EsniKeyRecord esniKeys) {
+    private void parsenotExtensions(EsniKeyRecord record) {
         int extensionsLen = this.parseIntField(ExtensionByteLength.ESNI_RECORD_EXTENSIONS);
-        byte[] extensionsBytes = this.parseByteArrayField(extensionsLen);
+        byte[] extensionBytes = this.parseByteArrayField(extensionsLen);
+        record.setExtensionBytes(extensionBytes);
         LOGGER.debug("extensionsBytesLen: " + extensionsLen);
-        LOGGER.debug("extensionsBytes: " + ArrayConverter.bytesToHexString(extensionsBytes));
+        LOGGER.debug("extensionsBytes: " + ArrayConverter.bytesToHexString(record.getExtensionBytes()));
     }
 
 }

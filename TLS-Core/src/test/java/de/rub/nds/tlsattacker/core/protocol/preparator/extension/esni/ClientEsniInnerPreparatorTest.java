@@ -32,13 +32,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 public class ClientEsniInnerPreparatorTest {
 
     private Chooser chooser;
+    private TlsContext context;
 
     @Before
     public void setUp() {
         Config config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
+        context = new TlsContext(config);
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
     }
 
+    @Before
     @Test
     public void test() {
         // Def Parameters:
@@ -54,6 +57,7 @@ public class ClientEsniInnerPreparatorTest {
         pair.setServerNameConfig(hostName.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
 
+        context.setEsniPaddedLength(260);
         // Compare results and expectations:
         clientEsniInnerPreparator.prepare();
 

@@ -1221,4 +1221,20 @@
         84 37 11 C2 1D 47 CE 6E  63 83 CD DA 37 E4 7D A3
     </defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <defaultEsniRecordBytes>/wEAEksqACQAHQAg+lctA+IeFfnKGqf7hfYbn8eEWKeAUKxYGBGGMyWURBIAAhMBAQQAAAAAXcw6RQAAAABd2hIFAAA=</defaultEsniRecordBytes>
+    <defaultEsniVersion>/wE=</defaultEsniVersion>
+    <defaultEsniKeysChecksum>ABJLKg==</defaultEsniKeysChecksum>
+    <defaultEsniServerKeyShareEntries>
+        <group>ECDH_X25519</group>
+        <publicKey>
+            FA 57 2D 03 E2 1E 15 F9  CA 1A A7 FB 85 F6 1B 9F
+            C7 84 58 A7 80 50 AC 58  18 11 86 33 25 94 44 12
+        </publicKey>
+    </defaultEsniServerKeyShareEntries>
+    <defaultEsniServerCiphersuites>TLS_AES_128_GCM_SHA256</defaultEsniServerCiphersuites>
+    <defaultEsniPaddedLength>260</defaultEsniPaddedLength>
+    <defaultEsniNotBefore>AAAAAF3MOkU=</defaultEsniNotBefore>
+    <defaultEsniNotAfter>AAAAAF3aEgU=</defaultEsniNotAfter>
+    <defaultEsniExtensions/>
+    <defaultEsniClientNonce>pyhMmlLxXBNkS5RyYXdGVw==</defaultEsniClientNonce>
 </config>

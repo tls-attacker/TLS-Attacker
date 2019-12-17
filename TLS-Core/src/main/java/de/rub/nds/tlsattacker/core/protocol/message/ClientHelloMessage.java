@@ -92,25 +92,12 @@ public class ClientHelloMessage extends HelloMessage {
         }
 
         if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
-            EncryptedServerNameIndicationExtensionMessage extensionMsg = new EncryptedServerNameIndicationExtensionMessage();
-
+            EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
             String hostname = tlsConfig.getDefaultClientConnection().getHostname();
-            byte nameType = (byte) 0x00;
-
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameTypeConfig(nameType);
             pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
-            extensionMsg.getClientEsniInner().getServerNameList().add(pair);
-
-            // TODO: use context variable for selectEsniCipherSuite instead
-            byte[] cipherSuiteConfig = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
-            extensionMsg.setCipherSuiteConfig(cipherSuiteConfig);
-
-            // TODO: maybe use context variable for selectEsniNamedGroup instead
-            NamedGroup namedGroupConfig = NamedGroup.ECDH_X25519;
-            extensionMsg.getKeyShareEntry().setGroupConfig(namedGroupConfig);
-
-            this.addExtension(extensionMsg);
+            msg.getClientEsniInner().getServerNameList().add(pair);
+            addExtension(msg);
         }
 
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {

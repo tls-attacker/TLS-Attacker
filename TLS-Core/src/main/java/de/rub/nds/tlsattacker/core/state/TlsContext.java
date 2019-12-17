@@ -2332,7 +2332,7 @@ public class TlsContext {
     // {NamedGroup group; opaque key_exchange<1..2^16-1>;}
     // KeyShareEntry // keys<4..2^16-1>
 
-    private byte[] esniCipherSuite; // CipherSuite cipher_suites<2..2^16-2>;
+    private List<CipherSuite> esniServerCiphersuites = new LinkedList();
 
     private Integer esniPaddedLength; // uint16 padded_length;
 
@@ -2374,12 +2374,12 @@ public class TlsContext {
         this.esniServerKeyShareEntryList = esniServerKeyShareEntryList;
     }
 
-    public byte[] getEsniCipherSuite() {
-        return esniCipherSuite;
+    public List<CipherSuite> getEsniServerCiphersuites() {
+        return esniServerCiphersuites;
     }
 
-    public void setEsniCipherSuite(byte[] esniCipherSuite) {
-        this.esniCipherSuite = esniCipherSuite;
+    public void setEsniServerCiphersuites(List<CipherSuite> esniServerCiphersuites) {
+        this.esniServerCiphersuites = esniServerCiphersuites;
     }
 
     public Integer getEsniPaddedLength() {

@@ -941,35 +941,41 @@ public class DefaultChooser extends Chooser {
         if (context.getEsniRecordBytes() != null) {
             return context.getEsniRecordBytes();
         } else {
-            byte[] defaultEsniRecordBytes = ArrayConverter
-                    .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
-            return defaultEsniRecordBytes;
+            return config.getDefaultEsniRecordBytes();
         }
     }
 
     @Override
-    public byte[] getEsniKeysVersion() {
-        return context.getEsniKeysVersion();
+    public byte[] getEsniVersion() {
+        if (context.getEsniKeysVersion() != null)
+            return context.getEsniKeysVersion();
+        else
+            return config.getDefaultEsniVersion();
     }
 
     @Override
-    public byte[] getEsniKeysChecksum() {
-        return this.context.getEsniKeysChecksum();
+    public byte[] getEsniChecksum() {
+        if (context.getEsniKeysChecksum() != null)
+            return context.getEsniKeysChecksum();
+        else
+            return config.getDefaultEsniKeysChecksum();
     }
 
     @Override
-    public List<KeyShareStoreEntry> getEsniServerKeyShareEntryList() {
-        if (context.getEsniServerKeyShareEntryList() != null && context.getEsniServerKeyShareEntryList().size() > 0) {
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        if (context.getEsniServerKeyShareEntryList() != null && context.getEsniServerKeyShareEntryList().size() > 0)
             return context.getEsniServerKeyShareEntryList();
+        else
+            return config.getDefaultEsniServerKeyShareEntries();
+    }
+
+    @Override
+    public List<CipherSuite> getEsniServerCiphersuites() {
+
+        if (context.getEsniServerCiphersuites() != null) {
+            return context.getEsniServerCiphersuites();
         } else {
-            // TODO: move to default config:
-            List<KeyShareStoreEntry> defaultEsniServerKeyShareEntryList = new LinkedList<>();
-            KeyShareStoreEntry defaultEntry = new KeyShareStoreEntry();
-            defaultEntry.setGroup(NamedGroup.ECDH_X25519);
-            defaultEntry.setPublicKey(ArrayConverter
-                    .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
-            defaultEsniServerKeyShareEntryList.add(defaultEntry);
-            return defaultEsniServerKeyShareEntryList;
+            return config.getDefaultEsniServerCiphersuites();
         }
     }
 
@@ -979,35 +985,43 @@ public class DefaultChooser extends Chooser {
         if (context.getEsniPaddedLength() != null) {
             return context.getEsniPaddedLength();
         } else {
-            // TODO: move to default config::
-            return 260;
+            return config.getDefaultEsniPaddedLength();
         }
     }
 
     @Override
     public byte[] getEsniNotBefore() {
-        return this.context.getEsniKeysNotBefore();
+        if (context.getEsniKeysNotBefore() != null) {
+            return this.context.getEsniKeysNotBefore();
+        } else {
+            return config.getDefaultEsniNotBefore();
+        }
     }
 
     @Override
     public byte[] getEsniNotAfter() {
-        return this.context.getEsniNotAfter();
+        if (context.getEsniNotAfter() != null) {
+            return context.getEsniNotAfter();
+        } else {
+            return config.getDefaultEsniNotAfter();
+        }
     }
 
     @Override
     public byte[] getEsniExtensions() {
-        return this.context.getEsniExtensions();
+        if (context.getEsniExtensions() != null) {
+            return context.getEsniExtensions();
+        } else {
+            return config.getDefaultEsniExtensions();
+        }
     }
 
-    //
     @Override
     public byte[] getEsniClientNonce() {
         if (context.getEsniClientNonce() != null) {
             return this.context.getEsniClientNonce();
         } else {
-            // TODO: move to default config:
-            return ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+            return config.getDefaultEsniClientNonce();
         }
     }
-
 }
