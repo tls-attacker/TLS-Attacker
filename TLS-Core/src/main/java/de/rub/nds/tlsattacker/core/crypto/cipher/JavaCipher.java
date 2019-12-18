@@ -91,7 +91,11 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
+
+            // Bug? :
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), encryptIv);
+            // cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"),
+            // encryptIv);
             cipher.updateAAD(additionAuthenticatedData);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
