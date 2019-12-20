@@ -13,6 +13,7 @@ import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseNativeTypesContext;
+import de.rub.nds.asn1tool.filesystem.TextFileReader;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -40,7 +41,8 @@ public class CcaCertificateGenerator {
      *         integration of multiple certificates, partially with keys, will
      *         be implemented with x509 attacker.
      */
-    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type) {
+    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type)
+            throws CertificateException, IOException, ParserException {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (type != null) {
             switch (type) {
@@ -53,8 +55,10 @@ public class CcaCertificateGenerator {
                 case EMPTY:
                     certificateMessage.setCertificatesListBytes(Modifiable.explicit(new byte[0]));
                     break;
-                case LEAF_RSA:
-
+                case CA_LEAF_RSA:
+                    generateCertificateMessageFromXML("root-v1.pem", "CA-LEAF_RSA-Basic.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
                 default:
                     break;
             }
@@ -62,10 +66,40 @@ public class CcaCertificateGenerator {
         return certificateMessage;
     }
 
+    /**
+     * This function assumes that all paths and the corresponding files exist. It will be the task of the Probe to
+     * ensure that those paths are at least set. Exceptions should be handled by the Probe
+     *
+     * This function establishes a few conventions. First, for every rootCertificate specifies there has to be a file
+     * with the same name in the keyDirectory which is the corresponding PRIVATE key to the certificate. Additionally
+     * several keys need to be present in the keyDirectory. Furthermore, certificateChains are XML files that can be
+     * processed by X509Attacker with the sole exception of two placeholders which will be replaced. Those placeholders
+     * are '<asn1Sequence identifier="issuer" type="Name" placeholder="replace_me"/>' and 'replace_me_im_a_dummy_key'.
+     * The former is replaced with the subject of the root certificate used and the latter with the path to the key
+     * of the root certificate. Note that not the attribute is the placeholder but the whole string.
+     *
+     *
+     * @param rootCertificate
+     * @param certificateChain
+     * @param keyDirectory
+     * @param xmlDirectory
+     * @param certificateInputDirectory
+     * @param certificateOutputDirectory
+     * @return
+     * @throws CertificateException
+     * @throws IOException
+     * @throws ParserException
+     */
     private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate, String certificateChain,
                                                                         String keyDirectory, String xmlDirectory,
                                                                         String certificateInputDirectory,
-                                                                        String certificateOutputDirectory) {
+                                                                        String certificateOutputDirectory)
+            throws CertificateException, IOException, ParserException {
+
+        String xmlSubject = extractXMLCertificateSubject(rootCertificate);
+
+        TextFileReader textFileReader = new TextFileReader(certificateChain);
+        String xmlString = textFileReader.read();
 
         return new CertificateMessage();
     }
