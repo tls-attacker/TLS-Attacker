@@ -62,7 +62,10 @@ public class CcaCertificateGenerator {
         return certificateMessage;
     }
 
-    private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate, String certificateChain) {
+    private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate, String certificateChain,
+                                                                        String keyDirectory, String xmlDirectory,
+                                                                        String certificateInputDirectory,
+                                                                        String certificateOutputDirectory) {
 
         return new CertificateMessage();
     }
