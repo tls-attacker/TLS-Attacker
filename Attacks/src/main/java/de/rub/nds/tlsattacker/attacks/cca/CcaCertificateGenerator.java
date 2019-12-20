@@ -89,6 +89,8 @@ public class CcaCertificateGenerator {
      * to the last certificate for the connection, aka it's supposed to be the leaf certificate. All previous certificates
      * should be should be in descending order, starting at the top with the highest level CA.
      *
+     * TODO: Currently I do not ensure that the Directory variables end with a slash. Maybe I should just add one since
+     * TODO: it should be ignored.
      *
      * @param rootCertificate
      * @param certificateChain
@@ -107,13 +109,14 @@ public class CcaCertificateGenerator {
                                                                         String certificateOutputDirectory)
             throws CertificateException, IOException, ParserException, KeyFileManagerException {
 
-        String xmlSubject = extractXMLCertificateSubject(rootCertificate);
+        String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory + rootCertificate);
 
-        TextFileReader textFileReader = new TextFileReader(certificateChain);
+        TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
         String xmlString = textFileReader.read();
 
         xmlString = xmlString.replace("<asn1Sequence identifier=\"issuer\" type=\"Name\" placeholder=\"replace_me\"/>", xmlSubject);
-        xmlString = xmlString.replace("replace_me_im_a_dummy_key", keyDirectory + rootCertificate);
+        // Please note that rootCertificate always has to be a filename only. No path
+        xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
 
         // Parse XML
         XmlParser xmlParser = new XmlParser(xmlString);
