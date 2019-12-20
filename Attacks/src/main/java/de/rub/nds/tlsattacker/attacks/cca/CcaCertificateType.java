@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.attacks.cca;
 
 public enum CcaCertificateType {
     CLIENT_INPUT("The certificate provided to the CLI switch"),
-    EMPTY("An empty certificate.");
-    // LEAF_RSA("RSA Leaf certificate generated based on the provided CA certificate")
+    EMPTY("An empty certificate."),
+    LEAF_RSA("RSA Leaf certificate generated based on the provided CA certificate");
     // There will be several more cases later through this work, especially one
     // we start integrating X509 attacker.
     // This is just to start out modular enabling a combination of our test

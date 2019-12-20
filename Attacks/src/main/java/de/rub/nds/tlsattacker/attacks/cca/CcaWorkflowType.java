@@ -22,15 +22,19 @@ public enum CcaWorkflowType {
             + "key material is sent from the client. Uninitialized data might be used, or null keys."),
     CRT_ZFIN(
             "TLS handshake of only ClientCertificate and Finished. No encryption is enabled and no "
-                    + "key material is sent from the client. Uninitialized data might be used, or null keys. VerifyData is zeroed.")
+                    + "key material is sent from the client. Uninitialized data might be used, or null keys. VerifyData is zeroed."),
+
+    /**
+     * TODO: Flows that send CRT out of order and still skip vrfy
+     */
     /*
      * The following test cases require the integration of X509-Attacker. Hence
      * they've been postponed for now.
      */
+
+    CRT_CKE_VRFY_CCS_FIN("TLS handshake that is completely valid. It's used to confirm that everything works."),
     /*
-     * CRT_CKE_VRFY_CCS_FIN(
-     * "TLS handshake that is completely valid. It's used to confirm that everything works."
-     * ), CRT1_CRT2_CKE_VRFY1_CCS_FIN(
+     * CRT1_CRT2_CKE_VRFY1_CCS_FIN(
      * "TLS handshake sending two certificate messages and afterwards only " +
      * "verifying the first."), CRT1_CRT2_CKE_VRFY2_CCS_FIN(
      * "TLS handshake sending two certificate messages and afterwards only " +
