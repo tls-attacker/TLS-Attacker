@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -77,6 +78,12 @@ public class CcaWorkflowGenerator {
                 case CRT_CCS_FIN:
                     trace.addTlsAction(new SendAction(certMessage, new ChangeCipherSpecMessage(tlsConfig),
                             new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT_CKE_VRFY_CCS_FIN:
+                    trace.addTlsAction(new SendAction(certMessage));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig),
+                            new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
                     break;
                 default:
                     break;

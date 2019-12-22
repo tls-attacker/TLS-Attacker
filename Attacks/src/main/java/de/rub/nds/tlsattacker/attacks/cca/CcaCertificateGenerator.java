@@ -17,18 +17,28 @@ import de.rub.nds.asn1.translator.ParseNativeTypesContext;
 import de.rub.nds.asn1tool.filesystem.TextFileReader;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
+import javassist.bytecode.ByteArray;
+import org.bouncycastle.crypto.tls.Certificate;
+import sun.security.rsa.RSAPrivateCrtKeyImpl;
+import sun.security.rsa.RSAPrivateKeyImpl;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -36,6 +46,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
 import static de.rub.nds.x509attacker.X509Attacker.*;
 
 public class CcaCertificateGenerator {
@@ -50,7 +61,7 @@ public class CcaCertificateGenerator {
      *         be implemented with x509 attacker.
      */
     public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type)
-            throws CertificateException, IOException, ParserException, KeyFileManagerException {
+            throws Exception {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (type != null) {
             switch (type) {
@@ -64,9 +75,9 @@ public class CcaCertificateGenerator {
                     certificateMessage.setCertificatesListBytes(Modifiable.explicit(new byte[0]));
                     break;
                 case CA_LEAF_RSA:
-                    generateCertificateMessageFromXML("root-v1.pem", "CA-LEAF_RSA-Basic.xml",
-                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
-                            ccaDelegate.getCertificateOutputDirectory());
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "CA-LEAF_RSA-Basic.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
                 default:
                     break;
             }
@@ -75,22 +86,29 @@ public class CcaCertificateGenerator {
     }
 
     /**
-     * This function assumes that all paths and the corresponding files exist. It will be the task of the Probe to
-     * ensure that those paths are at least set. Exceptions should be handled by the Probe
+     * This function assumes that all paths and the corresponding files exist.
+     * It will be the task of the Probe to ensure that those paths are at least
+     * set. Exceptions should be handled by the Probe
      *
-     * This function establishes a few conventions. First, for every rootCertificate specifies there has to be a file
-     * with the same name in the keyDirectory which is the corresponding PRIVATE key to the certificate. Additionally
-     * several keys need to be present in the keyDirectory. Furthermore, certificateChains are XML files that can be
-     * processed by X509Attacker with the sole exception of two placeholders which will be replaced. Those placeholders
-     * are '<asn1Sequence identifier="issuer" type="Name" placeholder="replace_me"/>' and 'replace_me_im_a_dummy_key'.
-     * The former is replaced with the subject of the root certificate used and the latter with the path to the key
-     * of the root certificate. Note that not the attribute is the placeholder but the whole string. Last but not least
-     * certificates have to be created in a certain order in the XML file because the code uses the key corresponding
-     * to the last certificate for the connection, aka it's supposed to be the leaf certificate. All previous certificates
-     * should be should be in descending order, starting at the top with the highest level CA.
+     * This function establishes a few conventions. First, for every
+     * rootCertificate specifies there has to be a file with the same name in
+     * the keyDirectory which is the corresponding PRIVATE key to the
+     * certificate. Additionally several keys need to be present in the
+     * keyDirectory. Furthermore, certificateChains are XML files that can be
+     * processed by X509Attacker with the sole exception of two placeholders
+     * which will be replaced. Those placeholders are '<asn1Sequence
+     * identifier="issuer" type="Name" placeholder="replace_me"/>' and
+     * 'replace_me_im_a_dummy_key'. The former is replaced with the subject of
+     * the root certificate used and the latter with the path to the key of the
+     * root certificate. Note that not the attribute is the placeholder but the
+     * whole string. Last but not least certificates have to be created in a
+     * certain order in the XML file because the code uses the key corresponding
+     * to the last certificate for the connection, aka it's supposed to be the
+     * leaf certificate. All previous certificates should be should be in
+     * descending order, starting at the top with the highest level CA.
      *
-     * TODO: Currently I do not ensure that the Directory variables end with a slash. Maybe I should just add one since
-     * TODO: it should be ignored.
+     * TODO: Currently I do not ensure that the Directory variables end with a
+     * slash. Maybe I should just add one since TODO: it should be ignored.
      *
      * @param rootCertificate
      * @param certificateChain
@@ -103,19 +121,19 @@ public class CcaCertificateGenerator {
      * @throws IOException
      * @throws ParserException
      */
-    private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate, String certificateChain,
-                                                                        String keyDirectory, String xmlDirectory,
-                                                                        String certificateInputDirectory,
-                                                                        String certificateOutputDirectory)
-            throws CertificateException, IOException, ParserException, KeyFileManagerException {
+    private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate,
+            String certificateChain, String keyDirectory, String xmlDirectory, String certificateInputDirectory,
+            String certificateOutputDirectory) throws Exception {
 
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory + rootCertificate);
 
         TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
         String xmlString = textFileReader.read();
 
-        xmlString = xmlString.replace("<asn1Sequence identifier=\"issuer\" type=\"Name\" placeholder=\"replace_me\"/>", xmlSubject);
-        // Please note that rootCertificate always has to be a filename only. No path
+        xmlString = xmlString.replace("<asn1Sequence identifier=\"issuer\" type=\"Name\" placeholder=\"replace_me\"/>",
+                xmlSubject);
+        // Please note that rootCertificate always has to be a filename only. No
+        // path
         xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
 
         // Parse XML
@@ -134,24 +152,63 @@ public class CcaCertificateGenerator {
         XmlSignatureEngine xmlSignatureEngine = new XmlSignatureEngine(linker, identifierMap);
         xmlSignatureEngine.computeSignatures();
 
+        // Declare variables for later use
+        String keyName = "Default non existent key";
+        CertificateMessage certificateMessage = new CertificateMessage();
+        List<CertificatePair> certificatePairList = new LinkedList<>();
+        CertificatePair certificatePair;
+        byte[] encodedLeafCertificate = {};
+        CertificateKeyPair certificateKeyPair;
+
         // Encode XML for certificate
         List<Asn1Encodable> certificates = asn1XmlContent.getAsn1Encodables();
         byte[][] encodedCertificates = new byte[certificates.size()][];
         for (int i = 0; i < certificates.size(); i++) {
-            encodedCertificates[i] = Asn1EncoderForX509.encodeForCertificate(linker, certificates.get(i));
+            Asn1Encodable certificate = certificates.get(i);
+            encodedCertificates[i] = Asn1EncoderForX509.encodeForCertificate(linker, certificate);
+            if (certificate instanceof Asn1Sequence && keyName == "Default non existent key") {
+                keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFile();
+                encodedLeafCertificate = encodedCertificates[i];
+            }
         }
 
-        // Write certificate files such that test cases can be reproduced without TLS-Scanner with exactly the same certificates
+        // Add certificates to pair list
+        for (byte[] certificate : encodedCertificates) {
+            if (certificate.length > 0) {
+                certificatePair = new CertificatePair(certificate);
+                certificatePairList.add(certificatePair);
+            }
+        }
+        certificateMessage.setCertificatesList(certificatePairList);
+
+        // Parse leaf certificate for CertificateKeyPair
+        Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
+
+        // Parse private key and instantiate correct CertificateKeyPair
+        byte[] keyBytes = keyFileManager.getKeyFileContent(keyName);
+        PrivateKey privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+
+        switch (privateKey.getAlgorithm()) {
+            case "RSA":
+                BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
+                BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
+                certificateKeyPair = new CertificateKeyPair(certificate, new CustomRSAPrivateKey(modulus, d));
+                break;
+            default:
+                throw new Exception("Unknown PublicKeyAlgorithm in Certificate");
+        }
+
+        certificateMessage.setCertificateKeyPair(certificateKeyPair);
+
+        // Write certificate files such that test cases can be reproduced
+        // without TLS-Scanner with exactly the same certificates
         writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
 
-        /**
-         * TODO: add certificates in order to CertificateMessage and set keyPair according to leaf certs key
-         */
-
-        return new CertificateMessage();
+        return certificateMessage;
     }
 
-    private static String extractXMLCertificateSubject(String rootCertificate) throws CertificateException, IOException, ParserException {
+    private static String extractXMLCertificateSubject(String rootCertificate) throws CertificateException,
+            IOException, ParserException {
         // Register XmlClasses, Types, Contexts and Unpackers
         registerXmlClasses();
         registerTypes();
@@ -184,13 +241,16 @@ public class CcaCertificateGenerator {
         Asn1Sequence asn1Sequence = (Asn1Sequence) asn1SubjectEncodables.get(0);
         stringBuilder.append("<asn1Sequence identifier=\"issuer\" type=\"Name\">");
         stringBuilder.append("<asn1Set identifier=\"relativeDistinguishedName0\" type=\"RelativeDistinguishedName\">");
-        for(Asn1Encodable asn1Set : asn1Sequence.getChildren()) {
-            _asn1Sequence = (Asn1Sequence)((Asn1Set) asn1Set).getChildren().get(0);
-            stringBuilder.append("<asn1Sequence identifier=\"attributeTypeAndValue" + i +"\" type=\"AttributeTypeAndValue\">");
+        for (Asn1Encodable asn1Set : asn1Sequence.getChildren()) {
+            _asn1Sequence = (Asn1Sequence) ((Asn1Set) asn1Set).getChildren().get(0);
+            stringBuilder.append("<asn1Sequence identifier=\"attributeTypeAndValue" + i
+                    + "\" type=\"AttributeTypeAndValue\">");
             stringBuilder.append("<asn1ObjectIdentifier identifier=\"type\" type=\"AttributeType\">");
 
             _asn1ObjectIdentifier = (Asn1ObjectIdentifier) _asn1Sequence.getChildren().get(0);
-            stringBuilder.append("<value>" + new StringBuilder(_asn1ObjectIdentifier.getValue().substring(0, 3)).reverse().toString() + _asn1ObjectIdentifier.getValue().substring(3) + "</value>");
+            stringBuilder.append("<value>"
+                    + new StringBuilder(_asn1ObjectIdentifier.getValue().substring(0, 3)).reverse().toString()
+                    + _asn1ObjectIdentifier.getValue().substring(3) + "</value>");
             stringBuilder.append("</asn1ObjectIdentifier>");
 
             _asn1Encodable = _asn1Sequence.getChildren().get(1);
@@ -201,7 +261,8 @@ public class CcaCertificateGenerator {
 
             } else if (_asn1Encodable instanceof Asn1PrimitivePrintableString) {
                 stringBuilder.append("<asn1PrimitivePrintableString identifier=\"value\" type=\"AttributeValue\">");
-                stringBuilder.append("<value>" + ((Asn1PrimitivePrintableString) _asn1Encodable).getValue() + "</value>");
+                stringBuilder.append("<value>" + ((Asn1PrimitivePrintableString) _asn1Encodable).getValue()
+                        + "</value>");
                 stringBuilder.append("</asn1PrimitivePrintableString>");
             } else if (_asn1Encodable instanceof Asn1PrimitiveIa5String) {
                 stringBuilder.append("<asn1PrimitiveIa5String identifier=\"value\" type=\"AttributeValue\">");
@@ -217,6 +278,17 @@ public class CcaCertificateGenerator {
         stringBuilder.append("</asn1Sequence>");
 
         return stringBuilder.toString();
+    }
+
+    private static Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
+        try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                    ArrayConverter.intToBytes(lengthBytes + 3, 3), ArrayConverter.intToBytes(lengthBytes, 3),
+                    bytesToParse));
+            return Certificate.parse(stream);
+        } catch (Exception E) {
+            return null;
+        }
     }
 
 }

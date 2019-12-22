@@ -21,20 +21,19 @@ public class CcaDelegate extends Delegate {
     @Parameter(names = "-certificatePath", description = "ASN.1 DER encoded client certificate used for basic "
             + "authentication bypass testing. Required for basic CCA test cases.")
     private String clientCertificatePath;
-    @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates " +
-            "for CCA test cases. Required for further CCA tests.")
+    @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates "
+            + "for CCA test cases. Required for further CCA tests.")
     private String certificateInputDirectory;
-    @Parameter(names = "-certificateOutputDirectory", description = "Path to directory to which certificates generated " +
-            "for test cases are written. Required for further CCA tests.")
+    @Parameter(names = "-certificateOutputDirectory", description = "Path to directory to which certificates generated "
+            + "for test cases are written. Required for further CCA tests.")
     private String certificateOutputDirectory;
-    @Parameter(names = "-keyDirectory", description = "Path to directory containing pre generated keys for certificates " +
-            "that will be generated, as well as the keys to the root certificates. Keys for root certificates need to " +
-            "have the same name as the certificate. Required for further CCA tests.")
+    @Parameter(names = "-keyDirectory", description = "Path to directory containing pre generated keys for certificates "
+            + "that will be generated, as well as the keys to the root certificates. Keys for root certificates need to "
+            + "have the same name as the certificate. Required for further CCA tests.")
     private String keyDirectory;
-    @Parameter(names = "-xmlCertificateDirectory", description = "Path to directory that contains XML files describing " +
-            "certificates in the format of X509Attacker. Required for further CCA tests.")
+    @Parameter(names = "-xmlCertificateDirectory", description = "Path to directory that contains XML files describing "
+            + "certificates in the format of X509Attacker. Required for further CCA tests.")
     private String xmlDirectory;
-
 
     public CcaDelegate() {
     }
