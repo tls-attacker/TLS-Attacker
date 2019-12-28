@@ -21,6 +21,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -33,6 +34,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
 import sun.security.rsa.RSAPrivateKeyImpl;
 
+import javax.crypto.interfaces.DHPrivateKey;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -90,22 +92,28 @@ public class CcaCertificateGenerator {
      * It will be the task of the Probe to ensure that those paths are at least
      * set. Exceptions should be handled by the Probe
      *
-     * This function establishes a few conventions. First, for every
+     * This function establishes a few conventions. 1.) First, for every
      * rootCertificate specifies there has to be a file with the same name in
      * the keyDirectory which is the corresponding PRIVATE key to the
-     * certificate. Additionally several keys need to be present in the
-     * keyDirectory. Furthermore, certificateChains are XML files that can be
-     * processed by X509Attacker with the sole exception of two placeholders
+     * certificate. 2.) Additionally several keys need to be present in the
+     * keyDirectory. 3.) Furthermore, certificateChains are XML files that can
+     * be processed by X509Attacker with the sole exception of two placeholders
      * which will be replaced. Those placeholders are '<asn1Sequence
      * identifier="issuer" type="Name" placeholder="replace_me"/>' and
      * 'replace_me_im_a_dummy_key'. The former is replaced with the subject of
      * the root certificate used and the latter with the path to the key of the
      * root certificate. Note that not the attribute is the placeholder but the
-     * whole string. Last but not least certificates have to be created in a
-     * certain order in the XML file because the code uses the key corresponding
-     * to the first certificate for the connection, aka it's supposed to be the
-     * leaf certificate. All following certificates should be should be in
-     * ascending order, ending at the bottom with the highest level CA.
+     * whole string. 4.) the keyInfo needs the keyType attribute which is used
+     * to specify which type of key is used (RSA, DH, DHE, DSA). Corresponding
+     * to the key used a naming convention has to be followed (the autogen
+     * script already follows the convention) 5.) Last but not least
+     * certificates have to be created in a certain order in the XML file
+     * because the code uses the key corresponding to the first certificate for
+     * the connection, aka it's supposed to be the leaf certificate. All
+     * following certificates should be should be in ascending order, ending at
+     * the bottom with the highest level CA.
+     *
+     *
      *
      * TODO: Currently I do not ensure that the Directory variables end with a
      * slash. Maybe I should just add one since it should be ignored.
@@ -154,11 +162,15 @@ public class CcaCertificateGenerator {
 
         // Declare variables for later use
         String keyName = "Default non existent key";
+        String keyType = "";
+        Boolean readKey = false;
         CertificateMessage certificateMessage = new CertificateMessage();
         List<CertificatePair> certificatePairList = new LinkedList<>();
         CertificatePair certificatePair;
         byte[] encodedLeafCertificate = {};
         CertificateKeyPair certificateKeyPair;
+        byte[] keyBytes;
+        PrivateKey privateKey;
 
         // Encode XML for certificate
         List<Asn1Encodable> certificates = asn1XmlContent.getAsn1Encodables();
@@ -166,9 +178,11 @@ public class CcaCertificateGenerator {
         for (int i = 0; i < certificates.size(); i++) {
             Asn1Encodable certificate = certificates.get(i);
             encodedCertificates[i] = Asn1EncoderForX509.encodeForCertificate(linker, certificate);
-            if (certificate instanceof Asn1Sequence && keyName == "Default non existent key") {
+            if (certificate instanceof Asn1Sequence && readKey == false) {
                 keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFile();
+                keyType = ((Asn1Sequence) certificate).getChildren().get(0).getAttribute("keyType");
                 encodedLeafCertificate = encodedCertificates[i];
+                readKey = true;
             }
         }
 
@@ -185,17 +199,26 @@ public class CcaCertificateGenerator {
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         // Parse private key and instantiate correct CertificateKeyPair
-        byte[] keyBytes = keyFileManager.getKeyFileContent(keyName);
-        PrivateKey privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
-        switch (privateKey.getAlgorithm()) {
+        switch (keyType) {
             case "RSA":
+                keyBytes = keyFileManager.getKeyFileContent(keyName);
+                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
                 BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
                 BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
                 certificateKeyPair = new CertificateKeyPair(certificate, new CustomRSAPrivateKey(modulus, d));
                 break;
+            case "DH":
+                keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
+                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+
+                BigInteger x = ((DHPrivateKey) privateKey).getX();
+                BigInteger p = ((DHPrivateKey) privateKey).getParams().getP();
+                BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
+                certificateKeyPair = new CertificateKeyPair(certificate, new CustomDHPrivateKey(x, p, g));
+                break;
             default:
-                throw new Exception("Unknown PublicKeyAlgorithm in Certificate");
+                throw new Exception("Unknown value for keyType in attribute of keyInfo in XMLCertificate.");
         }
 
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
