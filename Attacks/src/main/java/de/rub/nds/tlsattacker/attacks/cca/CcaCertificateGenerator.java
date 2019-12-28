@@ -103,12 +103,12 @@ public class CcaCertificateGenerator {
      * root certificate. Note that not the attribute is the placeholder but the
      * whole string. Last but not least certificates have to be created in a
      * certain order in the XML file because the code uses the key corresponding
-     * to the last certificate for the connection, aka it's supposed to be the
-     * leaf certificate. All previous certificates should be should be in
-     * descending order, starting at the top with the highest level CA.
+     * to the first certificate for the connection, aka it's supposed to be the
+     * leaf certificate. All following certificates should be should be in
+     * ascending order, ending at the bottom with the highest level CA.
      *
      * TODO: Currently I do not ensure that the Directory variables end with a
-     * slash. Maybe I should just add one since TODO: it should be ignored.
+     * slash. Maybe I should just add one since it should be ignored.
      *
      * @param rootCertificate
      * @param certificateChain
