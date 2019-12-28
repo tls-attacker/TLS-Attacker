@@ -103,7 +103,7 @@ public class CcaCertificateGenerator {
      * 'replace_me_im_a_dummy_key'. The former is replaced with the subject of
      * the root certificate used and the latter with the path to the key of the
      * root certificate. Note that not the attribute is the placeholder but the
-     * whole string. 4.) the keyInfo needs the keyType attribute which is used
+     * whole string. 4.) the leaf certificates keyInfo needs the keyType attribute which is used
      * to specify which type of key is used (RSA, DH, DHE, DSA). Corresponding
      * to the key used a naming convention has to be followed (the autogen
      * script already follows the convention) 5.) Last but not least
