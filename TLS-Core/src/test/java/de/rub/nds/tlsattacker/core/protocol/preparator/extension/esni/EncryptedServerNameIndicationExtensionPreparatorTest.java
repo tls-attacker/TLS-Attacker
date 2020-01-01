@@ -12,9 +12,11 @@ import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,6 +47,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
         context = new TlsContext(config);
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);

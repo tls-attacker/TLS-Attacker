@@ -55,6 +55,10 @@ public class HKDFunction {
 
     public static final String RESUMPTION = "resumption";
 
+    public static final String ESNI_IV = "esni iv";
+
+    public static final String ESNI_KEY = "esni key";
+
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
