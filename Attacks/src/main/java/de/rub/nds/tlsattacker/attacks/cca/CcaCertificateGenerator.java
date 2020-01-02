@@ -27,13 +27,10 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
-import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
-import javassist.bytecode.ByteArray;
 import org.bouncycastle.crypto.tls.Certificate;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
-import sun.security.rsa.RSAPrivateKeyImpl;
 
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.security.auth.x500.X500Principal;
@@ -78,10 +75,16 @@ public class CcaCertificateGenerator {
                 case EMPTY:
                     certificateMessage.setCertificatesListBytes(Modifiable.explicit(new byte[0]));
                     break;
-                case CA_LEAF_RSA:
-                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "CA-LEAF_RSA-Basic.xml",
+                case ROOTv3_CAv3_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv3.xml",
                             ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
                             ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
                 default:
                     break;
             }
