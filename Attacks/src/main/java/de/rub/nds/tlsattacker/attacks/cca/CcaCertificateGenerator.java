@@ -81,9 +81,10 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
                     break;
                 case ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3:
-                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3.xml",
-                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
+                            "ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
                     break;
                 default:
                     break;
@@ -201,6 +202,9 @@ public class CcaCertificateGenerator {
         certificateMessage.setCertificatesList(certificatePairList);
 
         // Parse leaf certificate for CertificateKeyPair
+        // Leads to the problem that unparsable certificates lead to an NPE exception later (e.g. version 5) since
+        // the Certificate couldn't be parsed.
+        // TODO: see if there is a different way to convert this into a certiicate object which is needed by TLS-Attacker/Scanner
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         // Parse private key and instantiate correct CertificateKeyPair
