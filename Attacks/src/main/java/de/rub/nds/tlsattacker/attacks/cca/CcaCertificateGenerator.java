@@ -22,6 +22,7 @@ import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -44,6 +45,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.DSAPrivateKey;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -103,13 +105,13 @@ public class CcaCertificateGenerator {
      * 'replace_me_im_a_dummy_key'. The former is replaced with the subject of
      * the root certificate used and the latter with the path to the key of the
      * root certificate. Note that not the attribute is the placeholder but the
-     * whole string. 4.) the leaf certificates keyInfo needs the keyType attribute which is used
-     * to specify which type of key is used (RSA, DH, DHE, DSA). Corresponding
-     * to the key used a naming convention has to be followed (the autogen
-     * script already follows the convention) 5.) Last but not least
-     * certificates have to be created in a certain order in the XML file
-     * because the code uses the key corresponding to the first certificate for
-     * the connection, aka it's supposed to be the leaf certificate. All
+     * whole string. 4.) the leaf certificates keyInfo needs the keyType
+     * attribute which is used to specify which type of key is used (RSA, DH,
+     * DHE, DSA). Corresponding to the key used a naming convention has to be
+     * followed (the autogen script already follows the convention) 5.) Last but
+     * not least certificates have to be created in a certain order in the XML
+     * file because the code uses the key corresponding to the first certificate
+     * for the connection, aka it's supposed to be the leaf certificate. All
      * following certificates should be should be in ascending order, ending at
      * the bottom with the highest level CA.
      *
@@ -217,8 +219,22 @@ public class CcaCertificateGenerator {
                 BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
                 certificateKeyPair = new CertificateKeyPair(certificate, new CustomDHPrivateKey(x, p, g));
                 break;
+            case "DSA":
+                keyBytes = keyFileManager.getKeyFileContent(keyName);
+                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+
+                BigInteger x2 = ((DSAPrivateKey) privateKey).getX();
+                BigInteger primeP = ((DSAPrivateKey) privateKey).getParams().getP();
+                BigInteger primeQ = ((DSAPrivateKey) privateKey).getParams().getQ();
+                BigInteger generator = ((DSAPrivateKey) privateKey).getParams().getG();
+                certificateKeyPair = new CertificateKeyPair(certificate, new CustomDSAPrivateKey(x2, primeP, primeQ,
+                        generator));
+                break;
+            case "ECDH":
+            case "ECDSA":
+            case "KEA":
             default:
-                throw new Exception("Unknown value for keyType in attribute of keyInfo in XMLCertificate.");
+                throw new Exception("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
         }
 
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
