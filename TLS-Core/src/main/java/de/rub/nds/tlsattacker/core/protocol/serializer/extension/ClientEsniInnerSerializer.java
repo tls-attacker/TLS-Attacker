@@ -37,8 +37,8 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
     }
 
     private void writeNonce(ClientEsniInner msg) {
-        appendBytes(msg.getNonce().getValue());
-        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getNonce().getValue()));
+        appendBytes(msg.getClientNonce().getValue());
+        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getClientNonce().getValue()));
     }
 
     private void writeServerNameListLength(ClientEsniInner msg) {

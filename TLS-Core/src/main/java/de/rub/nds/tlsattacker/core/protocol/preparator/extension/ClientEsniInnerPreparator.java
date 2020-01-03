@@ -48,8 +48,8 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     private void prepareNonce(ClientEsniInner msg) {
 
         byte[] nonce = chooser.getEsniClientNonce();
-        msg.setNonce(nonce);
-        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getNonce().getValue()));
+        msg.setClientNonce(nonce);
+        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getClientNonce().getValue()));
     }
 
     private void prepareServerPariNameList(ClientEsniInner msg) {

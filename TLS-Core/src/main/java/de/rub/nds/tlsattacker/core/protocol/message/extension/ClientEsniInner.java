@@ -23,10 +23,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 public class ClientEsniInner extends ModifiableVariableHolder implements Serializable {
 
     @ModifiableVariableProperty
-    private ModifiableByteArray nonce;
+    private ModifiableByteArray clientNonce;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger serverNameListLength;
+    private ModifiableInteger serverNameListLength;
 
     @ModifiableVariableProperty
     private ModifiableByteArray serverNameListBytes;
@@ -41,16 +41,16 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
         this.serverNameList = new LinkedList<>();
     }
 
-    public ModifiableByteArray getNonce() {
-        return nonce;
+    public ModifiableByteArray getClientNonce() {
+        return clientNonce;
     }
 
-    public void setNonce(ModifiableByteArray nonce) {
-        this.nonce = nonce;
+    public void setClientNonce(ModifiableByteArray clientNonce) {
+        this.clientNonce = clientNonce;
     }
 
-    public void setNonce(byte[] bytes) {
-        this.nonce = ModifiableVariableFactory.safelySetValue(nonce, bytes);
+    public void setClientNonce(byte[] bytes) {
+        this.clientNonce = ModifiableVariableFactory.safelySetValue(clientNonce, bytes);
     }
 
     public ModifiableByteArray getServerNameListBytes() {

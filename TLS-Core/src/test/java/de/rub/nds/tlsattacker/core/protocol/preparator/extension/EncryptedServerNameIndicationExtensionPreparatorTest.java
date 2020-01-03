@@ -139,10 +139,10 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         byte[] expectedMasterSecret = ArrayConverter
                 .hexStringToByteArray("AFEA7067E50CC72025C0AF44900AE00C3ED32277D8888EEA2C2FAAF724C942D4");
 
-        byte[] resultKey = msg.getEncryptedSniComputation().getKey().getValue();
+        byte[] resultKey = msg.getEncryptedSniComputation().getEsniKey().getValue();
         byte[] expectedKey = ArrayConverter.hexStringToByteArray("82FC17E07BB336C770F423A78EB506A9");
 
-        byte[] resultIv = msg.getEncryptedSniComputation().getIv().getValue();
+        byte[] resultIv = msg.getEncryptedSniComputation().getEsniIv().getValue();
         byte[] expectedIv = ArrayConverter.hexStringToByteArray("EADB1A925CF4517998C312A7");
 
         byte[] resultClientHelloKeyShare = msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue();

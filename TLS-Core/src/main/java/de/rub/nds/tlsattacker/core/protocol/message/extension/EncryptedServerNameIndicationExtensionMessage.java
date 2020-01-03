@@ -53,7 +53,7 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
     private EncryptedSniComputation encryptedSniComputation;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray serverEsniNonce;
+    private ModifiableByteArray serverNonce;
 
     public EncryptedServerNameIndicationExtensionMessage() {
         super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
@@ -158,15 +158,15 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.encryptedSniComputation = encryptedSniComputation;
     }
 
-    public ModifiableByteArray getServerEsniNonce() {
-        return serverEsniNonce;
+    public ModifiableByteArray getServerNonce() {
+        return serverNonce;
     }
 
-    public void setServerEsniNonce(ModifiableByteArray serverEsniNonce) {
-        this.serverEsniNonce = serverEsniNonce;
+    public void setServerNonce(ModifiableByteArray serverNonce) {
+        this.serverNonce = serverNonce;
     }
 
-    public void setServerEsniNonce(byte[] bytes) {
-        this.serverEsniNonce = ModifiableVariableFactory.safelySetValue(serverEsniNonce, bytes);
+    public void setServerNonce(byte[] bytes) {
+        this.serverNonce = ModifiableVariableFactory.safelySetValue(serverNonce, bytes);
     }
 }

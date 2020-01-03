@@ -42,7 +42,7 @@ public class EncryptedServerNameIndicationExtensionParser extends
 
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] nonce = parseByteArrayField(ExtensionByteLength.NONCE);
-        msg.setServerEsniNonce(nonce);
+        msg.setServerNonce(nonce);
         LOGGER.info("Received Nonce: " + ArrayConverter.bytesToHexString(nonce));
     }
 }

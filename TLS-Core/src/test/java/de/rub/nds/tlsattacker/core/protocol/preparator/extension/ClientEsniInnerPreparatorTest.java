@@ -53,7 +53,7 @@ public class ClientEsniInnerPreparatorTest {
         context.setEsniPaddedLength(260);
 
         clientEsniInnerPreparator.prepare();
-        int resultNonceLength = clientEsniInner.getNonce().getValue().length;
+        int resultNonceLength = clientEsniInner.getClientNonce().getValue().length;
         int expectedNonceLength = 16;
         int resultServerNameListLength = clientEsniInner.getServerNameListLength().getValue();
         int expectedServerNameListLength = 18;
