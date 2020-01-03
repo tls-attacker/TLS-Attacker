@@ -6,9 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.preparator.extension.esni;
+package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -25,20 +26,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.PublicKeyShareEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
@@ -55,7 +49,6 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
     @Test
     public void test() {
-        // Define parameters:
         CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         NamedGroup namedGroup = NamedGroup.ECDH_X25519;
 
@@ -79,7 +72,6 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         byte[] clientHelloKeyShareExchange = ArrayConverter
                 .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
 
-        // Set parameters:
         EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
         EncryptedServerNameIndicationExtensionSerializer serializer = new EncryptedServerNameIndicationExtensionSerializer(
                 msg);
@@ -109,12 +101,11 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         entry.setGroup(NamedGroup.ECDH_X25519);
         entry.setPublicKey(serverPublicKey);
         serverKeyShareEntryList.add(entry);
-        context.setEsniServerKeyShareEntryList(serverKeyShareEntryList);
+        context.setEsniServerKeyShareEntries(serverKeyShareEntryList);
 
         msg.getEncryptedSniComputation().setClientHelloRandom(clientRandom);
         context.setClientRandom(clientRandom);
 
-        // Compare results and expectations:
         preparator.prepare();
 
         byte[] resultClientEsniInnerBytes = msg.getClientEsniInnerBytes().getValue();
@@ -162,26 +153,18 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         byte[] expectedEncryptedSni = ArrayConverter
                 .hexStringToByteArray("E3C48A706133928DB0E5307156F8FEA15A6D5451954D077B364FA40875517400AAC0A033D03971E8C7ACA8E8BBCC3BC8AAB9A74F645BA086127E9008592E0794491DBA30AE868721817646B8C503E134AA28834B755DE4847D1705ED9518B41B9D423B225CAE8B37BE6952CF0AE2B97D3860F6EC994A84C3273A26B8F8E39114539656B785D051C5475D072C5CA1EC054BB395AFEA5EA24A87692B0759B4928638F7D2BC6532C57DCAF3D53BEE825FDAED4D8E3BFB6C0153DF0D042D9A2BA7E8C16381234E71EC012749BF36D9E887A30191192A794B53F43948C2C7D1A59E54748007247E4EDFF3508DBC61AF01DFDF3A487D81315C615D3C1E1E819506B0FEEC8357E688D4841DE975B633CD18AB5031AEA93465A3382BA0A1E83FDE646DD99A349353");
 
-        // System.out.println("expectedEncryptedSni: " +
-        // ArrayConverter.bytesToHexString(expectedClientHelloKeyShare));
-        // System.out.println("resultClientHelloKeyShare: " +
-        // ArrayConverter.bytesToHexString(resultClientHelloKeyShare));
-
         assertArrayEquals(expectedClientEsniInnerBytes, resultClientEsniInnerBytes);
         assertArrayEquals(expectedClientPublicKey, resultClientPublicKey);
-
         assertArrayEquals(expectedRecordDigest, resultRecordDigest);
         assertArrayEquals(expectedRecordDigest, resultRecordDigest);
         assertEquals(expectedRecordDigestLength, resultRecordDigestLength);
-
         assertArrayEquals(expectedContents, resultContents);
         assertArrayEquals(expectedContentsHash, resultContentsHash);
-
         assertArrayEquals(expectedSharedSecret, resultSharedSecret);
         assertArrayEquals(expectedMasterSecret, resultMasterSecret);
         assertArrayEquals(expectedKey, resultKey);
         assertArrayEquals(expectedIv, resultIv);
-        assertArrayEquals(resultClientHelloKeyShare, expectedClientHelloKeyShare);
-        assertArrayEquals(resultEncryptedSni, expectedEncryptedSni);
+        assertArrayEquals(expectedClientHelloKeyShare, resultClientHelloKeyShare);
+        assertArrayEquals(expectedEncryptedSni, resultEncryptedSni);
     }
 }

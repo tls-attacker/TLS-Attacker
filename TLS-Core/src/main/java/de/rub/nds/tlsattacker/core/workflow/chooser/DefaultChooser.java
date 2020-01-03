@@ -935,7 +935,15 @@ public class DefaultChooser extends Chooser {
         return config.getDefaultPWDPassword();
     }
 
-    // ******************************** ESNI ******************************** :
+    @Override
+    public byte[] getEsniClientNonce() {
+        if (context.getEsniClientNonce() != null) {
+            return this.context.getEsniClientNonce();
+        } else {
+            return config.getDefaultEsniClientNonce();
+        }
+    }
+
     @Override
     public byte[] getEsniRecordBytes() {
         if (context.getEsniRecordBytes() != null) {
@@ -946,27 +954,30 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniVersion() {
-        if (context.getEsniKeysVersion() != null)
-            return context.getEsniKeysVersion();
-        else
-            return config.getDefaultEsniVersion();
+    public byte[] getEsniRecordVersion() {
+        if (context.getEsniRecordVersion() != null) {
+            return context.getEsniRecordVersion();
+        } else {
+            return config.getDefaultEsniRecordVersion();
+        }
     }
 
     @Override
-    public byte[] getEsniChecksum() {
-        if (context.getEsniKeysChecksum() != null)
-            return context.getEsniKeysChecksum();
-        else
-            return config.getDefaultEsniKeysChecksum();
+    public byte[] getEsniRecordChecksum() {
+        if (context.getEsniRecordChecksum() != null) {
+            return context.getEsniRecordChecksum();
+        } else {
+            return config.getDefaultEsniRecordChecksum();
+        }
     }
 
     @Override
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
-        if (context.getEsniServerKeyShareEntryList() != null && context.getEsniServerKeyShareEntryList().size() > 0)
-            return context.getEsniServerKeyShareEntryList();
-        else
+        if (context.getEsniServerKeyShareEntries() != null && context.getEsniServerKeyShareEntries().size() > 0) {
+            return context.getEsniServerKeyShareEntries();
+        } else {
             return config.getDefaultEsniServerKeyShareEntries();
+        }
     }
 
     @Override
@@ -1013,15 +1024,6 @@ public class DefaultChooser extends Chooser {
             return context.getEsniExtensions();
         } else {
             return config.getDefaultEsniExtensions();
-        }
-    }
-
-    @Override
-    public byte[] getEsniClientNonce() {
-        if (context.getEsniClientNonce() != null) {
-            return this.context.getEsniClientNonce();
-        } else {
-            return config.getDefaultEsniClientNonce();
         }
     }
 }

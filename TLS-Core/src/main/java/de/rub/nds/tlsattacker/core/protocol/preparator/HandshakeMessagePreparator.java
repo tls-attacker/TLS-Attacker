@@ -103,8 +103,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
-                }
-                if (handler instanceof EncryptedServerNameIndicationExtensionHandler
+                } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
                         && msg instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) msg;

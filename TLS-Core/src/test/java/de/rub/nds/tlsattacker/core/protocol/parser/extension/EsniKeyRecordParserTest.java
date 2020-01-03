@@ -18,7 +18,7 @@ import org.junit.Test;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EsniKeyRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 
 public class EsniKeyRecordParserTest {
@@ -88,11 +88,8 @@ public class EsniKeyRecordParserTest {
         }
 
         assertEquals(expectedPaddedLength, resultPaddedLength);
-
         assertArrayEquals(expectedNotBefore, resultNotBefore);
-
         assertArrayEquals(expectedNotAfter, resultNotAfter);
-
         assertArrayEquals(expectedExtensionBytes, resultExtensionBytes);
 
     }
@@ -164,11 +161,8 @@ public class EsniKeyRecordParserTest {
         }
 
         assertEquals(expectedPaddedLength, resultPaddedLength);
-
         assertArrayEquals(expectedNotBefore, resultNotBefore);
-
         assertArrayEquals(expectedNotAfter, resultNotAfter);
-
         assertArrayEquals(expectedExtensionBytes, resultExtensionBytes);
     }
 
@@ -247,11 +241,8 @@ public class EsniKeyRecordParserTest {
         }
 
         assertEquals(expectedPaddedLength, resultPaddedLength);
-
         assertArrayEquals(expectedNotBefore, resultNotBefore);
-
         assertArrayEquals(expectedNotAfter, resultNotAfter);
-
         assertArrayEquals(expectedExtensionBytes, resultExtensionBytes);
 
     }

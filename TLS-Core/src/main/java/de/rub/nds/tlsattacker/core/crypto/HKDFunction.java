@@ -51,13 +51,13 @@ public class HKDFunction {
 
     public static final String EXPORTER_MASTER_SECRET = "exp master";
 
-    public static final String RESUMPTION_MASTER_SECRET = "res master";
-
-    public static final String RESUMPTION = "resumption";
-
     public static final String ESNI_IV = "esni iv";
 
     public static final String ESNI_KEY = "esni key";
+
+    public static final String RESUMPTION_MASTER_SECRET = "res master";
+
+    public static final String RESUMPTION = "resumption";
 
     /**
      * Computes HKDF-Extract output as defined in RFC 5869

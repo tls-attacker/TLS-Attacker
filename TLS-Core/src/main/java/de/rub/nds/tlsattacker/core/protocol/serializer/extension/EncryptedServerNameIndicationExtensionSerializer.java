@@ -14,8 +14,6 @@ import org.apache.logging.log4j.Logger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
 
 public class EncryptedServerNameIndicationExtensionSerializer extends
         ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
@@ -31,19 +29,14 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing ncryptedServerNameIndicationExtensionMessage");
-
         this.writeCipherSuite(msg);
-
         this.writeNamedGroup(msg);
         this.writeKeyExchangeLength(msg);
         this.writeKeyExchange(msg);
-
         this.writeRecordDigestLength(msg);
         this.writeRecordDigest(msg);
-
         this.writeEncryptedSniLength(msg);
         this.writeEncryptedSni(msg);
-
         return getAlreadySerialized();
     }
 
@@ -65,8 +58,6 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
 
     private void writeKeyExchange(EncryptedServerNameIndicationExtensionMessage msg) {
         appendBytes(msg.getKeyShareEntry().getPublicKey().getValue());
-        // Thread.getAllStackTraces();
-        // Thread.dumpStack();
         LOGGER.debug("KeyKeyShareEntry: "
                 + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
     }

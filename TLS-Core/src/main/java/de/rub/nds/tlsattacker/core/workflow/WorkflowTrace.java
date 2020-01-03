@@ -84,8 +84,7 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
-            @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
+    @XmlElements(value = { @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
             @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
             @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
             @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
@@ -109,6 +108,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
             @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
             @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
+            @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
             @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
             @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),

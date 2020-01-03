@@ -15,7 +15,6 @@ import java.util.Map;
 
 public enum ExtensionType {
 
-    ENCRYPTED_SERVER_NAME_INDICATION(new byte[] { (byte) 0xFF, (byte) 0xCE }),
     SERVER_NAME_INDICATION(new byte[] { (byte) 0, (byte) 0 }),
     MAX_FRAGMENT_LENGTH(new byte[] { (byte) 0, (byte) 1 }),
     CLIENT_CERTIFICATE_URL(new byte[] { (byte) 0, (byte) 2 }),
@@ -55,6 +54,8 @@ public enum ExtensionType {
     PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
     KEY_SHARE(new byte[] { (byte) 0, (byte) 51 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
+    ENCRYPTED_SERVER_NAME_INDICATION(new byte[] { (byte) 0xFF, (byte) 0xCE }),
+
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),

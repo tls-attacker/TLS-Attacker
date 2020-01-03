@@ -16,11 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +29,6 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -47,13 +41,11 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.esni.ClientEsniInnerPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientEsniInnerSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.esni.ClientEsniInnerSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
@@ -109,32 +101,25 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EncryptedServerNameIndicationExtension");
-
         prepareClientEsniInner(msg);
         prepareClientEsniInnerBytes(msg);
-
         prepareCipherSuite(msg);
-
         prepareNamedGroup(msg);
         prepareKeyShareEntry(msg);
         prepareServerPublicKey(msg);
-
         prepareRecordBytes(msg);
         prepareRecordDigest(msg);
         prepareRecordDigestLength(msg);
-
         prepareClientRandom(msg);
         prepareEsniContents(msg);
         prepareEsniContentsHash(msg);
         prepareEsniSharedSecret(msg);
         prepareEsniMasterSecret(msg);
-
         prepareKey(msg);
         prepareIv(msg);
         prepareClientHelloKeyShare(msg);
         prepereEncryptedSni(msg);
         prepereEncryptedSniLength(msg);
-
     }
 
     @Override
@@ -161,7 +146,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             this.streamClientEsniInnerBytes.write(serializer.serialize());
         } catch (IOException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not write byte[] from ClientEsniInner", e);
         }
         msg.setClientEsniInnerBytes(streamClientEsniInnerBytes.toByteArray());
@@ -263,7 +247,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             messageDigest = MessageDigest.getInstance(algorithm.getJavaName());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare RecordDigest", e);
         }
         recordDigest = messageDigest.digest(record);
@@ -303,7 +286,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             messageDigest = MessageDigest.getInstance(algorithm.getJavaName());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare esniContentsHash", e);
         }
         contentsHash = messageDigest.digest(contents);
@@ -331,7 +313,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             esniMasterSecret = HKDFunction.extract(hkdfAlgortihm, null, esniSharedSecret);
         } catch (CryptoException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare MasterSecret", e);
 
         }
@@ -351,7 +332,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             key = HKDFunction.expandLabel(hkdfAlgortihm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen);
         } catch (CryptoException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare Key", e);
         }
         msg.getEncryptedSniComputation().setKey(key);
@@ -369,7 +349,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             iv = HKDFunction.expandLabel(hkdfAlgortihm, esniMasterSecret, HKDFunction.ESNI_IV, hashIn, ivLen);
         } catch (CryptoException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Could not prepare Iv", e);
         }
         msg.getEncryptedSniComputation().setIv(iv);
@@ -390,7 +369,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
                 clientKeyShareStream.write(serializer.serialize());
             } catch (IOException e) {
                 e.printStackTrace();
-                // System.err.println(e.getMessage());
                 throw new PreparationException("Failed to write EsniContents", e);
             }
         }
@@ -403,7 +381,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             clientHelloKeyShareStream.write(keyShareListBytes);
         } catch (IOException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Failed to write EsniContents", e);
         }
 
@@ -458,7 +435,6 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             contentsStream.write(msg.getEncryptedSniComputation().getClientHelloRandom().getValue());
         } catch (IOException e) {
             e.printStackTrace();
-            // System.err.println(e.getMessage());
             throw new PreparationException("Failed to generate EsniContents", e);
         }
         return contentsStream.toByteArray();
@@ -480,5 +456,4 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
                 throw new UnsupportedOperationException(group + " is unsupported");
         }
     }
-
 }

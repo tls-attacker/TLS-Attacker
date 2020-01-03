@@ -262,17 +262,13 @@ public abstract class Chooser {
 
     public abstract String getPWDPassword();
 
-    // ********************* ESNI *********************:
-
     public abstract byte[] getEsniClientNonce();
 
     public abstract byte[] getEsniRecordBytes();
 
-    //
+    public abstract byte[] getEsniRecordVersion();
 
-    public abstract byte[] getEsniVersion();
-
-    public abstract byte[] getEsniChecksum();
+    public abstract byte[] getEsniRecordChecksum();
 
     public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
 
@@ -285,5 +281,4 @@ public abstract class Chooser {
     public abstract byte[] getEsniNotAfter();
 
     public abstract byte[] getEsniExtensions();
-
 }

@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EsniKeyRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 

@@ -166,7 +166,6 @@ public class WorkflowConfigurationFactory {
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
-        // ESNI:
         if (config.isAddEncryptedServerNameIndicationExtension()) {
             workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
         }

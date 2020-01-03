@@ -6,15 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.message.extension.esni;
+package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import java.io.Serializable;
-
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
 public class EncryptedSniComputation extends ModifiableVariableHolder {

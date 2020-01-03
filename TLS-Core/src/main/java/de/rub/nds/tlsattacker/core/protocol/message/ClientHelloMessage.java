@@ -92,12 +92,12 @@ public class ClientHelloMessage extends HelloMessage {
         }
 
         if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
-            EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
+            EncryptedServerNameIndicationExtensionMessage extensionMessage = new EncryptedServerNameIndicationExtensionMessage();
             String hostname = tlsConfig.getDefaultClientConnection().getHostname();
             ServerNamePair pair = new ServerNamePair();
             pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
-            msg.getClientEsniInner().getServerNameList().add(pair);
-            addExtension(msg);
+            extensionMessage.getClientEsniInner().getServerNameList().add(pair);
+            addExtension(extensionMessage);
         }
 
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {

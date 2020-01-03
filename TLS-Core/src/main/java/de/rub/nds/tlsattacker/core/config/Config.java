@@ -441,8 +441,6 @@ public class Config implements Serializable {
      */
     private Boolean addServerNameIndicationExtension = false;
 
-    private Boolean addEncryptedServerNameIndicationExtension = false;
-
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
@@ -457,10 +455,17 @@ public class Config implements Serializable {
      * If we generate ClientHello with the KeyShare extension
      */
     private Boolean addKeyShareExtension = false;
+
     /**
      * If we generate ClientHello with the EarlyData extension
      */
     private Boolean addEarlyDataExtension = false;
+
+    /**
+     * If we generate ClientHello with the EncryptedServerNameIndication
+     * extension
+     */
+    private Boolean addEncryptedServerNameIndicationExtension = false;
 
     /**
      * If we generate ClientHello with the PWDClear extension
@@ -1117,16 +1122,49 @@ public class Config implements Serializable {
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
-    Config() {
-        // ESNI:
-        defaultEsniServerKeyShareEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412")));
-        defaultEsniServerCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+    /**
+     * Supported Ciphersuites for EncryptedServerNameIndication extension.
+     */
+    private List<CipherSuite> clientSupportedEsniCiphersuites = new LinkedList();
 
+    /**
+     * Supported Groups for EncryptedServerNameIndication extension.
+     */
+    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
+
+    /**
+     * Default values for EncryptedServerNameIndication extension.
+     */
+
+    private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+
+    private byte[] defaultEsniRecordBytes = ArrayConverter
+            .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
+
+    private byte[] defaultEsniRecordVersion = new byte[] { (byte) 0xff, (byte) 0x01 };
+
+    private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
+
+    private List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries = new LinkedList<>();
+
+    private List<CipherSuite> defaultEsniServerCiphersuites = new LinkedList();
+
+    private int defaultEsniPaddedLength = 260;
+
+    private byte[] defaultEsniNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
+
+    private byte[] defaultEsniNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
+
+    private byte[] defaultEsniExtensions = new byte[0];
+
+    Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
+        defaultEsniServerKeyShareEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
+                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412")));
+        defaultEsniServerCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
@@ -2378,6 +2416,14 @@ public class Config implements Serializable {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
+    public Boolean isAddEncryptedServerNameIndicationExtension() {
+        return addEncryptedServerNameIndicationExtension;
+    }
+
+    public void setAddEncryptedServerNameIndicationExtension(Boolean addEncryptedServerNameIndicationExtension) {
+        this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
+    }
+
     public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
         this.addPWDClearExtension = addPWDClearExtension;
     }
@@ -3357,18 +3403,6 @@ public class Config implements Serializable {
         this.addPWDProtectExtension = addPWDProtectExtension;
     }
 
-    // ESNI:
-
-    public Boolean isAddEncryptedServerNameIndicationExtension() {
-        return addEncryptedServerNameIndicationExtension;
-    }
-
-    public void setAddEncryptedServerNameIndicationExtension(Boolean addEncryptedServerNameIndicationExtension) {
-        this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
-    }
-
-    private List<CipherSuite> clientSupportedEsniCiphersuites = new LinkedList();
-
     public List<CipherSuite> getClientSupportedEsniCiphersuites() {
         return this.clientSupportedEsniCiphersuites;
     }
@@ -3376,8 +3410,6 @@ public class Config implements Serializable {
     public void setClientSupportedEsniCiphersuites(List<CipherSuite> clientSupportedEsniCiphersuites) {
         this.clientSupportedEsniCiphersuites = clientSupportedEsniCiphersuites;
     }
-
-    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
 
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
         return this.clientSupportedEsniNamedGroups;
@@ -3391,28 +3423,13 @@ public class Config implements Serializable {
         this.clientSupportedEsniNamedGroups = new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
     }
 
-    // ESNI Default Values:
+    public byte[] getDefaultEsniClientNonce() {
+        return defaultEsniClientNonce;
+    }
 
-    private byte[] defaultEsniRecordBytes = ArrayConverter
-            .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
-
-    private byte[] defaultEsniVersion = new byte[] { (byte) 0xff, (byte) 0x01 };
-
-    private byte[] defaultEsniKeysChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
-
-    private List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries = new LinkedList<>();
-
-    private List<CipherSuite> defaultEsniServerCiphersuites = new LinkedList();
-
-    private int defaultEsniPaddedLength = 260;
-
-    private byte[] defaultEsniNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
-
-    private byte[] defaultEsniNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
-
-    private byte[] defaultEsniExtensions = new byte[0];
-
-    private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+    public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
+        this.defaultEsniClientNonce = defaultEsniClientNonce;
+    }
 
     public byte[] getDefaultEsniRecordBytes() {
         return defaultEsniRecordBytes;
@@ -3422,20 +3439,20 @@ public class Config implements Serializable {
         this.defaultEsniRecordBytes = defaultEsniRecordBytes;
     }
 
-    public byte[] getDefaultEsniVersion() {
-        return defaultEsniVersion;
+    public byte[] getDefaultEsniRecordVersion() {
+        return defaultEsniRecordVersion;
     }
 
-    public void setDefaultEsniVersion(byte[] defaultEsniVersion) {
-        this.defaultEsniVersion = defaultEsniVersion;
+    public void setDefaultEsniRecordVersion(byte[] defaultEsniRecordVersion) {
+        this.defaultEsniRecordVersion = defaultEsniRecordVersion;
     }
 
-    public byte[] getDefaultEsniKeysChecksum() {
-        return defaultEsniKeysChecksum;
+    public byte[] getDefaultEsniRecordChecksum() {
+        return defaultEsniRecordChecksum;
     }
 
-    public void setDefaultEsniKeysChecksum(byte[] defualtEsniKeysChecksum) {
-        this.defaultEsniKeysChecksum = defualtEsniKeysChecksum;
+    public void setDefaultEsniRecordChecksum(byte[] defualtEsniRecordChecksum) {
+        this.defaultEsniRecordChecksum = defualtEsniRecordChecksum;
     }
 
     public List<KeyShareStoreEntry> getDefaultEsniServerKeyShareEntries() {
@@ -3485,13 +3502,4 @@ public class Config implements Serializable {
     public void setDefaultEsniExtensions(byte[] defaultEsniExtensions) {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
-
-    public byte[] getDefaultEsniClientNonce() {
-        return defaultEsniClientNonce;
-    }
-
-    public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
-        this.defaultEsniClientNonce = defaultEsniClientNonce;
-    }
-
 }

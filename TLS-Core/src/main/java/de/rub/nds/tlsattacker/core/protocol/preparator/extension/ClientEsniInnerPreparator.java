@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.preparator.extension.esni;
+package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,10 +17,9 @@ import org.apache.logging.log4j.Logger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.ClientEsniInner;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNamePairPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;

@@ -891,11 +891,11 @@
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtension>false</addMaxFragmentLengthExtension>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addEncryptedServerNameIndicationExtension>false</addEncryptedServerNameIndicationExtension>
     <addSignatureAndHashAlgorithmsExtension>true</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
+    <addEncryptedServerNameIndicationExtension>false</addEncryptedServerNameIndicationExtension>
     <addPWDClearExtension>false</addPWDClearExtension>
     <addPWDProtectExtension>false</addPWDProtectExtension>
     <addPSKKeyExchangeModesExtension>false</addPSKKeyExchangeModesExtension>
@@ -1221,9 +1221,10 @@
         84 37 11 C2 1D 47 CE 6E  63 83 CD DA 37 E4 7D A3
     </defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <defaultEsniClientNonce>pyhMmlLxXBNkS5RyYXdGVw==</defaultEsniClientNonce>
     <defaultEsniRecordBytes>/wEAEksqACQAHQAg+lctA+IeFfnKGqf7hfYbn8eEWKeAUKxYGBGGMyWURBIAAhMBAQQAAAAAXcw6RQAAAABd2hIFAAA=</defaultEsniRecordBytes>
-    <defaultEsniVersion>/wE=</defaultEsniVersion>
-    <defaultEsniKeysChecksum>ABJLKg==</defaultEsniKeysChecksum>
+    <defaultEsniRecordVersion>/wE=</defaultEsniRecordVersion>
+    <defaultEsniRecordChecksum>ABJLKg==</defaultEsniRecordChecksum>
     <defaultEsniServerKeyShareEntries>
         <group>ECDH_X25519</group>
         <publicKey>
@@ -1236,5 +1237,4 @@
     <defaultEsniNotBefore>AAAAAF3MOkU=</defaultEsniNotBefore>
     <defaultEsniNotAfter>AAAAAF3aEgU=</defaultEsniNotAfter>
     <defaultEsniExtensions/>
-    <defaultEsniClientNonce>pyhMmlLxXBNkS5RyYXdGVw==</defaultEsniClientNonce>
 </config>

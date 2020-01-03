@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import java.util.LinkedList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 
 public class EncryptedServerNameIndicationExtensionParser extends
@@ -26,8 +23,6 @@ public class EncryptedServerNameIndicationExtensionParser extends
     public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array) {
 
         super(startposition, array);
-        LOGGER.debug("EncryptedServerNameIndicationExtensionParser");
-
     }
 
     @Override
@@ -35,8 +30,9 @@ public class EncryptedServerNameIndicationExtensionParser extends
         if (msg.getExtensionLength().getValue() > 0) {
             parseNonce(msg);
         } else {
-            LOGGER.debug("Received empty SNI Extension");
+            LOGGER.debug("Received empty ESNI Extension");
         }
+
     }
 
     @Override
@@ -47,6 +43,6 @@ public class EncryptedServerNameIndicationExtensionParser extends
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] nonce = parseByteArrayField(ExtensionByteLength.NONCE);
         msg.setServerEsniNonce(nonce);
-        LOGGER.info("Recived Nonce: " + ArrayConverter.bytesToHexString(nonce));
+        LOGGER.info("Received Nonce: " + ArrayConverter.bytesToHexString(nonce));
     }
 }

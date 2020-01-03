@@ -8,27 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.xbill.DNS.Lookup;
-import org.xbill.DNS.MXRecord;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.TXTRecord;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.esni.EsniKeyRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.config.Config;
-import java.util.Base64;
 
 public class EsniKeyDnsRequestAction extends TlsAction {
 
@@ -51,9 +49,9 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             lookup = new Lookup(hostname, Type.TXT);
             lookup.run();
             if (lookup.getResult() == Lookup.SUCCESSFUL) {
-                for (Record r : lookup.getAnswers()) {
-                    for (String s : (List<String>) ((TXTRecord) r).getStrings()) {
-                        esniKeyRecords.add(s);
+                for (Record record : lookup.getAnswers()) {
+                    for (String recordString : (List<String>) ((TXTRecord) record).getStrings()) {
+                        esniKeyRecords.add(recordString);
                     }
                 }
             }
@@ -87,9 +85,9 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
 
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
-        tlsContext.setEsniKeysVersion(esniKeyRecord.getVersion());
-        tlsContext.setEsniKeysChecksum(esniKeyRecord.getChecksum());
-        tlsContext.setEsniServerKeyShareEntryList(esniKeyRecord.getKeyList());
+        tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
+        tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());
+        tlsContext.setEsniServerKeyShareEntries(esniKeyRecord.getKeyList());
         tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuiteList());
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());

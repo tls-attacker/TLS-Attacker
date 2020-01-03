@@ -31,9 +31,6 @@ public class ExtensionParserFactory {
         ExtensionType type = ExtensionType.getExtensionType(typeBytes);
         ExtensionParser parser = null;
         switch (type) {
-            case ENCRYPTED_SERVER_NAME_INDICATION:
-                parser = new EncryptedServerNameIndicationExtensionParser(pointer, extensionBytes);
-                break;
             case CLIENT_CERTIFICATE_URL:
                 parser = new ClientCertificateUrlExtensionParser(pointer, extensionBytes);
                 break;
@@ -42,6 +39,9 @@ public class ExtensionParserFactory {
                 break;
             case ELLIPTIC_CURVES:
                 parser = new EllipticCurvesExtensionParser(pointer, extensionBytes);
+                break;
+            case ENCRYPTED_SERVER_NAME_INDICATION:
+                parser = new EncryptedServerNameIndicationExtensionParser(pointer, extensionBytes);
                 break;
             case HEARTBEAT:
                 parser = new HeartbeatExtensionParser(pointer, extensionBytes);

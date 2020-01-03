@@ -40,7 +40,6 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
 
     @Test
     public void test() {
-        // Def Parameters:
         byte[] extensionType = ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION.getValue();
         int extensionLength = 366;
         byte[] cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue();
@@ -55,7 +54,6 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
         byte[] clientPulicKey = ArrayConverter
                 .hexStringToByteArray("41f2f4bcb69a924d3b90d815d8bbe19f5aa68926f6538626737c30bd814d5400");
 
-        // Set Parameters:
         EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
         EncryptedServerNameIndicationExtensionSerializer esniMassageSerializer = new EncryptedServerNameIndicationExtensionSerializer(
                 msg);
