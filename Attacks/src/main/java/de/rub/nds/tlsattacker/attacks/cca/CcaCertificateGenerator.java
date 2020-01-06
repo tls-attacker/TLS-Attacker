@@ -56,10 +56,7 @@ public class CcaCertificateGenerator {
      *
      * @param ccaDelegate
      * @param type
-     * @return TODO: I might need access to a trust store. Or seperate
-     *         directories for keys and certificates. It's likely that TODO: any
-     *         integration of multiple certificates, partially with keys, will
-     *         be implemented with x509 attacker.
+     * @return
      */
     public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type)
             throws Exception {
@@ -79,6 +76,12 @@ public class CcaCertificateGenerator {
                     certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv3.xml",
                             ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
                             ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
                     break;
                 case ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3:
                     certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
@@ -138,6 +141,11 @@ public class CcaCertificateGenerator {
     private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate,
             String certificateChain, String keyDirectory, String xmlDirectory, String certificateInputDirectory,
             String certificateOutputDirectory) throws Exception {
+
+        keyDirectory = keyDirectory + "/";
+        xmlDirectory = xmlDirectory + "/";
+        certificateInputDirectory = certificateInputDirectory + "/";
+        certificateOutputDirectory = certificateOutputDirectory + "/";
 
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory + rootCertificate);
 
@@ -202,9 +210,11 @@ public class CcaCertificateGenerator {
         certificateMessage.setCertificatesList(certificatePairList);
 
         // Parse leaf certificate for CertificateKeyPair
-        // Leads to the problem that unparsable certificates lead to an NPE exception later (e.g. version 5) since
+        // Leads to the problem that unparsable certificates lead to an NPE
+        // exception later (e.g. version 5) since
         // the Certificate couldn't be parsed.
-        // TODO: see if there is a different way to convert this into a certiicate object which is needed by TLS-Attacker/Scanner
+        // TODO: see if there is a different way to convert this into a
+        // certiicate object which is needed by TLS-Attacker/Scanner
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         // Parse private key and instantiate correct CertificateKeyPair
@@ -282,6 +292,13 @@ public class CcaCertificateGenerator {
 
         // Output String
         StringBuilder stringBuilder = new StringBuilder();
+
+        /**
+         * TODO: Looks like there are different ways of encoding a subject. E.g. OpenSSL creates multiple ASN1Set elements
+         * while x509 Attackers example creates a single set with multiple children. I'll have to look what is correct.
+         * Maybe I can find a way to place the encoded values directly into the certificate instead of walking the way of
+         * parsing and encoding again.
+         */
 
         // Loop through parsed subject and construct XML String
         Asn1Sequence asn1Sequence = (Asn1Sequence) asn1SubjectEncodables.get(0);
