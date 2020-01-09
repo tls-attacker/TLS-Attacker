@@ -18,26 +18,50 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 public class EncryptedServerNameIndicationExtensionSerializer extends
         ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
 
+    public enum EsniSerializerMode {
+        CLIENT,
+        SERVER;
+    }
+
     private static final Logger LOGGER = LogManager.getLogger();
     private final EncryptedServerNameIndicationExtensionMessage msg;
+    private EsniSerializerMode esniSerializerMode;
 
     public EncryptedServerNameIndicationExtensionSerializer(EncryptedServerNameIndicationExtensionMessage message) {
         super(message);
         this.msg = message;
+        if (msg.getClientEsniInner().getServerNameList().isEmpty()) {
+            this.esniSerializerMode = EsniSerializerMode.SERVER;
+        } else {
+            this.esniSerializerMode = EsniSerializerMode.CLIENT;
+        }
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing ncryptedServerNameIndicationExtensionMessage");
-        this.writeCipherSuite(msg);
-        this.writeNamedGroup(msg);
-        this.writeKeyExchangeLength(msg);
-        this.writeKeyExchange(msg);
-        this.writeRecordDigestLength(msg);
-        this.writeRecordDigest(msg);
-        this.writeEncryptedSniLength(msg);
-        this.writeEncryptedSni(msg);
+        LOGGER.debug("Serializing EncryptedServerNameIndicationExtensionMessage");
+        switch (this.esniSerializerMode) {
+            case CLIENT:
+                this.writeCipherSuite(msg);
+                this.writeNamedGroup(msg);
+                this.writeKeyExchangeLength(msg);
+                this.writeKeyExchange(msg);
+                this.writeRecordDigestLength(msg);
+                this.writeRecordDigest(msg);
+                this.writeEncryptedSniLength(msg);
+                this.writeEncryptedSni(msg);
+                break;
+            case SERVER:
+                writeCipherServerNonce(msg);
+                break;
+            default:
+                break;
+        }
         return getAlreadySerialized();
+    }
+
+    private void writeCipherServerNonce(EncryptedServerNameIndicationExtensionMessage msg) {
+        appendBytes(msg.getServerNonce().getValue());
     }
 
     private void writeCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -80,5 +104,13 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     private void writeEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
         appendBytes(msg.getEncryptedSni().getValue());
         LOGGER.debug("EncryptedSni: " + ArrayConverter.bytesToHexString(msg.getEncryptedSni().getValue()));
+    }
+
+    public EsniSerializerMode getEsniSerializerMode() {
+        return esniSerializerMode;
+    }
+
+    public void setEsniSerializerMode(EsniSerializerMode esniSerializerMode) {
+        this.esniSerializerMode = esniSerializerMode;
     }
 }

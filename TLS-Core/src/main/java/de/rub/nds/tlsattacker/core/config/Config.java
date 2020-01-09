@@ -46,6 +46,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -1133,9 +1134,13 @@ public class Config implements Serializable {
     private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
 
     /**
+     * KeyPairs for Server with EncryptedServerNameIndication extension.
+     */
+    private List<KeyShareEntry> esniServerKeyPairs = new LinkedList();
+
+    /**
      * Default values for EncryptedServerNameIndication extension.
      */
-
     private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
 
     private byte[] defaultEsniRecordBytes = ArrayConverter
@@ -3421,6 +3426,18 @@ public class Config implements Serializable {
 
     public final void setClientSupportedEsniNamedGroups(NamedGroup... clientSupportedEsniNamedGroups) {
         this.clientSupportedEsniNamedGroups = new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
+    }
+
+    public List<KeyShareEntry> getEsniServerKeyPairs() {
+        return this.esniServerKeyPairs;
+    }
+
+    public void setEsniServerKeyPairs(List<KeyShareEntry> esniServerKeyPairs) {
+        this.esniServerKeyPairs = esniServerKeyPairs;
+    }
+
+    public final void setEsniServerKeyPairs(KeyShareEntry... esniServerKeyPairs) {
+        this.esniServerKeyPairs = new ArrayList(Arrays.asList(esniServerKeyPairs));
     }
 
     public byte[] getDefaultEsniClientNonce() {

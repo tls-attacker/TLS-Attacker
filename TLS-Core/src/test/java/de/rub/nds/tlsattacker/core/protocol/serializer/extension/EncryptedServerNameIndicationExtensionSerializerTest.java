@@ -57,6 +57,8 @@ public class EncryptedServerNameIndicationExtensionSerializerTest {
         EncryptedServerNameIndicationExtensionMessage msg = new EncryptedServerNameIndicationExtensionMessage();
         EncryptedServerNameIndicationExtensionSerializer esniMassageSerializer = new EncryptedServerNameIndicationExtensionSerializer(
                 msg);
+        esniMassageSerializer
+                .setEsniSerializerMode(EncryptedServerNameIndicationExtensionSerializer.EsniSerializerMode.CLIENT);
 
         msg.getKeyShareEntry().setGroup(namedGroup);
         msg.getKeyShareEntry().setPublicKey(clientPulicKey);

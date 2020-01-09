@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -46,6 +47,8 @@ public class EncryptedServerNameIndicationExtensionHandler extends
 
     @Override
     public void adjustTLSExtensionContext(EncryptedServerNameIndicationExtensionMessage message) {
+        if (message.getClientEsniInner().getClientNonce() != null)
+            context.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
     }
 
 }
