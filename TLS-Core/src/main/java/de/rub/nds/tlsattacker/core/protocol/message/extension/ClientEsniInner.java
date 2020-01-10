@@ -49,8 +49,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
         this.clientNonce = clientNonce;
     }
 
-    public void setClientNonce(byte[] bytes) {
-        this.clientNonce = ModifiableVariableFactory.safelySetValue(clientNonce, bytes);
+    public void setClientNonce(byte[] clientNonce) {
+        this.clientNonce = ModifiableVariableFactory.safelySetValue(this.clientNonce, clientNonce);
     }
 
     public ModifiableByteArray getServerNameListBytes() {
@@ -61,8 +61,9 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
         this.serverNameListBytes = serverNameListBytes;
     }
 
-    public void setServerNameListBytes(byte[] bytes) {
-        this.serverNameListBytes = ModifiableVariableFactory.safelySetValue(serverNameListBytes, bytes);
+    public void setServerNameListBytes(byte[] serverNameListBytes) {
+        this.serverNameListBytes = ModifiableVariableFactory.safelySetValue(this.serverNameListBytes,
+                serverNameListBytes);
     }
 
     public ModifiableByteArray getPadding() {
@@ -73,8 +74,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
         this.padding = padding;
     }
 
-    public void setPadding(byte[] bytes) {
-        this.padding = ModifiableVariableFactory.safelySetValue(padding, bytes);
+    public void setPadding(byte[] padding) {
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     public ModifiableInteger getServerNameListLength() {
@@ -85,8 +86,9 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
         this.serverNameListLength = serverNameListLength;
     }
 
-    public void setServerNameListLength(int length) {
-        this.serverNameListLength = ModifiableVariableFactory.safelySetValue(serverNameListLength, length);
+    public void setServerNameListLength(int serverNameListLength) {
+        this.serverNameListLength = ModifiableVariableFactory.safelySetValue(this.serverNameListLength,
+                serverNameListLength);
     }
 
     public List<ServerNamePair> getServerNameList() {

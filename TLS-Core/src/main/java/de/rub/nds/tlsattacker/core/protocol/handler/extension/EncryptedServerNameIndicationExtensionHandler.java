@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
@@ -31,7 +32,7 @@ public class EncryptedServerNameIndicationExtensionHandler extends
 
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
-        return null;
+        return new EncryptedServerNameIndicationExtensionParser(pointer, message);
     }
 
     @Override

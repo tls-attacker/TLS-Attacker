@@ -37,7 +37,6 @@ public class ClientEsniInnerPreparatorTest {
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
     }
 
-    @Before
     @Test
     public void test() {
 
