@@ -57,6 +57,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -179,7 +180,7 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
-            if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                 messages.add(new ChangeCipherSpecMessage());
             }
             messages.add(new EncryptedExtensionsMessage(config));
@@ -860,7 +861,7 @@ public class WorkflowConfigurationFactory {
             messages.add(new ServerHelloMessage(config));
 
             if (config.getHighestProtocolVersion().isTLS13()) {
-                if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                     messages.add(new ChangeCipherSpecMessage());
                 }
                 messages.add(new EncryptedExtensionsMessage(config));
