@@ -89,6 +89,12 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
+                case debug:
+                    certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
+                            "debug.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
                 default:
                     break;
             }
@@ -122,6 +128,7 @@ public class CcaCertificateGenerator {
      * following certificates should be should be in ascending order, ending at
      * the bottom with the highest level CA.
      *
+     * TODO: ASN.1 Parsing bugs for inspiration
      *
      *
      * TODO: Currently I do not ensure that the Directory variables end with a
@@ -152,8 +159,8 @@ public class CcaCertificateGenerator {
         TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
         String xmlString = textFileReader.read();
 
-        xmlString = xmlString.replace("<asn1Sequence identifier=\"issuer\" type=\"Name\" placeholder=\"replace_me\"/>",
-                xmlSubject);
+        String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
+        xmlString = xmlString.replace(needle, needle + xmlSubject);
         // Please note that rootCertificate always has to be a filename only. No
         // path
         xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
@@ -220,6 +227,10 @@ public class CcaCertificateGenerator {
         // Parse private key and instantiate correct CertificateKeyPair
 
         switch (keyType) {
+            /**
+             *
+             * TODO: replace types with enum
+             */
             case "RSA":
                 keyBytes = keyFileManager.getKeyFileContent(keyName);
                 privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
@@ -277,69 +288,11 @@ public class CcaCertificateGenerator {
         X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
         X500Principal x500PrincipalSubject = x509Certificate.getSubjectX500Principal();
 
-        // Get ASN.1 Subject
-        Asn1Parser asn1Parser = new Asn1Parser(x500PrincipalSubject.getEncoded(), false);
-        List<Asn1Encodable> asn1SubjectEncodables = asn1Parser.parse(ParseNativeTypesContext.NAME);
-
-        // Loop variables
-        Integer i = 0;
-        Asn1Sequence _asn1Sequence;
-        Asn1Encodable _asn1Encodable;
-        Asn1ObjectIdentifier _asn1ObjectIdentifier;
-        Asn1PrimitiveIa5String _asn1PrimitiveIa5String;
-        Asn1PrimitivePrintableString _asn1PrimitivePrintableString;
-        Asn1PrimitiveUtf8String _asn1PrimitiveUtf8String;
-
-        // Output String
+        byte[] encodedSubject = x500PrincipalSubject.getEncoded();
         StringBuilder stringBuilder = new StringBuilder();
-
-        /**
-         * TODO: Looks like there are different ways of encoding a subject. E.g. OpenSSL creates multiple ASN1Set elements
-         * while x509 Attackers example creates a single set with multiple children. I'll have to look what is correct.
-         * Maybe I can find a way to place the encoded values directly into the certificate instead of walking the way of
-         * parsing and encoding again.
-         */
-
-        // Loop through parsed subject and construct XML String
-        Asn1Sequence asn1Sequence = (Asn1Sequence) asn1SubjectEncodables.get(0);
-        stringBuilder.append("<asn1Sequence identifier=\"issuer\" type=\"Name\">");
-        stringBuilder.append("<asn1Set identifier=\"relativeDistinguishedName0\" type=\"RelativeDistinguishedName\">");
-        for (Asn1Encodable asn1Set : asn1Sequence.getChildren()) {
-            _asn1Sequence = (Asn1Sequence) ((Asn1Set) asn1Set).getChildren().get(0);
-            stringBuilder.append("<asn1Sequence identifier=\"attributeTypeAndValue" + i
-                    + "\" type=\"AttributeTypeAndValue\">");
-            stringBuilder.append("<asn1ObjectIdentifier identifier=\"type\" type=\"AttributeType\">");
-
-            _asn1ObjectIdentifier = (Asn1ObjectIdentifier) _asn1Sequence.getChildren().get(0);
-            stringBuilder.append("<value>"
-                    + new StringBuilder(_asn1ObjectIdentifier.getValue().substring(0, 3)).reverse().toString()
-                    + _asn1ObjectIdentifier.getValue().substring(3) + "</value>");
-            stringBuilder.append("</asn1ObjectIdentifier>");
-
-            _asn1Encodable = _asn1Sequence.getChildren().get(1);
-            if (_asn1Encodable instanceof Asn1PrimitiveUtf8String) {
-                stringBuilder.append("<asn1PrimitiveUtf8String identifier=\"value\" type=\"AttributeValue\">");
-                stringBuilder.append("<value>" + ((Asn1PrimitiveUtf8String) _asn1Encodable).getValue() + "</value>");
-                stringBuilder.append("</asn1PrimitiveUtf8String>");
-
-            } else if (_asn1Encodable instanceof Asn1PrimitivePrintableString) {
-                stringBuilder.append("<asn1PrimitivePrintableString identifier=\"value\" type=\"AttributeValue\">");
-                stringBuilder.append("<value>" + ((Asn1PrimitivePrintableString) _asn1Encodable).getValue()
-                        + "</value>");
-                stringBuilder.append("</asn1PrimitivePrintableString>");
-            } else if (_asn1Encodable instanceof Asn1PrimitiveIa5String) {
-                stringBuilder.append("<asn1PrimitiveIa5String identifier=\"value\" type=\"AttributeValue\">");
-                stringBuilder.append("<value>" + ((Asn1PrimitiveIa5String) _asn1Encodable).getValue() + "</value>");
-                stringBuilder.append("</asn1PrimitiveIa5String>");
-            } else {
-                throw new ParserException("Parsing failed, encountered unknown Asn1 type in Subject value");
-            }
-            stringBuilder.append("</asn1Sequence>");
-            i = i + 1;
+        for (byte b : encodedSubject) {
+            stringBuilder.append(String.format("%02x", b));
         }
-        stringBuilder.append("</asn1Set>");
-        stringBuilder.append("</asn1Sequence>");
-
         return stringBuilder.toString();
     }
 

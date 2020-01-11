@@ -18,7 +18,8 @@ public enum CcaCertificateType {
                     + "Root CA is v3."),
     ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3(
             "RSA Leaf Certificate generated with an intermediate Certificate that is v1 (actually not a CA). "
-                    + "Root CA is v1.");
+                    + "Root CA is v1."),
+    debug("debugging");
     // There will be several more cases later through this work, especially one
     // we start integrating X509 attacker.
     // This is just to start out modular enabling a combination of our test
