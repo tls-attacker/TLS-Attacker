@@ -84,6 +84,8 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         EncryptedServerNameIndicationExtensionMessage msg = parser.parse();
         EncryptedServerNameIndicationExtensionPreparator preparator = new EncryptedServerNameIndicationExtensionPreparator(
                 chooser, msg, null);
+
+        preparator.setEsniPreparatorMode(EncryptedServerNameIndicationExtensionPreparator.EsniPreparatorMode.SERVER);
         preparator.prepareAfterParse();
 
         byte[] resultGroup = msg.getKeyShareEntry().getGroup().getValue();

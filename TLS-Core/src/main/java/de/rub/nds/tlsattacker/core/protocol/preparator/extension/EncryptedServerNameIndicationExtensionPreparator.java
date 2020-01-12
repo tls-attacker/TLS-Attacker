@@ -49,7 +49,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientEsniInnerPars
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientEsniInnerSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer.EsniSerializerMode;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
@@ -100,7 +99,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         this.implementedNamedGroups.add(NamedGroup.ECDH_X448);
         this.implementedNamedGroups.add(NamedGroup.SECP256R1);
 
-        if (!msg.getClientEsniInner().getServerNameList().isEmpty() || msg.getServerNonce() != null) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             this.esniPreparatorMode = EsniPreparatorMode.CLIENT;
         } else {
             this.esniPreparatorMode = EsniPreparatorMode.SERVER;
@@ -120,6 +119,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         LOGGER.debug("Preparing EncryptedServerNameIndicationExtension");
         switch (this.esniPreparatorMode) {
             case CLIENT:
+                configurateEsniMessageType(msg);
                 prepareClientEsniInner(msg);
                 prepareClientEsniInnerBytes(msg);
                 prepareCipherSuite(msg);
@@ -141,6 +141,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
                 prepereEncryptedSniLength(msg);
                 break;
             case SERVER:
+                configurateEsniMessageType(msg);
                 prepereServerNonce(msg);
                 break;
             default:
@@ -150,6 +151,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     @Override
     public void afterPrepareExtensionContent() {
+        LOGGER.debug("AfterPreparing EncryptedServerNameIndicationExtension");
         if (this.esniPreparatorMode == EsniPreparatorMode.CLIENT) {
             LOGGER.debug("Afterpreparing EncryptedServerNameIndicationExtension");
             prepareClientRandom(msg);
@@ -166,6 +168,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     public void prepareAfterParse() {
+        LOGGER.debug("PreparingAfterParse EncryptedServerNameIndicationExtension");
         if (this.esniPreparatorMode == EsniPreparatorMode.SERVER) {
             try {
                 prepareClientRandom(msg);
@@ -181,6 +184,21 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             } catch (NullPointerException e) {
                 throw new PreparationException(
                         "Missing parameters to prepareAfterParse EncryptedServerNameIndicationExtension", e);
+            }
+        }
+    }
+
+    private void configurateEsniMessageType(EncryptedServerNameIndicationExtensionMessage msg) {
+        if (msg.getEsniMessageTypeConfig() == null) {
+            switch (this.esniPreparatorMode) {
+                case CLIENT:
+                    msg.setEsniMessageTypeConfig(EncryptedServerNameIndicationExtensionMessage.EsniMessageType.CLIENT);
+                    break;
+                case SERVER:
+                    msg.setEsniMessageTypeConfig(EncryptedServerNameIndicationExtensionMessage.EsniMessageType.SERVER);
+                    break;
+                default:
+                    break;
             }
         }
     }

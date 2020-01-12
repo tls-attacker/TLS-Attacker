@@ -23,7 +23,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 
 public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMessage {
 
+    public enum EsniMessageType {
+        CLIENT,
+        SERVER;
+    }
+
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private EsniMessageType esniMessageTypeConfig;
 
     @ModifiableVariableProperty
     private ModifiableByteArray cipherSuite;
@@ -66,12 +73,12 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         return cipherSuite;
     }
 
-    public void setCipherSuite(ModifiableByteArray suite) {
-        this.cipherSuite = suite;
+    public void setCipherSuite(ModifiableByteArray cipherSuite) {
+        this.cipherSuite = cipherSuite;
     }
 
-    public void setCipherSuite(byte[] bytes) {
-        this.cipherSuite = ModifiableVariableFactory.safelySetValue(cipherSuite, bytes);
+    public void setCipherSuite(byte[] cipherSuite) {
+        this.cipherSuite = ModifiableVariableFactory.safelySetValue(this.cipherSuite, cipherSuite);
     }
 
     public KeyShareEntry getKeyShareEntry() {
@@ -102,8 +109,8 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.recordDigest = recordDigest;
     }
 
-    public void setRecordDigest(byte[] bytes) {
-        this.recordDigest = ModifiableVariableFactory.safelySetValue(recordDigest, bytes);
+    public void setRecordDigest(byte[] recordDigest) {
+        this.recordDigest = ModifiableVariableFactory.safelySetValue(this.recordDigest, recordDigest);
     }
 
     public ModifiableInteger getEncryptedSniLength() {
@@ -126,8 +133,8 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.encryptedSni = encryptedSni;
     }
 
-    public void setEncryptedSni(byte[] bytes) {
-        this.encryptedSni = ModifiableVariableFactory.safelySetValue(encryptedSni, bytes);
+    public void setEncryptedSni(byte[] encryptedSni) {
+        this.encryptedSni = ModifiableVariableFactory.safelySetValue(this.encryptedSni, encryptedSni);
     }
 
     public ClientEsniInner getClientEsniInner() {
@@ -146,8 +153,9 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.clientEsniInnerBytes = clientEsniInnerBytes;
     }
 
-    public void setClientEsniInnerBytes(byte[] bytes) {
-        this.clientEsniInnerBytes = ModifiableVariableFactory.safelySetValue(clientEsniInnerBytes, bytes);
+    public void setClientEsniInnerBytes(byte[] clientEsniInnerBytes) {
+        this.clientEsniInnerBytes = ModifiableVariableFactory.safelySetValue(this.clientEsniInnerBytes,
+                clientEsniInnerBytes);
     }
 
     public EncryptedSniComputation getEncryptedSniComputation() {
@@ -166,7 +174,15 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.serverNonce = serverNonce;
     }
 
-    public void setServerNonce(byte[] bytes) {
-        this.serverNonce = ModifiableVariableFactory.safelySetValue(serverNonce, bytes);
+    public void setServerNonce(byte[] serverNonce) {
+        this.serverNonce = ModifiableVariableFactory.safelySetValue(this.serverNonce, serverNonce);
+    }
+
+    public EsniMessageType getEsniMessageTypeConfig() {
+        return esniMessageTypeConfig;
+    }
+
+    public void setEsniMessageTypeConfig(EsniMessageType esniMessageTypeConfig) {
+        this.esniMessageTypeConfig = esniMessageTypeConfig;
     }
 }
