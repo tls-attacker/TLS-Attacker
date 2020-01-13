@@ -947,6 +947,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public byte[] getEsniServerNonce() {
+        if (context.getEsniServerNonce() != null) {
+            return this.context.getEsniServerNonce();
+        } else {
+            return config.getDefaultEsniServerNonce();
+        }
+    }
+
+    @Override
     public byte[] getEsniRecordBytes() {
         if (context.getEsniRecordBytes() != null) {
             return context.getEsniRecordBytes();

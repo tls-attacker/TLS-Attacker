@@ -267,6 +267,8 @@ public abstract class Chooser {
 
     public abstract byte[] getEsniClientNonce();
 
+    public abstract byte[] getEsniServerNonce();
+
     public abstract byte[] getEsniRecordBytes();
 
     public abstract EsniDnsKeyRecordVersion getEsniRecordVersion();

@@ -616,6 +616,11 @@ public class TlsContext {
     private byte[] esniClientNonce;
 
     /**
+     * Nonce sent by the Server in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniServerNonce;
+
+    /**
      * Contains the keyRecord for the EncryptedServerNameIndication extension
      */
     private byte[] esniRecordBytes;
@@ -2331,6 +2336,15 @@ public class TlsContext {
 
     public void setEsniClientNonce(byte[] esniClientNonce) {
         this.esniClientNonce = esniClientNonce;
+
+    }
+
+    public byte[] getEsniServerNonce() {
+        return this.esniServerNonce;
+    }
+
+    public void setEsniServerNonce(byte[] esniServerNonce) {
+        this.esniServerNonce = esniServerNonce;
 
     }
 

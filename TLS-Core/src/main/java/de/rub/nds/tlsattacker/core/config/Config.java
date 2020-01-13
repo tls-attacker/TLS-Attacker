@@ -1146,6 +1146,8 @@ public class Config implements Serializable {
      */
     private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
 
+    private byte[] defaultEsniServerNonce = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+
     private byte[] defaultEsniRecordBytes = ArrayConverter
             .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
 
@@ -3449,6 +3451,14 @@ public class Config implements Serializable {
 
     public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
         this.defaultEsniClientNonce = defaultEsniClientNonce;
+    }
+
+    public byte[] getDefaultEsniServerNonce() {
+        return defaultEsniServerNonce;
+    }
+
+    public void setDefaultEsniServerNonce(byte[] defaultEsniServerNonce) {
+        this.defaultEsniServerNonce = defaultEsniServerNonce;
     }
 
     public byte[] getDefaultEsniRecordBytes() {
