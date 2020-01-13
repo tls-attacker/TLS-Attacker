@@ -13,6 +13,7 @@ import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
+import de.rub.nds.asn1.translator.ContextRegister;
 import de.rub.nds.asn1.translator.ParseNativeTypesContext;
 import de.rub.nds.asn1tool.filesystem.TextFileReader;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
@@ -64,6 +65,9 @@ public class CcaCertificateGenerator {
         if (type != null) {
             switch (type) {
                 case CLIENT_INPUT:
+                    /**
+                     * TODO: switch to pem input
+                     */
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
                     CertificatePair certificatePair = new CertificatePair(ccaDelegate.getClientCertificate());
                     certificatePairsList.add(certificatePair);
@@ -280,8 +284,8 @@ public class CcaCertificateGenerator {
         // Register XmlClasses, Types, Contexts and Unpackers
         registerXmlClasses();
         registerTypes();
-        registerContexts();
-        registerContentUnpackers();
+//        registerContexts();
+//        registerContentUnpackers();
 
         // Load X.509 root certificate and get Subject principal
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");

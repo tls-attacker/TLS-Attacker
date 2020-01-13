@@ -25,6 +25,12 @@ public enum CcaWorkflowType {
                     + "key material is sent from the client. Uninitialized data might be used, or null keys. VerifyData is zeroed."),
 
     /**
+     * TODO: I'd like to add a list that contains the certificate types used?
+     * or just add an flag that says if certificates are used or not. Otherwise one would have to edit this enum everytime
+     * one adds a certificate type. Though an advantage would be that I could specify if keys are required or not/only use
+     * certificateTypes that match the flow
+     */
+    /**
      * TODO: Flows that send CRT out of order and still skip vrfy
      */
     /*
