@@ -1223,7 +1223,7 @@
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
     <defaultEsniClientNonce>pyhMmlLxXBNkS5RyYXdGVw==</defaultEsniClientNonce>
     <defaultEsniRecordBytes>/wEAEksqACQAHQAg+lctA+IeFfnKGqf7hfYbn8eEWKeAUKxYGBGGMyWURBIAAhMBAQQAAAAAXcw6RQAAAABd2hIFAAA=</defaultEsniRecordBytes>
-    <defaultEsniRecordVersion>/wE=</defaultEsniRecordVersion>
+    <defaultEsniRecordVersion>VERSION_FF01</defaultEsniRecordVersion>
     <defaultEsniRecordChecksum>ABJLKg==</defaultEsniRecordChecksum>
     <defaultEsniServerKeyShareEntries>
         <group>ECDH_X25519</group>
@@ -1234,7 +1234,6 @@
     </defaultEsniServerKeyShareEntries>
     <defaultEsniServerCiphersuites>TLS_AES_128_GCM_SHA256</defaultEsniServerCiphersuites>
     <defaultEsniPaddedLength>260</defaultEsniPaddedLength>
-    <defaultEsniNotBefore>AAAAAF3MOkU=</defaultEsniNotBefore>
-    <defaultEsniNotAfter>AAAAAF3aEgU=</defaultEsniNotAfter>
-    <defaultEsniExtensions/>
+    <defaultEsniNotBefore>1578874287</defaultEsniNotBefore>
+    <defaultEsniNotAfter>1581466287</defaultEsniNotAfter>
 </config>

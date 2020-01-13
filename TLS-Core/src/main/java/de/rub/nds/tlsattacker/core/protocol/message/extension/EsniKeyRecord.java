@@ -12,24 +12,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 
 public class EsniKeyRecord {
 
-    private byte[] version;
+    private EsniDnsKeyRecordVersion version;
     private byte[] checksum;
-    private List<KeyShareStoreEntry> keyList = new LinkedList();
-    private List<CipherSuite> cipherSuiteList = new LinkedList();
+    private List<KeyShareStoreEntry> keys = new LinkedList();
+    private List<CipherSuite> cipherSuites = new LinkedList();
     private int paddedLength;
-    private byte[] notBefore;
-    private byte[] notAfter;
-    private byte[] extensionBytes;
+    private long notBefore;
+    private long notAfter;
+    private List<ExtensionMessage> extensions = new LinkedList();;
 
-    public byte[] getVersion() {
+    public EsniDnsKeyRecordVersion getVersion() {
         return version;
     }
 
-    public void setVersion(byte[] version) {
+    public void setVersion(EsniDnsKeyRecordVersion version) {
         this.version = version;
     }
 
@@ -41,20 +42,20 @@ public class EsniKeyRecord {
         this.checksum = checksum;
     }
 
-    public List<KeyShareStoreEntry> getKeyList() {
-        return keyList;
+    public List<KeyShareStoreEntry> getKeys() {
+        return keys;
     }
 
-    public void setKeyList(List<KeyShareStoreEntry> keyList) {
-        this.keyList = keyList;
+    public void setKeys(List<KeyShareStoreEntry> keys) {
+        this.keys = keys;
     }
 
-    public List<CipherSuite> getCipherSuiteList() {
-        return cipherSuiteList;
+    public List<CipherSuite> getCipherSuites() {
+        return cipherSuites;
     }
 
-    public void setCipherSuiteList(List<CipherSuite> cipherSuiteList) {
-        this.cipherSuiteList = cipherSuiteList;
+    public void setCipherSuiteList(List<CipherSuite> cipherSuites) {
+        this.cipherSuites = cipherSuites;
     }
 
     public int getPaddedLength() {
@@ -65,27 +66,27 @@ public class EsniKeyRecord {
         this.paddedLength = paddedLength;
     }
 
-    public byte[] getNotBefore() {
+    public long getNotBefore() {
         return notBefore;
     }
 
-    public void setNotBefore(byte[] notBefore) {
+    public void setNotBefore(long notBefore) {
         this.notBefore = notBefore;
     }
 
-    public byte[] getNotAfter() {
+    public long getNotAfter() {
         return notAfter;
     }
 
-    public void setNotAfter(byte[] notAfter) {
+    public void setNotAfter(long notAfter) {
         this.notAfter = notAfter;
     }
 
-    public byte[] getExtensionBytes() {
-        return extensionBytes;
+    public List<ExtensionMessage> getExtensions() {
+        return extensions;
     }
 
-    public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = extensionBytes;
+    public void setExtensions(List<ExtensionMessage> extensions) {
+        this.extensions = extensions;
     }
 }

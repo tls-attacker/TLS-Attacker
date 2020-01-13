@@ -258,16 +258,6 @@ public class ExtensionByteLength {
 
     public static final int ESNI_RECORD_CHECKSUM = 4;
 
-    public static final int ESNI_RECORD_KEYS_LENGTH = 2;
-
-    public static final int ESNI_RECORD_NAMEDGROUP = 2;
-
-    public static final int ESNI_RECORD_KEY_LENGTH = 2;
-
-    public static final int ESNI_RECORD_CIPHER_SUITES_LENGTH = 2;
-
-    public static final int ESNI_RECORD_CIPHER_SUITE = 2;
-
     public static final int ESNI_RECORD_PADDED_LENGTH = 2;
 
     public static final int ESNI_RECORD_NOT_BEFORE = 8;

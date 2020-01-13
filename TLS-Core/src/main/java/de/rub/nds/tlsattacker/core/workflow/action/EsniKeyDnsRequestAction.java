@@ -57,7 +57,6 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             }
         } catch (TextParseException e) {
             LOGGER.warn("No ESNI DNS Resource Record available for " + hostname);
-            e.printStackTrace();
             setExecuted(true);
             return;
         }
@@ -73,7 +72,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         try {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
-            LOGGER.warn("Can not base64 decode  Resource Record for" + hostname + ". Resource Record: "
+            LOGGER.warn("Failed to base64 decode Resource Record for" + hostname + ". Resource Record: "
                     + esniKeyRecordStr);
             setExecuted(true);
             return;
@@ -83,16 +82,15 @@ public class EsniKeyDnsRequestAction extends TlsAction {
 
         EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(0, esniKeyRecordBytes);
         EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
-
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());
-        tlsContext.setEsniServerKeyShareEntries(esniKeyRecord.getKeyList());
-        tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuiteList());
+        tlsContext.setEsniServerKeyShareEntries(esniKeyRecord.getKeys());
+        tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuites());
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
-        tlsContext.setEsniExtensions(esniKeyRecord.getExtensionBytes());
+        tlsContext.setEsniExtensions(esniKeyRecord.getExtensions());
         setExecuted(true);
     }
 

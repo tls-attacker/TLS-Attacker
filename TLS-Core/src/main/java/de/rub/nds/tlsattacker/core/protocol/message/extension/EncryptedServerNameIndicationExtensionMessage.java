@@ -97,8 +97,8 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.recordDigestLength = recordDigestLength;
     }
 
-    public void setRecordDigestLength(int length) {
-        this.recordDigestLength = ModifiableVariableFactory.safelySetValue(recordDigestLength, length);
+    public void setRecordDigestLength(int recordDigestLength) {
+        this.recordDigestLength = ModifiableVariableFactory.safelySetValue(this.recordDigestLength, recordDigestLength);
     }
 
     public ModifiableByteArray getRecordDigest() {
@@ -121,8 +121,8 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
         this.encryptedSniLength = encryptedSniLength;
     }
 
-    public void setEncryptedSniLength(int length) {
-        this.encryptedSniLength = ModifiableVariableFactory.safelySetValue(encryptedSniLength, length);
+    public void setEncryptedSniLength(int encryptedSniLength) {
+        this.encryptedSniLength = ModifiableVariableFactory.safelySetValue(this.encryptedSniLength, encryptedSniLength);
     }
 
     public ModifiableByteArray getEncryptedSni() {

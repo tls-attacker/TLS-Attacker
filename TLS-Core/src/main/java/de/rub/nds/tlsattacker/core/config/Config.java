@@ -23,6 +23,8 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
+import de.rub.nds.tlsattacker.core.constants.EsniVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -45,6 +47,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -1146,7 +1149,7 @@ public class Config implements Serializable {
     private byte[] defaultEsniRecordBytes = ArrayConverter
             .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
 
-    private byte[] defaultEsniRecordVersion = new byte[] { (byte) 0xff, (byte) 0x01 };
+    private EsniDnsKeyRecordVersion defaultEsniRecordVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion();
 
     private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
 
@@ -1156,11 +1159,11 @@ public class Config implements Serializable {
 
     private int defaultEsniPaddedLength = 260;
 
-    private byte[] defaultEsniNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
+    private Long defaultEsniNotBefore = System.currentTimeMillis() / 1000L;
 
-    private byte[] defaultEsniNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
+    private Long defaultEsniNotAfter = (System.currentTimeMillis() / 1000L) + 2592000L;
 
-    private byte[] defaultEsniExtensions = new byte[0];
+    private List<ExtensionMessage> defaultEsniExtensions = new LinkedList();
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -3456,11 +3459,11 @@ public class Config implements Serializable {
         this.defaultEsniRecordBytes = defaultEsniRecordBytes;
     }
 
-    public byte[] getDefaultEsniRecordVersion() {
+    public EsniDnsKeyRecordVersion getDefaultEsniRecordVersion() {
         return defaultEsniRecordVersion;
     }
 
-    public void setDefaultEsniRecordVersion(byte[] defaultEsniRecordVersion) {
+    public void setDefaultEsniRecordVersion(EsniDnsKeyRecordVersion defaultEsniRecordVersion) {
         this.defaultEsniRecordVersion = defaultEsniRecordVersion;
     }
 
@@ -3496,27 +3499,28 @@ public class Config implements Serializable {
         this.defaultEsniPaddedLength = defaultEsniPaddedLength;
     }
 
-    public byte[] getDefaultEsniNotBefore() {
+    public Long getDefaultEsniNotBefore() {
         return defaultEsniNotBefore;
     }
 
-    public void setDefaultEsniNotBefore(byte[] defaultEsniNotBefore) {
+    public void setDefaultEsniNotBefore(Long defaultEsniNotBefore) {
         this.defaultEsniNotBefore = defaultEsniNotBefore;
     }
 
-    public byte[] getDefaultEsniNotAfter() {
+    public Long getDefaultEsniNotAfter() {
         return defaultEsniNotAfter;
     }
 
-    public void setDefaultEsniNotAfter(byte[] defaultEsniNotAfter) {
+    public void setDefaultEsniNotAfter(Long defaultEsniNotAfter) {
         this.defaultEsniNotAfter = defaultEsniNotAfter;
     }
 
-    public byte[] getDefaultEsniExtensions() {
+    public List<ExtensionMessage> getDefaultEsniExtensions() {
         return defaultEsniExtensions;
     }
 
-    public void setDefaultEsniExtensions(byte[] defaultEsniExtensions) {
+    public void setDefaultEsniExtensions(List<ExtensionMessage> defaultEsniExtensions) {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
+
 }

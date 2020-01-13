@@ -8,13 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.math.BigInteger;
+import java.util.List;
+
+import org.bouncycastle.util.Arrays;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -25,6 +30,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -33,10 +39,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
-import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
@@ -954,7 +956,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniRecordVersion() {
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
         if (context.getEsniRecordVersion() != null) {
             return context.getEsniRecordVersion();
         } else {
@@ -1001,7 +1003,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniNotBefore() {
+    public Long getEsniNotBefore() {
         if (context.getEsniKeysNotBefore() != null) {
             return this.context.getEsniKeysNotBefore();
         } else {
@@ -1010,7 +1012,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniNotAfter() {
+    public Long getEsniNotAfter() {
         if (context.getEsniNotAfter() != null) {
             return context.getEsniNotAfter();
         } else {
@@ -1019,7 +1021,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getEsniExtensions() {
+    public List<ExtensionMessage> getEsniExtensions() {
         if (context.getEsniExtensions() != null) {
             return context.getEsniExtensions();
         } else {

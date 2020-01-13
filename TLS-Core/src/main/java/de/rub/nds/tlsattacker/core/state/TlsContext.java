@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -67,6 +68,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -618,7 +620,7 @@ public class TlsContext {
      */
     private byte[] esniRecordBytes;
 
-    private byte[] esniRecordVersion;
+    private EsniDnsKeyRecordVersion esniRecordVersion;
 
     private byte[] esniRecordChecksum;
 
@@ -628,11 +630,11 @@ public class TlsContext {
 
     private Integer esniPaddedLength;
 
-    private byte[] esniNotBefore;
+    private Long esniNotBefore;
 
-    private byte[] esniNotAfter;
+    private Long esniNotAfter;
 
-    private byte[] esniExtensions;
+    private List<ExtensionMessage> esniExtensions;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -2340,11 +2342,11 @@ public class TlsContext {
         this.esniRecordBytes = esniRecordBytes;
     }
 
-    public byte[] getEsniRecordVersion() {
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
         return esniRecordVersion;
     }
 
-    public void setEsniRecordVersion(byte[] esniRecordVersion) {
+    public void setEsniRecordVersion(EsniDnsKeyRecordVersion esniRecordVersion) {
         this.esniRecordVersion = esniRecordVersion;
     }
 
@@ -2380,27 +2382,28 @@ public class TlsContext {
         this.esniPaddedLength = esniPaddedLength;
     }
 
-    public byte[] getEsniKeysNotBefore() {
+    public Long getEsniKeysNotBefore() {
         return esniNotBefore;
     }
 
-    public void setEsniKeysNotBefore(byte[] esniKeysNotBefore) {
+    public void setEsniKeysNotBefore(Long esniKeysNotBefore) {
         this.esniNotBefore = esniKeysNotBefore;
     }
 
-    public byte[] getEsniNotAfter() {
+    public Long getEsniNotAfter() {
         return esniNotAfter;
     }
 
-    public void setEsniKeysNotAfter(byte[] esniKeysNotAfter) {
+    public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
         this.esniNotAfter = esniKeysNotAfter;
     }
 
-    public byte[] getEsniExtensions() {
+    public List<ExtensionMessage> getEsniExtensions() {
         return esniExtensions;
     }
 
-    public void setEsniExtensions(byte[] esniExtensions) {
+    public void setEsniExtensions(List<ExtensionMessage> esniExtensions) {
         this.esniExtensions = esniExtensions;
     }
+
 }
