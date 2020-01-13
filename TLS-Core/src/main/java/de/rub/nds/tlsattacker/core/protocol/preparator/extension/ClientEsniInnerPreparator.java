@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
@@ -81,7 +80,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         byte[] padding;
         int paddedLength = chooser.getEsniPaddedLength();
         int paddingLength = paddedLength - msg.getServerNameListBytes().getValue().length
-                - ExtensionByteLength.PADDED_LEMGTH;
+                - ExtensionByteLength.SERVER_NAME_LIST;
         if (paddingLength > 0) {
             padding = new byte[paddingLength];
         } else {

@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -69,15 +68,14 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         KeyShareStoreEntry entry;
         int i = 0;
         while (i < keysLen) {
-            byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP); // C
+            byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP);
             int keyExchangeLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH);
             byte[] keyExchange = this.parseByteArrayField(keyExchangeLen);
             entry = new KeyShareStoreEntry();
             entry.setGroup(NamedGroup.getNamedGroup(namedGroup));
             entry.setPublicKey(keyExchange);
             record.getKeys().add(entry);
-            i += ExtensionByteLength.KEY_SHARE_GROUP + ExtensionByteLength.KEY_SHARE_LENGTH // C
-                    + keyExchangeLen;
+            i += ExtensionByteLength.KEY_SHARE_GROUP + ExtensionByteLength.KEY_SHARE_LENGTH + keyExchangeLen;
             LOGGER.debug("namedGroup: " + ArrayConverter.bytesToHexString(namedGroup));
             LOGGER.debug("keyExchange: " + ArrayConverter.bytesToHexString(keyExchange));
 

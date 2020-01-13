@@ -1222,6 +1222,7 @@
     </defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
     <defaultEsniClientNonce>pyhMmlLxXBNkS5RyYXdGVw==</defaultEsniClientNonce>
+    <defaultEsniServerNonce>AAAAAAAAAAAAAAAAAAAAAA==</defaultEsniServerNonce>
     <defaultEsniRecordBytes>/wEAEksqACQAHQAg+lctA+IeFfnKGqf7hfYbn8eEWKeAUKxYGBGGMyWURBIAAhMBAQQAAAAAXcw6RQAAAABd2hIFAAA=</defaultEsniRecordBytes>
     <defaultEsniRecordVersion>VERSION_FF01</defaultEsniRecordVersion>
     <defaultEsniRecordChecksum>ABJLKg==</defaultEsniRecordChecksum>
@@ -1234,6 +1235,6 @@
     </defaultEsniServerKeyShareEntries>
     <defaultEsniServerCiphersuites>TLS_AES_128_GCM_SHA256</defaultEsniServerCiphersuites>
     <defaultEsniPaddedLength>260</defaultEsniPaddedLength>
-    <defaultEsniNotBefore>1578876481</defaultEsniNotBefore>
-    <defaultEsniNotAfter>1581468481</defaultEsniNotAfter>
+    <defaultEsniNotBefore>1578892085</defaultEsniNotBefore>
+    <defaultEsniNotAfter>1581484085</defaultEsniNotAfter>
 </config>

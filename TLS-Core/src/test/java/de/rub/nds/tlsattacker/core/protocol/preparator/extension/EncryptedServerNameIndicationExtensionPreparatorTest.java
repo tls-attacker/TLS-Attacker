@@ -33,7 +33,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServer
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
