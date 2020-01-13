@@ -160,7 +160,8 @@ public class CcaCertificateGenerator {
         String xmlString = textFileReader.read();
 
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
-        xmlString = xmlString.replace(needle, needle + xmlSubject);
+        String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
+        xmlString = xmlString.replace(needle, replacement + xmlSubject);
         // Please note that rootCertificate always has to be a filename only. No
         // path
         xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
