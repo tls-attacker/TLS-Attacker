@@ -106,15 +106,13 @@ public enum TwistedCurvePoint {
                     16)),
     // X-Curves use point of order 4 for evaluation of server behavior
     X25519Twist(
-            new BigInteger("2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2450", 16),
+            new BigInteger("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec", 16),
             new BigInteger("5B8545C0F22DFADE38855A5CD1228352F134A9E655D637C03704BDE426506941", 16),
             new BigInteger("4"),
             NamedGroup.ECDH_X25519,
             new BigInteger("CA6648A697DC4F37B1BB5C5809E9F265332D9C6138371C0809B54D69C303AC7", 16)),
     X448Twist(
-            new BigInteger(
-                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0000000000000000000000000000000000000000000000000000CB8D",
-                    16),
+            new BigInteger("1", 16),
             new BigInteger(
                     "9A6A7C05A0FA5E28F5804F2A40D7E9D4411FAA289AD9C54ACEFA9D5EAD8C5E1A0041CFBCA155921E66D4BDEC85414FFE42C18EFFEF918CB5",
                     16),

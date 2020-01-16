@@ -1004,6 +1004,10 @@ public enum CipherSuite {
         return getImplemented().contains(this);
     }
 
+    public boolean isSHA() {
+        return this.name().endsWith("SHA");
+    }
+
     public boolean isSHA256() {
         return this.name().contains("SHA256");
     }
@@ -1014,6 +1018,14 @@ public enum CipherSuite {
 
     public boolean isSHA384() {
         return this.name().contains("SHA384");
+    }
+
+    public boolean isSHA512() {
+        return this.name().contains("SHA512");
+    }
+
+    public boolean isECDSA() {
+        return this.name().contains("ECDSA");
     }
 
     public boolean isAnon() {

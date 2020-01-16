@@ -345,6 +345,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setStopActionsAfterFatal(true);
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
+        config.setStopActionsAfterIOException(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddServerNameIndicationExtension(true);

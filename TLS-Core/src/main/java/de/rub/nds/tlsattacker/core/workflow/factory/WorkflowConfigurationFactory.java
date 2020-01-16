@@ -181,7 +181,9 @@ public class WorkflowConfigurationFactory {
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-                messages.add(new ChangeCipherSpecMessage());
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                messages.add(ccs);
             }
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
@@ -862,7 +864,9 @@ public class WorkflowConfigurationFactory {
 
             if (config.getHighestProtocolVersion().isTLS13()) {
                 if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-                    messages.add(new ChangeCipherSpecMessage());
+                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                    ccs.setRequired(false);
+                    messages.add(ccs);
                 }
                 messages.add(new EncryptedExtensionsMessage(config));
                 if (config.isClientAuthentication()) {
