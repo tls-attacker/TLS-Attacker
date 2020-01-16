@@ -70,8 +70,8 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 }
                 exception = E;
             }
-            if(i < reexecutions) {
-               this.reset(); 
+            if (i < reexecutions) {
+                this.reset();
             }
         }
         if (hasError) {
