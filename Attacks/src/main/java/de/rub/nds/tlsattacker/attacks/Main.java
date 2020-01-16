@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -137,9 +138,9 @@ public class Main {
             } else {
                 try {
                     Boolean result = attacker.checkVulnerability();
-                    if (result == Boolean.TRUE) {
+                    if (Objects.equals(result, Boolean.TRUE)) {
                         CONSOLE.error("Vulnerable:" + result.toString());
-                    } else if (result == Boolean.FALSE) {
+                    } else if (Objects.equals(result, Boolean.FALSE)) {
                         CONSOLE.info("Vulnerable:" + result.toString());
                     } else {
                         CONSOLE.warn("Vulnerable: Uncertain");
