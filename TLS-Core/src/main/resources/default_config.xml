@@ -1235,6 +1235,6 @@
     </defaultEsniServerKeyShareEntries>
     <defaultEsniServerCiphersuites>TLS_AES_128_GCM_SHA256</defaultEsniServerCiphersuites>
     <defaultEsniPaddedLength>260</defaultEsniPaddedLength>
-    <defaultEsniNotBefore>1578892085</defaultEsniNotBefore>
-    <defaultEsniNotAfter>1581484085</defaultEsniNotAfter>
+    <defaultEsniNotBefore>1579241403</defaultEsniNotBefore>
+    <defaultEsniNotAfter>1581833403</defaultEsniNotAfter>
 </config>

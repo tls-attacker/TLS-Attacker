@@ -31,7 +31,7 @@ public class KeyShareCalculator {
     public static List<NamedGroup> getImplemented() {
         List<NamedGroup> list = new LinkedList();
         list.add(NamedGroup.ECDH_X25519);
-        list.add(NamedGroup.ECDH_X25519);
+        list.add(NamedGroup.ECDH_X448);
         list.add(NamedGroup.SECP160K1);
         list.add(NamedGroup.SECP160R1);
         list.add(NamedGroup.SECP160R2);

@@ -3421,6 +3421,10 @@ public class Config implements Serializable {
         this.clientSupportedEsniCiphersuites = clientSupportedEsniCiphersuites;
     }
 
+    public void setClientSupportedEsniCiphersuites(CipherSuite... clientSupportedEsniCiphersuites) {
+        this.clientSupportedEsniCiphersuites = new ArrayList(Arrays.asList(clientSupportedEsniCiphersuites));
+    }
+
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
         return this.clientSupportedEsniNamedGroups;
     }
