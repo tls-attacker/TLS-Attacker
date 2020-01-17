@@ -15,10 +15,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 public class CcaDelegate extends Delegate {
 
-    @Parameter(names = "-certificatePath", description = "ASN.1 DER encoded client certificate used for basic "
+    @Parameter(names = "-certificatePath", description = "ASN.1 PEM encoded client certificate used for basic "
             + "authentication bypass testing. Required for basic CCA test cases.")
     private String clientCertificatePath;
     @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates "
@@ -40,29 +44,41 @@ public class CcaDelegate extends Delegate {
 
     public byte[] getClientCertificate() {
         FileInputStream fileInputStream = null;
+        X509Certificate x509Certificate = null;
         if (this.clientCertificatePath == null) {
             LOGGER.error("Certificate path not supplied.");
         }
-        File file = new File(this.clientCertificatePath);
-        byte certificate[] = new byte[(int) file.length()];
-
         try {
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(certificate);
+
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            fileInputStream = new FileInputStream(this.clientCertificatePath);
+            x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
+
         } catch (FileNotFoundException e) {
-            LOGGER.error("File not found. " + e);
-        } catch (IOException ioe) {
-            LOGGER.error("Exception while reading file. " + ioe);
-        } finally {
+            LOGGER.error("Couldn't find client certificate." + e);
+        } catch (CertificateException ce) {
+            LOGGER.error("Error while generating certificate from clientCertificatePath input." + ce);
+        }
+
+        if (x509Certificate != null) {
             try {
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-            } catch (IOException ioe) {
-                LOGGER.error("Error while closing stream: " + ioe);
+                return x509Certificate.getEncoded();
+            } catch (CertificateEncodingException cee) {
+                LOGGER.error("Couldn't encode clientCertificate into byte array." + cee);
             }
         }
-        return certificate;
+        return null;
+    }
+
+    public Boolean clientCertificateSupplied() {
+        return getClientCertificate() != null;
+    }
+
+    public Boolean directoriesSupplied() {
+        return certificateInputDirectory != null &&
+                certificateOutputDirectory != null &&
+                xmlDirectory != null &&
+                keyDirectory != null;
     }
 
     public String getClientCertificatePath() {

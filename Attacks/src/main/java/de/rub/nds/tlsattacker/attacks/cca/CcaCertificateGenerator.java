@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.attacks.cca;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
 import de.rub.nds.asn1.model.*;
-import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
-import de.rub.nds.asn1.translator.ContextRegister;
-import de.rub.nds.asn1.translator.ParseNativeTypesContext;
 import de.rub.nds.asn1tool.filesystem.TextFileReader;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
@@ -281,11 +278,9 @@ public class CcaCertificateGenerator {
 
     private static String extractXMLCertificateSubject(String rootCertificate) throws CertificateException,
             IOException, ParserException {
-        // Register XmlClasses, Types, Contexts and Unpackers
+        // Register XmlClasses and Types
         registerXmlClasses();
         registerTypes();
-//        registerContexts();
-//        registerContentUnpackers();
 
         // Load X.509 root certificate and get Subject principal
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");

@@ -9,20 +9,22 @@
 package de.rub.nds.tlsattacker.attacks.cca;
 
 public enum CcaWorkflowType {
-    CRT_CKE_CCS_FIN("TLS handshake flow with CertificateVerify omitted."),
-    CRT_CKE_FIN("TLS handshake flow with CertificateVerify and CCS omitted."),
+    CRT_CKE_CCS_FIN("TLS handshake flow with CertificateVerify omitted.", true, false),
+    CRT_CKE_FIN("TLS handshake flow with CertificateVerify and CCS omitted.", true, false),
     CRT_CKE_ZFIN("TLS handshake flow with CertificateVerify and CCS omitted. Additionally the verify_data "
-            + "in the FinishedMessage is set zeroes only. Supposely found in CyaSSL 3.2.0"),
-    CKE_CCS_FIN("TLS handshake completely ignoring the CertificateRequest. First seen in GnuTLS 3.3.9."),
-    CKE_CCS_CRT_FIN_CCS_RND("Handshake abusing incorrect transitions in the JSEE state machine."),
+            + "in the FinishedMessage is set zeroes only. Supposely found in CyaSSL 3.2.0", true, false),
+    CKE_CCS_FIN("TLS handshake completely ignoring the CertificateRequest. First seen in GnuTLS 3.3.9.",
+            false, false),
+    CKE_CCS_CRT_FIN_CCS_RND("Handshake abusing incorrect transitions in the JSEE state machine.", true, false),
     CRT_CCS_FIN("TLS handshake omitting the ClientKeyExchange and CertificateVerify. This might lead to null "
             + "keys or non deterministic keys being established. Additionally same state machines might be confused "
-            + "leading to a ClientAuthentication bypass."),
+            + "leading to a ClientAuthentication bypass.", true, false),
     CRT_FIN("TLS handshake of only ClientCertificate and Finished. No encryption is enabled and no "
-            + "key material is sent from the client. Uninitialized data might be used, or null keys."),
+            + "key material is sent from the client. Uninitialized data might be used, or null keys.", true, false),
     CRT_ZFIN(
             "TLS handshake of only ClientCertificate and Finished. No encryption is enabled and no "
-                    + "key material is sent from the client. Uninitialized data might be used, or null keys. VerifyData is zeroed."),
+                    + "key material is sent from the client. Uninitialized data might be used, or null keys. " +
+                    "VerifyData is zeroed.", true, false),
 
     /**
      * TODO: I'd like to add a list that contains the certificate types used?
@@ -38,7 +40,8 @@ public enum CcaWorkflowType {
      * they've been postponed for now.
      */
 
-    CRT_CKE_VRFY_CCS_FIN("TLS handshake that is completely valid. It's used to confirm that everything works."),
+    CRT_CKE_VRFY_CCS_FIN("TLS handshake that is completely valid. It's used to confirm that everything works.",
+            true, true),
     /*
      * CRT1_CRT2_CKE_VRFY1_CCS_FIN(
      * "TLS handshake sending two certificate messages and afterwards only " +
@@ -64,12 +67,21 @@ public enum CcaWorkflowType {
     ;
 
     String description;
+    Boolean requiresCertificate;
+    Boolean requiresKey;
 
-    CcaWorkflowType(String description) {
+    CcaWorkflowType(String description, Boolean requiresCertificate, Boolean requiresKey) {
         this.description = description;
+        this.requiresCertificate = requiresCertificate;
+        this.requiresKey = requiresKey;
     }
 
     public String getDescription() {
         return description;
     }
+
+    public Boolean getRequiresCertificate() { return this.requiresCertificate; }
+
+    public Boolean getRequiresKey() {return  this.requiresKey; }
 }
+
