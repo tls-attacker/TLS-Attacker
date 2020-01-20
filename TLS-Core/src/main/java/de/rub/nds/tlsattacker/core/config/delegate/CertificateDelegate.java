@@ -11,11 +11,15 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
+import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -31,6 +35,12 @@ import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
+
+    @Parameter(names = "-cert", description = "PEM encoded certificate file")
+    private String certificate = null;
+
+    @Parameter(names = "-key", description = "PEM encoded private key")
+    private String key = null;
 
     @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate")
     private String keystore = null;
@@ -86,6 +96,31 @@ public class CertificateDelegate extends Delegate {
             throw new ParameterException("The following parameters are required for loading a" + " keystore: "
                     + join(mandatoryParameters.keySet()));
         }
+        PrivateKey privateKey = null;
+        if (key != null) {
+            try {
+                privateKey = PemUtil.readPrivateKey(new File(key));
+                CustomPrivateKey customPrivateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+                customPrivateKey.adjustInConfig(config, ConnectionEndType.CLIENT);
+                customPrivateKey.adjustInConfig(config, ConnectionEndType.SERVER);
+
+            } catch (IOException ex) {
+                LOGGER.warn("Could not read private key", ex);
+            }
+        }
+        if (certificate != null) {
+            try {
+                Certificate cert = PemUtil.readCertificate(new File(certificate));
+                if (privateKey != null) {
+                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert, privateKey));
+                } else {
+                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert));
+                }
+                config.setAutoSelectCertificate(false);
+            } catch (Exception ex) {
+                LOGGER.warn("Could not read certificate", ex);
+            }
+        }
         try {
             ConnectionEndType type;
             switch (config.getDefaultRunningMode()) {
@@ -102,7 +137,6 @@ public class CertificateDelegate extends Delegate {
             }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
-            PrivateKey privateKey = null;
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
             pair.adjustInConfig(config, type);
