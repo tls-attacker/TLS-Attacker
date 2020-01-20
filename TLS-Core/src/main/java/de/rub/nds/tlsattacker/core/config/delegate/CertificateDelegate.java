@@ -78,26 +78,32 @@ public class CertificateDelegate extends Delegate {
         this.alias = alias;
     }
 
+    public String getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public void applyDelegate(Config config) {
         Map<String, String> mandatoryParameters = new HashMap<>();
         mandatoryParameters.put("keystore", keystore);
         mandatoryParameters.put("password", password);
         mandatoryParameters.put("alias", alias);
-        List<String> missingParameters = new ArrayList<>();
-        for (String p : mandatoryParameters.keySet()) {
-            if (mandatoryParameters.get(p) == null) {
-                missingParameters.add(p);
-            }
-        }
-        if (missingParameters.size() == 3) {
-            return;
-        } else if (!missingParameters.isEmpty()) {
-            throw new ParameterException("The following parameters are required for loading a" + " keystore: "
-                    + join(mandatoryParameters.keySet()));
-        }
+
         PrivateKey privateKey = null;
         if (key != null) {
+            LOGGER.debug("Loading private key");
             try {
                 privateKey = PemUtil.readPrivateKey(new File(key));
                 CustomPrivateKey customPrivateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
@@ -109,6 +115,7 @@ public class CertificateDelegate extends Delegate {
             }
         }
         if (certificate != null) {
+            LOGGER.debug("Loading ceritificate");
             try {
                 Certificate cert = PemUtil.readCertificate(new File(certificate));
                 if (privateKey != null) {
@@ -120,6 +127,18 @@ public class CertificateDelegate extends Delegate {
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
             }
+        }
+        List<String> missingParameters = new ArrayList<>();
+        for (String p : mandatoryParameters.keySet()) {
+            if (mandatoryParameters.get(p) == null) {
+                missingParameters.add(p);
+            }
+        }
+        if (missingParameters.size() == 3) {
+            return;
+        } else if (!missingParameters.isEmpty()) {
+            throw new ParameterException("The following parameters are required for loading a" + " keystore: "
+                    + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
