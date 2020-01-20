@@ -85,11 +85,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientEcPrivateKey(privatekey);
-                    context.setSelectedGroup(group);
+                    context.setEcCertificateCurve(group);
                     break;
                 case SERVER:
                     context.setServerEcPrivateKey(privatekey);
-                    context.setSelectedGroup(group);
+                    context.setEcCertificateCurve(group);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
@@ -105,11 +105,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientEcPrivateKey(privatekey);
-                    config.setDefaultSelectedNamedGroup(group);
+                    config.setDefaultEcCertificateCurve(group);
                     break;
                 case SERVER:
                     config.setDefaultServerEcPrivateKey(privatekey);
-                    config.setDefaultSelectedNamedGroup(group);
+                    config.setDefaultEcCertificateCurve(group);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

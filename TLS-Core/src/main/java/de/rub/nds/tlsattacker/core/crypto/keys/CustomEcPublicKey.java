@@ -73,11 +73,15 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientEcPublicKey(point);
-                    context.setSelectedGroup(group);
+                    if (group != null) {
+                        context.setEcCertificateCurve(group);
+                    }
                     break;
                 case SERVER:
                     context.setServerEcPublicKey(point);
-                    context.setSelectedGroup(group);
+                    if (group != null) {
+                        context.setEcCertificateCurve(group);
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
@@ -125,11 +129,15 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientEcPublicKey(point);
-                    config.setDefaultSelectedNamedGroup(group);
+                    if (group != null) {
+                        config.setDefaultEcCertificateCurve(group);
+                    }
                     break;
                 case SERVER:
                     config.setDefaultServerEcPublicKey(point);
-                    config.setDefaultSelectedNamedGroup(group);
+                    if (group != null) {
+                        config.setDefaultEcCertificateCurve(group);
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
