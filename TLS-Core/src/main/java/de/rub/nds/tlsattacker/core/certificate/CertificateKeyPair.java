@@ -359,7 +359,7 @@ public class CertificateKeyPair implements Serializable {
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }
-        context.setSelectedGroup(publicKeyGroup);
+        context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;
