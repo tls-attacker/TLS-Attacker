@@ -25,8 +25,11 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
+import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
@@ -53,18 +56,14 @@ public class CcaCertificateGenerator {
     /**
      *
      * @param ccaDelegate
-     * @param type
+     * @param ccaCertificateType
      * @return
      */
-    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType type)
-            throws Exception {
+    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType ccaCertificateType) {
         CertificateMessage certificateMessage = new CertificateMessage();
-        if (type != null) {
-            switch (type) {
+        if (ccaCertificateType != null) {
+            switch (ccaCertificateType) {
                 case CLIENT_INPUT:
-                    /**
-                     * TODO: switch to pem input
-                     */
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
                     CertificatePair certificatePair = new CertificatePair(ccaDelegate.getClientCertificate());
                     certificatePairsList.add(certificatePair);
@@ -148,7 +147,9 @@ public class CcaCertificateGenerator {
      */
     private static CertificateMessage generateCertificateMessageFromXML(String rootCertificate,
             String certificateChain, String keyDirectory, String xmlDirectory, String certificateInputDirectory,
-            String certificateOutputDirectory) throws Exception {
+            String certificateOutputDirectory) {
+
+        Logger LOGGER = LogManager.getLogger();
 
         keyDirectory = keyDirectory + "/";
         xmlDirectory = xmlDirectory + "/";
@@ -158,8 +159,13 @@ public class CcaCertificateGenerator {
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory + rootCertificate);
 
         TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
-        String xmlString = textFileReader.read();
-
+        String xmlString;
+        try {
+            xmlString = textFileReader.read();
+        } catch (IOException ioe) {
+            LOGGER.error("Failed to read XML-File. " + ioe);
+            return null;
+        }
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
         String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
         xmlString = xmlString.replace(needle, replacement + xmlSubject);
@@ -177,8 +183,11 @@ public class CcaCertificateGenerator {
 
         // Load key files
         KeyFileManager keyFileManager = KeyFileManager.getReference();
-        keyFileManager.init(keyDirectory);
-
+        try {
+            keyFileManager.init(keyDirectory);
+        } catch (KeyFileManagerException kfme) {
+            LOGGER.error("Failed to initialize KeyFileManager. " + kfme);
+        }
         // Create signatures
         XmlSignatureEngine xmlSignatureEngine = new XmlSignatureEngine(linker, identifierMap);
         xmlSignatureEngine.computeSignatures();
@@ -219,81 +228,94 @@ public class CcaCertificateGenerator {
         certificateMessage.setCertificatesList(certificatePairList);
 
         // Parse leaf certificate for CertificateKeyPair
-        // Leads to the problem that unparsable certificates lead to an NPE
-        // exception later (e.g. version 5) since
-        // the Certificate couldn't be parsed.
-        // TODO: see if there is a different way to convert this into a
-        // certiicate object which is needed by TLS-Attacker/Scanner
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         // Parse private key and instantiate correct CertificateKeyPair
+        CcaCertificateKeyType ccaCertificateKeyType = CcaCertificateKeyType.fromJavaName(keyType.toLowerCase());
+        try {
+            switch (ccaCertificateKeyType) {
+                case RSA:
+                    keyBytes = keyFileManager.getKeyFileContent(keyName);
+                    privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+                    BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
+                    BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
+                    certificateKeyPair = new CertificateKeyPair(certificate, new CustomRSAPrivateKey(modulus, d));
+                    break;
+                case DH:
+                    keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
+                    privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
-        switch (keyType) {
-            /**
-             *
-             * TODO: replace types with enum
-             */
-            case "RSA":
-                keyBytes = keyFileManager.getKeyFileContent(keyName);
-                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
-                BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
-                BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
-                certificateKeyPair = new CertificateKeyPair(certificate, new CustomRSAPrivateKey(modulus, d));
-                break;
-            case "DH":
-                keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
-                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+                    BigInteger x = ((DHPrivateKey) privateKey).getX();
+                    BigInteger p = ((DHPrivateKey) privateKey).getParams().getP();
+                    BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
+                    certificateKeyPair = new CertificateKeyPair(certificate, new CustomDHPrivateKey(x, p, g));
+                    break;
+                case DSA:
+                    keyBytes = keyFileManager.getKeyFileContent(keyName);
+                    privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
-                BigInteger x = ((DHPrivateKey) privateKey).getX();
-                BigInteger p = ((DHPrivateKey) privateKey).getParams().getP();
-                BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
-                certificateKeyPair = new CertificateKeyPair(certificate, new CustomDHPrivateKey(x, p, g));
-                break;
-            case "DSA":
-                keyBytes = keyFileManager.getKeyFileContent(keyName);
-                privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
-
-                BigInteger x2 = ((DSAPrivateKey) privateKey).getX();
-                BigInteger primeP = ((DSAPrivateKey) privateKey).getParams().getP();
-                BigInteger primeQ = ((DSAPrivateKey) privateKey).getParams().getQ();
-                BigInteger generator = ((DSAPrivateKey) privateKey).getParams().getG();
-                certificateKeyPair = new CertificateKeyPair(certificate, new CustomDSAPrivateKey(x2, primeP, primeQ,
-                        generator));
-                break;
-            case "ECDH":
-            case "ECDSA":
-            case "KEA":
-            default:
-                throw new Exception("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
+                    BigInteger x2 = ((DSAPrivateKey) privateKey).getX();
+                    BigInteger primeP = ((DSAPrivateKey) privateKey).getParams().getP();
+                    BigInteger primeQ = ((DSAPrivateKey) privateKey).getParams().getQ();
+                    BigInteger generator = ((DSAPrivateKey) privateKey).getParams().getG();
+                    certificateKeyPair = new CertificateKeyPair(certificate, new CustomDSAPrivateKey(x2, primeP, primeQ,
+                            generator));
+                    break;
+                case ECDH:
+                case ECDSA:
+                case KEA:
+                default:
+                    LOGGER.error("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
+                    return null;
+            }
+        } catch (IOException ioe) {
+            LOGGER.error("IOException occurred while preparing PrivateKey. " + ioe);
+            return null;
+        } catch (KeyFileManagerException kfme) {
+            LOGGER.error("Couldn't read key from KeyFileManager. " + kfme);
+            return null;
         }
 
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
 
         // Write certificate files such that test cases can be reproduced
         // without TLS-Scanner with exactly the same certificates
-        writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
-
+        try {
+            writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
+        } catch (IOException ioe) {
+            LOGGER.error("Couldn't write certificates to output directory. " + ioe);
+        }
         return certificateMessage;
     }
 
-    private static String extractXMLCertificateSubject(String rootCertificate) throws CertificateException,
-            IOException, ParserException {
+    private static String extractXMLCertificateSubject(String rootCertificate) {
         // Register XmlClasses and Types
         registerXmlClasses();
         registerTypes();
 
-        // Load X.509 root certificate and get Subject principal
-        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-        FileInputStream fileInputStream = new FileInputStream(rootCertificate);
-        X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
-        X500Principal x500PrincipalSubject = x509Certificate.getSubjectX500Principal();
+        Logger LOGGER = LogManager.getLogger();
 
-        byte[] encodedSubject = x500PrincipalSubject.getEncoded();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (byte b : encodedSubject) {
-            stringBuilder.append(String.format("%02x", b));
+        // Load X.509 root certificate and get Subject principal
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            FileInputStream fileInputStream = new FileInputStream(rootCertificate);
+            X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
+            X500Principal x500PrincipalSubject = x509Certificate.getSubjectX500Principal();
+            byte[] encodedSubject = x500PrincipalSubject.getEncoded();
+            StringBuilder stringBuilder = new StringBuilder();
+            for (byte b : encodedSubject) {
+                stringBuilder.append(String.format("%02x", b));
+            }
+            return stringBuilder.toString();
+
+        } catch (IOException ioe) {
+            LOGGER.error("Error while reading rootCertificate. " + ioe);
+            return null;
+        } catch (CertificateException ce) {
+            LOGGER.error("Error while either instantiating X.509 CertificateFactory or generating certificate from " +
+                    "fileInputStream. " + ce);
+            return null;
         }
-        return stringBuilder.toString();
     }
 
     private static Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {

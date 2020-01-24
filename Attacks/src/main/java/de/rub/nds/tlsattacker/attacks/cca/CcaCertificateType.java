@@ -22,9 +22,9 @@ public enum CcaCertificateType {
                     + "Root CA is v1.", false, true),
     debug("debugging", false, true);
 
-    String description;
-    Boolean requiresCertificate;
-    Boolean requiresCaCertAndKeys;
+    private String description;
+    private Boolean requiresCertificate;
+    private Boolean requiresCaCertAndKeys;
 
     CcaCertificateType(String description, Boolean requiresCertificate, Boolean requiresCaCertAndKeys) {
         this.description = description;

@@ -66,9 +66,9 @@ public enum CcaWorkflowType {
 
     ;
 
-    String description;
-    Boolean requiresCertificate;
-    Boolean requiresKey;
+    private String description;
+    private Boolean requiresCertificate;
+    private Boolean requiresKey;
 
     CcaWorkflowType(String description, Boolean requiresCertificate, Boolean requiresKey) {
         this.description = description;

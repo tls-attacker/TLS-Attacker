@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.cca;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -28,30 +29,32 @@ public class CcaWorkflowGenerator {
      *
      * @param tlsConfig
      *            the config
-     * @param type
-     *            the type of workflow to execute
-     * @param certMessage
-     *            the certificateMessage to be sent in the workflow
+     * @param ccaWorkflowType
+     *            the ccaWorkflowType of workflow to execute
      * @return returns a WorkflowTrace ready for execution
      */
-    public static WorkflowTrace generateWorkflow(Config tlsConfig, CcaWorkflowType type, CertificateMessage certMessage) {
+    public static WorkflowTrace generateWorkflow(Config tlsConfig, CcaDelegate ccaDelegate, CcaWorkflowType ccaWorkflowType, CcaCertificateType ccaCertificateType) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
-        if (type != null) {
-            switch (type) {
+        CertificateMessage certificateMessage;
+        if (ccaWorkflowType != null) {
+            switch (ccaWorkflowType) {
                 case CRT_CKE_CCS_FIN:
-                    trace.addTlsAction(new SendAction(certMessage));
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(
                             tlsConfig)));
                     break;
                 case CRT_CKE_FIN:
-                    trace.addTlsAction(new SendAction(certMessage));
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
                     break;
                 case CRT_CKE_ZFIN:
-                    trace.addTlsAction(new SendAction(certMessage));
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     FinishedMessage crt_cke_zfin = new FinishedMessage(tlsConfig);
                     crt_cke_zfin.setVerifyData(Modifiable.explicit(new byte[HandshakeByteLength.VERIFY_DATA]));
@@ -63,24 +66,29 @@ public class CcaWorkflowGenerator {
                             tlsConfig)));
                     break;
                 case CKE_CCS_CRT_FIN_CCS_RND:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig), certMessage,
-                            new FinishedMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig), certMessage));
+                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig), certificateMessage,
+                            new FinishedMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig), certificateMessage));
                     break;
                 case CRT_FIN:
-                    trace.addTlsAction(new SendAction(certMessage, new FinishedMessage(tlsConfig)));
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage, new FinishedMessage(tlsConfig)));
                     break;
                 case CRT_ZFIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
                     FinishedMessage crt_zfin = new FinishedMessage(tlsConfig);
                     crt_zfin.setVerifyData(Modifiable.explicit(new byte[HandshakeByteLength.VERIFY_DATA]));
-                    trace.addTlsAction(new SendAction(certMessage, crt_zfin));
+                    trace.addTlsAction(new SendAction(certificateMessage, crt_zfin));
                     break;
                 case CRT_CCS_FIN:
-                    trace.addTlsAction(new SendAction(certMessage, new ChangeCipherSpecMessage(tlsConfig),
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage, new ChangeCipherSpecMessage(tlsConfig),
                             new FinishedMessage(tlsConfig)));
                     break;
                 case CRT_CKE_VRFY_CCS_FIN:
-                    trace.addTlsAction(new SendAction(certMessage));
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig),
                             new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
