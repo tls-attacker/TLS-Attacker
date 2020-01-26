@@ -89,6 +89,48 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
+                case ROOTv3_CAv3_LEAF_RSAv3_expired:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_LEAF_RSAv3_expired.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv3_NotYetValid:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_LEAF_RSAv3_NotYetValid.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv3_UnknownCritExt:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_LEAF_RSAv3_UnknownCritExt.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_CaFalse_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_CaFalse_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_NoBasicConstraints_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_NoBasicConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
                 case debug:
                     certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
                             "debug.xml", ccaDelegate.getKeyDirectory(),
