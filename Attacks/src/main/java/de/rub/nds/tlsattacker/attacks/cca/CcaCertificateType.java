@@ -17,8 +17,14 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3(
             "RSA Leaf Certificate generated with an intermediate Certificate that is v1 (actually not a CA). "
                     + "Root CA is v3.", false, true),
+    ROOTv3_CAv3_LEAFv2_nLEAF_RSAv3(
+            "RSA Leaf Certificate generated with an intermediate Certificate that is v2 (actually not a CA). "
+                    + "Root CA is v3.", false, true),
     ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3(
             "RSA Leaf Certificate generated with an intermediate Certificate that is v1 (actually not a CA). "
+                    + "Root CA is v1.", false, true),
+    ROOTv1_CAv3_LEAFv2_nLEAF_RSAv3(
+            "RSA Leaf Certificate generated with an intermediate Certificate that is v2 (actually not a CA). "
                     + "Root CA is v1.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_expired(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
@@ -38,9 +44,40 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_CaFalse_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
                     "The intermediate v3 CA certificate has the CA flag set to false.", false, true),
-    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3(
+    ROOTv3_CAv3_LEAF_RSAv2(
+            "RSA Leaf certificate v2 generated based on the provided (root-)CA certificate with one intermediate CA.",
+            false, true),
+    ROOTv3_CAv3_LEAF_RSAv1(
+            "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA.",
+            false, true),
+    ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
-                    "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.", false, true),
+                    "The intermediate v3 CA certificate specifies a KeyUsage of nothing.", false, true),
+    ROOTv3_CAv3_KeyUsageDigitalSignatures_LEAF_RSAv3(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The intermediate v3 CA certificate specifies a KeyUsage for digital signatures only.",
+            false, true),
+    ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The intermediate v3 CA certificate specifies no KeyUsage extension.",false, true),
+    ROOTv3_CAv3_LEAF_RSAv3__RDN_difference(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The intermediate v3 CA certificate and the leaf certificate use different ways to specify the same subject/issuer. " +
+                    "A faulty implementation might use some abstruse string comparison to determine if issuer==subject which" +
+                    " could succeed in this case.",
+            false, true),
+    ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageServerAuth(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The leaf certificates extended key usage extensions specifies server authentication only.",
+            false, true),
+    ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageCodeSign(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The leaf certificates extended key usage extensions specifies code signing only.",
+            false, true),
+//    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3(
+//            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+//                    "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.", false, true),
+//    Postponed due to lacking implementations in ASN.1-Tool
     debug("debugging", false, true);
 
     private String description;

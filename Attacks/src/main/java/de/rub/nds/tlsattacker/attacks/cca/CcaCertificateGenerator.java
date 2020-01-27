@@ -83,9 +83,21 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
+                case ROOTv3_CAv3_LEAFv2_nLEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_LEAFv2_nLEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
                 case ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3:
                     certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
                             "ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv1_CAv3_LEAFv2_nLEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
+                            "ROOTv1_CAv3_LEAFv2_nLEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
@@ -125,11 +137,51 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
-                case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
-                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
-                            "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
-                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
-                            ccaDelegate.getCertificateOutputDirectory());
+//                case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
+//                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+//                            "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+//                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+//                            ccaDelegate.getCertificateOutputDirectory());
+//                    break;
+                case ROOTv3_CAv3_LEAF_RSAv2:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv2.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv1:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv1.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_KeyUsageDigitalSignatures_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_KeyUsageDigitalSignatures_LEAF_RSAv3.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv3__RDN_difference:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv3__RDN_difference.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageServerAuth:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageServerAuth.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
+                    break;
+                case ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageCodeSign:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageCodeSign.xml",
+                            ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
+                            ccaDelegate.getCertificateInputDirectory(), ccaDelegate.getCertificateOutputDirectory());
                     break;
                 case debug:
                     certificateMessage = generateCertificateMessageFromXML("root-v1.pem",
