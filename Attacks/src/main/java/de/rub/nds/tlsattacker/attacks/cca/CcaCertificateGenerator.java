@@ -247,14 +247,14 @@ public class CcaCertificateGenerator {
         keyDirectory = keyDirectory + "/";
         xmlDirectory = xmlDirectory + "/";
         certificateInputDirectory = certificateInputDirectory + "/";
-        certificateOutputDirectory = certificateOutputDirectory + "/";
+//        certificateOutputDirectory = certificateOutputDirectory + "/";
 
         CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
 
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
 
 
-        TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
+//        TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
         String xmlString;
         xmlString = new String(ccaFileManager.getFileContent(certificateChain));
 
@@ -377,6 +377,8 @@ public class CcaCertificateGenerator {
 
         // Write certificate files such that test cases can be reproduced
         // without TLS-Scanner with exactly the same certificates
+        // TODO: if we run all this in parallel it could get interesting. I suppose first this should be controlled using
+        // TODO: an CLI argument. Second the parallelism might cause race conditions.
         /*try {
             writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
         } catch (IOException ioe) {
