@@ -37,6 +37,7 @@ public class CcaWorkflowGenerator {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
         CertificateMessage certificateMessage;
+        CertificateMessage certificateMessage2;
         if (ccaWorkflowType != null) {
             switch (ccaWorkflowType) {
                 case CRT_CKE_CCS_FIN:
@@ -92,6 +93,44 @@ public class CcaWorkflowGenerator {
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig),
                             new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT1_CRT2_CKE_VRFY1_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    certificateMessage2 = CcaCertificateGenerator.generateCertificate(ccaDelegate, CcaCertificateType.CLIENT_INPUT);
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendAction(certificateMessage2));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig),
+                            new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT1_CRT2_CKE_VRFY2_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, CcaCertificateType.CLIENT_INPUT);
+                    certificateMessage2 = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendAction(certificateMessage2));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig),
+                            new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT1_CKE_CRT2_CKE2_VRFY1_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    certificateMessage2 = CcaCertificateGenerator.generateCertificate(ccaDelegate, CcaCertificateType.CLIENT_INPUT);
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(certificateMessage2));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig),
+                            new FinishedMessage(tlsConfig)));
+                    break;
+                case CRT1_CKE_CRT2_CKE2_VRFY2_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, CcaCertificateType.CLIENT_INPUT);
+                    certificateMessage2 = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(certificateMessage2));
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig), new ChangeCipherSpecMessage(tlsConfig),
+                            new FinishedMessage(tlsConfig)));
                     break;
                 default:
                     break;

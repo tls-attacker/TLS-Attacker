@@ -36,7 +36,6 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PrivateKey;
@@ -250,16 +249,20 @@ public class CcaCertificateGenerator {
         certificateInputDirectory = certificateInputDirectory + "/";
         certificateOutputDirectory = certificateOutputDirectory + "/";
 
-        String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory + rootCertificate);
+        CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
+
+        String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
+
 
         TextFileReader textFileReader = new TextFileReader(xmlDirectory + certificateChain);
         String xmlString;
-        try {
-            xmlString = textFileReader.read();
-        } catch (IOException ioe) {
-            LOGGER.error("Failed to read XML-File. " + ioe);
+        xmlString = new String(ccaFileManager.getFileContent(certificateChain));
+
+        if (xmlString == null) {
+            LOGGER.error("Failed to get content of XML file.");
             return null;
         }
+
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
         String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
         xmlString = xmlString.replace(needle, replacement + xmlSubject);
@@ -374,26 +377,27 @@ public class CcaCertificateGenerator {
 
         // Write certificate files such that test cases can be reproduced
         // without TLS-Scanner with exactly the same certificates
-        try {
+        /*try {
             writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
         } catch (IOException ioe) {
             LOGGER.error("Couldn't write certificates to output directory. " + ioe);
-        }
+        }*/
         return certificateMessage;
     }
 
-    private static String extractXMLCertificateSubject(String rootCertificate) {
+    private static String extractXMLCertificateSubject(String certificateInputDirectory, String rootCertificate) {
         // Register XmlClasses and Types
         registerXmlClasses();
         registerTypes();
 
         Logger LOGGER = LogManager.getLogger();
+        CcaFileManager ccaFileManager = CcaFileManager.getReference(certificateInputDirectory);
 
         // Load X.509 root certificate and get Subject principal
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            FileInputStream fileInputStream = new FileInputStream(rootCertificate);
-            X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(fileInputStream);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ccaFileManager.getFileContent(rootCertificate));
+            X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(byteArrayInputStream);
             X500Principal x500PrincipalSubject = x509Certificate.getSubjectX500Principal();
             byte[] encodedSubject = x500PrincipalSubject.getEncoded();
             StringBuilder stringBuilder = new StringBuilder();
@@ -402,9 +406,6 @@ public class CcaCertificateGenerator {
             }
             return stringBuilder.toString();
 
-        } catch (IOException ioe) {
-            LOGGER.error("Error while reading rootCertificate. " + ioe);
-            return null;
         } catch (CertificateException ce) {
             LOGGER.error("Error while either instantiating X.509 CertificateFactory or generating certificate from " +
                     "fileInputStream. " + ce);

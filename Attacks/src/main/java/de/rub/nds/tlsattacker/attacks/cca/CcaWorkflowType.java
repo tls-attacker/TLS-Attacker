@@ -42,27 +42,24 @@ public enum CcaWorkflowType {
 
     CRT_CKE_VRFY_CCS_FIN("TLS handshake that is completely valid. It's used to confirm that everything works.",
             true, true),
-    /*
-     * CRT1_CRT2_CKE_VRFY1_CCS_FIN(
-     * "TLS handshake sending two certificate messages and afterwards only " +
-     * "verifying the first."), CRT1_CRT2_CKE_VRFY2_CCS_FIN(
-     * "TLS handshake sending two certificate messages and afterwards only " +
-     * "verifying the second."), CRT1_CKE_CRT2_CKE2_VRFY1_CCS_FIN(
-     * "TLS handshake sending two certificate messages and two client key " +
-     * "exchanges. Beurdouche et al. reported that the JSSE state machine allows to send ClientCertificate "
-     * +
-     * "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate "
-     * +
-     * "will be consumed. Maybe it's possible to use the unverified certificate."
-     * ), CRT1_CKE_CRT2_CKE2_VRFY2_CCS_FIN(
-     * "TLS handshake sending two certificate messages and two client key " +
-     * "exchanges. Beurdouche et al. reported that the JSSE state machine allows to send ClientCertificate "
-     * +
-     * "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate "
-     * +
-     * "will be consumed. Maybe it's possible to use the unverified certificate."
-     * ),
-     */
+    CRT1_CRT2_CKE_VRFY1_CCS_FIN("TLS handshake sending two certificate messages and afterwards only verifying " +
+            "the first. The implementation ought to use the X509-Attacker generated certificate for the first and the " +
+            "client provided for the second. If this testcase is true it indicates a potential vulnerability but doesn't " +
+            "signify one.", true, true),
+    CRT1_CRT2_CKE_VRFY2_CCS_FIN("TLS handshake sending two certificate messages and afterwards only verifying " +
+            "the second. The implementation ought to use the X509-Attacker generated certificate for the first and the " +
+            "client provided for the second. If this testcase is true it indicates a potential vulnerability but doesn't " +
+            "signify one.", true, true),
+    CRT1_CKE_CRT2_CKE2_VRFY1_CCS_FIN(
+      "TLS handshake sending two certificate messages and two client key " +
+      "exchanges. Beurdouche et al. reported that the JSSE state machine allows to send ClientCertificate " +
+      "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate " +
+      "will be consumed. Maybe it's possible to use the unverified certificate.", true, true),
+    CRT1_CKE_CRT2_CKE2_VRFY2_CCS_FIN(
+      "TLS handshake sending two certificate messages and two client key " +
+      "exchanges. Beurdouche et al. reported that the JSSE state machine allows to send ClientCertificate " +
+      "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate " +
+      "will be consumed. Maybe it's possible to use the unverified certificate.", true, true)
 
     ;
 
