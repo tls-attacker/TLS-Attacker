@@ -8,9 +8,15 @@
  */
 package de.rub.nds.tlsattacker.attacks.task;
 
+import de.rub.nds.tlsattacker.attacks.cca.CcaWorkflowGenerator;
+import de.rub.nds.tlsattacker.attacks.cca.vector.CcaVector;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,22 +27,37 @@ public class CcaTask extends TlsTask {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final State state;
+    private final CcaVector ccaVector;
+    private State state;
+    private final Config tlsConfig;
+    private final CcaDelegate ccaDelegate;
 
-
-    public CcaTask(State state, int reexecutions) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, int reexecutions) {
         super(reexecutions);
-        this.state = state;
+        this.ccaVector = ccaVector;
+        this.tlsConfig = tlsConfig;
+        this.ccaDelegate = ccaDelegate;
     }
 
-    public CcaTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions,
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, long additionalTimeout, boolean increasingTimeout, int reexecutions,
                    long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
-        this.state = state;
+        this.ccaVector = ccaVector;
+        this.tlsConfig = tlsConfig;
+        this.ccaDelegate = ccaDelegate;
+    }
+
+    private State prepareState() {
+        tlsConfig.setDefaultClientSupportedCiphersuites(ccaVector.getCipherSuite());
+        tlsConfig.setHighestProtocolVersion(ccaVector.getProtocolVersion());
+        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate, ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
+        State state = new State(tlsConfig, trace);
+        return state;
     }
 
     @Override
     public void execute() {
+        state = prepareState();
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
@@ -50,9 +71,11 @@ public class CcaTask extends TlsTask {
         }
     }
 
-    public State getState() {
-        return state;
+    public CcaVector getCcaVector() {
+        return ccaVector;
     }
+
+    public State getState() { return  state; }
 
     @Override
     public void reset() {
