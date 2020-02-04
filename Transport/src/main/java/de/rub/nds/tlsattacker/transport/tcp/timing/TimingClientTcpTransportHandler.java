@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
 
-    private long measurement = 0;
+    private Long measurement = null;
     private boolean prependEarlyReadData = false;
     private int earlyReadData = 0;
 
@@ -30,8 +30,9 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
 
     @Override
     public void sendData(byte[] data) throws IOException {
-        long startTime = System.nanoTime();
+        socket.setSoTimeout(1000);
         super.sendData(data);
+        long startTime = System.nanoTime();
         // read will block until data is available
         earlyReadData = inStream.read();
         long endTime = System.nanoTime();
@@ -54,7 +55,7 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
     }
 
     @Override
-    public long getLastMeasurement() {
+    public Long getLastMeasurement() {
         return measurement;
     }
 

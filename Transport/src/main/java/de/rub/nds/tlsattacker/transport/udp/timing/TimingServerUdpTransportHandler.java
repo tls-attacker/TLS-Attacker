@@ -18,7 +18,7 @@ public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler i
     }
 
     @Override
-    public long getLastMeasurement() {
+    public Long getLastMeasurement() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
