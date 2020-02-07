@@ -162,9 +162,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         for (int i = 1; i <= protocolFlows; i++) {
             setPremasterSecret(curve, i, point);
             InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i);
-            if (config.isAttackInRenegotiation() && getTlsConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-                taskToAdd.setResolveTls13CCSdiscrepancy(true);
-            }
             taskList.add(taskToAdd);
         }
         executor.bulkExecuteTasks(taskList);
@@ -175,9 +172,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         if (config.getPremasterSecret() != null) {
             premasterSecret = config.getPremasterSecret();
         } else {
-            // note that we're testing the congruences of the DECODED scalar
-            // for RFC7748 curves
-            Point sharedPoint = curve.mult(new BigInteger("" + i), point);
+            BigInteger secret = new BigInteger("" + i);
+            if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
+                secret = rfcCurve.decodeScalar(secret);
+            }
+            Point sharedPoint = curve.mult(secret, point);
             if (sharedPoint.getX() == null) {
                 premasterSecret = BigInteger.ZERO;
             } else {
