@@ -74,9 +74,9 @@ public enum CcaCertificateType {
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
                     "The leaf certificates extended key usage extensions specifies code signing only.",
             false, true),
-//    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3(
-//            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
-//                    "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.", false, true),
+    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. " +
+                    "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.", false, true),
 //    Postponed due to lacking implementations in ASN.1-Tool
     debug("debugging", false, true);
 

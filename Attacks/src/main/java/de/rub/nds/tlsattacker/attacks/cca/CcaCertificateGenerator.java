@@ -136,12 +136,12 @@ public class CcaCertificateGenerator {
                             ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
                             ccaDelegate.getCertificateOutputDirectory());
                     break;
-//                case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
-//                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
-//                            "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
-//                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
-//                            ccaDelegate.getCertificateOutputDirectory());
-//                    break;
+                case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
+                    certificateMessage = generateCertificateMessageFromXML("root-v3.pem",
+                            "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml", ccaDelegate.getKeyDirectory(),
+                            ccaDelegate.getXmlDirectory(), ccaDelegate.getCertificateInputDirectory(),
+                            ccaDelegate.getCertificateOutputDirectory());
+                    break;
                 case ROOTv3_CAv3_LEAF_RSAv2:
                     certificateMessage = generateCertificateMessageFromXML("root-v3.pem", "ROOTv3_CAv3_LEAF_RSAv2.xml",
                             ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
