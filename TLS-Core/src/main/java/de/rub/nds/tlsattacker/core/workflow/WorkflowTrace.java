@@ -134,6 +134,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
             @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
             @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
+            @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
