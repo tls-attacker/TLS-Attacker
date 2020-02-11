@@ -80,6 +80,7 @@ public abstract class TransportHandler {
                     try {
                         // dont ask - the java api does not allow this
                         // otherwise...
+                        System.out.println("Aha?");
                         Thread.sleep(1);
                         int read = inStream.read();
                         if (read == -1) {
@@ -128,4 +129,13 @@ public abstract class TransportHandler {
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
+
+    public void setIsInStreamTerminating(boolean isInStreamTerminating) {
+        this.isInStreamTerminating = isInStreamTerminating;
+    }
+
+    public boolean isIsInStreamTerminating() {
+        return isInStreamTerminating;
+    }
+
 }
