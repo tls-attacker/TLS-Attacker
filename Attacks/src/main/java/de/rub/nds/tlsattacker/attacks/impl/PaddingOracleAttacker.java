@@ -45,15 +45,13 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private final Config tlsConfig;
 
-    private boolean groupRecords = true;
-
     private boolean increasingTimeout = true;
 
     private long additionalTimeout = 1000;
 
     private long additionalTcpTimeout = 5000;
 
-    private List<List<VectorResponse>> responseMapList;
+    private List<VectorResponse> fullResponseMap;
 
     private EqualityError resultError;
 
@@ -101,20 +99,19 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
      */
     @Override
     public Boolean isVulnerable() {
-        groupRecords = false;
         CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
         EqualityError referenceError = null;
         List<VectorResponse> referenceResponseMap = null;
-        responseMapList = new LinkedList<>();
+        fullResponseMap = new LinkedList<>();
         try {
             for (int i = 0; i < config.getMapListDepth(); i++) {
 
                 List<VectorResponse> responseMap = createVectorResponseList();
-                responseMapList.add(responseMap);
+                this.fullResponseMap.addAll(responseMap);
                 if (i == 0) {
                     referenceResponseMap = responseMap;
-                    referenceError = getEqualityError(responseMap);
+                    referenceError = getEqualityError(fullResponseMap);
                     if (referenceError == EqualityError.NONE && !config.isRescanNotVulnerable()) {
                         LOGGER.debug("Server appears not vulnerable an RescanNotVulnerable is not active");
                         break;
@@ -291,13 +288,49 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         return EqualityError.NONE;
     }
+    
+     public boolean isConsistent(List<VectorResponse> responseVectorList) {
+        // TODO this comparision does too many equivalnce tests but is a easier
+        // to read?
+        for (VectorResponse responseOne : responseVectorList) {
+            for (VectorResponse responseTwo : responseVectorList) {
+                if (responseOne == responseTwo) {
+                    continue;
+                }
+                boolean shouldCompare = true;
+                if (responseOne.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
+                if (responseTwo.getFingerprint() == null) {
+                    responseOne.setErrorDuringHandshake(true);
+                    shouldCompare = false;
+                }
+                if (responseOne.getLength() == null || responseTwo.getLength() == null) {
+
+                    shouldCompare = false;
+                }
+                if (shouldCompare) {
+                    EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
+                            responseTwo.getFingerprint(), true);
+                    if (error != EqualityError.NONE) {
+                        CONSOLE.info("Found an EqualityError: " + error);
+                        LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
+                        LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
+                        return error;
+                    }
+                }
+            }
+        }
+        return EqualityError.NONE;
+    }
 
     public EqualityError getResultError() {
         return resultError;
     }
 
-    public List<List<VectorResponse>> getResponseMapList() {
-        return responseMapList;
+    public List<VectorResponse> getResponseMapList() {
+        return fullResponseMap;
     }
 
     /**
