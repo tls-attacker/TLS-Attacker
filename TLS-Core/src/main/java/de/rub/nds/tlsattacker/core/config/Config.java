@@ -423,6 +423,11 @@ public class Config implements Serializable {
     private Boolean serverSendsApplicationData = false;
 
     /**
+     * If we generate ClientHello with extensions in SSL
+     */
+    private Boolean addExtensionsInSSL = false;
+
+    /**
      * If we generate ClientHello with the ECPointFormat extension
      */
     private Boolean addECPointFormatExtension = true;
@@ -2306,6 +2311,14 @@ public class Config implements Serializable {
 
     public void setAddECPointFormatExtension(Boolean addECPointFormatExtension) {
         this.addECPointFormatExtension = addECPointFormatExtension;
+    }
+
+    public Boolean isAddExtensionsInSSL() {
+        return addExtensionsInSSL;
+    }
+
+    public void setAddExtensionsInSSL(Boolean addExtensionsInSSL) {
+        this.addExtensionsInSSL = addExtensionsInSSL;
     }
 
     public Boolean isAddEllipticCurveExtension() {
