@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.attacks.cca.CcaCertificateType;
 import de.rub.nds.tlsattacker.attacks.cca.CcaWorkflowType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
  *
@@ -25,7 +24,7 @@ public class CcaVector {
     private final CcaCertificateType ccaCertificateType;
 
     public CcaVector(ProtocolVersion protocolVersion, CipherSuite cipherSuite, CcaWorkflowType ccaWorkflowType,
-                     CcaCertificateType ccaCertificateType) {
+            CcaCertificateType ccaCertificateType) {
         this.protocolVersion = protocolVersion;
         this.cipherSuite = cipherSuite;
         this.ccaWorkflowType = ccaWorkflowType;
@@ -50,9 +49,8 @@ public class CcaVector {
 
     @Override
     public String toString() {
-        return "CcaTask{protocolVersion=" + protocolVersion + ", cipherSuite=" + cipherSuite + ", workflowType=" +
-                ccaWorkflowType + ", certificateType=" + ccaCertificateType + "}";
+        return "CcaTask{protocolVersion=" + protocolVersion + ", cipherSuite=" + cipherSuite + ", workflowType="
+                + ccaWorkflowType + ", certificateType=" + ccaCertificateType + "}";
     }
-
 
 }

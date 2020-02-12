@@ -8,11 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.cca.vector;
 
-import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.attacks.task.CcaTask;
-import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 /**
  *

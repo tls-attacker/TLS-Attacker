@@ -75,10 +75,8 @@ public class CcaDelegate extends Delegate {
     }
 
     public Boolean directoriesSupplied() {
-        return certificateInputDirectory != null &&
-                certificateOutputDirectory != null &&
-                xmlDirectory != null &&
-                keyDirectory != null;
+        return certificateInputDirectory != null && certificateOutputDirectory != null && xmlDirectory != null
+                && keyDirectory != null;
     }
 
     public String getClientCertificatePath() {

@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.cca;
 
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-
 public enum CcaCertificateKeyType {
     RSA("", "rsa"),
     DH("", "dh"),

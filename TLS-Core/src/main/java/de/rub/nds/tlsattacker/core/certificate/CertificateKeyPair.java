@@ -264,8 +264,8 @@ public class CertificateKeyPair implements Serializable {
         // the signature group is
         // the same as for the public key
         try {
-            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0).
-                    getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
             return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
@@ -281,8 +281,8 @@ public class CertificateKeyPair implements Serializable {
             return null;
         }
         try {
-            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0).
-                    getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
             return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
@@ -334,11 +334,14 @@ public class CertificateKeyPair implements Serializable {
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }
-        // TODO: If a client certificate is sent before an EC key exchange and that certificate is of type RSA
-        // then this will overwrite the selectedGroup in the context with null (RSA cert has no group).
+        // TODO: If a client certificate is sent before an EC key exchange and
+        // that certificate is of type RSA
+        // then this will overwrite the selectedGroup in the context with null
+        // (RSA cert has no group).
         // But hence the keyexchange fails.
-        // The standard actually does not dictate that the curve in a certificate is the same as in the KE
-//        context.setSelectedGroup(publicKeyGroup);
+        // The standard actually does not dictate that the curve in a
+        // certificate is the same as in the KE
+        // context.setSelectedGroup(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;

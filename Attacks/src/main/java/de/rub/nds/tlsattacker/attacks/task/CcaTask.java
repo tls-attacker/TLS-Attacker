@@ -39,8 +39,8 @@ public class CcaTask extends TlsTask {
         this.ccaDelegate = ccaDelegate;
     }
 
-    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, long additionalTimeout, boolean increasingTimeout, int reexecutions,
-                   long additionalTcpTimeout) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, long additionalTimeout,
+            boolean increasingTimeout, int reexecutions, long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
@@ -50,11 +50,8 @@ public class CcaTask extends TlsTask {
     private State prepareState() {
         tlsConfig.setDefaultClientSupportedCiphersuites(ccaVector.getCipherSuite());
         tlsConfig.setHighestProtocolVersion(ccaVector.getProtocolVersion());
-        tlsConfig.setEarlyStop(true);
-        tlsConfig.setStopReceivingAfterFatal(true);
-        tlsConfig.setStopActionsAfterFatal(true);
-        tlsConfig.setStopActionsAfterIOException(true);
-        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate, ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
+        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate,
+                ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);
         return state;
     }
@@ -79,7 +76,9 @@ public class CcaTask extends TlsTask {
         return ccaVector;
     }
 
-    public State getState() { return  state; }
+    public State getState() {
+        return state;
+    }
 
     @Override
     public void reset() {
