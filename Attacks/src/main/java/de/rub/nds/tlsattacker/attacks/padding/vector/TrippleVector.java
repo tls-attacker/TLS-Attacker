@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.attacks.padding.vector;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.general.Vector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -116,6 +118,23 @@ public class TrippleVector extends PaddingVector {
         return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
                 .getValue(), r.getComputations().getPadding().getValue()).length;
 
+    }
+
+    @Override
+    public boolean equals(Vector vector) {
+        if (vector instanceof TrippleVector) {
+            TrippleVector trippleVector = (TrippleVector) vector;
+            if (cleanModification.equals(trippleVector.getCleanModification())) {
+                if (macModification.equals(trippleVector.getMacModification())) {
+                    if (paddingModification.equals(trippleVector.getPaddingModification())) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 
 }
