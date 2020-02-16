@@ -15,10 +15,8 @@ import de.rub.nds.asn1.model.KeyInfo;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.keys.*;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
@@ -38,6 +36,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.ECPrivateKey;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.List;
@@ -225,6 +224,13 @@ public class CcaCertificateManager {
                     break;
                 case ECDH:
                 case ECDSA:
+                    keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
+                    privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+
+                    BigInteger pKey = ((ECPrivateKey)privateKey).getS();
+                    NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey)privateKey);
+                    customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
+                    break;
                 case KEA:
                 default:
                     LOGGER.error("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
