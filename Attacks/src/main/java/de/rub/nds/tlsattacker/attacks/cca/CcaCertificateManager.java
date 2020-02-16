@@ -14,6 +14,7 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.KeyInfo;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
+import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
@@ -25,6 +26,7 @@ import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
+import sun.security.rsa.RSAPublicKeyImpl;
 
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.security.auth.x500.X500Principal;
@@ -32,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -130,6 +133,7 @@ public class CcaCertificateManager {
         CertificateMessage certificateMessage = new CertificateMessage();
         String rootCertificate = ccaCertificateType.toString().substring(0, 6).toLowerCase() + ".pem";
         CustomPrivateKey customPrivateKey;
+        CustomPublicKey customPublicKey;
         byte[] keyBytes;
         PrivateKey privateKey;
 
@@ -198,10 +202,14 @@ public class CcaCertificateManager {
             switch (ccaCertificateKeyType) {
                 case RSA:
                     keyBytes = keyFileManager.getKeyFileContent(keyName);
+
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
                     BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
                     BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
                     customPrivateKey = new CustomRSAPrivateKey(modulus, d);
+
+                    PublicKey publicKey = PemUtil.readPublicKey(new ByteArrayInputStream(keyBytes));
+                    customPublicKey = new CustomRsaPublicKey(((RSAPublicKeyImpl)publicKey).getPublicExponent(), modulus);
                     break;
                 case DH:
                     keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));

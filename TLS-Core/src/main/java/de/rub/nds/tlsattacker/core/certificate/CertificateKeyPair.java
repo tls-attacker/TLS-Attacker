@@ -334,14 +334,7 @@ public class CertificateKeyPair implements Serializable {
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }
-        // TODO: If a client certificate is sent before an EC key exchange and
-        // that certificate is of type RSA
-        // then this will overwrite the selectedGroup in the context with null
-        // (RSA cert has no group).
-        // But hence the keyexchange fails.
-        // The standard actually does not dictate that the curve in a
-        // certificate is the same as in the KE
-        // context.setSelectedGroup(publicKeyGroup);
+         context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;
