@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
@@ -140,6 +141,23 @@ public class CertificateKeyPair implements Serializable {
         this.certificateBytes = stream.toByteArray();
         this.privateKey = null;
         this.publicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils.parsePublicKey(cert));
+        this.publicKeyGroup = getPublicNamedGroup(cert);
+        this.signatureGroup = getSignatureNamedGroup(cert);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(cert);
+        } else {
+            gostCurve = null;
+        }
+    }
+
+    public CertificateKeyPair(Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
+        this.certPublicKeyType = getPublicKeyType(cert);
+        this.certSignatureType = getSignatureType(cert);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        cert.encode(stream);
+        this.certificateBytes = stream.toByteArray();
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
         this.publicKeyGroup = getPublicNamedGroup(cert);
         this.signatureGroup = getSignatureNamedGroup(cert);
         if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {

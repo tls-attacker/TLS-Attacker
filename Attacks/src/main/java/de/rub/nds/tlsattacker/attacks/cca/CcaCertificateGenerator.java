@@ -36,6 +36,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.AbstractMap;
 import java.util.LinkedList;
@@ -286,7 +287,8 @@ public class CcaCertificateGenerator {
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         try {
-            certificateKeyPair = new CertificateKeyPair(certificate, (PrivateKey) entry.getValue());
+            certificateKeyPair = new CertificateKeyPair(certificate, (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>)entry.getValue()).getKey(),
+                    (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>)entry.getValue()).getValue());
         } catch (IOException ioe) {
             LOGGER.error("IOE while creating CertificateKeyPair");
             return null;

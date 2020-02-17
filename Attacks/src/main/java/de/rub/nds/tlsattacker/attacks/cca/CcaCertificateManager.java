@@ -54,7 +54,7 @@ public class CcaCertificateManager {
     private static Logger LOGGER = LogManager.getLogger();
 
     private static CcaCertificateManager reference = null;
-    private final Map<CcaCertificateType, Entry<byte[][], CustomPrivateKey>> certificateKeyMap = new HashMap<>();
+    private final Map<CcaCertificateType, Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>> certificateKeyMap = new HashMap<>();
     private CcaDelegate ccaDelegate = null;
 
     private CcaCertificateManager() {
@@ -103,16 +103,16 @@ public class CcaCertificateManager {
             if (ccaCertificateType.getRequiresCaCertAndKeys()) {
                 this.certificateKeyMap.put(ccaCertificateType, generateCertificateListFromXML(ccaCertificateType));
             } else if (ccaCertificateType.getRequiresCertificate()) {
-                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], CustomPrivateKey>(
+                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
                         new byte[][] { ccaDelegate.getClientCertificate() }, null));
             } else {
-                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], CustomPrivateKey>(
+                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
                         new byte[][] { new byte[0] }, null));
             }
         }
     }
 
-    public Entry<byte[][], CustomPrivateKey> getCertificateList(CcaCertificateType ccaCertificateType) {
+    public Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> getCertificateList(CcaCertificateType ccaCertificateType) {
         if (this.certificateKeyMap.containsKey(ccaCertificateType)) {
             return this.certificateKeyMap.get(ccaCertificateType);
         } else {
@@ -121,7 +121,7 @@ public class CcaCertificateManager {
         return null;
     }
 
-    private Entry<byte[][], CustomPrivateKey> generateCertificateListFromXML(CcaCertificateType ccaCertificateType) {
+    private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(CcaCertificateType ccaCertificateType) {
 
         // Logger for errors
         Logger LOGGER = LogManager.getLogger();
@@ -219,6 +219,7 @@ public class CcaCertificateManager {
                     BigInteger p = ((DHPrivateKey) privateKey).getParams().getP();
                     BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
                     customPrivateKey = new CustomDHPrivateKey(x, p, g);
+                    customPublicKey = null;
                     break;
                 case DSA:
                     keyBytes = keyFileManager.getKeyFileContent(keyName);
@@ -229,6 +230,7 @@ public class CcaCertificateManager {
                     BigInteger primeQ = ((DSAPrivateKey) privateKey).getParams().getQ();
                     BigInteger generator = ((DSAPrivateKey) privateKey).getParams().getG();
                     customPrivateKey = new CustomDSAPrivateKey(x2, primeP, primeQ, generator);
+                    customPublicKey = null;
                     break;
                 case ECDH:
                 case ECDSA:
@@ -238,6 +240,7 @@ public class CcaCertificateManager {
                     BigInteger pKey = ((ECPrivateKey)privateKey).getS();
                     NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey)privateKey);
                     customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
+                    customPublicKey = null;
                     break;
                 case KEA:
                 default:
@@ -259,6 +262,6 @@ public class CcaCertificateManager {
             LOGGER.error("Couldn't write certificates to output directory. " + ioe);
             return null;
         }
-        return new SimpleEntry<>(encodedCertificates, customPrivateKey);
+        return new SimpleEntry<>(encodedCertificates, (Entry<CustomPrivateKey, CustomPublicKey>) (new SimpleEntry<>(customPrivateKey, customPublicKey)));
     }
 }
