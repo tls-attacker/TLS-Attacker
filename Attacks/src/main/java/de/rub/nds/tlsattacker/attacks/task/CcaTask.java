@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +51,7 @@ public class CcaTask extends TlsTask {
     private State prepareState() {
         tlsConfig.setDefaultClientSupportedCiphersuites(ccaVector.getCipherSuite());
         tlsConfig.setHighestProtocolVersion(ccaVector.getProtocolVersion());
+        // tlsConfig.setClientAuthentication(true);
         WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate,
                 ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);

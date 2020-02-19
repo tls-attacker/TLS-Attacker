@@ -33,7 +33,11 @@ public class CcaFileManager {
 
     public static CcaFileManager getReference(String fileDirectory) {
         if (references.get(fileDirectory) == null) {
-            references.put(fileDirectory, new CcaFileManager(fileDirectory));
+            synchronized (CcaFileManager.class) {
+                if (references.get(fileDirectory) == null) {
+                    references.put(fileDirectory, new CcaFileManager(fileDirectory));
+                }
+            }
         }
         return references.get(fileDirectory);
     }

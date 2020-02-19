@@ -8,27 +8,14 @@
  */
 package de.rub.nds.tlsattacker.attacks.cca;
 
-import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
-import de.rub.nds.asn1.model.Asn1Sequence;
-import de.rub.nds.asn1.model.KeyInfo;
-import de.rub.nds.asn1.parser.ParserException;
-import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
-import de.rub.nds.asn1tool.xmlparser.XmlParser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
-import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
-import de.rub.nds.x509attacker.linker.Linker;
-import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -37,13 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.CertificateException;
-import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
 
 public class CcaCertificateGenerator {
 
@@ -87,7 +70,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3:
                 case ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3:
                 case ROOTv3_debug:
-                    certificateMessage = generateCertificateMessage(ccaCertificateType);
+                    certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
                 // case ROOTv3_CAv3_LEAF_RSAv3:
                 // certificateMessage = generateCertificateMessage("rootv3.pem",
@@ -259,7 +242,8 @@ public class CcaCertificateGenerator {
      * TODO: ASN.1 Parsing bugs for inspiration
      *
      */
-    private static CertificateMessage generateCertificateMessage(CcaCertificateType ccaCertificateType) {
+    private static CertificateMessage generateCertificateMessage(CcaDelegate ccaDelegate,
+            CcaCertificateType ccaCertificateType) {
 
         Logger LOGGER = LogManager.getLogger();
 
@@ -271,7 +255,7 @@ public class CcaCertificateGenerator {
         byte[][] encodedCertificates;
         CertificateKeyPair certificateKeyPair;
 
-        CcaCertificateManager ccaCertificateManager = CcaCertificateManager.getReference();
+        CcaCertificateManager ccaCertificateManager = CcaCertificateManager.getReference(ccaDelegate);
         Map.Entry entry = ccaCertificateManager.getCertificateList(ccaCertificateType);
 
         encodedCertificates = (byte[][]) entry.getKey();
@@ -287,8 +271,9 @@ public class CcaCertificateGenerator {
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         try {
-            certificateKeyPair = new CertificateKeyPair(certificate, (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>)entry.getValue()).getKey(),
-                    (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>)entry.getValue()).getValue());
+            certificateKeyPair = new CertificateKeyPair(certificate,
+                    (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
+                    (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
         } catch (IOException ioe) {
             LOGGER.error("IOE while creating CertificateKeyPair");
             return null;

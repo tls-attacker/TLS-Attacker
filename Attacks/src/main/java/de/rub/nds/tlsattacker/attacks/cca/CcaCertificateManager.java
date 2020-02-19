@@ -57,13 +57,23 @@ public class CcaCertificateManager {
     private final Map<CcaCertificateType, Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>> certificateKeyMap = new HashMap<>();
     private CcaDelegate ccaDelegate = null;
 
-    private CcaCertificateManager() {
+    private CcaCertificateManager(CcaDelegate ccaDelegate) {
+        this.init(ccaDelegate);
     }
 
-    public static CcaCertificateManager getReference() {
+    public static CcaCertificateManager getReference(CcaDelegate ccaDelegate) {
         if (reference == null) {
-            reference = new CcaCertificateManager();
+            synchronized (CcaCertificateManager.class) {
+                if (reference == null) {
+                    reference = new CcaCertificateManager(ccaDelegate);
+                }
+            }
         }
+        // }
+        // return reference;
+        // if (reference == null) {
+        // reference = new CcaCertificateManager();
+        // }
         return reference;
     }
 
@@ -103,16 +113,20 @@ public class CcaCertificateManager {
             if (ccaCertificateType.getRequiresCaCertAndKeys()) {
                 this.certificateKeyMap.put(ccaCertificateType, generateCertificateListFromXML(ccaCertificateType));
             } else if (ccaCertificateType.getRequiresCertificate()) {
-                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
-                        new byte[][] { ccaDelegate.getClientCertificate() }, null));
+                this.certificateKeyMap.put(
+                        ccaCertificateType,
+                        new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(new byte[][] { ccaDelegate
+                                .getClientCertificate() }, null));
             } else {
-                this.certificateKeyMap.put(ccaCertificateType, new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
-                        new byte[][] { new byte[0] }, null));
+                this.certificateKeyMap.put(ccaCertificateType,
+                        new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
+                                new byte[][] { new byte[0] }, null));
             }
         }
     }
 
-    public Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> getCertificateList(CcaCertificateType ccaCertificateType) {
+    public Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> getCertificateList(
+            CcaCertificateType ccaCertificateType) {
         if (this.certificateKeyMap.containsKey(ccaCertificateType)) {
             return this.certificateKeyMap.get(ccaCertificateType);
         } else {
@@ -121,7 +135,8 @@ public class CcaCertificateManager {
         return null;
     }
 
-    private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(CcaCertificateType ccaCertificateType) {
+    private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(
+            CcaCertificateType ccaCertificateType) {
 
         // Logger for errors
         Logger LOGGER = LogManager.getLogger();
@@ -209,7 +224,8 @@ public class CcaCertificateManager {
                     customPrivateKey = new CustomRSAPrivateKey(modulus, d);
 
                     PublicKey publicKey = PemUtil.readPublicKey(new ByteArrayInputStream(keyBytes));
-                    customPublicKey = new CustomRsaPublicKey(((RSAPublicKeyImpl)publicKey).getPublicExponent(), modulus);
+                    customPublicKey = new CustomRsaPublicKey(((RSAPublicKeyImpl) publicKey).getPublicExponent(),
+                            modulus);
                     break;
                 case DH:
                     keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
@@ -237,8 +253,8 @@ public class CcaCertificateManager {
                     keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
-                    BigInteger pKey = ((ECPrivateKey)privateKey).getS();
-                    NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey)privateKey);
+                    BigInteger pKey = ((ECPrivateKey) privateKey).getS();
+                    NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey) privateKey);
                     customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
                     customPublicKey = null;
                     break;
@@ -262,6 +278,7 @@ public class CcaCertificateManager {
             LOGGER.error("Couldn't write certificates to output directory. " + ioe);
             return null;
         }
-        return new SimpleEntry<>(encodedCertificates, (Entry<CustomPrivateKey, CustomPublicKey>) (new SimpleEntry<>(customPrivateKey, customPublicKey)));
+        return new SimpleEntry<>(encodedCertificates, (Entry<CustomPrivateKey, CustomPublicKey>) (new SimpleEntry<>(
+                customPrivateKey, customPublicKey)));
     }
 }
