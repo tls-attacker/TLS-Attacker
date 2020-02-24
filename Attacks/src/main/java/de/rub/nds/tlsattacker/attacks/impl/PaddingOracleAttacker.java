@@ -104,7 +104,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         EqualityError referenceError = null;
         fullResponseMap = new LinkedList<>();
         try {
-            for (int i = 0; i < config.getMapListDepth(); i++) {
+            for (int i = 0; i < config.getNumberOfIterations(); i++) {
                 List<VectorResponse> responseMap = createVectorResponseList();
                 this.fullResponseMap.addAll(responseMap);
             }
@@ -112,8 +112,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             CONSOLE.info(E.getMessage());
             return null;
         }
-        EqualityError error = getEqualityError(fullResponseMap);
-        if (error != EqualityError.NONE) {
+        referenceError = getEqualityError(fullResponseMap);
+        if (referenceError != EqualityError.NONE) {
             CONSOLE.info("Found a behavior difference within the responses. The server could be vulnerable.");
         } else {
             CONSOLE.info("Found no behavior difference within the responses. The server is very liekly not vulnerable.");

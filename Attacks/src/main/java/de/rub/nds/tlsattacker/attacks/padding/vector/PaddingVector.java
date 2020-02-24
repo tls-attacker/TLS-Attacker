@@ -31,6 +31,7 @@ public abstract class PaddingVector implements Vector {
 
     public abstract int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength);
 
+    @Override
     public String getName() {
         return name;
     }
