@@ -54,7 +54,13 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
 
     /**
      * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * the message. For RSA, PublicKeyLength actually is the length of the
+     * encrypted premaster secret.
+     *
+     * RFC 5246 states that "the RSA-encrypted PreMasterSecret in a
+     * ClientKeyExchange is preceded by two length bytes. These bytes are
+     * redundant in the case of RSA because the EncryptedPreMasterSecret is the
+     * only data in the ClientKeyExchange".
      *
      * @param msg
      *            Message to write in
@@ -70,7 +76,8 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
 
     /**
      * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * message. For RSA, the PublicKey field actually contains the encrypted
+     * premaster secret.
      *
      * @param msg
      *            Message to write in
