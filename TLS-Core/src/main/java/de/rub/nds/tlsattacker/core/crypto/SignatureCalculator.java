@@ -112,9 +112,6 @@ public class SignatureCalculator {
         return new byte[0];
     }
 
-    private SignatureCalculator() {
-    }
-
     private static byte[] generateGost01Signature(Chooser chooser, byte[] toBeSigned,
             SignatureAndHashAlgorithm algorithm) throws CryptoException {
         BCECGOST3410PrivateKey privateKey = KeyGenerator.getGost01PrivateKey(chooser);
@@ -125,6 +122,9 @@ public class SignatureCalculator {
             SignatureAndHashAlgorithm algorithm) throws CryptoException {
         BCECGOST3410_2012PrivateKey privateKey = KeyGenerator.getGost12PrivateKey(chooser);
         return generateSignature(privateKey, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+    }
+
+    private SignatureCalculator() {
     }
 
 }

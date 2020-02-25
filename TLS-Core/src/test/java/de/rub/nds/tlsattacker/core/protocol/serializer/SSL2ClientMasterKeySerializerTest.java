@@ -26,11 +26,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 
 @RunWith(Parameterized.class)
 public class SSL2ClientMasterKeySerializerTest {
-
-    private final ProtocolVersion version = ProtocolVersion.SSL2;
-    private SSL2ClientMasterKeyMessage message;
-    private byte[] expectedClientMasterKeyMessage;
-
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         byte[] expectedClientMasterKeyMessage = ArrayConverter
@@ -42,6 +37,10 @@ public class SSL2ClientMasterKeySerializerTest {
         return Arrays.asList(new Object[][] { { 138, HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue(), cipher, 0,
                 128, 0, new byte[0], encryptedKey, expectedClientMasterKeyMessage } });
     }
+
+    private final ProtocolVersion version = ProtocolVersion.SSL2;
+    private SSL2ClientMasterKeyMessage message;
+    private byte[] expectedClientMasterKeyMessage;
 
     public SSL2ClientMasterKeySerializerTest(int messageLength, byte messageType, byte[] cipher, int clearKeyLength,
             int encryptedKeyLength, int keyArgLength, byte[] clearKeyData, byte[] encryptedKey,

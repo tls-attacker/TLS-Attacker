@@ -38,7 +38,8 @@ class LeakyExportCheckCallable implements Callable<Boolean> {
         byte[] masterKey = new byte[data.getClearKey().length + data.getCipherSuite().getSecretKeyByteNumber()];
         System.arraycopy(data.getClearKey(), 0, masterKey, 0, data.getClearKey().length);
 
-        int secretKeyBytesUsed = Math.min(data.getSecretKeyPlain().length, data.getCipherSuite().getSecretKeyByteNumber());
+        int secretKeyBytesUsed = Math.min(data.getSecretKeyPlain().length, data.getCipherSuite()
+                .getSecretKeyByteNumber());
         System.arraycopy(data.getSecretKeyPlain(), 0, masterKey, data.getClearKey().length, secretKeyBytesUsed);
         if (secretKeyBytesUsed < data.getCipherSuite().getSecretKeyByteNumber()) {
             // TODO: Check this, the paper is weird
@@ -76,15 +77,16 @@ class LeakyExportCheckCallable implements Callable<Boolean> {
     }
 
     private boolean checkMasterKey(byte[] masterKey) {
-        byte[] clientReadKey = ServerVerifyChecker
-                .makeKeyMaterial(masterKey, data.getClientRandom(), data.getServerRandom(), "0");
+        byte[] clientReadKey = ServerVerifyChecker.makeKeyMaterial(masterKey, data.getClientRandom(),
+                data.getServerRandom(), "0");
         byte[] decrypted;
 
         if (data.getCipherSuite() == SSL2CipherSuite.SSL_CK_RC4_128_EXPORT40_WITH_MD5) {
             decrypted = ServerVerifyChecker.decryptRC4(clientReadKey, data.getEncrypted());
         } else {
             // SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
-            decrypted = ServerVerifyChecker.decryptRC2(clientReadKey, data.getEncrypted(), data.getIv(), data.getPaddingLength());
+            decrypted = ServerVerifyChecker.decryptRC2(clientReadKey, data.getEncrypted(), data.getIv(),
+                    data.getPaddingLength());
         }
 
         return ServerVerifyChecker.compareDecrypted(decrypted, data.getClientRandom(), true);

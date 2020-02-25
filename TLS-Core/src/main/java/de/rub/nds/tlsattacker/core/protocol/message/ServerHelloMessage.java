@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateU
 import de.rub.nds.tlsattacker.core.protocol.message.extension.DraftKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
@@ -84,6 +85,11 @@ public class ServerHelloMessage extends HelloMessage {
             extension.getServerNameList().add(pair);
             addExtension(extension);
         }
+        if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
+            EncryptedServerNameIndicationExtensionMessage extensionMessage = new EncryptedServerNameIndicationExtensionMessage();
+            addExtension(extensionMessage);
+        }
+
         if (tlsConfig.isAddKeyShareExtension()) {
             if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
                     && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {

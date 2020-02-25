@@ -28,55 +28,6 @@ import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
-
-    private EllipticCurve curve;
-
-    /**
-     * shared secret derived from the shared password between server and client
-     */
-    private Point passwordElement;
-
-    /**
-     * private secret used to calculate the premaster secret and part of the
-     * scalar that gets send to the peer
-     */
-    private BigInteger privateKeyScalar;
-
-    public static class PWDKeyMaterial {
-
-        public BigInteger privateKeyScalar;
-        public BigInteger scalar;
-        public Point element;
-    }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-    }
-
-    public void setCurve(EllipticCurve curve) {
-        this.curve = curve;
-    }
-
-    public EllipticCurve getCurve() {
-        return curve;
-    }
-
-    public Point getPasswordElement() {
-        return passwordElement;
-    }
-
-    public void setPasswordElement(Point passwordElement) {
-        this.passwordElement = passwordElement;
-    }
-
-    public BigInteger getPrivateKeyScalar() {
-        return privateKeyScalar;
-    }
-
-    public void setPrivateKeyScalar(BigInteger privateKeyScalar) {
-        this.privateKeyScalar = privateKeyScalar;
-    }
-
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
@@ -214,5 +165,53 @@ public class PWDComputations extends KeyExchangeComputations {
 
         keyMaterial.element = curve.inverse(curve.mult(mask, passwordElement));
         return keyMaterial;
+    }
+
+    private EllipticCurve curve;
+
+    /**
+     * shared secret derived from the shared password between server and client
+     */
+    private Point passwordElement;
+
+    /**
+     * private secret used to calculate the premaster secret and part of the
+     * scalar that gets send to the peer
+     */
+    private BigInteger privateKeyScalar;
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+    }
+
+    public void setCurve(EllipticCurve curve) {
+        this.curve = curve;
+    }
+
+    public EllipticCurve getCurve() {
+        return curve;
+    }
+
+    public Point getPasswordElement() {
+        return passwordElement;
+    }
+
+    public void setPasswordElement(Point passwordElement) {
+        this.passwordElement = passwordElement;
+    }
+
+    public BigInteger getPrivateKeyScalar() {
+        return privateKeyScalar;
+    }
+
+    public void setPrivateKeyScalar(BigInteger privateKeyScalar) {
+        this.privateKeyScalar = privateKeyScalar;
+    }
+
+    public static class PWDKeyMaterial {
+
+        public BigInteger privateKeyScalar;
+        public BigInteger scalar;
+        public Point element;
     }
 }

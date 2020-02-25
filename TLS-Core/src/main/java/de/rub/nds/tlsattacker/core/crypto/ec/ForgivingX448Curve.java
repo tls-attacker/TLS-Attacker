@@ -25,12 +25,6 @@ public class ForgivingX448Curve {
     public static final int ELEMENT_SIZE = 56;
 
     /**
-     * Private constructor to prevent instantiation
-     */
-    private ForgivingX448Curve() {
-    }
-
-    /**
      * Generates a publicKey for a given private key. The key is truncated or
      * padded to the correct size if necessary
      *
@@ -107,5 +101,11 @@ public class ForgivingX448Curve {
         byte[] sharedSecret = new byte[ELEMENT_SIZE];
         X448.scalarMult(privateKey, 0, publicKey, 0, sharedSecret, 0);
         return sharedSecret;
+    }
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private ForgivingX448Curve() {
     }
 }

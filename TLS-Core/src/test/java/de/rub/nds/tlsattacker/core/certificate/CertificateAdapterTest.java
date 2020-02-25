@@ -33,7 +33,6 @@ import org.junit.Test;
 public class CertificateAdapterTest {
 
     private static Certificate certificate;
-    private final CertificateAdapter certificateAdapter = new CertificateAdapter();
 
     /**
      * Creates a TLS certificate to test on
@@ -66,6 +65,8 @@ public class CertificateAdapterTest {
         X509CertificateHolder certHolder = certificateBuilder.build(contentSigner);
         certificate = new Certificate(new org.bouncycastle.asn1.x509.Certificate[] { certHolder.toASN1Structure() });
     }
+
+    private final CertificateAdapter certificateAdapter = new CertificateAdapter();
 
     /**
      * Tests if marshal() creates the correct HexString corresponding to a given

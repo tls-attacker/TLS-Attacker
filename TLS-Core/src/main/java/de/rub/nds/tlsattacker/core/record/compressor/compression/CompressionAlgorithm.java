@@ -14,9 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class CompressionAlgorithm {
 
-    private final CompressionMethod method;
-
     protected static final Logger LOGGER = LogManager.getLogger(CompressionAlgorithm.class.getName());
+    private final CompressionMethod method;
 
     public CompressionAlgorithm(CompressionMethod method) {
         this.method = method;

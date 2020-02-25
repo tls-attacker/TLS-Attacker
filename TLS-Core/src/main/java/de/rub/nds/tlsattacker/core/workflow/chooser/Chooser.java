@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -38,6 +39,8 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public abstract class Chooser {
 
@@ -269,4 +272,26 @@ public abstract class Chooser {
     public abstract byte[] getServerPWDSalt();
 
     public abstract String getPWDPassword();
+
+    public abstract byte[] getEsniClientNonce();
+
+    public abstract byte[] getEsniServerNonce();
+
+    public abstract byte[] getEsniRecordBytes();
+
+    public abstract EsniDnsKeyRecordVersion getEsniRecordVersion();
+
+    public abstract byte[] getEsniRecordChecksum();
+
+    public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
+
+    public abstract List<CipherSuite> getEsniServerCiphersuites();
+
+    public abstract Integer getEsniPaddedLength();
+
+    public abstract Long getEsniNotBefore();
+
+    public abstract Long getEsniNotAfter();
+
+    public abstract List<ExtensionMessage> getEsniExtensions();
 }

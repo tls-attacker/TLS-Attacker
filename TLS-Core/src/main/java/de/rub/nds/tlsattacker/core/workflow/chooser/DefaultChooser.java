@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import java.math.BigInteger;
+import java.util.List;
+
+import org.bouncycastle.util.Arrays;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -15,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -26,6 +32,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -34,9 +41,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.math.BigInteger;
-import java.util.List;
-import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
@@ -960,5 +964,106 @@ public class DefaultChooser extends Chooser {
     @Override
     public String getPWDPassword() {
         return config.getDefaultPWDPassword();
+    }
+
+    @Override
+    public byte[] getEsniClientNonce() {
+        if (context.getEsniClientNonce() != null) {
+            return this.context.getEsniClientNonce();
+        } else {
+            return config.getDefaultEsniClientNonce();
+        }
+    }
+
+    @Override
+    public byte[] getEsniServerNonce() {
+        if (context.getEsniServerNonce() != null) {
+            return this.context.getEsniServerNonce();
+        } else {
+            return config.getDefaultEsniServerNonce();
+        }
+    }
+
+    @Override
+    public byte[] getEsniRecordBytes() {
+        if (context.getEsniRecordBytes() != null) {
+            return context.getEsniRecordBytes();
+        } else {
+            return config.getDefaultEsniRecordBytes();
+        }
+    }
+
+    @Override
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
+        if (context.getEsniRecordVersion() != null) {
+            return context.getEsniRecordVersion();
+        } else {
+            return config.getDefaultEsniRecordVersion();
+        }
+    }
+
+    @Override
+    public byte[] getEsniRecordChecksum() {
+        if (context.getEsniRecordChecksum() != null) {
+            return context.getEsniRecordChecksum();
+        } else {
+            return config.getDefaultEsniRecordChecksum();
+        }
+    }
+
+    @Override
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        if (context.getEsniServerKeyShareEntries() != null && context.getEsniServerKeyShareEntries().size() > 0) {
+            return context.getEsniServerKeyShareEntries();
+        } else {
+            return config.getDefaultEsniServerKeyShareEntries();
+        }
+    }
+
+    @Override
+    public List<CipherSuite> getEsniServerCiphersuites() {
+
+        if (context.getEsniServerCiphersuites() != null) {
+            return context.getEsniServerCiphersuites();
+        } else {
+            return config.getDefaultEsniServerCiphersuites();
+        }
+    }
+
+    @Override
+    public Integer getEsniPaddedLength() {
+
+        if (context.getEsniPaddedLength() != null) {
+            return context.getEsniPaddedLength();
+        } else {
+            return config.getDefaultEsniPaddedLength();
+        }
+    }
+
+    @Override
+    public Long getEsniNotBefore() {
+        if (context.getEsniKeysNotBefore() != null) {
+            return this.context.getEsniKeysNotBefore();
+        } else {
+            return config.getDefaultEsniNotBefore();
+        }
+    }
+
+    @Override
+    public Long getEsniNotAfter() {
+        if (context.getEsniNotAfter() != null) {
+            return context.getEsniNotAfter();
+        } else {
+            return config.getDefaultEsniNotAfter();
+        }
+    }
+
+    @Override
+    public List<ExtensionMessage> getEsniExtensions() {
+        if (context.getEsniExtensions() != null) {
+            return context.getEsniExtensions();
+        } else {
+            return config.getDefaultEsniExtensions();
+        }
     }
 }

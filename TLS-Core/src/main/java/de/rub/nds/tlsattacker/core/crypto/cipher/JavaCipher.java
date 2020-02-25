@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
@@ -45,7 +46,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         IvParameterSpec encryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), encryptIv);
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
             return result;
@@ -61,7 +63,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()));
+                String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
             return cipher.doFinal(someBytes);
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException
@@ -75,7 +78,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), encryptIv);
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
             return result;
@@ -91,7 +95,9 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), encryptIv);
+
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             cipher.updateAAD(additionAuthenticatedData);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
@@ -117,7 +123,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         IvParameterSpec decryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
@@ -135,7 +142,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
-                cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()));
+                String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+                cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
             byte[] result = cipher.doFinal(someBytes);
             return result;
@@ -150,7 +158,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
@@ -169,7 +178,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
+            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             cipher.updateAAD(additionAuthenticatedData);
             byte[] result = cipher.doFinal(someBytes);
             if (result.length >= getBlocksize()) {

@@ -50,8 +50,6 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final GOSTClientKeyExchangeMessage msg;
-
     private static Map<ASN1ObjectIdentifier, String> oidMappings = new HashMap<>();
 
     static {
@@ -62,6 +60,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         oidMappings.put(CryptoProObjectIdentifiers.id_Gost28147_89_CryptoPro_D_ParamSet, "E-D");
         oidMappings.put(RosstandartObjectIdentifiers.id_tc26_gost_28147_param_Z, "Param-Z");
     }
+    private final GOSTClientKeyExchangeMessage msg;
 
     public GOSTClientKeyExchangePreparator(Chooser chooser, GOSTClientKeyExchangeMessage msg) {
         super(chooser, msg);

@@ -19,12 +19,11 @@ public class WaitAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Boolean asPlanned;
-
     /**
      * Default waiting time in milliseconds
      */
     public final static long DEFAULT_WAITING_TIME = 10;
+    private Boolean asPlanned;
 
     /**
      * Time to waiting in milliseconds.

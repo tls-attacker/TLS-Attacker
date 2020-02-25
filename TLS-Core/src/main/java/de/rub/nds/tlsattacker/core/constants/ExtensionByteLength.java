@@ -251,6 +251,42 @@ public class ExtensionByteLength {
      */
     public static final int PASSWORD_SALT = 2;
 
+    /**
+     * Fields in the DNS Record of the EncryptedServerNameIndicationExtension
+     */
+    public static final int ESNI_RECORD_VERSION = 2;
+
+    public static final int ESNI_RECORD_CHECKSUM = 4;
+
+    public static final int ESNI_RECORD_PADDED_LENGTH = 2;
+
+    public static final int ESNI_RECORD_NOT_BEFORE = 8;
+
+    public static final int ESNI_RECORD_NOT_AFTER = 8;
+
+    public static final int ESNI_RECORD_EXTENSIONS = 2;
+
+    /**
+     * Length of encryptedSni in the EncryptedServerNameIndicationExtension
+     */
+    public static final int ENCRYPTED_SNI_LENGTH = 2;
+
+    /**
+     * Nonce in EncryptedServerNameIndicationExtension
+     */
+    public static final int NONCE = 16;
+
+    /**
+     * PaddedLength in the ClientEsniInner of the
+     * EncryptedServerNameIndicationExtension
+     */
+    public static final int PADDED_LEMGTH = 2;
+
+    /**
+     * recordDdigestLength in EncryptedServerNameIndicationExtension
+     */
+    public static final int RECORD_DIGEST_LENGTH = 2;
+
     private ExtensionByteLength() {
     }
 }

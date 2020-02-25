@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -18,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -104,7 +106,15 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
+                } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
+                        && msg instanceof ClientHelloMessage
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    ClientHelloMessage clientHelloMessage = (ClientHelloMessage) msg;
+                    ((EncryptedServerNameIndicationExtensionPreparator) preparator)
+                            .setClientHelloMessage(clientHelloMessage);
+                    preparator.afterPrepare();
                 }
+
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
