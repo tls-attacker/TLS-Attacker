@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -100,6 +101,8 @@ public abstract class Chooser {
     public abstract byte[] getMasterSecret();
 
     public abstract CipherSuite getSelectedCipherSuite();
+
+    public abstract SSL2CipherSuite getSSL2CipherSuite();
 
     public abstract byte[] getPreMasterSecret();
 

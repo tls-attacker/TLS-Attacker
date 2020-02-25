@@ -40,6 +40,10 @@ public class SSL2ClientMasterKeyHandler extends ProtocolMessageHandler<SSL2Clien
     public void adjustTLSContext(SSL2ClientMasterKeyMessage message) {
         byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
         tlsContext.setPreMasterSecret(premasterSecret);
+        tlsContext.setClearKey(message.getClearKeyData().getValue());
+        if (tlsContext.getChooser().getSSL2CipherSuite().getBlockSize() != 0) {
+            tlsContext.setSSL2Iv(message.getKeyArgData().getValue());
+        }
     }
 
 }

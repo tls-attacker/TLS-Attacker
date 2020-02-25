@@ -21,9 +21,6 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final int EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES = 5;
-    public static final int EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES = 11;
-
     private final SSL2ClientMasterKeyMessage message;
 
     private byte[] padding;
@@ -40,12 +37,13 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     @Override
     protected void prepareProtocolMessageContents() {
         LOGGER.debug("Prepare SSL2ClientMasterKey");
+        prepareMessagePaddingLength(message);
         prepareType(message);
         prepareCipherKind(message);
         prepareClearKey(message);
         prepareClearKeyLength(message);
+        prepareKeyArg(message);
         prepareKeyArgLength(message);
-        // TODO: Add keyArgData if we want to also support block ciphers.
 
         LOGGER.debug("RSA Modulus: " + chooser.getServerRsaModulus().toString());
 
@@ -54,15 +52,20 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         final int lengthFieldLength = 2;
         int length = SSL2ByteLength.MESSAGE_TYPE;
         length += message.getCipherKind().getValue().length;
-        length += message.getClearKeyData().getValue().length + lengthFieldLength;
-        length += message.getEncryptedKeyData().getValue().length + lengthFieldLength;
-        length += lengthFieldLength; // for keyArgLength
+        length += message.getClearKeyData().getValue().length + SSL2ByteLength.CLEAR_KEY_LENGTH;
+        length += message.getEncryptedKeyData().getValue().length + SSL2ByteLength.ENCRYPTED_KEY_LENGTH;
+        length += message.getKeyArgData().getValue().length + SSL2ByteLength.KEY_ARG_LENGTH;
         prepareMessageLength(message, length);
     }
 
-    private void prepareKeyArgLength(SSL2ClientMasterKeyMessage message2) {
-        message.setKeyArgLength(0);
-        LOGGER.debug("KeyArgLength: " + message.getKeyArgLength().getValue());
+    /**
+     * Sets the padding length of the message (record). It is always 0, because
+     * the message is clear-text. This has nothing to do with PKCS#1 padding for
+     * the Premaster Secret as processed by preparePadding().
+     */
+    private void prepareMessagePaddingLength(SSL2ClientMasterKeyMessage message) {
+        message.setPaddingLength(0);
+        LOGGER.debug("MessagePaddingLength: " + message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ClientMasterKeyMessage message) {
@@ -71,20 +74,32 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     private void prepareCipherKind(SSL2ClientMasterKeyMessage message) {
-        // by default we currently just try export RC4
-        message.setCipherKind(ArrayConverter.hexStringToByteArray("020080"));
+        message.setCipherKind(chooser.getSSL2CipherSuite().getByteValue());
         LOGGER.debug("CipherKind: " + ArrayConverter.bytesToHexString(message.getCipherKind().getValue()));
     }
 
     private void prepareClearKey(SSL2ClientMasterKeyMessage message) {
         // by default we currently supply null bytes as the clear key portion
-        message.setClearKeyData(new byte[EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES]);
+        message.setClearKeyData(new byte[chooser.getSSL2CipherSuite().getClearKeyByteNumber()]);
         LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(message.getClearKeyData().getValue()));
     }
 
     private void prepareClearKeyLength(SSL2ClientMasterKeyMessage message) {
         message.setClearKeyLength(message.getClearKeyData().getValue().length);
         LOGGER.debug("ClearKeyLength: " + message.getClearKeyLength().getValue());
+    }
+
+    private void prepareKeyArg(SSL2ClientMasterKeyMessage message) {
+        // KEY-ARG-DATA contains the IV for block ciphers
+        byte[] keyArgData = new byte[chooser.getSSL2CipherSuite().getBlockSize()];
+        chooser.getContext().getRandom().nextBytes(keyArgData);
+        message.setKeyArgData(keyArgData);
+        LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
+    }
+
+    private void prepareKeyArgLength(SSL2ClientMasterKeyMessage message) {
+        message.setKeyArgLength(message.getKeyArgData().getValue().length);
+        LOGGER.debug("KeyArgLength: " + message.getKeyArgLength().getValue());
     }
 
     private void prepareMessageLength(SSL2ClientMasterKeyMessage message, int length) {
@@ -97,8 +112,12 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
     }
 
+    /**
+     * Generates as many random bytes as required for the secret portion of the
+     * master key in the chosen cipher suite.
+     */
     private byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES];
+        byte[] tempPremasterSecret = new byte[chooser.getSSL2CipherSuite().getSecretKeyByteNumber()];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         return tempPremasterSecret;
     }
@@ -131,21 +150,23 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         // TODO: Maybe de-duplicate vs. RSAClientKeyExchangePreparator
         message.prepareComputations();
 
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
-        // the number of random bytes in the pkcs1 message
+        // The Premaster Secret is actually called SECRET-KEY-DATA in SSLv2, but
+        // its role is similar
+        premasterSecret = generatePremasterSecret();
+        preparePremasterSecret(message);
 
-        int unpaddedLength = EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES;
-        // Currently we only support 40-bit export RC4
+        // the number of random bytes in the pkcs1 message
+        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
+
+        int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
         int randomByteLength = keyByteLength - unpaddedLength - 3;
         padding = new byte[randomByteLength];
         chooser.getContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(message);
-        premasterSecret = generatePremasterSecret();
-        preparePremasterSecret(message);
-        preparePlainPaddedPremasterSecret(message);
 
+        preparePlainPaddedPremasterSecret(message);
         byte[] paddedPremasterSecret = message.getComputations().getPlainPaddedPremasterSecret().getValue();
 
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
