@@ -179,6 +179,11 @@ public abstract class Pkcs1Oracle {
         /**
          *
          */
-        MANGER_0x00
+        MANGER_0x00,
+
+        /**
+         * Special DROWN "extra clear" oracle
+         */
+        DROWN_EXTRA_CLEAR
     }
 }

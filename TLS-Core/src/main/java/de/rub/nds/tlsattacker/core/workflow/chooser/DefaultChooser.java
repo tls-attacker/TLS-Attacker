@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -239,6 +240,15 @@ public class DefaultChooser extends Chooser {
             return context.getSelectedCipherSuite();
         } else {
             return config.getDefaultSelectedCipherSuite();
+        }
+    }
+
+    @Override
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        if (context.getSSL2CipherSuite() != null) {
+            return context.getSSL2CipherSuite();
+        } else {
+            return config.getDefaultSSL2CipherSuite();
         }
     }
 

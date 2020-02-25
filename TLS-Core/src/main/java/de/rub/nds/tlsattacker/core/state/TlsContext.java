@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -157,6 +158,11 @@ public class TlsContext {
     private byte[] masterSecret;
 
     /**
+     * Cleartext portion of the master secret for SSLv2 export ciphers.
+     */
+    private byte[] clearKey;
+
+    /**
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
@@ -176,6 +182,11 @@ public class TlsContext {
      */
     private CipherSuite selectedCipherSuite = null;
 
+    /*
+     * (Preferred) cipher suite for SSLv2.
+     */
+    private SSL2CipherSuite ssl2CipherSuite = null;
+
     /**
      * Selected compression algorithm.
      */
@@ -190,6 +201,13 @@ public class TlsContext {
      * Client session ID.
      */
     private byte[] clientSessionId;
+
+    /**
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
+     * TLS, this is explicitly transmitted in the handshake and cannot be
+     * derived from other data.
+     */
+    private byte[] ssl2Iv;
 
     /**
      * Server certificate parsed from the server certificate message.
@@ -1322,6 +1340,10 @@ public class TlsContext {
         return selectedCipherSuite;
     }
 
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        return ssl2CipherSuite;
+    }
+
     public void setMasterSecret(byte[] masterSecret) {
         this.masterSecret = masterSecret;
     }
@@ -1330,8 +1352,20 @@ public class TlsContext {
         this.selectedCipherSuite = selectedCipherSuite;
     }
 
+    public void setSSL2CipherSuite(SSL2CipherSuite ssl2CipherSuite) {
+        this.ssl2CipherSuite = ssl2CipherSuite;
+    }
+
     public byte[] getClientServerRandom() {
         return ArrayConverter.concatenate(clientRandom, serverRandom);
+    }
+
+    public byte[] getClearKey() {
+        return clearKey;
+    }
+
+    public void setClearKey(byte[] clearKey) {
+        this.clearKey = clearKey;
     }
 
     public byte[] getPreMasterSecret() {
@@ -1380,6 +1414,14 @@ public class TlsContext {
 
     public void setClientSessionId(byte[] clientSessionId) {
         this.clientSessionId = clientSessionId;
+    }
+
+    public byte[] getSSL2Iv() {
+        return ssl2Iv;
+    }
+
+    public void setSSL2Iv(byte[] ssl2Iv) {
+        this.ssl2Iv = ssl2Iv;
     }
 
     public Certificate getServerCertificate() {

@@ -56,6 +56,8 @@ public class SSL2ClientMasterKeySerializerTest {
         this.message.setKeyArgLength(keyArgLength);
         this.message.setClearKeyData(clearKeyData);
         this.message.setEncryptedKeyData(encryptedKey);
+        this.message.setPaddingLength(0);
+        this.message.setKeyArgData(new byte[keyArgLength]);
     }
 
     @Test

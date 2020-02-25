@@ -39,9 +39,11 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         if ((peek() & (byte) 0x80) != 0) {
             length = parseByteArrayField(SSL2ByteLength.LENGTH);
             mask = 0x3f;
+            message.setPaddingLength(0);
         } else {
             length = parseByteArrayField(SSL2ByteLength.LONG_LENGTH);
             mask = 0x7f;
+            message.setPaddingLength((int) length[2]);
         }
         int intLength = ((length[0] & mask) << 8) | (length[1] & 0xFF);
         message.setMessageLength(intLength);
