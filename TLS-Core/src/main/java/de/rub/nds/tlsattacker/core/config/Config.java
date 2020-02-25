@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
@@ -835,6 +836,8 @@ public class Config implements Serializable {
     private CertificateType defaultSelectedServerCertificateType = CertificateType.X509;
 
     private CertificateType defaultSelectedClientCertificateType = CertificateType.X509;
+
+    private SSL2CipherSuite defaultSSL2CipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
     private List<ECPointFormat> defaultServerSupportedPointFormats;
 
@@ -1970,6 +1973,14 @@ public class Config implements Serializable {
 
     public void setDefaultSelectedCipherSuite(CipherSuite defaultSelectedCipherSuite) {
         this.defaultSelectedCipherSuite = defaultSelectedCipherSuite;
+    }
+
+    public SSL2CipherSuite getDefaultSSL2CipherSuite() {
+        return defaultSSL2CipherSuite;
+    }
+
+    public void setDefaultSSL2CipherSuite(SSL2CipherSuite defaultSSL2CipherSuite) {
+        this.defaultSSL2CipherSuite = defaultSSL2CipherSuite;
     }
 
     public Boolean isQuickReceive() {

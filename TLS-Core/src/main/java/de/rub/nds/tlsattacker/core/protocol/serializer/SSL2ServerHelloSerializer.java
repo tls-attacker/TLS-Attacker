@@ -47,6 +47,11 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2Ser
      * Writes the MessageLength of the SSL2ServerHello into the final byte[]
      */
     private void writeMessageLength(SSL2ServerHelloMessage message) {
+        if (message.getPaddingLength().getValue() != 0) {
+            throw new UnsupportedOperationException("Long record headers are not supported");
+        }
+        // TODO: This looks wrong, I'd assume the value has to be masked (see
+        // e.g. SSL2ClientHelloSerializer)
         appendInt(message.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }

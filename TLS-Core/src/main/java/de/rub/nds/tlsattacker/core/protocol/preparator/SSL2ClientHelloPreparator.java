@@ -10,11 +10,16 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
 
@@ -30,6 +35,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
     @Override
     protected void prepareProtocolMessageContents() {
         LOGGER.debug("Prepare SSL2ClientHello");
+        preparePaddingLength(message);
         prepareType(message);
         prepareProtocolVersion(message);
         // By Default we just set a fixed value with ssl2 ciphersuites
@@ -50,6 +56,11 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         prepareMessageLength(message, length);
     }
 
+    private void preparePaddingLength(SSL2ClientHelloMessage message) {
+        message.setPaddingLength(0);
+        LOGGER.debug("PaddingLength: " + message.getPaddingLength().getValue());
+    }
+
     private void prepareType(SSL2ClientHelloMessage message) {
         message.setType(HandshakeMessageType.CLIENT_HELLO.getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
@@ -61,7 +72,18 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
     }
 
     private void prepareCipherSuites(SSL2ClientHelloMessage message) {
-        message.setCipherSuites(ArrayConverter.hexStringToByteArray("0700c0060040050080040080030080020080010080080080"));
+        ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
+        for (SSL2CipherSuite suite : SSL2CipherSuite.values()) {
+            try {
+                if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
+                    cipherStream.write(suite.getByteValue());
+                }
+            } catch (IOException ex) {
+                throw new PreparationException(
+                        "Could not prepare SSL2ClientHello. Failed to write Ciphersuites into message", ex);
+            }
+        }
+        message.setCipherSuites(cipherStream.toByteArray());
         LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
     }
 
