@@ -50,6 +50,11 @@ public enum CcaCertificateType {
                     + "The Leaf certificate contains and unknown critical extension.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_UnknownExt(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
+                    + "The Leaf certificate contains and unknown extension.",
+            false,
+            true),
     ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
                     + "The first intermediate CA certificate specifies a PathLen of zero.",
@@ -110,7 +115,24 @@ public enum CcaCertificateType {
                     + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.",
             false,
             true),
-    // Postponed due to lacking implementations in ASN.1-Tool
+    ROOTv3_CAv3_CAv3_PathLoop(
+            "Path loop created by two CA certificates signing each other.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_CaTrue(
+            "Chain of provided root CA, intermediate CA and a Leaf Cert that is declared a CA (BasicConstraints).",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_KeyUsageNothing(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificates key usage extensions allows no key usage at all.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_KeyUsageDigitalSignatures(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificates key usage extensions allows digitalSignatues only.",
+            false,
+            true),
     ROOTv3_debug("debugging", false, true);
 
     private String description;
