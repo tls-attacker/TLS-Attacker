@@ -35,13 +35,12 @@ public class SSL2ClientMasterKeySerializerTest {
         byte[] cipher = BigInteger.valueOf(SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5.getValue()).toByteArray();
 
         return Arrays.asList(new Object[][] { { 138, HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue(), cipher, 0,
-            128, 0, new byte[0], encryptedKey, expectedClientMasterKeyMessage } });
+                128, 0, new byte[0], encryptedKey, expectedClientMasterKeyMessage } });
     }
 
     private final ProtocolVersion version = ProtocolVersion.SSL2;
     private SSL2ClientMasterKeyMessage message;
     private byte[] expectedClientMasterKeyMessage;
-
 
     public SSL2ClientMasterKeySerializerTest(int messageLength, byte messageType, byte[] cipher, int clearKeyLength,
             int encryptedKeyLength, int keyArgLength, byte[] clearKeyData, byte[] encryptedKey,

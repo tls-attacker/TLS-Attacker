@@ -65,6 +65,7 @@ public class CertificateAdapterTest {
         X509CertificateHolder certHolder = certificateBuilder.build(contentSigner);
         certificate = new Certificate(new org.bouncycastle.asn1.x509.Certificate[] { certHolder.toASN1Structure() });
     }
+
     private final CertificateAdapter certificateAdapter = new CertificateAdapter();
 
     /**

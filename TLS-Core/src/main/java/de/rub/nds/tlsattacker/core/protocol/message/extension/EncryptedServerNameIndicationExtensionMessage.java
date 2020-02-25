@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 
 public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMessage {
 
-
     private static final Logger LOGGER = LogManager.getLogger();
 
     private EsniMessageType esniMessageTypeConfig;
@@ -181,6 +180,7 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
     public void setEsniMessageTypeConfig(EsniMessageType esniMessageTypeConfig) {
         this.esniMessageTypeConfig = esniMessageTypeConfig;
     }
+
     public enum EsniMessageType {
         CLIENT,
         SERVER;

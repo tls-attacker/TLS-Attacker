@@ -24,7 +24,6 @@ public class ForgivingX25519Curve {
 
     public static final int ELEMENT_SIZE = 32;
 
-
     /**
      * Generates a publicKey for a given private key. The key is truncated or
      * padded to the correct size if necessary
@@ -103,6 +102,7 @@ public class ForgivingX25519Curve {
         X25519.scalarMult(privateKey, 0, publicKey, 0, sharedSecret, 0);
         return sharedSecret;
     }
+
     /**
      * Private constructor to prevent instantiation
      */

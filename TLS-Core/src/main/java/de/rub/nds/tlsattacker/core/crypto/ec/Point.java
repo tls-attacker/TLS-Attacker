@@ -33,6 +33,7 @@ public class Point implements Serializable {
         EllipticCurve curve = CurveFactory.getCurve(group);
         return curve.getPoint(x, y);
     }
+
     public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         return curve.getPoint(x, y);
@@ -58,7 +59,6 @@ public class Point implements Serializable {
         this.x = null;
         this.y = null;
     }
-
 
     /**
      * Instantiates an affine point with coordinates x and y. Calling

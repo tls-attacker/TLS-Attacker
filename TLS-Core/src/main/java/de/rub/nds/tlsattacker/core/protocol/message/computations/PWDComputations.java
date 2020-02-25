@@ -97,6 +97,7 @@ public class PWDComputations extends KeyExchangeComputations {
         }
         return createdPoint;
     }
+
     protected static MacAlgorithm getMacAlgorithm(CipherSuite suite) {
         if (suite.isSHA256()) {
             return MacAlgorithm.HMAC_SHA256;
@@ -108,6 +109,7 @@ public class PWDComputations extends KeyExchangeComputations {
             throw new PreparationException("Unsupported Mac Algorithm for suite " + suite.toString());
         }
     }
+
     /**
      * Calculates the prf output for the dragonfly password element
      *
@@ -145,6 +147,7 @@ public class PWDComputations extends KeyExchangeComputations {
             return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
         }
     }
+
     public static PWDKeyMaterial generateKeyMaterial(EllipticCurve curve, Point passwordElement, Chooser chooser) {
         BigInteger mask;
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
@@ -177,7 +180,6 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     private BigInteger privateKeyScalar;
 
-
     @Override
     public void setSecretsInConfig(Config config) {
     }
@@ -207,7 +209,7 @@ public class PWDComputations extends KeyExchangeComputations {
     }
 
     public static class PWDKeyMaterial {
-        
+
         public BigInteger privateKeyScalar;
         public BigInteger scalar;
         public Point element;

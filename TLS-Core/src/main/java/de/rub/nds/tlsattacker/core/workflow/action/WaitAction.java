@@ -19,7 +19,6 @@ public class WaitAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     /**
      * Default waiting time in milliseconds
      */

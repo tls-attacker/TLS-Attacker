@@ -21,7 +21,6 @@ import org.junit.Test;
 
 public class PointFormatterTest {
 
-
     @BeforeClass
     public static void setUpClass() {
     }
@@ -29,6 +28,7 @@ public class PointFormatterTest {
     @AfterClass
     public static void tearDownClass() {
     }
+
     public PointFormatterTest() {
     }
 

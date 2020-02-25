@@ -31,9 +31,11 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyTransportBlob;
+
     public GOSTClientKeyExchangeMessage() {
         super();
     }
+
     public GOSTClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
     }
@@ -54,7 +56,6 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public GOSTClientComputations getComputations() {
         return computations;
     }
-
 
     @Override
     public void prepareComputations() {

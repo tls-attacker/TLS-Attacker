@@ -21,11 +21,11 @@ public class TLSProxyKeyTransportBlob extends ASN1Object {
         if (obj instanceof TLSProxyKeyTransportBlob) {
             return (TLSProxyKeyTransportBlob) obj;
         }
-        
+
         if (obj != null) {
             return new TLSProxyKeyTransportBlob(ASN1Sequence.getInstance(obj));
         }
-        
+
         return null;
     }
 
@@ -41,7 +41,6 @@ public class TLSProxyKeyTransportBlob extends ASN1Object {
         this.keyBlob = keyBlob;
         this.cert = cert;
     }
-
 
     public GostR3410KeyTransport getKeyBlob() {
         return keyBlob;

@@ -50,7 +50,6 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-
     private static Map<ASN1ObjectIdentifier, String> oidMappings = new HashMap<>();
 
     static {
