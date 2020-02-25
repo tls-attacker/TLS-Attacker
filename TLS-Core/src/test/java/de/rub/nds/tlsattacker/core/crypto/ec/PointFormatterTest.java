@@ -22,15 +22,15 @@ import org.junit.Test;
 
 public class PointFormatterTest {
 
-    public PointFormatterTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public PointFormatterTest() {
     }
 
     @Before

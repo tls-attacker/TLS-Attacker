@@ -19,9 +19,9 @@ import org.apache.logging.log4j.Logger;
 
 public class CertificateStatusRequestExtensionPreparator extends
         ExtensionPreparator<CertificateStatusRequestExtensionMessage> {
-    private final CertificateStatusRequestExtensionMessage msg;
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final CertificateStatusRequestExtensionMessage msg;
 
     public CertificateStatusRequestExtensionPreparator(Chooser chooser,
             CertificateStatusRequestExtensionMessage message,

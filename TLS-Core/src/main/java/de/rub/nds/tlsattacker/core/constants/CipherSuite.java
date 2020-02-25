@@ -982,6 +982,16 @@ public enum CipherSuite {
         return list;
     }
 
+    public static List<CipherSuite> getEsniImplemented() {
+        List<CipherSuite> list = new LinkedList();
+        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        return list;
+    }
+
     public static List<CipherSuite> getNotImplemented() {
         List<CipherSuite> notImplemented = new LinkedList<>();
         for (CipherSuite suite : values()) {

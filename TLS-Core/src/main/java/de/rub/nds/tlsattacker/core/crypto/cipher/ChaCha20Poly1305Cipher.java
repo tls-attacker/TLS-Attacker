@@ -32,8 +32,8 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private byte[] key;
     private static final byte[] ZEROES = new byte[RecordAEADCipher.AEAD_TAG_LENGTH - 1];
+    private byte[] key;
     private int additionalDataLength = 0;
 
     // instanciate ChaCha20Poly1305 algorithms

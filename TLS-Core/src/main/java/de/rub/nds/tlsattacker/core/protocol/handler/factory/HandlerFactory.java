@@ -133,6 +133,8 @@ public class HandlerFactory {
                     return new EllipticCurvesExtensionHandler(context);
                 case ENCRYPT_THEN_MAC:
                     return new EncryptThenMacExtensionHandler(context);
+                case ENCRYPTED_SERVER_NAME_INDICATION:
+                    return new EncryptedServerNameIndicationExtensionHandler(context);
                 case EXTENDED_MASTER_SECRET:
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:

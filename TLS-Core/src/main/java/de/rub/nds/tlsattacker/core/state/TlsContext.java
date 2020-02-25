@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -69,6 +70,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -613,6 +615,37 @@ public class TlsContext {
      * one, if its protocolmessage type is alert
      */
     private boolean tls13SoftDecryption = false;
+
+    /**
+     * Nonce sent by the Client in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniClientNonce;
+
+    /**
+     * Nonce sent by the Server in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniServerNonce;
+
+    /**
+     * Contains the keyRecord for the EncryptedServerNameIndication extension
+     */
+    private byte[] esniRecordBytes;
+
+    private EsniDnsKeyRecordVersion esniRecordVersion;
+
+    private byte[] esniRecordChecksum;
+
+    private List<KeyShareStoreEntry> esniServerKeyShareEntries;
+
+    private List<CipherSuite> esniServerCiphersuites = new LinkedList();
+
+    private Integer esniPaddedLength;
+
+    private Long esniNotBefore;
+
+    private Long esniNotAfter;
+
+    private List<ExtensionMessage> esniExtensions;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -2317,6 +2350,96 @@ public class TlsContext {
 
     public void setSelectedGostCurve(GOSTCurve selectedGostCurve) {
         this.selectedGostCurve = selectedGostCurve;
+    }
+
+    public byte[] getEsniClientNonce() {
+        return this.esniClientNonce;
+    }
+
+    public void setEsniClientNonce(byte[] esniClientNonce) {
+        this.esniClientNonce = esniClientNonce;
+
+    }
+
+    public byte[] getEsniServerNonce() {
+        return this.esniServerNonce;
+    }
+
+    public void setEsniServerNonce(byte[] esniServerNonce) {
+        this.esniServerNonce = esniServerNonce;
+
+    }
+
+    public byte[] getEsniRecordBytes() {
+        return esniRecordBytes;
+    }
+
+    public void setEsniRecordBytes(byte[] esniRecordBytes) {
+        this.esniRecordBytes = esniRecordBytes;
+    }
+
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
+        return esniRecordVersion;
+    }
+
+    public void setEsniRecordVersion(EsniDnsKeyRecordVersion esniRecordVersion) {
+        this.esniRecordVersion = esniRecordVersion;
+    }
+
+    public byte[] getEsniRecordChecksum() {
+        return esniRecordChecksum;
+    }
+
+    public void setEsniRecordChecksum(byte[] esniRecordChecksum) {
+        this.esniRecordChecksum = esniRecordChecksum;
+    }
+
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        return this.esniServerKeyShareEntries;
+    }
+
+    public void setEsniServerKeyShareEntries(List<KeyShareStoreEntry> esniServerKeyShareEntries) {
+        this.esniServerKeyShareEntries = esniServerKeyShareEntries;
+    }
+
+    public List<CipherSuite> getEsniServerCiphersuites() {
+        return esniServerCiphersuites;
+    }
+
+    public void setEsniServerCiphersuites(List<CipherSuite> esniServerCiphersuites) {
+        this.esniServerCiphersuites = esniServerCiphersuites;
+    }
+
+    public Integer getEsniPaddedLength() {
+        return esniPaddedLength;
+    }
+
+    public void setEsniPaddedLength(Integer esniPaddedLength) {
+        this.esniPaddedLength = esniPaddedLength;
+    }
+
+    public Long getEsniKeysNotBefore() {
+        return esniNotBefore;
+    }
+
+    public void setEsniKeysNotBefore(Long esniKeysNotBefore) {
+        this.esniNotBefore = esniKeysNotBefore;
+    }
+
+    public Long getEsniNotAfter() {
+        return esniNotAfter;
+    }
+
+    public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
+        this.esniNotAfter = esniKeysNotAfter;
+    }
+
+    public List<ExtensionMessage> getEsniExtensions() {
+        return esniExtensions;
+    }
+
+    public void setEsniExtensions(List<ExtensionMessage> esniExtensions) {
+        this.esniExtensions = esniExtensions;
     }
 
 }

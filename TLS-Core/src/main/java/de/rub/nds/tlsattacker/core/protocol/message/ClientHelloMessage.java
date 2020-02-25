@@ -24,12 +24,17 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     /**
      * compression length
      */
@@ -82,8 +87,18 @@ public class ClientHelloMessage extends HelloMessage {
                     .getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
-            addExtension(extension);
+            this.addExtension(extension);
         }
+
+        if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
+            EncryptedServerNameIndicationExtensionMessage extensionMessage = new EncryptedServerNameIndicationExtensionMessage();
+            String hostname = tlsConfig.getDefaultClientConnection().getHostname();
+            ServerNamePair pair = new ServerNamePair();
+            pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
+            extensionMessage.getClientEsniInner().getServerNameList().add(pair);
+            addExtension(extensionMessage);
+        }
+
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }

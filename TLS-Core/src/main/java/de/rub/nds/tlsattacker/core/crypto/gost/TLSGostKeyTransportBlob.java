@@ -17,6 +17,17 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 
 public class TLSGostKeyTransportBlob extends ASN1Object {
+    public static TLSGostKeyTransportBlob getInstance(Object obj) {
+        if (obj instanceof TLSGostKeyTransportBlob) {
+            return (TLSGostKeyTransportBlob) obj;
+        }
+
+        if (obj != null) {
+            return new TLSGostKeyTransportBlob(ASN1Sequence.getInstance(obj));
+        }
+
+        return null;
+    }
 
     private final GostR3410KeyTransport keyBlob;
     private final DERSequence proxyKeyBlobs;
@@ -33,18 +44,6 @@ public class TLSGostKeyTransportBlob extends ASN1Object {
     public TLSGostKeyTransportBlob(GostR3410KeyTransport keyBlob, DERSequence proxyKeyBlobs) {
         this.keyBlob = keyBlob;
         this.proxyKeyBlobs = proxyKeyBlobs;
-    }
-
-    public static TLSGostKeyTransportBlob getInstance(Object obj) {
-        if (obj instanceof TLSGostKeyTransportBlob) {
-            return (TLSGostKeyTransportBlob) obj;
-        }
-
-        if (obj != null) {
-            return new TLSGostKeyTransportBlob(ASN1Sequence.getInstance(obj));
-        }
-
-        return null;
     }
 
     public GostR3410KeyTransport getKeyBlob() {

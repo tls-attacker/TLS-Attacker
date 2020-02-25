@@ -19,12 +19,12 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class WorkflowExecutor {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     static {
         if (!BouncyCastleProviderChecker.isLoaded()) {
             throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
         }
     }
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final WorkflowExecutorType type;
 

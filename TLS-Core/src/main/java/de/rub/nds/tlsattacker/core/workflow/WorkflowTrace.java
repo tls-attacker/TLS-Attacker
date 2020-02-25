@@ -110,6 +110,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
             @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
             @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
+            @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
             @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
             @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),

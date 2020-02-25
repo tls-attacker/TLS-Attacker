@@ -41,6 +41,9 @@ public class ExtensionParserFactory {
             case ELLIPTIC_CURVES:
                 parser = new EllipticCurvesExtensionParser(pointer, extensionBytes);
                 break;
+            case ENCRYPTED_SERVER_NAME_INDICATION:
+                parser = new EncryptedServerNameIndicationExtensionParser(pointer, extensionBytes);
+                break;
             case HEARTBEAT:
                 parser = new HeartbeatExtensionParser(pointer, extensionBytes);
                 break;

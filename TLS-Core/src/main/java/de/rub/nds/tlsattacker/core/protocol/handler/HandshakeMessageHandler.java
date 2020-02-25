@@ -12,9 +12,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -43,4 +46,27 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
             }
         }
     }
+
+    @Override
+    public void prepareAfterParse(ProtocolMessage handshakeMessage) {
+        if (handshakeMessage.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : handshakeMessage.getExtensions()) {
+
+                HandshakeMessageType handshakeMessageType = handshakeMessage.getHandshakeMessageType();
+                ExtensionHandler extensionHhandler = HandlerFactory.getExtensionHandler(tlsContext,
+                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
+
+                if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
+                    EncryptedServerNameIndicationExtensionPreparator preparator = (EncryptedServerNameIndicationExtensionPreparator) extensionHhandler
+                            .getPreparator(extensionMessage);
+                    if (handshakeMessage instanceof ClientHelloMessage) {
+                        preparator.setClientHelloMessage((ClientHelloMessage) handshakeMessage);
+                    }
+                    preparator.prepareAfterParse();
+                }
+            }
+            super.prepareAfterParse(handshakeMessage);
+        }
+    }
+
 }
