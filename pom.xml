@@ -8,7 +8,7 @@
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
-    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
+    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/). </description>
     
     <licenses>
         <license>
@@ -282,7 +282,7 @@
                     </includes>
                     <properties>
                         <year>${project.inceptionYear}</year>
-                        <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
+                        <owner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</owner>
                     </properties>
                 </configuration>
                 <executions>
@@ -401,7 +401,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
+        <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
         <!-- We redefine the signature generation process, whic is enabled by default, 
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
