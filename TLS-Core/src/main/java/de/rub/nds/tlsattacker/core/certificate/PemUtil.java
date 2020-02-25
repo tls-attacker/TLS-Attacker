@@ -12,10 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -38,11 +41,47 @@ public class PemUtil {
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
+    private static final String PRIVATE_KEY = "PRIVATE KEY";
+
+    private static final String PUBLIC_KEY = "PUBLIC KEY";
+
+    public static void writePrivateKey(PrivateKey key, File targetFile) {
+        try {
+            writePrivateKey(key, new FileOutputStream(targetFile));
+        } catch (FileNotFoundException ex) {
+            LOGGER.warn(ex);
+        }
+    }
+
+    public static void writePrivateKey(PrivateKey key, OutputStream outputStream) {
+        writePrivateKey(key.getEncoded(), outputStream);
+    }
+
+    public static void writePrivateKey(byte[] encodedKey, OutputStream outputStream) {
+        writeKey(PRIVATE_KEY, encodedKey, outputStream);
+    }
+
     public static void writePublicKey(PublicKey key, File targetFile) {
-        PemObject pemObject = new PemObject("PublicKey", key.getEncoded());
+        try {
+            writePublicKey(key, new FileOutputStream(targetFile));
+        } catch (FileNotFoundException ex) {
+            LOGGER.warn(ex);
+        }
+    }
+
+    public static void writePublicKey(PublicKey key, OutputStream outputStream) {
+        writePublicKey(key.getEncoded(), outputStream);
+    }
+
+    public static void writePublicKey(byte[] encodedKey, OutputStream outputStream) {
+        writeKey(PUBLIC_KEY, encodedKey, outputStream);
+    }
+
+    private static void writeKey(String keyType, byte[] encodedKey, OutputStream outputStream) {
+        PemObject pemObject = new PemObject(keyType, encodedKey);
         PemWriter pemWriter = null;
         try {
-            pemWriter = new PemWriter(new FileWriter(targetFile));
+            pemWriter = new PemWriter(new OutputStreamWriter(outputStream));
             pemWriter.writeObject(pemObject);
         } catch (IOException ex) {
             LOGGER.warn(ex);

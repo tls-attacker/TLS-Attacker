@@ -17,11 +17,17 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.ECPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -106,7 +112,14 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            ECParameterSpec ecParameters = this.getParams();
+            ECPublicKeySpec pubKey = new ECPublicKeySpec(getW(), ecParameters);
+            PublicKey publicKey = KeyFactory.getInstance("EC").generatePublic(pubKey);
+            return publicKey.getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("Could not encode the private EC key", ex);
+        }
     }
 
     @Override
