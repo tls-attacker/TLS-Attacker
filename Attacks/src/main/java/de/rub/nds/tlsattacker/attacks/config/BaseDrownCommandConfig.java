@@ -8,60 +8,59 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 
-/**
- *
- */
-public class DrownCommandConfig extends AttackConfig {
-
-    /**
-     *
-     */
-    public static final String COMMAND = "drown";
+public abstract class BaseDrownCommandConfig extends AttackConfig {
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
-
+    ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private AttackDelegate attackDelegate;
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    /**
-     *
-     * @param delegate
-     */
-    public DrownCommandConfig(GeneralDelegate delegate) {
+    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack", required = true)
+    private SSL2CipherSuite cipherSuite;
+    @Parameter(names = "-premasterSecretsFile", description = "File containing captured "
+            + "Premaster secrets to be decrypted in hex format, one per line")
+    private String premasterSecretsFilePath;
+
+    public BaseDrownCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
+        attackDelegate = new AttackDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
+        addDelegate(attackDelegate);
         addDelegate(starttlsDelegate);
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public boolean isExecuteAttack() {
-        return false;
-    }
-
-    /**
-     *
-     * @return
-     */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
         config.setRecordLayerType(RecordLayerType.BLOB);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
+        config.setDefaultSSL2CipherSuite(cipherSuite);
+
         return config;
     }
+
+    @Override
+    public boolean isExecuteAttack() {
+        return attackDelegate.isExecuteAttack();
+    }
+
+    public String getPremasterSecretsFilePath() {
+        return premasterSecretsFilePath;
+    }
+
 }

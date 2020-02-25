@@ -20,8 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 public class EncryptedServerNameIndicationExtensionParser extends
         ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
 
-    private final byte[] array;
     private static final Logger LOGGER = LogManager.getLogger();
+    private final byte[] array;
 
     public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

@@ -48,7 +48,7 @@ public class SendMessageHelper {
         ProtocolMessageType lastType = null;
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig());
+        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig().getDtlsMaximumFragmentLength());
         for (ProtocolMessage message : messages) {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
@@ -72,12 +72,12 @@ public class SendMessageHelper {
                         } else {
                             messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
                         }
-                        // TODO a fragment can span records currently, which
-                        // should not be allowed
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
                                     .getValue());
                             fragmentMessages.add(fragment);
+                            recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records,
+                                    recordPosition, context);
                         }
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);

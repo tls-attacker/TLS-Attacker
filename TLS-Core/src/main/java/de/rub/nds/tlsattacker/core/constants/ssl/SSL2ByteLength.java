@@ -16,6 +16,10 @@ public class SSL2ByteLength {
 
     public static final int LONG_LENGTH = 3;
 
+    // Strictly speaking, this depends on the cipher, but all ciphers use an MD5
+    // digest with a length of 16 bytes
+    public static final int MAC_DATA = 16;
+
     public static final int MESSAGE_TYPE = 1;
 
     public static final int VERSION = 2;
@@ -37,6 +41,8 @@ public class SSL2ByteLength {
     public static final int CLEAR_KEY_LENGTH = 2;
 
     public static final int ENCRYPTED_KEY_LENGTH = 2;
+
+    public static final int KEY_ARG_LENGTH = 2;
 
     private SSL2ByteLength() {
     }

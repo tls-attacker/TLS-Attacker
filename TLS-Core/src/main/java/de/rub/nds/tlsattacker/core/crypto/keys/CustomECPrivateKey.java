@@ -14,10 +14,14 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -61,7 +65,14 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("CustomKey cannot be encoded");
+        try {
+            ECParameterSpec ecParameters = this.getParams();
+            ECPrivateKeySpec privKey = new ECPrivateKeySpec(privatekey, ecParameters);
+            PrivateKey privateKey = KeyFactory.getInstance("EC").generatePrivate(privKey);
+            return privateKey.getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("Could not encode the private EC key", ex);
+        }
     }
 
     @Override
@@ -85,11 +96,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientEcPrivateKey(privatekey);
-                    context.setSelectedGroup(group);
+                    context.setEcCertificateCurve(group);
                     break;
                 case SERVER:
                     context.setServerEcPrivateKey(privatekey);
-                    context.setSelectedGroup(group);
+                    context.setEcCertificateCurve(group);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
@@ -105,11 +116,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientEcPrivateKey(privatekey);
-                    config.setDefaultSelectedNamedGroup(group);
+                    config.setDefaultEcCertificateCurve(group);
                     break;
                 case SERVER:
                     config.setDefaultServerEcPrivateKey(privatekey);
-                    config.setDefaultSelectedNamedGroup(group);
+                    config.setDefaultEcCertificateCurve(group);
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

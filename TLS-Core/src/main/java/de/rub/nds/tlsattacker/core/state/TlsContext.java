@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -159,6 +160,11 @@ public class TlsContext {
     private byte[] masterSecret;
 
     /**
+     * Cleartext portion of the master secret for SSLv2 export ciphers.
+     */
+    private byte[] clearKey;
+
+    /**
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
@@ -178,6 +184,11 @@ public class TlsContext {
      */
     private CipherSuite selectedCipherSuite = null;
 
+    /*
+     * (Preferred) cipher suite for SSLv2.
+     */
+    private SSL2CipherSuite ssl2CipherSuite = null;
+
     /**
      * Selected compression algorithm.
      */
@@ -192,6 +203,13 @@ public class TlsContext {
      * Client session ID.
      */
     private byte[] clientSessionId;
+
+    /**
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
+     * TLS, this is explicitly transmitted in the handshake and cannot be
+     * derived from other data.
+     */
+    private byte[] ssl2Iv;
 
     /**
      * Server certificate parsed from the server certificate message.
@@ -240,6 +258,10 @@ public class TlsContext {
     private List<CachedObject> cachedInfoExtensionObjects;
 
     private List<RequestItemV2> statusRequestV2RequestList;
+
+    private CertificateType selectedClientCertificateType;
+
+    private CertificateType selectedServerCertificateType;
 
     /**
      * These are the padding bytes as used in the padding extension.
@@ -446,40 +468,23 @@ public class TlsContext {
     private long readSequenceNumber = 0;
 
     /**
-     * the sequence number to be used in the fragments of the next message sent
+     * the latest epoch the peer used
      */
-    private int dtlsNextSendSequenceNumber = 0;
-
-    /**
-     * the sequence number used in fragments
-     */
-    private int dtlsCurrentSendSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the next message
-     * received
-     */
-    private int dtlsNextReceiveSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the current message
-     */
-    private int dtlsCurrentReceiveSequenceNumber = 0;
+    private int dtlsReadEpoch = 0;
 
     /**
      * the epoch applied to transmitted DTLS records
      */
-    private int dtlsSendEpoch = 0;
+    private int dtlsWriteEpoch = 0;
 
-    /**
-     * the epoch expected in the next record
-     */
-    private int dtlsNextReceiveEpoch = 0;
+    private int dtlsReadHandshakeMessageSequence = 0;
+
+    private int dtlsWriteHandshakeMessageSequence = 0;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
-    private FragmentManager dtlsFragmentManager;
+    private FragmentManager globalDtlsFragmentManager;
 
     /**
      * supported protocol versions
@@ -687,7 +692,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
-        dtlsFragmentManager = new FragmentManager(config);
+        globalDtlsFragmentManager = new FragmentManager(config);
     }
 
     public Chooser getChooser() {
@@ -695,6 +700,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public CertificateType getSelectedClientCertificateType() {
+        return selectedClientCertificateType;
+    }
+
+    public void setSelectedClientCertificateType(CertificateType selectedClientCertificateType) {
+        this.selectedClientCertificateType = selectedClientCertificateType;
+    }
+
+    public CertificateType getSelectedServerCertificateType() {
+        return selectedServerCertificateType;
+    }
+
+    public void setSelectedServerCertificateType(CertificateType selectedServerCertificateType) {
+        this.selectedServerCertificateType = selectedServerCertificateType;
     }
 
     public boolean isTls13SoftDecryption() {
@@ -711,6 +732,30 @@ public class TlsContext {
 
     public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
         this.reversePrepareAfterParse = reversePrepareAfterParse;
+    }
+
+    public int getDtlsReadHandshakeMessageSequence() {
+        return dtlsReadHandshakeMessageSequence;
+    }
+
+    public void setDtlsReadHandshakeMessageSequence(int dtlsReadHandshakeMessageSequence) {
+        this.dtlsReadHandshakeMessageSequence = dtlsReadHandshakeMessageSequence;
+    }
+
+    public void increaseDtlsReadHandshakeMessageSequence() {
+        this.dtlsReadHandshakeMessageSequence++;
+    }
+
+    public void increaseDtlsWriteHandshakeMessageSequence() {
+        this.dtlsWriteHandshakeMessageSequence++;
+    }
+
+    public int getDtlsWriteHandshakeMessageSequence() {
+        return dtlsWriteHandshakeMessageSequence;
+    }
+
+    public void setDtlsWriteHandshakeMessageSequence(int dtlsWriteHandshakeMessageSequence) {
+        this.dtlsWriteHandshakeMessageSequence = dtlsWriteHandshakeMessageSequence;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {
@@ -1241,80 +1286,32 @@ public class TlsContext {
         this.readSequenceNumber++;
     }
 
-    public int getDtlsNextSendSequenceNumber() {
-        return dtlsNextSendSequenceNumber;
+    public void increaseDtlsReadEpoch() {
+        this.dtlsReadEpoch++;
     }
 
-    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
-        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
+    public void increaseDtlsWriteEpoch() {
+        this.dtlsWriteEpoch++;
     }
 
-    public void increaseDtlsNextSendSequenceNumber() {
-        this.dtlsNextSendSequenceNumber++;
+    public int getDtlsWriteEpoch() {
+        return dtlsWriteEpoch;
     }
 
-    public int getDtlsCurrentSendSequenceNumber() {
-        return dtlsCurrentSendSequenceNumber;
+    public void setDtlsWriteEpoch(int dtlsWriteEpoch) {
+        this.dtlsWriteEpoch = dtlsWriteEpoch;
     }
 
-    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
-        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
+    public int getDtlsReceiveEpoch() {
+        return dtlsReadEpoch;
     }
 
-    public void increaseDtlsCurrentSendSequenceNumber() {
-        this.dtlsCurrentSendSequenceNumber++;
-    }
-
-    public int getDtlsCurrentReceiveSequenceNumber() {
-        return dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
-        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void increaseDtlsCurrentReceiveSequenceNumber() {
-        dtlsCurrentReceiveSequenceNumber++;
-    }
-
-    public int getDtlsNextReceiveSequenceNumber() {
-        return dtlsNextReceiveSequenceNumber;
-    }
-
-    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
-        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
-    }
-
-    public int getDtlsSendEpoch() {
-        return dtlsSendEpoch;
-    }
-
-    public void increaseDtlsSendEpoch() {
-        dtlsSendEpoch++;
-    }
-
-    public void setDtlsSendEpoch(int sendEpoch) {
-        this.dtlsSendEpoch = sendEpoch;
-    }
-
-    public int getDtlsNextReceiveEpoch() {
-        return dtlsNextReceiveEpoch;
-    }
-
-    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
-        this.dtlsNextReceiveEpoch = receiveEpoch;
-    }
-
-    public void increaseDtlsNextReceiveEpoch() {
-        dtlsNextReceiveEpoch++;
+    public void setDtlsReceiveEpoch(int sendEpoch) {
+        this.dtlsReadEpoch = sendEpoch;
     }
 
     public FragmentManager getDtlsFragmentManager() {
-        return dtlsFragmentManager;
-    }
-
-    public void increaseDtlsNextReceiveSequenceNumber() {
-        dtlsNextReceiveSequenceNumber++;
+        return globalDtlsFragmentManager;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -1376,6 +1373,10 @@ public class TlsContext {
         return selectedCipherSuite;
     }
 
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        return ssl2CipherSuite;
+    }
+
     public void setMasterSecret(byte[] masterSecret) {
         this.masterSecret = masterSecret;
     }
@@ -1384,8 +1385,20 @@ public class TlsContext {
         this.selectedCipherSuite = selectedCipherSuite;
     }
 
+    public void setSSL2CipherSuite(SSL2CipherSuite ssl2CipherSuite) {
+        this.ssl2CipherSuite = ssl2CipherSuite;
+    }
+
     public byte[] getClientServerRandom() {
         return ArrayConverter.concatenate(clientRandom, serverRandom);
+    }
+
+    public byte[] getClearKey() {
+        return clearKey;
+    }
+
+    public void setClearKey(byte[] clearKey) {
+        this.clearKey = clearKey;
     }
 
     public byte[] getPreMasterSecret() {
@@ -1434,6 +1447,14 @@ public class TlsContext {
 
     public void setClientSessionId(byte[] clientSessionId) {
         this.clientSessionId = clientSessionId;
+    }
+
+    public byte[] getSSL2Iv() {
+        return ssl2Iv;
+    }
+
+    public void setSSL2Iv(byte[] ssl2Iv) {
+        this.ssl2Iv = ssl2Iv;
     }
 
     public Certificate getServerCertificate() {

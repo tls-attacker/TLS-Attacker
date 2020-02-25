@@ -53,10 +53,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 public class EncryptedServerNameIndicationExtensionPreparator extends
         ExtensionPreparator<EncryptedServerNameIndicationExtensionMessage> {
 
-    public enum EsniPreparatorMode {
-        CLIENT,
-        SERVER;
-    }
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -541,6 +537,10 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     public void setEsniPreparatorMode(EsniPreparatorMode esniPreparatorMode) {
         this.esniPreparatorMode = esniPreparatorMode;
+    }
+    public enum EsniPreparatorMode {
+        CLIENT,
+        SERVER;
     }
 
 }

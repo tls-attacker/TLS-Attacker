@@ -54,7 +54,6 @@ public class GOSTClientKeyExchangePreparatorTest {
                 .getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         tlsContext.setSelectedGostCurve(curve);
-        System.out.println(curve);
         tlsContext
                 .setClientEcPublicKey(Point
                         .createPoint(

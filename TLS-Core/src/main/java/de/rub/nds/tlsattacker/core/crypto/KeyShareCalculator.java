@@ -23,6 +23,11 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyShareCalculator {
 
@@ -75,10 +80,11 @@ public class KeyShareCalculator {
             throw new IllegalArgumentException(
                     "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
-        if (group == NamedGroup.ECDH_X25519) {
-            return ForgivingX25519Curve.computePublicKey(privateKey);
-        } else if (group == NamedGroup.ECDH_X448) {
-            return ForgivingX448Curve.computePublicKey(privateKey);
+        if (group == NamedGroup.ECDH_X25519 || group == NamedGroup.ECDH_X448) {
+            EllipticCurve curve = CurveFactory.getCurve(group);
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+
+            return rfcCurve.computePublicKey(privateKey);
         } else {
             throw new UnsupportedOperationException("Unknown MontgomeryGroup: " + group.name());
         }

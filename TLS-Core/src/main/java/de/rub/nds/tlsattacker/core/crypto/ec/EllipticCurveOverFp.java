@@ -8,12 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_p, where p is a prime number.
  */
 public class EllipticCurveOverFp extends EllipticCurve {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final FieldElementFp a;
     private final FieldElementFp b;
@@ -89,7 +94,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
         // Check if y^2 == x^3 + ax + b
         FieldElementFp leftPart = (FieldElementFp) y.mult(y);
-        FieldElementFp rightPart = (FieldElementFp) x.mult(x.mult(x)).add(x.mult(this.a)).add(this.b);
+        FieldElementFp rightPart = (FieldElementFp) x.mult(x.mult(x)).add(x.mult(this.getA())).add(this.getB());
 
         return leftPart.equals(rightPart);
     }
@@ -117,7 +122,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
                 final FieldElementFp three = new FieldElementFp(new BigInteger("3"), this.getModulus());
 
                 // lambda := (3*(x1^2) + a) / (2*y1)
-                lambda = (FieldElementFp) x1.mult(x1).mult(three).add(this.a).divide(y1.mult(two));
+                lambda = (FieldElementFp) x1.mult(x1).mult(three).add(this.getA()).divide(y1.mult(two));
             } else {
                 // lambda := (y2 - y1) / (x2 - x1)
                 lambda = (FieldElementFp) y2.subtract(y1).divide(x2.subtract(x1));
@@ -132,7 +137,8 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            return new Point();
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
 
@@ -143,8 +149,22 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
     @Override
     public Point createAPointOnCurve(BigInteger x) {
-        BigInteger y = x.pow(3).add(x.multiply(a.getData())).add(b.getData()).mod(getModulus());
+        BigInteger y = x.pow(3).add(x.multiply(getA().getData())).add(getB().getData()).mod(getModulus());
         y = y.modPow(getModulus().add(BigInteger.ONE).shiftRight(2), getModulus());
         return getPoint(x, y);
+    }
+
+    /**
+     * @return the a
+     */
+    public FieldElementFp getA() {
+        return a;
+    }
+
+    /**
+     * @return the b
+     */
+    public FieldElementFp getB() {
+        return b;
     }
 }

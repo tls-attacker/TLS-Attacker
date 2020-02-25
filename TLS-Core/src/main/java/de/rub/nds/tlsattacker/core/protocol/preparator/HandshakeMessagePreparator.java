@@ -57,6 +57,9 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     @Override
     protected final void prepareProtocolMessageContents() {
+        if (chooser.getSelectedProtocolVersion().isDTLS()) {
+            msg.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
+        }
         prepareHandshakeMessageContents();
         serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);

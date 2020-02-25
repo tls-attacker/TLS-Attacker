@@ -38,6 +38,7 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL
         writeKeyArgLength(msg);
         writeClearKeyData(msg);
         writeEncryptedKeyData(msg);
+        writeKeyArgData(msg);
         return getAlreadySerialized();
     }
 
@@ -59,9 +60,15 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL
         LOGGER.debug("EncryptedKeyLength: " + length);
     }
 
+    public void writeKeyArgData(SSL2ClientMasterKeyMessage msg) {
+        byte[] keyArgData = msg.getKeyArgData().getValue();
+        appendBytes(keyArgData);
+        LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
+    }
+
     private void writeKeyArgLength(SSL2ClientMasterKeyMessage msg) {
         int length = msg.getKeyArgLength().getValue();
-        appendInt(length, SSL2ByteLength.ENCRYPTED_KEY_LENGTH);
+        appendInt(length, SSL2ByteLength.KEY_ARG_LENGTH);
         LOGGER.debug("EncryptedKeyLength: " + length);
     }
 
@@ -73,6 +80,9 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer<SSL
 
     // TODO: Consider de-duplicating vs. SSL2ClientHelloSerializer.
     private void writeMessageLength(SSL2ClientMasterKeyMessage msg) {
+        if (msg.getPaddingLength().getValue() != 0) {
+            throw new UnsupportedOperationException("Long record headers are not supported");
+        }
         appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
     }
