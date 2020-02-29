@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -40,6 +41,10 @@ public class SSL2ClientMasterKeyHandler extends ProtocolMessageHandler<SSL2Clien
     public void adjustTLSContext(SSL2ClientMasterKeyMessage message) {
         byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
         tlsContext.setPreMasterSecret(premasterSecret);
+        tlsContext.setClearKey(message.getClearKeyData().getValue());
+        if (tlsContext.getChooser().getSSL2CipherSuite().getBlockSize() != 0) {
+            tlsContext.setSSL2Iv(message.getKeyArgData().getValue());
+        }
     }
 
 }

@@ -1,12 +1,12 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class
  * "BcChaCha20Poly1305".
@@ -32,8 +32,8 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private byte[] key;
     private static final byte[] ZEROES = new byte[RecordAEADCipher.AEAD_TAG_LENGTH - 1];
+    private byte[] key;
     private int additionalDataLength = 0;
 
     // instanciate ChaCha20Poly1305 algorithms

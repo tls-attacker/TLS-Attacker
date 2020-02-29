@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -978,6 +979,16 @@ public enum CipherSuite {
         list.add(UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD);
         list.add(UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD);
         list.add(TLS_NULL_WITH_NULL_NULL);
+        return list;
+    }
+
+    public static List<CipherSuite> getEsniImplemented() {
+        List<CipherSuite> list = new LinkedList();
+        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
         return list;
     }
 

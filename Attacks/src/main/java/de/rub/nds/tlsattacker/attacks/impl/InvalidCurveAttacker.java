@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -17,6 +18,7 @@ import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.attacks.task.InvalidCurveTask;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerprintSecretPair;
+import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -30,6 +32,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementFp;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -52,6 +55,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,7 +117,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
                 tlsConfig.getDefaultSelectedNamedGroup());
         BigInteger result = attacker.attack();
-        LOGGER.info("Result found: {}", result);
+        LOGGER.info("Resulting plain private key: {}", result);
+        String privateKeyFile = generatePrivateKeyFile(result, tlsConfig);
+        LOGGER.info("Resulting encoded private key:");
+        LOGGER.info(privateKeyFile);
     }
 
     /**
@@ -418,6 +425,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         } else {
             return null;
         }
+    }
+
+    private String generatePrivateKeyFile(BigInteger result, Config tlsConfig) {
+        CustomECPrivateKey key = new CustomECPrivateKey(result, tlsConfig.getDefaultSelectedNamedGroup());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PemUtil.writePrivateKey(key, baos);
+        return new String(baos.toByteArray());
     }
 
     /**

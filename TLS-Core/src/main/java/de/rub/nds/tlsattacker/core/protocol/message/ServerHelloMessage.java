@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateU
 import de.rub.nds.tlsattacker.core.protocol.message.extension.DraftKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
@@ -86,6 +88,7 @@ public class ServerHelloMessage extends HelloMessage {
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
+
             if (tlsConfig.isAddKeyShareExtension()) {
                 if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
                         && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
@@ -93,6 +96,9 @@ public class ServerHelloMessage extends HelloMessage {
                 } else {
                     addExtension(new KeyShareExtensionMessage(tlsConfig));
                 }
+            }
+            if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
+                addExtension(new EncryptedServerNameIndicationExtensionMessage());
             }
             if (tlsConfig.isAddExtendedMasterSecretExtension()) {
                 addExtension(new ExtendedMasterSecretExtensionMessage());

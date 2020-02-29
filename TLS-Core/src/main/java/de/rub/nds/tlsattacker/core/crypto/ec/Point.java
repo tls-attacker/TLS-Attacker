@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -29,6 +30,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Point implements Serializable {
+    public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
+    }
+
+    public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
+        EllipticCurve curve = CurveFactory.getCurve(group);
+        return curve.getPoint(x, y);
+    }
 
     /*
      * Point objects are immutable. This should make deep copies in the methods
@@ -49,16 +59,6 @@ public class Point implements Serializable {
         this.infinity = true;
         this.x = null;
         this.y = null;
-    }
-
-    public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
-        EllipticCurve curve = CurveFactory.getCurve(group);
-        return curve.getPoint(x, y);
-    }
-
-    public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
-        EllipticCurve curve = CurveFactory.getCurve(group);
-        return curve.getPoint(x, y);
     }
 
     /**
