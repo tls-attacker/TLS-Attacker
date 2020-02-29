@@ -42,8 +42,12 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareCompressionMethod();
         }
-        prepareExtensions();
-        prepareExtensionLength();
+        if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
+                        .isAddExtensionsInSSL())) {
+            prepareExtensions();
+            prepareExtensionLength();
+        }
     }
 
     private void prepareCipherSuite() {

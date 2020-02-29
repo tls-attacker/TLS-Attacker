@@ -569,11 +569,13 @@ public class WorkflowConfigurationFactory {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
                         List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
-                        for (int x = 0; x < extensions.size(); x++) {
-                            if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
-                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
-                                x--;
+                        if (extensions != null) {
+                            for (int x = 0; x < extensions.size(); x++) {
+                                if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
+                                        || extensions.get(x) instanceof EarlyDataExtensionMessage) {
+                                    ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
+                                    x--;
+                                }
                             }
                         }
                     }

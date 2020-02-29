@@ -55,8 +55,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 msg.setIncludeInDigest(false);
             }
         }
-        prepareExtensions();
-        prepareExtensionLength();
+        if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
+                        .isAddExtensionsInSSL())) {
+            prepareExtensions();
+            prepareExtensionLength();
+        }
     }
 
     // for DTLS, the random value of a second ClientHello message should be
