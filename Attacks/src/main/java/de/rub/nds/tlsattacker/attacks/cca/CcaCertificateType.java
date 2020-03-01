@@ -115,6 +115,13 @@ public enum CcaCertificateType {
                     + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.",
             false,
             true),
+    ROOTv3_CAv3_MalformedNameConstraints_LEAF_RSAv3(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
+                    + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate."
+                    + "Additionally the NameConstraints extension uses implicit tagging where explicit is expected, hence "
+                    + "presenting malformed ASN.1.",
+            false,
+            true),
     ROOTv3_CAv3_CAv3_PathLoop(
             "Path loop created by two CA certificates signing each other.",
             false,
@@ -133,6 +140,28 @@ public enum CcaCertificateType {
                     + "The leaf certificates key usage extensions allows digitalSignatues only.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "Additionally after the certificate chain is a self signed attacker certificate. This test case "
+                    + "requires manual verification of which entity is authenticated on the server.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_SelfSigned(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate points to the intermediate CA but is actually self signed.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_EmptySigned(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Empty signatureValue)",
+            false,
+            true),
+//    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
+//            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+//                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)",
+//            false,
+//            true),
+//    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
     ROOTv3_debug("debugging", false, true);
 
     private String description;
