@@ -77,6 +77,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
+
+            if(config.isStopTraceAfterUnexpected() && !action.executedAsPlanned())
+            {
+                LOGGER.debug("Skipping all Actions, received anUnexpected message");
+                break;
+            }
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {

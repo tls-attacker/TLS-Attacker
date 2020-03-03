@@ -672,6 +672,8 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
+    private Boolean stopTraceAfterUnexpected = true;
+
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -3348,5 +3350,13 @@ public class Config implements Serializable {
 
     public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
         this.addPWDProtectExtension = addPWDProtectExtension;
+    }
+
+    public Boolean isStopTraceAfterUnexpected() {
+        return stopTraceAfterUnexpected;
+    }
+
+    public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
+        this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
     }
 }
