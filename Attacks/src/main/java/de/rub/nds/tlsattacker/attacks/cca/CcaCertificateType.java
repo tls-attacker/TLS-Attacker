@@ -156,6 +156,12 @@ public enum CcaCertificateType {
                     + "The leaf certificate points to the intermediate CA but isn't signed at all. (Empty signatureValue)",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterLeaf(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "Additionally after the leaf certificate is a self signed attacker certificate. This test case "
+                    + "requires manual verification of which entity is authenticated on the server.",
+            false,
+            true),
 //    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
 //            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
 //                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)",

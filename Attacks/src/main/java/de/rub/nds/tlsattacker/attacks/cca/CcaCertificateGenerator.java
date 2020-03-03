@@ -78,6 +78,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain:
                 case ROOTv3_CAv3_LEAF_RSAv3_SelfSigned:
                 case ROOTv3_CAv3_LEAF_RSAv3_EmptySigned:
+                case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterLeaf:
                 case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
