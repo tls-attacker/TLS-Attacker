@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
-import de.rub.nds.tlsattacker.attacks.general.Vector;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingTraceGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
@@ -31,12 +30,8 @@ import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -148,7 +143,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         boolean result = true;
         if (responseVectorListOne.size() != responseVectorListTwo.size()) {
             throw new OracleUnstableException(
-                    "The padding Oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
+                    "The padding oracle seems to be unstable - there is something going terrible wrong. We recommend manual analysis");
         }
 
         for (VectorResponse vectorResponseOne : responseVectorListOne) {
@@ -253,7 +248,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         return EqualityError.NONE;
     }
-
 
     public EqualityError getResultError() {
         return resultError;

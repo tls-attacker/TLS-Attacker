@@ -142,6 +142,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setStopActionsAfterIOException(true);
         config.setStopActionsAfterFatal(true);
         config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
