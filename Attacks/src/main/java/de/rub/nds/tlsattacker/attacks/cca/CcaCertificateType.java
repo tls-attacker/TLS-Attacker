@@ -162,6 +162,11 @@ public enum CcaCertificateType {
                     + "requires manual verification of which entity is authenticated on the server.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_CertPolicy(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate and CA certificate has a certificate policy extension with the any value pointing to an URL.",
+            false,
+            true),
 //    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
 //            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
 //                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)",
