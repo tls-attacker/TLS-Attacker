@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.general;
 
 public interface Vector {
-    public boolean equals(Vector vector);
+    @Override
+    public boolean equals(Object vector);
 
     public String getName();
 }

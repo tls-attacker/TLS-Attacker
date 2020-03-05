@@ -82,15 +82,4 @@ public class PlainPaddingVector extends PaddingVector {
 
         return size;
     }
-
-    @Override
-    public boolean equals(Vector vector) {
-        if (vector instanceof PlainPaddingVector) {
-            PlainPaddingVector plainPaddingVector = (PlainPaddingVector) vector;
-            return Arrays.equals(modification.getExplicitValue(), plainPaddingVector.getModification()
-                    .getExplicitValue());
-        } else {
-            return false;
-        }
-    }
 }

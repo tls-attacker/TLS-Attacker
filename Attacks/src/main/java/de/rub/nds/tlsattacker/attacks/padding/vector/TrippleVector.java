@@ -112,29 +112,12 @@ public class TrippleVector extends PaddingVector {
         r.getComputations().setMac(new byte[macLength]);
         int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
                 - ((r.getCleanProtocolMessageBytes().getValue().length + r.getComputations().getMac().getValue().length) % AlgorithmResolver
-                        .getCipher(testedSuite).getBlocksize());
+                .getCipher(testedSuite).getBlocksize());
 
         r.getComputations().setPadding(new byte[paddingLength]);
         return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
                 .getValue(), r.getComputations().getPadding().getValue()).length;
 
-    }
-
-    @Override
-    public boolean equals(Vector vector) {
-        if (vector instanceof TrippleVector) {
-            TrippleVector trippleVector = (TrippleVector) vector;
-            if (cleanModification.equals(trippleVector.getCleanModification())) {
-                if (macModification.equals(trippleVector.getMacModification())) {
-                    if (paddingModification.equals(trippleVector.getPaddingModification())) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } else {
-            return false;
-        }
     }
 
 }
