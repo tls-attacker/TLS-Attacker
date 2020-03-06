@@ -12,9 +12,11 @@ package de.rub.nds.tlsattacker.attacks.padding.vector;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.attacks.general.Vector;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -29,7 +31,7 @@ public class PlainPaddingVector extends PaddingVector {
         this.modification = modification;
     }
 
-    public VariableModification getModification() {
+    public ByteArrayExplicitValueModification getModification() {
         return modification;
     }
 

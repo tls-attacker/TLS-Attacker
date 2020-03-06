@@ -44,27 +44,20 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
+
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
     /**
-     * How many rescans should be done to confirm vulnerabilities
+     * How many rescans should be done
      */
-    private int mapListDepth = 3;
-
-    /**
-     * When a false positive or shaky scan orrcurs stop the evaluation
-     */
-    private boolean rescanNotVulnerable = true;
-
-    /**
-     * Do not rescan servers which appear not vulnerable on first try
-     */
-    private boolean abortRescansOnFailure = true;
+    private int numberOfIterations = 3;
 
     /**
      *
@@ -153,7 +146,8 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setStopActionsAfterFatal(true);
+        config.setStopActionsAfterIOException(true);
+        config.setStopActionsAfterFatal(false);
         config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
@@ -171,28 +165,19 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         return config;
     }
 
-    public int getMapListDepth() {
-        return mapListDepth;
+    public int getNumberOfIterations() {
+        return numberOfIterations;
     }
 
-    public void setMapListDepth(int mapListDepth) {
-        this.mapListDepth = mapListDepth;
+    public void setNumberOfIterations(int mapListDepth) {
+        this.numberOfIterations = mapListDepth;
     }
 
-    public boolean isAbortRescansOnFailure() {
-        return rescanNotVulnerable;
+    public CiphersuiteDelegate getCiphersuiteDelegate() {
+        return ciphersuiteDelegate;
     }
 
-    public void setAbortRescansOnFailure(boolean abortRescansOnFailure) {
-        this.rescanNotVulnerable = abortRescansOnFailure;
+    public ProtocolVersionDelegate getProtocolVersionDelegate() {
+        return protocolVersionDelegate;
     }
-
-    public boolean isRescanNotVulnerable() {
-        return rescanNotVulnerable;
-    }
-
-    public void setRescanNotVulnerable(boolean rescanNotVulnerable) {
-        this.rescanNotVulnerable = rescanNotVulnerable;
-    }
-
 }

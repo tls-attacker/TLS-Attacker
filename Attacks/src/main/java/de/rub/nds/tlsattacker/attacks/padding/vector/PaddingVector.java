@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
+import de.rub.nds.tlsattacker.attacks.general.Vector;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -16,7 +17,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 /**
  *
  */
-public abstract class PaddingVector {
+public abstract class PaddingVector implements Vector {
 
     protected final String name;
 
@@ -31,6 +32,7 @@ public abstract class PaddingVector {
 
     public abstract int getRecordLength(CipherSuite testedSuite, ProtocolVersion testedVersion, int appDataLength);
 
+    @Override
     public String getName() {
         return name;
     }

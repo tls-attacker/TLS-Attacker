@@ -617,6 +617,10 @@ public enum CipherSuite {
         return (this.name().contains("CHACHA20_POLY1305"));
     }
 
+    public boolean usesDH() {
+        return (this.name().contains("_DH"));
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version. TODO: this is still very imprecise and must be improved with new
