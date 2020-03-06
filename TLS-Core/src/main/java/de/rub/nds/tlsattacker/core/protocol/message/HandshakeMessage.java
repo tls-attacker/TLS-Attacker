@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -56,6 +57,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
      */
     @XmlElementWrapper
     @XmlElements(value = {
+            @XmlElement(type = EncryptedServerNameIndicationExtensionMessage.class, name = "EncryptedServerNameIndicationExtension"),
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),

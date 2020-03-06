@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
 import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
@@ -166,6 +168,10 @@ public class WorkflowConfigurationFactory {
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
+        if (config.isAddEncryptedServerNameIndicationExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,6 +40,9 @@ public class ExtensionParserFactory {
                 break;
             case ELLIPTIC_CURVES:
                 parser = new EllipticCurvesExtensionParser(pointer, extensionBytes);
+                break;
+            case ENCRYPTED_SERVER_NAME_INDICATION:
+                parser = new EncryptedServerNameIndicationExtensionParser(pointer, extensionBytes);
                 break;
             case HEARTBEAT:
                 parser = new HeartbeatExtensionParser(pointer, extensionBytes);

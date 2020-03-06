@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -23,12 +24,6 @@ public class ForgivingX448Curve {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final int ELEMENT_SIZE = 56;
-
-    /**
-     * Private constructor to prevent instantiation
-     */
-    private ForgivingX448Curve() {
-    }
 
     /**
      * Generates a publicKey for a given private key. The key is truncated or
@@ -107,5 +102,11 @@ public class ForgivingX448Curve {
         byte[] sharedSecret = new byte[ELEMENT_SIZE];
         X448.scalarMult(privateKey, 0, publicKey, 0, sharedSecret, 0);
         return sharedSecret;
+    }
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private ForgivingX448Curve() {
     }
 }
