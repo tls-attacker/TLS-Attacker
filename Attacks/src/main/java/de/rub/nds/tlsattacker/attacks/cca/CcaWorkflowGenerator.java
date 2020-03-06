@@ -36,7 +36,7 @@ public class CcaWorkflowGenerator {
      */
     public static WorkflowTrace generateWorkflow(Config tlsConfig, CcaDelegate ccaDelegate,
             CcaWorkflowType ccaWorkflowType, CcaCertificateType ccaCertificateType) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE,
                 RunningModeType.CLIENT);
         CertificateMessage certificateMessage;
         CertificateMessage certificateMessage2;
