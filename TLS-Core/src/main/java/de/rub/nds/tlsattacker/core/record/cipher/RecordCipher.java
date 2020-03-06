@@ -16,15 +16,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -65,9 +61,9 @@ public abstract class RecordCipher {
         this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
     }
 
-    public abstract void encrypt(Record record);
+    public abstract void encrypt(Record record) throws CryptoException;
 
-    public abstract void decrypt(Record record);
+    public abstract void decrypt(Record record) throws CryptoException;
 
     public abstract boolean isUsingPadding();
 

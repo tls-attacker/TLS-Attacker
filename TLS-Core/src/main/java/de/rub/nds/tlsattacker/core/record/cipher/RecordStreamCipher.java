@@ -14,12 +14,9 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -58,34 +55,6 @@ public class RecordStreamCipher extends RecordCipher {
         }
     }
 
-    @Override
-    public EncryptionResult encrypt(EncryptionRequest request) {
-        try {
-            return new EncryptionResult(encryptCipher.encrypt(request.getPlainText()));
-        } catch (CryptoException E) {
-            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
-            LOGGER.debug(E);
-            return new EncryptionResult(request.getPlainText());
-        }
-    }
-
-    @Override
-    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
-        try {
-            return new DecryptionResult(null, decryptCipher.decrypt(decryptionRequest.getCipherText()), null, true);
-        } catch (CryptoException E) {
-            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
-            LOGGER.debug(E);
-            return new DecryptionResult(null, decryptionRequest.getCipherText(), false, false);
-        }
-    }
-
-    @Override
-    public int getMacLength() {
-        return readMac.getMacLength();
-    }
-
-    @Override
     public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
         byte[] result;
@@ -96,16 +65,6 @@ public class RecordStreamCipher extends RecordCipher {
         }
         LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
-    }
-
-    @Override
-    public byte[] calculatePadding(int paddingLength) {
-        return new byte[0];
-    }
-
-    @Override
-    public int calculatePaddingLength(int dataLength) {
-        return 0;
     }
 
     @Override
@@ -121,16 +80,6 @@ public class RecordStreamCipher extends RecordCipher {
     @Override
     public boolean isUsingTags() {
         return false;
-    }
-
-    @Override
-    public byte[] getEncryptionIV() {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] getDecryptionIV() {
-        return new byte[0];
     }
 
     @Override
