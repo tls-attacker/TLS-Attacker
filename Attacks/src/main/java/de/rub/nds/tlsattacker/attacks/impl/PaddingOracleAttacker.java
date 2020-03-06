@@ -223,7 +223,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     /**
-     * //TODO This assumes that the responseVectorList only contains comparable
+     * This assumes that the responseVectorList only contains comparable
      * vectors
      *
      * @param responseVectorList
