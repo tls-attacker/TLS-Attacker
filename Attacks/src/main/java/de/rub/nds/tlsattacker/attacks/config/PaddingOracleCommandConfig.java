@@ -43,10 +43,13 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
+
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
@@ -143,7 +146,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterIOException(true);
-        config.setStopActionsAfterFatal(true);
+        config.setStopActionsAfterFatal(false);
         config.setStopReceivingAfterFatal(false);
         config.setEarlyStop(true);
         config.setWorkflowExecutorShouldClose(false);
