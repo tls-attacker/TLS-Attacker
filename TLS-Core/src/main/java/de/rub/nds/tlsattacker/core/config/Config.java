@@ -672,7 +672,7 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
-    private Boolean stopTraceAfterUnexpected = true;
+    private Boolean stopTraceAfterUnexpected = false;
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 

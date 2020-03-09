@@ -51,7 +51,7 @@ public class CcaTask extends TlsTask {
     private State prepareState() {
         tlsConfig.setDefaultClientSupportedCiphersuites(ccaVector.getCipherSuite());
         tlsConfig.setHighestProtocolVersion(ccaVector.getProtocolVersion());
-        // tlsConfig.setClientAuthentication(true);
+        tlsConfig.setClientAuthentication(true);
         WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate,
                 ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);
