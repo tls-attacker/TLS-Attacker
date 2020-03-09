@@ -80,167 +80,10 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_RSAv3_EmptySigned:
                 case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterLeaf:
                 case ROOTv3_CAv3_LEAF_RSAv3_CertPolicy:
+                case ROOTv3_CAv3_LEAF_RSAv3_NullSigned:
                 case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
-                // case ROOTv3_CAv3_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAFv2_nLEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAFv2_nLEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv1.pem",
-                // "ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv1_CAv3_LEAFv2_nLEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv1.pem",
-                // "ROOTv1_CAv3_LEAFv2_nLEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3_expired:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3_expired.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3_NotYetValid:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3_NotYetValid.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3_UnknownCritExt:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3_UnknownCritExt.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_CaFalse_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_CaFalse_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_NoBasicConstraints_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_NoBasicConstraints_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_NameConstraints_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv2:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv2.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv1:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv1.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_KeyUsageDigitalSignatures_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_KeyUsageDigitalSignatures_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_NoKeyUsage_LEAF_RSAv3.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3__RDN_difference:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3__RDN_difference.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageServerAuth:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageServerAuth.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageCodeSign:
-                // certificateMessage = generateCertificateMessage("rootv3.pem",
-                // "ROOTv3_CAv3_LEAF_RSAv3_extendedKeyUsageCodeSign.xml",
-                // ccaDelegate.getKeyDirectory(), ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
-                // case debug:
-                // certificateMessage = generateCertificateMessage("rootv1.pem",
-                // "debug.xml", ccaDelegate.getKeyDirectory(),
-                // ccaDelegate.getXmlDirectory(),
-                // ccaDelegate.getCertificateInputDirectory(),
-                // ccaDelegate.getCertificateOutputDirectory());
-                // break;
                 default:
                     break;
             }
@@ -282,7 +125,7 @@ public class CcaCertificateGenerator {
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
         try {
-            certificateKeyPair = new CertificateKeyPair(certificate,
+            certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate, certificate,
                     (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
                     (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
         } catch (IOException ioe) {
@@ -290,31 +133,6 @@ public class CcaCertificateGenerator {
             return null;
         }
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
-        /*
-         * // Encode XML for certificate List<Asn1Encodable> certificates =
-         * asn1XmlContent.getAsn1Encodables(); byte[][] encodedCertificates =
-         * new byte[certificates.size()][]; for (int i = 0; i <
-         * certificates.size(); i++) { Asn1Encodable certificate =
-         * certificates.get(i); encodedCertificates[i] =
-         * Asn1EncoderForX509.encodeForCertificate(linker, certificate); if
-         * (certificate instanceof Asn1Sequence && readKey == false) { keyName =
-         * ((KeyInfo) ((Asn1Sequence)
-         * certificate).getChildren().get(0)).getKeyFile(); keyType =
-         * ((Asn1Sequence)
-         * certificate).getChildren().get(0).getAttribute("keyType");
-         * encodedLeafCertificate = encodedCertificates[i]; readKey = true; } }
-         * // Add certificates to pair list for (byte[] certificate :
-         * encodedCertificates) { if (certificate.length > 0) { certificatePair
-         * = new CertificatePair(certificate);
-         * certificatePairList.add(certificatePair); } }
-         * certificateMessage.setCertificatesList(certificatePairList); // Parse
-         * leaf certificate for CertificateKeyPair Certificate certificate =
-         * parseCertificate(encodedLeafCertificate.length,
-         * encodedLeafCertificate); // Parse private key and instantiate correct
-         * CertificateKeyPair CcaCertificateKeyType ccaCertificateKeyType =
-         * CcaCertificateKeyType.fromJavaName(keyType.toLowerCase());
-         * certificateMessage.setCertificateKeyPair(certificateKeyPair);
-         */
 
         return certificateMessage;
     }

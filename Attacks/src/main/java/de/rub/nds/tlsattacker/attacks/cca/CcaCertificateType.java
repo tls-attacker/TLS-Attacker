@@ -167,11 +167,11 @@ public enum CcaCertificateType {
                     + "The leaf certificate and CA certificate has a certificate policy extension with the any value pointing to an URL.",
             false,
             true),
-//    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
-//            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
-//                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)",
-//            false,
-//            true),
+    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)",
+            false,
+            true),
 //    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
     ROOTv3_debug("debugging", false, true);
 

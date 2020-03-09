@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
@@ -150,21 +151,37 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public CertificateKeyPair(Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
-        this.certPublicKeyType = getPublicKeyType(cert);
-        this.certSignatureType = getSignatureType(cert);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        cert.encode(stream);
-        this.certificateBytes = stream.toByteArray();
-        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
-        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
-        this.publicKeyGroup = getPublicNamedGroup(cert);
-        this.signatureGroup = getSignatureNamedGroup(cert);
-        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
-            gostCurve = getGostCurve(cert);
+    public CertificateKeyPair(byte[] certBytes, Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
+        // TODO: The following code assumes a few default. This is possible since this constructor is used in only one place.
+        // TODO: Maybe there's a better way to circumvent the problem that I have to parse the certificate. For know I'll simply
+        // TODO: assume defaults if cert == null
+        if (cert != null) {
+            this.certPublicKeyType = getPublicKeyType(cert);
+            this.certSignatureType = getSignatureType(cert);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            cert.encode(stream);
+            this.certificateBytes = stream.toByteArray();
+            this.publicKeyGroup = getPublicNamedGroup(cert);
+            this.signatureGroup = getSignatureNamedGroup(cert);
+            if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+                gostCurve = getGostCurve(cert);
+            } else {
+                gostCurve = null;
+            }
         } else {
+            this.certPublicKeyType = CertificateKeyType.RSA;
+            this.certSignatureType = CertificateKeyType.RSA;
+            // To get the same output as cert.encode() but using the raw bytes pack them accordingly
+            this.certificateBytes = ArrayConverter.concatenate(
+                    ArrayConverter.intToBytes(certBytes.length + 3, 3),
+                    ArrayConverter.intToBytes(certBytes.length, 3),
+                    certBytes);
+            this.publicKeyGroup = null;
+            this.signatureGroup = null;
             gostCurve = null;
         }
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
     }
 
     public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
@@ -185,6 +202,10 @@ public class CertificateKeyPair implements Serializable {
     }
 
     private CertificateKeyType getPublicKeyType(Certificate cert) {
+        if (cert == null) {
+            // TODO: Robert suggested a default value from the config. I'd go with RSA, but I can't seem to access the config here.
+            return CertificateKeyType.NONE;
+        }
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
@@ -239,6 +260,10 @@ public class CertificateKeyPair implements Serializable {
     }
 
     private CertificateKeyType getSignatureType(Certificate cert) {
+        if (cert == null) {
+            // TODO: Robert suggested a default value from the config. I'd go with RSA, but I can't seem to access the config here.
+            return CertificateKeyType.NONE;
+        }
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
