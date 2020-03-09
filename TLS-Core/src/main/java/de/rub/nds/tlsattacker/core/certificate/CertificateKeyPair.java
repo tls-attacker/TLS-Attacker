@@ -202,10 +202,6 @@ public class CertificateKeyPair implements Serializable {
     }
 
     private CertificateKeyType getPublicKeyType(Certificate cert) {
-        if (cert == null) {
-            // TODO: Robert suggested a default value from the config. I'd go with RSA, but I can't seem to access the config here.
-            return CertificateKeyType.NONE;
-        }
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
@@ -260,10 +256,6 @@ public class CertificateKeyPair implements Serializable {
     }
 
     private CertificateKeyType getSignatureType(Certificate cert) {
-        if (cert == null) {
-            // TODO: Robert suggested a default value from the config. I'd go with RSA, but I can't seem to access the config here.
-            return CertificateKeyType.NONE;
-        }
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
