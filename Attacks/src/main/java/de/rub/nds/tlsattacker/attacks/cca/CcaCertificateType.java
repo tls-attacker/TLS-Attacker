@@ -176,8 +176,19 @@ public enum CcaCertificateType {
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The leaf certificate has malformed, but matching (tbsCert and Cert) parameters in the SignatureAlgorithm.",
             false,
-            true
-    ),
+            true),
+    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SAN(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
+                    + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate "
+                    + "in the subject, but are met in the SAN",
+            false,
+            true),
+    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SAN2(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
+                    + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate "
+                    + "in the SAN, but are met in the Subject",
+            false,
+            true),
 //    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
     ROOTv3_debug("debugging", false, true);
 
