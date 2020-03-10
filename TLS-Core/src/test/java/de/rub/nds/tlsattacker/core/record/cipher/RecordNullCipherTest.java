@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class RecordNullCipherTest {
      * Test of encrypt method, of class RecordNullCipher.
      */
     @Test
-    public void testEncrypt() {
+    public void testEncrypt() throws CryptoException {
         record.setCleanProtocolMessageBytes(data);
         recordCipher.encrypt(record);
         assertArrayEquals(record.getProtocolMessageBytes().getValue(), data);
@@ -42,7 +42,7 @@ public class RecordNullCipherTest {
      * Test of decrypt method, of class RecordNullCipher.
      */
     @Test
-    public void testDecrypt() {
+    public void testDecrypt() throws CryptoException {
         record.setProtocolMessageBytes(data);
         recordCipher.decrypt(record);
         assertArrayEquals(data, record.getCleanProtocolMessageBytes().getValue());
