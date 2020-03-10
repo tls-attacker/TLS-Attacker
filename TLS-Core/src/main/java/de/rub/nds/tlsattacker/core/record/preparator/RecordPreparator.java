@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -48,7 +47,6 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
-        prepareSequenceNumber(record);
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             prepareAdditionalPaddingLength(record);
@@ -56,8 +54,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
         if (isDTLS()) {
             prepareEpoch(record);
-            prepareDtlsSequenceNumber(record);
         }
+        prepareSequenceNumber(record);
 
         compressor.compress(record);
         encryptor.encrypt(record);
@@ -95,17 +93,9 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 
-    private void prepareDtlsSequenceNumber(Record record) {
-        // the dtls sequence number takes is updated in the same way as the
-        // implicit sequence number in TLS
-        record.setSequenceNumber(record.getComputations().getSequenceNumber().getValue());
-
-        LOGGER.debug("DtlsSequenceNumber: " + record.getSequenceNumber().getValue());
-    }
-
     private void prepareSequenceNumber(Record record) {
-        record.getComputations().setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
-        LOGGER.debug("SequenceNumber: " + record.getComputations().getSequenceNumber().getValue());
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
+        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
     private void prepareLength(Record record) {

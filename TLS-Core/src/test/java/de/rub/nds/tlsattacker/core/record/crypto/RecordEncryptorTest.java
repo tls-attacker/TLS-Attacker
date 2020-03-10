@@ -54,7 +54,7 @@ public class RecordEncryptorTest {
         record.prepareComputations();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.getComputations().setSequenceNumber(BigInteger.ZERO);
+        record.setSequenceNumber(BigInteger.ZERO);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RecordEncryptorTest {
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CB692015BE123B8364314FE1CBD527A01EDCA68BF5A7918C190942A9AECA971CA"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(
@@ -157,7 +157,7 @@ public class RecordEncryptorTest {
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(
@@ -185,11 +185,11 @@ public class RecordEncryptorTest {
         context.setServerRandom(ArrayConverter
                 .hexStringToByteArray("52E78F4F4E131F8CABAFD5D7C9C62A5EDF62CADB4D033131FE9B83DE9D459EFD"));
 
-        Record record = new Record();
+        record = new Record();
         record.prepareComputations();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
-        record.getComputations().setSequenceNumber(BigInteger.ZERO);
+        record.setSequenceNumber(BigInteger.ZERO);
 
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1400000C07E0B66F9A775545F6590C2E"));
 
@@ -227,7 +227,7 @@ public class RecordEncryptorTest {
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381CE4D3A05054892056A014B28E3AF613105583FAA"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(new byte[0], record.getComputations().getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter
@@ -263,7 +263,7 @@ public class RecordEncryptorTest {
         // assertArrayEquals(new byte[0], record
         // .get().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
-                .getComputations().getUnpaddedRecordBytes().getValue());
+                .getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(new byte[0], record.getComputations().getPadding().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
                 .getComputations().getPlainRecordBytes().getValue());
@@ -299,7 +299,7 @@ public class RecordEncryptorTest {
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000CD424FAF2BEA85BCE69DC07D2F4CA3F8A11CE20E1D9BE67BE9B49C2E9305035D0"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(
@@ -337,7 +337,7 @@ public class RecordEncryptorTest {
         assertArrayEquals(
                 ArrayConverter
                         .hexStringToByteArray("1400000C5BD2239FEE954F5C5CC2A66D4BD82D0657D876744D05455125FF0BE1F7FA293D"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(

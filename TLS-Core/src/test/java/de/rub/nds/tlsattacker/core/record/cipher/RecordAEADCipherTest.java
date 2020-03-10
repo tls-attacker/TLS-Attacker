@@ -12,12 +12,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -59,6 +61,10 @@ public class RecordAEADCipherTest {
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
         Record record = new Record();
         record.setCleanProtocolMessageBytes(plaintext);
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
         byte[] ciphertext = record.getProtocolMessageBytes().getValue();
         byte[] ciphertext_correct = ArrayConverter
@@ -79,7 +85,11 @@ public class RecordAEADCipherTest {
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         Record record = new Record();
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
         record.setProtocolMessageBytes(ciphertext);
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
         byte[] plaintext = record.getCleanProtocolMessageBytes().getValue();
         byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");

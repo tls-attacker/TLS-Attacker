@@ -97,6 +97,8 @@ public class RecordStreamCipher extends RecordCipher {
 
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
+        computations.setAuthenticatedNonMetaData(cleanBytes);
+
         computations.setMac(calculateMac(ArrayConverter.concatenate(
                 collectAdditionalAuthenticatedData(record, version), cleanBytes), context.getConnection()
                 .getLocalConnectionEndType()));

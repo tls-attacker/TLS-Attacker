@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import java.math.BigInteger;
 
 public class RecordCryptoComputations {
@@ -64,9 +63,9 @@ public class RecordCryptoComputations {
     private ModifiableByteArray plainRecordBytes;
 
     /**
-     * The unencrypted data before it is padded
+     * The bytes of the plain message that are going to be authenticated
      */
-    private ModifiableByteArray unpaddedRecordBytes;
+    private ModifiableByteArray authenticatedNonMetaData;
 
     /**
      * The pure ciphertext part of the record. The output from the negotaited
@@ -78,11 +77,6 @@ public class RecordCryptoComputations {
      * The CBC IV
      */
     private ModifiableByteArray cbcInitialisationVector;
-
-    /**
-     * The sequence number of the record
-     */
-    private ModifiableBigInteger sequenceNumber;
 
     /**
      * The data over which the hmacs/tags are computed which are not explicitly
@@ -161,19 +155,6 @@ public class RecordCryptoComputations {
         this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, plainRecordBytes);
     }
 
-    public ModifiableByteArray getUnpaddedRecordBytes() {
-        return unpaddedRecordBytes;
-    }
-
-    public void setUnpaddedRecordBytes(ModifiableByteArray unpaddedRecordBytes) {
-        this.unpaddedRecordBytes = unpaddedRecordBytes;
-    }
-
-    public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
-        this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
-                unpaddedRecordBytes);
-    }
-
     public ModifiableByteArray getCbcInitialisationVector() {
         return cbcInitialisationVector;
     }
@@ -187,18 +168,6 @@ public class RecordCryptoComputations {
                 initialisationVector);
     }
 
-    public ModifiableBigInteger getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    public void setSequenceNumber(BigInteger sequenceNumber) {
-        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
-    }
-
     public ModifiableByteArray getAuthenticatedMetaData() {
         return authenticatedMetaData;
     }
@@ -210,6 +179,19 @@ public class RecordCryptoComputations {
     public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
         this.authenticatedMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData,
                 authenticatedMetaData);
+    }
+
+    public ModifiableByteArray getAuthenticatedNonMetaData() {
+        return authenticatedNonMetaData;
+    }
+
+    public void setAuthenticatedNonMetaData(ModifiableByteArray authenticatedNonMetaData) {
+        this.authenticatedNonMetaData = authenticatedNonMetaData;
+    }
+
+    public void setAuthenticatedNonMetaData(byte[] authenticatedNonMetaData) {
+        this.authenticatedNonMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData,
+                authenticatedNonMetaData);
     }
 
     public ModifiableInteger getAdditionalPaddingLength() {

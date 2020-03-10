@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -23,7 +22,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,7 +71,7 @@ public class RecordDecryptor extends Decryptor {
         context.increaseReadSequenceNumber();
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                 && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            checkForEndOfEarlyData(record.getComputations().getUnpaddedRecordBytes().getValue());
+            checkForEndOfEarlyData(record.getComputations().getPlainRecordBytes().getValue());
         }
     }
 

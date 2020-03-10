@@ -120,8 +120,11 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setNonce(totalNonce);
         totalNonce = record.getComputations().getNonce().getValue();
 
-        LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(totalNonce));
+        byte[] authenticatedNonMetaData = Arrays.copyOfRange(record.getProtocolMessageBytes().getValue(),
+                AEAD_IV_LENGTH, record.getProtocolMessageBytes().getValue().length - getTagSize());
+        record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
 
+        LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(totalNonce));
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
@@ -158,6 +161,7 @@ public class RecordAEADCipher extends RecordCipher {
         encryptIv = record.getComputations().getNonce().getValue();
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(encryptIv));
 
+        record.getComputations().setAuthenticatedNonMetaData(record.getCleanProtocolMessageBytes().getValue());
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
@@ -195,6 +199,10 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] implicitNonce = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
         record.getComputations().setImplicitNonce(implicitNonce);
         implicitNonce = record.getComputations().getImplicitNonce().getValue();
+
+        byte[] authenticatedNonMetaData = Arrays.copyOfRange(protocolBytes, AEAD_IV_LENGTH, protocolBytes.length
+                - getTagSize());
+        record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
 
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
@@ -237,6 +245,10 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setNonce(decryptIV);
         decryptIV = record.getComputations().getNonce().getValue();
         LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
+
+        byte[] authenticatedNonMetaData = Arrays.copyOfRange(record.getProtocolMessageBytes().getValue(),
+                AEAD_IV_LENGTH, record.getProtocolMessageBytes().getValue().length - getTagSize());
+        record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
 
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());

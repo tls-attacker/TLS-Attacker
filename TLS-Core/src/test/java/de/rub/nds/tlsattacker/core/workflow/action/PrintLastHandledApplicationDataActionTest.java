@@ -31,7 +31,7 @@ public class PrintLastHandledApplicationDataActionTest {
     private TlsContext ctx;
     private PrintLastHandledApplicationDataAction action;
     private final String expectedAppDataEncodedString = "GET /theTestData";
-    private final String expectedAppDataHexString = "\n47 45 54 20 2F 74 68 65  54 65 73 74 44 61 74 61";
+    private final String expectedAppDataHexString = "47 45 54 20 2F 74 68 65 54 65 73 74 44 61 74 61";
 
     public PrintLastHandledApplicationDataActionTest() {
     }
