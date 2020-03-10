@@ -39,7 +39,7 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public void encrypt(Record record) {
+    public void encrypt(Record record) throws CryptoException {
 
         LOGGER.debug("Encrypting Record: (null cipher)");
         record.prepareComputations();
@@ -48,7 +48,7 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public void decrypt(Record record) {
+    public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record: (null cipher)");
         record.prepareComputations();
         byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();

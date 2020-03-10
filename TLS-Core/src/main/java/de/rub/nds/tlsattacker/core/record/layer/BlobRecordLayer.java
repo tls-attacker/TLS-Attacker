@@ -78,18 +78,8 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void decryptRecord(AbstractRecord record) {
-        try {
-            decryptor.decrypt(record);
-        } catch (CryptoException ex) {
-            LOGGER.warn("Could not decrypt record. Using null cipher instead", ex);
-            try {
-                RecordDecryptor recordDecryptor = new RecordDecryptor(new RecordNullCipher(context), context);
-                recordDecryptor.decrypt(record);
-            } catch (CryptoException ex1) {
-                throw new RuntimeException("Could not decrypt record with null cipher", ex1);
-            }
-        }
+    public void decryptAndDecompressRecord(AbstractRecord record) {
+        decryptor.decrypt(record);
         decompressor.decompress(record);
     }
 

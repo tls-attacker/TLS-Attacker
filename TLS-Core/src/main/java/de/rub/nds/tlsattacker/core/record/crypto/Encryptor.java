@@ -34,7 +34,7 @@ public abstract class Encryptor extends RecordCryptoUnit {
         }
     }
 
-    public abstract void encrypt(Record object) throws CryptoException;
+    public abstract void encrypt(Record object);
 
-    public abstract void encrypt(BlobRecord object) throws CryptoException;
+    public abstract void encrypt(BlobRecord object);
 }

@@ -104,7 +104,7 @@ public class RecordGroup {
 
     public void decryptRecords(TlsContext context) {
         for (AbstractRecord record : getRecords()) {
-            context.getRecordLayer().decryptRecord(record);
+            context.getRecordLayer().decryptAndDecompressRecord(record);
         }
     }
 

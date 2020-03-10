@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -59,8 +60,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         }
 
         compressor.compress(record);
-
         encryptor.encrypt(record);
+
         prepareLength(record);
     }
 
