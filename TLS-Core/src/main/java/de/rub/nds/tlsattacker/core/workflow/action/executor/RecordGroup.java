@@ -71,39 +71,6 @@ public class RecordGroup {
         return null;
     }
 
-    public boolean isValid() {
-        for (AbstractRecord abstractRecord : records) {
-            // We only check real records here - blobrecords are considerd
-            // always
-            // valid for us
-            if (abstractRecord instanceof Record) {
-                Record record = (Record) abstractRecord;
-                if (record.getComputations().getMac() != null && record.getComputations().getMac().getValue() != null) {
-                    // There is an HMAC - we need to check that it is correct
-                    if (!Objects.equals(record.getComputations().getMacValid(), Boolean.TRUE)) {
-                        return false;
-                    }
-                }
-                if (record.getComputations().getPadding() != null
-                        && record.getComputations().getPadding().getValue() != null) {
-                    // There is padding - we need to check that it is correct
-                    if (!Objects.equals(record.getComputations().getPaddingValid(), Boolean.TRUE)) {
-                        return false;
-                    }
-                }
-
-                if (record.getComputations().getTag() != null && record.getComputations().getTag().getValue() != null) {
-                    // There is padding - we need to check that it is correct
-                    if (!Objects.equals(record.getComputations().getTagValid(), Boolean.TRUE)) {
-                        return false;
-                    }
-                }
-
-            }
-        }
-        return true;
-    }
-
     public Integer getDtlsEpoch() {
         if (!records.isEmpty()) {
             return getRecordEpoch(records.get(0));

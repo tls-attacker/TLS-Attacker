@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -63,7 +64,11 @@ public abstract class RecordCipher {
 
     public abstract void encrypt(Record record) throws CryptoException;
 
+    public abstract void encrypt(BlobRecord record) throws CryptoException;
+
     public abstract void decrypt(Record record) throws CryptoException;
+
+    public abstract void decrypt(BlobRecord record) throws CryptoException;
 
     public abstract boolean isUsingPadding();
 

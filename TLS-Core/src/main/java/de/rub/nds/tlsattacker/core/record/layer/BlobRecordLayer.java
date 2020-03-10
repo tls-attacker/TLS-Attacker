@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
@@ -30,8 +30,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BlobRecordLayer extends RecordLayer {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 
@@ -75,9 +79,17 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public void decryptRecord(AbstractRecord record) {
-        byte[] data = record.getProtocolMessageBytes().getValue();
-        data = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
-        record.setCleanProtocolMessageBytes(data);
+        try {
+            decryptor.decrypt(record);
+        } catch (CryptoException ex) {
+            LOGGER.warn("Could not decrypt record. Using null cipher instead", ex);
+            try {
+                RecordDecryptor recordDecryptor = new RecordDecryptor(new RecordNullCipher(context), context);
+                recordDecryptor.decrypt(record);
+            } catch (CryptoException ex1) {
+                throw new RuntimeException("Could not decrypt record with null cipher", ex1);
+            }
+        }
         decompressor.decompress(record);
     }
 

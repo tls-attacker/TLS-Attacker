@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +53,18 @@ public class RecordNullCipher extends RecordCipher {
         record.prepareComputations();
         byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
         record.setCleanProtocolMessageBytes(protocolMessageBytes);
+    }
+
+    @Override
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord: (null cipher)");
+        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
+    }
+
+    @Override
+    public void decrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Derypting BlobRecord: (null cipher)");
+        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
     }
 
 }

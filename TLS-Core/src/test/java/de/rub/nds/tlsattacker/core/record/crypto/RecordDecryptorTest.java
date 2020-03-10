@@ -120,7 +120,7 @@ public class RecordDecryptorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
-                .getComputations().getAuthenticatedNonMetaData().getValue());
+                .getComputations().getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
                 .getComputations().getMac().getValue());
         assertArrayEquals(
@@ -142,6 +142,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        // TODO This test does nothing?!
 
     }
 
@@ -152,7 +153,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -162,7 +163,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -172,7 +173,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -183,7 +184,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -194,7 +195,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -205,7 +206,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
 }

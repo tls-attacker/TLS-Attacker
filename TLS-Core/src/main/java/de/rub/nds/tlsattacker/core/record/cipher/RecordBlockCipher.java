@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -307,6 +308,18 @@ public final class RecordBlockCipher extends RecordCipher {
         }
         LOGGER.debug("Padding is valid");
         return true;
+    }
+
+    @Override
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord");
+        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
+    }
+
+    @Override
+    public void decrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Derypting BlobRecord");
+        br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
     }
 
     class DecryptionParser extends Parser<Object> {
