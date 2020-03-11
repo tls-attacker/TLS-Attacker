@@ -25,6 +25,10 @@ public enum CcaCertificateType {
                     + "Root CA is v3.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAvNeg1_nLeaf_RSAv3("RSA Leaf Certificate generated with an intermediate Certificate that is v -1 (actually not a CA). "
+            + "Root CA is v3.",
+            false,
+            true),
     ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3(
             "RSA Leaf Certificate generated with an intermediate Certificate that is v1 (actually not a CA). "
                     + "Root CA is v1.",
@@ -76,6 +80,10 @@ public enum CcaCertificateType {
             true),
     ROOTv3_CAv3_LEAF_RSAv1(
             "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAvNeg1(
+            "RSA Leaf certificate v -1 generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
             true),
     ROOTv3_CAv3_KeyUsageNothing_LEAF_RSAv3(
