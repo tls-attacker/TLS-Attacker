@@ -201,6 +201,13 @@ public enum CcaCertificateType {
                     + "in the SAN, but are met in the Subject. The extension is marked as non critical.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_CRLDistributionPoints(
+            "RSA leaf certificate generated based on the provided (root-)CA certificate with on intermediate CA."
+                    + "The leaf certificate uses the CRL distribution point extension to specify the distribution point at localhost. "
+                    + "If the implementation actually tries to verify the CRL and potentially fetch the CRL the test should fail "
+                    + "since there is no valid CRL locally (no fetch) and none hosted at localhost (why would we even want that).",
+            false,
+            true),
 //    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
     ROOTv3_debug("debugging", false, true);
 

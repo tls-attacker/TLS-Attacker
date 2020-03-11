@@ -86,6 +86,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SAN2Crit:
                 case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SAN:
                 case ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SAN2:
+                case ROOTv3_CAv3_LEAF_RSAv3_CRLDistributionPoints:
                 case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
