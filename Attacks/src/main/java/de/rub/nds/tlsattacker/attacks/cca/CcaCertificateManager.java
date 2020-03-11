@@ -29,6 +29,7 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
 import sun.security.rsa.RSAPublicKeyImpl;
 
 import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +40,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECPoint;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +51,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
 import static de.rub.nds.x509attacker.X509Attacker.*;
 
 public class CcaCertificateManager {
@@ -150,6 +155,7 @@ public class CcaCertificateManager {
         CustomPrivateKey customPrivateKey;
         CustomPublicKey customPublicKey;
         byte[] keyBytes;
+        byte[] pubKeyBytes;
         PrivateKey privateKey;
 
         // Input/Output directories
@@ -231,32 +237,41 @@ public class CcaCertificateManager {
                     keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
+                    pubKeyBytes = keyFileManager.getKeyFileContent(keyName);
+                    publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
+
+                    BigInteger y = ((DHPublicKey) publicKey).getY();
                     BigInteger x = ((DHPrivateKey) privateKey).getX();
                     BigInteger p = ((DHPrivateKey) privateKey).getParams().getP();
                     BigInteger g = ((DHPrivateKey) privateKey).getParams().getG();
                     customPrivateKey = new CustomDHPrivateKey(x, p, g);
-                    customPublicKey = null;
+                    customPublicKey = new CustomDhPublicKey(p, g, y);
                     break;
                 case DSA:
                     keyBytes = keyFileManager.getKeyFileContent(keyName);
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+                    publicKey = readPublicKey(new ByteArrayInputStream(keyBytes));
 
+                    BigInteger y2 = ((DSAPublicKey) publicKey).getY();
                     BigInteger x2 = ((DSAPrivateKey) privateKey).getX();
                     BigInteger primeP = ((DSAPrivateKey) privateKey).getParams().getP();
                     BigInteger primeQ = ((DSAPrivateKey) privateKey).getParams().getQ();
                     BigInteger generator = ((DSAPrivateKey) privateKey).getParams().getG();
                     customPrivateKey = new CustomDSAPrivateKey(x2, primeP, primeQ, generator);
-                    customPublicKey = null;
+                    customPublicKey = new CustomDsaPublicKey(primeP, primeQ, generator, y2);
                     break;
                 case ECDH:
                 case ECDSA:
                     keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
+                    pubKeyBytes = keyFileManager.getKeyFileContent(keyName);
+                    publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
 
+                    ECPoint x3 = ((ECPublicKey) publicKey).getW();
                     BigInteger pKey = ((ECPrivateKey) privateKey).getS();
                     NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey) privateKey);
                     customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
-                    customPublicKey = null;
+                    customPublicKey = new CustomEcPublicKey(x3.getAffineX(), x3.getAffineY(), nGroup);
                     break;
                 case KEA:
                 default:

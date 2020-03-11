@@ -208,6 +208,11 @@ public enum CcaCertificateType {
                     + "since there is no valid CRL locally (no fetch) and none hosted at localhost (why would we even want that).",
             false,
             true),
+    ROOTv3_NewFakeChain_ROOTv3_CAv3_LEAF_RSAv3(
+            "A certificate chain in which the ROOT certificate is a lookalike of the real root certificate " +
+                    "uses a different key. Intermediate CA and leaf certificate are as always.",
+            false,
+            true),
 //    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
     ROOTv3_debug("debugging", false, true);
 
