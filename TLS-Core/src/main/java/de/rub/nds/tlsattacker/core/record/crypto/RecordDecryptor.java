@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -58,6 +59,7 @@ public class RecordDecryptor extends Decryptor {
     public void decrypt(Record record) {
         LOGGER.debug("Decrypting Record");
         record.prepareComputations();
+        record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         try {
             recordCipher.decrypt(record);
         } catch (CryptoException ex) {
