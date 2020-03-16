@@ -58,9 +58,9 @@ public class RecordBlockCipherTest {
         List<AliasedConnection> mixedConnections = new ArrayList<>();
         mixedConnections.add(new InboundConnection());
         mixedConnections.add(new OutboundConnection());
-        context.setClientRandom(new byte[] { 0 });
-        context.setServerRandom(new byte[] { 0 });
-        context.setMasterSecret(new byte[] { 0 });
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
                 context.setSelectedCipherSuite(suite);
@@ -86,9 +86,9 @@ public class RecordBlockCipherTest {
     public void test() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-        context.setClientRandom(new byte[] { 0 });
-        context.setServerRandom(new byte[] { 0 });
-        context.setMasterSecret(new byte[] { 0 });
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
         context.setConnection(new OutboundConnection());
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
     }
@@ -191,10 +191,205 @@ public class RecordBlockCipherTest {
                         .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
                 record.getProtocolMessageBytes().getValue());
 
-        // TODO
-        // assertTrue(record.getComputations().getMacValid());
-        // assertTrue(record.getComputations().getPaddingValid());
+        assertTrue(record.getComputations().getMacValid());
+        assertTrue(record.getComputations().getPaddingValid());
+    }
 
+    @Test
+    public void testDecryptTls10() throws NoSuchAlgorithmException, CryptoException {
+        //This is effectivly the testEncryptTls10() test in reverse
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("03c08c3460b420bb3851d9d47acb933dbe70399bf6c92da33af01d4fb770e98c"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("78f0c84e04d3c23cad94aad61ccae23ce79bcd9d2d6953f8ccbe0e528c63a238"));
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("F81015161244782B3541E6020140556E4FFEA98C57FCF6CEC172CD8B577DC73CCDE4B724E07DB8687DDF327CD8A68891"));
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD");
+        // IV : 1ACF314DA7208EB8
+        // ClientWriteKey: 65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC
+        // ClientWriteMACKey: 183612323C5507EDAA5BF0DE71272A2EA87B1165
+        cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolMessageBytes(data);
+        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        cipher.decrypt(record);
+
+        // These fields are not used within blockciphers
+        assertNull(record.getComputations().getExplicitNonce());
+        assertNull(record.getComputations().getImplicitNonce());
+        assertNull(record.getComputations().getNonce());
+        assertNull(record.getComputations().getAuthenticationTag());
+        assertNull(record.getComputations().getTagValid());
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010028"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"), record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"), record.getComputations()
+                .getCbcInitialisationVector().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
+                record.getComputations().getCipherKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("183612323C5507EDAA5BF0DE71272A2EA87B1165"), record
+                .getComputations().getMacKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("7952A83507720317BEE172747A2A6C84759E6A33"), record
+                .getComputations().getMac().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("03030303"), record.getComputations().getPadding()
+                .getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB57530030303037952A83507720317BEE172747A2A6C84759E6A3303030303"),
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getComputations().getCiphertext().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getProtocolMessageBytes().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        assertTrue(record.getComputations().getMacValid());
+        assertTrue(record.getComputations().getPaddingValid());
+    }
+    
+    @Test
+    public void testEncryptTls12() throws NoSuchAlgorithmException, CryptoException {
+        context.setConnection(new OutboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("03c08c3460b420bb3851d9d47acb933dbe70399bf6c92da33af01d4fb770e98c"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("78f0c84e04d3c23cad94aad61ccae23ce79bcd9d2d6953f8ccbe0e528c63a238"));
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("F81015161244782B3541E6020140556E4FFEA98C57FCF6CEC172CD8B577DC73CCDE4B724E07DB8687DDF327CD8A68891"));
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
+        // IV : 1ACF314DA7208EB8
+        // ClientWriteKey: 65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC
+        // ClientWriteMACKey: 183612323C5507EDAA5BF0DE71272A2EA87B1165
+        context.getConfig().getDefault
+        cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setCleanProtocolMessageBytes(data);
+        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        cipher.encrypt(record);
+
+        // These fields are not used within blockciphers
+        assertNull(record.getComputations().getExplicitNonce());
+        assertNull(record.getComputations().getImplicitNonce());
+        assertNull(record.getComputations().getNonce());
+        assertNull(record.getComputations().getAuthenticationTag());
+        assertNull(record.getComputations().getTagValid());
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010028"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+        assertArrayEquals(data, record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"), record.getComputations()
+                .getCbcInitialisationVector().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
+                record.getComputations().getCipherKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("183612323C5507EDAA5BF0DE71272A2EA87B1165"), record
+                .getComputations().getMacKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("7952A83507720317BEE172747A2A6C84759E6A33"), record
+                .getComputations().getMac().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("03030303"), record.getComputations().getPadding()
+                .getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB57530030303037952A83507720317BEE172747A2A6C84759E6A3303030303"),
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getComputations().getCiphertext().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getProtocolMessageBytes().getValue());
+
+        assertTrue(record.getComputations().getMacValid());
+        assertTrue(record.getComputations().getPaddingValid());
+    }
+
+    @Test
+    public void testDecryptTls12() throws NoSuchAlgorithmException, CryptoException {
+        //This is effectivly the testEncryptTls10() test in reverse
+        context.setConnection(new InboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setClientRandom(ArrayConverter
+                .hexStringToByteArray("03c08c3460b420bb3851d9d47acb933dbe70399bf6c92da33af01d4fb770e98c"));
+        context.setServerRandom(ArrayConverter
+                .hexStringToByteArray("78f0c84e04d3c23cad94aad61ccae23ce79bcd9d2d6953f8ccbe0e528c63a238"));
+        context.setMasterSecret(ArrayConverter
+                .hexStringToByteArray("F81015161244782B3541E6020140556E4FFEA98C57FCF6CEC172CD8B577DC73CCDE4B724E07DB8687DDF327CD8A68891"));
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD");
+        // IV : 1ACF314DA7208EB8
+        // ClientWriteKey: 65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC
+        // ClientWriteMACKey: 183612323C5507EDAA5BF0DE71272A2EA87B1165
+        cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setProtocolMessageBytes(data);
+        record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        cipher.decrypt(record);
+
+        // These fields are not used within blockciphers
+        assertNull(record.getComputations().getExplicitNonce());
+        assertNull(record.getComputations().getImplicitNonce());
+        assertNull(record.getComputations().getNonce());
+        assertNull(record.getComputations().getAuthenticationTag());
+        assertNull(record.getComputations().getTagValid());
+
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603010028"), record.getComputations()
+                .getAuthenticatedMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"), record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"), record.getComputations()
+                .getCbcInitialisationVector().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
+                record.getComputations().getCipherKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("183612323C5507EDAA5BF0DE71272A2EA87B1165"), record
+                .getComputations().getMacKey().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("7952A83507720317BEE172747A2A6C84759E6A33"), record
+                .getComputations().getMac().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("03030303"), record.getComputations().getPadding()
+                .getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB57530030303037952A83507720317BEE172747A2A6C84759E6A3303030303"),
+                record.getComputations().getPlainRecordBytes().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getComputations().getCiphertext().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E231DE35AD06AC17B8A26638290BB5846283B4788D8C42119BD"),
+                record.getProtocolMessageBytes().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
+                record.getCleanProtocolMessageBytes().getValue());
+
+        assertTrue(record.getComputations().getMacValid());
+        assertTrue(record.getComputations().getPaddingValid());
     }
 
     /**
