@@ -204,7 +204,8 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setAuthenticatedNonMetaData(cleanBytes);
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
             computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection().getLocalConnectionEndType()));
+                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
+                    .getLocalConnectionEndType()));
 
             computations.setPadding(calculatePadding(calculatePaddingLength(cleanBytes.length
                     + computations.getMac().getValue().length)));
@@ -225,7 +226,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 record.setProtocolMessageBytes(computations.getCiphertext());
             }
         }
-        //TODO - our own macs and paddings are "always" valid - this does not respect modifications made on the variables
+        // TODO - our own macs and paddings are "always" valid - this does not
+        // respect modifications made on the variables
         computations.setPaddingValid(true);
         computations.setMacValid(true);
     }
@@ -287,13 +289,14 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPaddingValid(isPaddingValid(padding));
 
             byte[] calculatedHMAC = calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection().getLocalConnectionEndType().getPeer());
+                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
+                    .getLocalConnectionEndType().getPeer());
             computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
         } else {
             byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
             computations.setCiphertext(ciphertext);
             ciphertext = computations.getCiphertext().getValue();
-            
+
             byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
 
             computations.setPlainRecordBytes(plainData);
@@ -316,7 +319,8 @@ public final class RecordBlockCipher extends RecordCipher {
 
             computations.setPaddingValid(isPaddingValid(padding));
             byte[] calculatedHMAC = calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection().getLocalConnectionEndType().getPeer());
+                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
+                    .getLocalConnectionEndType().getPeer());
             computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
         }
 
