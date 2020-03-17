@@ -34,7 +34,7 @@ public class RecordCryptoComputations {
     /**
      * The implicit part of the nonce for aead taken from the keyblock
      */
-    private ModifiableByteArray implicitNonce;
+    private ModifiableByteArray aeadSalt;
 
     /**
      * The eplicit nonce for aead which is transmitted in plain in each message
@@ -42,9 +42,9 @@ public class RecordCryptoComputations {
     private ModifiableByteArray explicitNonce;
 
     /**
-     * The whole aead nonce (salt || explicit nonce)
+     * The whole gcm nonce (salt || explicit nonce)
      */
-    private ModifiableByteArray nonce;
+    private ModifiableByteArray gcmNonce;
 
     /**
      * The whole padding
@@ -90,7 +90,7 @@ public class RecordCryptoComputations {
 
     private Boolean macValid = null;
 
-    private Boolean tagValid = null;
+    private Boolean authenticationTagValid = null;
 
     public RecordCryptoComputations() {
     }
@@ -235,16 +235,16 @@ public class RecordCryptoComputations {
         this.ciphertext = ModifiableVariableFactory.safelySetValue(this.ciphertext, ciphertext);
     }
 
-    public ModifiableByteArray getImplicitNonce() {
-        return implicitNonce;
+    public ModifiableByteArray getAeadSalt() {
+        return aeadSalt;
     }
 
-    public void setImplicitNonce(ModifiableByteArray implicitNonce) {
-        this.implicitNonce = implicitNonce;
+    public void setAeadSalt(ModifiableByteArray implicitNonce) {
+        this.aeadSalt = implicitNonce;
     }
 
-    public void setImplicitNonce(byte[] implicitNonce) {
-        this.implicitNonce = ModifiableVariableFactory.safelySetValue(this.implicitNonce, implicitNonce);
+    public void setAeadSalt(byte[] implicitNonce) {
+        this.aeadSalt = ModifiableVariableFactory.safelySetValue(this.aeadSalt, implicitNonce);
     }
 
     public ModifiableByteArray getExplicitNonce() {
@@ -259,16 +259,16 @@ public class RecordCryptoComputations {
         this.explicitNonce = ModifiableVariableFactory.safelySetValue(this.explicitNonce, explicitNonce);
     }
 
-    public ModifiableByteArray getNonce() {
-        return nonce;
+    public ModifiableByteArray getGcmNonce() {
+        return gcmNonce;
     }
 
-    public void setNonce(ModifiableByteArray nonce) {
-        this.nonce = nonce;
+    public void setGcmNonce(ModifiableByteArray gcmNonce) {
+        this.gcmNonce = gcmNonce;
     }
 
-    public void setNonce(byte[] nonce) {
-        this.nonce = ModifiableVariableFactory.safelySetValue(this.nonce, nonce);
+    public void setGcmNonce(byte[] gcmNonce) {
+        this.gcmNonce = ModifiableVariableFactory.safelySetValue(this.gcmNonce, gcmNonce);
     }
 
     public ModifiableByteArray getAuthenticationTag() {
@@ -283,15 +283,15 @@ public class RecordCryptoComputations {
         this.authenticationTag = ModifiableVariableFactory.safelySetValue(this.authenticationTag, authenticationTag);
     }
 
-    public Boolean getTagValid() {
-        return tagValid;
+    public Boolean getAuthenticationTagValid() {
+        return authenticationTagValid;
     }
 
-    public void setTagValid(Boolean tagValid) {
-        this.tagValid = tagValid;
+    public void setAuthenticationTagValid(Boolean authenticationTagValid) {
+        this.authenticationTagValid = authenticationTagValid;
     }
 
-    public void setTagValid(boolean tagValid) {
-        this.tagValid = tagValid;
+    public void setAuthenticationTagValid(boolean authenticationTagValid) {
+        this.authenticationTagValid = authenticationTagValid;
     }
 }

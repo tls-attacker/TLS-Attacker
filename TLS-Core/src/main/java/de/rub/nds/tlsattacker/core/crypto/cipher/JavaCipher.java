@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
@@ -164,17 +165,17 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] cipherText)
             throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
-            cipher.updateAAD(additionAuthenticatedData);
-            byte[] result = cipher.doFinal(someBytes);
+            cipher.updateAAD(additionalAuthenticatedData);
+            byte[] result = cipher.doFinal(cipherText);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
-                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+                System.arraycopy(cipherText, cipherText.length - getBlocksize(), this.iv, 0, getBlocksize());
             }
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException

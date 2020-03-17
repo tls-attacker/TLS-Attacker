@@ -46,6 +46,11 @@ public class RecordAEADCipher extends RecordCipher {
     /**
      * AEAD iv length in bytes
      */
+    public static final int AEAD_SALT_LENGTH = 8;
+
+    /**
+     * AEAD iv length in bytes
+     */
     public static final int AEAD_IV_LENGTH = 12;
 
     /**
@@ -97,31 +102,30 @@ public class RecordAEADCipher extends RecordCipher {
         if (cipherSuite.usesStrictExplicitIv() || version.isTLS13()) {
             return aeadTagLength;
         } else {
-            return SEQUENCE_NUMBER_LENGTH + aeadTagLength;
+            return AEAD_SALT_LENGTH + aeadTagLength;
         }
     }
 
     public void encryptTls12(Record record) throws CryptoException {
-
-        byte[] explicitNonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
+        byte[] explicitNonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), AEAD_SALT_LENGTH);
         record.getComputations().setExplicitNonce(explicitNonce);
         explicitNonce = record.getComputations().getExplicitNonce().getValue();
 
-        byte[] implicitNonce = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
-        record.getComputations().setImplicitNonce(implicitNonce);
-        implicitNonce = record.getComputations().getImplicitNonce().getValue();
+        byte[] aeadSalt = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
+        record.getComputations().setAeadSalt(aeadSalt);
+        aeadSalt = record.getComputations().getAeadSalt().getValue();
 
         byte[] totalNonce;
         if (cipherSuite.usesStrictExplicitIv()) {
             totalNonce = explicitNonce;
         } else {
-            totalNonce = ArrayConverter.concatenate(implicitNonce, explicitNonce);
+            totalNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
         }
-        record.getComputations().setNonce(totalNonce);
-        totalNonce = record.getComputations().getNonce().getValue();
+        record.getComputations().setGcmNonce(totalNonce);
+        totalNonce = record.getComputations().getGcmNonce().getValue();
 
-        byte[] authenticatedNonMetaData = Arrays.copyOfRange(record.getProtocolMessageBytes().getValue(),
-                AEAD_IV_LENGTH, record.getProtocolMessageBytes().getValue().length - getTagSize());
+        byte[] authenticatedNonMetaData = record.getComputations().getPlainRecordBytes().getValue();
         record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
 
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(totalNonce));
@@ -133,9 +137,9 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting AEAD with the following AAD: {}",
                 ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
-        byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        byte[] wholeCipherText = encryptCipher.encrypt(totalNonce, getTagSize() * 8, additionalAuthenticatedData,
-                cleanBytes);
+        byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
+        byte[] wholeCipherText = encryptCipher.encrypt(totalNonce, AEAD_TAG_LENGTH * 8, additionalAuthenticatedData,
+                plainBytes);
 
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - AEAD_TAG_LENGTH);
 
@@ -144,8 +148,10 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
 
-        record.getComputations().setCiphertext(ArrayConverter.concatenate(onlyCiphertext, authenticationTag));
-        record.setProtocolMessageBytes(ArrayConverter.concatenate(explicitNonce, wholeCipherText, authenticationTag));
+        record.getComputations().setCiphertext(onlyCiphertext);
+        record.setProtocolMessageBytes(ArrayConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
+        // TODO our own authentication tags are always valid
+        record.getComputations().setAuthenticationTagValid(true);
     }
 
     public void encryptTls13(Record record) throws CryptoException {
@@ -157,8 +163,8 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("NonceBytes:" + ArrayConverter.bytesToHexString(nonce));
 
         byte[] encryptIv = prepareAeadParameters(nonce, getEncryptionIV());
-        record.getComputations().setNonce(encryptIv);
-        encryptIv = record.getComputations().getNonce().getValue();
+        record.getComputations().setGcmNonce(encryptIv);
+        encryptIv = record.getComputations().getGcmNonce().getValue();
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(encryptIv));
 
         record.getComputations().setAuthenticatedNonMetaData(record.getCleanProtocolMessageBytes().getValue());
@@ -173,10 +179,10 @@ public class RecordAEADCipher extends RecordCipher {
                 || version == ProtocolVersion.TLS13_DRAFT26 || version == ProtocolVersion.TLS13_DRAFT27
                 || version == ProtocolVersion.TLS13_DRAFT28) {
             LOGGER.debug("AAD:" + additionalAuthenticatedData);
-            cipherText = encryptCipher.encrypt(encryptIv, getTagSize() * 8, additionalAuthenticatedData, record
+            cipherText = encryptCipher.encrypt(encryptIv, AEAD_TAG_LENGTH * 8, additionalAuthenticatedData, record
                     .getCleanProtocolMessageBytes().getValue());
         } else {
-            cipherText = encryptCipher.encrypt(encryptIv, getTagSize() * 8, record.getCleanProtocolMessageBytes()
+            cipherText = encryptCipher.encrypt(encryptIv, AEAD_TAG_LENGTH * 8, record.getCleanProtocolMessageBytes()
                     .getValue());
         }
         byte[] onlyCipherText = Arrays.copyOfRange(cipherText, 0,
@@ -192,17 +198,17 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] protocolBytes = record.getProtocolMessageBytes().getValue();
         DecryptionParser parser = new DecryptionParser(0, protocolBytes);
 
-        byte[] explicitNonce = parser.parseByteArrayField(SEQUENCE_NUMBER_LENGTH);
-        record.getComputations().setExplicitNonce(explicitNonce);
-        explicitNonce = record.getComputations().getExplicitNonce().getValue();
+        byte[] aeadSalt = parser.parseByteArrayField(AEAD_SALT_LENGTH);
+        record.getComputations().setExplicitNonce(aeadSalt);
+        aeadSalt = record.getComputations().getExplicitNonce().getValue();
 
-        byte[] implicitNonce = getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType());
-        record.getComputations().setImplicitNonce(implicitNonce);
-        implicitNonce = record.getComputations().getImplicitNonce().getValue();
+        byte[] implicitNonce = getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType());
+        record.getComputations().setAeadSalt(implicitNonce);
+        implicitNonce = record.getComputations().getAeadSalt().getValue();
 
-        byte[] authenticatedNonMetaData = Arrays.copyOfRange(protocolBytes, AEAD_IV_LENGTH, protocolBytes.length
-                - getTagSize());
-        record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
+        byte[] cipherTextOnly = parser.parseByteArrayField(parser.getBytesLeft() - AEAD_TAG_LENGTH);
+        record.getComputations().setCiphertext(cipherTextOnly);
+        record.getComputations().setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
 
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
@@ -214,23 +220,30 @@ public class RecordAEADCipher extends RecordCipher {
 
         byte[] totalNonce;
         if (cipherSuite.usesStrictExplicitIv()) {
-            totalNonce = explicitNonce;
+            totalNonce = aeadSalt;
         } else {
-            totalNonce = ArrayConverter.concatenate(implicitNonce, explicitNonce);
+            totalNonce = ArrayConverter.concatenate(implicitNonce, aeadSalt);
         }
-        record.getComputations().setNonce(totalNonce);
-        totalNonce = record.getComputations().getNonce().getValue();
+        record.getComputations().setGcmNonce(totalNonce);
+        totalNonce = record.getComputations().getGcmNonce().getValue();
         LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(totalNonce));
-
-        byte[] cipherTextOnly = parser.parseByteArrayField(parser.getBytesLeft() - getTagSize());
 
         byte[] authenticationTag = parser.parseByteArrayField(parser.getBytesLeft());
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
-
-        byte[] plaintext = decryptCipher.decrypt(totalNonce, getTagSize() * 8, additionalAuthenticatedData,
-                ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
-        record.setCleanProtocolMessageBytes(plaintext);
+        // TODO it would be better if we had a seperate CM implementation to do
+        // the decryption
+        try {
+            byte[] plaintext = decryptCipher.decrypt(totalNonce, AEAD_TAG_LENGTH * 8, additionalAuthenticatedData,
+                    ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+            record.getComputations().setAuthenticationTagValid(true);
+            record.getComputations().setPlainRecordBytes(plaintext);
+            record.setCleanProtocolMessageBytes(record.getComputations().getPlainRecordBytes().getValue());
+        } catch (Exception E) {
+            LOGGER.warn("Tag invalid", E);
+            record.getComputations().setAuthenticationTagValid(false);
+            throw new CryptoException(E);
+        }
     }
 
     public void decryptTls13(Record record) throws CryptoException {
@@ -238,12 +251,11 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
         byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
                 RecordByteLength.SEQUENCE_NUMBER);
-        byte[] nonce = ArrayConverter
-                .concatenate(new byte[AEAD_IV_LENGTH - SEQUENCE_NUMBER_LENGTH], sequenceNumberByte);
+        byte[] nonce = ArrayConverter.concatenate(new byte[AEAD_IV_LENGTH - AEAD_SALT_LENGTH], sequenceNumberByte);
 
         byte[] decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
-        record.getComputations().setNonce(decryptIV);
-        decryptIV = record.getComputations().getNonce().getValue();
+        record.getComputations().setGcmNonce(decryptIV);
+        decryptIV = record.getComputations().getGcmNonce().getValue();
         LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
 
         byte[] authenticatedNonMetaData = Arrays.copyOfRange(record.getProtocolMessageBytes().getValue(),
@@ -303,13 +315,13 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public byte[] getDecryptionIV() {
-        byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), AEAD_SALT_LENGTH);
         return ArrayConverter.concatenate(getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()),
                 nonce);
     }
 
     public byte[] getEncryptionIV() {
-        byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), AEAD_SALT_LENGTH);
         return ArrayConverter.concatenate(getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()),
                 nonce);
     }

@@ -184,15 +184,21 @@ public final class RecordBlockCipher extends RecordCipher {
 
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
-            computations.setPadding(calculatePadding(calculatePaddingLength(computations.getAuthenticatedNonMetaData()
-                    .getValue().length)));
+
+            computations.setPadding(calculatePadding(calculatePaddingLength(cleanBytes.length)));
             computations.setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding()
                     .getValue()));
-            computations.setAuthenticatedNonMetaData(record.getComputations().getPlainRecordBytes().getValue());
-            computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
+            byte[] ciphertext = encryptCipher.encrypt(iv, computations.getPlainRecordBytes().getValue());
+            computations.setCiphertext(ciphertext);
+            if (useExplicitIv) {
+                computations.setAuthenticatedNonMetaData(ArrayConverter.concatenate(iv, record.getComputations()
+                        .getCiphertext().getValue()));
+            } else {
+                computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
+            }
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
             computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                    .getValue(), computations.getCiphertext().getValue()), context.getConnection()
+                    .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
                     .getLocalConnectionEndType()));
             if (useExplicitIv) {
                 record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext().getValue(),
@@ -215,12 +221,8 @@ public final class RecordBlockCipher extends RecordCipher {
                     ArrayConverter.concatenate(cleanBytes, computations.getMac().getValue(), computations.getPadding()
                             .getValue()));
 
-            try {
-                computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
-            } catch (CryptoException ex) {
-                LOGGER.warn("Could not encrypt data, using unencrypted data instead", ex);
-                computations.setCiphertext(record.getComputations().getPlainRecordBytes().getValue());
-            }
+            computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
+
             if (useExplicitIv) {
                 record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext().getValue()));
             } else {
@@ -277,12 +279,17 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPlainRecordBytes(plainData);
             plainData = computations.getPlainRecordBytes().getValue();
 
+            LOGGER.info(ArrayConverter.bytesToHexString(plainData));
             parser = new DecryptionParser(0, plainData);
-            byte[] cleanProtocolBytes = parser.parseByteArrayField(plainData.length - plainData[plainData.length - 1]
-                    + 1);
+            byte[] cleanProtocolBytes = parser.parseByteArrayField(plainData.length
+                    - (plainData[plainData.length - 1] + 1));
             record.setCleanProtocolMessageBytes(cleanProtocolBytes);
-
-            computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext());
+            if (useExplicitIv) {
+                computations.setAuthenticatedNonMetaData(ArrayConverter.concatenate(record.getComputations()
+                        .getCbcInitialisationVector().getValue(), record.getComputations().getCiphertext().getValue()));
+            } else {
+                computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
+            }
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
 
             byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
