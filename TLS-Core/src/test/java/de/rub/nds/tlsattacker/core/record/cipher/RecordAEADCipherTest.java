@@ -114,7 +114,7 @@ public class RecordAEADCipherTest {
     }
 
     @Test
-    public void testDecryptGcm12Server() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptGcmServer() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -245,7 +245,7 @@ public class RecordAEADCipherTest {
     }
 
     @Test
-    public void testDecryptGcm12Client() throws NoSuchAlgorithmException, CryptoException {
+    public void testDecryptGcmClient() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
