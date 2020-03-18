@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -79,7 +80,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareEpoch(Record record) {
-        record.setEpoch(chooser.getContext().getDtlsSendEpoch());
+        record.setEpoch(chooser.getContext().getDtlsWriteEpoch());
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 

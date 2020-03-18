@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -34,11 +35,11 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
-
+        RecordCipher recordCipher = getRecordMostRecentCipher();
         try {
             recordCipher.encrypt(record);
         } catch (CryptoException ex) {
-            LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher");
+            LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher", ex);
             try {
                 nullCipher.encrypt(record);
             } catch (CryptoException ex1) {
@@ -52,11 +53,16 @@ public class RecordEncryptor extends Encryptor {
     public void encrypt(Record record) {
 
         LOGGER.debug("Encrypting Record:");
-
+        RecordCipher recordCipher;
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            recordCipher = getRecordCipher(record.getEpoch().getValue());
+        } else {
+            recordCipher = getRecordMostRecentCipher();
+        }
         try {
             recordCipher.encrypt(record);
         } catch (CryptoException ex) {
-            LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher");
+            LOGGER.warn("Could not encrypt BlobRecord. Using NullCipher", ex);
             try {
                 nullCipher.encrypt(record);
             } catch (CryptoException ex1) {

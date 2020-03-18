@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -223,11 +224,6 @@ public class Bleichenbacher extends Pkcs1Attack {
                 upperBound = step2cComputeUpperBound(ri, n, m[0].lower);
                 lowerBound = step2cComputeLowerBound(ri, n, m[0].upper);
                 si = lowerBound;
-                // System.out.println("slower: " + lowerBound);
-                // System.out.println("sgoal:  " +
-                // (BigInteger.valueOf(3).multiply(bigB).add(ri.multiply(n))).divide(new
-                // BigInteger(decryptedMsg)));
-                // System.out.println("supper: " + upperBound);
             }
             send = prepareMsg(c0, si);
 

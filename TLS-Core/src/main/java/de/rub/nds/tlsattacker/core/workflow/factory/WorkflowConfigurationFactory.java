@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
 import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
@@ -57,6 +59,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -165,6 +168,10 @@ public class WorkflowConfigurationFactory {
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
+        if (config.isAddEncryptedServerNameIndicationExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
@@ -179,8 +186,10 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
-            if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
-                messages.add(new ChangeCipherSpecMessage());
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                messages.add(ccs);
             }
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
@@ -560,11 +569,13 @@ public class WorkflowConfigurationFactory {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
                         List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
-                        for (int x = 0; x < extensions.size(); x++) {
-                            if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
-                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
-                                x--;
+                        if (extensions != null) {
+                            for (int x = 0; x < extensions.size(); x++) {
+                                if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
+                                        || extensions.get(x) instanceof EarlyDataExtensionMessage) {
+                                    ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
+                                    x--;
+                                }
                             }
                         }
                     }
@@ -860,8 +871,10 @@ public class WorkflowConfigurationFactory {
             messages.add(new ServerHelloMessage(config));
 
             if (config.getHighestProtocolVersion().isTLS13()) {
-                if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
-                    messages.add(new ChangeCipherSpecMessage());
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                    ccs.setRequired(false);
+                    messages.add(ccs);
                 }
                 messages.add(new EncryptedExtensionsMessage(config));
                 if (config.isClientAuthentication()) {

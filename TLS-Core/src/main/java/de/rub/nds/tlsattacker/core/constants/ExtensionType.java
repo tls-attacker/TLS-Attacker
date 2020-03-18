@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -54,6 +55,8 @@ public enum ExtensionType {
     PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
     KEY_SHARE(new byte[] { (byte) 0, (byte) 51 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
+    ENCRYPTED_SERVER_NAME_INDICATION(new byte[] { (byte) 0xFF, (byte) 0xCE }),
+
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),

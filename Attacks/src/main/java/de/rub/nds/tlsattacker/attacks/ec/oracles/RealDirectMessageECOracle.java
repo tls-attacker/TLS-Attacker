@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -76,6 +77,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        message.prepareComputations();
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
@@ -92,7 +94,6 @@ public class RealDirectMessageECOracle extends ECOracle {
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
-        message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {

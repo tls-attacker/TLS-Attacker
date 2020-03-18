@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -37,32 +38,21 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        // receiving
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecompressor();
-            // DTLS
-            // TODO check that prior handshake-related messages have been
-            // received
-            // If they haven't, it means that this message has arrived out of
-            // order.
-            // and that we should not increase the next receive epoch, as we
-            // still
-            // have messages left to process in the current epoch.
-            tlsContext.increaseDtlsNextReceiveEpoch();
+            tlsContext.increaseDtlsReadEpoch();
         }
     }
 
     @Override
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
-        // sending
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateCompressor();
-            // DTLS
-            tlsContext.increaseDtlsSendEpoch();
+            tlsContext.increaseDtlsWriteEpoch();
         }
     }
 

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -161,12 +162,12 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public void updateEncryptionCipher() {
-        encryptor.setRecordCipher(cipher);
+        encryptor.addNewRecordCipher(cipher);
     }
 
     @Override
     public void updateDecryptionCipher() {
-        decryptor.setRecordCipher(cipher);
+        decryptor.addNewRecordCipher(cipher);
     }
 
     @Override
@@ -212,12 +213,12 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public RecordCipher getEncryptorCipher() {
-        return encryptor.getRecordCipher();
+        return encryptor.getRecordMostRecentCipher();
     }
 
     @Override
     public RecordCipher getDecryptorCipher() {
-        return decryptor.getRecordCipher();
+        return decryptor.getRecordMostRecentCipher();
     }
 
 }

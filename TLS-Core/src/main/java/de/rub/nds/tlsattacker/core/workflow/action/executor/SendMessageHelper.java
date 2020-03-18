@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -48,7 +49,7 @@ public class SendMessageHelper {
         ProtocolMessageType lastType = null;
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig());
+        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig().getDtlsMaximumFragmentLength());
         for (ProtocolMessage message : messages) {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
@@ -72,12 +73,12 @@ public class SendMessageHelper {
                         } else {
                             messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
                         }
-                        // TODO a fragment can span records currently, which
-                        // should not be allowed
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
                                     .getValue());
                             fragmentMessages.add(fragment);
+                            recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records,
+                                    recordPosition, context);
                         }
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -82,8 +83,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         if (entry.getGroupConfig().isStandardCurve()) {
             Point ecPublicKey = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey());
             // TODO We currently just use the default point format
-            byte[] serializedPoint = PointFormatter.formatToByteArray(ecPublicKey, chooser.getConfig()
-                    .getDefaultSelectedPointFormat());
+            byte[] serializedPoint = PointFormatter.formatToByteArray(entry.getGroupConfig(), ecPublicKey, chooser
+                    .getConfig().getDefaultSelectedPointFormat());
             entry.setPublicKey(serializedPoint);
         } else if (entry.getGroupConfig().isCurve() && !entry.getGroupConfig().isStandardCurve()) {
             byte[] publicKey = KeyShareCalculator.createMontgomeryKeyShare(entry.getGroupConfig(),

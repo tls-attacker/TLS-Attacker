@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -508,7 +509,7 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon() || this.isPWD();
+        return this.name().contains("DHE_") || this.isAnon() || this.isPWD() || this.isTLS13();
     }
 
     public boolean isPskOrDhPsk() {
@@ -614,6 +615,10 @@ public enum CipherSuite {
 
     public boolean usesStrictExplicitIv() {
         return (this.name().contains("CHACHA20_POLY1305"));
+    }
+
+    public boolean usesDH() {
+        return (this.name().contains("_DH"));
     }
 
     /**
@@ -981,6 +986,16 @@ public enum CipherSuite {
         return list;
     }
 
+    public static List<CipherSuite> getEsniImplemented() {
+        List<CipherSuite> list = new LinkedList();
+        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        return list;
+    }
+
     public static List<CipherSuite> getNotImplemented() {
         List<CipherSuite> notImplemented = new LinkedList<>();
         for (CipherSuite suite : values()) {
@@ -1004,6 +1019,10 @@ public enum CipherSuite {
         return getImplemented().contains(this);
     }
 
+    public boolean isSHA() {
+        return this.name().endsWith("SHA");
+    }
+
     public boolean isSHA256() {
         return this.name().contains("SHA256");
     }
@@ -1014,6 +1033,14 @@ public enum CipherSuite {
 
     public boolean isSHA384() {
         return this.name().contains("SHA384");
+    }
+
+    public boolean isSHA512() {
+        return this.name().contains("SHA512");
+    }
+
+    public boolean isECDSA() {
+        return this.name().contains("ECDSA");
     }
 
     public boolean isAnon() {

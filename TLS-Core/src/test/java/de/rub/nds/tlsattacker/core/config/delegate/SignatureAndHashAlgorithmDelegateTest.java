@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -82,8 +83,10 @@ public class SignatureAndHashAlgorithmDelegateTest {
         assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
         delegate.applyDelegate(config);
         assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.RSA_SHA512));
-        assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(SignatureAndHashAlgorithm.DSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
+                SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
+                SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test

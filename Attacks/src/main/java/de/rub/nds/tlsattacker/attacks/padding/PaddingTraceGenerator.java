@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -30,6 +31,9 @@ public abstract class PaddingTraceGenerator {
      */
     public PaddingTraceGenerator(PaddingRecordGeneratorType type) {
         switch (type) {
+            case LONG_RECORD:
+                vectorGenerator = new LongRecordPaddingGenerator();
+                break;
             case LONG:
                 vectorGenerator = new LongPaddingGenerator();
                 break;

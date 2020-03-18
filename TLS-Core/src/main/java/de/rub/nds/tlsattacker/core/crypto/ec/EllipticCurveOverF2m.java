@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
@@ -17,6 +20,8 @@ import java.math.BigInteger;
  * coefficient.
  */
 public class EllipticCurveOverF2m extends EllipticCurve {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final FieldElementF2m a;
     private final FieldElementF2m b;
@@ -147,7 +152,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            return new Point();
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
 

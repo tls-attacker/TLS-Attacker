@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -103,12 +104,14 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey (encrypted premaster secret): "
+                + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength (encrypted premaster secret length): "
+                + msg.getPublicKeyLength().getValue());
     }
 
     protected byte[] decryptPremasterSecret() {
@@ -128,6 +131,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         msg.prepareComputations();
         prepareClientServerRandom(msg);
         int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
+        // For RSA, the PublicKey field actually contains the encrypted
+        // premaster secret
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
             int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
             padding = new byte[randomByteLength];

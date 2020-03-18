@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,7 +40,7 @@ public class EllipticCurveTest {
 
     @Test
     public void test() {
-        final int implemented = 28;
+        final int implemented = 30;
         int counter = 0;
 
         for (NamedGroup name : NamedGroup.values()) {

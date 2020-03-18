@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,6 +16,10 @@ public class SSL2ByteLength {
     public static final int LENGTH = 2;
 
     public static final int LONG_LENGTH = 3;
+
+    // Strictly speaking, this depends on the cipher, but all ciphers use an MD5
+    // digest with a length of 16 bytes
+    public static final int MAC_DATA = 16;
 
     public static final int MESSAGE_TYPE = 1;
 
@@ -37,6 +42,8 @@ public class SSL2ByteLength {
     public static final int CLEAR_KEY_LENGTH = 2;
 
     public static final int ENCRYPTED_KEY_LENGTH = 2;
+
+    public static final int KEY_ARG_LENGTH = 2;
 
     private SSL2ByteLength() {
     }

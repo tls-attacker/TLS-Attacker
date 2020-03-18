@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,15 +16,18 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveX25519;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -223,8 +227,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
-                }
 
+                    // This is a workaround for Tls1.3 InvalidCurve attacks
+                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                        LOGGER.debug("Using specified PMS instead of computed PMS");
+                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+                    }
+                }
             } else {
                 Integer pos = null;
                 for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {
@@ -267,15 +276,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
      * @return
      */
     private byte[] computeSharedSecret(KeyShareStoreEntry keyShare) {
+        EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+        Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
+        tlsContext.setServerEcPublicKey(publicPoint);
+        BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+
         switch (keyShare.getGroup()) {
             case ECDH_X25519:
-                BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
-                byte[] keySharePublicKey = keyShare.getPublicKey();
-                return ForgivingX25519Curve.computeSharedSecret(privateKey, keySharePublicKey);
             case ECDH_X448:
-                privateKey = tlsContext.getConfig().getKeySharePrivate();
-                keySharePublicKey = keyShare.getPublicKey();
-                return ForgivingX448Curve.computeSharedSecret(privateKey, keySharePublicKey);
+                RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+                return rfcCurve.computeSharedSecretDecodedPoint(privateKey, publicPoint);
             case SECP160K1:
             case SECP160R1:
             case SECP160R2:
@@ -301,9 +311,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case SECT409R1:
             case SECT571K1:
             case SECT571R1:
-                EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
-                Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
-                privateKey = tlsContext.getConfig().getDefaultKeySharePrivateKey();
                 Point sharedPoint = curve.mult(privateKey, publicPoint);
                 int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
                 return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);

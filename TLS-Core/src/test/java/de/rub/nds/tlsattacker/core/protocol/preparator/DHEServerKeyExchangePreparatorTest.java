@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -55,7 +56,7 @@ public class DHEServerKeyExchangePreparatorTest {
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
         SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA1);
         SigAndHashList.add(SignatureAndHashAlgorithm.DSA_MD5);
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(SigAndHashList);
+        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(SigAndHashList);
         // Test
         preparator.prepareHandshakeMessageContents();
 
