@@ -69,21 +69,6 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public boolean isUsingPadding() {
-        return false;
-    }
-
-    @Override
-    public boolean isUsingMac() {
-        return true;
-    }
-
-    @Override
-    public boolean isUsingTags() {
-        return false;
-    }
-
-    @Override
     public void encrypt(Record record) throws CryptoException {
         if (record.getComputations() == null) {
             LOGGER.warn("Record computations are not prepared.");

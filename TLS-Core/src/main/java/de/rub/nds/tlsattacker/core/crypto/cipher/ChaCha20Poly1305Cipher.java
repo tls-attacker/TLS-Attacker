@@ -14,7 +14,6 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +26,13 @@ import org.bouncycastle.util.Arrays;
 
 public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
 
-    private static final CipherAlgorithm algorithm = CipherAlgorithm.ChaCha20Poly1305;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private byte[] key;
-    private static final byte[] ZEROES = new byte[RecordAEADCipher.AEAD_TAG_LENGTH - 1];
-    private int additionalDataLength = 0;
+    private final byte[] key;
+
+    private static final int TAG_LENGTH = 16;
+
+    private static final byte[] ZEROES = new byte[TAG_LENGTH - 1];
 
     private final ChaCha7539Engine cipher = new ChaCha7539Engine();
     private final Poly1305 mac = new Poly1305();
@@ -57,17 +57,17 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length), this.ZEROES, 0,
-                RecordAEADCipher.AEAD_IV_LENGTH));
-        additionalDataLength = additionAuthenticatedData.length;
-        int ciphertextLength = someBytes.length - RecordAEADCipher.AEAD_TAG_LENGTH;
-        byte[] plaintext = new byte[getOutputSize(false, someBytes.length)];
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext) {
+        this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
+                new byte[(tagLength / 8) - 1], 0, iv.length));
+        int additionalDataLength = additionalAuthenticatedData.length;
+        int ciphertextLength = ciphertext.length - (tagLength / 8);
+        byte[] plaintext = new byte[getOutputSize(false, ciphertext.length)];
 
         this.cipher.init(false, new ParametersWithIV(null, iv));
         initMAC();
-        updateMAC(additionAuthenticatedData, 0, additionalDataLength);
-        updateMAC(someBytes, 0, ciphertextLength);
+        updateMAC(additionalAuthenticatedData, 0, additionalDataLength);
+        updateMAC(ciphertext, 0, ciphertextLength);
 
         byte[] aadLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
                 Long.valueOf(additionalDataLength), 8));
@@ -75,14 +75,14 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
                 Long.valueOf(ciphertextLength), 8));
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
-        this.mac.update(calculatedMAC, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
+        this.mac.update(calculatedMAC, 0, (tagLength / 8));
         this.mac.doFinal(calculatedMAC, 0);
 
-        byte[] receivedMAC = Arrays.copyOfRange(someBytes, ciphertextLength, someBytes.length);
+        byte[] receivedMAC = Arrays.copyOfRange(ciphertext, ciphertextLength, ciphertext.length);
         if (!Arrays.areEqual(calculatedMAC, receivedMAC)) {
             LOGGER.warn("MAC verification failed, continuing anyways.");
         }
-        this.cipher.processBytes(someBytes, 0, ciphertextLength, plaintext, 0);
+        this.cipher.processBytes(ciphertext, 0, ciphertextLength, plaintext, 0);
 
         return plaintext;
     }
@@ -104,8 +104,8 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
-        this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length), this.ZEROES, 0,
-                RecordAEADCipher.AEAD_IV_LENGTH));
+        this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
+                new byte[(tagLength / 8) - 1], 0, iv.length));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
         byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
@@ -124,7 +124,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
                 plaintextLengthLittleEndian, 8);
 
-        mac.update(aadPlaintextLengthsLittleEndian, 0, RecordAEADCipher.AEAD_TAG_LENGTH);
+        mac.update(aadPlaintextLengthsLittleEndian, 0, (tagLength / 8));
         mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;
@@ -141,8 +141,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     }
 
     private int getOutputSize(boolean isEncrypting, int inputLength) {
-        return isEncrypting ? inputLength + RecordAEADCipher.AEAD_TAG_LENGTH : inputLength
-                - RecordAEADCipher.AEAD_TAG_LENGTH;
+        return isEncrypting ? inputLength + TAG_LENGTH : inputLength - TAG_LENGTH;
     }
 
     private void initMAC() {
@@ -159,19 +158,18 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private void updateMAC(byte[] buf, int off, int len) {
         this.mac.update(buf, off, len);
 
-        int partial = len % RecordAEADCipher.AEAD_TAG_LENGTH;
+        int partial = len % TAG_LENGTH;
         if (partial != 0) {
-            this.mac.update(this.ZEROES, 0, RecordAEADCipher.AEAD_TAG_LENGTH - partial);
+            this.mac.update(this.ZEROES, 0, TAG_LENGTH - partial);
         }
     }
 
     @Override
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
-        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber),
-                (RecordAEADCipher.AEAD_IV_LENGTH - padding.length));
+        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
 
-        for (int i = 0; i < RecordAEADCipher.AEAD_IV_LENGTH; ++i) {
+        for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }
         return temp;

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
@@ -200,8 +199,9 @@ public class TlsRecordLayer extends RecordLayer {
             decryptor.decrypt(record);
             decompressor.decompress(record);
         } else {
-            LOGGER.warn("Not decrypting received non Record:" + record.toString());
-            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
+            LOGGER.warn("Decrypting received non Record:" + record.toString());
+            decryptor.decrypt(record);
+            decompressor.decompress(record);
         }
     }
 

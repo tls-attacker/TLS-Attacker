@@ -70,12 +70,6 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(BlobRecord record) throws CryptoException;
 
-    public abstract boolean isUsingPadding();
-
-    public abstract boolean isUsingMac();
-
-    public abstract boolean isUsingTags();
-
     public final KeySet getKeySet() {
         return keySet;
     }

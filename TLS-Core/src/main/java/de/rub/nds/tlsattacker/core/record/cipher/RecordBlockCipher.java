@@ -131,21 +131,6 @@ public final class RecordBlockCipher extends RecordCipher {
         return encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize());
     }
 
-    @Override
-    public boolean isUsingPadding() {
-        return true;
-    }
-
-    @Override
-    public boolean isUsingMac() {
-        return true;
-    }
-
-    @Override
-    public boolean isUsingTags() {
-        return false;
-    }
-
     public byte[] getEncryptionIV() {
         if (useExplicitIv) {
             LOGGER.debug("Using explict IV");

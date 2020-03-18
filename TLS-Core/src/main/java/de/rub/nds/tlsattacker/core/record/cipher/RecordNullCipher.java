@@ -24,21 +24,6 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public boolean isUsingPadding() {
-        return false;
-    }
-
-    @Override
-    public boolean isUsingMac() {
-        return false;
-    }
-
-    @Override
-    public boolean isUsingTags() {
-        return false;
-    }
-
-    @Override
     public void encrypt(Record record) throws CryptoException {
 
         LOGGER.debug("Encrypting Record: (null cipher)");

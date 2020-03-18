@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -32,6 +31,8 @@ import org.apache.logging.log4j.Logger;
 public class KeySetGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private final static int AEAD_IV_LENGTH = 12;
 
     public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
@@ -87,10 +88,10 @@ public class KeySetGenerator {
                 cipherAlg.getKeySize()));
         LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
         keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.AEAD_IV_LENGTH));
+                AEAD_IV_LENGTH));
         LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
         keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
-                RecordAEADCipher.AEAD_IV_LENGTH));
+                AEAD_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
@@ -194,7 +195,7 @@ public class KeySetGenerator {
     private static int getAeadSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        int saltSize = RecordAEADCipher.AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
+        int saltSize = AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
         int secretSetSize = 2 * keySize + 2 * saltSize;
         return secretSetSize;
     }
