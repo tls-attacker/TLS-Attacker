@@ -47,16 +47,10 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            prepareAdditionalPaddingLength(record);
-        }
-
         if (isDTLS()) {
             prepareEpoch(record);
         }
         prepareSequenceNumber(record);
-
         compressor.compress(record);
         encryptor.encrypt(record);
 

@@ -76,24 +76,37 @@ public class RecordStreamCipher extends RecordCipher {
         }
         LOGGER.debug("Encrypting Record:");
         RecordCryptoComputations computations = record.getComputations();
-
-        record.getComputations().setMacKey(getKeySet().getWriteMacSecret(context.getChooser().getConnectionEndType()));
-        record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
+        computations.setMacKey(getKeySet().getWriteMacSecret(context.getChooser().getConnectionEndType()));
+        computations.setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
 
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
         computations.setAuthenticatedNonMetaData(cleanBytes);
-
-        computations.setMac(calculateMac(ArrayConverter.concatenate(
-                collectAdditionalAuthenticatedData(record, version), cleanBytes), context.getConnection()
+        computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
+        computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
                 .getLocalConnectionEndType()));
 
-        record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
+        computations.setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
+                computations.getMac().getValue()));
 
         computations.setCiphertext(encryptCipher.encrypt(record.getComputations().getPlainRecordBytes().getValue()));
 
-        record.setProtocolMessageBytes(Arrays.concatenate(computations.getCiphertext().getValue(), computations
-                .getMac().getValue()));
+        record.setProtocolMessageBytes(computations.getCiphertext().getValue());
+        // TODO our macs are always valid
+        computations.setMacValid(true);
+
+        System.out
+                .println("Clean:" + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
+        System.out.println("AuthenticatedNonbMetaData: "
+                + ArrayConverter.bytesToHexString(computations.getAuthenticatedNonMetaData().getValue()));
+        System.out.println("AuthenticatedMetaData: "
+                + ArrayConverter.bytesToHexString(computations.getAuthenticatedMetaData().getValue()));
+        System.out.println("MAC: " + ArrayConverter.bytesToHexString(computations.getMac().getValue()));
+        System.out.println("Ciphertext: " + ArrayConverter.bytesToHexString(computations.getCiphertext().getValue()));
+        System.out.println("Plain: " + ArrayConverter.bytesToHexString(computations.getPlainRecordBytes().getValue()));
+        System.out.println("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
 
     }
 
@@ -109,21 +122,20 @@ public class RecordStreamCipher extends RecordCipher {
         computations.setMacKey(getKeySet().getReadMacSecret(context.getChooser().getConnectionEndType()));
         computations.setCipherKey(getKeySet().getReadKey(context.getChooser().getConnectionEndType()));
 
-        byte[] plaintext = record.getProtocolMessageBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(0, plaintext);
-        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        byte[] cipherText = record.getProtocolMessageBytes().getValue();
 
-        byte[] ciphertext = parser.parseByteArrayField(plaintext.length - readMac.getMacLength());
-        byte[] plainData = decryptCipher.decrypt(ciphertext);
-
+        computations.setCiphertext(cipherText);
+        byte[] plainData = decryptCipher.decrypt(cipherText);
         computations.setPlainRecordBytes(plainData);
         plainData = computations.getPlainRecordBytes().getValue();
-
-        byte[] cleanProtocolBytes = computations.getPlainRecordBytes().getValue();
-        record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+        DecryptionParser parser = new DecryptionParser(0, plainData);
+        byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
+        record.setCleanProtocolMessageBytes(cleanBytes);
 
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
+        // TODO actually check mac
+        record.getComputations().setMacValid(true);
     }
 
     @Override
