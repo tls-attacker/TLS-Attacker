@@ -95,7 +95,7 @@ public abstract class RecordCipher {
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            if (protocolVersion == ProtocolVersion.TLS13) {
+            if (protocolVersion.isTLS13()) {
                 stream.write(record.getContentType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
                 stream.write(ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));

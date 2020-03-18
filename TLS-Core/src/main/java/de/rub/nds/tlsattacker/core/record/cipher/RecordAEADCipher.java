@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -114,6 +115,8 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setPlainRecordBytes(
                     ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
                             .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
+            record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
+            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
         }

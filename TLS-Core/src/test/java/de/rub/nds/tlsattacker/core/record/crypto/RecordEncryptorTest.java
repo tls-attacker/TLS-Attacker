@@ -118,8 +118,8 @@ public class RecordEncryptorTest {
                 ArrayConverter
                         .hexStringToByteArray("1400000CB692015BE123B8364314FE1CBD527A01EDCA68BF5A7918C190942A9AECA971CA0B0B0B0B0B0B0B0B0B0B0B0B"),
                 record.getComputations().getPlainRecordBytes().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259"), record.getComputations()
-                .getCbcInitialisationVector().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259"), record
+                .getComputations().getCbcInitialisationVector().getValue());
         assertNull(record.getComputations().getAdditionalPaddingLength());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
@@ -219,10 +219,8 @@ public class RecordEncryptorTest {
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("CE4D3A05054892056A014B28E3AF613105583FAA"), record
                 .getComputations().getMac().getValue());
-        assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381"),
-                record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000CDF6663DF2F42C83E1EA94381"), record
+                .getComputations().getAuthenticatedNonMetaData().getValue());
         assertNull(record.getComputations().getPadding());
         assertArrayEquals(
                 ArrayConverter

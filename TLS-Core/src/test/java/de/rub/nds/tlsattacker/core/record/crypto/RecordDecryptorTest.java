@@ -115,18 +115,13 @@ public class RecordDecryptorTest {
         decryptor.decrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3"), record
                 .getComputations().getCbcInitialisationVector().getValue());
-        assertEquals(11, (long) record.getComputations().getAdditionalPaddingLength().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
-                .getComputations().getAuthenticatedMetaData().getValue());
+                .getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
                 .getComputations().getMac().getValue());
-        assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD"),
-                record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(

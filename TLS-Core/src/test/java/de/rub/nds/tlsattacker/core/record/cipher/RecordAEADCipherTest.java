@@ -367,6 +367,7 @@ public class RecordAEADCipherTest {
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setProtocolMessageBytes(ciphertext);
+        record.setLength(record.getProtocolMessageBytes().getValue().length);
         record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
