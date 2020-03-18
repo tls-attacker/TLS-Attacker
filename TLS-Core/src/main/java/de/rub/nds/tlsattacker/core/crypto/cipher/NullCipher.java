@@ -75,4 +75,8 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
         return someBytes;
     }
 
+    @Override
+    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
+        return iv;
+    }
 }

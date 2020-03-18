@@ -155,4 +155,8 @@ public class GOST28147Cipher implements EncryptionCipher, DecryptionCipher {
         throw new UnsupportedOperationException("Can only be used as a stream cipher!");
     }
 
+    @Override
+    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
+        return iv;
+    }
 }

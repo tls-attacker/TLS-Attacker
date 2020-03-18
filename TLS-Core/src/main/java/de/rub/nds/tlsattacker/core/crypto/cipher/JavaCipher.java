@@ -184,4 +184,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
         }
     }
 
+    @Override
+    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
+        return iv;
+    }
 }

@@ -21,8 +21,7 @@ public class ChaCha20Poly1305CipherTest {
 
     @Test
     public void testEncrypt() {
-        byte[] nonce = new byte[8];
-        byte[] iv = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("DB9225611E4646D7D10BA135"), nonce);
+        byte[] iv = ArrayConverter.hexStringToByteArray("DB9225611E4646D7D10BA135");
         byte[] key = ArrayConverter
                 .hexStringToByteArray("5C602601DBAC4CD0B8BA794A208763A8036C239C91835BA8FD4396B34F004F3A");
         byte[] aad = ArrayConverter.hexStringToByteArray("00000000000000001603030010");
@@ -38,8 +37,7 @@ public class ChaCha20Poly1305CipherTest {
 
     @Test
     public void testDecrypt() {
-        byte[] nonce = new byte[8];
-        byte[] iv = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("FC8A9AA4809FB4F11B5E6E2B"), nonce);
+        byte[] iv = ArrayConverter.hexStringToByteArray("FC8A9AA4809FB4F11B5E6E2B");
         byte[] key = ArrayConverter
                 .hexStringToByteArray("7A3B05D1E2A054BB00ED2E308463D4AA258C1E54F946898919B059765B8636DD");
         byte[] aad = ArrayConverter.hexStringToByteArray("00000000000000001603030010");

@@ -27,6 +27,8 @@ public interface EncryptionCipher {
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException;
 
+    public byte[] preprocessIv(long sequenceNumber, byte[] iv);
+
     public byte[] getIv();
 
     public void setIv(byte[] iv);
