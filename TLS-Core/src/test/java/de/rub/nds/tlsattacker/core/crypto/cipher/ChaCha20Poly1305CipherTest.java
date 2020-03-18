@@ -30,7 +30,7 @@ public class ChaCha20Poly1305CipherTest {
                 .hexStringToByteArray("ACE73C8630758D6DBFCEF6D1A0318D4F85BA532C183455F27E00618365DE1A57");
 
         ChaCha20Poly1305Cipher encryptCipher = new ChaCha20Poly1305Cipher(key); //
-        byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16, aad, plaintext);
+        byte[] calculatedCiphertext = encryptCipher.encrypt(iv, 16 * 8, aad, plaintext);
 
         Assert.assertArrayEquals(expectedCiphertext, calculatedCiphertext);
     }
@@ -46,7 +46,7 @@ public class ChaCha20Poly1305CipherTest {
         byte[] expectedPlaintext = ArrayConverter.hexStringToByteArray("1400000C5C2BB43710C69470E41B058C");
 
         ChaCha20Poly1305Cipher decryptCipher = new ChaCha20Poly1305Cipher(key); //
-        byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16, aad, ciphertext);
+        byte[] calculatedPlaintext = decryptCipher.decrypt(iv, 16 * 8, aad, ciphertext);
 
         Assert.assertArrayEquals(expectedPlaintext, calculatedPlaintext);
     }

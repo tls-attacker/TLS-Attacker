@@ -28,6 +28,7 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -329,7 +330,7 @@ public class RecordAEADCipherTest {
         context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
+        byte[] plaintext = ArrayConverter.hexStringToByteArray("080000020000");
         Record record = new Record();
         record.setCleanProtocolMessageBytes(plaintext);
         record.prepareComputations();
@@ -366,12 +367,13 @@ public class RecordAEADCipherTest {
         record.prepareComputations();
         record.setSequenceNumber(new BigInteger("0"));
         record.setProtocolMessageBytes(ciphertext);
-        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
         byte[] plaintext = record.getCleanProtocolMessageBytes().getValue();
-        byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");
+        byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("080000020000");
         assertArrayEquals(plaintext, plaintext_correct);
+        assertEquals(ProtocolMessageType.HANDSHAKE.getValue(), (byte) record.getContentType().getValue());
     }
 
     @Test

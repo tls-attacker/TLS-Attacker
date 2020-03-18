@@ -109,13 +109,21 @@ public class RecordAEADCipher extends RecordCipher {
     public void encrypt(Record record) throws CryptoException {
         LOGGER.debug("Encrypting Record");
         record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
-
-        record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
+        if (version.isTLS13()) {
+            record.getComputations().setPadding(new byte[context.getConfig().getDefaultAdditionalPadding()]);
+            record.getComputations().setPlainRecordBytes(
+                    ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
+                            .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
+        } else {
+            record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
+        }
 
         byte[] explicitNonce = prepareEncryptionExplicitNonce(record);
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
-
+        System.out.println("Explicit nonce:" + ArrayConverter.bytesToHexString(explicitNonce));
+        System.out.println("Salt:" + ArrayConverter.bytesToHexString(aeadSalt));
+        System.out.println("Nonce:" + ArrayConverter.bytesToHexString(gcmNonce));
         // TODO This does not make a lot of sense
         byte[] authenticatedNonMetaData = record.getComputations().getPlainRecordBytes().getValue();
         record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
@@ -198,19 +206,39 @@ public class RecordAEADCipher extends RecordCipher {
         // the decryption
 
         try {
-            byte[] plaintext;
+            byte[] plainRecordBytes;
             if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
                     || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
                     || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-                plaintext = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8, additionalAuthenticatedData,
+                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8, additionalAuthenticatedData,
                         ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
             } else {
-                plaintext = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8,
+                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8,
                         ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
             }
             record.getComputations().setAuthenticationTagValid(true);
-            record.getComputations().setPlainRecordBytes(plaintext);
-            record.setCleanProtocolMessageBytes(record.getComputations().getPlainRecordBytes().getValue());
+            record.getComputations().setPlainRecordBytes(plainRecordBytes);
+            plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
+
+            if (version.isTLS13()) {
+                // TLS 1.3 plain record bytes are constructed as: Clean |
+                // ContentType | 0x00000... (Padding)
+                int numberOfPaddingBytes = countTrailingZeroBytes(plainRecordBytes);
+                if (numberOfPaddingBytes == plainRecordBytes.length) {
+                    LOGGER.warn("Record contains ONLY padding and no content type. Setting clean bytes == plainbytes");
+                    record.setCleanProtocolMessageBytes(plainRecordBytes);
+                    return;
+                }
+                parser = new DecryptionParser(0, plainRecordBytes);
+                byte[] cleanBytes = parser.parseByteArrayField(plainRecordBytes.length - numberOfPaddingBytes - 1);
+                byte[] contentType = parser.parseByteArrayField(1);
+                byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
+                record.setCleanProtocolMessageBytes(cleanBytes);
+                record.getComputations().setPadding(cleanBytes);
+                record.setContentType(contentType[0]);
+            } else {
+                record.setCleanProtocolMessageBytes(plainRecordBytes);
+            }
         } catch (CryptoException E) {
             LOGGER.warn("Tag invalid", E);
             record.getComputations().setAuthenticationTagValid(false);
@@ -229,6 +257,18 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Derypting BlobRecord");
         br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
 
+    }
+
+    private int countTrailingZeroBytes(byte[] plainRecordBytes) {
+        int counter = 0;
+        for (int i = plainRecordBytes.length - 1; i < plainRecordBytes.length; i--) {
+            if (plainRecordBytes[i] == 0) {
+                counter++;
+            } else {
+                return counter;
+            }
+        }
+        return counter;
     }
 
     class DecryptionParser extends Parser<Object> {

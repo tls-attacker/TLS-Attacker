@@ -67,7 +67,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return cipher.doFinal(someBytes);
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException
                 | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not encrypt data", ex);
         }
     }
 
@@ -82,7 +82,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not encrypt data", ex);
         }
     }
 
@@ -99,7 +99,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not enrypt data", ex);
         }
     }
 
@@ -127,7 +127,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not decrypt data", ex);
         }
     }
 
@@ -142,7 +142,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
                 | BadPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not decrypt data", ex);
         }
     }
 
@@ -160,7 +160,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not decrypt data", ex);
         }
     }
 
@@ -180,7 +180,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not decrypt data", ex);
         }
     }
 
