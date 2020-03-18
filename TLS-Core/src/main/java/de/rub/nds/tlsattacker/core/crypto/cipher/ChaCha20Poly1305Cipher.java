@@ -162,15 +162,4 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
             this.mac.update(this.ZEROES, 0, TAG_LENGTH - partial);
         }
     }
-
-    @Override
-    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
-        byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
-        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
-
-        for (int i = 0; i < iv.length; ++i) {
-            temp[i] ^= iv[i];
-        }
-        return temp;
-    }
 }

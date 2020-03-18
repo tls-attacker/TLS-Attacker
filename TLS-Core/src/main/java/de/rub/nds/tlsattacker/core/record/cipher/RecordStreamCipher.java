@@ -95,19 +95,6 @@ public class RecordStreamCipher extends RecordCipher {
         record.setProtocolMessageBytes(computations.getCiphertext().getValue());
         // TODO our macs are always valid
         computations.setMacValid(true);
-
-        System.out
-                .println("Clean:" + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
-        System.out.println("AuthenticatedNonbMetaData: "
-                + ArrayConverter.bytesToHexString(computations.getAuthenticatedNonMetaData().getValue()));
-        System.out.println("AuthenticatedMetaData: "
-                + ArrayConverter.bytesToHexString(computations.getAuthenticatedMetaData().getValue()));
-        System.out.println("MAC: " + ArrayConverter.bytesToHexString(computations.getMac().getValue()));
-        System.out.println("Ciphertext: " + ArrayConverter.bytesToHexString(computations.getCiphertext().getValue()));
-        System.out.println("Plain: " + ArrayConverter.bytesToHexString(computations.getPlainRecordBytes().getValue()));
-        System.out.println("ProtocolMessageBytes: "
-                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
-
     }
 
     @Override

@@ -77,17 +77,6 @@ public class RecordPreparatorTest {
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
         assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
-        System.out
-                .println("Clean:" + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
-        System.out.println("Plain: "
-                + ArrayConverter.bytesToHexString(record.getComputations().getPlainRecordBytes().getValue()));
-        System.out.println("AAD: "
-                + ArrayConverter.bytesToHexString(record.getComputations().getAuthenticatedMetaData().getValue()));
-        System.out.println("Ciphertext: "
-                + ArrayConverter.bytesToHexString(record.getComputations().getCiphertext().getValue()));
-        System.out.println("WholeCiphertext: "
-                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
-
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());
     }

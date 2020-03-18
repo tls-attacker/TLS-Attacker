@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -76,7 +77,10 @@ public class RecordAEADCipher extends RecordCipher {
 
     private byte[] prepareEncryptionGcmNonce(byte[] aeadSalt, byte[] explicitNonce, Record record) {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
-        gcmNonce = encryptCipher.preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
+            // Nonce construction is different for chacha & tls1.3
+            gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
         return gcmNonce;
@@ -115,6 +119,7 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setPlainRecordBytes(
                     ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
                             .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
+            //For TLS1.3 we need the length beforehand to compute the authenticatedMetaData
             record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
@@ -124,9 +129,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] explicitNonce = prepareEncryptionExplicitNonce(record);
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
-        System.out.println("Explicit nonce:" + ArrayConverter.bytesToHexString(explicitNonce));
-        System.out.println("Salt:" + ArrayConverter.bytesToHexString(aeadSalt));
-        System.out.println("Nonce:" + ArrayConverter.bytesToHexString(gcmNonce));
+        
         // TODO This does not make a lot of sense
         byte[] authenticatedNonMetaData = record.getComputations().getPlainRecordBytes().getValue();
         record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
@@ -195,7 +198,10 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
-        gcmNonce = decryptCipher.preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
+            // Nonce construction is different for chacha & tls1.3
+            gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
 
@@ -239,6 +245,7 @@ public class RecordAEADCipher extends RecordCipher {
                 record.setCleanProtocolMessageBytes(cleanBytes);
                 record.getComputations().setPadding(cleanBytes);
                 record.setContentType(contentType[0]);
+                record.setContentMessageType(ProtocolMessageType.getContentType(contentType[0]));
             } else {
                 record.setCleanProtocolMessageBytes(plainRecordBytes);
             }
@@ -300,5 +307,14 @@ public class RecordAEADCipher extends RecordCipher {
             return super.getPointer();
         }
 
+    }
+
+    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
+        byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
+        for (int i = 0; i < iv.length; ++i) {
+            temp[i] ^= iv[i];
+        }
+        return temp;
     }
 }

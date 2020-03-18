@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
@@ -182,10 +181,5 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
-    }
-
-    @Override
-    public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
-        return iv;
     }
 }
