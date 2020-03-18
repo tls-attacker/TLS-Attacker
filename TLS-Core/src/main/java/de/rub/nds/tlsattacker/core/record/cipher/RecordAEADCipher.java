@@ -119,7 +119,8 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setPlainRecordBytes(
                     ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
                             .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
-            //For TLS1.3 we need the length beforehand to compute the authenticatedMetaData
+            // For TLS1.3 we need the length beforehand to compute the
+            // authenticatedMetaData
             record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + AEAD_TAG_LENGTH);
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
@@ -129,7 +130,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] explicitNonce = prepareEncryptionExplicitNonce(record);
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
-        
+
         // TODO This does not make a lot of sense
         byte[] authenticatedNonMetaData = record.getComputations().getPlainRecordBytes().getValue();
         record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
