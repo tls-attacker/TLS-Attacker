@@ -60,6 +60,7 @@ public final class RecordBlockCipher extends RecordCipher {
             if (version.usesExplicitIv()) {
                 useExplicitIv = true;
             } else {
+                useExplicitIv = false;
                 encryptCipher.setIv(keySet.getWriteIv(localConEndType));
                 decryptCipher.setIv(keySet.getReadIv(localConEndType));
             }
@@ -174,7 +175,7 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPadding(calculatePadding(calculatePaddingLength(cleanBytes.length)));
             computations.setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding()
                     .getValue()));
-            byte[] ciphertext = encryptCipher.encrypt(iv, computations.getPlainRecordBytes().getValue());
+            byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
             computations.setCiphertext(ciphertext);
             if (useExplicitIv) {
                 computations.setAuthenticatedNonMetaData(ArrayConverter.concatenate(iv, record.getComputations()
