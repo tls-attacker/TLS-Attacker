@@ -145,4 +145,13 @@ public class SendDynamicServerCertificateActionTest {
     public void testHashCode() {
         assertTrue(action.hashCode() == 1079966196);
     }
+
+    @Test
+    public void testSendNoCertificate(){
+        // Check if no certificate is sent with the corresponding cipher suite
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
+        action.execute(state);
+        assertTrue(action.getSendMessages().size() == 0
+                    && action.getSendRecords().size() == 0);
+    }
 }
