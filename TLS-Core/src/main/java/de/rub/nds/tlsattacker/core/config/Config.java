@@ -1128,9 +1128,9 @@ public class Config implements Serializable {
 
     /**
      * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
-     * unknown if this option is set.
+     * unencrypted messages if this option is set.
      */
-    private Boolean parseInvalidRecordNormally = true;
+    private Boolean parseInvalidRecordsUnencrypted = false;
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
@@ -3345,11 +3345,11 @@ public class Config implements Serializable {
     }
 
     public Boolean getParseInvalidRecordNormally() {
-        return parseInvalidRecordNormally;
+        return parseInvalidRecordsUnencrypted;
     }
 
     public void setParseInvalidRecordNormally(Boolean parseInvalidRecordNormally) {
-        this.parseInvalidRecordNormally = parseInvalidRecordNormally;
+        this.parseInvalidRecordsUnencrypted = parseInvalidRecordNormally;
     }
 
     public String getDefaultClientPWDUsername() {
