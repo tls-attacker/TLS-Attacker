@@ -566,7 +566,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = {"MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"};
+            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -626,15 +626,16 @@ public enum CipherSuite {
      * version. TODO: this is still very imprecise and must be improved with new
      * ciphers.
      *
-     * @param version The ProtocolVersion to check
+     * @param version
+     *            The ProtocolVersion to check
      * @return True if the Ciphersuite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8() && !this.name().contains("IDEA")
-                && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()
+                && !this.name().contains("IDEA") && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
