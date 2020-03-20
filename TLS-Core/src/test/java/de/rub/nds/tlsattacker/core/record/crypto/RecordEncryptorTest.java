@@ -254,8 +254,6 @@ public class RecordEncryptorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertNull(record.getComputations().getMac());
-        // assertArrayEquals(new byte[0], record
-        // .get().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("FA78825C25329563CD9FEDFBE49AF948"), record
                 .getComputations().getAuthenticatedNonMetaData().getValue());
         assertNull(record.getComputations().getPadding());
