@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -130,7 +131,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
+        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
         // For RSA, the PublicKey field actually contains the encrypted
         // premaster secret
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
@@ -152,8 +153,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
             BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
                     chooser.getServerRsaModulus());
-            encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted,
-                    chooser.getServerRsaModulus().bitLength() / 8, true);
+            encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus().bitLength()
+                    / Bits.IN_A_BYTE, true);
             prepareSerializedPublicKey(msg);
             premasterSecret = manipulatePremasterSecret(premasterSecret);
             preparePremasterSecret(msg);

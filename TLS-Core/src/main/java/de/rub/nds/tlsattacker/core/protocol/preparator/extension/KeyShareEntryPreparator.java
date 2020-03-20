@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -58,7 +59,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, passwordElement,
                 chooser);
-        int curveSize = curve.getModulus().bitLength() / 8;
+        int curveSize = curve.getModulus().bitLength() / Bits.IN_A_BYTE;
         entry.setPrivateKey(keyMaterial.privateKeyScalar);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(ArrayConverter.concatenate(

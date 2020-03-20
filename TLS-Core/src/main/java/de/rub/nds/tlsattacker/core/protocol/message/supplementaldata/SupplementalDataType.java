@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.supplementaldata;
 
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public enum SupplementalDataType {
 
     private static int valueToInt(byte[] value) {
         if (value.length == 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else {
             return -1;
         }

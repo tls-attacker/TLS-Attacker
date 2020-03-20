@@ -15,6 +15,7 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,9 +60,9 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext) {
         this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / 8) - 1], 0, iv.length));
+                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionalAuthenticatedData.length;
-        int ciphertextLength = ciphertext.length - (tagLength / 8);
+        int ciphertextLength = ciphertext.length - (tagLength / Bits.IN_A_BYTE);
         byte[] plaintext = new byte[getOutputSize(false, ciphertext.length)];
 
         this.cipher.init(false, new ParametersWithIV(null, iv));
@@ -75,7 +76,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
                 Long.valueOf(ciphertextLength), 8));
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
-        this.mac.update(calculatedMAC, 0, (tagLength / 8));
+        this.mac.update(calculatedMAC, 0, (tagLength / Bits.IN_A_BYTE));
         this.mac.doFinal(calculatedMAC, 0);
 
         byte[] receivedMAC = Arrays.copyOfRange(ciphertext, ciphertextLength, ciphertext.length);
@@ -105,7 +106,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
         this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / 8) - 1], 0, iv.length));
+                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
         byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
@@ -124,7 +125,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
                 plaintextLengthLittleEndian, 8);
 
-        mac.update(aadPlaintextLengthsLittleEndian, 0, (tagLength / 8));
+        mac.update(aadPlaintextLengthsLittleEndian, 0, (tagLength / Bits.IN_A_BYTE));
         mac.doFinal(ciphertext, 0 + plaintextLength);
 
         return ciphertext;

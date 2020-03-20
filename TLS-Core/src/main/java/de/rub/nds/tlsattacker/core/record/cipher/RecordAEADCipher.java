@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -151,10 +152,10 @@ public class RecordAEADCipher extends RecordCipher {
         if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
                 || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
                 || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * 8, additionalAuthenticatedData,
-                    plainBytes);
+            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                    additionalAuthenticatedData, plainBytes);
         } else {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * 8, plainBytes);
+            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, plainBytes);
         }
 
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
@@ -221,10 +222,10 @@ public class RecordAEADCipher extends RecordCipher {
             if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
                     || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
                     || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8, additionalAuthenticatedData,
-                        ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                        additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
             } else {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * 8,
+                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
                         ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
             }
             record.getComputations().setAuthenticationTagValid(true);

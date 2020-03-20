@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -92,7 +93,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, secret);
+        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
         message.getComputations().setPremasterSecret(pms);
 
@@ -124,7 +125,8 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         Point p = curve.mult(guessedSecret, checkPoint);
-        byte[] pms = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / 8, p.getX().getData());
+        byte[] pms = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getX()
+                .getData());
         return Arrays.equals(checkPMS, pms);
     }
 

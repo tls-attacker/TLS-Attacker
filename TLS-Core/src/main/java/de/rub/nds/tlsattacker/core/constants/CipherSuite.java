@@ -461,7 +461,7 @@ public enum CipherSuite {
 
     private static int valueToInt(byte[] value) {
         if (value.length >= 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else if (value.length == 1) {
             return value[0];
         } else {

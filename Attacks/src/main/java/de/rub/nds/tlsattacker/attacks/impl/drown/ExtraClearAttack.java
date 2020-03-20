@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.attacks.constants.DrownVulnerabilityType;
 import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.ExtraClearDrownOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
@@ -220,7 +221,7 @@ class ExtraClearAttack {
 
         BigInteger e = serverPublicKey;
         BigInteger N = serverModulus;
-        int l_m = serverModulus.bitLength() / 8;
+        int l_m = serverModulus.bitLength() / Bits.IN_A_BYTE;
         BigInteger B = BigInteger.valueOf(2).modPow(BigInteger.valueOf(8 * (l_m - 2)), N);
         int l_k = cipherSuite.getSecretKeyByteNumber();
         // The DROWN paper says this needs to be `2^(8 (k + 1))`, which is

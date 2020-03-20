@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -456,9 +457,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         byte[] aad = msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue();
         int tagBitLength;
         if (cipherSuite.isCCM_8()) {
-            tagBitLength = 8 * 8; // TODO fix me
+            tagBitLength = 8 * Bits.IN_A_BYTE; // TODO fix me
         } else {
-            tagBitLength = 16 * 8; // TODO fix me
+            tagBitLength = 16 * Bits.IN_A_BYTE; // TODO fix me
         }
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
@@ -484,9 +485,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         byte[] aad = msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue();
         int tagBitLength;
         if (cipherSuite.isCCM_8()) {
-            tagBitLength = 8 * 8; // TODO fix me
+            tagBitLength = 8 * Bits.IN_A_BYTE; // TODO fix me
         } else {
-            tagBitLength = 16 * 8; // TOD fix me
+            tagBitLength = 16 * Bits.IN_A_BYTE; // TOD fix me
         }
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
