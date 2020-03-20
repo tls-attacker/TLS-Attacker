@@ -10,10 +10,8 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import java.math.BigInteger;
 
 public class RecordCryptoComputations {
 
@@ -240,12 +238,12 @@ public class RecordCryptoComputations {
         return aeadSalt;
     }
 
-    public void setAeadSalt(ModifiableByteArray implicitNonce) {
-        this.aeadSalt = implicitNonce;
+    public void setAeadSalt(ModifiableByteArray aeadSalt) {
+        this.aeadSalt = aeadSalt;
     }
 
-    public void setAeadSalt(byte[] implicitNonce) {
-        this.aeadSalt = ModifiableVariableFactory.safelySetValue(this.aeadSalt, implicitNonce);
+    public void setAeadSalt(byte[] aeadSalt) {
+        this.aeadSalt = ModifiableVariableFactory.safelySetValue(this.aeadSalt, aeadSalt);
     }
 
     public ModifiableByteArray getExplicitNonce() {
