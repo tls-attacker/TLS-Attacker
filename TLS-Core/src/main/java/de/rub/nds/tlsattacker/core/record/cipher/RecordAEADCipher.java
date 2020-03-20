@@ -133,11 +133,6 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
 
-        // TODO This does not make a lot of sense
-        byte[] authenticatedNonMetaData = record.getComputations().getPlainRecordBytes().getValue();
-        record.getComputations().setAuthenticatedNonMetaData(authenticatedNonMetaData);
-        authenticatedNonMetaData = record.getComputations().getAuthenticatedNonMetaData().getValue();
-
         LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(gcmNonce));
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
@@ -159,6 +154,8 @@ public class RecordAEADCipher extends RecordCipher {
         }
 
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
+
+        record.getComputations().setAuthenticatedNonMetaData(onlyCiphertext);
 
         byte[] authenticationTag = Arrays.copyOfRange(wholeCipherText, wholeCipherText.length - aeadTagLength,
                 wholeCipherText.length);

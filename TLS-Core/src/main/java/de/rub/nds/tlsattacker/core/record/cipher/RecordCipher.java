@@ -118,7 +118,15 @@ public abstract class RecordCipher {
                     version = new byte[0];
                 }
                 stream.write(version);
-                int length = record.getComputations().getAuthenticatedNonMetaData().getValue().length;
+                int length;
+                if (record.getComputations().getAuthenticatedNonMetaData() == null
+                        || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue() == null) {
+                    // This case is required for TLS 1.2 aead encryption
+                    length = record.getComputations().getPlainRecordBytes().getValue().length;
+                } else {
+                    length = record.getComputations().getAuthenticatedNonMetaData().getValue().length;
+
+                }
                 stream.write(ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
                 return stream.toByteArray();
             }

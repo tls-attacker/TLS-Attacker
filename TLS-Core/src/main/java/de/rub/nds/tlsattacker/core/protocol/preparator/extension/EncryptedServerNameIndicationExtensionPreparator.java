@@ -55,7 +55,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         ExtensionPreparator<EncryptedServerNameIndicationExtensionMessage> {
 
     private final static int IV_LENGTH = 12;
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Chooser chooser;

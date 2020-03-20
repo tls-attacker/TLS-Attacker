@@ -256,7 +256,7 @@ public class RecordEncryptorTest {
         assertNull(record.getComputations().getMac());
         // assertArrayEquals(new byte[0], record
         // .get().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("FA78825C25329563CD9FEDFBE49AF948"), record
                 .getComputations().getAuthenticatedNonMetaData().getValue());
         assertNull(record.getComputations().getPadding());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1400000C0C821172BB87E255D5C6E078"), record

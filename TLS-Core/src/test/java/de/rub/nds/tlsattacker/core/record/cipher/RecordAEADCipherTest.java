@@ -97,7 +97,10 @@ public class RecordAEADCipherTest {
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030028"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
-        assertArrayEquals(data, record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
                 record.getComputations().getCipherKey().getValue());
@@ -228,7 +231,10 @@ public class RecordAEADCipherTest {
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030028"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
-        assertArrayEquals(data, record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
                 record.getComputations().getCipherKey().getValue());
