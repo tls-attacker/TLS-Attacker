@@ -46,7 +46,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientEsniInnerPars
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientEsniInnerSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
@@ -55,6 +54,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 public class EncryptedServerNameIndicationExtensionPreparator extends
         ExtensionPreparator<EncryptedServerNameIndicationExtensionMessage> {
 
+    private final static int IV_LENGTH = 12;
+    
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Chooser chooser;
@@ -403,9 +404,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        int ivLen = 12; // TODO fix me
         try {
-            iv = HKDFunction.expandLabel(hkdfAlgortihm, esniMasterSecret, HKDFunction.ESNI_IV, hashIn, ivLen);
+            iv = HKDFunction.expandLabel(hkdfAlgortihm, esniMasterSecret, HKDFunction.ESNI_IV, hashIn, IV_LENGTH);
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniIv", e);
         }
@@ -457,9 +457,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         byte[] aad = msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue();
         int tagBitLength;
         if (cipherSuite.isCCM_8()) {
-            tagBitLength = 8 * Bits.IN_A_BYTE; // TODO fix me
+            tagBitLength = 8 * Bits.IN_A_BYTE;
         } else {
-            tagBitLength = 16 * Bits.IN_A_BYTE; // TODO fix me
+            tagBitLength = 16 * Bits.IN_A_BYTE;
         }
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
@@ -485,9 +485,9 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
         byte[] aad = msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue();
         int tagBitLength;
         if (cipherSuite.isCCM_8()) {
-            tagBitLength = 8 * Bits.IN_A_BYTE; // TODO fix me
+            tagBitLength = 8 * Bits.IN_A_BYTE;
         } else {
-            tagBitLength = 16 * Bits.IN_A_BYTE; // TOD fix me
+            tagBitLength = 16 * Bits.IN_A_BYTE;
         }
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
