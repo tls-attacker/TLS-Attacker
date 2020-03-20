@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
@@ -23,9 +22,9 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cryptomator.siv.org.bouncycastle.util.Arrays;
 
 public class RecordStreamCipher extends RecordCipher {
 
@@ -122,8 +121,11 @@ public class RecordStreamCipher extends RecordCipher {
 
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
-        // TODO actually check mac
-        record.getComputations().setMacValid(true);
+        byte[] calculatedHmac = calculateMac(
+                ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(), record
+                        .getComputations().getAuthenticatedNonMetaData().getValue()),
+                context.getTalkingConnectionEndType());
+        record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 
     @Override
