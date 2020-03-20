@@ -15,6 +15,22 @@ public enum CcaCertificateType {
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
             true),
+    ECROOTv3_CAv3_LEAF_ECv3(
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use ECC.",
+            false,
+            true),
+    ECROOTv3_CAv3CustomCurve_LEAF_ECv3(
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use ECC and the intermedia CA uses a custom curve (secp384r1 with custom generator).",
+            false,
+            true),
+    ECROOTv3_Curveball_CAv3_LEAF_ECv3(
+            "EC Leaf certificate generated based on the 'new' (root-)CA certificate with one intermediate CA." +
+                    "All use ECC and a ROOT certificate is included. The new ROOT certificate is generated based on " +
+                    "CVE-2020-0601 (Curveball/Chain of Fools). TODO: maybe change something, currently the key for it is generated manually.",
+            false,
+            true),
     ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3(
             "RSA Leaf Certificate generated with an intermediate Certificate that is v1 (actually not a CA). "
                     + "Root CA is v3.",

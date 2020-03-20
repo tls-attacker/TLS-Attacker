@@ -90,6 +90,9 @@ public class CcaCertificateGenerator {
                 case ROOTv3_NewFakeChain_ROOTv3_CAv3_LEAF_RSAv3:
                 case ROOTv3_CAv3_LEAF_RSAvNeg1:
                 case ROOTv3_CAv3_LEAF_RSAvNeg1_nLeaf_RSAv3:
+                case ECROOTv3_CAv3_LEAF_ECv3:
+                case ECROOTv3_CAv3CustomCurve_LEAF_ECv3:
+                case ECROOTv3_Curveball_CAv3_LEAF_ECv3:
                 case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;

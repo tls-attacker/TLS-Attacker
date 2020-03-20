@@ -148,10 +148,12 @@ public class CcaCertificateManager {
 
         // Declare variables for later use
         String keyName = "Default non existent key";
+        String pubKeyName = "Default non existent key";
         String keyType = "";
         Boolean readKey = false;
         CertificateMessage certificateMessage = new CertificateMessage();
-        String rootCertificate = ccaCertificateType.toString().substring(0, 6).toLowerCase() + ".pem";
+        String rootCertificate = ccaCertificateType.toString().split("_")[0].toLowerCase() + ".pem";
+//        String rootCertificate = ccaCertificateType.toString().substring(0, 6).toLowerCase() + ".pem";
         CustomPrivateKey customPrivateKey;
         CustomPublicKey customPublicKey;
         byte[] keyBytes;
@@ -212,6 +214,7 @@ public class CcaCertificateManager {
             encodedCertificates[i] = Asn1EncoderForX509.encodeForCertificate(linker, certificate);
             if (certificate instanceof Asn1Sequence && readKey == false) {
                 keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFile();
+                pubKeyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getPubKeyFile();
                 keyType = ((Asn1Sequence) certificate).getChildren().get(0).getAttribute("keyType");
                 readKey = true;
             }
@@ -229,15 +232,17 @@ public class CcaCertificateManager {
                     BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
                     customPrivateKey = new CustomRSAPrivateKey(modulus, d);
 
-                    PublicKey publicKey = PemUtil.readPublicKey(new ByteArrayInputStream(keyBytes));
+                    pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
+
+                    PublicKey publicKey = PemUtil.readPublicKey(new ByteArrayInputStream(pubKeyBytes));
                     customPublicKey = new CustomRsaPublicKey(((RSAPublicKeyImpl) publicKey).getPublicExponent(),
                             modulus);
                     break;
                 case DH:
-                    keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
+                    keyBytes = keyFileManager.getKeyFileContent(keyName);
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
 
-                    pubKeyBytes = keyFileManager.getKeyFileContent(keyName);
+                    pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
                     publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
 
                     BigInteger y = ((DHPublicKey) publicKey).getY();
@@ -262,9 +267,9 @@ public class CcaCertificateManager {
                     break;
                 case ECDH:
                 case ECDSA:
-                    keyBytes = keyFileManager.getKeyFileContent(keyName.replace("pub", ""));
+                    keyBytes = keyFileManager.getKeyFileContent(keyName);
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
-                    pubKeyBytes = keyFileManager.getKeyFileContent(keyName);
+                    pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
                     publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
 
                     ECPoint x3 = ((ECPublicKey) publicKey).getW();
