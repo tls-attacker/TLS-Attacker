@@ -93,6 +93,11 @@ public class CcaCertificateGenerator {
                 case ECROOTv3_CAv3_LEAF_ECv3:
                 case ECROOTv3_CAv3CustomCurve_LEAF_ECv3:
                 case ECROOTv3_Curveball_CAv3_LEAF_ECv3:
+                case ROOTv3_CAv3_LEAF_RSAv1_UniqueIdentifiers:
+                case ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithmParameters:
+                case ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1:
+                case ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2:
+                case ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters:
                 case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;

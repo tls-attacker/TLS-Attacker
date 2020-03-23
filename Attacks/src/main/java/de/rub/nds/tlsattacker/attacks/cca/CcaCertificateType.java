@@ -20,6 +20,13 @@ public enum CcaCertificateType {
                     "All use ECC.",
             false,
             true),
+    ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters(
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use ECC and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
+                    "Unless the implementation ignores the parameters the test is expected to fail because " +
+                    "a.) Parameters are not null b.) parameters are invalid",
+            false,
+            true),
     ECROOTv3_CAv3CustomCurve_LEAF_ECv3(
             "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
                     "All use ECC and the intermedia CA uses a custom curve (secp384r1 with custom generator).",
@@ -96,6 +103,11 @@ public enum CcaCertificateType {
             true),
     ROOTv3_CAv3_LEAF_RSAv1(
             "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv1_UniqueIdentifiers(
+            "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The leaf certificate has uniqueIDs for issuer and subject which MUST NOT appear in a v1 certificate.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAvNeg1(
@@ -237,7 +249,22 @@ public enum CcaCertificateType {
                     "uses a different key. Intermediate CA and leaf certificate are as always.",
             false,
             true),
-//    Removed because cert.isEmpty() returns true if NullTag is used (Note, this only happens after the server received the certificate)
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithmParameters("RSA Leaf certificate generated based on the " +
+            "provided (root-)CA certificate with one intermediate CA. In the leaf certificate the signatureAlgorithms " +
+            "parameters differ in the tbsCertificate and outside.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1("RSA Leaf certificate generated based on the provided " +
+            "(root-)CA certificate with one intermediate CA. In the leaf certificate the signature field " +
+            "(type AlgorithmIdentifier) specifies a different algorithm than the signatureAlgorithm field in the " +
+            "Certificate. Additionally the algorithm doesn't match the key.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 " +
+            "but the algorithm identifiers are swapped.",
+            false,
+            true),/*
+ // Removed for now since Javas signature engine relies on the value to sign the certificate. But this causes a mismatch since it can't find an EC key*/
     ROOTv3_debug("debugging", false, true);
 
     private String description;
