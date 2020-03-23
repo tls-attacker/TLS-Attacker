@@ -68,16 +68,13 @@ public class ServerVerifyChecker {
             default:
                 throw new UnsupportedOperationException("Check not implemented for the selected cipher suite");
         }
-
         return compareDecrypted(decryptedPart, context.getClientRandom(), decreaseLogNoise);
     }
 
     public static boolean compareDecrypted(byte[] decrypted, byte[] clientRandom, boolean silent) {
         if (decrypted.length <= SSL2ByteLength.MAC_DATA + SSL2ByteLength.MESSAGE_TYPE) {
-            if (!silent) {
-                LOGGER.warn("Decrypted Server-Verify message is too short");
-                return false;
-            }
+            LOGGER.warn("Decrypted Server-Verify message is too short");
+            return false;
         }
         int typeOffset = SSL2ByteLength.MAC_DATA;
         // All protocol fields after the record header are part of the message

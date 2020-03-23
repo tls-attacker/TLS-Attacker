@@ -52,7 +52,7 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
             throw new ConfigurationException("'Extra clear' oracle requires a non-export cipher");
         }
         // TODO: Check cipher suite for Leaky Export
-
+        config.setDefaultSSL2CipherSuite(cipherSuite);
         return config;
     }
 
