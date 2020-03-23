@@ -410,6 +410,38 @@ public class RecordBlockCipherTest {
     }
 
     @Test
+    public void testEncryptTls12ClientWithAddtionalPadding() throws NoSuchAlgorithmException, CryptoException {
+        context.setConnection(new OutboundConnection());
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.getConfig().setDefaultAdditionalPadding(32);
+        KeySet keySet = new KeySet();
+        keySet.setClientWriteKey(ArrayConverter
+                .hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"));
+        keySet.setClientWriteMacSecret(ArrayConverter.hexStringToByteArray("183612323C5507EDAA5BF0DE71272A2EA87B1165"));
+        keySet.setClientWriteIv(new byte[8]); // IV is not from KeyBlock
+        keySet.setServerWriteIv(new byte[8]); // ServerSide is not used
+        keySet.setServerWriteKey(new byte[24]); // ServerSide is not used
+        keySet.setServerWriteMacSecret(new byte[20]); // ServerSide is not used
+        context.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("1ACF314DA7208EB8"))); // IV
+        byte[] data = ArrayConverter
+                .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
+        cipher = new RecordBlockCipher(context, keySet);
+        Record record = new Record();
+        record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+        record.prepareComputations();
+        record.setSequenceNumber(new BigInteger("0"));
+        record.setCleanProtocolMessageBytes(data);
+        record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        cipher.encrypt(record);
+
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("232323232323232323232323232323232323232323232323232323232323232323232323"),
+                record.getComputations().getPadding().getValue());
+    }
+
+    @Test
     public void testDecryptTls12Client() throws NoSuchAlgorithmException, CryptoException {
         // This is effectivly the testEncryptTls12() test in reverse
         context.setConnection(new InboundConnection());
