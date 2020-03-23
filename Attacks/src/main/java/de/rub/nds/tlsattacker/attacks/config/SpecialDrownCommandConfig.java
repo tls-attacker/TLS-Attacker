@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
@@ -34,6 +35,8 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
     @Parameter(names = "-analyzeCheckData", description = "Analyze given state file for "
             + "'leaky export' oracle vulnerability check, this might take a long time")
     private boolean analyzeCheckData;
+    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack", required = true)
+    private SSL2CipherSuite cipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
     public SpecialDrownCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -78,4 +81,11 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
         return analyzeCheckData;
     }
 
+    public SSL2CipherSuite getCipherSuite() {
+        return cipherSuite;
+    }
+
+    public void setCipherSuite(SSL2CipherSuite cipherSuite) {
+        this.cipherSuite = cipherSuite;
+    }
 }

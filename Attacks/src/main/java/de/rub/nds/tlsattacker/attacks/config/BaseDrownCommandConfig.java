@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 
 public abstract class BaseDrownCommandConfig extends AttackConfig {
@@ -29,8 +28,6 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack", required = true)
-    private SSL2CipherSuite cipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
     @Parameter(names = "-premasterSecretsFile", description = "File containing captured "
             + "Premaster secrets to be decrypted in hex format, one per line")
     private String premasterSecretsFilePath;
@@ -50,7 +47,6 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         config.setRecordLayerType(RecordLayerType.BLOB);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-        config.setDefaultSSL2CipherSuite(cipherSuite);
 
         return config;
     }
@@ -62,13 +58,5 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
 
     public String getPremasterSecretsFilePath() {
         return premasterSecretsFilePath;
-    }
-
-    public SSL2CipherSuite getCipherSuite() {
-        return cipherSuite;
-    }
-
-    public void setCipherSuite(SSL2CipherSuite cipherSuite) {
-        this.cipherSuite = cipherSuite;
     }
 }

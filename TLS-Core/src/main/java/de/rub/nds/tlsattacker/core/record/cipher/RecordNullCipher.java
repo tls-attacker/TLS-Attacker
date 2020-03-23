@@ -50,7 +50,7 @@ public class RecordNullCipher extends RecordCipher {
     @Override
     public void decrypt(BlobRecord br) throws CryptoException {
         LOGGER.debug("Derypting BlobRecord: (null cipher)");
-        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
+        br.setCleanProtocolMessageBytes(br.getProtocolMessageBytes().getValue());
     }
 
 }
