@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -48,7 +49,7 @@ public class RecordDecryptor extends Decryptor {
         RecordCipher recordCipher = getRecordMostRecentCipher();
         try {
             recordCipher.decrypt(record);
-        } catch (CryptoException ex) {
+        } catch (CryptoException | ParserException ex) {
             LOGGER.warn("Could not decrypt BlobRecord. Using NulLCipher instead", ex);
             try {
                 nullCipher.decrypt(record);
@@ -71,7 +72,7 @@ public class RecordDecryptor extends Decryptor {
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         try {
             recordCipher.decrypt(record);
-        } catch (CryptoException ex) {
+        } catch (CryptoException | ParserException ex) {
             LOGGER.warn("Could not decrypt Record. Using NulLCipher instead", ex);
             try {
                 nullCipher.decrypt(record);

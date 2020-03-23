@@ -118,7 +118,8 @@ public class RecordStreamCipher extends RecordCipher {
         DecryptionParser parser = new DecryptionParser(0, plainData);
         byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
         record.setCleanProtocolMessageBytes(cleanBytes);
-
+        record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
+        record.getComputations().setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
         byte[] calculatedHmac = calculateMac(
