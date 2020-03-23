@@ -31,6 +31,7 @@ import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -121,7 +122,7 @@ public class RecordEncryptorTest {
                 record.getComputations().getPlainRecordBytes().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259"), record
                 .getComputations().getCbcInitialisationVector().getValue());
-        assertNull(record.getComputations().getAdditionalPaddingLength());
+        assertTrue(0 == record.getComputations().getAdditionalPaddingLength().getValue());
         assertArrayEquals(
                 record.getProtocolMessageBytes().getValue(),
                 ArrayConverter

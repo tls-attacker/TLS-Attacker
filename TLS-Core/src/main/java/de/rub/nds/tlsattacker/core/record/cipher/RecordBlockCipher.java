@@ -129,8 +129,11 @@ public final class RecordBlockCipher extends RecordCipher {
         return padding;
     }
 
-    public int calculatePaddingLength(int dataLength) {
-        if (context.getConfig().getDefaultAdditionalPadding() % encryptCipher.getBlocksize() != 0) {
+    public int calculatePaddingLength(Record record, int dataLength) {
+        int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+        record.getComputations().setAdditionalPaddingLength(additionalPadding);
+        additionalPadding = record.getComputations().getAdditionalPaddingLength().getValue();
+        if (additionalPadding % encryptCipher.getBlocksize() != 0) {
             LOGGER.warn("Additional padding is not a multiple of the blocksize");
         }
         return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize()))
@@ -176,7 +179,7 @@ public final class RecordBlockCipher extends RecordCipher {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
 
-            computations.setPadding(calculatePadding(calculatePaddingLength(cleanBytes.length)));
+            computations.setPadding(calculatePadding(calculatePaddingLength(record, cleanBytes.length)));
             computations.setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding()
                     .getValue()));
             byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
@@ -205,7 +208,7 @@ public final class RecordBlockCipher extends RecordCipher {
                     .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
                     .getLocalConnectionEndType()));
 
-            computations.setPadding(calculatePadding(calculatePaddingLength(cleanBytes.length
+            computations.setPadding(calculatePadding(calculatePaddingLength(record, cleanBytes.length
                     + computations.getMac().getValue().length)));
 
             record.getComputations().setPlainRecordBytes(
