@@ -242,7 +242,7 @@ public class Config implements Serializable {
     /**
      * Padding length for TLS 1.3 messages
      */
-    private Integer paddingLength = 0;
+    private Integer defaultAdditionalPadding = 0;
 
     /**
      * Key type for KeyShareExtension
@@ -1098,6 +1098,9 @@ public class Config implements Serializable {
      */
     private String defaultPWDPassword = "barney";
 
+    /**
+     * Min iterations for finding the PWD password element
+     */
     private int defaultPWDIterations = 40;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1122,6 +1125,12 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDSalt = ArrayConverter
             .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+
+    /**
+     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
+     * unencrypted messages if this option is set.
+     */
+    private Boolean parseInvalidRecordsUnencrypted = false;
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
@@ -2495,12 +2504,12 @@ public class Config implements Serializable {
         return pskKeyExchangeModes;
     }
 
-    public Integer getPaddingLength() {
-        return paddingLength;
+    public Integer getDefaultAdditionalPadding() {
+        return defaultAdditionalPadding;
     }
 
-    public void setPaddingLength(Integer paddingLength) {
-        this.paddingLength = paddingLength;
+    public void setDefaultAdditionalPadding(Integer defaultAdditionalPadding) {
+        this.defaultAdditionalPadding = defaultAdditionalPadding;
     }
 
     public BigInteger getKeySharePrivate() {
@@ -3335,6 +3344,14 @@ public class Config implements Serializable {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
     }
 
+    public Boolean getParseInvalidRecordNormally() {
+        return parseInvalidRecordsUnencrypted;
+    }
+
+    public void setParseInvalidRecordNormally(Boolean parseInvalidRecordNormally) {
+        this.parseInvalidRecordsUnencrypted = parseInvalidRecordNormally;
+    }
+
     public String getDefaultClientPWDUsername() {
         return defaultClientPWDUsername;
     }
@@ -3359,9 +3376,6 @@ public class Config implements Serializable {
         this.defaultPWDPassword = password;
     }
 
-    /**
-     * Min iterations for finding the PWD password element
-     */
     public int getDefaultPWDIterations() {
         return defaultPWDIterations;
     }

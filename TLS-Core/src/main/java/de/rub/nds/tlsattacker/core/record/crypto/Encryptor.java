@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -24,7 +25,7 @@ public abstract class Encryptor extends RecordCryptoUnit {
         super(cipher);
     }
 
-    void encrypt(AbstractRecord object) {
+    void encrypt(AbstractRecord object) throws CryptoException {
         if (object instanceof BlobRecord) {
             encrypt((BlobRecord) object);
         } else if (object instanceof Record) {

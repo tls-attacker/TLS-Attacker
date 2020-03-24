@@ -137,7 +137,7 @@ public enum NamedGroup {
             LOGGER.warn("Could not convert NamedGroup. Returning null");
             return null;
         }
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
     }
 
     public static NamedGroup getNamedGroup(byte[] value) {

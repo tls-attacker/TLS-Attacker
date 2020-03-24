@@ -126,7 +126,7 @@ public class ReceiveMessageHelper {
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 orderDtlsRecords(tempRecords);
             }
-            List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords, context);
+            List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords);
             for (RecordGroup recordGroup : recordGroups) {
                 MessageActionResult tempResult = processRecordGroup(recordGroup, context);
                 result = result.merge(tempResult);
@@ -139,7 +139,6 @@ public class ReceiveMessageHelper {
     private MessageActionResult processRecordGroup(RecordGroup recordGroup, TlsContext context) {
         recordGroup.adjustContext(context);
         recordGroup.decryptRecords(context);
-
         MessageParsingResult messageParsingResult = parseMessages(recordGroup, context);
 
         return new MessageActionResult(recordGroup.getRecords(), messageParsingResult.getMessages(),
@@ -251,38 +250,44 @@ public class ReceiveMessageHelper {
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = null;
-        for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords(), context)) {
-            byte[] cleanProtocolMessageBytes;
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()
-                    && group.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-                List<ProtocolMessage> messageList = handleDtlsHandshakeRecordBytes(group.getCleanBytes(), context,
-                        true, group.getDtlsEpoch());
-                if (isListOnlyDtlsHandshakeMessageFragments(messageList)) {
-                    messageFragments = convertToDtlsFragmentList(messageList);
-                    List<DtlsHandshakeMessageFragment> defragmentedReorderdFragments = defragmentAndReorder(
-                            messageFragments, context);
-                    for (DtlsHandshakeMessageFragment fragment : defragmentedReorderdFragments) {
-                        context.setDtlsReadHandshakeMessageSequence(fragment.getMessageSeq().getValue());
-                        List<ProtocolMessage> parsedMessages = handleCleanBytes(
-                                convertDtlsFragmentToCleanTlsBytes(fragment), group.getProtocolMessageType(), context,
-                                false);
+        for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords())) {
+            List<RecordGroup> subGroups = group.splitIntoProcessableSubgroups();
+            for (RecordGroup subGroup : subGroups) {
+
+                byte[] cleanProtocolMessageBytes;
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()
+                        && subGroup.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+                    List<ProtocolMessage> messageList = handleDtlsHandshakeRecordBytes(subGroup.getCleanBytes(),
+                            context, true, subGroup.getDtlsEpoch());
+                    if (isListOnlyDtlsHandshakeMessageFragments(messageList)) {
+                        messageFragments = convertToDtlsFragmentList(messageList);
+                        List<DtlsHandshakeMessageFragment> defragmentedReorderdFragments = defragmentAndReorder(
+                                messageFragments, context);
+                        for (DtlsHandshakeMessageFragment fragment : defragmentedReorderdFragments) {
+                            context.setDtlsReadHandshakeMessageSequence(fragment.getMessageSeq().getValue());
+                            List<ProtocolMessage> parsedMessages = handleCleanBytes(
+                                    convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
+                                    context, false, subGroup.areAllRecordsValid()
+                                            || context.getConfig().getParseInvalidRecordNormally());
+                            messages.addAll(parsedMessages);
+                        }
+                    } else {
+                        LOGGER.warn("Receive non DTLS-Handshake message Fragment - Not trying to defragment this - passing as is (probably wrong)");
+                        cleanProtocolMessageBytes = subGroup.getCleanBytes();
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                                subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
+                                        || context.getConfig().getParseInvalidRecordNormally());
                         messages.addAll(parsedMessages);
                     }
+
                 } else {
-                    LOGGER.warn("Receive non DTLS-Handshake message Fragment - Not trying to defragment this - passing as is (probably wrong)");
-                    cleanProtocolMessageBytes = group.getCleanBytes();
+                    cleanProtocolMessageBytes = subGroup.getCleanBytes();
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                            group.getProtocolMessageType(), context, false);
+                            subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
+                                    || context.getConfig().getParseInvalidRecordNormally());
                     messages.addAll(parsedMessages);
                 }
-
-            } else {
-                cleanProtocolMessageBytes = group.getCleanBytes();
-                List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
-                        group.getProtocolMessageType(), context, false);
-                messages.addAll(parsedMessages);
             }
-
         }
         return new MessageParsingResult(messages, messageFragments);
     }
@@ -365,41 +370,54 @@ public class ReceiveMessageHelper {
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
-            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse) {
+            ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse, boolean tryParseAsValid) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
-            try {
-                if (typeFromRecord != null) {
-                    if (typeFromRecord == ProtocolMessageType.APPLICATION_DATA
-                            && context.getConfig().isHttpsParsingEnabled()) {
-                        try {
-                            result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
-                        } catch (ParserException | AdjustmentException | UnsupportedOperationException E) {
+            if (tryParseAsValid) {
+                try {
+                    if (typeFromRecord != null) {
+                        if (typeFromRecord == ProtocolMessageType.APPLICATION_DATA
+                                && context.getConfig().isHttpsParsingEnabled()) {
+                            try {
+                                result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
+                            } catch (ParserException | AdjustmentException | UnsupportedOperationException E) {
+                                result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer,
+                                        typeFromRecord, context, onlyParse);
+                            }
+                        } else {
                             result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
                                     context, onlyParse);
                         }
                     } else {
-                        result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
-                                context, onlyParse);
+                        if (cleanProtocolMessageBytes.length > 2) {
+                            result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        } else {
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        }
                     }
-                } else {
-                    if (cleanProtocolMessageBytes.length > 2) {
-                        result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
-                    } else {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
-                    }
-                }
-            } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
-                LOGGER.warn("Could not parse Message as a CorrectMessage");
-                LOGGER.debug(exCorrectMsg);
-                try {
-                    if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
-                        LOGGER.warn("Trying to parse Message as UnknownHandshakeMessage");
-                        result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
-                                typeFromRecord, context);
-                    } else {
+                } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
+                    LOGGER.warn("Could not parse Message as a CorrectMessage");
+                    LOGGER.debug(exCorrectMsg);
+                    try {
+                        if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
+                            LOGGER.warn("Trying to parse Message as UnknownHandshakeMessage");
+                            result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
+                                    typeFromRecord, context);
+                        } else {
+                            try {
+                                result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                            } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
+                                LOGGER.warn("Could not parse Message as UnknownMessage");
+                                LOGGER.debug(exUnknownHMsg);
+                                break;
+                            }
+                        }
+                    } catch (ParserException | UnsupportedOperationException exUnknownHandshakeMsg) {
+                        LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
+                        LOGGER.debug(exUnknownHandshakeMsg);
+
                         try {
                             result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
                         } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
@@ -408,17 +426,14 @@ public class ReceiveMessageHelper {
                             break;
                         }
                     }
-                } catch (ParserException | UnsupportedOperationException exUnknownHandshakeMsg) {
-                    LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
-                    LOGGER.debug(exUnknownHandshakeMsg);
-
-                    try {
-                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
-                    } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
-                        LOGGER.warn("Could not parse Message as UnknownMessage");
-                        LOGGER.debug(exUnknownHMsg);
-                        break;
-                    }
+                }
+            } else {
+                try {
+                    result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
+                    LOGGER.warn("Could not parse Message as UnknownMessage");
+                    LOGGER.debug(exUnknownHMsg);
+                    break;
                 }
             }
             if (result != null) {

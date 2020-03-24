@@ -48,15 +48,15 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
-    /**
-     * protocol message bytes after decryption
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_RECORD)
-    private ModifiableByteArray fragment;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
+    /**
+     * This is the implicit sequence number in TLS and also the explicit
+     * sequence number in DTLS This could also have been a seperate field within
+     * the computations struct but i chose to only keep one of them as the whole
+     * situation is already complicated enough
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
@@ -149,14 +149,6 @@ public class Record extends AbstractRecord {
     public void adjustContext(TlsContext context) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
         context.setLastRecordVersion(version);
-    }
-
-    public ModifiableByteArray getFragment() {
-        return fragment;
-    }
-
-    public void setFragment(ModifiableByteArray fragment) {
-        this.fragment = fragment;
     }
 
     public RecordCryptoComputations getComputations() {

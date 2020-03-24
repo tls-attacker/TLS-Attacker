@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare;
 
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -31,7 +32,7 @@ public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry>
         if (group.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
             int elementLength = curve.getModulus().bitLength();
-            byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / 8);
+            byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / Bits.IN_A_BYTE);
             int scalarLength = parseIntField(ExtensionByteLength.PWD_SCALAR);
             BigInteger scalar = parseBigIntField(scalarLength);
             return new DragonFlyKeyShareEntry(rawPublicKey, scalarLength, scalar);

@@ -9,63 +9,48 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordNullCipher extends RecordCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RecordNullCipher(TlsContext context) {
         super(context, null);
     }
 
-    /**
-     * Null Cipher just passes the data through
-     *
-     * @param request
-     *            The EncryptionRequest
-     * @return The EncryptionResult
-     */
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) {
-        return new EncryptionResult(request.getPlainText());
-    }
+    public void encrypt(Record record) throws CryptoException {
 
-    /**
-     * Null Cipher just passes the data through
-     *
-     * @param decryptionRequest
-     * @return The raw decrypted Data
-     */
-    @Override
-    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
-        return new DecryptionResult(null, decryptionRequest.getCipherText(), null, true);
+        LOGGER.debug("Encrypting Record: (null cipher)");
+        record.prepareComputations();
+        byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
+        record.setProtocolMessageBytes(cleanBytes);
     }
 
     @Override
-    public boolean isUsingPadding() {
-        return false;
+    public void decrypt(Record record) throws CryptoException {
+        LOGGER.debug("Decrypting Record: (null cipher)");
+        record.prepareComputations();
+        byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
+        record.setCleanProtocolMessageBytes(protocolMessageBytes);
     }
 
     @Override
-    public boolean isUsingMac() {
-        return false;
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord: (null cipher)");
+        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
     }
 
     @Override
-    public boolean isUsingTags() {
-        return false;
+    public void decrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Derypting BlobRecord: (null cipher)");
+        br.setCleanProtocolMessageBytes(br.getProtocolMessageBytes().getValue());
     }
 
-    @Override
-    public byte[] getEncryptionIV() {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] getDecryptionIV() {
-        return new byte[0];
-    }
 }

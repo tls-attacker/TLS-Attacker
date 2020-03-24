@@ -35,9 +35,9 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                        // fix
-                                                                        // design
-                                                                        // flaw
+                    // fix
+                    // design
+                    // flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
@@ -49,6 +49,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     @Override
     public void prepareAfterParse(ProtocolMessage handshakeMessage) {
+        super.prepareAfterParse(handshakeMessage);
         if (handshakeMessage.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : handshakeMessage.getExtensions()) {
 
@@ -65,7 +66,6 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
                     preparator.prepareAfterParse();
                 }
             }
-            super.prepareAfterParse(handshakeMessage);
         }
     }
 
