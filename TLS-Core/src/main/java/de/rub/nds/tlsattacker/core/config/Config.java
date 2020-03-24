@@ -776,7 +776,7 @@ public class Config implements Serializable {
     /**
      * How much data we should put into a record by default
      */
-    private Integer defaultMaxRecordData = 1048576;
+    private Integer defaultMaxRecordData = 16384;
 
     /**
      * How much padding bytes should be send by default
