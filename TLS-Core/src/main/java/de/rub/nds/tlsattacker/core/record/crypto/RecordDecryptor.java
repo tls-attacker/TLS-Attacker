@@ -50,11 +50,11 @@ public class RecordDecryptor extends Decryptor {
         try {
             recordCipher.decrypt(record);
         } catch (CryptoException | ParserException ex) {
-            LOGGER.warn("Could not decrypt BlobRecord. Using NulLCipher instead", ex);
+            LOGGER.warn("Could not decrypt BlobRecord. Using NullCipher instead", ex);
             try {
                 nullCipher.decrypt(record);
             } catch (CryptoException ex1) {
-                LOGGER.warn("Could not decrypt BlobRecord with null cipher", ex1);
+                LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
             }
         }
     }
