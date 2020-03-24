@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
+import de.rub.nds.tlsattacker.core.protocol.parser.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
