@@ -154,9 +154,10 @@ public class RecordGroup {
     private boolean isRecordInvalid(AbstractRecord record) {
         if (record instanceof Record) {
             RecordCryptoComputations computations = ((Record) record).getComputations();
-            if (Objects.equals(computations.getMacValid(), Boolean.FALSE)
-                    || Objects.equals(computations.getPaddingValid(), Boolean.FALSE)
-                    || Objects.equals(computations.getAuthenticationTagValid(), Boolean.FALSE)) {
+            if (computations != null
+                    && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
+                            || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
+                            computations.getAuthenticationTagValid(), Boolean.FALSE))) {
                 return true;
             }
         }
