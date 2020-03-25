@@ -77,10 +77,13 @@ public class KeyGenerator {
     public static DSAPrivateKey getDSAPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             // TODO
-            throw new UnsupportedOperationException("DSA currently only supported for Servers");
+            return new CustomDSAPrivateKey(chooser.getDsaClientPrivateKey(), chooser.getDsaClientPrimeP(),
+                    chooser.getDsaClientPrimeQ(), chooser.getDsaClientGenerator());
+//            throw new UnsupportedOperationException("DSA currently only supported for Servers");
         } else {
-            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaPrimeP(),
-                    chooser.getDsaPrimeQ(), chooser.getDsaGenerator());
+
+            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaServerPrimeP(),
+                    chooser.getDsaServerPrimeQ(), chooser.getDsaServerGenerator());
         }
     }
 

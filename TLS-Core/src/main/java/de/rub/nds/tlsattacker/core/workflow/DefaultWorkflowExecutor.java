@@ -33,7 +33,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-
         List<TlsContext> allTlsContexts = state.getAllTlsContexts();
 
         if (config.isWorkflowExecutorShouldOpen()) {
