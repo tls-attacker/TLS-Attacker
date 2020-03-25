@@ -20,6 +20,11 @@ public enum CcaCertificateType {
                     "All use ECC.",
             false,
             true),
+    DSAROOTv3_CAv3_LEAF_DSAv3(
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use DSA.",
+            false,
+            true),
     ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters(
             "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
                     "All use ECC and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
