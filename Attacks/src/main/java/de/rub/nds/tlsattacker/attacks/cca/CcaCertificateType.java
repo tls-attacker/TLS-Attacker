@@ -15,6 +15,26 @@ public enum CcaCertificateType {
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
             true),
+    ROOTv3_CAv3_LEAF_RSAv3_Md2withRSA(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The leaf certificate uses MD2withRSA which is a weak algorithm.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_Md4withRSA(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The leaf certificate uses MD4withRSA which is a weak algorithm.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_Md5withRSA(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The leaf certificate uses MD5withRSA which is a weak algorithm.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_RSAv3_weakKey(
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The leaf certificate uses a 512 bit RSA key with e=3 which is weak.",
+            false,
+            true),
     ECROOTv3_CAv3_LEAF_ECv3(
             "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
                     "All use ECC.",
@@ -25,9 +45,21 @@ public enum CcaCertificateType {
                     "All use DSA.",
             false,
             true),
+    DSAROOTv3_CAv3_LEAF_DSAv3_Sha1(
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use DSA and are signed using Sha1WithDSA (weak algo).",
+            false,
+            true),
     ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters(
             "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
                     "All use ECC and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
+                    "Unless the implementation ignores the parameters the test is expected to fail because " +
+                    "a.) Parameters are not null b.) parameters are invalid",
+            false,
+            true),
+    DSAROOTv3_CAv3_LEAF_DSAv3_GarbageParameters(
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "All use DSA and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
                     "Unless the implementation ignores the parameters the test is expected to fail because " +
                     "a.) Parameters are not null b.) parameters are invalid",
             false,
