@@ -58,11 +58,11 @@ public class WorkflowTraceUtilTest {
     private ReceiveAction rcvAlertMessage;
     private ReceiveAction rcvServerHello;
     private ReceiveAction rcvFinishedMessage;
+    private ReceiveAction rcvMultipleProtocolMessage;
+    private ReceiveAction rcvMultipleHandshakeMessage;
 
     private HeartbeatMessage msgHeartbeatMessageWithLength;
     private ServerHelloMessage msgServerHelloMessageWithCipherSuite;
-    private ReceiveAction rcvMultipleProtocolMessage;
-    private ReceiveAction rcvMultipleHandshakeMessage;
 
     private SendAction sHeartbeat;
     private SendAction sAlertMessage;
