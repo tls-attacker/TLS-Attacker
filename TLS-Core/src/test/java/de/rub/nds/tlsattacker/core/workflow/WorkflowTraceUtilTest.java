@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.IOException;
@@ -60,9 +61,12 @@ public class WorkflowTraceUtilTest {
     private ReceiveAction rcvFinishedMessage;
     private ReceiveAction rcvMultipleProtocolMessage;
     private ReceiveAction rcvMultipleHandshakeMessage;
+    private ReceiveAction rcvMultipleRecords;
 
     private HeartbeatMessage msgHeartbeatMessageWithLength;
     private ServerHelloMessage msgServerHelloMessageWithCipherSuite;
+
+    private Record recWithLength;
 
     private SendAction sHeartbeat;
     private SendAction sAlertMessage;
@@ -83,11 +87,14 @@ public class WorkflowTraceUtilTest {
         rcvFinishedMessage = new ReceiveAction();
         rcvMultipleProtocolMessage = new ReceiveAction();
         rcvMultipleHandshakeMessage = new ReceiveAction();
+        rcvMultipleRecords = new ReceiveAction();
 
         msgHeartbeatMessageWithLength = new HeartbeatMessage();
         msgHeartbeatMessageWithLength.setPayloadLength(42);
         msgServerHelloMessageWithCipherSuite = new ServerHelloMessage();
         msgServerHelloMessageWithCipherSuite.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue());
+        recWithLength = new Record();
+        recWithLength.setLength(42);
 
         rcvHeartbeat.setMessages(new HeartbeatMessage());
         rcvAlertMessage.setMessages(new AlertMessage());
@@ -95,6 +102,8 @@ public class WorkflowTraceUtilTest {
         rcvFinishedMessage.setMessages(new FinishedMessage());
         rcvMultipleProtocolMessage.setMessages(new HeartbeatMessage(), new HeartbeatMessage(), msgHeartbeatMessageWithLength);
         rcvMultipleHandshakeMessage.setMessages(new ServerHelloMessage(), new HeartbeatMessage(), msgServerHelloMessageWithCipherSuite);
+        rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
+
 
         sHeartbeat = new SendAction();
         sAlertMessage = new SendAction();
@@ -201,6 +210,17 @@ public class WorkflowTraceUtilTest {
         assertTrue(WorkflowTraceUtil.didSendMessage(ProtocolMessageType.ALERT, trace));
         assertTrue(WorkflowTraceUtil.didSendMessage(HandshakeMessageType.CLIENT_HELLO, trace));
         assertTrue(WorkflowTraceUtil.didSendMessage(HandshakeMessageType.FINISHED, trace));
+    }
+
+    @Test
+    public void testGetLastReceivedRecord() {
+        assertNull(WorkflowTraceUtil.getLastReceivedRecord(trace));
+
+        trace.addTlsAction(rcvMultipleRecords);
+
+        assertNotSame(rcvMultipleRecords.getRecords().get(0), WorkflowTraceUtil.getLastReceivedRecord(trace));
+        assertNotSame(rcvMultipleRecords.getRecords().get(1), WorkflowTraceUtil.getLastReceivedRecord(trace));
+        assertSame(rcvMultipleRecords.getRecords().get(2), WorkflowTraceUtil.getLastReceivedRecord(trace));
     }
 
     private void pwf(String pre, WorkflowTrace trace) {
