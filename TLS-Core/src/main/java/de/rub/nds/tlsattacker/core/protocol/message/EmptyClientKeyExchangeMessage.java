@@ -12,8 +12,10 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -22,6 +24,9 @@ import java.util.List;
 
 @XmlRootElement
 public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+
+    @HoldsModifiableVariable
+    protected EmptyClientComputations computations;
 
     public EmptyClientKeyExchangeMessage() {
         super();
@@ -39,11 +44,11 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public KeyExchangeComputations getComputations() { return null;};
+    public EmptyClientComputations getComputations() { return computations;};
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new DHClientKeyExchangeHandler(context);
+        return new EmptyClientKeyExchangeHandler(context);
     }
 
     @Override
@@ -53,11 +58,17 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public void prepareComputations() {
+        if (getComputations() == null) {
+            computations = new EmptyClientComputations();
+        }
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (computations != null) {
+            holders.add(computations);
+        }
         return holders;
     }
 }
