@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSer
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * Handler for DH and DHE ClientKeyExchange messages
+ * Handler for Empty ClientKeyExchange messages
  */
 public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<EmptyClientKeyExchangeMessage> {
 

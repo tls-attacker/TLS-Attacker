@@ -23,7 +23,7 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
     protected final T msg;
 
     /**
-     * Constructor for the DHClientKeyExchangeSerializer
+     * Constructor for the EmptyClientKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -38,6 +38,6 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing EmptyClientKeyExchangeMessage");
-        return new byte[0];
+        return getAlreadySerialized();
     }
 }
