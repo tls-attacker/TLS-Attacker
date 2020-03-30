@@ -23,6 +23,7 @@ public enum CcaWorkflowType {
     CRT_ZFIN("TLS handshake of only ClientCertificate and Finished. No encryption is enabled and no "
             + "key material is sent from the client. Uninitialized data might be used, or null keys. "
             + "VerifyData is zeroed.", true, false),
+    CRT_ECKE_CCS_FIN("TLS handshake flow with empty CKE message.", true, true),
 
     /**
      * TODO: I'd like to add a list that contains the certificate types used? or
