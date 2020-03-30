@@ -59,8 +59,8 @@ public class WorkflowTraceUtilTest {
     private ReceiveAction rcvAlertMessage;
     private ReceiveAction rcvServerHello;
     private ReceiveAction rcvFinishedMessage;
-    private ReceiveAction rcvMultipleProtocolMessage;
-    private ReceiveAction rcvMultipleHandshakeMessage;
+    private ReceiveAction rcvMultipleProtocolMessages;
+    private ReceiveAction rcvMultipleHandshakeMessages;
     private ReceiveAction rcvMultipleRecords;
 
     private HeartbeatMessage msgHeartbeatMessageWithLength;
@@ -85,8 +85,8 @@ public class WorkflowTraceUtilTest {
         rcvAlertMessage = new ReceiveAction();
         rcvServerHello = new ReceiveAction();
         rcvFinishedMessage = new ReceiveAction();
-        rcvMultipleProtocolMessage = new ReceiveAction();
-        rcvMultipleHandshakeMessage = new ReceiveAction();
+        rcvMultipleProtocolMessages = new ReceiveAction();
+        rcvMultipleHandshakeMessages = new ReceiveAction();
         rcvMultipleRecords = new ReceiveAction();
 
         msgHeartbeatMessageWithLength = new HeartbeatMessage();
@@ -100,8 +100,8 @@ public class WorkflowTraceUtilTest {
         rcvAlertMessage.setMessages(new AlertMessage());
         rcvServerHello.setMessages(new ServerHelloMessage());
         rcvFinishedMessage.setMessages(new FinishedMessage());
-        rcvMultipleProtocolMessage.setMessages(new HeartbeatMessage(), new HeartbeatMessage(), msgHeartbeatMessageWithLength);
-        rcvMultipleHandshakeMessage.setMessages(new ServerHelloMessage(), new HeartbeatMessage(), msgServerHelloMessageWithCipherSuite);
+        rcvMultipleProtocolMessages.setMessages(new HeartbeatMessage(), new HeartbeatMessage(), msgHeartbeatMessageWithLength);
+        rcvMultipleHandshakeMessages.setMessages(new ServerHelloMessage(), new HeartbeatMessage(), msgServerHelloMessageWithCipherSuite);
         rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
 
 
@@ -124,19 +124,19 @@ public class WorkflowTraceUtilTest {
     public void testGetLastReceivedMessage() {
         assertNull(WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
 
-        trace.addTlsAction(rcvMultipleProtocolMessage);
+        trace.addTlsAction(rcvMultipleProtocolMessages);
 
-        assertNotSame(rcvMultipleProtocolMessage.getMessages().get(0), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
-        assertNotSame(rcvMultipleProtocolMessage.getMessages().get(1), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
-        assertSame(rcvMultipleProtocolMessage.getMessages().get(2), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+        assertNotSame(rcvMultipleProtocolMessages.getMessages().get(0), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+        assertNotSame(rcvMultipleProtocolMessages.getMessages().get(1), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+        assertSame(rcvMultipleProtocolMessages.getMessages().get(2), WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
 
         assertNull(WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
 
-        trace.addTlsAction(rcvMultipleHandshakeMessage);
+        trace.addTlsAction(rcvMultipleHandshakeMessages);
 
-        assertNotSame(rcvMultipleHandshakeMessage.getMessages().get(0), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
-        assertNotSame(rcvMultipleHandshakeMessage.getMessages().get(1), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
-        assertSame(rcvMultipleHandshakeMessage.getMessages().get(2), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+        assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(0), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+        assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(1), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+        assertSame(rcvMultipleHandshakeMessages.getMessages().get(2), WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
     }
 
 
