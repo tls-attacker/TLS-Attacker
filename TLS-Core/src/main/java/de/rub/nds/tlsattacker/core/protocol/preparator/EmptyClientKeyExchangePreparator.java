@@ -32,7 +32,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
 
     @Override
     public void prepareHandshakeMessageContents() {
-        LOGGER.debug("Preparing EmptyClientExchangeMessage");
+        LOGGER.debug("Preparing EmptyClientKeyExchangeMessage");
         prepareAfterParse(true);
     }
 
