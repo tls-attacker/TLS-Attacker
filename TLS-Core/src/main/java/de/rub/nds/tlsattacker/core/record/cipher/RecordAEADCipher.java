@@ -266,7 +266,7 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public void decrypt(BlobRecord br) throws CryptoException {
         LOGGER.debug("Derypting BlobRecord");
-        br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
+        br.setCleanProtocolMessageBytes(decryptCipher.decrypt(br.getProtocolMessageBytes().getValue()));
 
     }
 
