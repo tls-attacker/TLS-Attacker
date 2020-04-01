@@ -229,11 +229,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // generated statically and not dynamically. We will adjust this in
         // future versions.
         for (StateVectorPair pair : stateVectorPairList) {
-            if (pair.getState().getTlsContext().getServerRsaModulus() != null && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+            if (pair.getState().getTlsContext().getServerRsaModulus() != null
+                    && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
                 throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
             }
         }
-        
 
         return bleichenbacherVectorMap;
     }
