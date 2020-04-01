@@ -45,6 +45,38 @@ public enum CcaCertificateType {
                     "All use DSA.",
             false,
             true),
+    DSAROOTv3_CAv3_LEAF_DHv3_KeyAgreement(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses DSA while only the leaf uses DH with keyUsage keyAgreement only.",
+            false,
+            true),
+    ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
+            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
+            false,
+            true),
+    ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement2(
+            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only. Uses a " +
+                    "different curve than the other testcase.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_DHv3_KeyAgreement(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses RSA while only the leaf uses DH with keyUsage keyAgreement only.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_ECv3_KeyAgreement2(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
+                    "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.  Uses a " +
+                    "different curve than the other testcase.",
+            false,
+            true),
     DSAROOTv3_CAv3_LEAF_DSAv3_Sha1(
             "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
                     "All use DSA and are signed using Sha1WithDSA (weak algo).",
