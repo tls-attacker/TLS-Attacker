@@ -44,18 +44,11 @@ public class RecordDecryptor extends Decryptor {
 
     @Override
     public void decrypt(BlobRecord record) {
-        LOGGER.debug("Decrypting BlobRecord");
-
-        RecordCipher recordCipher = getRecordMostRecentCipher();
+        LOGGER.warn("We are not decrypting BlobRecords. Using NullCipher");
         try {
-            recordCipher.decrypt(record);
-        } catch (CryptoException | ParserException ex) {
-            LOGGER.warn("Could not decrypt BlobRecord. Using NullCipher instead", ex);
-            try {
-                nullCipher.decrypt(record);
-            } catch (CryptoException ex1) {
-                LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
-            }
+            nullCipher.decrypt(record);
+        } catch (CryptoException ex1) {
+            LOGGER.warn("Could not decrypt BlobRecord with NullCipher", ex1);
         }
     }
 
@@ -88,7 +81,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }
