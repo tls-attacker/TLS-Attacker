@@ -332,9 +332,9 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 " +
             "but the algorithm identifiers are swapped.",
             false,
-            true),/*
+            true);/*
  // Removed for now since Javas signature engine relies on the value to sign the certificate. But this causes a mismatch since it can't find an EC key*/
-    ROOTv3_debug("debugging", false, true);
+//    ROOTv3_debug("debugging", false, true);
 
     private String description;
     private Boolean requiresCertificate;
