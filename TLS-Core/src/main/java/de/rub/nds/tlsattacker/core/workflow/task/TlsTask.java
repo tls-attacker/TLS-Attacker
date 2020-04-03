@@ -59,12 +59,12 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 try {
                     Thread.sleep(additionalTcpTimeout);
                 } catch (InterruptedException ex) {
-                    LOGGER.error("Interrupted during sleep", E);
+                    LOGGER.error("Interrupted during sleep", ex);
                 }
                 hasError = true;
                 exception = E;
             } catch (Exception E) {
-                LOGGER.warn("Encountered an exception during the execution", E);
+                LOGGER.error("Encountered an exception during the execution", E);
                 hasError = true;
                 if (increasingSleepTimes) {
                     sleepTime += additionalSleepTime;
