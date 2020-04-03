@@ -40,7 +40,8 @@ public class GenericReceiveAsciiActionTest {
 
         tlsContext = state.getTlsContext();
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        asciiToCheck = new byte[] { 0x15, 0x03, 0x02, 0x01, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21 };
+        asciiToCheck = new byte[] { 0x15, 0x03, 0x02, 0x01, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c,
+                0x64, 0x21 };
     }
 
     /**
@@ -50,12 +51,10 @@ public class GenericReceiveAsciiActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getTransportHandler())
-                .setFetchableByte(asciiToCheck);
-
+        ((FakeTransportHandler) tlsContext.getTransportHandler()).setFetchableByte(asciiToCheck);
 
         action.execute(state);
-        assertEquals(new String (asciiToCheck, "US-ASCII"), action.getAsciiText());
+        assertEquals(new String(asciiToCheck, "US-ASCII"), action.getAsciiText());
         assertTrue(action.isExecuted());
 
         actionException.execute(state);
