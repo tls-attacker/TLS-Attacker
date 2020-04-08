@@ -33,8 +33,8 @@ public class CcaWorkflowGenerator {
      */
     public static WorkflowTrace generateWorkflow(Config tlsConfig, CcaDelegate ccaDelegate,
             CcaWorkflowType ccaWorkflowType, CcaCertificateType ccaCertificateType) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.DYNAMIC_HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
         CertificateMessage certificateMessage;
         CertificateMessage certificateMessage2;
         if (ccaWorkflowType != null) {
@@ -144,7 +144,7 @@ public class CcaWorkflowGenerator {
                     break;
             }
         }
-//        trace.addTlsAction(new GenericReceiveAction());
+        // trace.addTlsAction(new GenericReceiveAction());
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         return trace;
     }

@@ -44,8 +44,9 @@ public class CcaDelegate extends Delegate {
 
     public byte[] getClientCertificate() {
         /*
-        TODO: This code is kinda inefficient and called everytime we get the client cert. Looks like I need to optimize using
-        the certificateManager.
+         * TODO: This code is kinda inefficient and called everytime we get the
+         * client cert. Looks like I need to optimize using the
+         * certificateManager.
          */
         FileInputStream fileInputStream = null;
         X509Certificate x509Certificate = null;

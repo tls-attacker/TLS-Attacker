@@ -153,7 +153,8 @@ public class CcaCertificateManager {
         Boolean readKey = false;
         CertificateMessage certificateMessage = new CertificateMessage();
         String rootCertificate = ccaCertificateType.toString().split("_")[0].toLowerCase() + ".pem";
-//        String rootCertificate = ccaCertificateType.toString().substring(0, 6).toLowerCase() + ".pem";
+        // String rootCertificate = ccaCertificateType.toString().substring(0,
+        // 6).toLowerCase() + ".pem";
         CustomPrivateKey customPrivateKey;
         CustomPublicKey customPublicKey;
         byte[] keyBytes;

@@ -894,8 +894,6 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-
-
     private WorkflowTrace createDynamicHelloWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = new WorkflowTrace();

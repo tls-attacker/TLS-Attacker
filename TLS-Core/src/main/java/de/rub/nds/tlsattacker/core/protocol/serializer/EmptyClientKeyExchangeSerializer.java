@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessag
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMessage> extends ClientKeyExchangeSerializer<T> {
+public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMessage> extends
+        ClientKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

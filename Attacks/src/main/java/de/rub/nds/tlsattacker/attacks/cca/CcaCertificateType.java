@@ -16,95 +16,95 @@ public enum CcaCertificateType {
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_Md2withRSA(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The leaf certificate uses MD2withRSA which is a weak algorithm.",
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate uses MD2withRSA which is a weak algorithm.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_Md4withRSA(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The leaf certificate uses MD4withRSA which is a weak algorithm.",
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate uses MD4withRSA which is a weak algorithm.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_Md5withRSA(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The leaf certificate uses MD5withRSA which is a weak algorithm.",
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate uses MD5withRSA which is a weak algorithm.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_weakKey(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The leaf certificate uses a 512 bit RSA key with e=3 which is weak.",
+            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate uses a 512 bit RSA key with e=3 which is weak.",
             false,
             true),
     ECROOTv3_CAv3_LEAF_ECv3(
-            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use ECC.",
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use ECC.",
             false,
             true),
     DSAROOTv3_CAv3_LEAF_DSAv3(
-            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use DSA.",
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use DSA.",
             false,
             true),
     DSAROOTv3_CAv3_LEAF_DHv3_KeyAgreement(
-            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses DSA while only the leaf uses DH with keyUsage keyAgreement only.",
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses DSA while only the leaf uses DH with keyUsage keyAgreement only.",
             false,
             true),
     ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
-            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
+            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
             false,
             true),
     ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement2(
-            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only. Uses a " +
-                    "different curve than the other testcase.",
+            "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only. Uses a "
+                    + "different curve than the other testcase.",
             false,
             true),
     ROOTv3_CAv3_LEAF_DHv3_KeyAgreement(
-            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses RSA while only the leaf uses DH with keyUsage keyAgreement only.",
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses RSA while only the leaf uses DH with keyUsage keyAgreement only.",
             false,
             true),
     ROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
-            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
             false,
             true),
     ROOTv3_CAv3_LEAF_ECv3_KeyAgreement2(
-            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.  Uses a " +
-                    "different curve than the other testcase.",
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses RSA while only the leaf uses ECDH with keyUsage keyAgreement only.  Uses a "
+                    + "different curve than the other testcase.",
             false,
             true),
     DSAROOTv3_CAv3_LEAF_DSAv3_Sha1(
-            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use DSA and are signed using Sha1WithDSA (weak algo).",
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use DSA and are signed using Sha1WithDSA (weak algo).",
             false,
             true),
     ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters(
-            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use ECC and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
-                    "Unless the implementation ignores the parameters the test is expected to fail because " +
-                    "a.) Parameters are not null b.) parameters are invalid",
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use ECC and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature."
+                    + "Unless the implementation ignores the parameters the test is expected to fail because "
+                    + "a.) Parameters are not null b.) parameters are invalid",
             false,
             true),
     DSAROOTv3_CAv3_LEAF_DSAv3_GarbageParameters(
-            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use DSA and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature." +
-                    "Unless the implementation ignores the parameters the test is expected to fail because " +
-                    "a.) Parameters are not null b.) parameters are invalid",
+            "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use DSA and the leaf certificate specifies garbage parameters in signatureAlgorithm and signature."
+                    + "Unless the implementation ignores the parameters the test is expected to fail because "
+                    + "a.) Parameters are not null b.) parameters are invalid",
             false,
             true),
     ECROOTv3_CAv3CustomCurve_LEAF_ECv3(
-            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "All use ECC and the intermedia CA uses a custom curve (secp384r1 with custom generator).",
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use ECC and the intermedia CA uses a custom curve (secp384r1 with custom generator).",
             false,
             true),
     ECROOTv3_Curveball_CAv3_LEAF_ECv3(
-            "EC Leaf certificate generated based on the 'new' (root-)CA certificate with one intermediate CA." +
-                    "All use ECC and a ROOT certificate is included. The new ROOT certificate is generated based on " +
-                    "CVE-2020-0601 (Curveball/Chain of Fools). TODO: maybe change something, currently the key for it is generated manually.",
+            "EC Leaf certificate generated based on the 'new' (root-)CA certificate with one intermediate CA."
+                    + "All use ECC and a ROOT certificate is included. The new ROOT certificate is generated based on "
+                    + "CVE-2020-0601 (Curveball/Chain of Fools). TODO: maybe change something, currently the key for it is generated manually.",
             false,
             true),
     ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3(
@@ -117,8 +117,9 @@ public enum CcaCertificateType {
                     + "Root CA is v3.",
             false,
             true),
-    ROOTv3_CAv3_LEAF_RSAvNeg1_nLeaf_RSAv3("RSA Leaf Certificate generated with an intermediate Certificate that is v -1 (actually not a CA). "
-            + "Root CA is v3.",
+    ROOTv3_CAv3_LEAF_RSAvNeg1_nLeaf_RSAv3(
+            "RSA Leaf Certificate generated with an intermediate Certificate that is v -1 (actually not a CA). "
+                    + "Root CA is v3.",
             false,
             true),
     ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3(
@@ -175,8 +176,8 @@ public enum CcaCertificateType {
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv1_UniqueIdentifiers(
-            "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA." +
-                    "The leaf certificate has uniqueIDs for issuer and subject which MUST NOT appear in a v1 certificate.",
+            "RSA Leaf certificate v1 generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The leaf certificate has uniqueIDs for issuer and subject which MUST NOT appear in a v1 certificate.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAvNeg1(
@@ -227,10 +228,7 @@ public enum CcaCertificateType {
                     + "presenting malformed ASN.1.",
             false,
             true),
-    ROOTv3_CAv3_CAv3_PathLoop(
-            "Path loop created by two CA certificates signing each other.",
-            false,
-            true),
+    ROOTv3_CAv3_CAv3_PathLoop("Path loop created by two CA certificates signing each other.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_CaTrue(
             "Chain of provided root CA, intermediate CA and a Leaf Cert that is declared a CA (BasicConstraints).",
             false,
@@ -314,27 +312,54 @@ public enum CcaCertificateType {
             false,
             true),
     ROOTv3_NewFakeChain_ROOTv3_CAv3_LEAF_RSAv3(
-            "A certificate chain in which the ROOT certificate is a lookalike of the real root certificate " +
-                    "uses a different key. Intermediate CA and leaf certificate are as always.",
+            "A certificate chain in which the ROOT certificate is a lookalike of the real root certificate "
+                    + "uses a different key. Intermediate CA and leaf certificate are as always.",
             false,
             true),
-    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithmParameters("RSA Leaf certificate generated based on the " +
-            "provided (root-)CA certificate with one intermediate CA. In the leaf certificate the signatureAlgorithms " +
-            "parameters differ in the tbsCertificate and outside.",
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithmParameters(
+            "RSA Leaf certificate generated based on the "
+                    + "provided (root-)CA certificate with one intermediate CA. In the leaf certificate the signatureAlgorithms "
+                    + "parameters differ in the tbsCertificate and outside.",
             false,
             true),
-    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1("RSA Leaf certificate generated based on the provided " +
-            "(root-)CA certificate with one intermediate CA. In the leaf certificate the signature field " +
-            "(type AlgorithmIdentifier) specifies a different algorithm than the signatureAlgorithm field in the " +
-            "Certificate. Additionally the algorithm doesn't match the key.",
-            false,
-            true),
-    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 " +
-            "but the algorithm identifiers are swapped.",
-            false,
-            true);/*
- // Removed for now since Javas signature engine relies on the value to sign the certificate. But this causes a mismatch since it can't find an EC key*/
-//    ROOTv3_debug("debugging", false, true);
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1("RSA Leaf certificate generated based on the provided "
+            + "(root-)CA certificate with one intermediate CA. In the leaf certificate the signature field "
+            + "(type AlgorithmIdentifier) specifies a different algorithm than the signatureAlgorithm field in the "
+            + "Certificate. Additionally the algorithm doesn't match the key.", false, true),
+    ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 "
+            + "but the algorithm identifiers are swapped.", false, true);/*
+                                                                          * //
+                                                                          * Removed
+                                                                          * for
+                                                                          * now
+                                                                          * since
+                                                                          * Javas
+                                                                          * signature
+                                                                          * engine
+                                                                          * relies
+                                                                          * on
+                                                                          * the
+                                                                          * value
+                                                                          * to
+                                                                          * sign
+                                                                          * the
+                                                                          * certificate
+                                                                          * .
+                                                                          * But
+                                                                          * this
+                                                                          * causes
+                                                                          * a
+                                                                          * mismatch
+                                                                          * since
+                                                                          * it
+                                                                          * can
+                                                                          * 't
+                                                                          * find
+                                                                          * an
+                                                                          * EC
+                                                                          * key
+                                                                          */
+    // ROOTv3_debug("debugging", false, true);
 
     private String description;
     private Boolean requiresCertificate;

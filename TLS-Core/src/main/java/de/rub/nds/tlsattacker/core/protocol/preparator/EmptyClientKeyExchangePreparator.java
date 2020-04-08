@@ -18,7 +18,8 @@ import org.bouncycastle.util.BigIntegers;
 
 import java.math.BigInteger;
 
-public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage> extends ClientKeyExchangePreparator<T> {
+public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage> extends
+        ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -49,6 +50,5 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.prepareComputations();
         prepareClientServerRandom(msg);
     }
-
 
 }

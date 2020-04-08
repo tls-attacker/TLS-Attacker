@@ -44,7 +44,9 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public EmptyClientComputations getComputations() { return computations;};
+    public EmptyClientComputations getComputations() {
+        return computations;
+    };
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {

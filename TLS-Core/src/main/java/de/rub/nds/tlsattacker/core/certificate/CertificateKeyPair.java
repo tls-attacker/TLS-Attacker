@@ -151,9 +151,12 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public CertificateKeyPair(byte[] certBytes, Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
-        // TODO: The following code assumes a few default. This is possible since this constructor is used in only one place.
-        // TODO: Maybe there's a better way to circumvent the problem that I have to parse the certificate. For know I'll simply
+    public CertificateKeyPair(byte[] certBytes, Certificate cert, PrivateKey privateKey, PublicKey publicKey)
+            throws IOException {
+        // TODO: The following code assumes a few default. This is possible
+        // since this constructor is used in only one place.
+        // TODO: Maybe there's a better way to circumvent the problem that I
+        // have to parse the certificate. For know I'll simply
         // TODO: assume defaults if cert == null
         if (cert != null) {
             this.certPublicKeyType = getPublicKeyType(cert);
@@ -171,11 +174,10 @@ public class CertificateKeyPair implements Serializable {
         } else {
             this.certPublicKeyType = CertificateKeyType.RSA;
             this.certSignatureType = CertificateKeyType.RSA;
-            // To get the same output as cert.encode() but using the raw bytes pack them accordingly
-            this.certificateBytes = ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(certBytes.length + 3, 3),
-                    ArrayConverter.intToBytes(certBytes.length, 3),
-                    certBytes);
+            // To get the same output as cert.encode() but using the raw bytes
+            // pack them accordingly
+            this.certificateBytes = ArrayConverter.concatenate(ArrayConverter.intToBytes(certBytes.length + 3, 3),
+                    ArrayConverter.intToBytes(certBytes.length, 3), certBytes);
             this.publicKeyGroup = null;
             this.signatureGroup = null;
             gostCurve = null;

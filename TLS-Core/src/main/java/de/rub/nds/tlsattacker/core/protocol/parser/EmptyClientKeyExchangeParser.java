@@ -42,6 +42,8 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
     }
 
     @Override
-    protected T createHandshakeMessage() { return (T) new EmptyClientKeyExchangeMessage(); }
+    protected T createHandshakeMessage() {
+        return (T) new EmptyClientKeyExchangeMessage();
+    }
 
 }
