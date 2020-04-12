@@ -1,5 +1,13 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.workflow.action;
-
 
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -34,13 +42,14 @@ public class SendDynamicServerCertificateActionTest {
 
     @Before
     public void setUp() throws Exception {
-        //Setup action
+        // Setup action
         action = new SendDynamicServerCertificateAction();
-        //Setup Server configuration
+        // Setup Server configuration
         config = Config.createConfig();
         config.setDefaultRunningMode(RunningModeType.SERVER);
         // see WorkflowConfigurationFactory.java
-        // Action will be added if highest protocol version is lower than TLS 1.3
+        // Action will be added if highest protocol version is lower than TLS
+        // 1.3
         config.setHighestProtocolVersion(ProtocolVersion.TLS12);
 
         WorkflowTrace trace = new WorkflowTrace();
@@ -54,21 +63,14 @@ public class SendDynamicServerCertificateActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
     }
 
-    @Test
+    @Test(expected = WorkflowExecutionException.class)
     public void testExecute() {
         action.execute(state);
         assertTrue((action.executedAsPlanned()));
         assertTrue(action.isExecuted());
-        try{
-            // test if you can execute twice
-            action.execute(state);
-            fail();
-        } catch (WorkflowExecutionException e){
-            assertTrue(e.getMessage().equals("Action already executed!"));
-        } catch (Exception e){
-            // catch other exceptions
-            fail();
-        }
+        // test if you can execute twice
+        action.execute(state);
+        // catch exception with expected annotation
     }
 
     @Test
@@ -102,7 +104,8 @@ public class SendDynamicServerCertificateActionTest {
 
     @Test
     public void testReset() {
-        //execute action -> check if executed -> reset -> check if action not executed!
+        // execute action -> check if executed -> reset -> check if action not
+        // executed!
         // -> check if you can execute action again
         assertFalse(action.isExecuted());
         action.execute(state);
@@ -127,14 +130,16 @@ public class SendDynamicServerCertificateActionTest {
         // check if send records contains the correct amount of sent records
         assertTrue(action.getSendRecords().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendRecords().size() == 1
-                && action.getSendRecords().get(0) instanceof Record);
+        assertTrue(action.getSendRecords().size() == 1 && action.getSendRecords().get(0) instanceof Record);
     }
 
     @Test
     public void testEquals() {
+        SendDynamicClientKeyExchangeAction compareAction1 = new SendDynamicClientKeyExchangeAction();
+        SendDynamicClientKeyExchangeAction compareAction2 = new SendDynamicClientKeyExchangeAction();
         // check if the action equals another action/class
-        assertTrue(action.equals(action));
+        assertFalse(action.equals(compareAction1));
+        assertTrue(compareAction1.equals(compareAction2) && compareAction2.equals(compareAction1));
         // Null check
         assertFalse(action.equals(null));
         // check any other object
@@ -143,15 +148,16 @@ public class SendDynamicServerCertificateActionTest {
 
     @Test
     public void testHashCode() {
-        assertTrue(action.hashCode() == 1079966196);
+        SendDynamicClientKeyExchangeAction compareAction1 = new SendDynamicClientKeyExchangeAction();
+        SendDynamicClientKeyExchangeAction compareAction2 = new SendDynamicClientKeyExchangeAction();
+        assertTrue(compareAction1.hashCode() == compareAction2.hashCode());
     }
 
     @Test
-    public void testSendNoCertificate(){
+    public void testSendNoCertificate() {
         // Check if no certificate is sent with the corresponding cipher suite
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
         action.execute(state);
-        assertTrue(action.getSendMessages().size() == 0
-                    && action.getSendRecords().size() == 0);
+        assertTrue(action.getSendMessages().size() == 0 && action.getSendRecords().size() == 0);
     }
 }
