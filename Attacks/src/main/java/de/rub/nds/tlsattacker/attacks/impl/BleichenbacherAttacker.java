@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -293,7 +294,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
-        if ((pms.length * 8) != publicKey.getModulus().bitLength()) {
+        if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                     + "is not equal to the server public key length. Have you selected the correct value?");
         }

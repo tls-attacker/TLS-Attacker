@@ -53,7 +53,7 @@ public class PrintLastHandledApplicationDataActionTest {
     @Test
     public void executingWithDefaultsSavesHex() throws IOException {
         action.execute(state);
-        assertThat(action.getLastHandledApplicationData(), equalTo(expectedAppDataHexString));
+        assertThat(expectedAppDataHexString, equalTo(action.getLastHandledApplicationData()));
         assertTrue(action.executedAsPlanned());
         assertTrue(action.isExecuted());
     }

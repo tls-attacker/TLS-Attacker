@@ -461,7 +461,7 @@ public enum CipherSuite {
 
     private static int valueToInt(byte[] value) {
         if (value.length >= 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else if (value.length == 1) {
             return value[0];
         } else {
@@ -634,8 +634,8 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384") && !this.name().contains("IDEA")
-                && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()
+                && !this.name().contains("IDEA") && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;

@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
@@ -157,7 +158,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         preparePremasterSecret(message);
 
         // the number of random bytes in the pkcs1 message
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
+        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
 
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
@@ -174,7 +175,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
                 chooser.getServerRsaModulus());
         encryptedPremasterSecret = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus()
-                .bitLength() / 8, true);
+                .bitLength() / Bits.IN_A_BYTE, true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);
     }

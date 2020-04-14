@@ -24,10 +24,6 @@ public class GeneralDrownCommandConfig extends BaseDrownCommandConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        if (!config.getDefaultSSL2CipherSuite().isExport()) {
-            throw new ConfigurationException("General DROWN requires an export cipher");
-        }
-
         return config;
     }
 

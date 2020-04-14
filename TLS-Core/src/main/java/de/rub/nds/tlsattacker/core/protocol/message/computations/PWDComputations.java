@@ -61,7 +61,7 @@ public class PWDComputations extends KeyExchangeComputations {
 
         boolean found = false;
         int counter = 0;
-        int n = (curve.getModulus().bitLength() + 64) / 8;
+        int n = (curve.getModulus().bitLength() + 64) / Bits.IN_A_BYTE;
         byte[] context;
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             context = chooser.getClientRandom();

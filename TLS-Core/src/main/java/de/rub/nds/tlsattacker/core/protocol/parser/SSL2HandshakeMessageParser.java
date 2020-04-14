@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
@@ -46,7 +47,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
             mask = 0x7f;
             message.setPaddingLength((int) length[2]);
         }
-        int intLength = ((length[0] & mask) << 8) | (length[1] & 0xFF);
+        int intLength = ((length[0] & mask) << Bits.IN_A_BYTE) | (length[1] & 0xFF);
         message.setMessageLength(intLength);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }

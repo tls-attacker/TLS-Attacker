@@ -233,6 +233,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
 
         WorkflowTrace trace;
+        tlsConfig.setWorkflowExecutorShouldClose(false);
 
         // we're modifying the config at runtime so all parallel workflow traces
         // need unique configs

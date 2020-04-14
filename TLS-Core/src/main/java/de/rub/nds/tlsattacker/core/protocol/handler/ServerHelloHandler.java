@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
@@ -344,6 +345,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         Point sharedSecret = curve
                 .mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / 8, true);
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / Bits.IN_A_BYTE, true);
     }
 }
