@@ -133,6 +133,11 @@
             <version>3.6</version>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
+        <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>ModifiableVariable</artifactId>
             <version>2.6</version>
