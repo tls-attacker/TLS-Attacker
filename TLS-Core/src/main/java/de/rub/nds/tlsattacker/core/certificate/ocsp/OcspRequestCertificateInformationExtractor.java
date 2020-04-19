@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
-import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
-import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
@@ -35,6 +32,11 @@ public class OcspRequestCertificateInformationExtractor {
 
     public OcspRequestCertificateInformationExtractor(Certificate cert) {
         this.cert = cert;
+
+        // Init ASN.1 Tool
+        registerContexts();
+        registerContentUnpackers();
+
     }
 
     public BigInteger getSerialNumber() {
@@ -48,28 +50,23 @@ public class OcspRequestCertificateInformationExtractor {
     }
 
     public byte[] getIssuerKeyHash() throws IOException, NoSuchAlgorithmException {
-        byte[] publicKey = cert.getSubjectPublicKeyInfo().getPublicKeyData().getEncoded();
+        byte[] publicKey = cert.getSubjectPublicKeyInfo().getPublicKeyData().getBytes();
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         return md.digest(publicKey);
     }
 
     public String getOcspServerUrl() throws IOException, ParserException, NullPointerException {
 
-        // TODO: Needs cleanup and a sanity check! This is kind of a messy way
-        // to go
-        // through the ASN.1 structure, but it works surprisingly well... If
-        // you're
-        // trying to understand the way this works, open up an ASN.1 decoder
-        // next to
-        // the code and go through it hierarchically.
+        /*
+         * TODO: Needs cleanup and a sanity check! This is kind of a messy way
+         * to go through the ASN.1 structure, but it works surprisingly well...
+         * If you're trying to understand the way this works, open up an ASN.1
+         * decoder next to the code and go through it hierarchically.
+         */
 
         String ocspUrlResult = null;
 
         byte[] certAsn1 = cert.getEncoded();
-
-        // Init ASN.1 Tool
-        registerContexts();
-        registerContentUnpackers();
 
         // Parse ASN.1 structure of the certificate
         Asn1Parser asn1Parser = new Asn1Parser(certAsn1, false);
