@@ -20,20 +20,20 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OcspRequestMessage {
+public class OCSPRequestMessage {
 
     Asn1Sequence tbsRequestWrapper = new Asn1Sequence();
     Asn1Sequence tbsRequest = new Asn1Sequence();
     Asn1Sequence requestList = new Asn1Sequence();
 
-    public OcspRequestMessage() {
+    public OCSPRequestMessage() {
         Asn1Sequence request = new Asn1Sequence();
         requestList.addChild(request);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
     }
 
-    public OcspRequestMessage(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
+    public OCSPRequestMessage(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
         Asn1Sequence request = new Asn1Sequence();
         Asn1Sequence reqCert = new Asn1Sequence();
         Asn1Sequence hashAlgorithm = new Asn1Sequence();

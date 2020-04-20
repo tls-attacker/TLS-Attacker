@@ -26,17 +26,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class OcspRequestCertificateInformationExtractor {
+public class CertificateInformationExtractor {
 
     Certificate cert;
+    static boolean asn1ToolInitialized = false;
 
-    public OcspRequestCertificateInformationExtractor(Certificate cert) {
+    public CertificateInformationExtractor(Certificate cert) {
         this.cert = cert;
 
         // Init ASN.1 Tool
-        registerContexts();
-        registerContentUnpackers();
-
+        if (!asn1ToolInitialized) {
+            registerContexts();
+            registerContentUnpackers();
+            asn1ToolInitialized = true;
+        }
     }
 
     public BigInteger getSerialNumber() {
@@ -107,7 +110,6 @@ public class OcspRequestCertificateInformationExtractor {
                 // authorityInfoAccess
                 if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.1.1")) {
                     authorityInfoAccess = (Asn1Sequence) enc;
-                    break;
                 }
             }
         }
