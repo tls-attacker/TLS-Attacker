@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
-import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
-import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
@@ -78,24 +75,26 @@ public class CertificateInformationExtractor {
         Asn1Parser asn1Parser = new Asn1Parser(certAsn1, false);
         List<Asn1Encodable> asn1Encodables = asn1Parser.parse(ParseOcspTypesContext.NAME);
 
-        // Navigate through the mess to the OCSP URL. First, just unroll the
-        // two outer ASN.1 sequences to get to most of the information
-        // stored in a X.509 certificate.
+        /*
+         * Navigate through the mess to the OCSP URL. First, just unroll the two
+         * outer ASN.1 sequences to get to most of the information stored in a
+         * X.509 certificate.
+         */
         Asn1Sequence innerObjects = (Asn1Sequence) ((Asn1Sequence) asn1Encodables.get(0)).getChildren().get(0);
 
         // Get sequence containing X.509 extensions
-        Asn1Sequence x509Extensions = null;
+        Asn1Explicit x509Extensions = null;
 
         for (Asn1Encodable enc : innerObjects.getChildren()) {
-            if (enc instanceof Asn1Sequence) {
-                if (((Asn1Sequence) enc).getIdentifierOctets().getOriginalValue().length > 0) {
-                    // -93 == 0xA3 signed. It's the explicit tag for X.509
-                    // extension in the DER encoded form, therefore a good
-                    // value to search for.
-                    if (((Asn1Sequence) enc).getIdentifierOctets().getOriginalValue()[0] == -93) {
-                        x509Extensions = (Asn1Sequence) enc;
-                        break;
-                    }
+            if (enc instanceof Asn1Explicit) {
+                /*
+                 * -93 == 0xA3 signed == Offset 3. It's the explicit tag for
+                 * X.509 extension in the DER encoded form, therefore a good
+                 * value to search for.
+                 */
+                if (((Asn1Explicit) enc).getOffset() == 3) {
+                    x509Extensions = (Asn1Explicit) enc;
+                    break;
                 }
             }
         }
@@ -117,11 +116,11 @@ public class CertificateInformationExtractor {
             }
         }
 
-        // get(0) is the Object Identifier we checked, get(1) the Octet
-        // String with the content
-        // The Octet String has a sequence as child, and one of them has
-        // the desired OCSP information.
-        // Almost there!
+        /*
+         * get(0) is the Object Identifier we checked, get(1) the Octet String
+         * with the content the Octet String has a sequence as child, and one of
+         * them has the desired OCSP information. Almost there!
+         */
         Asn1EncapsulatingOctetString authorityInfoAccessEntities = (Asn1EncapsulatingOctetString) authorityInfoAccess
                 .getChildren().get(1);
         Asn1Sequence authorityInfoAccessEntitiesSequence = (Asn1Sequence) authorityInfoAccessEntities.getChildren()
