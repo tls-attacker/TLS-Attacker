@@ -89,6 +89,8 @@ public class OCSPRequest {
         }
 
         OCSPRequestMessage ocspRequestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
+        ocspRequestMessage.addExtension(OCSPExtensions.NONCE.getOID());
+        ocspRequestMessage.addExtension(OCSPExtensions.ACCEPTABLE_RESPONSES.getOID());
         byte[] ocspEncodedRequest = ocspRequestMessage.getEncodedRequest();
 
         HttpURLConnection con = (HttpURLConnection) ocspServerUrl.openConnection();

@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
+import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
+import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
+import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
