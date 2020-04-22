@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
+import de.rub.nds.asn1.model.Asn1Explicit;
+import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
+import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
+import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
@@ -28,8 +32,8 @@ import java.util.List;
 
 public class CertificateInformationExtractor {
 
-    Certificate cert;
     static boolean asn1ToolInitialized = false;
+    Certificate cert;
 
     public CertificateInformationExtractor(Certificate cert) {
         this.cert = cert;
@@ -40,6 +44,18 @@ public class CertificateInformationExtractor {
             registerContentUnpackers();
             asn1ToolInitialized = true;
         }
+    }
+
+    private static void registerContexts() {
+        ContextRegister contextRegister = ContextRegister.getInstance();
+        contextRegister.registerContext(ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
+        contextRegister.registerContext(ParseOcspTypesContext.NAME, ParseOcspTypesContext.class);
+    }
+
+    private static void registerContentUnpackers() {
+        ContentUnpackerRegister contentUnpackerRegister = ContentUnpackerRegister.getInstance();
+        contentUnpackerRegister.registerContentUnpacker(new DefaultContentUnpacker());
+        contentUnpackerRegister.registerContentUnpacker(new PrimitiveBitStringUnpacker());
     }
 
     public BigInteger getSerialNumber() {
@@ -152,17 +168,5 @@ public class CertificateInformationExtractor {
         }
 
         return ocspUrlResult;
-    }
-
-    private static void registerContexts() {
-        ContextRegister contextRegister = ContextRegister.getInstance();
-        contextRegister.registerContext(ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
-        contextRegister.registerContext(ParseOcspTypesContext.NAME, ParseOcspTypesContext.class);
-    }
-
-    private static void registerContentUnpackers() {
-        ContentUnpackerRegister contentUnpackerRegister = ContentUnpackerRegister.getInstance();
-        contentUnpackerRegister.registerContentUnpacker(new DefaultContentUnpacker());
-        contentUnpackerRegister.registerContentUnpacker(new PrimitiveBitStringUnpacker());
     }
 }

@@ -24,11 +24,11 @@ import java.security.NoSuchAlgorithmException;
 public class OCSPRequest {
 
     private final Logger LOGGER = LogManager.getLogger();
-    private Certificate cert;
+    private final Certificate cert;
+    private final CertificateInformationExtractor infoExtractorMain;
     private Certificate issuerCert;
-    private CertificateInformationExtractor infoExtractorMain;
     private CertificateInformationExtractor infoExtractorIssuer;
-    private URL ocspServerUrl;
+    private URL serverUrl;
 
     // TODO: Better way to deal with exceptions
     public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain) {
@@ -36,7 +36,7 @@ public class OCSPRequest {
         this.infoExtractorMain = new CertificateInformationExtractor(cert);
 
         try {
-            this.ocspServerUrl = new URL(infoExtractorMain.getOcspServerUrl());
+            this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
         } catch (Exception e) {
             LOGGER.error("An error occurred during the parsing of the certificate's ASN.1 structure. Please set the OCSP Server URL manually.");
             LOGGER.error(e.getStackTrace());
@@ -50,10 +50,10 @@ public class OCSPRequest {
         }
     }
 
-    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain, URL ocspServerUrl) {
+    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain, URL serverUrl) {
         this.cert = certChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(cert);
-        this.ocspServerUrl = ocspServerUrl;
+        this.serverUrl = serverUrl;
 
         // If we have an issuerCert, import it too, as we need it for the
         // IssuerKeyHash
@@ -63,15 +63,36 @@ public class OCSPRequest {
         }
     }
 
-    public void setOcspServerUrl(String url) throws MalformedURLException {
-        this.ocspServerUrl = new URL(url);
+    public URL getServerUrl() {
+        return serverUrl;
     }
 
-    public void setOcspServerUrl(URL url) {
-        this.ocspServerUrl = url;
+    public void setServerUrl(URL url) {
+        this.serverUrl = url;
+    }
+
+    public void setServerUrl(String url) throws MalformedURLException {
+        this.serverUrl = new URL(url);
+    }
+
+    public Certificate getCert() {
+        return cert;
+    }
+
+    public Certificate getIssuerCert() {
+        return issuerCert;
     }
 
     public byte[] makeRequest() throws IOException, NoSuchAlgorithmException {
+        OCSPRequestMessage requestMessage = prepareDefaultRequestMessage();
+        return makeOcspRequest(requestMessage);
+    }
+
+    public byte[] makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException {
+        return makeOcspRequest(requestMessage);
+    }
+
+    private OCSPRequestMessage prepareDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {
         BigInteger serialNumber = infoExtractorMain.getSerialNumber();
         byte[] issuerNameHash;
         byte[] issuerKeyHash;
@@ -88,29 +109,33 @@ public class OCSPRequest {
             issuerKeyHash = infoExtractorMain.getIssuerKeyHash();
         }
 
-        OCSPRequestMessage ocspRequestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
-        ocspRequestMessage.addExtension(OCSPExtensions.NONCE.getOID());
-        ocspRequestMessage.addExtension(OCSPExtensions.ACCEPTABLE_RESPONSES.getOID());
-        byte[] ocspEncodedRequest = ocspRequestMessage.getEncodedRequest();
+        OCSPRequestMessage requestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
+        requestMessage.addExtension(OCSPExtensions.NONCE.getOID());
+        requestMessage.addExtension(OCSPExtensions.ACCEPTABLE_RESPONSES.getOID());
 
-        HttpURLConnection con = (HttpURLConnection) ocspServerUrl.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/ocsp-request");
+        return requestMessage;
+    }
 
-        con.setDoOutput(true);
-        OutputStream os = con.getOutputStream();
-        os.write(ocspEncodedRequest);
+    private byte[] makeOcspRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException {
+        byte[] encodedRequest = requestMessage.getEncodedRequest();
+        HttpURLConnection httpCon = (HttpURLConnection) serverUrl.openConnection();
+        httpCon.setRequestMethod("POST");
+        httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
+
+        httpCon.setDoOutput(true);
+        OutputStream os = httpCon.getOutputStream();
+        os.write(encodedRequest);
         os.flush();
         os.close();
 
-        int status = con.getResponseCode();
+        int status = httpCon.getResponseCode();
         byte[] response;
         if (status == 200)
-            response = ByteStreams.toByteArray(con.getInputStream());
+            response = ByteStreams.toByteArray(httpCon.getInputStream());
         else
             throw new RuntimeException("Response not successful: Received status code " + status);
 
-        con.disconnect();
+        httpCon.disconnect();
 
         return response;
     }
