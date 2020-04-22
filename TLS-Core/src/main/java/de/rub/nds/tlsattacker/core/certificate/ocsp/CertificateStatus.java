@@ -74,9 +74,10 @@ public class CertificateStatus {
         Asn1Sequence requestInformation = (Asn1Sequence) certStatusSeq.getChildren().get(0);
 
         /*
-         * At first, get information from the original request. This MAY differ
-         * sometimes, as some responders don't need all values to match to give
-         * a response. DigiCert, for example, also accepts an invalid
+         * At first, get information about the processed request. This MAY
+         * differ from the original request sometimes, as some responders don't
+         * need all values to match to give a response for a given certificate.
+         * DigiCert's OCSP responder, for example, also accepts an invalid
          * issuerKeyHash in a request if the other values match up and returns
          * the correct one in the response.
          */
