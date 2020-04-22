@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import com.google.common.io.ByteStreams;
+import de.rub.nds.asn1.parser.ParserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
@@ -83,13 +84,14 @@ public class OCSPRequest {
         return issuerCert;
     }
 
-    public byte[] makeRequest() throws IOException, NoSuchAlgorithmException {
+    public OCSPResponse makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
         OCSPRequestMessage requestMessage = prepareDefaultRequestMessage();
-        return makeOcspRequest(requestMessage);
+        return performRequest(requestMessage);
     }
 
-    public byte[] makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException {
-        return makeOcspRequest(requestMessage);
+    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException,
+            ParserException {
+        return performRequest(requestMessage);
     }
 
     private OCSPRequestMessage prepareDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {
@@ -116,7 +118,7 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private byte[] makeOcspRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException {
+    private OCSPResponse performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
         HttpURLConnection httpCon = (HttpURLConnection) serverUrl.openConnection();
         httpCon.setRequestMethod("POST");
@@ -137,6 +139,9 @@ public class OCSPRequest {
 
         httpCon.disconnect();
 
-        return response;
+        OCSPResponse ocspResponse = new OCSPResponse();
+        ocspResponse.parseResponse(response);
+
+        return ocspResponse;
     }
 }
