@@ -24,11 +24,16 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
@@ -145,7 +150,13 @@ public class PWDComputations extends KeyExchangeComputations {
         } else {
             PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite());
-            return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
+            if (prf != null) {
+                return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
+            } else {
+                LOGGER.warn("Could not select prf for " + chooser.getSelectedProtocolVersion() + " and "
+                        + chooser.getSelectedCipherSuite());
+                return new byte[outlen];
+            }
         }
     }
 
