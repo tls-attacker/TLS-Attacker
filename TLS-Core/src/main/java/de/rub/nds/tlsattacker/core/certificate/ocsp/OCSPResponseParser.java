@@ -24,6 +24,7 @@ import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -33,51 +34,43 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OCSPResponse {
+public class OCSPResponseParser {
 
     private final Logger LOGGER = LogManager.getLogger();
-    private final List<CertificateStatus> certStatusList = new LinkedList<>();
-    private byte[] encodedResponse;
-    private byte[] responderKey;
-    private int responseStatus;
-    private int responseDataVersion = 0; // 0 = OCSP v1
-    private String responseTime;
-    private String responseTypeIdentifier;
-    private String signatureAlgorithmIdentifier;
-    private Asn1Encodable signature;
-    private List<Asn1Encodable> responderDn;
-    private Certificate cert;
 
-    public OCSPResponse() {
+    public OCSPResponseParser() {
         // Init ASN.1 Tool
         Asn1ToolInitializer.initAsn1Tool();
     }
 
-    public void parseResponse(byte[] encodedResponse) throws ParserException, IOException {
-        this.encodedResponse = encodedResponse;
+    public OCSPResponseMessage parseResponse(byte[] encodedResponse) throws ParserException, IOException {
+        OCSPResponseMessage responseMessage = new OCSPResponseMessage();
+        responseMessage.setEncodedResponse(encodedResponse);
 
         Asn1Parser asn1Parser = new Asn1Parser(encodedResponse, false);
-        List<Asn1Encodable> asn1Encodables = asn1Parser.parse(ParseOcspTypesContext.NAME);
+        List<Asn1Encodable> decodedResponse = asn1Parser.parse(ParseOcspTypesContext.NAME);
 
-        Asn1Sequence outerWrapper = (Asn1Sequence) asn1Encodables.get(0);
+        Asn1Sequence outerWrapper = (Asn1Sequence) decodedResponse.get(0);
 
         // Get response status
         Asn1Enumerated encodedResponseObject = (Asn1Enumerated) outerWrapper.getChildren().get(0);
-        responseStatus = encodedResponseObject.getValue().intValue();
+        int responseStatus = encodedResponseObject.getValue().intValue();
 
         // If we don't get a valid response, abort.
         if (responseStatus != 0) {
-            return;
+            responseMessage.setResponseStatus(responseStatus);
+            return responseMessage;
         }
 
         Asn1Explicit responseObject = (Asn1Explicit) outerWrapper.getChildren().get(1);
         Asn1Sequence responseObjectSequence = (Asn1Sequence) responseObject.getChildren().get(0);
         Asn1ObjectIdentifier responseTypeObject = (Asn1ObjectIdentifier) responseObjectSequence.getChildren().get(0);
-        responseTypeIdentifier = responseTypeObject.getValue();
+        String responseTypeIdentifier = responseTypeObject.getValue();
 
         // We only support OCSP basic responses so far
         if (!responseTypeIdentifier.equals("1.3.6.1.5.5.7.48.1.1")) {
-            return;
+            throw new NotImplementedException("This response type is not supported. Identifier: "
+                    + responseTypeIdentifier);
         }
 
         Asn1EncapsulatingOctetString basicOscpResponseWrapper = (Asn1EncapsulatingOctetString) responseObjectSequence
@@ -88,7 +81,12 @@ public class OCSPResponse {
         Asn1Sequence signatureAlgorithmSequence = (Asn1Sequence) basicOcspResponse.getChildren().get(1);
 
         // Decode tbsResponseData
-        Asn1Sequence responseCertListSequence = null;
+        Asn1Sequence responseCertificateListSequence = null;
+
+        List<Asn1Encodable> responderDn = null;
+        byte[] responderKey = null;
+        int responseDataVersion = 0; // Assume it's v1 by default
+        String responseTime = null;
 
         /*
          * Case 1 can occur twice: The first time, it can be a responder ID,
@@ -97,6 +95,7 @@ public class OCSPResponse {
          * response list. Therefore, if we passed the response, treat this case
          * for extensions.
          */
+
         for (Asn1Encodable enc : tbsResponseData.getChildren()) {
             if (enc instanceof Asn1Explicit) {
                 Asn1Explicit currentObject = (Asn1Explicit) enc;
@@ -106,7 +105,7 @@ public class OCSPResponse {
                         responseDataVersion = ((Asn1Integer) childObject).getValue().intValue();
                         break;
                     case 1:
-                        if (responseCertListSequence == null) {
+                        if (responseCertificateListSequence == null) {
                             responderDn = ((Asn1Sequence) childObject).getChildren();
                         } else {
                             // TODO: Add support for responseExtensions here.
@@ -119,24 +118,25 @@ public class OCSPResponse {
             } else if (enc instanceof Asn1PrimitiveGeneralizedTime) {
                 responseTime = ((Asn1PrimitiveGeneralizedTime) enc).getValue();
             } else if (enc instanceof Asn1Sequence) {
-                responseCertListSequence = (Asn1Sequence) enc;
+                responseCertificateListSequence = (Asn1Sequence) enc;
             }
         }
 
         // Decode every listed certificate status from tbsResponseData
-        if (responseCertListSequence != null) {
-            for (Asn1Encodable certStatusSequence : responseCertListSequence.getChildren()) {
-                if (certStatusSequence instanceof Asn1Sequence) {
-                    certStatusList.add(new CertificateStatus((Asn1Sequence) certStatusSequence));
+        List<CertificateStatus> certificateStatusList = new LinkedList<>();
+        if (responseCertificateListSequence != null) {
+            for (Asn1Encodable certificateStatusSequence : responseCertificateListSequence.getChildren()) {
+                if (certificateStatusSequence instanceof Asn1Sequence) {
+                    certificateStatusList.add(new CertificateStatus((Asn1Sequence) certificateStatusSequence));
                 }
             }
         }
 
         // Signature of the OCSP Response can either be a primitive or an
         // encapsulated type, so let's deal with that later in the getter
-        signatureAlgorithmIdentifier = ((Asn1ObjectIdentifier) signatureAlgorithmSequence.getChildren().get(0))
+        String signatureAlgorithmIdentifier = ((Asn1ObjectIdentifier) signatureAlgorithmSequence.getChildren().get(0))
                 .getValue();
-        signature = basicOcspResponse.getChildren().get(2);
+        Asn1Encodable signature = basicOcspResponse.getChildren().get(2);
 
         Asn1Explicit certs = null;
         if (basicOcspResponse.getChildren().size() > 3) {
@@ -144,6 +144,7 @@ public class OCSPResponse {
         }
 
         // And if a certificate was embedded, parse it with BouncyCastle.
+        Certificate certificate = null;
         if (certs != null) {
             // Grab the certificate Asn1Sequence
             Asn1Sequence certOuterSequence = (Asn1Sequence) certs.getChildren().get(0);
@@ -157,17 +158,38 @@ public class OCSPResponse {
 
             // Mimic TLS certificate message format with two length values in
             // front of the certificate data
-            byte[] certSequenceEncoded = asn1Encoder.encode();
-            byte[] certSequenceEncodedWithLength = ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(certSequenceEncoded.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                    certSequenceEncoded);
+            byte[] certificateSequenceEncoded = asn1Encoder.encode();
+            byte[] certificateSequenceEncodedWithLength = ArrayConverter.concatenate(ArrayConverter.intToBytes(
+                    certificateSequenceEncoded.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                    certificateSequenceEncoded);
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
-                    .intToBytes(certSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                    certSequenceEncodedWithLength));
+                    .intToBytes(certificateSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                    certificateSequenceEncodedWithLength));
 
             // And feed the TLS mimicked certificate message into BouncyCastle
             // TLS certificate parser
-            cert = Certificate.parse(stream);
+            certificate = Certificate.parse(stream);
         }
+
+        // If we're done with parsing, fill the OCSP response message
+        responseMessage.setCertificateStatusList(certificateStatusList);
+        if (responderKey != null) {
+            responseMessage.setResponderKey(responderKey);
+        }
+        responseMessage.setResponseDataVersion(responseDataVersion);
+        if (responseTime != null) {
+            responseMessage.setResponseTime(responseTime);
+        }
+        responseMessage.setResponseTypeIdentifier(responseTypeIdentifier);
+        responseMessage.setSignatureAlgorithmIdentifier(signatureAlgorithmIdentifier);
+        responseMessage.setSignature(signature);
+        if (responderDn != null) {
+            responseMessage.setResponderDn(responderDn);
+        }
+        if (certificate != null) {
+            responseMessage.setCertificate(certificate);
+        }
+
+        return responseMessage;
     }
 }

@@ -25,16 +25,16 @@ import java.security.NoSuchAlgorithmException;
 public class OCSPRequest {
 
     private final Logger LOGGER = LogManager.getLogger();
-    private final Certificate cert;
+    private final Certificate certificate;
     private final CertificateInformationExtractor infoExtractorMain;
-    private Certificate issuerCert;
+    private Certificate issuerCertificate;
     private CertificateInformationExtractor infoExtractorIssuer;
     private URL serverUrl;
 
     // TODO: Better way to deal with exceptions
     public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain) {
-        this.cert = certChain.getCertificateAt(0);
-        this.infoExtractorMain = new CertificateInformationExtractor(cert);
+        this.certificate = certChain.getCertificateAt(0);
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
 
         try {
             this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
@@ -46,21 +46,21 @@ public class OCSPRequest {
         // If we have an issuerCert, import it too, as we need it for the
         // IssuerKeyHash
         if (certChain.getLength() > 1) {
-            this.issuerCert = certChain.getCertificateAt(1);
-            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCert);
+            this.issuerCertificate = certChain.getCertificateAt(1);
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
         }
     }
 
     public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain, URL serverUrl) {
-        this.cert = certChain.getCertificateAt(0);
-        this.infoExtractorMain = new CertificateInformationExtractor(cert);
+        this.certificate = certChain.getCertificateAt(0);
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
         this.serverUrl = serverUrl;
 
         // If we have an issuerCert, import it too, as we need it for the
         // IssuerKeyHash
         if (certChain.getLength() > 1) {
-            this.issuerCert = certChain.getCertificateAt(1);
-            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCert);
+            this.issuerCertificate = certChain.getCertificateAt(1);
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
         }
     }
 
@@ -76,21 +76,21 @@ public class OCSPRequest {
         this.serverUrl = new URL(url);
     }
 
-    public Certificate getCert() {
-        return cert;
+    public Certificate getCertificate() {
+        return certificate;
     }
 
-    public Certificate getIssuerCert() {
-        return issuerCert;
+    public Certificate getIssuerCertificate() {
+        return issuerCertificate;
     }
 
-    public OCSPResponse makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
+    public OCSPResponseMessage makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
         OCSPRequestMessage requestMessage = prepareDefaultRequestMessage();
         return performRequest(requestMessage);
     }
 
-    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException,
-            ParserException {
+    public OCSPResponseMessage makeRequest(OCSPRequestMessage requestMessage) throws IOException,
+            NoSuchAlgorithmException, ParserException {
         return performRequest(requestMessage);
     }
 
@@ -105,7 +105,7 @@ public class OCSPRequest {
 
         // issuerKeyHash, however, is based on the public key mentioned in the
         // issuer's certificate
-        if (issuerCert != null && infoExtractorIssuer != null) {
+        if (issuerCertificate != null && infoExtractorIssuer != null) {
             issuerKeyHash = infoExtractorIssuer.getIssuerKeyHash();
         } else {
             issuerKeyHash = infoExtractorMain.getIssuerKeyHash();
@@ -118,7 +118,7 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private OCSPResponse performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+    private OCSPResponseMessage performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
         HttpURLConnection httpCon = (HttpURLConnection) serverUrl.openConnection();
         httpCon.setRequestMethod("POST");
@@ -139,9 +139,9 @@ public class OCSPRequest {
 
         httpCon.disconnect();
 
-        OCSPResponse ocspResponse = new OCSPResponse();
-        ocspResponse.parseResponse(response);
+        OCSPResponseParser ocspResponseParser = new OCSPResponseParser();
+        OCSPResponseMessage ocspResponseMessage = ocspResponseParser.parseResponse(response);
 
-        return ocspResponse;
+        return ocspResponseMessage;
     }
 }
