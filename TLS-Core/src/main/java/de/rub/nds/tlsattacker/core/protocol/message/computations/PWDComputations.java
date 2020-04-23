@@ -92,6 +92,12 @@ public class PWDComputations extends KeyExchangeComputations {
                 found = true;
                 chooser.getContext().getBadSecureRandom().nextBytes(base);
             }
+            if (counter > 1000) {
+                savedSeed = seed.clone();
+                createdPoint = tempPoint;
+                LOGGER.warn("Could not find a useful pwd point");
+                break;
+            }
         } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
 
         // use the lsb of the saved seed and Y to determine which of the two
