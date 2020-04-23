@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
+import de.rub.nds.asn1.encoder.Asn1Encoder;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
 import de.rub.nds.asn1.model.Asn1Enumerated;
 import de.rub.nds.asn1.model.Asn1Explicit;
@@ -168,24 +169,29 @@ public class OCSPResponse {
 
         // And if a certificate was embedded, parse it with BouncyCastle.
         if (certs != null) {
-            // TODO: Find out how to get the raw bytes of an ASN.1 object
+            // Grab the certificate Asn1Sequence
+            Asn1Sequence certOuterSequence = (Asn1Sequence) certs.getChildren().get(0);
+            Asn1Sequence certSequence = (Asn1Sequence) certOuterSequence.getChildren().get(0);
 
-            /*
-             * Asn1Sequence certObject = (Asn1Sequence)
-             * certs.getChildren().get(0); ModifiableByteArray
-             * certSequenceModByteArray = certObject.getContent(); byte[]
-             * certSequenceByteArray =
-             * certSequenceModByteArray.getOriginalValue(); byte[]
-             * certSequenceWithLengthByteArray = ArrayConverter.concatenate(
-             * ArrayConverter.intToBytes(certSequenceByteArray.length,
-             * HandshakeByteLength.CERTIFICATES_LENGTH), certSequenceByteArray);
-             * ByteArrayInputStream stream = new
-             * ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
-             * .intToBytes(certSequenceWithLengthByteArray.length,
-             * HandshakeByteLength.CERTIFICATES_LENGTH),
-             * certSequenceWithLengthByteArray)); cert =
-             * Certificate.parse(stream); } LOGGER.debug("lel");
-             */
+            // Re-encode it to DER, as if we would get a normal DER encoded
+            // certificate
+            List<Asn1Encodable> toEncode = new LinkedList<>();
+            toEncode.add(certSequence);
+            Asn1Encoder asn1Encoder = new Asn1Encoder(toEncode);
+
+            // Mimic TLS certificate message format with two length values in
+            // front of the certificate data
+            byte[] certSequenceEncoded = asn1Encoder.encode();
+            byte[] certSequenceEncodedWithLength = ArrayConverter.concatenate(
+                    ArrayConverter.intToBytes(certSequenceEncoded.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                    certSequenceEncoded);
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
+                    .intToBytes(certSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                    certSequenceEncodedWithLength));
+
+            // And feed the TLS mimicked certificate message into BouncyCastle
+            // TLS certificate parser
+            cert = Certificate.parse(stream);
         }
     }
 }
