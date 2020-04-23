@@ -18,20 +18,11 @@ import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitiveGeneralizedTime;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
-import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
-import de.rub.nds.asn1.parser.contentunpackers.DefaultContentUnpacker;
-import de.rub.nds.asn1.parser.contentunpackers.PrimitiveBitStringUnpacker;
-import de.rub.nds.asn1.translator.ContextRegister;
-import de.rub.nds.asn1.translator.ParseNativeTypesContext;
-import de.rub.nds.asn1.translator.ParseOcspTypesContext;
+import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
-
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.CertificateInformationExtractor.asn1ToolInitialized;
-
-// TODO: Find a way to share this variable
 
 public class CertificateStatus {
 
@@ -48,26 +39,10 @@ public class CertificateStatus {
 
     public CertificateStatus(Asn1Sequence certStatusSequence) {
         // Init ASN.1 Tool
-        if (!asn1ToolInitialized) {
-            registerContexts();
-            registerContentUnpackers();
-            asn1ToolInitialized = true;
-        }
+        Asn1ToolInitializer.initAsn1Tool();
 
         this.certStatusSequence = certStatusSequence;
         parseCertificateStatus(certStatusSequence);
-    }
-
-    private static void registerContexts() {
-        ContextRegister contextRegister = ContextRegister.getInstance();
-        contextRegister.registerContext(ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
-        contextRegister.registerContext(ParseOcspTypesContext.NAME, ParseOcspTypesContext.class);
-    }
-
-    private static void registerContentUnpackers() {
-        ContentUnpackerRegister contentUnpackerRegister = ContentUnpackerRegister.getInstance();
-        contentUnpackerRegister.registerContentUnpacker(new DefaultContentUnpacker());
-        contentUnpackerRegister.registerContentUnpacker(new PrimitiveBitStringUnpacker());
     }
 
     private void parseCertificateStatus(Asn1Sequence certStatusSeq) {

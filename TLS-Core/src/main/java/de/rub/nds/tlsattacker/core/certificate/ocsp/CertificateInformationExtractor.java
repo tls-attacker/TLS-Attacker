@@ -16,12 +16,8 @@ import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
-import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
-import de.rub.nds.asn1.parser.contentunpackers.DefaultContentUnpacker;
-import de.rub.nds.asn1.parser.contentunpackers.PrimitiveBitStringUnpacker;
-import de.rub.nds.asn1.translator.ContextRegister;
-import de.rub.nds.asn1.translator.ParseNativeTypesContext;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
+import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.bouncycastle.asn1.x509.Certificate;
 
 import java.io.IOException;
@@ -32,30 +28,13 @@ import java.util.List;
 
 public class CertificateInformationExtractor {
 
-    static boolean asn1ToolInitialized = false;
     Certificate cert;
 
     public CertificateInformationExtractor(Certificate cert) {
         this.cert = cert;
 
         // Init ASN.1 Tool
-        if (!asn1ToolInitialized) {
-            registerContexts();
-            registerContentUnpackers();
-            asn1ToolInitialized = true;
-        }
-    }
-
-    private static void registerContexts() {
-        ContextRegister contextRegister = ContextRegister.getInstance();
-        contextRegister.registerContext(ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
-        contextRegister.registerContext(ParseOcspTypesContext.NAME, ParseOcspTypesContext.class);
-    }
-
-    private static void registerContentUnpackers() {
-        ContentUnpackerRegister contentUnpackerRegister = ContentUnpackerRegister.getInstance();
-        contentUnpackerRegister.registerContentUnpacker(new DefaultContentUnpacker());
-        contentUnpackerRegister.registerContentUnpacker(new PrimitiveBitStringUnpacker());
+        Asn1ToolInitializer.initAsn1Tool();
     }
 
     public BigInteger getSerialNumber() {
