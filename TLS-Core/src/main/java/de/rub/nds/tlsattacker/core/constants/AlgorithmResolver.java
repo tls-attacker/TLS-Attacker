@@ -29,17 +29,16 @@ public class AlgorithmResolver {
      * specific cipher suites (the last part of a cipher suite string identifies
      * the PRF).
      *
-     * @param protocolVersion
-     *            The ProtocolVersion for which the PRFAlgorithm should be
-     *            returned
-     * @param cipherSuite
-     *            The Ciphersuite for which the PRFAlgorithm should be returned
+     * @param protocolVersion The ProtocolVersion for which the PRFAlgorithm
+     * should be returned
+     * @param cipherSuite The Ciphersuite for which the PRFAlgorithm should be
+     * returned
      * @return The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
-            throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
+            return null;
         }
         if (cipherSuite.usesGOSTR3411()) {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411;
@@ -66,12 +65,10 @@ public class AlgorithmResolver {
      * algorithms in specific cipher suites (the last part of a cipher suite
      * string identifies the digest).
      *
-     * @param protocolVersion
-     *            The ProtocolVersion for which the DigestAlgorithm should be
-     *            returned
-     * @param cipherSuite
-     *            The Ciphersuite for which the DigestAlgorithm should be
-     *            returned
+     * @param protocolVersion The ProtocolVersion for which the DigestAlgorithm
+     * should be returned
+     * @param cipherSuite The Ciphersuite for which the DigestAlgorithm should
+     * be returned
      * @return The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -174,8 +171,7 @@ public class AlgorithmResolver {
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
      *
-     * @param cipherSuite
-     *            The selected CipherSuite
+     * @param cipherSuite The selected CipherSuite
      * @return The Set of publicKeyAlgorithms
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
@@ -263,9 +259,8 @@ public class AlgorithmResolver {
     }
 
     /**
-     * @param cipherSuite
-     *            The Ciphersuite for which the BulkCipherAlgorithm should be
-     *            returned
+     * @param cipherSuite The Ciphersuite for which the BulkCipherAlgorithm
+     * should be returned
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
@@ -273,8 +268,8 @@ public class AlgorithmResolver {
     }
 
     /**
-     * @param cipherSuite
-     *            The Ciphersuite for which the CipherType should be selected
+     * @param cipherSuite The Ciphersuite for which the CipherType should be
+     * selected
      * @return The CipherType of the Ciphersuite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
