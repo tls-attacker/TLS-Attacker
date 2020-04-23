@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import de.rub.nds.asn1.Asn1Encodable;
 import org.bouncycastle.crypto.tls.Certificate;
 
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class OCSPResponseMessage {
     private byte[] responderKey;
     private int responseStatus;
     private int responseDataVersion = 0; // 0 = OCSP v1
+    private BigInteger nonce;
     private String responseTime;
     private String responseTypeIdentifier;
     private String signatureAlgorithmIdentifier;
@@ -113,5 +115,13 @@ public class OCSPResponseMessage {
 
     public void setCertificate(Certificate certificate) {
         this.certificate = certificate;
+    }
+
+    public BigInteger getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(BigInteger nonce) {
+        this.nonce = nonce;
     }
 }

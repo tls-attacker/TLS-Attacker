@@ -31,6 +31,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -87,6 +88,7 @@ public class OCSPResponseParser {
         byte[] responderKey = null;
         int responseDataVersion = 0; // Assume it's v1 by default
         String responseTime = null;
+        BigInteger nonce = null;
 
         /*
          * Case 1 can occur twice: The first time, it can be a responder ID,
@@ -108,7 +110,20 @@ public class OCSPResponseParser {
                         if (responseCertificateListSequence == null) {
                             responderDn = ((Asn1Sequence) childObject).getChildren();
                         } else {
-                            // TODO: Add support for responseExtensions here.
+                            // Handle responseExtensions
+                            Asn1Sequence innerExtensionSequence = (Asn1Sequence) ((Asn1Sequence) childObject)
+                                    .getChildren().get(0);
+                            Asn1ObjectIdentifier extensionIdentifier = (Asn1ObjectIdentifier) innerExtensionSequence
+                                    .getChildren().get(0);
+
+                            // Nonce extension
+                            if (extensionIdentifier.getValue().equals("1.3.6.1.5.5.7.48.1.2")) {
+                                Asn1EncapsulatingOctetString encapsulatedNonce = (Asn1EncapsulatingOctetString) innerExtensionSequence
+                                        .getChildren().get(1);
+                                Asn1PrimitiveOctetString nonceOctetString = (Asn1PrimitiveOctetString) encapsulatedNonce
+                                        .getChildren().get(0);
+                                nonce = new BigInteger(1, nonceOctetString.getValue());
+                            }
                         }
                         break;
                     case 2:
@@ -177,6 +192,9 @@ public class OCSPResponseParser {
             responseMessage.setResponderKey(responderKey);
         }
         responseMessage.setResponseDataVersion(responseDataVersion);
+        if (nonce != null) {
+            responseMessage.setNonce(nonce);
+        }
         if (responseTime != null) {
             responseMessage.setResponseTime(responseTime);
         }
