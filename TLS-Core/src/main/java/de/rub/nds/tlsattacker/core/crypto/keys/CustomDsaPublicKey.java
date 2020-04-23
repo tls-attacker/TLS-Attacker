@@ -52,7 +52,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         LOGGER.debug("Adjusting DSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDsaGenerator(g);
@@ -69,6 +69,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
+    }
+
+    public BigInteger getP() {
+        return p;
+    }
+
+    public BigInteger getQ() {
+        return q;
+    }
+
+    public BigInteger getG() {
+        return g;
     }
 
     @Override
@@ -100,7 +113,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDsaGenerator(g);
@@ -117,6 +130,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

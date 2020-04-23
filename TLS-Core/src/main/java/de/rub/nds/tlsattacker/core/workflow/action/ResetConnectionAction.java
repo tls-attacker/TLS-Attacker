@@ -28,6 +28,10 @@ public class ResetConnectionAction extends ConnectionBoundAction {
     public ResetConnectionAction() {
     }
 
+    public ResetConnectionAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());

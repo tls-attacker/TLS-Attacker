@@ -20,13 +20,11 @@ import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
-import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.ECPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
@@ -69,6 +67,18 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         group = null;
         this.gostCurve = gostCurve;
         point = CurveFactory.getCurve(gostCurve).getPoint(x, y);
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public NamedGroup getGroup() {
+        return group;
+    }
+
+    public GOSTCurve getGostCurve() {
+        return gostCurve;
     }
 
     @Override

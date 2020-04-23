@@ -218,16 +218,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        if (executor.getSize() > 1) {
-            executor.bulkExecuteStateTasks(stateList);
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
-        } else {
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                executor.bulkExecuteStateTasks(stateVectorPair.getState());
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
+        executor.bulkExecuteStateTasks(stateList);
+        for (StateVectorPair stateVectorPair : stateVectorPairList) {
+            processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
         }
         // Check that the public key send by the server is actually the public
         // key used to generate
@@ -236,7 +229,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // generated statically and not dynamically. We will adjust this in
         // future versions.
         for (StateVectorPair pair : stateVectorPairList) {
-            if (!pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+            if (pair.getState().getTlsContext().getServerRsaModulus() != null
+                    && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
                 throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
             }
         }

@@ -206,8 +206,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             if (pair.getFingerPrintTask().isHasError()) {
                 errornousScans = true;
                 LOGGER.warn("Could not extract fingerprint for " + pair.toString());
-                VectorResponse vectorResponse = new VectorResponse(pair.getVector(), null);
-                tempResponseVectorList.add(vectorResponse);
             } else {
                 testedSuite = pair.getFingerPrintTask().getState().getTlsContext().getSelectedCipherSuite();
                 testedVersion = pair.getFingerPrintTask().getState().getTlsContext().getSelectedProtocolVersion();
