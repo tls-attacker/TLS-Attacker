@@ -88,7 +88,6 @@ public class OCSPResponseParser {
         byte[] responderKey = null;
         int responseDataVersion = 0; // Assume it's v1 by default
         String responseTime = null;
-        BigInteger nonce = null;
 
         /*
          * Case 1 can occur twice: The first time, it can be a responder ID,
@@ -111,19 +110,7 @@ public class OCSPResponseParser {
                             responderDn = ((Asn1Sequence) childObject).getChildren();
                         } else {
                             // Handle responseExtensions
-                            Asn1Sequence innerExtensionSequence = (Asn1Sequence) ((Asn1Sequence) childObject)
-                                    .getChildren().get(0);
-                            Asn1ObjectIdentifier extensionIdentifier = (Asn1ObjectIdentifier) innerExtensionSequence
-                                    .getChildren().get(0);
-
-                            // Nonce extension
-                            if (extensionIdentifier.getValue().equals("1.3.6.1.5.5.7.48.1.2")) {
-                                Asn1EncapsulatingOctetString encapsulatedNonce = (Asn1EncapsulatingOctetString) innerExtensionSequence
-                                        .getChildren().get(1);
-                                Asn1PrimitiveOctetString nonceOctetString = (Asn1PrimitiveOctetString) encapsulatedNonce
-                                        .getChildren().get(0);
-                                nonce = new BigInteger(1, nonceOctetString.getValue());
-                            }
+                            parseExtensions((Asn1Sequence) childObject, responseMessage);
                         }
                         break;
                     case 2:
@@ -192,9 +179,6 @@ public class OCSPResponseParser {
             responseMessage.setResponderKey(responderKey);
         }
         responseMessage.setResponseDataVersion(responseDataVersion);
-        if (nonce != null) {
-            responseMessage.setNonce(nonce);
-        }
         if (responseTime != null) {
             responseMessage.setResponseTime(responseTime);
         }
@@ -209,5 +193,24 @@ public class OCSPResponseParser {
         }
 
         return responseMessage;
+    }
+
+    private void parseExtensions(Asn1Sequence extensionSequence, OCSPResponseMessage responseMessage) {
+        Asn1Sequence innerExtensionSequence = (Asn1Sequence) ((Asn1Sequence) extensionSequence).getChildren().get(0);
+        Asn1ObjectIdentifier extensionIdentifier = (Asn1ObjectIdentifier) innerExtensionSequence.getChildren().get(0);
+
+        // Nonce extension
+        BigInteger nonce = null;
+        if (extensionIdentifier.getValue().equals("1.3.6.1.5.5.7.48.1.2")) {
+            Asn1EncapsulatingOctetString encapsulatedNonce = (Asn1EncapsulatingOctetString) innerExtensionSequence
+                    .getChildren().get(1);
+            Asn1PrimitiveOctetString nonceOctetString = (Asn1PrimitiveOctetString) encapsulatedNonce.getChildren().get(
+                    0);
+            nonce = new BigInteger(1, nonceOctetString.getValue());
+        }
+
+        if (nonce != null) {
+            responseMessage.setNonce(nonce);
+        }
     }
 }
