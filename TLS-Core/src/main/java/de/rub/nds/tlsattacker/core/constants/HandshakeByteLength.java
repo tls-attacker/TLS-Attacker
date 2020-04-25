@@ -246,6 +246,16 @@ public class HandshakeByteLength {
      */
     public static final int PWD_SCALAR_LENGTH = 1;
 
+    /**
+     * certificate status type length field
+     */
+    public static final int CERTIFICATE_STATUS_TYPE_LENGTH = 1;
+
+    /**
+     * certificate status response length field
+     */
+    public static final int CERTIFICATE_STATUS_RESPONSE_LENGTH = 3;
+
     private HandshakeByteLength() {
     }
 }
