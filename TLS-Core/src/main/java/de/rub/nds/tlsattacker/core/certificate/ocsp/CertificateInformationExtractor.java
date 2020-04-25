@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
 import de.rub.nds.asn1.model.Asn1Explicit;
+import de.rub.nds.asn1.model.Asn1Integer;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitiveIa5String;
 import de.rub.nds.asn1.model.Asn1Sequence;
@@ -28,7 +29,11 @@ import java.util.List;
 
 public class CertificateInformationExtractor {
 
-    Certificate certificate;
+    private final Certificate certificate;
+    private List<Asn1Encodable> x509ExtensionSequences;
+    private Boolean mustStaple;
+    private Boolean mustStaplev2;
+    private String ocspServerUrl;
 
     public CertificateInformationExtractor(Certificate certificate) {
         this.certificate = certificate;
@@ -57,15 +62,29 @@ public class CertificateInformationExtractor {
         return md.digest(publicKey);
     }
 
+    public Boolean getMustStaple() throws IOException, ParserException {
+        if (mustStaple == null) {
+            mustStaple = parseMustStaple()[0];
+        }
+        return mustStaple;
+    }
+
+    public Boolean getMustStaplev2() throws IOException, ParserException {
+        if (mustStaplev2 == null) {
+            mustStaplev2 = parseMustStaple()[1];
+        }
+        return mustStaplev2;
+    }
+
     public String getOcspServerUrl() throws IOException, ParserException, NullPointerException {
+        if (ocspServerUrl == null) {
+            ocspServerUrl = parseOcspServerUrl();
+        }
 
-        /*
-         * TODO: Needs cleanup and a sanity check! This is kind of a messy way
-         * to go through the ASN.1 structure, but it works surprisingly well...
-         * If you're trying to understand the way this works, open up an ASN.1
-         * decoder next to the code and go through it hierarchically.
-         */
+        return ocspServerUrl;
+    }
 
+    private void getX509Extensions() throws IOException, ParserException {
         String ocspUrlResult = null;
 
         byte[] certAsn1 = certificate.getEncoded();
@@ -97,13 +116,77 @@ public class CertificateInformationExtractor {
                 }
             }
         }
+        x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
+    }
+
+    private boolean[] parseMustStaple() throws IOException, ParserException {
+        if (x509ExtensionSequences == null) {
+            getX509Extensions();
+        }
+
+        boolean foundMustStaple = false;
+        boolean foundMustStaplev2 = false;
+
+        Asn1Sequence tlsFeatureExtension = null;
+
+        for (Asn1Encodable enc : x509ExtensionSequences) {
+            if (enc instanceof Asn1Sequence) {
+                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
+                        .get(0));
+                // This is the objectIdentifier value for RFC 7633, which
+                // defines the TLS feature X.509 extension
+                if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.1.24")) {
+                    tlsFeatureExtension = (Asn1Sequence) enc;
+                    break;
+                }
+            }
+        }
+
+        if (tlsFeatureExtension != null) {
+            Asn1EncapsulatingOctetString tlsFeaturesContent = (Asn1EncapsulatingOctetString) tlsFeatureExtension
+                    .getChildren().get(1);
+            Asn1Sequence tlsFeaturesContentSequence = (Asn1Sequence) tlsFeaturesContent.getChildren().get(0);
+
+            /*
+             * 5 = TLS extension "status_request", 17 = TLS extension
+             * "status_request_v2". Taken from:
+             * https://github.com/openssl/openssl
+             * /blob/master/crypto/x509/v3_tlsf.c
+             */
+
+            for (Asn1Encodable feature : tlsFeaturesContentSequence.getChildren()) {
+                if (feature instanceof Asn1Integer) {
+                    if (((Asn1Integer) feature).getValue().intValue() == 5) {
+                        foundMustStaple = true;
+                    } else if (((Asn1Integer) feature).getValue().intValue() == 17) {
+                        foundMustStaplev2 = true;
+                    }
+                }
+            }
+
+        }
+
+        return new boolean[] { foundMustStaple, foundMustStaplev2 };
+    }
+
+    private String parseOcspServerUrl() throws IOException, ParserException {
+        /*
+         * TODO: Needs cleanup and a sanity check! This is kind of a messy way
+         * to go through the ASN.1 structure, but it works surprisingly well...
+         * If you're trying to understand the way this works, open up an ASN.1
+         * decoder next to the code and go through it hierarchically.
+         */
+
+        if (x509ExtensionSequences == null) {
+            getX509Extensions();
+        }
+
+        String ocspUrlResult = null;
 
         // Now that we found the extensions, search for the
         // 'authorityInfoAccess' extension
-        List<Asn1Encodable> x509ExtensionsSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0))
-                .getChildren();
         Asn1Sequence authorityInfoAccess = null;
-        for (Asn1Encodable enc : x509ExtensionsSequences) {
+        for (Asn1Encodable enc : x509ExtensionSequences) {
             if (enc instanceof Asn1Sequence) {
                 Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
                         .get(0));
@@ -111,6 +194,7 @@ public class CertificateInformationExtractor {
                 // authorityInfoAccess
                 if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.1.1")) {
                     authorityInfoAccess = (Asn1Sequence) enc;
+                    break;
                 }
             }
         }
@@ -120,10 +204,10 @@ public class CertificateInformationExtractor {
          * with the content the Octet String has a sequence as child, and one of
          * them has the desired OCSP information. Almost there!
          */
-        Asn1EncapsulatingOctetString authorityInfoAccessEntities = (Asn1EncapsulatingOctetString) authorityInfoAccess
+        Asn1EncapsulatingOctetString authorityInfoAccessContent = (Asn1EncapsulatingOctetString) authorityInfoAccess
                 .getChildren().get(1);
-        Asn1Sequence authorityInfoAccessEntitiesSequence = (Asn1Sequence) authorityInfoAccessEntities.getChildren()
-                .get(0);
+        Asn1Sequence authorityInfoAccessEntitiesSequence = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(
+                0);
 
         List<Asn1Encodable> ocspInformation = null;
 
