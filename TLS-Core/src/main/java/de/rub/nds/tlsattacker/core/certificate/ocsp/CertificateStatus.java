@@ -129,4 +129,76 @@ public class CertificateStatus {
             }
         }
     }
+
+    public Asn1Sequence getCertStatusSequence() {
+        return certStatusSequence;
+    }
+
+    public void setCertStatusSequence(Asn1Sequence certStatusSequence) {
+        this.certStatusSequence = certStatusSequence;
+    }
+
+    public String getHashAlgorithmIdentifier() {
+        return hashAlgorithmIdentifier;
+    }
+
+    public void setHashAlgorithmIdentifier(String hashAlgorithmIdentifier) {
+        this.hashAlgorithmIdentifier = hashAlgorithmIdentifier;
+    }
+
+    public byte[] getIssuerNameHash() {
+        return issuerNameHash;
+    }
+
+    public void setIssuerNameHash(byte[] issuerNameHash) {
+        this.issuerNameHash = issuerNameHash;
+    }
+
+    public byte[] getIssuerKeyHash() {
+        return issuerKeyHash;
+    }
+
+    public void setIssuerKeyHash(byte[] issuerKeyHash) {
+        this.issuerKeyHash = issuerKeyHash;
+    }
+
+    public BigInteger getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(BigInteger serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public int getCertStatus() {
+        return certStatus;
+    }
+
+    public void setCertStatus(int certStatus) {
+        this.certStatus = certStatus;
+    }
+
+    public String getTimeOfRevocation() {
+        return timeOfRevocation;
+    }
+
+    public void setTimeOfRevocation(String timeOfRevocation) {
+        this.timeOfRevocation = timeOfRevocation;
+    }
+
+    public String getTimeOfLastUpdate() {
+        return timeOfLastUpdate;
+    }
+
+    public void setTimeOfLastUpdate(String timeOfLastUpdate) {
+        this.timeOfLastUpdate = timeOfLastUpdate;
+    }
+
+    public String getTimeOfNextUpdate() {
+        return timeOfNextUpdate;
+    }
+
+    public void setTimeOfNextUpdate(String timeOfNextUpdate) {
+        this.timeOfNextUpdate = timeOfNextUpdate;
+    }
 }

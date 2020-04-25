@@ -28,27 +28,31 @@ import java.util.List;
 
 public class CertificateInformationExtractor {
 
-    Certificate cert;
+    Certificate certificate;
 
-    public CertificateInformationExtractor(Certificate cert) {
-        this.cert = cert;
+    public CertificateInformationExtractor(Certificate certificate) {
+        this.certificate = certificate;
 
         // Init ASN.1 Tool
         Asn1ToolInitializer.initAsn1Tool();
     }
 
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
     public BigInteger getSerialNumber() {
-        return cert.getSerialNumber().getValue();
+        return certificate.getSerialNumber().getValue();
     }
 
     public byte[] getIssuerNameHash() throws IOException, NoSuchAlgorithmException {
-        byte[] encodedDistinguishedName = cert.getIssuer().getEncoded();
+        byte[] encodedDistinguishedName = certificate.getIssuer().getEncoded();
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         return md.digest(encodedDistinguishedName);
     }
 
     public byte[] getIssuerKeyHash() throws IOException, NoSuchAlgorithmException {
-        byte[] publicKey = cert.getSubjectPublicKeyInfo().getPublicKeyData().getBytes();
+        byte[] publicKey = certificate.getSubjectPublicKeyInfo().getPublicKeyData().getBytes();
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         return md.digest(publicKey);
     }
@@ -64,7 +68,7 @@ public class CertificateInformationExtractor {
 
         String ocspUrlResult = null;
 
-        byte[] certAsn1 = cert.getEncoded();
+        byte[] certAsn1 = certificate.getEncoded();
 
         // Parse ASN.1 structure of the certificate
         Asn1Parser asn1Parser = new Asn1Parser(certAsn1, false);
