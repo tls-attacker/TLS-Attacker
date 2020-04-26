@@ -39,7 +39,7 @@ public class AlgorithmResolver {
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
-            throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
+            return null;
         }
         if (cipherSuite.usesGOSTR3411()) {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411;

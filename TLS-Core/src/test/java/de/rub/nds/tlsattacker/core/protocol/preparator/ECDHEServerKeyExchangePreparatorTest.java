@@ -59,7 +59,11 @@ public class ECDHEServerKeyExchangePreparatorTest {
         this.tlsContext = new TlsContext();
         BadFixedRandom rnd = new BadFixedRandom((byte) 0x23);
         random = new BadRandom(rnd, null);
-
+        tlsContext
+                .getConfig()
+                .setDefaultServerEcPrivateKey(
+                        new BigInteger(
+                                "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761"));
         loadTestVectorsToContext();
 
         tlsContext.setRandom(random);

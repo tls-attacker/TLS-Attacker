@@ -44,6 +44,14 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         publicKey = null;
     }
 
+    public BigInteger getModulus() {
+        return modulus;
+    }
+
+    public BigInteger getGenerator() {
+        return generator;
+    }
+
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting DH public key in context");

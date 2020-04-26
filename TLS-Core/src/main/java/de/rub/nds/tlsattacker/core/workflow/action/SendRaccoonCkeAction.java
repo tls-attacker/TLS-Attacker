@@ -118,13 +118,16 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         int length = ArrayConverter.bigIntegerToByteArray(m).length;
         byte[] pms = ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m),
                 length);
-        if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
 
-            return g.modPow(initialClientDhSecret, m).toByteArray();
-        } else {
-            initialClientDhSecret = initialClientDhSecret.add(new BigInteger("1"));
-            return getClientPublicKey(g, m, serverPublicKey, initialClientDhSecret, withNullByte);
+        if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
+            BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
+            byte[] cke = ArrayConverter.bigIntegerToByteArray(clientPublicKey);
+            if (cke.length == length) {
+                return cke;
+            }
         }
+        initialClientDhSecret = initialClientDhSecret.add(new BigInteger("1"));
+        return getClientPublicKey(g, m, serverPublicKey, initialClientDhSecret, withNullByte);
     }
 
     @Override
