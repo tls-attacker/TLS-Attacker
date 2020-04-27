@@ -8,15 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponse;
+import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseParser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
+import java.io.IOException;
 
 public class CertificateStatusMessage extends HandshakeMessage {
 
@@ -44,9 +49,20 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
+        OCSPResponse response = null;
+        try {
+            OCSPResponseParser responseParser = new OCSPResponseParser();
+            response = responseParser.parseResponse(getOcspResponseBytes().getValue());
+        } catch (IOException | ParserException e) {
+            e.printStackTrace();
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("CertificateStatusMessage:");
-        builder.append("\n To be implemented...");
+        if (response != null) {
+            builder.append("\n ").append(response.toString());
+        } else {
+            throw new RuntimeException("Couldn't parse embedded OCSP response in CertificateStatusMessage.");
+        }
         return builder.toString();
     }
 

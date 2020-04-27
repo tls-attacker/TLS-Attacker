@@ -84,13 +84,13 @@ public class OCSPRequest {
         return issuerCertificate;
     }
 
-    public OCSPResponseMessage makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
+    public OCSPResponse makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
         OCSPRequestMessage requestMessage = prepareDefaultRequestMessage();
         return performRequest(requestMessage);
     }
 
-    public OCSPResponseMessage makeRequest(OCSPRequestMessage requestMessage) throws IOException,
-            NoSuchAlgorithmException, ParserException {
+    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException,
+            ParserException {
         return performRequest(requestMessage);
     }
 
@@ -118,7 +118,7 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private OCSPResponseMessage performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+    private OCSPResponse performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
         HttpURLConnection httpCon = (HttpURLConnection) serverUrl.openConnection();
         httpCon.setRequestMethod("POST");
@@ -140,8 +140,8 @@ public class OCSPRequest {
         httpCon.disconnect();
 
         OCSPResponseParser ocspResponseParser = new OCSPResponseParser();
-        OCSPResponseMessage ocspResponseMessage = ocspResponseParser.parseResponse(response);
+        OCSPResponse ocspResponse = ocspResponseParser.parseResponse(response);
 
-        return ocspResponseMessage;
+        return ocspResponse;
     }
 }
