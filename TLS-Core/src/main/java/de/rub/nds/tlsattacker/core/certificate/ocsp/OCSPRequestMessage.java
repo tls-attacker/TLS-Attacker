@@ -26,8 +26,7 @@ import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPExtensions.ACCEPTABLE_RESPONSES;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPExtensions.NONCE;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 
 public class OCSPRequestMessage {
 
@@ -140,7 +139,7 @@ public class OCSPRequestMessage {
             Asn1Sequence oidSequence = new Asn1Sequence();
             Asn1ObjectIdentifier acceptedResponseOid = new Asn1ObjectIdentifier();
             // OCSP Basic Response
-            acceptedResponseOid.setValue("1.3.6.1.5.5.7.48.1.1");
+            acceptedResponseOid.setValue(BASIC.getOID());
             oidSequence.addChild(acceptedResponseOid);
             encapsulatingOctetString.addChild(oidSequence);
         }

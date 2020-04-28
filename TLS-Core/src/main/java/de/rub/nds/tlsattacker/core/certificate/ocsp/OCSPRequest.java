@@ -22,6 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
+
 public class OCSPRequest {
 
     private final Logger LOGGER = LogManager.getLogger();
@@ -112,8 +115,8 @@ public class OCSPRequest {
         }
 
         OCSPRequestMessage requestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
-        requestMessage.addExtension(OCSPExtensions.NONCE.getOID());
-        requestMessage.addExtension(OCSPExtensions.ACCEPTABLE_RESPONSES.getOID());
+        requestMessage.addExtension(NONCE.getOID());
+        requestMessage.addExtension(ACCEPTABLE_RESPONSES.getOID());
 
         return requestMessage;
     }

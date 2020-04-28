@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-public enum OCSPExtensions {
+public enum OCSPResponseTypes {
+    BASIC("1.3.6.1.5.5.7.48.1.1"),
     NONCE("1.3.6.1.5.5.7.48.1.2"),
     CRL_REFERENCES("1.3.6.1.5.5.7.48.1.3"),
     ACCEPTABLE_RESPONSES("1.3.6.1.5.5.7.48.1.4"),
@@ -24,7 +25,7 @@ public enum OCSPExtensions {
      * @param extension
      */
 
-    OCSPExtensions(final String extension) {
+    OCSPResponseTypes(final String extension) {
         this.extension = extension;
     }
 

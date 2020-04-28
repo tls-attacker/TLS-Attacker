@@ -17,6 +17,7 @@ import de.rub.nds.asn1.model.Asn1PrimitiveUtf8String;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -28,6 +29,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
 
 public class OCSPResponse {
     private List<CertificateStatus> certificateStatusList = new LinkedList<>();
@@ -159,8 +162,7 @@ public class OCSPResponse {
                 } else if (dnKeyValue.get(1) instanceof Asn1PrimitiveUtf8String) {
                     value = ((Asn1PrimitiveUtf8String) dnKeyValue.get(1)).getValue();
                 }
-
-                sb.append("\n   ").append(oid).append(": ").append(value);
+                sb.append("\n   ").append(ObjectIdentifierTranslator.translate(oid)).append(": ").append(value);
             }
         }
         return sb.toString();
@@ -182,7 +184,7 @@ public class OCSPResponse {
         }
         sb.append("\n Produced at: ").append(formatDate(getResponseTime()));
         sb.append("\n Response Type: ");
-        if (getResponseTypeIdentifier().equals("1.3.6.1.5.5.7.48.1.1")) {
+        if (getResponseTypeIdentifier().equals(BASIC.getOID())) {
             sb.append("OCSP Basic Response");
         } else {
             sb.append(getResponseTypeIdentifier());
@@ -201,7 +203,8 @@ public class OCSPResponse {
         for (CertificateStatus certificateStatus : getCertificateStatusList()) {
             certificateCounter++;
             sb.append("\n Certificate Status No. ").append(certificateCounter);
-            sb.append("\n   Hash Algorithm: ").append(certificateStatus.getHashAlgorithmIdentifier());
+            sb.append("\n   Hash Algorithm: ").append(
+                    ObjectIdentifierTranslator.translate(certificateStatus.getHashAlgorithmIdentifier()));
             sb.append("\n   Issuer Name Hash: ").append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
             sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
             sb.append("\n   Serial Number: ").append(certificateStatus.getSerialNumber().toString(16));
@@ -218,7 +221,8 @@ public class OCSPResponse {
             sb.append("\n   Next Update: ").append(formatDate(certificateStatus.getTimeOfNextUpdate()));
         }
 
-        sb.append("\n  Signature Algorithm: ").append(getSignatureAlgorithmIdentifier());
+        sb.append("\n  Signature Algorithm: ").append(
+                ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
 
         byte[] signature = null;
         if (getSignature() instanceof Asn1PrimitiveBitString) {

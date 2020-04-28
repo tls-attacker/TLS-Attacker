@@ -35,6 +35,9 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
+
 public class OCSPResponseParser {
 
     private final Logger LOGGER = LogManager.getLogger();
@@ -69,7 +72,7 @@ public class OCSPResponseParser {
         String responseTypeIdentifier = responseTypeObject.getValue();
 
         // We only support OCSP basic responses so far
-        if (!responseTypeIdentifier.equals("1.3.6.1.5.5.7.48.1.1")) {
+        if (!responseTypeIdentifier.equals(BASIC.getOID())) {
             throw new NotImplementedException("This response type is not supported. Identifier: "
                     + responseTypeIdentifier);
         }
@@ -196,12 +199,12 @@ public class OCSPResponseParser {
     }
 
     private void parseExtensions(Asn1Sequence extensionSequence, OCSPResponse responseMessage) {
-        Asn1Sequence innerExtensionSequence = (Asn1Sequence) ((Asn1Sequence) extensionSequence).getChildren().get(0);
+        Asn1Sequence innerExtensionSequence = (Asn1Sequence) extensionSequence.getChildren().get(0);
         Asn1ObjectIdentifier extensionIdentifier = (Asn1ObjectIdentifier) innerExtensionSequence.getChildren().get(0);
 
         // Nonce extension
         BigInteger nonce = null;
-        if (extensionIdentifier.getValue().equals("1.3.6.1.5.5.7.48.1.2")) {
+        if (extensionIdentifier.getValue().equals(NONCE.getOID())) {
             Asn1EncapsulatingOctetString encapsulatedNonce = (Asn1EncapsulatingOctetString) innerExtensionSequence
                     .getChildren().get(1);
             Asn1PrimitiveOctetString nonceOctetString = (Asn1PrimitiveOctetString) encapsulatedNonce.getChildren().get(
