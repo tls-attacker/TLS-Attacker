@@ -274,6 +274,46 @@ public class WorkflowTraceUtilTest {
     }
 
     @Test
+    public void testGetSendingActionsForMessage() {
+        assertEquals(0, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(0, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
+
+        trace.addTlsAction(sClientHello);
+
+        assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
+        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
+        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
+
+        trace.addTlsAction(sHeartbeat);
+
+        assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).size());
+        assertEquals(sHeartbeat, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).get(0));
+    }
+
+    @Test
+    public void testGetReceivingActionsForMessage() {
+        assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
+
+        trace.addTlsAction(rcvServerHello);
+
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
+        assertEquals(rcvServerHello, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
+        assertEquals(rcvServerHello, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
+
+        trace.addTlsAction(rcvAlertMessage);
+
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).size());
+        assertEquals(rcvAlertMessage, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).get(0));
+    }
+
+    @Test
     public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds() throws JAXBException, IOException {
         InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_defaullt_alias.xml");
 
