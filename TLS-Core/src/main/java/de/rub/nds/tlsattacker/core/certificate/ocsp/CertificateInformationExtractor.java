@@ -18,6 +18,7 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
+import de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.bouncycastle.asn1.x509.Certificate;
 
@@ -26,6 +27,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.*;
 
 public class CertificateInformationExtractor {
 
@@ -135,7 +138,7 @@ public class CertificateInformationExtractor {
                         .get(0));
                 // This is the objectIdentifier value for RFC 7633, which
                 // defines the TLS feature X.509 extension
-                if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.1.24")) {
+                if (objectIdentifier.getValue().equals(TLS_FEATURE.getOID())) {
                     tlsFeatureExtension = (Asn1Sequence) enc;
                     break;
                 }
@@ -192,7 +195,7 @@ public class CertificateInformationExtractor {
                         .get(0));
                 // This is the objectIdentifier value for
                 // authorityInfoAccess
-                if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.1.1")) {
+                if (objectIdentifier.getValue().equals(AUTHORITY_INFO_ACCESS.getOID())) {
                     authorityInfoAccess = (Asn1Sequence) enc;
                     break;
                 }
@@ -217,7 +220,7 @@ public class CertificateInformationExtractor {
                 Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren()
                         .get(0);
                 // This is the objectIdentifier value for OCSP
-                if (objectIdentifier.getValue().equals("1.3.6.1.5.5.7.48.1")) {
+                if (objectIdentifier.getValue().equals(OCSP.getOID())) {
                     ocspInformation = ((Asn1Sequence) enc).getChildren();
                     break;
                 }

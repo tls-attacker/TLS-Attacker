@@ -19,17 +19,17 @@ public enum OCSPResponseTypes {
     PREFERRED_SIGNATURE_ALGORITHMS("1.3.6.1.5.5.7.48.1.8"),
     EXTENDED_REVOKED("1.3.6.1.5.5.7.48.1.9");
 
-    private final String extension;
+    private final String objectIdentifier;
 
     /**
-     * @param extension
+     * @param objectIdentifier
      */
 
-    OCSPResponseTypes(final String extension) {
-        this.extension = extension;
+    OCSPResponseTypes(final String objectIdentifier) {
+        this.objectIdentifier = objectIdentifier;
     }
 
     public String getOID() {
-        return extension;
+        return objectIdentifier;
     }
 }
