@@ -41,53 +41,53 @@ public class OCSPRequest {
     public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain) {
         this.certificate = certChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
+        this.issuerCertificate = certChain.getCertificateAt(1);
+        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
 
-        try {
-            this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
-        } catch (Exception e) {
-            LOGGER.error("An error occurred during the parsing of the certificate's ASN.1 structure. Please set the OCSP Server URL manually.");
-            LOGGER.error(e.getStackTrace());
-        }
-
-        // If we have an issuerCert, import it too, as we need it for the
-        // IssuerKeyHash
-        if (certChain.getLength() > 1) {
-            this.issuerCertificate = certChain.getCertificateAt(1);
-            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
-        }
+        prepareOcspUrl();
     }
 
     public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certificateChain, URL serverUrl) {
         this.certificate = certificateChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
         this.serverUrl = serverUrl;
-
-        // If we have an issuerCert, import it too, as we need it for the
-        // IssuerKeyHash
-        if (certificateChain.getLength() > 1) {
-            this.issuerCertificate = certificateChain.getCertificateAt(1);
-            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
-        }
+        this.issuerCertificate = certificateChain.getCertificateAt(1);
+        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
     }
 
-    public OCSPRequest(Certificate certificate) {
+    // If no chain is given, try to recreate one with the issuer information in
+    // a certificate
+    public OCSPRequest(Certificate certificate) throws RuntimeException {
         this.certificate = certificate;
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
 
-        try {
-            this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
-        } catch (Exception e) {
-            LOGGER.error("An error occurred during the parsing of the certificate's ASN.1 structure. Please set the OCSP Server URL manually.");
-            LOGGER.error(e.getStackTrace());
-        }
+        prepareOcspUrl();
+        prepareIssuerCertificateUrl();
+    }
 
-        try {
-            this.issuerCertificate = retrieveIssuerCertificate();
-            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
-        } catch (Exception e) {
-            LOGGER.error("An error occurred during retrieving the issuer certificate and can't be used. The following OCSP request may be considered illegal by the responder.");
-            LOGGER.error(e.getStackTrace());
-        }
+    public OCSPRequest(Certificate certificate, URL serverUrl) throws RuntimeException {
+        this.certificate = certificate;
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
+        this.serverUrl = serverUrl;
+
+        prepareIssuerCertificateUrl();
+    }
+
+    public OCSPRequest(Certificate mainCertificate, Certificate issuerCertificate) throws RuntimeException {
+        this.certificate = mainCertificate;
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
+        this.issuerCertificate = issuerCertificate;
+        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+
+        prepareOcspUrl();
+    }
+
+    public OCSPRequest(Certificate mainCertificate, Certificate issuerCertificate, URL serverUrl) {
+        this.certificate = mainCertificate;
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
+        this.issuerCertificate = issuerCertificate;
+        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        this.serverUrl = serverUrl;
     }
 
     public URL getServerUrl() {
@@ -115,12 +115,44 @@ public class OCSPRequest {
         return performRequest(requestMessage);
     }
 
-    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException,
-            ParserException {
+    public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
         return performRequest(requestMessage);
     }
 
-    private Certificate retrieveIssuerCertificate() throws IOException, ParserException {
+    private void prepareOcspUrl() {
+        try {
+            this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
+        } catch (UnsupportedOperationException e) {
+            throw new UnsupportedOperationException("This certificate does not appear to support OCSP.");
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred during parsing certificate for OCSP information.");
+        }
+    }
+
+    private void prepareIssuerCertificateUrl() {
+        try {
+            this.issuerCertificate = retrieveIssuerCertificate();
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        } catch (NoSuchFieldException e) {
+            // Checks with the Root CA as issuer are not supported yet.
+            throw new UnsupportedOperationException("Unable to find information about issuer.");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to extract issuer information.");
+        }
+    }
+
+    private Certificate retrieveIssuerCertificate() throws IOException, ParserException, NoSuchFieldException {
+        /*
+         * Certificate chain recreation sucks. We only support .crt /
+         * DER-encoded certificates for extraction, as this seems to be the most
+         * common one out there and is somewhat easy to parse with BouncyCastle.
+         * This only works somewhat reliably with an intermediate CA as issuer.
+         * Any root CA will likely fail, as an URL to the issuer certificate is
+         * often not given in the intermediate's certificate (since they're
+         * often stored locally). So take care, the following code will likely
+         * fail often.
+         */
+
         // Get URL for the issuer certificate from main certificate
         String issuerCertificateUrlString = infoExtractorMain.getCertificateIssuerUrl();
         URL issuerCertificateUrl = null;
@@ -144,13 +176,14 @@ public class OCSPRequest {
 
         httpCon.disconnect();
 
-        // Parse and create a Certificate object
+        // Recreate TLS certificate length information
         byte[] certificateWithLength = ArrayConverter.concatenate(
                 ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
         ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
                 ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
                 certificateWithLength));
 
+        // Parse and create a Certificate object
         org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
         return tlsCertificate.getCertificateAt(0);
     }

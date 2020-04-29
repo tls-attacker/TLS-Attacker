@@ -80,7 +80,7 @@ public class CertificateInformationExtractor {
         return mustStaplev2;
     }
 
-    public String getOcspServerUrl() throws IOException, ParserException, NullPointerException {
+    public String getOcspServerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (ocspServerUrl == null) {
             ocspServerUrl = parseOcspServerUrl();
         }
@@ -88,7 +88,7 @@ public class CertificateInformationExtractor {
         return ocspServerUrl;
     }
 
-    public String getCertificateIssuerUrl() throws IOException, ParserException {
+    public String getCertificateIssuerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (certificateIssuerUrl == null) {
             certificateIssuerUrl = parseCertificateIssuerUrl();
         }
@@ -131,7 +131,7 @@ public class CertificateInformationExtractor {
         x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
     }
 
-    private void retrieveAuthorityInfoAccessEntities() {
+    private void retrieveAuthorityInfoAccessEntities() throws NoSuchFieldException {
         // Now that we found the extensions, search for the
         // 'authorityInfoAccess' extension
         Asn1Sequence authorityInfoAccess = null;
@@ -149,6 +149,9 @@ public class CertificateInformationExtractor {
             }
         }
 
+        if (authorityInfoAccess == null) {
+            throw new NoSuchFieldException("No 'Authority Info Access' entry found in certificate.");
+        }
         /*
          * get(0) is the Object Identifier we checked, get(1) the Octet String
          * with the content the Octet String has a sequence as child, and one of
@@ -224,7 +227,7 @@ public class CertificateInformationExtractor {
         return urlString;
     }
 
-    private String parseOcspServerUrl() throws IOException, ParserException {
+    private String parseOcspServerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (x509ExtensionSequences == null) {
             retrieveX509Extensions();
         }
@@ -249,12 +252,16 @@ public class CertificateInformationExtractor {
             }
         }
 
+        if (ocspInformation == null) {
+            throw new NoSuchFieldException("No OCSP entry found in certificate.");
+        }
+
         // If we found the OCSP information, let's extract it and we're
         // done!
         return getStringFromInformationAccessEntry(ocspInformation);
     }
 
-    private String parseCertificateIssuerUrl() throws IOException, ParserException {
+    private String parseCertificateIssuerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (x509ExtensionSequences == null) {
             retrieveX509Extensions();
         }
@@ -277,6 +284,10 @@ public class CertificateInformationExtractor {
                     break;
                 }
             }
+        }
+
+        if (certificateIssuerInformation == null) {
+            throw new NoSuchFieldException("No Certificate Issuer entry found in certificate.");
         }
 
         // If we found the OCSP information, let's extract it and we're
