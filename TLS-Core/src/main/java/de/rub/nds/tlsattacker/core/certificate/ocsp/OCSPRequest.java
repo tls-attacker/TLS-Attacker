@@ -57,7 +57,7 @@ public class OCSPRequest {
 
     // If no chain is given, try to recreate one with the issuer information in
     // a certificate
-    public OCSPRequest(Certificate certificate) throws RuntimeException {
+    public OCSPRequest(Certificate certificate) throws RuntimeException, NoSuchFieldException {
         this.certificate = certificate;
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
 
@@ -65,7 +65,7 @@ public class OCSPRequest {
         prepareIssuerCertificateUrl();
     }
 
-    public OCSPRequest(Certificate certificate, URL serverUrl) throws RuntimeException {
+    public OCSPRequest(Certificate certificate, URL serverUrl) throws RuntimeException, NoSuchFieldException {
         this.certificate = certificate;
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
         this.serverUrl = serverUrl;
@@ -129,13 +129,13 @@ public class OCSPRequest {
         }
     }
 
-    private void prepareIssuerCertificateUrl() {
+    private void prepareIssuerCertificateUrl() throws NoSuchFieldException {
         try {
             this.issuerCertificate = retrieveIssuerCertificate();
             this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
         } catch (NoSuchFieldException e) {
             // Checks with the Root CA as issuer are not supported yet.
-            throw new UnsupportedOperationException("Unable to find information about issuer.");
+            throw new NoSuchFieldException("Unable to find information about issuer.");
         } catch (Exception e) {
             throw new RuntimeException("Failed to extract issuer information.");
         }
