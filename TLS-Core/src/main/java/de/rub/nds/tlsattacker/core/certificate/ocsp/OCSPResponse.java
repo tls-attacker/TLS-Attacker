@@ -209,12 +209,12 @@ public class OCSPResponse {
             sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
             sb.append("\n   Serial Number: ").append(certificateStatus.getSerialNumber().toString(16));
             sb.append("\n   Certificate Status: ");
-            if (certificateStatus.getCertStatus() == 0) {
+            if (certificateStatus.getCertificateStatus() == 0) {
                 sb.append("good");
-            } else if (certificateStatus.getCertStatus() == 1) {
+            } else if (certificateStatus.getCertificateStatus() == 1) {
                 sb.append("revoked");
                 sb.append("\n   Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
-            } else if (certificateStatus.getCertStatus() == 2) {
+            } else if (certificateStatus.getCertificateStatus() == 2) {
                 sb.append("unknown");
             }
             sb.append("\n   Last Update: ").append(formatDate(certificateStatus.getTimeOfLastUpdate()));

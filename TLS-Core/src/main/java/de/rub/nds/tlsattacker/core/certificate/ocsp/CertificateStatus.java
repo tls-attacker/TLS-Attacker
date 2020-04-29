@@ -27,22 +27,22 @@ import java.math.BigInteger;
 public class CertificateStatus {
 
     private final Logger LOGGER = LogManager.getLogger();
-    private Asn1Sequence certStatusSequence;
+    private Asn1Sequence certificateStatusSequence;
     private String hashAlgorithmIdentifier;
     private byte[] issuerNameHash;
     private byte[] issuerKeyHash;
     private BigInteger serialNumber;
-    private int certStatus;
+    private int certificateStatus;
     private String timeOfRevocation;
     private String timeOfLastUpdate;
     private String timeOfNextUpdate;
 
-    public CertificateStatus(Asn1Sequence certStatusSequence) {
+    public CertificateStatus(Asn1Sequence certificateStatusSequence) {
         // Init ASN.1 Tool
         Asn1ToolInitializer.initAsn1Tool();
 
-        this.certStatusSequence = certStatusSequence;
-        parseCertificateStatus(certStatusSequence);
+        this.certificateStatusSequence = certificateStatusSequence;
+        parseCertificateStatus(certificateStatusSequence);
     }
 
     private void parseCertificateStatus(Asn1Sequence certStatusSeq) {
@@ -87,7 +87,7 @@ public class CertificateStatus {
 
         // Good status
         if (certStatusObject instanceof Asn1Null || certStatusObject instanceof Asn1EndOfContent) {
-            certStatus = 0; // good, not revoked
+            certificateStatus = 0; // good, not revoked
         }
 
         // Time of next update (offset 0), revoked (offset 1) or unknown
@@ -96,12 +96,12 @@ public class CertificateStatus {
             Asn1Explicit certStatusExplicitObject = (Asn1Explicit) certStatusObject;
             switch (certStatusExplicitObject.getOffset()) {
                 case 1:
-                    certStatus = 1; // revoked
+                    certificateStatus = 1; // revoked
                     timeOfRevocation = ((Asn1PrimitiveGeneralizedTime) certStatusExplicitObject.getChildren().get(0))
                             .getValue();
                     break;
                 case 2:
-                    certStatus = 2; // unknown
+                    certificateStatus = 2; // unknown
                     break;
             }
         }
@@ -130,12 +130,12 @@ public class CertificateStatus {
         }
     }
 
-    public Asn1Sequence getCertStatusSequence() {
-        return certStatusSequence;
+    public Asn1Sequence getCertificateStatusSequence() {
+        return certificateStatusSequence;
     }
 
-    public void setCertStatusSequence(Asn1Sequence certStatusSequence) {
-        this.certStatusSequence = certStatusSequence;
+    public void setCertificateStatusSequence(Asn1Sequence certificateStatusSequence) {
+        this.certificateStatusSequence = certificateStatusSequence;
     }
 
     public String getHashAlgorithmIdentifier() {
@@ -170,12 +170,12 @@ public class CertificateStatus {
         this.serialNumber = serialNumber;
     }
 
-    public int getCertStatus() {
-        return certStatus;
+    public int getCertificateStatus() {
+        return certificateStatus;
     }
 
-    public void setCertStatus(int certStatus) {
-        this.certStatus = certStatus;
+    public void setCertificateStatus(int certificateStatus) {
+        this.certificateStatus = certificateStatus;
     }
 
     public String getTimeOfRevocation() {
