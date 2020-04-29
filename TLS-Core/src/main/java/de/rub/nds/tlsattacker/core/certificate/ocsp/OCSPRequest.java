@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.parser.ParserException;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -54,16 +57,36 @@ public class OCSPRequest {
         }
     }
 
-    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain, URL serverUrl) {
-        this.certificate = certChain.getCertificateAt(0);
+    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certificateChain, URL serverUrl) {
+        this.certificate = certificateChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
         this.serverUrl = serverUrl;
 
         // If we have an issuerCert, import it too, as we need it for the
         // IssuerKeyHash
-        if (certChain.getLength() > 1) {
-            this.issuerCertificate = certChain.getCertificateAt(1);
+        if (certificateChain.getLength() > 1) {
+            this.issuerCertificate = certificateChain.getCertificateAt(1);
             this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        }
+    }
+
+    public OCSPRequest(Certificate certificate) {
+        this.certificate = certificate;
+        this.infoExtractorMain = new CertificateInformationExtractor(certificate);
+
+        try {
+            this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
+        } catch (Exception e) {
+            LOGGER.error("An error occurred during the parsing of the certificate's ASN.1 structure. Please set the OCSP Server URL manually.");
+            LOGGER.error(e.getStackTrace());
+        }
+
+        try {
+            this.issuerCertificate = retrieveIssuerCertificate();
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred during retrieving the issuer certificate and can't be used. The following OCSP request may be considered illegal by the responder.");
+            LOGGER.error(e.getStackTrace());
         }
     }
 
@@ -95,6 +118,41 @@ public class OCSPRequest {
     public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, NoSuchAlgorithmException,
             ParserException {
         return performRequest(requestMessage);
+    }
+
+    private Certificate retrieveIssuerCertificate() throws IOException, ParserException {
+        // Get URL for the issuer certificate from main certificate
+        String issuerCertificateUrlString = infoExtractorMain.getCertificateIssuerUrl();
+        URL issuerCertificateUrl = null;
+
+        if (issuerCertificateUrlString != null) {
+            issuerCertificateUrl = new URL(issuerCertificateUrlString);
+        } else {
+            throw new RuntimeException("Didn't get any issuer certificate URL from certificate.");
+        }
+
+        // Download certificate from URL
+        HttpURLConnection httpCon = (HttpURLConnection) issuerCertificateUrl.openConnection();
+        httpCon.setRequestMethod("GET");
+
+        int status = httpCon.getResponseCode();
+        byte[] response;
+        if (status == 200)
+            response = ByteStreams.toByteArray(httpCon.getInputStream());
+        else
+            throw new RuntimeException("Response not successful: Received status code " + status);
+
+        httpCon.disconnect();
+
+        // Parse and create a Certificate object
+        byte[] certificateWithLength = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+        ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                certificateWithLength));
+
+        org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
+        return tlsCertificate.getCertificateAt(0);
     }
 
     private OCSPRequestMessage prepareDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {

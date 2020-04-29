@@ -18,7 +18,6 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
-import de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.bouncycastle.asn1.x509.Certificate;
 
@@ -34,9 +33,11 @@ public class CertificateInformationExtractor {
 
     private final Certificate certificate;
     private List<Asn1Encodable> x509ExtensionSequences;
+    private Asn1Sequence authorityInfoAccessEntities;
     private Boolean mustStaple;
     private Boolean mustStaplev2;
     private String ocspServerUrl;
+    private String certificateIssuerUrl;
 
     public CertificateInformationExtractor(Certificate certificate) {
         this.certificate = certificate;
@@ -87,7 +88,15 @@ public class CertificateInformationExtractor {
         return ocspServerUrl;
     }
 
-    private void getX509Extensions() throws IOException, ParserException {
+    public String getCertificateIssuerUrl() throws IOException, ParserException {
+        if (certificateIssuerUrl == null) {
+            certificateIssuerUrl = parseCertificateIssuerUrl();
+        }
+
+        return certificateIssuerUrl;
+    }
+
+    private void retrieveX509Extensions() throws IOException, ParserException {
         String ocspUrlResult = null;
 
         byte[] certAsn1 = certificate.getEncoded();
@@ -122,9 +131,38 @@ public class CertificateInformationExtractor {
         x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
     }
 
+    private void retrieveAuthorityInfoAccessEntities() {
+        // Now that we found the extensions, search for the
+        // 'authorityInfoAccess' extension
+        Asn1Sequence authorityInfoAccess = null;
+
+        for (Asn1Encodable enc : x509ExtensionSequences) {
+            if (enc instanceof Asn1Sequence) {
+                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
+                        .get(0));
+                // This is the objectIdentifier value for
+                // authorityInfoAccess
+                if (objectIdentifier.getValue().equals(AUTHORITY_INFO_ACCESS.getOID())) {
+                    authorityInfoAccess = (Asn1Sequence) enc;
+                    break;
+                }
+            }
+        }
+
+        /*
+         * get(0) is the Object Identifier we checked, get(1) the Octet String
+         * with the content the Octet String has a sequence as child, and one of
+         * them has the desired OCSP information. Almost there!
+         */
+        Asn1EncapsulatingOctetString authorityInfoAccessContent = (Asn1EncapsulatingOctetString) authorityInfoAccess
+                .getChildren().get(1);
+
+        this.authorityInfoAccessEntities = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(0);
+    }
+
     private boolean[] parseMustStaple() throws IOException, ParserException {
         if (x509ExtensionSequences == null) {
-            getX509Extensions();
+            retrieveX509Extensions();
         }
 
         boolean foundMustStaple = false;
@@ -172,50 +210,34 @@ public class CertificateInformationExtractor {
         return new boolean[] { foundMustStaple, foundMustStaplev2 };
     }
 
-    private String parseOcspServerUrl() throws IOException, ParserException {
-        /*
-         * TODO: Needs cleanup and a sanity check! This is kind of a messy way
-         * to go through the ASN.1 structure, but it works surprisingly well...
-         * If you're trying to understand the way this works, open up an ASN.1
-         * decoder next to the code and go through it hierarchically.
-         */
+    private String getStringFromInformationAccessEntry(List<Asn1Encodable> authorityInformationAccessInformation) {
+        String urlString = null;
+        if (authorityInformationAccessInformation != null) {
+            Asn1PrimitiveIa5String urlIa5String = null;
+            if (authorityInformationAccessInformation.size() > 1
+                    && authorityInformationAccessInformation.get(1) instanceof Asn1PrimitiveIa5String) {
+                urlIa5String = (Asn1PrimitiveIa5String) authorityInformationAccessInformation.get(1);
+            }
+            urlString = urlIa5String.getValue();
+        }
 
+        return urlString;
+    }
+
+    private String parseOcspServerUrl() throws IOException, ParserException {
         if (x509ExtensionSequences == null) {
-            getX509Extensions();
+            retrieveX509Extensions();
+        }
+        if (authorityInfoAccessEntities == null) {
+            retrieveAuthorityInfoAccessEntities();
         }
 
         String ocspUrlResult = null;
 
-        // Now that we found the extensions, search for the
-        // 'authorityInfoAccess' extension
-        Asn1Sequence authorityInfoAccess = null;
-        for (Asn1Encodable enc : x509ExtensionSequences) {
-            if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
-                        .get(0));
-                // This is the objectIdentifier value for
-                // authorityInfoAccess
-                if (objectIdentifier.getValue().equals(AUTHORITY_INFO_ACCESS.getOID())) {
-                    authorityInfoAccess = (Asn1Sequence) enc;
-                    break;
-                }
-            }
-        }
-
-        /*
-         * get(0) is the Object Identifier we checked, get(1) the Octet String
-         * with the content the Octet String has a sequence as child, and one of
-         * them has the desired OCSP information. Almost there!
-         */
-        Asn1EncapsulatingOctetString authorityInfoAccessContent = (Asn1EncapsulatingOctetString) authorityInfoAccess
-                .getChildren().get(1);
-        Asn1Sequence authorityInfoAccessEntitiesSequence = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(
-                0);
-
         List<Asn1Encodable> ocspInformation = null;
 
         // Now let's check if we have OCSP information embedded...
-        for (Asn1Encodable enc : authorityInfoAccessEntitiesSequence.getChildren()) {
+        for (Asn1Encodable enc : authorityInfoAccessEntities.getChildren()) {
             if (enc instanceof Asn1Sequence) {
                 Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren()
                         .get(0);
@@ -229,14 +251,36 @@ public class CertificateInformationExtractor {
 
         // If we found the OCSP information, let's extract it and we're
         // done!
-        if (ocspInformation != null) {
-            Asn1PrimitiveIa5String ocspUrlIa5String = null;
-            if (ocspInformation.size() > 1 && ocspInformation.get(1) instanceof Asn1PrimitiveIa5String) {
-                ocspUrlIa5String = (Asn1PrimitiveIa5String) ocspInformation.get(1);
-            }
-            ocspUrlResult = ocspUrlIa5String.getValue();
+        return getStringFromInformationAccessEntry(ocspInformation);
+    }
+
+    private String parseCertificateIssuerUrl() throws IOException, ParserException {
+        if (x509ExtensionSequences == null) {
+            retrieveX509Extensions();
+        }
+        if (authorityInfoAccessEntities == null) {
+            retrieveAuthorityInfoAccessEntities();
         }
 
-        return ocspUrlResult;
+        String issuerCertUrlResult = null;
+
+        List<Asn1Encodable> certificateIssuerInformation = null;
+
+        // Now let's check if we have OCSP information embedded...
+        for (Asn1Encodable enc : authorityInfoAccessEntities.getChildren()) {
+            if (enc instanceof Asn1Sequence) {
+                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) ((Asn1Sequence) enc).getChildren()
+                        .get(0);
+                // This is the objectIdentifier value for OCSP
+                if (objectIdentifier.getValue().equals(CERTIFICATE_AUTHORITY_ISSUER.getOID())) {
+                    certificateIssuerInformation = ((Asn1Sequence) enc).getChildren();
+                    break;
+                }
+            }
+        }
+
+        // If we found the OCSP information, let's extract it and we're
+        // done!
+        return getStringFromInformationAccessEntry(certificateIssuerInformation);
     }
 }
