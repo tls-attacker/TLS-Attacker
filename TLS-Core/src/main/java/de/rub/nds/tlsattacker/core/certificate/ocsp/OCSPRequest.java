@@ -35,6 +35,7 @@ public class OCSPRequest {
     private final CertificateInformationExtractor infoExtractorMain;
     private Certificate issuerCertificate;
     private CertificateInformationExtractor infoExtractorIssuer;
+    private OCSPRequestMessage requestMessage;
     private URL serverUrl;
 
     // TODO: Better way to deal with exceptions
@@ -110,8 +111,18 @@ public class OCSPRequest {
         return issuerCertificate;
     }
 
+    public OCSPRequestMessage getRequestMessage() {
+        return requestMessage;
+    }
+
+    public void setRequestMessage(OCSPRequestMessage requestMessage) {
+        this.requestMessage = requestMessage;
+    }
+
     public OCSPResponse makeRequest() throws IOException, NoSuchAlgorithmException, ParserException {
-        OCSPRequestMessage requestMessage = prepareDefaultRequestMessage();
+        if (this.requestMessage == null) {
+            createDefaultRequestMessage();
+        }
         return performRequest(requestMessage);
     }
 
@@ -188,7 +199,7 @@ public class OCSPRequest {
         return tlsCertificate.getCertificateAt(0);
     }
 
-    private OCSPRequestMessage prepareDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {
+    private void createDefaultRequestMessage() throws IOException, NoSuchAlgorithmException {
         BigInteger serialNumber = infoExtractorMain.getSerialNumber();
         byte[] issuerNameHash;
         byte[] issuerKeyHash;
@@ -209,7 +220,7 @@ public class OCSPRequest {
         requestMessage.addExtension(NONCE.getOID());
         requestMessage.addExtension(ACCEPTABLE_RESPONSES.getOID());
 
-        return requestMessage;
+        this.requestMessage = requestMessage;
     }
 
     private OCSPResponse performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
