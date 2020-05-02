@@ -217,7 +217,6 @@ public class OCSPRequest {
         }
 
         OCSPRequestMessage requestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
-        requestMessage.addExtension(NONCE.getOID());
         requestMessage.addExtension(ACCEPTABLE_RESPONSES.getOID());
 
         return requestMessage;

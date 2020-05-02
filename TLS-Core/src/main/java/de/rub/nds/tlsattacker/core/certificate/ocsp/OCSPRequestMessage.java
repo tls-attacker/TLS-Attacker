@@ -36,6 +36,7 @@ public class OCSPRequestMessage {
     Asn1Sequence requestList = new Asn1Sequence();
     Asn1Sequence extensionSequence = new Asn1Sequence();
     Asn1Explicit extensionExplicitSequence = new Asn1Explicit();
+    BigInteger nonce;
 
     boolean extensionsSet = false;
 
@@ -76,6 +77,62 @@ public class OCSPRequestMessage {
         tbsRequestWrapper.addChild(tbsRequest);
         extensionExplicitSequence.setOffset(2);
         extensionExplicitSequence.addChild(extensionSequence);
+    }
+
+    public Asn1Sequence getTbsRequestWrapper() {
+        return tbsRequestWrapper;
+    }
+
+    public void setTbsRequestWrapper(Asn1Sequence tbsRequestWrapper) {
+        this.tbsRequestWrapper = tbsRequestWrapper;
+    }
+
+    public Asn1Sequence getTbsRequest() {
+        return tbsRequest;
+    }
+
+    public void setTbsRequest(Asn1Sequence tbsRequest) {
+        this.tbsRequest = tbsRequest;
+    }
+
+    public Asn1Sequence getRequestList() {
+        return requestList;
+    }
+
+    public void setRequestList(Asn1Sequence requestList) {
+        this.requestList = requestList;
+    }
+
+    public Asn1Sequence getExtensionSequence() {
+        return extensionSequence;
+    }
+
+    public void setExtensionSequence(Asn1Sequence extensionSequence) {
+        this.extensionSequence = extensionSequence;
+    }
+
+    public Asn1Explicit getExtensionExplicitSequence() {
+        return extensionExplicitSequence;
+    }
+
+    public void setExtensionExplicitSequence(Asn1Explicit extensionExplicitSequence) {
+        this.extensionExplicitSequence = extensionExplicitSequence;
+    }
+
+    public boolean isExtensionsSet() {
+        return extensionsSet;
+    }
+
+    public void setExtensionsSet(boolean extensionsSet) {
+        this.extensionsSet = extensionsSet;
+    }
+
+    public BigInteger getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(BigInteger nonce) {
+        this.nonce = nonce;
     }
 
     public void addToRequest(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
@@ -126,13 +183,15 @@ public class OCSPRequestMessage {
 
         // Nonce
         if (extensionOid.equals(NONCE.getOID())) {
-            Asn1PrimitiveOctetString nonce = new Asn1PrimitiveOctetString();
+            Asn1PrimitiveOctetString nonceOctetString = new Asn1PrimitiveOctetString();
 
             SecureRandom rand = new SecureRandom();
-            BigInteger nonceValue = new BigInteger(128, rand);
+            if (nonce == null) {
+                nonce = new BigInteger(128, rand);
+            }
 
-            nonce.setValue(nonceValue.toByteArray());
-            encapsulatingOctetString.addChild(nonce);
+            nonceOctetString.setValue(nonce.toByteArray());
+            encapsulatingOctetString.addChild(nonceOctetString);
         }
         // Acceptable Responses
         else if (extensionOid.equals(ACCEPTABLE_RESPONSES.getOID())) {
