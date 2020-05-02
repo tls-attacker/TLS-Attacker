@@ -174,6 +174,10 @@ public class OCSPResponse {
     }
 
     public String toString() {
+        return toString(true);
+    }
+
+    public String toString(boolean includeSignatureAndCertificate) {
         StringBuilder sb = new StringBuilder();
         sb.append("OCSP Response:");
         sb.append("\n Version: ");
@@ -238,17 +242,19 @@ public class OCSPResponse {
             }
         }
 
-        if (signature != null) {
-            sb.append("\n  Signature: ");
-            sb.append(ArrayConverter.bytesToHexString(signature));
-        }
+        if (includeSignatureAndCertificate) {
+            if (signature != null) {
+                sb.append("\n  Signature: ");
+                sb.append(ArrayConverter.bytesToHexString(signature));
+            }
 
-        if (getCertificate() != null) {
-            try {
-                String certificateBytes = ArrayConverter.bytesToHexString(getResponseCertificateBytes());
-                sb.append("\n Certificate:").append(certificateBytes);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (getCertificate() != null) {
+                try {
+                    String certificateBytes = ArrayConverter.bytesToHexString(getResponseCertificateBytes());
+                    sb.append("\n Certificate:").append(certificateBytes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
