@@ -42,12 +42,8 @@ public class OCSPResponseParser {
 
     private final Logger LOGGER = LogManager.getLogger();
 
-    public OCSPResponseParser() {
-        // Init ASN.1 Tool
+    public static OCSPResponse parseResponse(byte[] encodedResponse) throws ParserException, IOException {
         Asn1ToolInitializer.initAsn1Tool();
-    }
-
-    public OCSPResponse parseResponse(byte[] encodedResponse) throws ParserException, IOException {
         OCSPResponse responseMessage = new OCSPResponse();
         responseMessage.setEncodedResponse(encodedResponse);
 
@@ -198,7 +194,7 @@ public class OCSPResponseParser {
         return responseMessage;
     }
 
-    private void parseExtensions(Asn1Sequence extensionSequence, OCSPResponse responseMessage) {
+    private static void parseExtensions(Asn1Sequence extensionSequence, OCSPResponse responseMessage) {
         Asn1Sequence innerExtensionSequence = (Asn1Sequence) extensionSequence.getChildren().get(0);
         Asn1ObjectIdentifier extensionIdentifier = (Asn1ObjectIdentifier) innerExtensionSequence.getChildren().get(0);
 

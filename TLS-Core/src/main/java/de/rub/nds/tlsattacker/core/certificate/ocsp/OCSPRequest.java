@@ -244,9 +244,6 @@ public class OCSPRequest {
 
         httpCon.disconnect();
 
-        OCSPResponseParser ocspResponseParser = new OCSPResponseParser();
-        OCSPResponse ocspResponse = ocspResponseParser.parseResponse(response);
-
-        return ocspResponse;
+        return OCSPResponseParser.parseResponse(response);
     }
 }
