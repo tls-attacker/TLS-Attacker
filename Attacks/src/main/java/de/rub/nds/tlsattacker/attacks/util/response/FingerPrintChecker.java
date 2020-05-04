@@ -39,7 +39,7 @@ public class FingerPrintChecker {
         if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
             return EqualityError.RECORD_COUNT;
         }
-        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+        if (fingerprint1.isEncrypted() != fingerprint2.isEncrypted()) {
             return EqualityError.ENCRYPTED_ALERT;
         }
         if (!checkRecordClassEquality(fingerprint1.getRecordClasses(), fingerprint2.getRecordClasses())) {
@@ -54,7 +54,7 @@ public class FingerPrintChecker {
         if (!checkRecordContentTypeEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
             return EqualityError.RECORD_CONTENT_TYPE;
         }
-        if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
+        if ((!fingerprint1.isEncrypted() && !canDecryptAlerts) || canDecryptAlerts) {
             if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
                 return EqualityError.ALERT_RECORD_CONTENT;
             }
@@ -235,10 +235,10 @@ public class FingerPrintChecker {
         if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
             return EqualityError.RECORD_COUNT;
         }
-        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+        if (fingerprint1.isEncrypted() != fingerprint2.isEncrypted()) {
             return EqualityError.ENCRYPTED_ALERT;
         }
-        if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
+        if ((!fingerprint1.isEncrypted() && !canDecryptAlerts) || canDecryptAlerts) {
             if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
                 return EqualityError.MESSAGE_COUNT;
             }
