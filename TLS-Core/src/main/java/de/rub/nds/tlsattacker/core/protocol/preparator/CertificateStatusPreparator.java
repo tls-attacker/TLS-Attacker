@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,25 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
     @Override
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateStatusMessage");
+        LOGGER.debug("Note: This is not properly implemented yet. Will use hardcoded message with empty content.");
+        // Dummy message, we can't create an own StatusMessage yet.
+        prepareCertificateStatusType();
+        prepareOcspResponseLength();
+        prepareOcspResponseBytes();
+    }
 
+    private void prepareCertificateStatusType() {
+        msg.setCertificateStatusType(1); // 1: OCSP 2: OCSP_multi
+        LOGGER.debug("CertificateStatusType: " + msg.getCertificateStatusType().getValue());
+    }
+
+    private void prepareOcspResponseLength() {
+        msg.setOcspResponseLength(0);
+        LOGGER.debug("OCSPResponseLength: " + msg.getOcspResponseLength());
+    }
+
+    private void prepareOcspResponseBytes() {
+        msg.setOcspResponseBytes(new byte[0]);
+        LOGGER.debug("OCSPResponseBytes: " + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes()));
     }
 }
