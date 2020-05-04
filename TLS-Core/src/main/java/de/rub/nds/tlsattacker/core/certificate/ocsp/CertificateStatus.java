@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
+import de.rub.nds.asn1.model.Asn1EncapsulatingBitString;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
 import de.rub.nds.asn1.model.Asn1EndOfContent;
 import de.rub.nds.asn1.model.Asn1Explicit;
@@ -75,7 +76,15 @@ public class CertificateStatus {
             issuerKeyHash = ((Asn1EncapsulatingOctetString) issuerKeyHashObject).getContent().getOriginalValue();
         }
 
-        serialNumber = ((Asn1Integer) requestInformation.getChildren().get(3)).getValue();
+        // Another ASN.1 Tool bug workaround: Sometimes the serial number is
+        // identified as an encapsulated bit string.
+        Asn1Encodable serialNumberObject = requestInformation.getChildren().get(3);
+        if (serialNumberObject instanceof Asn1Integer) {
+            serialNumber = ((Asn1Integer) serialNumberObject).getValue();
+        } else if (serialNumberObject instanceof Asn1EncapsulatingBitString) {
+            Asn1EncapsulatingBitString serialNumberBitStringObject = (Asn1EncapsulatingBitString) serialNumberObject;
+            serialNumber = new BigInteger(1, serialNumberBitStringObject.getContent().getValue());
+        }
 
         /*
          * And here comes the revocation status. ASN.1 Tool is buggy and gets
