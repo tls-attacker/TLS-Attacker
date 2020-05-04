@@ -12,9 +12,9 @@ public enum CcaWorkflowType {
     CRT_CKE_CCS_FIN("TLS handshake flow with CertificateVerify omitted.", true, false),
     CRT_CKE_FIN("TLS handshake flow with CertificateVerify and CCS omitted.", true, false),
     CRT_CKE_ZFIN("TLS handshake flow with CertificateVerify and CCS omitted. Additionally the verify_data "
-            + "in the FinishedMessage is set zeroes only. Supposely found in CyaSSL 3.2.0", true, false),
+            + "in the FinishedMessage is set zeroes only. Supposedly found in CyaSSL 3.2.0", true, false),
     CKE_CCS_FIN("TLS handshake completely ignoring the CertificateRequest. First seen in GnuTLS 3.3.9.", false, false),
-    CKE_CCS_CRT_FIN_CCS_RND("Handshake abusing incorrect transitions in the JSEE state machine.", true, false),
+    CKE_CCS_CRT_FIN_CCS_RND("Handshake abusing incorrect transitions in the JSSE state machine.", true, false),
     CRT_CCS_FIN("TLS handshake omitting the ClientKeyExchange and CertificateVerify. This might lead to null "
             + "keys or non deterministic keys being established. Additionally same state machines might be confused "
             + "leading to a ClientAuthentication bypass.", true, false),
@@ -23,22 +23,11 @@ public enum CcaWorkflowType {
     CRT_ZFIN("TLS handshake of only ClientCertificate and Finished. No encryption is enabled and no "
             + "key material is sent from the client. Uninitialized data might be used, or null keys. "
             + "VerifyData is zeroed.", true, false),
-    CRT_ECKE_CCS_FIN("TLS handshake flow with empty CKE message.", true, true),
+    CRT_ECKE_CCS_FIN("TLS handshake flow with empty CKE message.", true, false),
 
-    /**
-     * TODO: I'd like to add a list that contains the certificate types used? or
-     * just add an flag that says if certificates are used or not. Otherwise one
-     * would have to edit this enum everytime one adds a certificate type.
-     * Though an advantage would be that I could specify if keys are required or
-     * not/only use certificateTypes that match the flow
-     */
-    /**
-     * TODO: Flows that send CRT out of order and still skip vrfy
-     */
-    /*
-     * The following test cases require the integration of X509-Attacker. Hence
-     * they've been postponed for now.
-     */
+    CKE_CRT_CCS_FIN("TLS handshake flow with CRT out of order and VRFY omited.", true, false),
+    CKE_CRT_VRFY_CCS_FIN("TLS handshake flow with CRT out of order.", true, true),
+
 
     CRT_CKE_VRFY_CCS_FIN(
             "TLS handshake that is completely valid. It's used to confirm that everything works.",

@@ -140,6 +140,20 @@ public class CcaWorkflowGenerator {
                     trace.addTlsAction(new SendAction(certificateMessage, new EmptyClientKeyExchangeMessage(),
                             new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
                     break;
+                case CKE_CRT_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(
+                            tlsConfig)));
+                    break;
+                case CKE_CRT_VRFY_CCS_FIN:
+                    certificateMessage = CcaCertificateGenerator.generateCertificate(ccaDelegate, ccaCertificateType);
+                    trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
+                    trace.addTlsAction(new SendAction(certificateMessage));
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(tlsConfig),
+                            new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+                    break;
                 default:
                     break;
             }
