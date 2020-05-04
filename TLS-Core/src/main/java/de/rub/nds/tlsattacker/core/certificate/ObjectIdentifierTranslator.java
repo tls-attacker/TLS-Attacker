@@ -15,9 +15,13 @@ public class ObjectIdentifierTranslator {
 
     static {
         // Algorithms
-        oidMap.put("1.2.840.10015.4.1", "ecdsa-with-SHA1");
-        oidMap.put("1.2.840.10015.4.2", "ecdsa-with-Recommended");
-        oidMap.put("1.2.840.10015.4.3", "ecdsa-with-SHA2");
+        oidMap.put("1.2.840.10045.4.1", "ecdsa-with-SHA1");
+        oidMap.put("1.2.840.10045.4.2", "ecdsa-with-Recommended");
+        oidMap.put("1.2.840.10045.4.3", "ecdsa-with-SHA2");
+        oidMap.put("1.2.840.10045.4.3.1", "ecdsa-with-SHA224");
+        oidMap.put("1.2.840.10045.4.3.2", "ecdsa-with-SHA256");
+        oidMap.put("1.2.840.10045.4.3.3", "ecdsa-with-SHA384");
+        oidMap.put("1.2.840.10045.4.3.4", "ecdsa-with-SHA512");
 
         oidMap.put("1.2.840.113549.1.1.0", "modules"); // ASN.1 modules?
         oidMap.put("1.2.840.113549.1.1.1", "rsaEncryption");
