@@ -45,8 +45,8 @@ public class ResponseFingerprint {
      * @param recordList
      * @param socketState
      */
-    public ResponseFingerprint(List<ProtocolMessage> messageList,
-            List<AbstractRecord> recordList, SocketState socketState) {
+    public ResponseFingerprint(List<ProtocolMessage> messageList, List<AbstractRecord> recordList,
+            SocketState socketState) {
         this.messageList = messageList;
         this.recordList = recordList;
         this.socketState = socketState;
@@ -92,8 +92,8 @@ public class ResponseFingerprint {
             records.append(someRecord.getClass().getSimpleName()).append(",");
         }
 
-        return "ResponseFingerprint[ Messages=[" + messages.toString() + "], Reccords=[" + records.toString() + "], SocketState="
-                + socketState + ']';
+        return "ResponseFingerprint[ Messages=[" + messages.toString() + "], Reccords=[" + records.toString()
+                + "], SocketState=" + socketState + ']';
     }
 
     public String toHumanReadable() {
@@ -208,25 +208,28 @@ public class ResponseFingerprint {
                 if (!this.recordList.get(i).getClass().equals(other.recordList.get(i).getClass())) {
                     return false;
                 }
-                //This also finds fragmentations issues
-                if (this.recordList.get(i).getCompleteRecordBytes().getValue().length != other.recordList.get(i).getCompleteRecordBytes().getValue().length) {
+                // This also finds fragmentations issues
+                if (this.recordList.get(i).getCompleteRecordBytes().getValue().length != other.recordList.get(i)
+                        .getCompleteRecordBytes().getValue().length) {
                     return false;
                 }
                 if (this.recordList.get(i) instanceof Record && other.recordList.get(i) instanceof Record) {
-                    //Comparing Records
+                    // Comparing Records
                     Record thisRecord = (Record) this.getRecordList().get(i);
                     Record otherRecord = (Record) other.getRecordList().get(i);
                     if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType().getValue()) {
                         return false;
                     }
 
-                    if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord.getProtocolVersion().getValue())) {
+                    if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord.getProtocolVersion()
+                            .getValue())) {
                         return false;
                     }
 
                 } else {
-                    //Comparing BlobRecords
-                    if (Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other.getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                    // Comparing BlobRecords
+                    if (Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
+                            .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
                         return false;
                     }
                 }
