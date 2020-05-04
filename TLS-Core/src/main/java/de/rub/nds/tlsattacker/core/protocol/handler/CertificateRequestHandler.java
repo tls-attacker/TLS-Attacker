@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
@@ -51,7 +52,10 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     public void adjustTLSContext(CertificateRequestMessage message) {
         adjustClientCertificateTypes(message);
         adjustDistinguishedNames(message);
-        adjustServerSupportedSignatureAndHashAlgorithms(message);
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+            adjustServerSupportedSignatureAndHashAlgorithms(message);
+        }
         adjustSelectedSignatureAndHashAlgorithm();
     }
 
