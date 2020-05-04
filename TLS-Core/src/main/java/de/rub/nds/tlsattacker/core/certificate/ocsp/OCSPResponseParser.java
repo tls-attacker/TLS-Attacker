@@ -128,7 +128,9 @@ public class OCSPResponseParser {
         if (responseCertificateListSequence != null) {
             for (Asn1Encodable certificateStatusSequence : responseCertificateListSequence.getChildren()) {
                 if (certificateStatusSequence instanceof Asn1Sequence) {
-                    certificateStatusList.add(new CertificateStatus((Asn1Sequence) certificateStatusSequence));
+                    // Create a new Certificate Status object for each entry
+                    certificateStatusList.add(CertificateStatusParser
+                            .parseCertificateStatus((Asn1Sequence) certificateStatusSequence));
                 }
             }
         }
