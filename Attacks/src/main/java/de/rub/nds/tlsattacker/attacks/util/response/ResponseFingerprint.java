@@ -145,7 +145,7 @@ public class ResponseFingerprint {
             }
             resultString.deleteCharAt(resultString.length() - 1); // remove last
                                                                   // ,
-            resultString.append("]");
+            resultString.append("] ");
         }
         if (socketState != null) {
             switch (socketState) {
