@@ -35,12 +35,6 @@ public class ResponseFingerprint {
 
     /**
      *
-     * @param receivedTransportHandlerException
-     * @param encryptedAlert
-     * @param numberRecordsReceived
-     * @param numberOfMessageReceived
-     * @param recordClasses
-     * @param messageClasses
      * @param messageList
      * @param recordList
      * @param socketState
@@ -140,8 +134,18 @@ public class ResponseFingerprint {
             }
             resultString.append(" ");
         }
-        if (encrypted) {
-            resultString.append(" ENC ");
+        if (recordList.size() > 0) {
+            resultString.append(" [");
+            for (AbstractRecord record : recordList) {
+                if (record instanceof Record) {
+                    resultString.append("R(" + ((Record) record).getLength().getValue() + "),");
+                } else {
+                    resultString.append("B(" + ((Record) record).getLength().getValue() + "),");
+                }
+            }
+            resultString.deleteCharAt(resultString.length() - 1); // remove last
+                                                                  // ,
+            resultString.append("]");
         }
         if (socketState != null) {
             switch (socketState) {

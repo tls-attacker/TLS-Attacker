@@ -33,46 +33,62 @@ public class FingerPrintChecker {
      */
     public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
             boolean canDecryptAlerts) {
-        if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
-            return EqualityError.SOCKET_EXCEPTION;
+        if (fingerprint1.getMessageList().size() == fingerprint2.getMessageList().size()) {
+            for (int i = 0; i < fingerprint1.getMessageList().size(); i++) {
+                if (!fingerprint1.getMessageList().get(i).toCompactString()
+                        .equals(fingerprint2.getMessageList().get(i).toCompactString())) {
+                    if (fingerprint1.getMessageList().get(i).getClass()
+                            .equals(fingerprint2.getMessageList().get(i).getClass()))
+                        return EqualityError.MESSAGE_CONTENT;
+                } else {
+                    return EqualityError.MESSAGE_CLASS;
+                }
+            }
+        } else {
+            return EqualityError.MESSAGE_COUNT;
         }
-        if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
+        if (fingerprint1.getRecordList().size() == fingerprint2.getRecordList().size()) {
+            for (int i = 0; i < fingerprint1.getRecordList().size(); i++) {
+                if (!fingerprint1.getRecordList().get(i).getClass()
+                        .equals(fingerprint2.getRecordList().get(i).getClass())) {
+                    return EqualityError.RECORD_CLASS;
+                }
+                // This also finds fragmentations issues
+                if (fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue().length != fingerprint2
+                        .getRecordList().get(i).getCompleteRecordBytes().getValue().length) {
+                    return EqualityError.RECORD_CONTENT;
+                }
+                if (fingerprint1.getRecordList().get(i) instanceof Record
+                        && fingerprint2.getRecordList().get(i) instanceof Record) {
+                    // Comparing Records
+                    Record thisRecord = (Record) fingerprint1.getRecordList().get(i);
+                    Record otherRecord = (Record) fingerprint2.getRecordList().get(i);
+                    if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType().getValue()) {
+                        return EqualityError.RECORD_CONTENT_TYPE;
+                    }
+
+                    if (!java.util.Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord
+                            .getProtocolVersion().getValue())) {
+                        return EqualityError.RECORD_VERSION;
+                    }
+
+                } else {
+                    // Comparing BlobRecords
+                    if (java.util.Arrays.equals(
+                            fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue(), fingerprint2
+                                    .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                        return EqualityError.RECORD_CONTENT;
+                    }
+                }
+            }
+        } else {
             return EqualityError.RECORD_COUNT;
         }
-        if (fingerprint1.isEncrypted() != fingerprint2.isEncrypted()) {
-            return EqualityError.ENCRYPTED_ALERT;
-        }
-        if (!checkRecordClassEquality(fingerprint1.getRecordClasses(), fingerprint2.getRecordClasses())) {
-            return EqualityError.RECORD_CLASS;
-        }
-        if (!checkRecordLengthEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.RECORD_LENGTH;
-        }
-        if (!checkRecordProtocolVersionEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.RECORD_VERSION;
-        }
-        if (!checkRecordContentTypeEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.RECORD_CONTENT_TYPE;
-        }
-        if ((!fingerprint1.isEncrypted() && !canDecryptAlerts) || canDecryptAlerts) {
-            if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-                return EqualityError.ALERT_RECORD_CONTENT;
-            }
-            if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-                return EqualityError.ALERT_MESSAGE_CONTENT;
-            }
-            if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
-                return EqualityError.MESSAGE_COUNT;
-            }
-            if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
-                return EqualityError.MESSAGE_CLASS;
-            }
-        }
-        if (!checkSocketState(fingerprint1, fingerprint2)) {
+        if (fingerprint1.getSocketState() == fingerprint2.getSocketState()) {
+            return EqualityError.NONE;
+        } else {
             return EqualityError.SOCKET_STATE;
         }
-        return EqualityError.NONE;
-
     }
 
     private static boolean checkRecordClassEquality(List<Class<AbstractRecord>> recordClassList1,
@@ -225,32 +241,6 @@ public class FingerPrintChecker {
             }
         }
         return true;
-    }
-
-    public static EqualityError checkSimpleEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
-            boolean canDecryptAlerts) {
-        if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
-            return EqualityError.SOCKET_EXCEPTION;
-        }
-        if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
-            return EqualityError.RECORD_COUNT;
-        }
-        if (fingerprint1.isEncrypted() != fingerprint2.isEncrypted()) {
-            return EqualityError.ENCRYPTED_ALERT;
-        }
-        if ((!fingerprint1.isEncrypted() && !canDecryptAlerts) || canDecryptAlerts) {
-            if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
-                return EqualityError.MESSAGE_COUNT;
-            }
-            if (!checkMessageListAlertEquality(fingerprint1.getMessageList(), fingerprint2.getMessageList())) {
-                return EqualityError.ALERT_MESSAGE_CONTENT;
-            }
-        }
-        if (!checkSocketState(fingerprint1, fingerprint2)) {
-            return EqualityError.SOCKET_STATE;
-        }
-        return EqualityError.NONE;
-
     }
 
     private FingerPrintChecker() {
