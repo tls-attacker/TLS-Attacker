@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -452,6 +454,52 @@ public class WorkflowTrace implements Serializable {
 
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
+    }
+
+
+
+    public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList = messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getLastReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList = messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList = messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList = messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
     }
 
 }
