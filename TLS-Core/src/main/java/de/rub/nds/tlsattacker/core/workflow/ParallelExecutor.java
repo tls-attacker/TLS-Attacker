@@ -50,7 +50,7 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>(),
+        executorService = new ThreadPoolExecutor(0, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
                 factory);
         this.reexecutions = reexecutions;
         this.size = size;
