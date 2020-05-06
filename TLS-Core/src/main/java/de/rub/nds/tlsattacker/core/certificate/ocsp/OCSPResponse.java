@@ -36,7 +36,7 @@ public class OCSPResponse {
     private List<CertificateStatus> certificateStatusList = new LinkedList<>();
     private byte[] encodedResponse;
     private byte[] responderKey;
-    private int responseStatus;
+    private int responseStatus = -1;
     private int responseDataVersion = 0; // 0 = OCSP v1
     private BigInteger nonce;
     private String responseTime;
@@ -180,6 +180,33 @@ public class OCSPResponse {
     public String toString(boolean includeSignatureAndCertificate) {
         StringBuilder sb = new StringBuilder();
         sb.append("OCSP Response:");
+
+        // If response was not successful or object was empty...
+        if (getResponseStatus() != 0) {
+            switch (getResponseStatus()) {
+                case -1:
+                    // Empty object
+                    break;
+                case 1:
+                    sb.append("\n malformedRequest");
+                    break;
+                case 2:
+                    sb.append("\n internalError");
+                    break;
+                case 3:
+                    sb.append("\n tryLater");
+                    break;
+                // case 4 is defined as unused in the RFC
+                case 5:
+                    sb.append("\n sigRequired");
+                    break;
+                case 6:
+                    sb.append("\n unauthorized");
+                    break;
+            }
+            return sb.toString();
+        }
+
         sb.append("\n Version: ");
         if (getResponseDataVersion() == 0) {
             sb.append("1 (0x0)");
