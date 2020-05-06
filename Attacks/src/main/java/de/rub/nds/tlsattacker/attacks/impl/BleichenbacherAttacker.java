@@ -185,7 +185,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public EqualityError getEqualityError(List<VectorFingerprintPair> bleichenbacherVectorMap) {
         ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
         for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
-            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint(), false);
+            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint());
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found an EqualityError!");
                 CONSOLE.info(EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));

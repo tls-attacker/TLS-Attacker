@@ -22,15 +22,7 @@ public enum EqualityError {
     /**
      *
      */
-    SOCKET_EXCEPTION,
-    /**
-     *
-     */
     SOCKET_STATE,
-    /**
-     *
-     */
-    ALERT_COUNT,
     /**
      *
      */
@@ -50,15 +42,7 @@ public enum EqualityError {
     /**
      *
      */
-    ALERT_RECORD_CONTENT,
-    /**
-     *
-     */
-    ALERT_MESSAGE_CONTENT,
-    /**
-     *
-     */
-    ENCRYPTED_ALERT,
+    MESSAGE_CONTENT,
     /**
      *
      */
@@ -70,6 +54,10 @@ public enum EqualityError {
     /**
      *
      */
-    RECORD_VERSION;
+    RECORD_VERSION,
+    /**
+     *
+     */
+    RECORD_CONTENT;
 
 }

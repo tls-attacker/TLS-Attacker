@@ -87,8 +87,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
                         chooser.getServerEcPublicKey());
             } else {
-                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(), msg
-                        .getPublicKey().getValue());
+                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
+                        msg.getPublicKey().getValue());
             }
         } else {
 
@@ -98,7 +98,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             } else {
                 publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
             }
-            premasterSecret = computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
+            premasterSecret = computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey()
+                    .getValue());
         }
         preparePremasterSecret(msg);
     }
