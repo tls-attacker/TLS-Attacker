@@ -18,6 +18,11 @@ public class VectorResponse {
 
     private final Vector vector;
 
+    private VectorResponse() {
+        fingerprint = null;
+        vector = null;
+    }
+
     public VectorResponse(Vector vector, ResponseFingerprint fingerprint) {
         this.vector = vector;
         this.fingerprint = fingerprint;

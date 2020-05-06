@@ -17,6 +17,11 @@ public class FingerprintSecretPair {
     private final ResponseFingerprint fingerprint;
     private final int appliedSecret;
 
+    private FingerprintSecretPair() {
+        fingerprint = null;
+        appliedSecret = 0;
+    }
+
     public FingerprintSecretPair(ResponseFingerprint fingerprint, int appliedSecret) {
         this.fingerprint = fingerprint;
         this.appliedSecret = appliedSecret;

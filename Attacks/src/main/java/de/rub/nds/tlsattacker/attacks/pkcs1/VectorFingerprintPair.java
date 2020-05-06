@@ -27,6 +27,9 @@ public class VectorFingerprintPair {
      * @param fingerprint
      * @param vector
      */
+    private VectorFingerprintPair() {
+    }
+
     public VectorFingerprintPair(ResponseFingerprint fingerprint, Pkcs1Vector vector) {
         this.fingerprint = fingerprint;
         this.vector = vector;

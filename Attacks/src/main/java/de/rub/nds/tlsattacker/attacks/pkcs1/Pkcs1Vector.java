@@ -21,6 +21,9 @@ public class Pkcs1Vector {
 
     private byte[] encryptedValue;
 
+    private Pkcs1Vector() {
+    }
+
     /**
      *
      * @param description
