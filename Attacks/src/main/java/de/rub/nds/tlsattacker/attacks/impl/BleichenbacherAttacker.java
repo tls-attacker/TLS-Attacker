@@ -12,13 +12,13 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherVulnerabilityMap;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1VectorGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.VectorFingerprintPair;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
@@ -61,7 +61,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private final ParallelExecutor executor;
 
-    private List<VectorFingerprintPair> fingerprintPairList;
+    private List<VectorResponse> fingerprintPairList;
 
     /**
      *
@@ -148,15 +148,15 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             // Socket Equality Errors can be caused by problems on on the
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
-            List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
+            List<VectorResponse> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
                     pkcs1Vectors, publicKey);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
             BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
             BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
                     error2);
             if (mapOne.looksIdentical(mapTwo)) {
-                List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(
-                        config.getWorkflowType(), pkcs1Vectors, publicKey);
+                List<VectorResponse> thirdBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
+                        pkcs1Vectors, publicKey);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
                 BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
                         thirdBleichenbacherVectorMap, error3);
@@ -182,9 +182,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      * @param bleichenbacherVectorMap
      * @return
      */
-    public EqualityError getEqualityError(List<VectorFingerprintPair> bleichenbacherVectorMap) {
+    public EqualityError getEqualityError(List<VectorResponse> bleichenbacherVectorMap) {
         ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
-        for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
+        for (VectorResponse pair : bleichenbacherVectorMap) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint());
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found an EqualityError!");
@@ -195,20 +195,20 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return EqualityError.NONE;
     }
 
-    private void printBleichenbacherVectormap(List<VectorFingerprintPair> bleichenbacherVectorMap) {
+    private void printBleichenbacherVectormap(List<VectorResponse> bleichenbacherVectorMap) {
         LOGGER.debug("Vectormap:");
         LOGGER.debug("---------------");
-        for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
+        for (VectorResponse pair : bleichenbacherVectorMap) {
             LOGGER.debug(pair);
         }
         LOGGER.debug("---------------");
     }
 
-    private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
+    private List<VectorResponse> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
             List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
-        List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
+        List<VectorResponse> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
@@ -239,10 +239,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
-            List<VectorFingerprintPair> bleichenbacherVectorMap) {
+            List<VectorResponse> bleichenbacherVectorMap) {
         if (stateVectorPair.getState().getWorkflowTrace().executedAsPlanned()) {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
-            bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
+            bleichenbacherVectorMap.add(new VectorResponse(stateVectorPair.getVector(), fingerprint));
         } else {
             LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
@@ -338,7 +338,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return shakyScans;
     }
 
-    public List<VectorFingerprintPair> getFingerprintPairList() {
+    public List<VectorResponse> getFingerprintPairList() {
         return fingerprintPairList;
     }
 }

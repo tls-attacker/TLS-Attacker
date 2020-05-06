@@ -58,6 +58,8 @@ public enum EqualityError {
     /**
      *
      */
+    ALERT_MESSAGE_CONTENT, // TODO TO BE REMOVED
+    ALERT_RECORD_CONTENT, // TODO TO BE REMOVED
     RECORD_CONTENT;
 
 }
