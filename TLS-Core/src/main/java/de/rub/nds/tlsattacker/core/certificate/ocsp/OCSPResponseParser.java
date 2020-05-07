@@ -55,10 +55,10 @@ public class OCSPResponseParser {
         // Get response status
         Asn1Enumerated encodedResponseObject = (Asn1Enumerated) outerWrapper.getChildren().get(0);
         int responseStatus = encodedResponseObject.getValue().intValue();
+        responseMessage.setResponseStatus(responseStatus);
 
         // If we don't get a valid response, abort.
         if (responseStatus != 0) {
-            responseMessage.setResponseStatus(responseStatus);
             return responseMessage;
         }
 
