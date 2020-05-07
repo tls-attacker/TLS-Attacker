@@ -137,7 +137,7 @@ public class OCSPRequest {
     private void prepareOcspUrl() {
         try {
             this.serverUrl = new URL(infoExtractorMain.getOcspServerUrl());
-        } catch (UnsupportedOperationException e) {
+        } catch (NoSuchFieldException e) {
             throw new UnsupportedOperationException("This certificate does not appear to support OCSP.");
         } catch (Exception e) {
             throw new RuntimeException("An error occurred during parsing certificate for OCSP information.");
