@@ -39,11 +39,13 @@ public class OCSPRequest {
     private URL serverUrl;
 
     // TODO: Better way to deal with exceptions
-    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certChain) {
-        this.certificate = certChain.getCertificateAt(0);
+    public OCSPRequest(org.bouncycastle.crypto.tls.Certificate certificateChain) {
+        this.certificate = certificateChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
-        this.issuerCertificate = certChain.getCertificateAt(1);
-        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        if (certificateChain.getLength() > 1) {
+            this.issuerCertificate = certificateChain.getCertificateAt(1);
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        }
 
         prepareOcspUrl();
     }
@@ -52,8 +54,10 @@ public class OCSPRequest {
         this.certificate = certificateChain.getCertificateAt(0);
         this.infoExtractorMain = new CertificateInformationExtractor(certificate);
         this.serverUrl = serverUrl;
-        this.issuerCertificate = certificateChain.getCertificateAt(1);
-        this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        if (certificateChain.getLength() > 1) {
+            this.issuerCertificate = certificateChain.getCertificateAt(1);
+            this.infoExtractorIssuer = new CertificateInformationExtractor(issuerCertificate);
+        }
     }
 
     // If no chain is given, try to recreate one with the issuer information in
