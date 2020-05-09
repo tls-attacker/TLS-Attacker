@@ -79,7 +79,12 @@ public enum CcaCertificateType {
             true),
     DSAROOTv3_CAv3_LEAF_DSAv3_Sha1(
             "DSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
-                    + "All use DSA and are signed using Sha1WithDSA (weak algo).",
+                    + "All use DSA and the leaf is signed using Sha1WithDSA (weak algo).",
+            false,
+            true),
+    ECROOTv3_CAv3_LEAF_ECv3_Sha1(
+            "EC Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "All use ECDSA and the leaf is signed using Sha1WithECDSA (weak algo).",
             false,
             true),
     ECROOTv3_CAv3_LEAF_ECv3_GarbageParameters(
@@ -238,9 +243,9 @@ public enum CcaCertificateType {
                     + "The leaf certificates key usage extensions allows no key usage at all.",
             false,
             true),
-    ROOTv3_CAv3_LEAF_RSAv3_KeyUsageDigitalSignatures(
+    ROOTv3_CAv3_LEAF_RSAv3_KeyUsageKeyAgreement(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
-                    + "The leaf certificates key usage extensions allows digitalSignatues only.",
+                    + "The leaf certificates key usage extensions allows key Agreement only.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain(
@@ -325,41 +330,9 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1("RSA Leaf certificate generated based on the provided "
             + "(root-)CA certificate with one intermediate CA. In the leaf certificate the signature field "
             + "(type AlgorithmIdentifier) specifies a different algorithm than the signatureAlgorithm field in the "
-            + "Certificate. Additionally the algorithm doesn't match the key.", false, true),
+            + "Certificate. AdditionallCcaCertificateTypey the algorithm doesn't match the key.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 "
-            + "but the algorithm identifiers are swapped.", false, true);/*
-                                                                          * //
-                                                                          * Removed
-                                                                          * for
-                                                                          * now
-                                                                          * since
-                                                                          * Javas
-                                                                          * signature
-                                                                          * engine
-                                                                          * relies
-                                                                          * on
-                                                                          * the
-                                                                          * value
-                                                                          * to
-                                                                          * sign
-                                                                          * the
-                                                                          * certificate
-                                                                          * .
-                                                                          * But
-                                                                          * this
-                                                                          * causes
-                                                                          * a
-                                                                          * mismatch
-                                                                          * since
-                                                                          * it
-                                                                          * can
-                                                                          * 't
-                                                                          * find
-                                                                          * an
-                                                                          * EC
-                                                                          * key
-                                                                          */
-    // ROOTv3_debug("debugging", false, true);
+            + "but the algorithm identifiers are swapped.", false, true);
 
     private String description;
     private Boolean requiresCertificate;

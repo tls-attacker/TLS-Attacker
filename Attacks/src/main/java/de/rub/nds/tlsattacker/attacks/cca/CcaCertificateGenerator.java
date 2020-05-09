@@ -72,7 +72,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_CAv3_PathLoop:
                 case ROOTv3_CAv3_LEAF_RSAv3_UnknownExt:
                 case ROOTv3_CAv3_LEAF_RSAv3_CaTrue:
-                case ROOTv3_CAv3_LEAF_RSAv3_KeyUsageDigitalSignatures:
+                case ROOTv3_CAv3_LEAF_RSAv3_KeyUsageKeyAgreement:
                 case ROOTv3_CAv3_LEAF_RSAv3_KeyUsageNothing:
                 case ROOTv3_CAv3_MalformedNameConstraints_LEAF_RSAv3:
                 case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain:
@@ -111,6 +111,7 @@ public class CcaCertificateGenerator {
                 case ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement:
                 case ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement2:
                 case DSAROOTv3_CAv3_LEAF_DHv3_KeyAgreement:
+                case ECROOTv3_CAv3_LEAF_ECv3_Sha1:
                     // case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
