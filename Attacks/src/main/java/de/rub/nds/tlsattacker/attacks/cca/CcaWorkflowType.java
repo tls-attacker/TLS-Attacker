@@ -28,7 +28,6 @@ public enum CcaWorkflowType {
     CKE_CRT_CCS_FIN("TLS handshake flow with CRT out of order and VRFY omited.", true, false),
     CKE_CRT_VRFY_CCS_FIN("TLS handshake flow with CRT out of order.", true, true),
 
-
     CRT_CKE_VRFY_CCS_FIN(
             "TLS handshake that is completely valid. It's used to confirm that everything works.",
             true,
