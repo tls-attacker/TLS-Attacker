@@ -29,7 +29,6 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     protected final T msg;
     protected byte[] premasterSecret;
 
-
     public EmptyClientKeyExchangePreparator(Chooser chooser, T msg) {
         super(chooser, msg);
         this.msg = msg;
@@ -77,15 +76,17 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
 
         if (!chooser.getContext().getClientCertificate().isEmpty()) {
 
-            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
+            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
             if (algorithm == "1.2.840.113549.1.3.1") {
-                premasterSecret = calculatePremasterSecret(chooser.getClientDhModulus(), chooser.getDhClientPrivateKey(),
-                        chooser.getDhClientPublicKey());
+                premasterSecret = calculatePremasterSecret(chooser.getClientDhModulus(),
+                        chooser.getDhClientPrivateKey(), chooser.getDhClientPublicKey());
             } else if (algorithm == "1.2.840.10045.2.1") {
                 if (clientMode) {
 
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-                    // NOTE: if this is not the same group as the one the certificate resides on it won't work anyway.
+                    // NOTE: if this is not the same group as the one the
+                    // certificate resides on it won't work anyway.
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
                     EllipticCurve curve = CurveFactory.getCurve(usedGroup);
@@ -99,9 +100,12 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
             preparePremasterSecret(msg);
         }
 
-        //        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-//                .getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
-//        preparePremasterSecret(msg);
+        // premasterSecret =
+        // calculatePremasterSecret(msg.getComputations().getModulus().getValue(),
+        // msg.getComputations()
+        // .getPrivateKey().getValue(),
+        // msg.getComputations().getPublicKey().getValue());
+        // preparePremasterSecret(msg);
     }
 
 }
