@@ -50,6 +50,11 @@ public enum CcaCertificateType {
                     + "The chain uses DSA while only the leaf uses DH with keyUsage keyAgreement only.",
             false,
             true),
+    DSAROOTv3_CAv3_LEAF_DHv3(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses DSA while only the leaf uses DH.",
+            false,
+            true),
     ECROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
             "ECDH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The chain uses ECDSA while only the leaf uses ECDH with keyUsage keyAgreement only.",
@@ -64,6 +69,16 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_DHv3_KeyAgreement(
             "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The chain uses RSA while only the leaf uses DH with keyUsage keyAgreement only.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_DHv3(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses RSA while only the leaf uses DH.",
+            false,
+            true),
+    ROOTv3_CAv3_LEAF_ECv3(
+            "DH Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
+                    + "The chain uses RSA while only the leaf uses ECDH/DSA.",
             false,
             true),
     ROOTv3_CAv3_LEAF_ECv3_KeyAgreement(
