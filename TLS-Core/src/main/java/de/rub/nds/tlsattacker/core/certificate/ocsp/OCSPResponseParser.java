@@ -25,8 +25,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 import java.io.ByteArrayInputStream;
@@ -39,8 +37,6 @@ import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BAS
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
 
 public class OCSPResponseParser {
-
-    private final Logger LOGGER = LogManager.getLogger();
 
     public static OCSPResponse parseResponse(byte[] encodedResponse) throws ParserException, IOException {
         Asn1ToolInitializer.initAsn1Tool();

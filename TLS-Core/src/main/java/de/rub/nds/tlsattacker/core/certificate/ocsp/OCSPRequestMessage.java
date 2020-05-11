@@ -18,8 +18,6 @@ import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -30,7 +28,6 @@ import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 
 public class OCSPRequestMessage {
 
-    private final Logger LOGGER = LogManager.getLogger();
     Asn1Sequence tbsRequestWrapper = new Asn1Sequence();
     Asn1Sequence tbsRequest = new Asn1Sequence();
     Asn1Sequence requestList = new Asn1Sequence();

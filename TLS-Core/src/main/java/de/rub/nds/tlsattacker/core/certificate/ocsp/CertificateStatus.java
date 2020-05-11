@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.model.Asn1Sequence;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 
 public class CertificateStatus {
 
-    private final Logger LOGGER = LogManager.getLogger();
     private Asn1Sequence certificateStatusSequence;
     private String hashAlgorithmIdentifier;
     private byte[] issuerNameHash;

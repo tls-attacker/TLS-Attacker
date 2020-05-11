@@ -12,8 +12,6 @@ import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 
 import java.io.ByteArrayInputStream;
@@ -26,11 +24,9 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
 
 public class OCSPRequest {
 
-    private final Logger LOGGER = LogManager.getLogger();
     private final Certificate certificate;
     private final CertificateInformationExtractor infoExtractorMain;
     private Certificate issuerCertificate;
