@@ -860,7 +860,7 @@ public class Config implements Serializable {
 
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
-    private ProtocolVersion defaultSelectedProtocolVersion = ProtocolVersion.TLS12;
+    private ProtocolVersion defaultSelectedProtocolVersion = ProtocolVersion.TLS10;
 
     private ProtocolVersion defaultHighestClientProtocolVersion = ProtocolVersion.TLS12;
 

@@ -74,7 +74,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.prepareComputations();
         prepareClientServerRandom(msg);
 
-        if (!chooser.getContext().getClientCertificate().isEmpty()) {
+        if (chooser.getContext().getClientCertificate() != null
+                && !chooser.getContext().getClientCertificate().isEmpty()) {
 
             String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0)
                     .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
