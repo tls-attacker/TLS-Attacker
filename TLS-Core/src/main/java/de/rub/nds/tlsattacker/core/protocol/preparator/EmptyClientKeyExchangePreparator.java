@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.*;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;

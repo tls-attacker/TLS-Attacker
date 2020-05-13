@@ -11,10 +11,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;

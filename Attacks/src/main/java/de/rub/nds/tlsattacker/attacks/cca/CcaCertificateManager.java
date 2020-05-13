@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;

@@ -8,13 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
