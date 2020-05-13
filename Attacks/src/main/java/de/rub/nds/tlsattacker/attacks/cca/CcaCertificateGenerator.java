@@ -115,7 +115,6 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_DHv3:
                 case ROOTv3_CAv3_LEAF_ECv3:
                 case DSAROOTv3_CAv3_LEAF_DHv3:
-                    // case ROOTv3_debug:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
                 default:
@@ -125,11 +124,6 @@ public class CcaCertificateGenerator {
         return certificateMessage;
     }
 
-    /**
-     *
-     * TODO: ASN.1 Parsing bugs for inspiration
-     *
-     */
     private static CertificateMessage generateCertificateMessage(CcaDelegate ccaDelegate,
             CcaCertificateType ccaCertificateType) {
 

@@ -74,11 +74,6 @@ public class CcaCertificateManager {
                 }
             }
         }
-        // }
-        // return reference;
-        // if (reference == null) {
-        // reference = new CcaCertificateManager();
-        // }
         return reference;
     }
 
@@ -151,10 +146,8 @@ public class CcaCertificateManager {
         String pubKeyName = "Default non existent key";
         String keyType = "";
         Boolean readKey = false;
-        CertificateMessage certificateMessage = new CertificateMessage();
         String rootCertificate = ccaCertificateType.toString().split("_")[0].toLowerCase() + ".pem";
-        // String rootCertificate = ccaCertificateType.toString().substring(0,
-        // 6).toLowerCase() + ".pem";
+
         CustomPrivateKey customPrivateKey;
         CustomPublicKey customPublicKey;
         byte[] keyBytes;
@@ -183,8 +176,7 @@ public class CcaCertificateManager {
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
         String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
         xmlString = xmlString.replace(needle, replacement + xmlSubject);
-        // Please note that rootCertificate always has to be a filename only. No
-        // path
+
         xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
 
         // Parse XML

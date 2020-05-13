@@ -158,7 +158,6 @@ public class CcaWorkflowGenerator {
                     break;
             }
         }
-        // trace.addTlsAction(new GenericReceiveAction());
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         return trace;
     }

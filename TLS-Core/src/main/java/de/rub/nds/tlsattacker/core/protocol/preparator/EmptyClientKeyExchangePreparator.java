@@ -86,8 +86,6 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 if (clientMode) {
 
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-                    // NOTE: if this is not the same group as the one the
-                    // certificate resides on it won't work anyway.
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
                     EllipticCurve curve = CurveFactory.getCurve(usedGroup);
@@ -100,13 +98,6 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
             }
             preparePremasterSecret(msg);
         }
-
-        // premasterSecret =
-        // calculatePremasterSecret(msg.getComputations().getModulus().getValue(),
-        // msg.getComputations()
-        // .getPrivateKey().getValue(),
-        // msg.getComputations().getPublicKey().getValue());
-        // preparePremasterSecret(msg);
     }
 
 }

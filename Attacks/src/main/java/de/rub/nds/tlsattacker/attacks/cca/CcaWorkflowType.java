@@ -24,10 +24,8 @@ public enum CcaWorkflowType {
             + "key material is sent from the client. Uninitialized data might be used, or null keys. "
             + "VerifyData is zeroed.", true, false),
     CRT_ECKE_CCS_FIN("TLS handshake flow with empty CKE message.", true, false),
-
     CKE_CRT_CCS_FIN("TLS handshake flow with CRT out of order and VRFY omited.", true, false),
     CKE_CRT_VRFY_CCS_FIN("TLS handshake flow with CRT out of order.", true, true),
-
     CRT_CKE_VRFY_CCS_FIN(
             "TLS handshake that is completely valid. It's used to confirm that everything works.",
             true,
@@ -59,9 +57,7 @@ public enum CcaWorkflowType {
                     + "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate "
                     + "will be consumed. Maybe it's possible to use the unverified certificate.",
             true,
-            true)
-
-    ;
+            true);
 
     private String description;
     private Boolean requiresCertificate;

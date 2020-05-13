@@ -124,7 +124,7 @@ public enum CcaCertificateType {
     ECROOTv3_Curveball_CAv3_LEAF_ECv3(
             "EC Leaf certificate generated based on the 'new' (root-)CA certificate with one intermediate CA."
                     + "All use ECC and a ROOT certificate is included. The new ROOT certificate is generated based on "
-                    + "CVE-2020-0601 (Curveball/Chain of Fools). TODO: maybe change something, currently the key for it is generated manually.",
+                    + "CVE-2020-0601 (Curveball/Chain of Fools).",
             false,
             true),
     ROOTv3_CAv3_LEAFv1_nLEAF_RSAv3(
