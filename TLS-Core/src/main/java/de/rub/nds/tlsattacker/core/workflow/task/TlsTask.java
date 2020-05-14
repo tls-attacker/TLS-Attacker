@@ -76,7 +76,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
             }
         }
         if (hasError) {
-            LOGGER.error("Could not execute Workflow.", exception);
+            LOGGER.warn("Could not execute Workflow.", exception);
         }
         return this;
     }
