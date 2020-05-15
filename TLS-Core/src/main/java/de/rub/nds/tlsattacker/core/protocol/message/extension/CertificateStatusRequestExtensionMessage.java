@@ -80,7 +80,7 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     }
 
     public void setRequestExtensionLength(int requestExtensionLength) {
-        this.requestExtensionLength = safelySetValue(this.responderIDListLength, requestExtensionLength);
+        this.requestExtensionLength = safelySetValue(this.requestExtensionLength, requestExtensionLength);
     }
 
     public ModifiableByteArray getRequestExtension() {
