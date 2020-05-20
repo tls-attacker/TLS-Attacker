@@ -38,8 +38,6 @@ public class OCSPRequestMessage {
     boolean extensionsSet = false;
 
     public OCSPRequestMessage() {
-        Asn1Sequence request = new Asn1Sequence();
-        requestList.addChild(request);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
         extensionExplicitSequence.setOffset(2);
@@ -47,29 +45,7 @@ public class OCSPRequestMessage {
     }
 
     public OCSPRequestMessage(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
-        Asn1Sequence request = new Asn1Sequence();
-        Asn1Sequence reqCert = new Asn1Sequence();
-        Asn1Sequence hashAlgorithm = new Asn1Sequence();
-        Asn1Null hashAlgorithmFiller = new Asn1Null();
-        Asn1ObjectIdentifier hashAlgorithmId = new Asn1ObjectIdentifier();
-        Asn1PrimitiveOctetString issuerNameHash = new Asn1PrimitiveOctetString();
-        Asn1PrimitiveOctetString issuerKeyHash = new Asn1PrimitiveOctetString();
-        Asn1Integer serialNumber = new Asn1Integer();
-
-        serialNumber.setValue(serialNumberValue);
-        issuerNameHash.setValue(issuerNameHashValue);
-        issuerKeyHash.setValue(issuerKeyHashValue);
-        hashAlgorithmId.setValue("1.3.14.3.2.26"); // SHA1
-
-        hashAlgorithm.addChild(hashAlgorithmId);
-        hashAlgorithm.addChild(hashAlgorithmFiller);
-        reqCert.addChild(hashAlgorithm);
-        reqCert.addChild(issuerNameHash);
-        reqCert.addChild(issuerKeyHash);
-        reqCert.addChild(serialNumber);
-
-        request.addChild(reqCert);
-        requestList.addChild(request);
+        addToRequest(serialNumberValue, issuerNameHashValue, issuerKeyHashValue);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
         extensionExplicitSequence.setOffset(2);
