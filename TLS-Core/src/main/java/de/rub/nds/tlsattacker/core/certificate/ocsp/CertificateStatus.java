@@ -9,8 +9,13 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class CertificateStatus {
 
@@ -19,8 +24,9 @@ public class CertificateStatus {
     private byte[] issuerNameHash;
     private byte[] issuerKeyHash;
     private BigInteger serialNumber;
-    private int certificateStatus;
+    private int certificateStatus = -1;
     private String timeOfRevocation;
+    private int revocationReason;
     private String timeOfLastUpdate;
     private String timeOfNextUpdate;
 
@@ -94,5 +100,80 @@ public class CertificateStatus {
 
     public void setTimeOfNextUpdate(String timeOfNextUpdate) {
         this.timeOfNextUpdate = timeOfNextUpdate;
+    }
+
+    public int getRevocationReason() {
+        return revocationReason;
+    }
+
+    public void setRevocationReason(int revocationReason) {
+        this.revocationReason = revocationReason;
+    }
+
+    private String formatDate(String unformattedDateString) {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'", Locale.ENGLISH);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        LocalDateTime date = LocalDateTime.parse(unformattedDateString, inputFormatter);
+        return outputFormatter.format(date);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Certificate Status");
+        // Use status value to determine if object has been filled
+        if (certificateStatus != -1) {
+            sb.append("\n Hash Algorithm: ").append(ObjectIdentifierTranslator.translate(getHashAlgorithmIdentifier()));
+            sb.append("\n Issuer Name Hash: ").append(Hex.toHexString(getIssuerNameHash()));
+            sb.append("\n Issuer Key Hash: ").append(Hex.toHexString(getIssuerKeyHash()));
+            sb.append("\n Serial Number: ").append(getSerialNumber().toString(16));
+            sb.append("\n Certificate Status: ");
+            if (getCertificateStatus() == 0) {
+                sb.append("good");
+            } else if (getCertificateStatus() == 1) {
+                sb.append("revoked");
+                sb.append("\n Time of Revocation: ").append(formatDate(getTimeOfRevocation()));
+                if (getRevocationReason() != -1) {
+                    sb.append("\n Revocation Reason: ");
+                    switch (getRevocationReason()) {
+                        case 0:
+                            sb.append("unspecified");
+                            break;
+                        case 1:
+                            sb.append("keyCompromise");
+                            break;
+                        case 2:
+                            sb.append("cACompromise");
+                            break;
+                        case 3:
+                            sb.append("affiliationChanged");
+                            break;
+                        case 4:
+                            sb.append("superseded");
+                            break;
+                        case 5:
+                            sb.append("cessationOfOperation");
+                            break;
+                        case 6:
+                            sb.append("certificateHold");
+                            break;
+                        // case 7 is undefined by standard
+                        case 8:
+                            sb.append("removeFromCRL");
+                            break;
+                        case 9:
+                            sb.append("privilegeWithdrawn");
+                            break;
+                        case 10:
+                            sb.append("aACompromise");
+                            break;
+                    }
+                }
+            } else if (getCertificateStatus() == 2) {
+                sb.append("unknown");
+            }
+            sb.append("\n Last Update: ").append(formatDate(getTimeOfLastUpdate()));
+            sb.append("\n Next Update: ").append(formatDate(getTimeOfNextUpdate()));
+        }
+        return sb.toString();
     }
 }

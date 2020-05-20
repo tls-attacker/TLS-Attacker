@@ -245,6 +245,42 @@ public class OCSPResponse {
             } else if (certificateStatus.getCertificateStatus() == 1) {
                 sb.append("revoked");
                 sb.append("\n   Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
+                if (certificateStatus.getRevocationReason() != -1) {
+                    sb.append("\n   Revocation Reason: ");
+                    switch (certificateStatus.getRevocationReason()) {
+                        case 0:
+                            sb.append("unspecified");
+                            break;
+                        case 1:
+                            sb.append("keyCompromise");
+                            break;
+                        case 2:
+                            sb.append("cACompromise");
+                            break;
+                        case 3:
+                            sb.append("affiliationChanged");
+                            break;
+                        case 4:
+                            sb.append("superseded");
+                            break;
+                        case 5:
+                            sb.append("cessationOfOperation");
+                            break;
+                        case 6:
+                            sb.append("certificateHold");
+                            break;
+                        // case 7 is undefined by standard
+                        case 8:
+                            sb.append("removeFromCRL");
+                            break;
+                        case 9:
+                            sb.append("privilegeWithdrawn");
+                            break;
+                        case 10:
+                            sb.append("aACompromise");
+                            break;
+                    }
+                }
             } else if (certificateStatus.getCertificateStatus() == 2) {
                 sb.append("unknown");
             }

@@ -12,6 +12,7 @@ import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1EncapsulatingBitString;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
 import de.rub.nds.asn1.model.Asn1EndOfContent;
+import de.rub.nds.asn1.model.Asn1Enumerated;
 import de.rub.nds.asn1.model.Asn1Explicit;
 import de.rub.nds.asn1.model.Asn1Integer;
 import de.rub.nds.asn1.model.Asn1Null;
@@ -22,6 +23,7 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class CertificateStatusParser {
 
@@ -36,6 +38,7 @@ public class CertificateStatusParser {
         BigInteger serialNumber = null;
         int certificateStatusValue = 2; // unknown
         String timeOfRevocation = null;
+        int revocationReason = -1;
         String timeOfLastUpdate = null;
         String timeOfNextUpdate = null;
 
@@ -98,8 +101,15 @@ public class CertificateStatusParser {
             switch (certStatusExplicitObject.getOffset()) {
                 case 1:
                     certificateStatusValue = 1; // revoked
-                    timeOfRevocation = ((Asn1PrimitiveGeneralizedTime) certStatusExplicitObject.getChildren().get(0))
-                            .getValue();
+                    List<Asn1Encodable> revocationObjects = certStatusExplicitObject.getChildren();
+                    timeOfRevocation = ((Asn1PrimitiveGeneralizedTime) revocationObjects.get(0)).getValue();
+
+                    // Optional revocation reason
+                    if (revocationObjects.size() > 1) {
+                        if (revocationObjects.get(1) instanceof Asn1Explicit) {
+                            revocationReason = ((Asn1Enumerated) revocationObjects.get(1)).getValue().intValue();
+                        }
+                    }
                     break;
                 case 2:
                     certificateStatusValue = 2; // unknown
@@ -137,6 +147,7 @@ public class CertificateStatusParser {
         certificateStatus.setSerialNumber(serialNumber);
         certificateStatus.setCertificateStatus(certificateStatusValue);
         certificateStatus.setTimeOfRevocation(timeOfRevocation);
+        certificateStatus.setRevocationReason(revocationReason);
         certificateStatus.setTimeOfLastUpdate(timeOfLastUpdate);
         certificateStatus.setTimeOfNextUpdate(timeOfNextUpdate);
 
