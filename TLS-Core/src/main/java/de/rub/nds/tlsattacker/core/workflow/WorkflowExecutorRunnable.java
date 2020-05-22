@@ -59,9 +59,10 @@ public class WorkflowExecutorRunnable implements Runnable {
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getLocalPort());
         long timeout = new Long(serverCon.getTimeout());
+        long firstTimeout = new Long(serverCon.getFirstTimeout());
         ServerTcpTransportHandler th;
         try {
-            th = new ServerTcpTransportHandler(timeout, socket);
+            th = new ServerTcpTransportHandler(firstTimeout, timeout, socket);
         } catch (IOException ex) {
             LOGGER.error("Could not prepare TransportHandler for " + socket);
             LOGGER.error("Aborting workflow trace execution on " + socket);

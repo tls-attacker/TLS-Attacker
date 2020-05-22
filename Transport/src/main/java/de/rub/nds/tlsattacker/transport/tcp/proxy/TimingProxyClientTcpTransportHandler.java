@@ -53,7 +53,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     }
 
     public TimingProxyClientTcpTransportHandler(Connection connection) {
-        super(connection.getTimeout(), ConnectionEndType.CLIENT);
+        super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT);
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
         this.proxyDataHostName = connection.getProxyDataHostname();
@@ -63,8 +63,8 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         setIsInStreamTerminating(false);
     }
 
-    public TimingProxyClientTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, ConnectionEndType.CLIENT);
+    public TimingProxyClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
         setIsInStreamTerminating(false);

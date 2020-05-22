@@ -26,7 +26,7 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
     @Before
     public void setUp() {
-        handler = new ServerTCPNonBlockingTransportHandler(1000, 0);
+        handler = new ServerTCPNonBlockingTransportHandler(1000, 1000, 0);
     }
 
     @After

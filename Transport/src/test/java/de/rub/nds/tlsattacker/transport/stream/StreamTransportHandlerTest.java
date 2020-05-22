@@ -29,7 +29,7 @@ public class StreamTransportHandlerTest {
     public void setUp() {
         outputStream = new ByteArrayOutputStream();
         inputStream = new ByteArrayInputStream(new byte[] { 4, 3, 2, 1 });
-        handler = new StreamTransportHandler(100, ConnectionEndType.CLIENT, inputStream, outputStream);
+        handler = new StreamTransportHandler(100, 100, ConnectionEndType.CLIENT, inputStream, outputStream);
     }
 
     /**

@@ -22,7 +22,7 @@ public class FakeTransportHandler extends TransportHandler {
     private Boolean opened = false;
 
     public FakeTransportHandler(ConnectionEndType type) {
-        super(0, type);
+        super(0, 0, type);
         fetchableByte = new byte[0];
     }
 

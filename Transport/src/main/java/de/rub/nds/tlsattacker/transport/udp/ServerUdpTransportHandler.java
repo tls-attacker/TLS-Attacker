@@ -29,8 +29,8 @@ public class ServerUdpTransportHandler extends TransportHandler {
 
     private DatagramSocket socket;
 
-    public ServerUdpTransportHandler(long timeout, int port) {
-        super(timeout, ConnectionEndType.SERVER, false);
+    public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER, false);
         this.port = port;
     }
 

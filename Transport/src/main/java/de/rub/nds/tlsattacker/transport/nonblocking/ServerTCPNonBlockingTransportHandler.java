@@ -38,8 +38,8 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     private Thread thread;
 
-    public ServerTCPNonBlockingTransportHandler(long timeout, int port) {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTCPNonBlockingTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 

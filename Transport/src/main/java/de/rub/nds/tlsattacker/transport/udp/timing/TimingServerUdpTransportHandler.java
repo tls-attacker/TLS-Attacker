@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 
 public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler implements TimeableTransportHandler {
 
-    public TimingServerUdpTransportHandler(long timeout, int port) {
-        super(timeout, port);
+    public TimingServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, port);
     }
 
     @Override

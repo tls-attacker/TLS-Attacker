@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler implements TimeableTransportHandler {
 
-    public TimingServerTcpTransportHandler(long timeout, int port) {
-        super(timeout, port);
+    public TimingServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, port);
     }
 
     @Override

@@ -15,8 +15,8 @@ import java.net.Socket;
 
 public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler {
 
-    public ClientTcpNoDelayTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public ClientTcpNoDelayTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
     }
 
     @Override

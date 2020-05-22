@@ -29,6 +29,8 @@ public abstract class Connection implements Serializable {
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
 
+    protected Integer firstTimeout = null;
+
     public Connection() {
     }
 
@@ -123,6 +125,14 @@ public abstract class Connection implements Serializable {
 
     public Integer getTimeout() {
         return timeout;
+    }
+
+    public void setFirstTimeout(Integer firstTimeout) {
+        this.firstTimeout = firstTimeout;
+    }
+
+    public Integer getFirstTimeout() {
+        return firstTimeout;
     }
 
     /**

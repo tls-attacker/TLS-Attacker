@@ -48,6 +48,7 @@ public class OutboundConnection extends AliasedConnection {
         this.proxyControlHostname = other.proxyControlHostname;
         this.proxyControlPort = other.proxyControlPort;
         this.timeout = other.timeout;
+        this.firstTimeout = other.firstTimeout;
         this.transportHandlerType = other.transportHandlerType;
     }
 
@@ -67,6 +68,7 @@ public class OutboundConnection extends AliasedConnection {
         sb.append(" proxyControlHost=").append(proxyControlHostname);
         sb.append(" proxyControlPort=").append(proxyControlPort);
         sb.append(" type=").append(transportHandlerType);
+        sb.append(" firstTimeout=").append(firstTimeout);
         sb.append(" timeout=").append(timeout);
         sb.append("}");
         return sb.toString();

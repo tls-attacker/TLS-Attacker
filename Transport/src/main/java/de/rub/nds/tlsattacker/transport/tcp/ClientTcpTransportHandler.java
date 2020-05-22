@@ -30,15 +30,15 @@ public class ClientTcpTransportHandler extends TransportHandler {
     protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getTimeout(), connection.getIp(), connection.getPort());
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection.getIp(), connection.getPort());
     }
 
-    public ClientTcpTransportHandler(long timeout, String hostname, int port) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, timeout, hostname, port);
+    public ClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        this(timeout, firstTimeout, timeout, hostname, port);
     }
 
-    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
-        super(timeout, ConnectionEndType.CLIENT);
+    public ClientTcpTransportHandler(long connectionTimeout, long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
         this.connectionTimeout = connectionTimeout;

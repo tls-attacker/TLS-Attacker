@@ -23,6 +23,10 @@ public abstract class TransportHandler {
 
     protected long timeout;
 
+    protected long firstTimeout;
+
+    private boolean firstReceived;
+
     protected OutputStream outStream;
 
     protected PushbackInputStream inStream;
@@ -37,13 +41,15 @@ public abstract class TransportHandler {
      */
     private boolean isInStreamTerminating = true;
 
-    public TransportHandler(long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
         this.isInStreamTerminating = isInStreamTerminating;
     }
 
-    public TransportHandler(long timeout, ConnectionEndType type) {
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
     }
@@ -69,7 +75,11 @@ public abstract class TransportHandler {
 
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        long minTimeMillies = System.currentTimeMillis() + timeout;
+        long minTimeMillies = System.currentTimeMillis();
+        if (firstReceived)
+            minTimeMillies += timeout;
+        else
+            minTimeMillies += firstTimeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
             if (inStream.available() != 0) {
                 while (inStream.available() != 0) {
@@ -85,18 +95,21 @@ public abstract class TransportHandler {
                         int read = inStream.read();
                         if (read == -1) {
                             // TCP FIN
+                            firstReceived = true;
                             return stream.toByteArray();
                         }
                         inStream.unread(read);
 
                     } catch (SocketException E) {
                         // TCP RST received
+                        firstReceived = true;
                         return stream.toByteArray();
                     } catch (Exception E) {
                     }
                 }
             }
         }
+        firstReceived = true;
         return stream.toByteArray();
     }
 

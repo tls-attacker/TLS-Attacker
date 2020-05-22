@@ -28,19 +28,19 @@ public class ServerTcpTransportHandler extends TransportHandler {
      */
     private boolean externalServerSocket = false;
 
-    public ServerTcpTransportHandler(long timeout, int port) {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
-    public ServerTcpTransportHandler(long timeout, ServerSocket serverSocket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
     }
 
-    public ServerTcpTransportHandler(long timeout, Socket socket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, Socket socket) throws IOException {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout(1);

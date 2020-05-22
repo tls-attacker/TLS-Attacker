@@ -17,8 +17,8 @@ public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandle
 
     private final Recording recording;
 
-    public ClientRecordingTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public ClientRecordingTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
         RandomHelper.getRandom().setSeed(0);
         recording = new Recording(0);
     }
