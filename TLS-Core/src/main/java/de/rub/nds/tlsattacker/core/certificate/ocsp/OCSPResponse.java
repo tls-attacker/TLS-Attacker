@@ -238,7 +238,7 @@ public class OCSPResponse {
                     ObjectIdentifierTranslator.translate(certificateStatus.getHashAlgorithmIdentifier()));
             sb.append("\n   Issuer Name Hash: ").append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
             sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
-            sb.append("\n   Serial Number: ").append(certificateStatus.getSerialNumber().toString(16));
+            sb.append("\n   Serial Number: ").append("0x").append(certificateStatus.getSerialNumber().toString(16));
             sb.append("\n   Certificate Status: ");
             if (certificateStatus.getCertificateStatus() == 0) {
                 sb.append("good");
