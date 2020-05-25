@@ -288,7 +288,7 @@ public class OCSPResponse {
             sb.append("\n   Next Update: ").append(formatDate(certificateStatus.getTimeOfNextUpdate()));
         }
 
-        sb.append("\n  Signature Algorithm: ").append(
+        sb.append("\n Signature Algorithm: ").append(
                 ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
 
         byte[] signature = null;
@@ -307,7 +307,7 @@ public class OCSPResponse {
 
         if (includeSignatureAndCertificate) {
             if (signature != null) {
-                sb.append("\n  Signature: ");
+                sb.append("\n Signature: ");
                 sb.append(ArrayConverter.bytesToHexString(signature));
             }
 
