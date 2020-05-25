@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -246,5 +248,18 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     @Override
     public void filter(TlsAction defaultCon) {
         super.filter(defaultCon);
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+        return new ArrayList<ProtocolMessageType>(){{add(waitTillMessage.getProtocolMessageType());}};
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+        if (!waitTillMessage.isHandshakeMessage()) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<HandshakeMessageType>(){{add(((HandshakeMessage)waitTillMessage).getHandshakeMessageType());}};
     }
 }

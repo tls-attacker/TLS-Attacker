@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
@@ -580,5 +582,38 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (sendRecords == null) {
             sendRecords = new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+        if (this.messages == null) return new ArrayList<>();
+
+        List<ProtocolMessageType> types = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            types.add(msg.getProtocolMessageType());
+        }
+        return types;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+        if (this.messages == null) return new ArrayList<>();
+
+        List<HandshakeMessageType> types = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            if (!msg.isHandshakeMessage()) continue;
+            types.add(((HandshakeMessage)msg).getHandshakeMessageType());
+        }
+        return types;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        return this.getGoingToReceiveProtocolMessageTypes();
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        return this.getGoingToReceiveHandshakeMessageTypes();
     }
 }

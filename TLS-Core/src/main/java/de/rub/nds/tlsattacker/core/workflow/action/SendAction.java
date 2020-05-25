@@ -10,8 +10,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -211,6 +214,26 @@ public class SendAction extends MessageAction implements SendingAction {
         hash = 67 * hash + Objects.hashCode(this.records);
 
         return hash;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
+        }
+        return protocolMessageTypes;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            if (msg.isHandshakeMessage()) {
+                handshakeMessageTypes.add(((HandshakeMessage)msg).getHandshakeMessageType());
+            }
+        }
+        return handshakeMessageTypes;
     }
 
 }
