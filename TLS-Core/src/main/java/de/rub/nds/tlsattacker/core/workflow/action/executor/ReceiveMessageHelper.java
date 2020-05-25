@@ -187,7 +187,7 @@ public class ReceiveMessageHelper {
                     return false;
                 }
                 if (!expectedMessages.get(i).getClass().equals(actualMessages.get(i).getClass())) {
-                    return false;
+                    return earlyStop;
                 }
             }
         }
