@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.cca;
 public enum CcaCertificateType {
     CLIENT_INPUT("The certificate provided to the CLI switch", true, false),
     EMPTY("An empty certificate.", false, false),
+    ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3("", true, true),
     ROOTv3_CAv3_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
@@ -345,7 +346,7 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1("RSA Leaf certificate generated based on the provided "
             + "(root-)CA certificate with one intermediate CA. In the leaf certificate the signature field "
             + "(type AlgorithmIdentifier) specifies a different algorithm than the signatureAlgorithm field in the "
-            + "Certificate. AdditionallCcaCertificateTypey the algorithm doesn't match the key.", false, true),
+            + "Certificate. Additionally the algorithm doesn't match the key.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms2("Same as ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithms1 "
             + "but the algorithm identifiers are swapped.", false, true);
 

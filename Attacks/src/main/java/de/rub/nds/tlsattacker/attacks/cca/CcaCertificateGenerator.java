@@ -115,6 +115,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_DHv3:
                 case ROOTv3_CAv3_LEAF_ECv3:
                 case DSAROOTv3_CAv3_LEAF_DHv3:
+                case ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3:
                     certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
                     break;
                 default:
