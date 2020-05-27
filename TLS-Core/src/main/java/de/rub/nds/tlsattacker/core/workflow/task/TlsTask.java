@@ -51,9 +51,16 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 if (sleepTime > 0) {
                     Thread.sleep(sleepTime);
                 }
-                execute();
-                hasError = false;
-                break;
+                boolean executionSuccess = execute();
+                if (executionSuccess) {
+                    hasError = false;
+                    break;
+                } else {
+                    if (increasingSleepTimes) {
+                        sleepTime += additionalSleepTime;
+                    }
+                    hasError = true;
+                }
             } catch (TransportHandlerConnectException E) {
                 LOGGER.warn("Could not connect to target. Sleep and Retry");
                 try {

@@ -11,5 +11,5 @@ package de.rub.nds.tlsattacker.core.workflow.task;
 
 public interface ITask {
 
-    public void execute();
+    public boolean execute();
 }

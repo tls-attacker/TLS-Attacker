@@ -54,7 +54,7 @@ public class InvalidCurveTask extends TlsTask {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(getState());
             executor.executeWorkflow();
@@ -64,14 +64,14 @@ public class InvalidCurveTask extends TlsTask {
             }
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
-                throw new FingerprintExtractionException(
-                        "Workflow Trace execution failed before attack vector was sent. No fingerprint extracted.");
+                return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(getState());
 
-            if (getFingerprint() == null) {
-                throw new FingerprintExtractionException("Could not extract fingerprint. Fingerprint is null");
+            if (fingerprint == null) {
+                return false;
             }
+            return true;
         } finally {
             try {
                 getState().getTlsContext().getTransportHandler().closeConnection();
