@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 
 /**
  * This extension is defined in RFC6066
@@ -29,6 +30,12 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableInteger requestExtensionLength;
     @ModifiableVariableProperty
     private ModifiableByteArray requestExtension;
+    /**
+     * As a TLS 1.3 CertificateEntry extension, this extension uses the format
+     * of a CertificateStatus message. If this is the case, let's treat it as an
+     * embedded CertificateStatus message.
+     */
+    private CertificateStatusMessage certificateStatus;
 
     public CertificateStatusRequestExtensionMessage() {
         super(ExtensionType.STATUS_REQUEST);
@@ -95,4 +102,11 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
         this.requestExtension = safelySetValue(this.requestExtension, requestExtension);
     }
 
+    public CertificateStatusMessage getCertificateStatus() {
+        return certificateStatus;
+    }
+
+    public void setCertificateStatus(CertificateStatusMessage certificateStatus) {
+        this.certificateStatus = certificateStatus;
+    }
 }

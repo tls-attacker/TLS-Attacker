@@ -24,6 +24,16 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
         super(pointer, array, HandshakeMessageType.CERTIFICATE_STATUS, version);
     }
 
+    public void parseCertificateEntryContent(CertificateStatusMessage msg) {
+        LOGGER.debug("Parsing status_request CertificateEntry extension as CertificateStatusMessage");
+        // Skip ahead type & length, as they're from the extension and we don't
+        // care about them
+        setPointer(getPointer() + HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+        parseCertificateStatusType(msg);
+        parseOcspResponseLength(msg);
+        parseOcspResponse(msg);
+    }
+
     @Override
     protected void parseHandshakeMessageContent(CertificateStatusMessage msg) {
         LOGGER.debug("Parsing CertificateStatusMessage");
