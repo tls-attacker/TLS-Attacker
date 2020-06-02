@@ -10,8 +10,11 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionServerTask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -70,6 +73,10 @@ public class ParallelExecutor {
 
     public Future addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
+    }
+
+    public Future addServerStateTask(State state, ServerSocket socket) {
+        return addTask(new StateExecutionServerTask(state, socket, reexecutions));
     }
 
     public void bulkExecuteStateTasks(List<State> stateList) {
