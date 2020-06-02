@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTranspor
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpNoDelayTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.fragmentation.ClientTcpFragmentationTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.fragmentation.ServerTcpFragmentationTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingServerTcpTransportHandler;
@@ -26,6 +28,9 @@ public class TransportHandlerFactory {
     public static TransportHandler createTransportHandler(Connection con) {
         ConnectionEndType localConEndType = con.getLocalConnectionEndType();
         Long timeout = new Long(con.getTimeout());
+        if (con.getFirstTimeout() == null) {
+            con.setFirstTimeout(con.getTimeout());
+        }
         Long firstTimeout = new Long(con.getFirstTimeout());
         switch (con.getTransportHandlerType()) {
             case TCP:
@@ -75,6 +80,12 @@ public class TransportHandlerFactory {
                 } else {
                     throw new UnsupportedOperationException(
                             "This transport handler type is only supported in client mode");
+                }
+            case TCP_FRAGMENTATION:
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpFragmentationTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                } else {
+                    return new ServerTcpFragmentationTransportHandler(firstTimeout, timeout, con.getPort());
                 }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
