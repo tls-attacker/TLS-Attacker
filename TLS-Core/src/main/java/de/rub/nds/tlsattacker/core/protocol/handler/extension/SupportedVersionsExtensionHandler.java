@@ -18,9 +18,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This handler processes the SupportedVersions extensions, as defined in
@@ -59,6 +61,20 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             context.setClientSupportedProtocolVersions(versionList);
             context.setHighestClientProtocolVersion(ProtocolVersion.getHighestProtocolVersion(versionList));
+            List<ProtocolVersion> clientVersions = new ArrayList<>(context.getClientSupportedProtocolVersions());
+            ProtocolVersion.sort(clientVersions, false);
+            boolean found = false;
+            for (ProtocolVersion i : clientVersions) {
+                if (context.getConfig().getHighestProtocolVersion().compare(i) >= 0) {
+                    context.setSelectedProtocolVersion(i);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                LOGGER.warn("No common protocol version could be found.");
+                context.setSelectedProtocolVersion(context.getConfig().getDefaultSelectedProtocolVersion());
+            }
         } else {
             if (versionList.size() == 1) {
                 context.setSelectedProtocolVersion(versionList.get(0));
@@ -67,5 +83,4 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
             }
         }
     }
-
 }

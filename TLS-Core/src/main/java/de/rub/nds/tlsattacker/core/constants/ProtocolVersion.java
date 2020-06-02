@@ -11,12 +11,16 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+
+import java.util.*;
+
+class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
+
+    @Override
+    public int compare(ProtocolVersion o1, ProtocolVersion o2) {
+        return o1.compare(o2);
+    }
+}
 
 public enum ProtocolVersion {
 
@@ -77,6 +81,18 @@ public enum ProtocolVersion {
             return null;
         }
         return MAP.get(i);
+    }
+
+    public static void sort(List<ProtocolVersion> versions) {
+        sort(versions, true);
+    }
+
+    public static void sort(List<ProtocolVersion> versions, boolean ascending) {
+        Comparator<ProtocolVersion> comparator = new ProtocolVersionComparator();
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+        versions.sort(comparator);
     }
 
     public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
@@ -180,5 +196,16 @@ public enum ProtocolVersion {
     public boolean usesExplicitIv() {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
                 || this == ProtocolVersion.DTLS12;
+    }
+
+    public int compare(ProtocolVersion o1) {
+        if (o1 == this) {
+            return 0;
+        }
+
+        if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
+            return 1;
+        }
+        return -1;
     }
 }
