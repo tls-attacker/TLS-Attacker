@@ -1383,6 +1383,7 @@ public class TlsContext {
     }
 
     public void setMasterSecret(byte[] masterSecret) {
+        keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
     }
 
@@ -1411,6 +1412,7 @@ public class TlsContext {
     }
 
     public void setPreMasterSecret(byte[] preMasterSecret) {
+        keylogfile.writeKey("PMS_CLIENT_RANDOM", preMasterSecret);
         this.preMasterSecret = preMasterSecret;
     }
 
