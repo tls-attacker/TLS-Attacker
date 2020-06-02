@@ -39,9 +39,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareSessionIDLength();
 
         prepareCipherSuite();
-        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
-            prepareCompressionMethod();
-        }
+        prepareCompressionMethod();
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
                 || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
                         .isAddExtensionsInSSL())) {
@@ -90,7 +88,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
     private void prepareSessionID() {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            msg.setSessionId(new byte[0]);
+            msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
@@ -99,6 +97,9 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
     private void prepareProtocolVersion() {
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
+        if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13)
+            ourVersion = ProtocolVersion.TLS12;
+
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
         int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
         int intRepresentationClientVersion = clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];
