@@ -63,12 +63,12 @@ public class CertificateStatusParser {
         if (issuerNameHashObject instanceof Asn1PrimitiveOctetString) {
             issuerNameHash = ((Asn1PrimitiveOctetString) issuerNameHashObject).getValue();
         } else if (issuerNameHashObject instanceof Asn1EncapsulatingOctetString) {
-            issuerNameHash = ((Asn1EncapsulatingOctetString) issuerNameHashObject).getContent().getOriginalValue();
+            issuerNameHash = ((Asn1EncapsulatingOctetString) issuerNameHashObject).getContent().getValue();
         }
         if (issuerKeyHashObject instanceof Asn1PrimitiveOctetString) {
             issuerKeyHash = ((Asn1PrimitiveOctetString) issuerKeyHashObject).getValue();
         } else if (issuerKeyHashObject instanceof Asn1EncapsulatingOctetString) {
-            issuerKeyHash = ((Asn1EncapsulatingOctetString) issuerKeyHashObject).getContent().getOriginalValue();
+            issuerKeyHash = ((Asn1EncapsulatingOctetString) issuerKeyHashObject).getContent().getValue();
         }
 
         // Another ASN.1 Tool bug workaround: Sometimes the serial number is
@@ -82,9 +82,10 @@ public class CertificateStatusParser {
         }
 
         /*
-         * And here comes the revocation status. ASN.1 Tool is buggy and gets
-         * sometimes Null or EndOfContent for a 'good' status, so we treat them
-         * both as good status.
+         * And here comes the revocation status. ASN.1 Tool has no support for
+         * parsing Implicit types yet and therefore returns either Null or
+         * EndOfContent for a 'good' status, so we treat them both as good
+         * status.
          */
 
         Asn1Encodable certStatusObject = certStatusSeq.getChildren().get(1);

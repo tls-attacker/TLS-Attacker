@@ -109,7 +109,12 @@ public class OCSPResponseParser {
                         }
                         break;
                     case 2:
-                        responderKey = ((Asn1PrimitiveOctetString) childObject).getValue();
+                        // Workaround for yet another ASN.1 Tool mismatch
+                        if (childObject instanceof Asn1PrimitiveOctetString) {
+                            responderKey = ((Asn1PrimitiveOctetString) childObject).getValue();
+                        } else if (childObject instanceof Asn1EncapsulatingOctetString) {
+                            responderKey = ((Asn1EncapsulatingOctetString) childObject).getContent().getValue();
+                        }
                         break;
                 }
             } else if (enc instanceof Asn1PrimitiveGeneralizedTime) {
