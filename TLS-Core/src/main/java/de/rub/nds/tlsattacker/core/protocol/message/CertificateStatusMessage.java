@@ -43,7 +43,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public CertificateStatusHandler getHandler(TlsContext context) {
         return new CertificateStatusHandler(context);
     }
 
@@ -51,8 +51,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
     public String toString() {
         OCSPResponse response = null;
         try {
-            OCSPResponseParser responseParser = new OCSPResponseParser();
-            response = responseParser.parseResponse(getOcspResponseBytes().getValue());
+            response = OCSPResponseParser.parseResponse(getOcspResponseBytes().getValue());
         } catch (IOException | ParserException e) {
             e.printStackTrace();
         }
