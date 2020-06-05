@@ -205,7 +205,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     @Override
     public void adjustTlsContextAfterSerialize(ServerHelloMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            setServerRecordCipher();
+            if (!tlsContext.getChooser().tls13BackwardsCompatibilityMode()) {
+                setServerRecordCipher();
+            } else {
+                tlsContext.setTls13SoftDecryption(true);
+            }
         }
     }
 

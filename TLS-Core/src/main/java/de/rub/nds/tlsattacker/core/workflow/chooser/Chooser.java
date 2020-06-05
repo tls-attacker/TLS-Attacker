@@ -295,4 +295,6 @@ public abstract class Chooser {
     public abstract Long getEsniNotAfter();
 
     public abstract List<ExtensionMessage> getEsniExtensions();
+
+    public abstract Boolean tls13BackwardsCompatibilityMode();
 }

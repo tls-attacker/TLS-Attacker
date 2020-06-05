@@ -616,6 +616,8 @@ public class TlsContext {
      */
     private boolean tls13SoftDecryption = false;
 
+    private Boolean tls13BackwardsCompatibilityMode;
+
     /**
      * Nonce sent by the Client in the EncryptedServerNameIndication extension
      */
@@ -2442,4 +2444,11 @@ public class TlsContext {
         this.esniExtensions = esniExtensions;
     }
 
+    public Boolean getTls13BackwardsCompatibilityMode() {
+        return tls13BackwardsCompatibilityMode;
+    }
+
+    public void setTls13BackwardsCompatibilityMode(Boolean tls13BackwardsCompatibilityMode) {
+        this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
+    }
 }
