@@ -80,10 +80,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     @Override
     public void adjustTLSContext(ServerHelloMessage message) {
         adjustSelectedProtocolVersion(message);
-        if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustSelectedCompression(message);
-            adjustSelectedSessionID(message);
-        }
+        adjustSelectedCompression(message);
+        adjustSelectedSessionID(message);
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
@@ -207,8 +205,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (!tlsContext.getChooser().tls13BackwardsCompatibilityMode()) {
                 setServerRecordCipher();
-            } else {
-                tlsContext.setTls13SoftDecryption(true);
             }
         }
     }

@@ -113,7 +113,9 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustSessionID(ClientHelloMessage message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
-        tlsContext.setTls13BackwardsCompatibilityMode(sessionId.length > 0);
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext.setTls13BackwardsCompatibilityMode(sessionId.length > 0);
+        }
         LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }
 

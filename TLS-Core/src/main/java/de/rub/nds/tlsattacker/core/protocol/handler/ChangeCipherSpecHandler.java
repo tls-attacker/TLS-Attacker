@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -50,7 +51,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType() &&
+                tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecompressor();
@@ -76,8 +78,18 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
         RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, tlsContext
                 .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
+    }
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+    private void setClientRecordCipher() {
+        Tls13KeySetType keySetType = Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS;
+        tlsContext.setActiveClientKeySetType(keySetType);
+        LOGGER.debug("Setting cipher for client to use " + keySetType);
+        KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
+                .getChooser().getSelectedCipherSuite());
+        tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
@@ -88,11 +100,15 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && tlsContext.getTls13BackwardsCompatibilityMode()) {
-            setServerRecordCipher();
-        }
-
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() &&
+                    tlsContext.getChooser().tls13BackwardsCompatibilityMode()) {
+                if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                    setServerRecordCipher();
+                } else {
+                    setClientRecordCipher();
+                }
+            }
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateCompressor();
