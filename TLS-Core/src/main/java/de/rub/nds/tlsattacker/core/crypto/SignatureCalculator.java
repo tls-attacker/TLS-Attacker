@@ -16,14 +16,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
+
+import java.security.*;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
@@ -43,6 +41,8 @@ public class SignatureCalculator {
             case ECDSA:
                 return generateECDSASignature(chooser, toBeSigned, algorithm);
             case RSA:
+            case RSA_PSS_PSS:
+            case RSA_PSS_RSAE:
                 return generateRSASignature(chooser, toBeSigned, algorithm);
             case GOSTR34102001:
                 return generateGost01Signature(chooser, toBeSigned, algorithm);
@@ -82,10 +82,11 @@ public class SignatureCalculator {
             LOGGER.trace("Creating Signature with " + algoName + " over " + ArrayConverter.bytesToHexString(toBeSigned)
                     + " with the PrivateKey:" + key.toString());
             Signature instance = Signature.getInstance(algoName);
+            algorithm.setupSignature(instance);
             instance.initSign(key, random);
             instance.update(toBeSigned);
             return instance.sign();
-        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
+        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException | InvalidAlgorithmParameterException ex) {
             throw new CryptoException("Could not sign Data", ex);
         }
     }

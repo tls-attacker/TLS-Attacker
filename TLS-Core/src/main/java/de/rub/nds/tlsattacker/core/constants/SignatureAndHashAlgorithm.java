@@ -11,6 +11,11 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.Signature;
+import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.PSSParameterSpec;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -193,6 +198,10 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public String getJavaName() {
+        if (this.toString().contains("RSA_PSS")) {
+            return this.getHashAlgorithm().getJavaName().replaceAll("-", "") + "withRSA/PSS";
+        }
+
         String hashAlgorithmName = getHashAlgorithm().getJavaName();
         if (!hashAlgorithmName.contains("GOST")) {
             hashAlgorithmName = hashAlgorithmName.replace("-", "");
@@ -201,4 +210,10 @@ public enum SignatureAndHashAlgorithm {
         return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
 
+    public void setupSignature(Signature signature) throws InvalidAlgorithmParameterException {
+        if (this.getSignatureAlgorithm() == SignatureAlgorithm.RSA_PSS_PSS) {
+            String hashName = this.getHashAlgorithm().getJavaName();
+            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), 32, 1));
+        }
+    }
 }
