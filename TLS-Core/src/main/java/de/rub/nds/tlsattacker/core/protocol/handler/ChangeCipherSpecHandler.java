@@ -102,7 +102,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() &&
-                    tlsContext.getChooser().tls13BackwardsCompatibilityMode()) {
+                    tlsContext.getConfig().getTls13BackwardsCompatibilityMode()) {
                 if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                     setServerRecordCipher();
                 } else {

@@ -113,8 +113,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustSessionID(ClientHelloMessage message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.setTls13BackwardsCompatibilityMode(sessionId.length > 0);
+        if (tlsContext.getConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13 &&
+            tlsContext.getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER &&
+            sessionId.length > 0 && !tlsContext.getConfig().getTls13BackwardsCompatibilityMode()) {
+            LOGGER.warn("TLS 1.3 backwards compatibility mode is disabled, but the client sent a sessionId.");
         }
         LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }

@@ -62,7 +62,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                     adjustApplicationTrafficSecrets();
-                    if (!tlsContext.getChooser().tls13BackwardsCompatibilityMode()) {
+                    if (!tlsContext.getConfig().getTls13BackwardsCompatibilityMode()) {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     }
                 } else {

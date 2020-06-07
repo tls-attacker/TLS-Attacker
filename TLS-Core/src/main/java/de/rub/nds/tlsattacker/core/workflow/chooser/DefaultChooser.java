@@ -1067,13 +1067,4 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultEsniExtensions();
         }
     }
-
-    @Override
-    public Boolean tls13BackwardsCompatibilityMode() {
-        if (context.getTls13BackwardsCompatibilityMode() != null) {
-            return context.getTls13BackwardsCompatibilityMode();
-        } else {
-            return config.getTls13BackwardsCompatibilityMode();
-        }
-    }
 }
