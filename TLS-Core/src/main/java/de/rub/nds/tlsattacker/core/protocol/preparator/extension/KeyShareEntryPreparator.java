@@ -81,7 +81,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 entry.setPrivateKey(chooser.getServerEcPrivateKey());
             }
         }
-        if (entry.getGroupConfig().isStandardCurve()) {
+        if (entry.getGroupConfig().isStandardCurve() || entry.getGroupConfig().isGrease()) {
             Point ecPublicKey = KeyShareCalculator.createPublicKey(entry.getGroupConfig(), entry.getPrivateKey());
             // TODO We currently just use the default point format
             byte[] serializedPoint = PointFormatter.formatToByteArray(entry.getGroupConfig(), ecPublicKey, chooser

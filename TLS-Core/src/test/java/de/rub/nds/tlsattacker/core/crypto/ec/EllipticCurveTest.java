@@ -40,7 +40,7 @@ public class EllipticCurveTest {
 
     @Test
     public void test() {
-        final int implemented = 30;
+        final int implemented = 46;
         int counter = 0;
 
         for (NamedGroup name : NamedGroup.values()) {

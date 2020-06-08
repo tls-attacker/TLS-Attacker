@@ -22,6 +22,10 @@ public class CurveFactory {
      * @return EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
+        if (name.isGrease()) {
+            return new EllipticCurveSECP256R1();
+        }
+
         switch (name) {
             case BRAINPOOLP256R1:
                 return new EllipticCurveBrainpoolP256R1();
