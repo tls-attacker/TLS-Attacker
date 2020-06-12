@@ -34,24 +34,25 @@ public class Keylogfile {
         this.writeKeylog = context.getConfig().isWriteKeylogFile();
     }
 
-    synchronized public void writeKey(String identifier, byte[] key) {
-        if (!this.writeKeylog)
-            return;
+    public void writeKey(String identifier, byte[] key) {
+        synchronized (Keylogfile.class) {
+            if (!this.writeKeylog)
+                return;
 
-        try {
-            File f = new File(this.path);
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                f.createNewFile();
+            try {
+                File f = new File(this.path);
+                if (!f.exists()) {
+                    f.getParentFile().mkdirs();
+                    f.createNewFile();
+                }
+
+                FileWriter fw = new FileWriter(this.path, true);
+                fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " " + DatatypeConverter.printHexBinary(key) + "\n");
+                fw.close();
+            } catch (Exception e) {
+                LOGGER.error(e);
             }
-
-            FileWriter fw = new FileWriter(this.path, true);
-            fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " " + DatatypeConverter.printHexBinary(key) + "\n");
-            fw.close();
-        } catch (Exception e) {
-            LOGGER.error(e);
         }
-
     }
 
 }
