@@ -46,6 +46,8 @@ public enum ExtensionType {
     PWD_CLEAR(new byte[] { (byte) 0, (byte) 30 }),
     PASSWORD_SALT(new byte[] { (byte) 0, (byte) 31 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
+    EXTENDED_RANDOM(new byte[] {(byte) 0, (byte) 40 }), // Shares same IANA ID
+                                                        // as old keyshare extension.
     KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
                                                        // extension before TLS
                                                        // 1.3 Draft 23
@@ -139,6 +141,7 @@ public enum ExtensionType {
         list.add(EXTENDED_MASTER_SECRET);
         list.add(HEARTBEAT);
         list.add(KEY_SHARE);
+        list.add(EXTENDED_RANDOM);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
         list.add(PRE_SHARED_KEY);
@@ -177,6 +180,7 @@ public enum ExtensionType {
         list.add(EXTENDED_MASTER_SECRET);
         list.add(HEARTBEAT);
         list.add(KEY_SHARE);
+        list.add(EXTENDED_RANDOM);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
         list.add(PRE_SHARED_KEY);
@@ -217,6 +221,7 @@ public enum ExtensionType {
         list.add(TOKEN_BINDING);
         list.add(RENEGOTIATION_INFO);
         list.add(HEARTBEAT);
+        list.add(EXTENDED_RANDOM);
         return list;
     }
 }
