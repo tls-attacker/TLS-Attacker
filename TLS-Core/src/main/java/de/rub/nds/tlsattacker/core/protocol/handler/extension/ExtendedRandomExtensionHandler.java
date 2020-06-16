@@ -9,6 +9,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,8 +42,17 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in Extended Random Draft. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
-        context.setExtendedRandom(message.getExtendedRandom().getValue());
-        LOGGER.debug("The context extended Random was set to " + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
+
+        if(context.getTalkingConnectionEndType().equals(ConnectionEndType.SERVER)){
+            context.setServerExtendedRandom(message.getExtendedRandom().getValue());
+            LOGGER.debug("The context server extended Random was set to " + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
+
+        }
+        if(context.getTalkingConnectionEndType().equals(ConnectionEndType.CLIENT)){
+            context.setClientExtendedRandom(message.getExtendedRandom().getValue());
+            LOGGER.debug("The context client extended Random was set to " + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
+
+        }
 
     }
 }

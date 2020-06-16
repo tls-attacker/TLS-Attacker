@@ -4,6 +4,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +21,15 @@ public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<Exten
 
     @Override
     public void prepareExtensionContent() {
-        message.setExtendedRandom(chooser.getConfig().getExtendedRandom());
-        LOGGER.debug("Prepared the Extended Random with value "
-                + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
+        if(chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)){
+            message.setExtendedRandom(chooser.getClientExtendedRandom());
+            LOGGER.debug("Prepared the Client Extended Random with value "
+                    + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
+        }
+        if(chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)){
+            message.setExtendedRandom(chooser.getServerExtendedRandom());
+            LOGGER.debug("Prepared the Server Extended Random with value "
+                    + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
+        }
     }
 }

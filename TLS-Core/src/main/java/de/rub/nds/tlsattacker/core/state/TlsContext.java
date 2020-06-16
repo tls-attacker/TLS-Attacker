@@ -171,6 +171,16 @@ public class TlsContext {
     private byte[] preMasterSecret;
 
     /**
+     * Client Extended Random used in Extended Random Extension
+     */
+    private byte[] clientExtendedRandom;
+
+    /**
+     * Server Extended Random used in Extended Random Extension
+     */
+    private byte[] serverExtendedRandom;
+
+    /**
      * Client random, including unix time.
      */
     private byte[] clientRandom;
@@ -1394,6 +1404,12 @@ public class TlsContext {
         return ArrayConverter.concatenate(clientRandom, serverRandom);
     }
 
+    public byte[] getClientServerExtendedRandom() {
+        byte[] clientConcatRandom = ArrayConverter.concatenate(clientRandom, clientExtendedRandom);
+        byte[] serverConcatRandom = ArrayConverter.concatenate(serverRandom, serverExtendedRandom);
+        return ArrayConverter.concatenate(clientConcatRandom,serverConcatRandom);
+    }
+
     public byte[] getClearKey() {
         return clearKey;
     }
@@ -1410,9 +1426,15 @@ public class TlsContext {
         this.preMasterSecret = preMasterSecret;
     }
 
-    public byte[] getClientRandom() {
-        return clientRandom;
-    }
+    public byte[] getClientExtendedRandom() { return clientExtendedRandom; }
+
+    public void setClientExtendedRandom(byte[] clientExtendedRandom) { this.clientExtendedRandom = clientExtendedRandom; };
+
+    public byte[] getServerExtendedRandom() { return serverExtendedRandom; }
+
+    public void setServerExtendedRandom(byte[] serverExtendedRandom) { this.serverExtendedRandom = serverExtendedRandom; }
+
+    public byte[] getClientRandom() { return clientRandom; }
 
     public void setClientRandom(byte[] clientRandom) {
         this.clientRandom = clientRandom;

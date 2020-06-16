@@ -517,6 +517,11 @@ public class Config implements Serializable {
      */
     private Boolean addSessionTicketTLSExtension = false;
 
+    /***
+     * If we generate ClientHello with extended Random Extension
+     */
+    private Boolean addExtendedRandomExtension = false;
+
     /**
      * If we generate ClientHello with SignedCertificateTimestamp extension
      */
@@ -880,6 +885,14 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPreMasterSecret = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientExtendedRandom = ArrayConverter
+            .hexStringToByteArray("0011");
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultServerExtendedRandom = ArrayConverter
+            .hexStringToByteArray("0011");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientRandom = ArrayConverter
@@ -1846,6 +1859,10 @@ public class Config implements Serializable {
     public void setDefaultSelectedCompressionMethod(CompressionMethod defaultSelectedCompressionMethod) {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
     }
+
+    public byte[] getDefaultClientExtendedRandom() {return Arrays.copyOf(defaultClientExtendedRandom, defaultClientExtendedRandom.length);}
+
+    public byte[] getDefaultServerExtendedRandom() {return Arrays.copyOf(defaultServerExtendedRandom, defaultServerExtendedRandom.length);}
 
     public byte[] getDefaultServerRandom() {
         return Arrays.copyOf(defaultServerRandom, defaultServerRandom.length);

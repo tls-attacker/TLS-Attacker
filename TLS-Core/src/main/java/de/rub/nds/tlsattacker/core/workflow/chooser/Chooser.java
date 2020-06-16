@@ -110,6 +110,10 @@ public abstract class Chooser {
 
     public abstract byte[] getPreMasterSecret();
 
+    public abstract byte[] getClientExtendedRandom();
+
+    public abstract byte[] getServerExtendedRandom();
+
     public abstract byte[] getClientRandom();
 
     public abstract byte[] getServerRandom();
