@@ -344,6 +344,10 @@ public class CertificateKeyPair implements Serializable {
         return publicKeyGroup;
     }
 
+    public GOSTCurve getGostCurve() {
+        return gostCurve;
+    }
+
     public void adjustInConfig(Config config, ConnectionEndType connectionEnd) {
         publicKey.adjustInConfig(config, connectionEnd);
         if (privateKey != null) {
@@ -365,72 +369,13 @@ public class CertificateKeyPair implements Serializable {
         context.setSelectedGroup(publicKeyGroup);
         context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            // TODO rething auto selection
-            Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                    Sets.newHashSet(context.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
-                    Sets.newHashSet(context.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
-            List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
-            List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
-            clientPreferredHash.removeIf(i -> i.getHashAlgorithm() != context.getConfig().getPreferredHashAlgorithm());
-            algorithms.addAll(0, clientPreferredHash);
+            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this, context.getChooser());
 
-            if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-                algorithms.removeIf(i -> i.toString().contains("RSA_SHA"));
-            }
-
-            SignatureAndHashAlgorithm sigHashAlgo = null;
-            boolean found = false;
-            for (SignatureAndHashAlgorithm i : algorithms) {
-                SignatureAlgorithm sig = i.getSignatureAlgorithm();
-
-                switch (certPublicKeyType) {
-                    case ECDSA:
-                        if (sig == SignatureAlgorithm.ECDSA) {
-                            found = true;
-                            sigHashAlgo = i;
-                        }
-                        break;
-                    case RSA:
-                        if (sig.toString().contains("RSA")) {
-                            found = true;
-                            sigHashAlgo = i;
-                        }
-                        break;
-                    case DSS:
-                        if (sig == SignatureAlgorithm.DSA) {
-                            found = true;
-                            sigHashAlgo = i;
-                        }
-                        break;
-                    case GOST01:
-                        if (sig == SignatureAlgorithm.GOSTR34102001) {
-                            found = true;
-                            sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
-                            context.setSelectedGostCurve(gostCurve);
-                            LOGGER.debug("Adjusting selected gost curve:" + gostCurve);
-                        }
-                        break;
-                    case GOST12:
-                        if (sig == SignatureAlgorithm.GOSTR34102012_256 || sig == SignatureAlgorithm.GOSTR34102012_512) {
-                            found = true;
-                            if (gostCurve.is512bit2012()) {
-                                sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
-                            } else {
-                                sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
-                            }
-                            context.setSelectedGostCurve(gostCurve);
-                            LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
-                        }
-                        break;
-                }
-
-                if (found)
-                    break;
-            }
-
-            if (sigHashAlgo == null) {
-                LOGGER.warn("Could not auto select SignatureAndHashAlgorithm, setting default value");
-                sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
+            if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512 ||
+                    sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256 ||
+                    sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
+                context.setSelectedGostCurve(gostCurve);
+                LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
 
 
