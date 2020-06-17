@@ -9,9 +9,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.List;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -266,10 +269,19 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes
+     * to the Client Random
+     */
     @Override
     public byte[] getClientRandom() {
         if (context.getClientRandom() != null) {
-            return copy(context.getClientRandom());
+            if(context.getClientExtendedRandom() != null && context.getServerExtendedRandom() != null){
+                byte[] concatRandom = ArrayConverter.concatenate(context.getClientRandom(),context.getClientExtendedRandom());
+                return concatRandom;
+            } else {
+                return copy(context.getClientRandom());
+            }
         } else {
             return config.getDefaultClientRandom();
         }
@@ -293,10 +305,19 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes
+     * to the Server Random
+     */
     @Override
     public byte[] getServerRandom() {
         if (context.getServerRandom() != null) {
-            return copy(context.getServerRandom());
+            if(context.getServerExtendedRandom() != null && context.getClientExtendedRandom() != null){
+                byte[] concatRandom = ArrayConverter.concatenate(context.getServerRandom(),context.getServerExtendedRandom());
+                return concatRandom;
+            } else {
+                return copy(context.getServerRandom());
+            }
         } else {
             return config.getDefaultServerRandom();
         }
