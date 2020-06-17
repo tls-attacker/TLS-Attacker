@@ -9,12 +9,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.List;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
