@@ -1860,9 +1860,17 @@ public class Config implements Serializable {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
     }
 
+    public boolean isAddExtendedRandomExtension() { return this.addExtendedRandomExtension; }
+
+    public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) { this.addExtendedRandomExtension = addExtendedRandomExtension; }
+
     public byte[] getDefaultClientExtendedRandom() {return Arrays.copyOf(defaultClientExtendedRandom, defaultClientExtendedRandom.length);}
 
     public byte[] getDefaultServerExtendedRandom() {return Arrays.copyOf(defaultServerExtendedRandom, defaultServerExtendedRandom.length);}
+
+    public void setDefaultClientExtendedRandom(byte[] defaultClientExtendedRandom) { this.defaultClientExtendedRandom = defaultClientExtendedRandom; }
+
+    public void setDefaultServerExtendedRandom(byte[] defaultServerExtendedRandom) { this.defaultServerExtendedRandom = defaultServerExtendedRandom; }
 
     public byte[] getDefaultServerRandom() {
         return Arrays.copyOf(defaultServerRandom, defaultServerRandom.length);

@@ -402,6 +402,32 @@ public class DefaultChooserTest {
     }
 
     /**
+     * Test of getClientExtendedRandom method of class DefaultChooser.
+     */
+    @Test
+    public void testGetClientExtendedRandom() {
+        byte[] clientExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        config.setDefaultClientExtendedRandom(clientExtendedRandom);
+        assertArrayEquals(clientExtendedRandom, config.getDefaultClientExtendedRandom());
+        assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
+        context.setClientExtendedRandom(clientExtendedRandom);
+        assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
+    }
+
+    /**
+     * Test of getServerExtendedRandom of class DefaultChooser.
+     */
+    @Test
+    public void testGetServerExtendedRandom(){
+        byte[] serverExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        config.setDefaultServerExtendedRandom(serverExtendedRandom);
+        assertArrayEquals(serverExtendedRandom, config.getDefaultServerExtendedRandom());
+        assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
+        context.setServerExtendedRandom(serverExtendedRandom);
+        assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
+    }
+
+    /**
      * Test of getSelectedCompressionMethod method, of class DefaultChooser.
      */
     @Test
