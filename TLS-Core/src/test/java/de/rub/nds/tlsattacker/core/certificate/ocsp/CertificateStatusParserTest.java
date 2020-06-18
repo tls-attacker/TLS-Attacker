@@ -27,13 +27,14 @@ import java.util.List;
 
 public class CertificateStatusParserTest {
 
-    @Before
-    public void setUp() {
-        Asn1ToolInitializer.initAsn1Tool();
-    }
+    private CertificateStatus certificateStatusGood;
+    private CertificateStatus certificateStatusRevoked;
 
-    @Test
-    public void testParseCertificateStatus() throws IOException, ParserException {
+    @Before
+    public void setUp() throws IOException, ParserException {
+        Asn1ToolInitializer.initAsn1Tool();
+
+        // Certificate Status with a 'good' status
         InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/certificatestatus-good.bin");
         byte[] certificateStatusBytes = ByteStreams.toByteArray(stream);
 
@@ -41,55 +42,51 @@ public class CertificateStatusParserTest {
         List<Asn1Encodable> decodedResponse = asn1Parser.parse(ParseOcspTypesContext.NAME);
         Asn1Sequence certificateStatusObject = (Asn1Sequence) decodedResponse.get(0);
 
-        CertificateStatus certificateStatus = CertificateStatusParser.parseCertificateStatus(certificateStatusObject);
-        Assert.assertSame(certificateStatusObject, certificateStatus.getCertificateStatusSequence());
-        Assert.assertEquals("1.3.14.3.2.26", certificateStatus.getHashAlgorithmIdentifier());
+        certificateStatusGood = CertificateStatusParser.parseCertificateStatus(certificateStatusObject);
+        Assert.assertSame(certificateStatusObject, certificateStatusGood.getCertificateStatusSequence());
+
+        // Certificate Status with a 'revoked' status
+        stream = getClass().getClassLoader().getResourceAsStream("ocsp/certificatestatus-revoked.bin");
+        certificateStatusBytes = ByteStreams.toByteArray(stream);
+
+        asn1Parser = new Asn1Parser(certificateStatusBytes, false);
+        decodedResponse = asn1Parser.parse(ParseOcspTypesContext.NAME);
+        certificateStatusObject = (Asn1Sequence) decodedResponse.get(0);
+
+        certificateStatusRevoked = CertificateStatusParser.parseCertificateStatus(certificateStatusObject);
+        Assert.assertSame(certificateStatusObject, certificateStatusRevoked.getCertificateStatusSequence());
+    }
+
+    @Test
+    public void testParseCertificateStatus() {
+        Assert.assertEquals("1.3.14.3.2.26", certificateStatusGood.getHashAlgorithmIdentifier());
 
         byte[] expectedNameHash = { 126, -26, 106, -25, 114, -102, -77, -4, -8, -94, 32, 100, 108, 22, -95, 45, 96,
                 113, 8, 93 };
         byte[] expectedKeyHash = { -88, 74, 106, 99, 4, 125, -35, -70, -26, -47, 57, -73, -90, 69, 101, -17, -13, -88,
                 -20, -95 };
         BigInteger expectedSerialNumber = new BigInteger("403767931667699214058966529413005128395827");
-        Assert.assertArrayEquals(expectedNameHash, certificateStatus.getIssuerNameHash());
-        Assert.assertArrayEquals(expectedKeyHash, certificateStatus.getIssuerKeyHash());
-        Assert.assertEquals(expectedSerialNumber, certificateStatus.getSerialNumber());
+        Assert.assertArrayEquals(expectedNameHash, certificateStatusGood.getIssuerNameHash());
+        Assert.assertArrayEquals(expectedKeyHash, certificateStatusGood.getIssuerKeyHash());
+        Assert.assertEquals(expectedSerialNumber, certificateStatusGood.getSerialNumber());
 
-        Assert.assertEquals("20200615150000Z", certificateStatus.getTimeOfLastUpdate());
-        Assert.assertEquals("20200622150000Z", certificateStatus.getTimeOfNextUpdate());
+        Assert.assertEquals("20200615150000Z", certificateStatusGood.getTimeOfLastUpdate());
+        Assert.assertEquals("20200622150000Z", certificateStatusGood.getTimeOfNextUpdate());
     }
 
     @Test
-    public void testParseCertificateStatusGood() throws IOException, ParserException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/certificatestatus-good.bin");
-        byte[] certificateStatusBytes = ByteStreams.toByteArray(stream);
-
-        Asn1Parser asn1Parser = new Asn1Parser(certificateStatusBytes, false);
-        List<Asn1Encodable> decodedResponse = asn1Parser.parse(ParseOcspTypesContext.NAME);
-        Asn1Sequence certificateStatusObject = (Asn1Sequence) decodedResponse.get(0);
-
-        CertificateStatus certificateStatus = CertificateStatusParser.parseCertificateStatus(certificateStatusObject);
-
+    public void testParseCertificateStatusGood() {
         // Certificate has "good" status
-        Assert.assertEquals(0, certificateStatus.getCertificateStatus());
-        Assert.assertNull(certificateStatus.getTimeOfRevocation());
-        Assert.assertEquals(-1, certificateStatus.getRevocationReason());
+        Assert.assertEquals(0, certificateStatusGood.getCertificateStatus());
+        Assert.assertNull(certificateStatusGood.getTimeOfRevocation());
+        Assert.assertEquals(-1, certificateStatusGood.getRevocationReason());
     }
 
     @Test
-    public void testParseCertificateStatusRevoked() throws IOException, ParserException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/certificatestatus-revoked.bin");
-        byte[] certificateStatusBytes = ByteStreams.toByteArray(stream);
-
-        Asn1Parser asn1Parser = new Asn1Parser(certificateStatusBytes, false);
-        List<Asn1Encodable> decodedResponse = asn1Parser.parse(ParseOcspTypesContext.NAME);
-        Asn1Sequence certificateStatusObject = (Asn1Sequence) decodedResponse.get(0);
-
-        CertificateStatus certificateStatus = CertificateStatusParser.parseCertificateStatus(certificateStatusObject);
-
-        Assert.assertEquals(1, certificateStatus.getCertificateStatus());
-        Assert.assertEquals("20200423141917Z", certificateStatus.getTimeOfRevocation());
-
-        // Test response contains no revocation reason
-        Assert.assertEquals(-1, certificateStatus.getRevocationReason());
+    public void testParseCertificateStatusRevoked() {
+        // Certificate has "revoked" status, but no reason
+        Assert.assertEquals(1, certificateStatusRevoked.getCertificateStatus());
+        Assert.assertEquals("20200423141917Z", certificateStatusRevoked.getTimeOfRevocation());
+        Assert.assertEquals(-1, certificateStatusRevoked.getRevocationReason());
     }
 }
