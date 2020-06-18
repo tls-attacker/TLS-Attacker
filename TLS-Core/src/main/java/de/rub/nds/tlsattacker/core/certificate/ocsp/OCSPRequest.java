@@ -216,7 +216,7 @@ public class OCSPRequest {
             issuerKeyHash = infoExtractorMain.getIssuerKeyHash();
         }
 
-        OCSPRequestMessage requestMessage = new OCSPRequestMessage(serialNumber, issuerNameHash, issuerKeyHash);
+        OCSPRequestMessage requestMessage = new OCSPRequestMessage(issuerNameHash, issuerKeyHash, serialNumber);
         requestMessage.addExtension(ACCEPTABLE_RESPONSES.getOID());
 
         return requestMessage;

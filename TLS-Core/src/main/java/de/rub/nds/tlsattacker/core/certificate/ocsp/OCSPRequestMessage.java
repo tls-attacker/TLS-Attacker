@@ -44,8 +44,8 @@ public class OCSPRequestMessage {
         extensionExplicitSequence.addChild(extensionSequence);
     }
 
-    public OCSPRequestMessage(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
-        addToRequest(serialNumberValue, issuerNameHashValue, issuerKeyHashValue);
+    public OCSPRequestMessage(byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
+        addToRequest(issuerNameHashValue, issuerKeyHashValue, serialNumberValue);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
         extensionExplicitSequence.setOffset(2);
@@ -108,7 +108,7 @@ public class OCSPRequestMessage {
         this.nonce = nonce;
     }
 
-    public void addToRequest(BigInteger serialNumberValue, byte[] issuerNameHashValue, byte[] issuerKeyHashValue) {
+    public void addToRequest(byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
         Asn1Sequence request = new Asn1Sequence();
         Asn1Sequence reqCert = new Asn1Sequence();
         Asn1Sequence hashAlgorithm = new Asn1Sequence();
