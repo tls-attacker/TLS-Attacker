@@ -17,7 +17,9 @@ import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.asn1.parser.ParserException;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,17 +28,28 @@ import java.util.List;
 
 public class OCSPResponseParserTest {
 
-    @Test
-    public void testParseResponse() throws IOException, ParserException {
-        /*
-         * Response uses DN for identification, no extensions, does not contain
-         * certificate
-         */
+    private OCSPResponse response;
+    private OCSPResponse responseWithNonce;
+
+    @Before
+    public void setUp() throws IOException, ParserException {
+        // Response uses DN for identification, no extensions, does not contain
+        // certificate
         InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response.bin");
         byte[] responseBytes = ByteStreams.toByteArray(stream);
-
-        OCSPResponse response = OCSPResponseParser.parseResponse(responseBytes);
+        response = OCSPResponseParser.parseResponse(responseBytes);
         Assert.assertArrayEquals(responseBytes, response.getEncodedResponse());
+
+        // Response uses key for identification, contains nonce extensions,
+        // contains certificate
+        stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response-nonce.bin");
+        responseBytes = ByteStreams.toByteArray(stream);
+        responseWithNonce = OCSPResponseParser.parseResponse(responseBytes);
+        Assert.assertArrayEquals(responseBytes, responseWithNonce.getEncodedResponse());
+    }
+
+    @Test
+    public void testParseResponse() {
 
         Assert.assertEquals(0, response.getResponseStatus());
         Assert.assertEquals(0, response.getResponseDataVersion());
@@ -44,6 +57,7 @@ public class OCSPResponseParserTest {
         Assert.assertEquals("20200615155900Z", response.getResponseTime());
         Assert.assertEquals("1.3.6.1.5.5.7.48.1.1", response.getResponseTypeIdentifier());
         Assert.assertEquals("1.2.840.113549.1.1.11", response.getSignatureAlgorithmIdentifier());
+        Assert.assertTrue(response.getCertificateStatusList().get(0) instanceof CertificateStatus);
 
         // Response contains no certificate
         Assert.assertNull(response.getCertificate());
@@ -64,24 +78,12 @@ public class OCSPResponseParserTest {
     }
 
     @Test
-    public void testParseResponseNonceExtension() throws IOException, ParserException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response-nonce.bin");
-        byte[] responseBytes = ByteStreams.toByteArray(stream);
-
-        OCSPResponse response = OCSPResponseParser.parseResponse(responseBytes);
-        Assert.assertArrayEquals(responseBytes, response.getEncodedResponse());
-
-        Assert.assertEquals(1337, response.getNonce().intValue());
+    public void testParseResponseNonceExtension() {
+        Assert.assertEquals(1337, responseWithNonce.getNonce().intValue());
     }
 
     @Test
-    public void testParseResponseResponderDn() throws IOException, ParserException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response.bin");
-        byte[] responseBytes = ByteStreams.toByteArray(stream);
-
-        OCSPResponse response = OCSPResponseParser.parseResponse(responseBytes);
-        Assert.assertArrayEquals(responseBytes, response.getEncodedResponse());
-
+    public void testParseResponseResponderDn() {
         Assert.assertNull(response.getResponderKey());
 
         // Check for Distinguished Name Structure
@@ -101,17 +103,16 @@ public class OCSPResponseParserTest {
     }
 
     @Test
-    public void testParseResponseResponderKey() throws IOException, ParserException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("ocsp/ocsp-response-nonce.bin");
-        byte[] responseBytes = ByteStreams.toByteArray(stream);
-
-        OCSPResponse response = OCSPResponseParser.parseResponse(responseBytes);
-        Assert.assertArrayEquals(responseBytes, response.getEncodedResponse());
-
-        Assert.assertNull(response.getResponderDn());
+    public void testParseResponseResponderKey() {
+        Assert.assertNull(responseWithNonce.getResponderDn());
 
         byte[] expectedResponderKey = { -100, 77, 0, -103, 0, 14, -117, -80, 1, -127, 117, -95, -70, -16, -48, 37, -41,
                 -96, 28, 71 };
-        Assert.assertArrayEquals(expectedResponderKey, response.getResponderKey());
+        Assert.assertArrayEquals(expectedResponderKey, responseWithNonce.getResponderKey());
+    }
+
+    @Test
+    public void testParseResponseCertificate() {
+        Assert.assertTrue(responseWithNonce.getCertificate() instanceof Certificate);
     }
 }
