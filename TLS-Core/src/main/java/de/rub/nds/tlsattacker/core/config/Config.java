@@ -888,11 +888,11 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientExtendedRandom = ArrayConverter
-            .hexStringToByteArray("0011");
+            .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerExtendedRandom = ArrayConverter
-            .hexStringToByteArray("0011");
+            .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientRandom = ArrayConverter
@@ -901,6 +901,9 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerRandom = ArrayConverter
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
+
+    // Parse Extensions of Type 40 as TLS 1.3-draft-22 key-share instead of Extended Random
+    private Boolean parseKeyShareOld = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
@@ -1413,6 +1416,14 @@ public class Config implements Serializable {
 
     public void setUseFreshRandom(Boolean useFreshRandom) {
         this.useFreshRandom = useFreshRandom;
+    }
+
+    public Boolean isParseKeyShareOld(){
+        return parseKeyShareOld;
+    }
+
+    public void setParseKeyShareOld(boolean parseKeyShareOld){
+        this.parseKeyShareOld = parseKeyShareOld;
     }
 
     public Boolean isUseAllProvidedRecords() {
