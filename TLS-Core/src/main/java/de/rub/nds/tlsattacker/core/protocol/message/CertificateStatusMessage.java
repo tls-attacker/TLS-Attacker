@@ -20,10 +20,14 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
 public class CertificateStatusMessage extends HandshakeMessage {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificateStatusType;
@@ -50,17 +54,23 @@ public class CertificateStatusMessage extends HandshakeMessage {
     @Override
     public String toString() {
         OCSPResponse response = null;
-        try {
-            response = OCSPResponseParser.parseResponse(getOcspResponseBytes().getValue());
-        } catch (IOException | ParserException e) {
-            e.printStackTrace();
+        if (getOcspResponseBytes() != null) {
+            try {
+                response = OCSPResponseParser.parseResponse(getOcspResponseBytes().getValue());
+            } catch (IOException | ParserException e) {
+                LOGGER.error("Could not parse embedded OCSP response in CertificateStatusMessage.");
+            }
         }
         StringBuilder builder = new StringBuilder();
         builder.append("CertificateStatusMessage:");
         if (response != null) {
-            builder.append("\n ").append(response.toString());
+            try {
+                builder.append("\n ").append(response.toString());
+            } catch (Exception e) {
+                throw new RuntimeException("Could not print parsed OCSP response in CertificateStatusMessage.");
+            }
         } else {
-            throw new RuntimeException("Couldn't parse embedded OCSP response in CertificateStatusMessage.");
+            builder.append("\n null");
         }
         return builder.toString();
     }
