@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -119,15 +120,17 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionBytes(T message) {
+    protected void parseExtensionBytes(T message, Config config) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         int pointer = 0;
         while (pointer < extensionBytes.length) {
+            // TODO: Give ExtensionParses access to TLS Config!! ( Or access to
+            // parseKeyShareOld )
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
-                    message.getHandshakeMessageType());
+                    message.getHandshakeMessageType(), config);
             extensionMessages.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing Extensions");
@@ -135,6 +138,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
             pointer = parser.getPointer();
         }
         message.setExtensions(extensionMessages);
+    }
+
+    protected void parseExtensionBytes(T message) {
+        parseExtensionBytes(message, null);
     }
 
     /**
