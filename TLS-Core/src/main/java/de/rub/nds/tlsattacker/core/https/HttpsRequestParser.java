@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.https;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
@@ -22,8 +23,8 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HttpsRequestParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, version);
+    public HttpsRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
     }
 
     @Override
