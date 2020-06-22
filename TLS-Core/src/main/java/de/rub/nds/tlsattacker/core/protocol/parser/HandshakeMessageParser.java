@@ -54,9 +54,11 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *            The expected type of the parsed HandshakeMessage
      * @param version
      *            The Version with which this message should be parsed
+     * @param config
+     *            A Config used in the current context
      */
-    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
-        super(pointer, array, version);
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
         this.expectedType = expectedType;
         this.version = version;
     }
@@ -120,17 +122,15 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionBytes(T message, Config config) {
+    protected void parseExtensionBytes(T message) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         int pointer = 0;
         while (pointer < extensionBytes.length) {
-            // TODO: Give ExtensionParses access to TLS Config!! ( Or access to
-            // parseKeyShareOld )
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
-                    message.getHandshakeMessageType(), config);
+                    message.getHandshakeMessageType(), this.getConfig());
             extensionMessages.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing Extensions");
@@ -138,10 +138,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
             pointer = parser.getPointer();
         }
         message.setExtensions(extensionMessages);
-    }
-
-    protected void parseExtensionBytes(T message) {
-        parseExtensionBytes(message, null);
     }
 
     /**

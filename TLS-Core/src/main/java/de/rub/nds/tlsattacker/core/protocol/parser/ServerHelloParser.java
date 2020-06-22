@@ -24,8 +24,6 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Config config;
-
     /**
      * Constructor for the ServerHelloMessageParser
      *
@@ -36,15 +34,11 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      *            The byte[] which the ServerHellorParser is supposed to parse
      * @param version
      *            The Version for which this message should be parsed
+     * @param config
+     *            A Config used in the current context
      */
     public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);
-        this.config = config;
-    }
-
-    public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);
-        this.config = null;
+        super(pointer, array, HandshakeMessageType.SERVER_HELLO, version, config);
     }
 
     /**
@@ -89,7 +83,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            parseExtensionBytes(msg, config);
+            parseExtensionBytes(msg);
         }
     }
 

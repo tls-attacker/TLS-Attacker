@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -23,13 +24,13 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        this(pointer, array, version, null);
+    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        this(pointer, array, version, null, config);
     }
 
     public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
+                                      KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }

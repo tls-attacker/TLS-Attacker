@@ -25,12 +25,11 @@ public class ExtensionParserFactory {
             HandshakeMessageType handshakeMessageType, Config config) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new ParserException(
-                    "Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
+                    "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
         typeBytes[1] = extensionBytes[pointer + 1];
-        // TODO: Check here if KeyShareOld or ExtendedRandom should be parsed!
         ExtensionType type = ExtensionType.getExtensionType(typeBytes);
         ExtensionParser parser = null;
         switch (type) {
@@ -162,11 +161,6 @@ public class ExtensionParserFactory {
             parser = new UnknownExtensionParser(pointer, extensionBytes);
         }
         return parser;
-    }
-
-    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
-            HandshakeMessageType handshakeMessageType) {
-        return getExtensionParser(extensionBytes, pointer, handshakeMessageType, null);
     }
 
     private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type,

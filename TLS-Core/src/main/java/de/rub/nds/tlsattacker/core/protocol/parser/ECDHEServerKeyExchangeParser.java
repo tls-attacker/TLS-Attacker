@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -38,14 +39,16 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        this(pointer, array, version, null);
+    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        this(pointer, array, version, null, config);
     }
 
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
+                                        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
@@ -127,8 +130,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     /**
      * Checks if the version is TLS12
      *
-     * @param message
-     *            Message to check
      * @return True if the used version is TLS12
      */
     private boolean isTLS12() {
@@ -138,8 +139,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     /**
      * Checks if the version is DTLS12
      *
-     * @param message
-     *            Message to check
      * @return True if the used version is DTLS12
      */
     private boolean isDTLS12() {

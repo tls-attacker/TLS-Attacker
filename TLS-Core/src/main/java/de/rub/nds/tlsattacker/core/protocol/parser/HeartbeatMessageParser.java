@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -32,8 +33,8 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      * @param version
      *            Version of the Protocol
      */
-    public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version) {
-        super(startposition, array, version);
+    public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override

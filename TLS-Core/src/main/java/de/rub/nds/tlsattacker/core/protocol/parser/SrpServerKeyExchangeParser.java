@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -35,9 +36,11 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public SrpServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
+    public SrpServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
     }
 
@@ -157,8 +160,6 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     /**
      * Checks if the version is TLS12
      *
-     * @param message
-     *            Message to check
      * @return True if the used version is TLS12
      */
     private boolean isTLS12() {
@@ -168,8 +169,6 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     /**
      * Checks if the version is DTLS12
      *
-     * @param message
-     *            Message to check
      * @return True if the used version is DTLS12
      */
     private boolean isDTLS12() {
