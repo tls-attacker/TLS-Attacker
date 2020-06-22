@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
@@ -64,6 +65,7 @@ public class DHClientKeyExchangeParserTest {
     private int serializedKeyLength;
     private byte[] serializedKey;
     private ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public DHClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
             int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
@@ -81,7 +83,7 @@ public class DHClientKeyExchangeParserTest {
     @Test
     public void testParse() {
         DHClientKeyExchangeParser<DHClientKeyExchangeMessage> parser = new DHClientKeyExchangeParser(0, message,
-                version);
+                version, config);
         DHClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
