@@ -39,7 +39,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
 
     @Override
     public HelloRetryRequestParser getParser(byte[] message, int pointer) {
-        return new HelloRetryRequestParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HelloRetryRequestParser(pointer, message, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

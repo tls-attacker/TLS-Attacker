@@ -27,7 +27,7 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
 
     @Override
     public SrpClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new SrpClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

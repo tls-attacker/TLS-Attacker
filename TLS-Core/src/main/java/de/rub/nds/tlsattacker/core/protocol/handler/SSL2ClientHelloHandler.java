@@ -23,7 +23,7 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
 
     @Override
     public SSL2ClientHelloParser getParser(byte[] message, int pointer) {
-        return new SSL2ClientHelloParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientHelloParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override

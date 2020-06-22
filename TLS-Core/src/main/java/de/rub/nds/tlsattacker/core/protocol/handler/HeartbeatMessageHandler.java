@@ -26,7 +26,7 @@ public class HeartbeatMessageHandler extends ProtocolMessageHandler<HeartbeatMes
 
     @Override
     public HeartbeatMessageParser getParser(byte[] message, int pointer) {
-        return new HeartbeatMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new HeartbeatMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

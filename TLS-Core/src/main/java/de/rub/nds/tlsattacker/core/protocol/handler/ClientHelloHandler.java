@@ -49,7 +49,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     public ClientHelloParser getParser(byte[] message, int pointer) {
-        return new ClientHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new ClientHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

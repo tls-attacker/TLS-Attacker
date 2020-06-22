@@ -25,7 +25,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
 
     @Override
     public ProtocolMessageParser<SSL2ServerVerifyMessage> getParser(byte[] message, int pointer) {
-        return new SSL2ServerVerifyParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ServerVerifyParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override

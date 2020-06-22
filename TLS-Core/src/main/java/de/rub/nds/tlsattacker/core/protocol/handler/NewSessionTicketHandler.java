@@ -41,7 +41,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public NewSessionTicketParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override
