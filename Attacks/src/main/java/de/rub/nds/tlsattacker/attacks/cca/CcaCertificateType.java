@@ -12,8 +12,10 @@ public enum CcaCertificateType {
     CLIENT_INPUT("The certificate provided to the CLI switch", true, false),
     EMPTY("An empty certificate.", false, false),
     ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3(
-            "RSA Leaf Certificate generated with an intermediate Certificate that is v3 (actually not a CA)." +
-            "Root CA is v3", true, true),
+            "RSA Leaf Certificate generated with an intermediate Certificate that is v3 (actually not a CA)."
+                    + "Root CA is v3",
+            true,
+            true),
     ROOTv3_CAv3_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
