@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.attacks.cca;
 public enum CcaCertificateType {
     CLIENT_INPUT("The certificate provided to the CLI switch", true, false),
     EMPTY("An empty certificate.", false, false),
-    ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3("", true, true),
+    ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3(
+            "RSA Leaf Certificate generated with an intermediate Certificate that is v3 (actually not a CA)." +
+            "Root CA is v3", true, true),
     ROOTv3_CAv3_LEAF_RSAv3(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA.",
             false,
@@ -250,10 +252,6 @@ public enum CcaCertificateType {
             false,
             true),
     ROOTv3_CAv3_CAv3_PathLoop("Path loop created by two CA certificates signing each other.", false, true),
-    ROOTv3_CAv3_LEAF_RSAv3_CaTrue(
-            "Chain of provided root CA, intermediate CA and a Leaf Cert that is declared a CA (BasicConstraints).",
-            false,
-            true),
     ROOTv3_CAv3_LEAF_RSAv3_KeyUsageNothing(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The leaf certificates key usage extensions allows no key usage at all.",
@@ -264,12 +262,6 @@ public enum CcaCertificateType {
                     + "The leaf certificates key usage extensions allows key Agreement only.",
             false,
             true),
-    ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
-                    + "Additionally after the certificate chain is a self signed attacker certificate. This test case "
-                    + "requires manual verification of which entity is authenticated on the server.",
-            false,
-            true),
     ROOTv3_CAv3_LEAF_RSAv3_SelfSigned(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The leaf certificate points to the intermediate CA but is actually self signed.",
@@ -278,12 +270,6 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_RSAv3_EmptySigned(
             "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
                     + "The leaf certificate points to the intermediate CA but isn't signed at all. (Empty signatureValue)",
-            false,
-            true),
-    ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterLeaf(
-            "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
-                    + "Additionally after the leaf certificate is a self signed attacker certificate. This test case "
-                    + "requires manual verification of which entity is authenticated on the server.",
             false,
             true),
     ROOTv3_CAv3_LEAF_RSAv3_CertPolicy(

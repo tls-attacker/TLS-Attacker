@@ -71,14 +71,11 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_ZeroPathLen_CAv3_LEAF_RSAv3:
                 case ROOTv3_CAv3_CAv3_PathLoop:
                 case ROOTv3_CAv3_LEAF_RSAv3_UnknownExt:
-                case ROOTv3_CAv3_LEAF_RSAv3_CaTrue:
                 case ROOTv3_CAv3_LEAF_RSAv3_KeyUsageKeyAgreement:
                 case ROOTv3_CAv3_LEAF_RSAv3_KeyUsageNothing:
                 case ROOTv3_CAv3_MalformedNameConstraints_LEAF_RSAv3:
-                case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterChain:
                 case ROOTv3_CAv3_LEAF_RSAv3_SelfSigned:
                 case ROOTv3_CAv3_LEAF_RSAv3_EmptySigned:
-                case ROOTv3_CAv3_LEAF_RSAv3_AdditionalCertAfterLeaf:
                 case ROOTv3_CAv3_LEAF_RSAv3_CertPolicy:
                 case ROOTv3_CAv3_LEAF_RSAv3_NullSigned:
                 case ROOTv3_CAv3_LEAF_RSAv3_MalformedAlgorithmParameters:
