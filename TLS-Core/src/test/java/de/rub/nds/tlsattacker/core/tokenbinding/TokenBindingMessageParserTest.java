@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +22,8 @@ public class TokenBindingMessageParserTest {
     private TokenBindingMessageParser parser;
 
     private ProtocolVersion version;
+
+    private Config config = Config.createConfig();
 
     private byte[] toParse;
 
@@ -36,7 +39,7 @@ public class TokenBindingMessageParserTest {
      */
     @Test
     public void testParseMessageContent() {
-        parser = new TokenBindingMessageParser(0, toParse, version);
+        parser = new TokenBindingMessageParser(0, toParse, version, config);
         TokenBindingMessage message = parser.parse();
         Assert.assertArrayEquals(new byte[0], message.getExtensionBytes().getValue());
         assertTrue(message.getExtensionLength().getValue() == 0);
