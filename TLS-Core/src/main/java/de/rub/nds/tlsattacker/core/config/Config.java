@@ -899,8 +899,8 @@ public class Config implements Serializable {
     private byte[] defaultServerRandom = ArrayConverter
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
-    // Parse Extensions of Type 40 as TLS 1.3-draft-22 key-share instead of
-    // Extended Random
+    // Parse Extensions of Type 40 as key share extension instead of
+    // Extended Random like in TLS13-Drafts 14 - 22.
     private Boolean parseKeyShareOld = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1420,6 +1420,12 @@ public class Config implements Serializable {
         return parseKeyShareOld;
     }
 
+    /**
+     * This method allows type 40 extensions to be parsed as key share extensions as defined in TLS13 Draft 14 - 22.
+     * Note, that if this is set to FALSE, type 40 extensions will be parsed as Extended Random.
+     * When TLS13 Draft 14 - 22 are set to be supported, this method defaults to TRUE.
+     * @param parseKeyShareOld set to True when type 40 extensions should be parsed as key share extensions
+     */
     public void setParseKeyShareOld(boolean parseKeyShareOld) {
         // Disallow extended Random for TLS13_DRAFT14-22
         List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
@@ -1432,11 +1438,11 @@ public class Config implements Serializable {
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
-        if(Collections.disjoint(keyShareDrafts,getSupportedVersions())){
+        if (Collections.disjoint(keyShareDrafts, getSupportedVersions())) {
             this.parseKeyShareOld = parseKeyShareOld;
         } else {
-            LOGGER.warn("Supported ProtocolVersions contains at least one of TLS13 Drafts using " +
-                    "old Key Share Extension. Defaulting to TRUE.");
+            LOGGER.warn("Supported ProtocolVersions contains at least one of TLS13 Drafts using "
+                    + "old Key Share Extension. Defaulting to TRUE.");
             this.parseKeyShareOld = true;
         }
     }
@@ -1890,10 +1896,15 @@ public class Config implements Serializable {
         return this.addExtendedRandomExtension;
     }
 
+    /**
+     * Adds the extended Random Extension to the Handshake messages. If parseKeyShareOld is set to TRUE,
+     * extended Random is NOT supported and this method will default to FALSE.
+     * @param addExtendedRandomExtension set to TRUE if extended Random Extension should be added to Handshake message
+     */
     public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) {
-        if(isParseKeyShareOld()){
-            LOGGER.warn("Can't add Extended Random Extension while " +
-                    "old Key Share extension is supported. Defaulting to FALSE.");
+        if (isParseKeyShareOld()) {
+            LOGGER.warn("Can't add Extended Random Extension while "
+                    + "old Key Share extension is supported. Defaulting to FALSE.");
             this.addExtendedRandomExtension = false;
         } else {
             this.addExtendedRandomExtension = addExtendedRandomExtension;
@@ -2439,7 +2450,7 @@ public class Config implements Serializable {
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
-        if(!Collections.disjoint(keyShareDrafts,supportedVersions)){
+        if (!Collections.disjoint(keyShareDrafts, supportedVersions)) {
             this.setParseKeyShareOld(true);
         } else {
             this.setParseKeyShareOld(false);
@@ -2460,7 +2471,7 @@ public class Config implements Serializable {
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
         keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
-        if(!Collections.disjoint(keyShareDrafts,supportedVersionList)){
+        if (!Collections.disjoint(keyShareDrafts, supportedVersionList)) {
             this.setParseKeyShareOld(true);
         } else {
             this.setParseKeyShareOld(false);
