@@ -33,9 +33,11 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private EsniKeyRecord record;
+    private Config config;
 
-    public EsniKeyRecordParser(int startposition, byte[] array) {
+    public EsniKeyRecordParser(int startposition, byte[] array, Config config) {
         super(startposition, array);
+        this.config = config;
     }
 
     @Override
@@ -128,8 +130,6 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
             }
 
             byte[] extensionBytes = extensionStream.toByteArray();
-            // TODO: Check if config should be passed from Handler to this Parser
-            Config config = Config.createConfig();
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0,
                     HandshakeMessageType.UNKNOWN, config);
             ExtensionMessage extensionMessage = parser.parse();
