@@ -72,10 +72,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -902,7 +899,8 @@ public class Config implements Serializable {
     private byte[] defaultServerRandom = ArrayConverter
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
-    // Parse Extensions of Type 40 as TLS 1.3-draft-22 key-share instead of Extended Random
+    // Parse Extensions of Type 40 as TLS 1.3-draft-22 key-share instead of
+    // Extended Random
     private Boolean parseKeyShareOld = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1418,12 +1416,29 @@ public class Config implements Serializable {
         this.useFreshRandom = useFreshRandom;
     }
 
-    public Boolean isParseKeyShareOld(){
+    public Boolean isParseKeyShareOld() {
         return parseKeyShareOld;
     }
 
-    public void setParseKeyShareOld(boolean parseKeyShareOld){
-        this.parseKeyShareOld = parseKeyShareOld;
+    public void setParseKeyShareOld(boolean parseKeyShareOld) {
+        // Disallow extended Random for TLS13_DRAFT14-22
+        List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT14);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT15);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT16);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT17);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT18);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT19);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
+        if(Collections.disjoint(keyShareDrafts,getSupportedVersions())){
+            this.parseKeyShareOld = parseKeyShareOld;
+        } else {
+            LOGGER.warn("Supported ProtocolVersions contains at least one of TLS13 Drafts using " +
+                    "old Key Share Extension. Defaulting to TRUE.");
+            this.parseKeyShareOld = true;
+        }
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -1871,17 +1886,35 @@ public class Config implements Serializable {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
     }
 
-    public boolean isAddExtendedRandomExtension() { return this.addExtendedRandomExtension; }
+    public boolean isAddExtendedRandomExtension() {
+        return this.addExtendedRandomExtension;
+    }
 
-    public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) { this.addExtendedRandomExtension = addExtendedRandomExtension; }
+    public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) {
+        if(isParseKeyShareOld()){
+            LOGGER.warn("Can't add Extended Random Extension while " +
+                    "old Key Share extension is supported. Defaulting to FALSE.");
+            this.addExtendedRandomExtension = false;
+        } else {
+            this.addExtendedRandomExtension = addExtendedRandomExtension;
+        }
+    }
 
-    public byte[] getDefaultClientExtendedRandom() {return Arrays.copyOf(defaultClientExtendedRandom, defaultClientExtendedRandom.length);}
+    public byte[] getDefaultClientExtendedRandom() {
+        return Arrays.copyOf(defaultClientExtendedRandom, defaultClientExtendedRandom.length);
+    }
 
-    public byte[] getDefaultServerExtendedRandom() {return Arrays.copyOf(defaultServerExtendedRandom, defaultServerExtendedRandom.length);}
+    public byte[] getDefaultServerExtendedRandom() {
+        return Arrays.copyOf(defaultServerExtendedRandom, defaultServerExtendedRandom.length);
+    }
 
-    public void setDefaultClientExtendedRandom(byte[] defaultClientExtendedRandom) { this.defaultClientExtendedRandom = defaultClientExtendedRandom; }
+    public void setDefaultClientExtendedRandom(byte[] defaultClientExtendedRandom) {
+        this.defaultClientExtendedRandom = defaultClientExtendedRandom;
+    }
 
-    public void setDefaultServerExtendedRandom(byte[] defaultServerExtendedRandom) { this.defaultServerExtendedRandom = defaultServerExtendedRandom; }
+    public void setDefaultServerExtendedRandom(byte[] defaultServerExtendedRandom) {
+        this.defaultServerExtendedRandom = defaultServerExtendedRandom;
+    }
 
     public byte[] getDefaultServerRandom() {
         return Arrays.copyOf(defaultServerRandom, defaultServerRandom.length);
@@ -2395,11 +2428,44 @@ public class Config implements Serializable {
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
+        // Disable extended Random Extension support for TLS13_Drafts 14-22
+        List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT14);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT15);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT16);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT17);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT18);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT19);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
+        if(!Collections.disjoint(keyShareDrafts,supportedVersions)){
+            this.setParseKeyShareOld(true);
+        } else {
+            this.setParseKeyShareOld(false);
+        }
         this.supportedVersions = supportedVersions;
     }
 
     public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
-        this.supportedVersions = new ArrayList(Arrays.asList(supportedVersions));
+        List<ProtocolVersion> supportedVersionList = new ArrayList(Arrays.asList(supportedVersions));
+        // Disable extended Random Extension support for TLS13_Drafts 14-22
+        List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT14);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT15);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT16);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT17);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT18);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT19);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
+        if(!Collections.disjoint(keyShareDrafts,supportedVersionList)){
+            this.setParseKeyShareOld(true);
+        } else {
+            this.setParseKeyShareOld(false);
+        }
+        this.supportedVersions = supportedVersionList;
     }
 
     public HeartbeatMode getHeartbeatMode() {
