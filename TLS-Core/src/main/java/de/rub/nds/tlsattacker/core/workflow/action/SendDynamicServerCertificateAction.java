@@ -205,11 +205,19 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
 
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>(){{add(ProtocolMessageType.HANDSHAKE);}};
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(ProtocolMessageType.HANDSHAKE);
+            }
+        };
     }
 
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
-        return new ArrayList<HandshakeMessageType>(){{add(HandshakeMessageType.CERTIFICATE);}};
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(HandshakeMessageType.CERTIFICATE);
+            }
+        };
     }
 }

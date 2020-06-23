@@ -357,30 +357,34 @@ public class WorkflowTraceUtil {
         return trace.getTlsActions().indexOf(receiving) < trace.getTlsActions().indexOf(sending) ? receiving : sending;
     }
 
-    public static TlsAction getFirstSendingActionForMessage(@Nonnull ProtocolMessageType type, @Nonnull WorkflowTrace trace) {
+    public static TlsAction getFirstSendingActionForMessage(@Nonnull ProtocolMessageType type,
+            @Nonnull WorkflowTrace trace) {
         if (!getSendingActionsForMessage(type, trace).isEmpty()) {
-            return (TlsAction)getSendingActionsForMessage(type, trace).get(0);
+            return (TlsAction) getSendingActionsForMessage(type, trace).get(0);
         }
         return null;
     }
 
-    public static TlsAction getFirstSendingActionForMessage(@Nonnull HandshakeMessageType type, @Nonnull WorkflowTrace trace) {
+    public static TlsAction getFirstSendingActionForMessage(@Nonnull HandshakeMessageType type,
+            @Nonnull WorkflowTrace trace) {
         if (!getSendingActionsForMessage(type, trace).isEmpty()) {
-            return (TlsAction)getSendingActionsForMessage(type, trace).get(0);
+            return (TlsAction) getSendingActionsForMessage(type, trace).get(0);
         }
         return null;
     }
 
-    public static TlsAction getFirstReceivingActionForMessage(@Nonnull ProtocolMessageType type, @Nonnull WorkflowTrace trace) {
+    public static TlsAction getFirstReceivingActionForMessage(@Nonnull ProtocolMessageType type,
+            @Nonnull WorkflowTrace trace) {
         if (!getReceivingActionsForMessage(type, trace).isEmpty()) {
-            return (TlsAction)getReceivingActionsForMessage(type, trace).get(0);
+            return (TlsAction) getReceivingActionsForMessage(type, trace).get(0);
         }
         return null;
     }
 
-    public static TlsAction getFirstReceivingActionForMessage(@Nonnull HandshakeMessageType type, @Nonnull WorkflowTrace trace) {
+    public static TlsAction getFirstReceivingActionForMessage(@Nonnull HandshakeMessageType type,
+            @Nonnull WorkflowTrace trace) {
         if (!getReceivingActionsForMessage(type, trace).isEmpty()) {
-            return (TlsAction)getReceivingActionsForMessage(type, trace).get(0);
+            return (TlsAction) getReceivingActionsForMessage(type, trace).get(0);
         }
         return null;
     }

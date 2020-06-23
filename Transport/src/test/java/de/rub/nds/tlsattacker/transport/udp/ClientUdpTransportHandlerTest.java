@@ -33,8 +33,8 @@ public class ClientUdpTransportHandlerTest {
     @Test
     public void testSendData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1,
-                    localhost.getHostName(), testSocket.getLocalPort());
+            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1, localhost.getHostName(),
+                    testSocket.getLocalPort());
             testSocket.setSoTimeout(1);
 
             udpTH.initialize();
@@ -57,8 +57,8 @@ public class ClientUdpTransportHandlerTest {
     @Test
     public void testFetchData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1,
-                    localhost.getHostName(), testSocket.getLocalPort());
+            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1, localhost.getHostName(),
+                    testSocket.getLocalPort());
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getLocalPort());

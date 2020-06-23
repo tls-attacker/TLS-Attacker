@@ -198,7 +198,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if (Objects.equals(timeout, defaultCon.getTimeout()) || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
         }
-        if (Objects.equals(firstTimeout, defaultCon.getTimeout()) || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
+        if (Objects.equals(firstTimeout, defaultCon.getTimeout())
+                || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
             firstTimeout = null;
         }
         if (hostname.equals(defaultCon.getHostname()) || Objects.equals(hostname, DEFAULT_HOSTNAME)) {

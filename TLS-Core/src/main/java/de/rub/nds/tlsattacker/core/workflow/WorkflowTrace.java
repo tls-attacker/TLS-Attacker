@@ -456,7 +456,6 @@ public class WorkflowTrace implements Serializable {
         this.dirty = dirty;
     }
 
-
     public <T extends TlsAction> T getFirstAction(Class<T> actionCls) {
         List<TlsAction> actions = this.getTlsActions();
         for (TlsAction action : actions) {
@@ -510,5 +509,4 @@ public class WorkflowTrace implements Serializable {
             return (T) messageList.get(messageList.size() - 1);
         }
     }
-
 }

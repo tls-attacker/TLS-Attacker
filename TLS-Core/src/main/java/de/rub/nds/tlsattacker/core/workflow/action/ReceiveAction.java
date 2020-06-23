@@ -365,7 +365,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
             if (msg.isHandshakeMessage()) {
-                handshakeMessageTypes.add(((HandshakeMessage)msg).getHandshakeMessageType());
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }
         }
         return handshakeMessageTypes;

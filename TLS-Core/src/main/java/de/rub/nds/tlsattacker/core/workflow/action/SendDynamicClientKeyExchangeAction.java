@@ -201,14 +201,21 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         return hash;
     }
 
-
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>(){{add(ProtocolMessageType.HANDSHAKE);}};
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(ProtocolMessageType.HANDSHAKE);
+            }
+        };
     }
 
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
-        return new ArrayList<HandshakeMessageType>(){{add(HandshakeMessageType.CLIENT_KEY_EXCHANGE);}};
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+            }
+        };
     }
 }

@@ -236,7 +236,6 @@ public class WorkflowTraceTest {
         assertEquals("testName", trace.getName());
     }
 
-
     @Test
     public void testGetFirstReceivedMessage() {
         SendAction sClientHello = new SendAction();

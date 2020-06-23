@@ -22,7 +22,8 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
         super(firstTimeout, timeout, port);
     }
 
-    public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
+    public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
+            throws IOException {
         super(firstTimeout, timeout, serverSocket);
     }
 
@@ -36,7 +37,7 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
             throw new IOException("Transporthandler is not initalized!");
         }
         int pointer = 0;
-        int chunk_size = (int)Math.ceil((double)data.length / 3);
+        int chunk_size = (int) Math.ceil((double) data.length / 3);
 
         while (pointer < data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {

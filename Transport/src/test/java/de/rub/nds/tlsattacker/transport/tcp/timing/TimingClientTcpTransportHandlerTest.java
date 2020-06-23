@@ -49,7 +49,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler = new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -72,7 +73,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler = new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

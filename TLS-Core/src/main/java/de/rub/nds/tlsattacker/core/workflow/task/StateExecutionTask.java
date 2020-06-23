@@ -29,6 +29,9 @@ public class StateExecutionTask extends TlsTask {
     public boolean execute() {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
+        if (state.getTlsContext().isReceivedTransportHandlerException()) {
+            throw new RuntimeException("TransportHandler exception received.");
+        }
         return true;
     }
 

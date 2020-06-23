@@ -586,7 +586,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        if (this.messages == null) return new ArrayList<>();
+        if (this.messages == null)
+            return new ArrayList<>();
 
         List<ProtocolMessageType> types = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
@@ -597,12 +598,14 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        if (this.messages == null) return new ArrayList<>();
+        if (this.messages == null)
+            return new ArrayList<>();
 
         List<HandshakeMessageType> types = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            if (!msg.isHandshakeMessage()) continue;
-            types.add(((HandshakeMessage)msg).getHandshakeMessageType());
+            if (!msg.isHandshakeMessage())
+                continue;
+            types.add(((HandshakeMessage) msg).getHandshakeMessageType());
         }
         return types;
     }

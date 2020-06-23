@@ -252,7 +252,11 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
 
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>(){{add(waitTillMessage.getProtocolMessageType());}};
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(waitTillMessage.getProtocolMessageType());
+            }
+        };
     }
 
     @Override
@@ -260,6 +264,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         if (!waitTillMessage.isHandshakeMessage()) {
             return new ArrayList<>();
         }
-        return new ArrayList<HandshakeMessageType>(){{add(((HandshakeMessage)waitTillMessage).getHandshakeMessageType());}};
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
+            }
+        };
     }
 }

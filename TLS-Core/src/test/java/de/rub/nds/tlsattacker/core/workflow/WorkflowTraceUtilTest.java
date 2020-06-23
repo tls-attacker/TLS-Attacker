@@ -282,78 +282,74 @@ public class WorkflowTraceUtilTest {
 
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
-        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
-        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
+        assertEquals(sClientHello,
+                WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
+        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace)
+                .get(0));
 
         trace.addTlsAction(sHeartbeat);
 
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).size());
-        assertEquals(sHeartbeat, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).get(0));
+        assertEquals(sHeartbeat, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace)
+                .get(0));
     }
 
     @Test
     public void testGetReceivingActionsForMessage() {
         assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
+        assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace)
+                .size());
 
         ReceiveAction serverHelloRAction = new ReceiveAction(new ServerHelloMessage());
         trace.addTlsAction(serverHelloRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
-        assertEquals(serverHelloRAction, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
-        assertEquals(serverHelloRAction, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
-
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
+                .size());
+        assertEquals(serverHelloRAction,
+                WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
+        assertEquals(serverHelloRAction,
+                WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
 
         ReceiveAction alertRAction = new ReceiveAction(new AlertMessage());
         trace.addTlsAction(alertRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
+        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
+                .size());
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).size());
-        assertEquals(alertRAction, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).get(0));
+        assertEquals(alertRAction, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace)
+                .get(0));
     }
 
     @Test
     public void testGetFirstActionForMessage() {
-        trace.addTlsActions(
-                new SendAction(new FinishedMessage()),
-                new ReceiveAction(new FinishedMessage())
-        );
+        trace.addTlsActions(new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
         assertTrue(WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof SendAction);
     }
 
     @Test
     public void testGetFirstActionForMessage2() {
-        trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage())
-        );
+        trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
         assertTrue(WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof ReceiveAction);
     }
 
     @Test
     public void testGetFirstReceivingActionForMessage() {
-        trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()),
-                new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage())
-        );
-        assertEquals(trace.getTlsActions().get(0), WorkflowTraceUtil.getFirstReceivingActionForMessage(HandshakeMessageType.FINISHED, trace));
+        trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()),
+                new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
+        assertEquals(trace.getTlsActions().get(0),
+                WorkflowTraceUtil.getFirstReceivingActionForMessage(HandshakeMessageType.FINISHED, trace));
     }
 
     @Test
     public void testGetFirstSendingActionForMessage() {
-        trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()),
-                new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage())
-        );
-        assertEquals(trace.getTlsActions().get(2), WorkflowTraceUtil.getFirstSendingActionForMessage(HandshakeMessageType.FINISHED, trace));
+        trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()),
+                new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
+        assertEquals(trace.getTlsActions().get(2),
+                WorkflowTraceUtil.getFirstSendingActionForMessage(HandshakeMessageType.FINISHED, trace));
     }
 
     @Test

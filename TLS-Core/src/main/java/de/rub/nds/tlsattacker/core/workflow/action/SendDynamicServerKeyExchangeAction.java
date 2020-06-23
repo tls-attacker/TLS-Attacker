@@ -207,12 +207,20 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
 
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>(){{add(ProtocolMessageType.HANDSHAKE);}};
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(ProtocolMessageType.HANDSHAKE);
+            }
+        };
     }
 
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
-        return new ArrayList<HandshakeMessageType>(){{add(HandshakeMessageType.SERVER_KEY_EXCHANGE);}};
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+            }
+        };
     }
 
 }

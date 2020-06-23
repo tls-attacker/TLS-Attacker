@@ -230,7 +230,7 @@ public class SendAction extends MessageAction implements SendingAction {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
             if (msg.isHandshakeMessage()) {
-                handshakeMessageTypes.add(((HandshakeMessage)msg).getHandshakeMessageType());
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }
         }
         return handshakeMessageTypes;

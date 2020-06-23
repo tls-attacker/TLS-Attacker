@@ -29,14 +29,16 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
 
     public ClientTcpFragmentationTransportHandler(Connection connection) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection.getIp(), connection.getPort());
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection
+                .getIp(), connection.getPort());
     }
 
     public ClientTcpFragmentationTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
         this(timeout, firstTimeout, timeout, hostname, port);
     }
 
-    public ClientTcpFragmentationTransportHandler(long connectionTimeout, long firstTimeout, long timeout, String hostname, int port) {
+    public ClientTcpFragmentationTransportHandler(long connectionTimeout, long firstTimeout, long timeout,
+            String hostname, int port) {
         super(connectionTimeout, firstTimeout, timeout, hostname, port);
     }
 
@@ -46,7 +48,7 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
             throw new IOException("Transporthandler is not initalized!");
         }
         int pointer = 0;
-        int chunk_size = (int)Math.ceil((double)data.length / 3);
+        int chunk_size = (int) Math.ceil((double) data.length / 3);
 
         while (pointer < data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {
@@ -59,7 +61,8 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
             outStream.flush();
             try {
                 Thread.sleep(10);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
 
         }
     }
