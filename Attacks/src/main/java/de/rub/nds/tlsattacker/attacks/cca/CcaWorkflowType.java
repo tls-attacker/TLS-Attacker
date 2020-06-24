@@ -57,7 +57,9 @@ public enum CcaWorkflowType {
                     + "messages after a ClientKeyExchange. It is unclear if this behavior is exploitable and which certificate "
                     + "will be consumed. Maybe it's possible to use the unverified certificate.",
             true,
-            true);
+            true),
+    CRT_VRFY_CKE_CCS_FIN("TLS handshake reordering VRFY and CKE", true, true),
+    CRT_CKE_CCS_VRFY_FIN("TLS handshake reordering VRFY and CCS", true, true);
 
     private String description;
     private Boolean requiresCertificate;
