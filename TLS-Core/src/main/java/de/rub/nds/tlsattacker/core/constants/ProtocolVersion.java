@@ -11,12 +11,8 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+
+import java.util.*;
 
 public enum ProtocolVersion {
 
@@ -181,4 +177,24 @@ public enum ProtocolVersion {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
                 || this == ProtocolVersion.DTLS12;
     }
+
+    /***
+     * Helper method to get a list of TLS13 Drafts, which support the old Key Share extension of type 40,
+     * before it was changed to not be in conflict the extended Random extension, which has the same type id.
+     * @return The List of TLS13 Drafts supporting the old Key Share Extension with type id 40
+     */
+    public static List<ProtocolVersion> getOldKeyShareVersions(){
+        List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT14);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT15);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT16);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT17);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT18);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT19);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
+        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
+        return keyShareDrafts;
+    }
+
 }
