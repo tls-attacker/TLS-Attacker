@@ -1172,6 +1172,10 @@ public class Config implements Serializable {
 
     private boolean acceptContentRewritingDtlsFragments = true;
 
+    private boolean writeKeylogFile = false;
+
+    private String keylogFilePath = null;
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -3570,4 +3574,19 @@ public class Config implements Serializable {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
 
+    public boolean isWriteKeylogFile() {
+        return writeKeylogFile;
+    }
+
+    public void setWriteKeylogFile(boolean writeKeylogFile) {
+        this.writeKeylogFile = writeKeylogFile;
+    }
+
+    public String getKeylogFilePath() {
+        return keylogFilePath;
+    }
+
+    public void setKeylogFilePath(String keylogFilePath) {
+        this.keylogFilePath = keylogFilePath;
+    }
 }

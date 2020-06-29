@@ -1146,4 +1146,5 @@ C7 84 58 A7 80 50 AC 58  18 11 86 33 25 94 44 12
     <defaultEsniNotAfter>1585247135231</defaultEsniNotAfter>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
+    <writeKeylogFile>false</writeKeylogFile>
 </config>
