@@ -781,7 +781,9 @@ public class WorkflowConfigurationFactory {
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
-        messages.add(message);
+        if (message != null) {
+            messages.add(message);
+        }
     }
 
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
