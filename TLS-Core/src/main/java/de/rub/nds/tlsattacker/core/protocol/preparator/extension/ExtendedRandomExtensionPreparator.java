@@ -20,8 +20,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.Random;
 
 /**
- * Class which prepares an Extended Random Extension Message for handshake messages, as defined as
- * in https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
+ * Class which prepares an Extended Random Extension Message for handshake
+ * messages, as defined as in
+ * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
 public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<ExtendedRandomExtensionMessage> {
 
@@ -39,15 +40,19 @@ public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<Exten
     public void prepareExtensionContent() {
         // Send specific extended Random based on current role in handshake
         if (chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)) {
+            LOGGER.debug("Offering Extended Random as Client.");
             message.setExtendedRandom(chooser.getClientExtendedRandom());
             LOGGER.debug("Prepared the Client Extended Random with value "
                     + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
         }
         if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
-            if(!(chooser.getServerExtendedRandom().length == chooser.getClientExtendedRandom().length)){
-                // mirror extended Random length of Client
-                byte[] generatedExtendedRandom = generateExtendedRandom(chooser.getClientExtendedRandom().length);
+            LOGGER.debug("Accepting Extended Random of Client.");
+            if (!(chooser.getServerExtendedRandom().length == chooser.getClientExtendedRandom().length)) {
+                LOGGER.debug("Extended Random of Client is not same length as Default Extended Random."
+                        + "Generating fresh Extended Random of appropriate length.");
+                byte[] generatedExtendedRandom = prepareExtendedRandom(chooser.getClientExtendedRandom().length);
                 // Update Context with new Server extended Random
+                LOGGER.debug("Updating Server Extended Random of current Context.");
                 chooser.getContext().setServerExtendedRandom(generatedExtendedRandom);
                 message.setExtendedRandom(generatedExtendedRandom);
             } else {
@@ -56,9 +61,15 @@ public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<Exten
             LOGGER.debug("Prepared the Server Extended Random with value "
                     + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
         }
+        prepareExtendedRandomLength(message);
     }
 
-    private byte[] generateExtendedRandom(int length){
+    private void prepareExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
+        msg.setExtendedRandomLength(msg.getExtendedRandom().getValue().length);
+        LOGGER.debug("ExtendedRandomLength: " + msg.getExtendedRandomLength().getValue());
+    }
+
+    private byte[] prepareExtendedRandom(int length) {
         byte[] randomBytes = new byte[length];
         new Random().nextBytes(randomBytes);
         return randomBytes;

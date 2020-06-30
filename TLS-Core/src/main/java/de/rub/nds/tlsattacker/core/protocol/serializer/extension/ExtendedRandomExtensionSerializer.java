@@ -9,12 +9,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Class which serializes the Extended Random Extension for Usage as in Handshake Messages, as defined as in
+ * Class which serializes the Extended Random Extension for Usage as in
+ * Handshake Messages, as defined as in
  * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
 public class ExtendedRandomExtensionSerializer extends ExtensionSerializer<ExtendedRandomExtensionMessage> {
@@ -29,8 +32,20 @@ public class ExtendedRandomExtensionSerializer extends ExtensionSerializer<Exten
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendBytes(message.getExtendedRandom().getValue());
-        LOGGER.debug("Serialized Extended Random of length " + message.getExtendedRandom().getValue().length);
+        writeExtendedRandomLength(message);
+        writeExtendedRandom(message);
         return getAlreadySerialized();
+    }
+
+    private void writeExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
+        appendInt(msg.getExtendedRandomLength().getValue(), ExtensionByteLength.EXTENDED_RANDOM_LENGTH);
+        LOGGER.debug("ExtendedRandomLength: " + msg.getExtendedRandomLength().getValue());
+
+    }
+
+    private void writeExtendedRandom(ExtendedRandomExtensionMessage msg) {
+        appendBytes(message.getExtendedRandom().getValue());
+        LOGGER.debug("Serialized Extended Random: "
+                + ArrayConverter.bytesToHexString(msg.getExtendedRandom().getValue()));
     }
 }

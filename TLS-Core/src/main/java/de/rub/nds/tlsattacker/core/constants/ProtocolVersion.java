@@ -178,23 +178,4 @@ public enum ProtocolVersion {
                 || this == ProtocolVersion.DTLS12;
     }
 
-    /***
-     * Helper method to get a list of TLS13 Drafts, which support the old Key Share extension of type 40,
-     * before it was changed to not be in conflict the extended Random extension, which has the same type id.
-     * @return The List of TLS13 Drafts supporting the old Key Share Extension with type id 40
-     */
-    public static List<ProtocolVersion> getOldKeyShareVersions(){
-        List<ProtocolVersion> keyShareDrafts = new ArrayList<>();
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT14);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT15);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT16);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT17);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT18);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT19);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT20);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT21);
-        keyShareDrafts.add(ProtocolVersion.TLS13_DRAFT22);
-        return keyShareDrafts;
-    }
-
 }

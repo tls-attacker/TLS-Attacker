@@ -268,26 +268,21 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes
-     * to the Client Random
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Client Random
      */
     @Override
     public byte[] getClientRandom() {
         if (context.getClientRandom() != null) {
-            if(context.getClientExtendedRandom() != null && context.getServerExtendedRandom() != null){
-                byte[] concatRandom = ArrayConverter.concatenate(context.getClientRandom(),context.getClientExtendedRandom());
-                return concatRandom;
-            } else {
-                return copy(context.getClientRandom());
-            }
+            return copy(context.getClientRandom());
         } else {
             return config.getDefaultClientRandom();
         }
     }
 
     @Override
-    public byte[] getClientExtendedRandom(){
-        if(context.getClientExtendedRandom() != null){
+    public byte[] getClientExtendedRandom() {
+        if (context.getClientExtendedRandom() != null) {
             return copy(context.getClientExtendedRandom());
         } else {
             return config.getDefaultClientExtendedRandom();
@@ -295,8 +290,8 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getServerExtendedRandom(){
-        if(context.getServerExtendedRandom() != null){
+    public byte[] getServerExtendedRandom() {
+        if (context.getServerExtendedRandom() != null) {
             return copy(context.getServerExtendedRandom());
         } else {
             return config.getDefaultServerExtendedRandom();
@@ -304,18 +299,13 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes
-     * to the Server Random
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Server Random
      */
     @Override
     public byte[] getServerRandom() {
         if (context.getServerRandom() != null) {
-            if(context.getServerExtendedRandom() != null && context.getClientExtendedRandom() != null){
-                byte[] concatRandom = ArrayConverter.concatenate(context.getServerRandom(),context.getServerExtendedRandom());
-                return concatRandom;
-            } else {
-                return copy(context.getServerRandom());
-            }
+            return copy(context.getServerRandom());
         } else {
             return config.getDefaultServerRandom();
         }

@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import java.util.Collection;
@@ -14,7 +23,9 @@ import org.junit.runners.Parameterized;
 public class ExtendedRandomExtensionSerializerTest {
 
     @Parameterized.Parameters
-    public static Collection<Object[]> generateData() { return ExtendedRandomExtensionParserTest.generateData(); }
+    public static Collection<Object[]> generateData() {
+        return ExtendedRandomExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -23,7 +34,7 @@ public class ExtendedRandomExtensionSerializerTest {
     private ExtendedRandomExtensionMessage message;
 
     public ExtendedRandomExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-                                                 byte[] extendedRandom, byte[] expectedBytes, int startParsing){
+            byte[] extendedRandom, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;
@@ -31,11 +42,12 @@ public class ExtendedRandomExtensionSerializerTest {
     }
 
     @Test
-    public void testSerializeExtensionContent(){
+    public void testSerializeExtensionContent() {
         message = new ExtendedRandomExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
         message.setExtendedRandom(extendedRandom);
+        message.setExtendedRandomLength(extendedRandom.length);
 
         ExtendedRandomExtensionSerializer serializer = new ExtendedRandomExtensionSerializer(message);
 

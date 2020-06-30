@@ -48,11 +48,6 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
 
     @Override
     public void adjustTLSExtensionContext(ExtendedRandomExtensionMessage message) {
-        if (message.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in Extended Random Draft. "
-                    + "Length was " + message.getExtensionLength().getValue());
-        }
-
         if (context.getTalkingConnectionEndType().equals(ConnectionEndType.SERVER)) {
             context.setServerExtendedRandom(message.getExtendedRandom().getValue());
             LOGGER.debug("The context server extended Random was set to "
@@ -64,6 +59,21 @@ public class ExtendedRandomExtensionHandler extends ExtensionHandler<ExtendedRan
             LOGGER.debug("The context client extended Random was set to "
                     + ArrayConverter.bytesToHexString(message.getExtendedRandom()));
 
+        }
+
+        // If both extended Randoms are received (i.e. client and server agreed
+        // on using extended Random)
+        // then extend the client and server random for premaster computations.
+        if (!(context.getClientExtendedRandom() == null) && !(context.getServerExtendedRandom() == null)) {
+            LOGGER.debug("Extended Random was agreed on. Concatenating extended Randoms to normal Randoms.");
+            byte[] clientConcatRandom = ArrayConverter.concatenate(context.getClientRandom(),
+                    context.getClientExtendedRandom());
+            byte[] serverConcatRandom = ArrayConverter.concatenate(context.getServerRandom(),
+                    context.getServerExtendedRandom());
+            context.setClientRandom(clientConcatRandom);
+            LOGGER.debug("ClientRandom: " + ArrayConverter.bytesToHexString(context.getClientRandom()));
+            context.setServerRandom(serverConcatRandom);
+            LOGGER.debug("ServerRandom: " + ArrayConverter.bytesToHexString(context.getServerRandom()));
         }
 
     }

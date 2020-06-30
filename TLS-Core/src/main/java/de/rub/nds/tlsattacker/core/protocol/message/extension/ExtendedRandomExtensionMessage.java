@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -22,6 +23,9 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableByteArray extendedRandom;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger extendedRandomLength;
 
     public ExtendedRandomExtensionMessage() {
         super(ExtensionType.EXTENDED_RANDOM);
@@ -37,6 +41,18 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     public ModifiableByteArray getExtendedRandom() {
         return extendedRandom;
+    }
+
+    public ModifiableInteger getExtendedRandomLength() {
+        return extendedRandomLength;
+    }
+
+    public void setExtendedRandomLength(int length) {
+        this.extendedRandomLength = ModifiableVariableFactory.safelySetValue(extendedRandomLength, length);
+    }
+
+    public void setExtendedRandomLength(ModifiableInteger pointFormatsLength) {
+        this.extendedRandomLength = pointFormatsLength;
     }
 
 }

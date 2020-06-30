@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -17,11 +26,11 @@ import java.util.Collection;
 public class ExtendedRandomExtensionParserTest {
 
     @Parameterized.Parameters
-    public static Collection<Object[]> generateData(){
-        return Arrays.asList(new Object[][]{{ExtensionType.EXTENDED_RANDOM,0,new byte[0],
-                ArrayConverter.hexStringToByteArray("00280000"),0} });
+    public static Collection<Object[]> generateData() {
+        return Arrays
+                .asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3, ArrayConverter.hexStringToByteArray("AB"),
+                        ArrayConverter.hexStringToByteArray("002800030001AB"), 0 } });
     }
-
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -41,7 +50,7 @@ public class ExtendedRandomExtensionParserTest {
      * @param startParsing
      */
     public ExtendedRandomExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extendedRandom,
-                                             byte[] expectedBytes, int startParsing){
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;
@@ -50,12 +59,12 @@ public class ExtendedRandomExtensionParserTest {
     }
 
     @Before
-    public void setUp(){
+    public void setUp() {
         parser = new ExtendedRandomExtensionParser(startParsing, exptectedBytes);
     }
 
     @Test
-    public void testParseExtensionMessageContent(){
+    public void testParseExtensionMessageContent() {
         message = parser.parse();
 
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
@@ -63,7 +72,5 @@ public class ExtendedRandomExtensionParserTest {
         assertArrayEquals(extendedRandom, message.getExtendedRandom().getValue());
 
     }
-
-
 
 }

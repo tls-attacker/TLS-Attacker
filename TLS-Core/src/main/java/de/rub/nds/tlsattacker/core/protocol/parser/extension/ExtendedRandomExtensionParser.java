@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,13 +30,14 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
 
     @Override
     public void parseExtensionMessageContent(ExtendedRandomExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The extended Random length shouldn't exceed 2 bytes as defined in Extended Random Draft. "
-                    + "Length was " + msg.getExtensionLength().getValue());
-        }
-
-        msg.setExtendedRandom(parseByteArrayField(msg.getExtensionLength().getValue()));
+        parseExtendedRandomLength(msg);
+        msg.setExtendedRandom(parseByteArrayField(msg.getExtendedRandomLength().getValue()));
         LOGGER.debug("The extended Random TLS parser parsed the value " + bytesToHexString(msg.getExtendedRandom()));
+    }
+
+    private void parseExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
+        msg.setExtendedRandomLength(parseIntField(ExtensionByteLength.EXTENDED_RANDOM_LENGTH));
+        LOGGER.debug("ExtendedRandomLength : " + msg.getExtendedRandomLength().getValue());
     }
 
     @Override

@@ -76,5 +76,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
         return version;
     }
 
-    protected Config getConfig() {return config; }
+    protected Config getConfig() {
+        return config;
+    }
 }

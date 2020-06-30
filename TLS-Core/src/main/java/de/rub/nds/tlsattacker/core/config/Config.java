@@ -1420,32 +1420,8 @@ public class Config implements Serializable {
         return parseKeyShareOld;
     }
 
-    /**
-     * This method allows type 40 extensions to be parsed as key share
-     * extensions as defined in TLS13 Draft 14 - 22. Note, that if this is set
-     * to FALSE, type 40 extensions will be parsed as Extended Random. When
-     * TLS13 Draft 14 - 22 are set to be supported, this method defaults to
-     * TRUE.
-     * 
-     * @param parseKeyShareOld
-     *            set to True when type 40 extensions should be parsed as key
-     *            share extensions
-     */
     public void setParseKeyShareOld(boolean parseKeyShareOld) {
-        // Disallow extended Random for TLS13_DRAFT14-22
-        List<ProtocolVersion> keyShareDrafts = ProtocolVersion.getOldKeyShareVersions();
-        if (Collections.disjoint(keyShareDrafts, getSupportedVersions())) {
-            this.parseKeyShareOld = parseKeyShareOld;
-        } else {
-            LOGGER.warn("Supported ProtocolVersions contains at least one of TLS13 Drafts using "
-                    + "old Key Share Extension. Defaulting to TRUE.");
-            this.parseKeyShareOld = true;
-            if(this.isAddExtendedRandomExtension()){
-                LOGGER.warn("Disabling extended Random Extension as old Key Share Extension" +
-                        "overwrites it in one of the currently supported Versions");
-                this.setAddExtendedRandomExtension(false);
-            }
-        }
+        this.parseKeyShareOld = parseKeyShareOld;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -1897,30 +1873,8 @@ public class Config implements Serializable {
         return this.addExtendedRandomExtension;
     }
 
-    /**
-     * Adds the extended Random Extension to the Handshake messages. If
-     * parseKeyShareOld is set to TRUE, extended Random is NOT supported and
-     * this method will default to FALSE.
-     * 
-     * @param addExtendedRandomExtension
-     *            set to TRUE if extended Random Extension should be added to
-     *            Handshake message
-     */
     public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) {
-        if (isParseKeyShareOld()) {
-            LOGGER.warn("Can't add Extended Random Extension while "
-                    + "old Key Share extension is supported. Defaulting to FALSE.");
-            this.addExtendedRandomExtension = false;
-        } else {
-            this.addExtendedRandomExtension = addExtendedRandomExtension;
-            if(!Collections.disjoint(supportedVersions,ProtocolVersion.getOldKeyShareVersions())){
-                if(isAddKeyShareExtension()){
-                    LOGGER.warn("Removing Key Share Extension as parseKeyShareOld is FALSE and" +
-                            "extended Random Extension is set to be added while supporting old TLS13 Drafts.");
-                    setAddKeyShareExtension(false);
-                }
-            }
-        }
+        this.addExtendedRandomExtension = addExtendedRandomExtension;
     }
 
     public byte[] getDefaultClientExtendedRandom() {
@@ -2451,32 +2405,11 @@ public class Config implements Serializable {
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
-        // Disable extended Random Extension support for TLS13_Drafts 14-22
-        List<ProtocolVersion> keyShareDrafts = ProtocolVersion.getOldKeyShareVersions();
-        if (!Collections.disjoint(keyShareDrafts, supportedVersions)) {
-            this.setParseKeyShareOld(true);
-            if(this.isAddExtendedRandomExtension()){
-                LOGGER.warn("Disabling extended Random Extension as old Key Share Extension" +
-                        "overwrites it in one of the currently supported Versions");
-                this.setAddExtendedRandomExtension(false);
-            }
-        }
         this.supportedVersions = supportedVersions;
     }
 
     public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
-        List<ProtocolVersion> supportedVersionList = new ArrayList(Arrays.asList(supportedVersions));
-        // Disable extended Random Extension support for TLS13_Drafts 14-22
-        List<ProtocolVersion> keyShareDrafts = ProtocolVersion.getOldKeyShareVersions();
-        if (!Collections.disjoint(keyShareDrafts, supportedVersionList)) {
-            this.setParseKeyShareOld(true);
-            if(this.isAddExtendedRandomExtension()){
-                LOGGER.warn("Disabling extended Random Extension as old Key Share Extension" +
-                        "overwrites it in one of the currently supported Versions");
-                this.setAddExtendedRandomExtension(false);
-            }
-        }
-        this.supportedVersions = supportedVersionList;
+        this.supportedVersions = new ArrayList(Arrays.asList(supportedVersions));
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -2556,13 +2489,6 @@ public class Config implements Serializable {
     }
 
     public void setAddKeyShareExtension(Boolean addKeyShareExtension) {
-        if(parseKeyShareOld || !Collections.disjoint(supportedVersions,ProtocolVersion.getOldKeyShareVersions())){
-            if(isAddExtendedRandomExtension()){
-                LOGGER.warn("Disabling extended Random Extension as old Key Share Extension" +
-                        "overwrites it in one of the currently supported Versions");
-                setAddExtendedRandomExtension(false);
-            }
-        }
         this.addKeyShareExtension = addKeyShareExtension;
     }
 
