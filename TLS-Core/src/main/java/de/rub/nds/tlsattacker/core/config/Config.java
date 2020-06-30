@@ -901,7 +901,7 @@ public class Config implements Serializable {
 
     // Parse Extensions of Type 40 as key share extension instead of
     // Extended Random like in TLS13-Drafts 14 - 22.
-    private Boolean parseKeyShareOld = false;
+    private Boolean parseKeyShareOld = true;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
