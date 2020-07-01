@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -150,13 +151,20 @@ public class CcaCertificateGenerator {
         // Parse leaf certificate for CertificateKeyPair
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
 
-        try {
-            certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate, certificate,
+        if (certificate != null) {
+            try {
+                certificateKeyPair = new CertificateKeyPair(certificate,
+                        (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
+                        (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
+            } catch (IOException ioe) {
+                LOGGER.error("IOE while creating CertificateKeyPair");
+                return null;
+            }
+        } else {
+            certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate,
                     (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
                     (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
-        } catch (IOException ioe) {
-            LOGGER.error("IOE while creating CertificateKeyPair");
-            return null;
+
         }
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
 
@@ -165,9 +173,10 @@ public class CcaCertificateGenerator {
 
     private static Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(lengthBytes + 3, 3), ArrayConverter.intToBytes(lengthBytes, 3),
-                    bytesToParse));
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
+                    .intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
+                            HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter.intToBytes(lengthBytes,
+                    HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (Exception E) {
             return null;
