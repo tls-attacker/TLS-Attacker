@@ -23,7 +23,7 @@ public class CcaFileManager {
 
     private static Map<String, CcaFileManager> references = new HashMap<>();
 
-    private File fileDirectory = new File("");
+    private File fileDirectory;
 
     private final Map<String, byte[]> fileMap = new HashMap<>();
 
