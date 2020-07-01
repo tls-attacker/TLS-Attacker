@@ -251,7 +251,6 @@ public class CcaCertificateManager {
                     customPrivateKey = new CustomDSAPrivateKey(x2, primeP, primeQ, generator);
                     customPublicKey = new CustomDsaPublicKey(primeP, primeQ, generator, y2);
                     break;
-                case ECDH:
                 case ECDSA:
                     keyBytes = keyFileManager.getKeyFileContent(keyName);
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
@@ -264,7 +263,6 @@ public class CcaCertificateManager {
                     customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
                     customPublicKey = new CustomEcPublicKey(x3.getAffineX(), x3.getAffineY(), nGroup);
                     break;
-                case KEA:
                 default:
                     LOGGER.error("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
                     return null;
