@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +25,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class CcaCertificateGenerator {
 
@@ -128,25 +125,26 @@ public class CcaCertificateGenerator {
 
         Logger LOGGER = LogManager.getLogger();
 
-        // Declare variables for later use
         CertificateMessage certificateMessage = new CertificateMessage();
         List<CertificatePair> certificatePairList = new LinkedList<>();
         CertificatePair certificatePair;
         byte[] encodedLeafCertificate;
-        byte[][] encodedCertificates;
         CertificateKeyPair certificateKeyPair;
 
         CcaCertificateManager ccaCertificateManager = CcaCertificateManager.getReference(ccaDelegate);
-        Map.Entry entry = ccaCertificateManager.getCertificateList(ccaCertificateType);
+        CcaCertificateChain ccaCertificateChain = ccaCertificateManager.getCertificateChain(ccaCertificateType);
 
-        encodedCertificates = (byte[][]) entry.getKey();
-        encodedLeafCertificate = encodedCertificates[0];
-        for (byte[] certificate : encodedCertificates) {
+
+
+        encodedLeafCertificate = ccaCertificateChain.getEncodedCertificates().get(0);
+
+        for (byte[] certificate : ccaCertificateChain.getEncodedCertificates()) {
             if (certificate.length > 0) {
                 certificatePair = new CertificatePair(certificate);
                 certificatePairList.add(certificatePair);
             }
         }
+
         certificateMessage.setCertificatesList(certificatePairList);
         // Parse leaf certificate for CertificateKeyPair
         Certificate certificate = parseCertificate(encodedLeafCertificate.length, encodedLeafCertificate);
@@ -154,16 +152,16 @@ public class CcaCertificateGenerator {
         if (certificate != null) {
             try {
                 certificateKeyPair = new CertificateKeyPair(certificate,
-                        (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
-                        (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
+                        (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
+                        (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
             } catch (IOException ioe) {
                 LOGGER.error("IOE while creating CertificateKeyPair");
                 return null;
             }
         } else {
             certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate,
-                    (PrivateKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getKey(),
-                    (PublicKey) ((Map.Entry<CustomPrivateKey, CustomPublicKey>) entry.getValue()).getValue());
+                    (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
+                    (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
 
         }
         certificateMessage.setCertificateKeyPair(certificateKeyPair);

@@ -43,11 +43,10 @@ import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECPoint;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+
 
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
@@ -58,7 +57,7 @@ public class CcaCertificateManager {
     private static Logger LOGGER = LogManager.getLogger();
 
     private static CcaCertificateManager reference = null;
-    private final Map<CcaCertificateType, Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>> certificateKeyMap = new HashMap<>();
+    private final Map<CcaCertificateType, CcaCertificateChain> certificateKeyMap = new HashMap<>();
     private CcaDelegate ccaDelegate = null;
 
     private CcaCertificateManager(CcaDelegate ccaDelegate) {
@@ -111,20 +110,18 @@ public class CcaCertificateManager {
             if (ccaCertificateType.getRequiresCaCertAndKeys()) {
                 this.certificateKeyMap.put(ccaCertificateType, generateCertificateListFromXML(ccaCertificateType));
             } else if (ccaCertificateType.getRequiresCertificate()) {
-                this.certificateKeyMap.put(
-                        ccaCertificateType,
-                        new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(new byte[][] { ccaDelegate
-                                .getClientCertificate() }, null));
+                CcaCertificateChain ccaCertificateChain = new CcaCertificateChain();
+                ccaCertificateChain.appendEncodedCertificate(ccaDelegate.getClientCertificate());
+                this.certificateKeyMap.put( ccaCertificateType, ccaCertificateChain);
             } else {
-                this.certificateKeyMap.put(ccaCertificateType,
-                        new SimpleEntry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>>(
-                                new byte[][] { new byte[0] }, null));
+                CcaCertificateChain ccaCertificateChain = new CcaCertificateChain();
+                ccaCertificateChain.appendEncodedCertificate(new byte[0]);
+                this.certificateKeyMap.put(ccaCertificateType, ccaCertificateChain);
             }
         }
     }
 
-    public Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> getCertificateList(
-            CcaCertificateType ccaCertificateType) {
+    public CcaCertificateChain getCertificateChain(CcaCertificateType ccaCertificateType) {
         if (this.certificateKeyMap.containsKey(ccaCertificateType)) {
             return this.certificateKeyMap.get(ccaCertificateType);
         } else {
@@ -133,7 +130,7 @@ public class CcaCertificateManager {
         return null;
     }
 
-    private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(
+    private CcaCertificateChain generateCertificateListFromXML(
             CcaCertificateType ccaCertificateType) {
 
         // Declare variables for later use
@@ -183,10 +180,11 @@ public class CcaCertificateManager {
 
 
         List<Asn1Encodable> certificates = asn1XmlContent.getAsn1Encodables();
-        byte[][] encodedCertificates = new byte[certificates.size()][];
+
+        CcaCertificateChain ccaCertificateChain = new CcaCertificateChain();
         for (int i = 0; i < certificates.size(); i++) {
             Asn1Encodable certificate = certificates.get(i);
-            encodedCertificates[i] = Asn1EncoderForX509.encodeForCertificate(linker, certificate);
+            ccaCertificateChain.appendEncodedCertificate(Asn1EncoderForX509.encodeForCertificate(linker, certificate));
             if (certificate instanceof Asn1Sequence && readKey == false) {
                 keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFile();
                 pubKeyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getPubKeyFile();
@@ -263,14 +261,13 @@ public class CcaCertificateManager {
             return null;
         }
 
-        try {
-            writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
-        } catch (IOException ioe) {
-            LOGGER.error("Couldn't write certificates to output directory. " + ioe);
-            return null;
-        }
-        return new SimpleEntry<>(encodedCertificates, (Entry<CustomPrivateKey, CustomPublicKey>) (new SimpleEntry<>(
-                customPrivateKey, customPublicKey)));
+        ccaCertificateChain.setLeafCertificatePrivateKey(customPrivateKey);
+        ccaCertificateChain.setLeafCertificatePublicKey(customPublicKey);
+
+        saveCertificateChainToFile(certificateOutputDirectory, certificates, ccaCertificateChain);
+
+
+        return ccaCertificateChain;
     }
 
     /**
@@ -293,6 +290,24 @@ public class CcaCertificateManager {
         xmlString = xmlString.replace(needle, replacement + rootCaSubject);
         xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificateKeyName);
         return xmlString;
+    }
+
+    /**
+     * This is a wrapper function to write a generated certificate chain to disk. This is needed since X.509-Attacker still uses a two dimensional byte array for encoded certificates rather than a LinkedList.
+     * @param outputDirectory
+     * @param certificates
+     * @param ccaCertificateChain
+     */
+    private void saveCertificateChainToFile(String outputDirectory, List<Asn1Encodable> certificates, CcaCertificateChain ccaCertificateChain) {
+        byte[][] encodedCertificates = new byte[certificates.size()][];
+        for(int i = 0; i < ccaCertificateChain.getEncodedCertificates().size(); i++) {
+            encodedCertificates[i] = ccaCertificateChain.getEncodedCertificates().get(i);
+        }
+        try {
+            writeCertificates(outputDirectory, certificates, encodedCertificates);
+        } catch (IOException ioe) {
+            LOGGER.error("Couldn't write certificates to output directory. " + ioe);
+        }
     }
 
 }
