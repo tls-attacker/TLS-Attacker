@@ -161,7 +161,6 @@ public class CcaCertificateManager {
         String xmlString = new String(ccaFileManager.getFileContent(ccaCertificateType.toString() + ".xml"));
 
         if (xmlString == null) {
-            LOGGER.error("Failed to get content of XML file.");
             return null;
         }
 
