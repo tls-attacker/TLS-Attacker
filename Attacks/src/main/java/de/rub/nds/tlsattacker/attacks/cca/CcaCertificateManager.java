@@ -156,6 +156,13 @@ public class CcaCertificateManager {
 
         CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
 
+        KeyFileManager keyFileManager = KeyFileManager.getReference();
+        try {
+            keyFileManager.init(keyDirectory);
+        } catch (KeyFileManagerException kfme) {
+            LOGGER.error("Failed to initialize KeyFileManager. " + kfme);
+        }
+
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
 
         String xmlString = new String(ccaFileManager.getFileContent(ccaCertificateType.toString() + ".xml"));
@@ -169,22 +176,12 @@ public class CcaCertificateManager {
         XmlParser xmlParser = new XmlParser(xmlString);
         Asn1XmlContent asn1XmlContent = xmlParser.getAsn1XmlContent();
         Map<String, Asn1Encodable> identifierMap = xmlParser.getIdentifierMap();
-
-        // Create links
         Linker linker = new Linker(identifierMap);
-
-        // Load key files
-        KeyFileManager keyFileManager = KeyFileManager.getReference();
-        try {
-            keyFileManager.init(keyDirectory);
-        } catch (KeyFileManagerException kfme) {
-            LOGGER.error("Failed to initialize KeyFileManager. " + kfme);
-        }
 
         XmlSignatureEngine xmlSignatureEngine = new XmlSignatureEngine(linker, identifierMap);
         xmlSignatureEngine.computeSignatures();
 
-        // Encode XML for certificate
+
         List<Asn1Encodable> certificates = asn1XmlContent.getAsn1Encodables();
         byte[][] encodedCertificates = new byte[certificates.size()][];
         for (int i = 0; i < certificates.size(); i++) {
@@ -198,7 +195,6 @@ public class CcaCertificateManager {
             }
         }
 
-        // Parse private key and instantiate correct CustomPrivateKey
         CcaCertificateKeyType ccaCertificateKeyType = CcaCertificateKeyType.fromJavaName(keyType.toLowerCase());
         try {
             switch (ccaCertificateKeyType) {
