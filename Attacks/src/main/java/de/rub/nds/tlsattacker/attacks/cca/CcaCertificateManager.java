@@ -136,8 +136,6 @@ public class CcaCertificateManager {
     private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(
             CcaCertificateType ccaCertificateType) {
 
-        // Logger for errors
-        Logger LOGGER = LogManager.getLogger();
 
         // Declare variables for later use
         String keyName = "Default non existent key";
