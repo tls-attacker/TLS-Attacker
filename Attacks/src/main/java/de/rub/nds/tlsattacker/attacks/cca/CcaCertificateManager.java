@@ -164,13 +164,8 @@ public class CcaCertificateManager {
             return null;
         }
 
-        String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
-        String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
-        xmlString = xmlString.replace(needle, replacement + xmlSubject);
+        xmlString = replacePlaceholders(xmlString, rootCertificate, xmlSubject);
 
-        xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificate);
-
-        // Parse XML
         XmlParser xmlParser = new XmlParser(xmlString);
         Asn1XmlContent asn1XmlContent = xmlParser.getAsn1XmlContent();
         Map<String, Asn1Encodable> identifierMap = xmlParser.getIdentifierMap();
@@ -281,4 +276,27 @@ public class CcaCertificateManager {
         return new SimpleEntry<>(encodedCertificates, (Entry<CustomPrivateKey, CustomPublicKey>) (new SimpleEntry<>(
                 customPrivateKey, customPublicKey)));
     }
+
+    /**
+     *
+     * @param xmlString
+     *            Content of the XML file describing the certificate chain.
+     * @param rootCertificateKeyName
+     *            Name of the root certificates key.
+     * @param rootCaSubject
+     *            ASN.1 Subject of the root certificate encoded as a hex string.
+     * @return The xmlString in which the placeholder for the issuer (which is
+     *         the root CA) has been replaced with the hex string encoding the
+     *         root CAs subject. Additionally, the key placeholder has been
+     *         replaced with the filename of the keyfile of the root CA
+     *         certificate.
+     */
+    private String replacePlaceholders(String xmlString, String rootCertificateKeyName, String rootCaSubject) {
+        String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
+        String replacement = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\"><value>";
+        xmlString = xmlString.replace(needle, replacement + rootCaSubject);
+        xmlString = xmlString.replace("replace_me_im_a_dummy_key", rootCertificateKeyName);
+        return xmlString;
+    }
+
 }

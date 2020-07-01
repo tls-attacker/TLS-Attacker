@@ -16,5 +16,6 @@ public class EmptyClientComputations extends KeyExchangeComputations {
     }
 
     @Override
-    public void setSecretsInConfig(Config config) { }
+    public void setSecretsInConfig(Config config) {
+    }
 }
