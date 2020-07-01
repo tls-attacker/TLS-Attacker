@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -88,8 +90,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
                     EllipticCurve curve = CurveFactory.getCurve(usedGroup);
-                    Point publicKey;
-                    publicKey = chooser.getServerEcPublicKey();
+                    Point publicKey = chooser.getServerEcPublicKey();
                     premasterSecret = computeECPremasterSecret(curve, publicKey, chooser.getClientEcPrivateKey());
                 } else {
                     LOGGER.debug("Not Implemented.");
