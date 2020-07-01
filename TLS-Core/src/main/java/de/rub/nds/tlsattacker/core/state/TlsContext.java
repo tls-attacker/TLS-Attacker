@@ -696,6 +696,9 @@ public class TlsContext {
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
         random = new Random(0);
+        if (config.isStealthMode()) {
+            random = new Random();
+        }
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);

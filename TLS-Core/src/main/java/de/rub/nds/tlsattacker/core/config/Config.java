@@ -698,6 +698,11 @@ public class Config implements Serializable {
      */
     private Boolean earlyStop = false;
 
+    /**
+     * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not deterministic.
+     */
+    private Boolean stealthMode = false;
+
     private Boolean stopActionsAfterIOException = false;
 
     private Boolean stopTraceAfterUnexpected = false;
@@ -1469,6 +1474,14 @@ public class Config implements Serializable {
 
     public void setEarlyStop(Boolean earlyStop) {
         this.earlyStop = earlyStop;
+    }
+
+    public Boolean isStealthMode() {
+        return stealthMode;
+    }
+
+    public void setStealthMode(Boolean stealthMode) {
+        this.stealthMode = stealthMode;
     }
 
     public Point getDefaultTokenBindingECPublicKey() {
