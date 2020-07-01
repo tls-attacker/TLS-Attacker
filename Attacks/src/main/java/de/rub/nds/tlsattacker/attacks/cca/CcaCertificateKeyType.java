@@ -9,15 +9,14 @@
 package de.rub.nds.tlsattacker.attacks.cca;
 
 public enum CcaCertificateKeyType {
-    RSA("rsa", "1.2.840.113549.1.1.1"),
-    DH( "dh", "1.2.840.113549.1.3.1"),
-    DSA("dsa", "1.2.840.10040.4.1"),
-    ECDSA("ecdsa", "1.2.840.10045.2.1");
+    RSA("rsa"),
+    DH( "dh"),
+    DSA("dsa"),
+    ECDSA("ecdsa");
 
     private String javaName;
-    private String oid;
 
-    CcaCertificateKeyType(String javaName, String oid) {
+    CcaCertificateKeyType(String javaName) {
         this.javaName = javaName;
     }
 
@@ -30,18 +29,8 @@ public enum CcaCertificateKeyType {
         return null;
     }
 
-    public static CcaCertificateKeyType fromOid(String oid) {
-        for (CcaCertificateKeyType ccaCertificateKeyType : values()) {
-            if (ccaCertificateKeyType.getOid().equals(oid)) {
-                return ccaCertificateKeyType;
-            }
-        }
-        return null;
-    }
-    
     public String getJavaName() {
         return javaName;
     }
 
-    public String getOid() { return oid; }
 }
