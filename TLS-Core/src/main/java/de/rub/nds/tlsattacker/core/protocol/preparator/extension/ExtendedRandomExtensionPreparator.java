@@ -40,20 +40,17 @@ public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<Exten
     public void prepareExtensionContent() {
         // Send specific extended Random based on current role in handshake
         if (chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)) {
-            LOGGER.debug("Offering Extended Random as Client.");
+            LOGGER.debug("Preparing Client Extended Random of Extended Random Extension Message.");
             message.setExtendedRandom(chooser.getClientExtendedRandom());
             LOGGER.debug("Prepared the Client Extended Random with value "
                     + ArrayConverter.bytesToHexString(message.getExtendedRandom().getValue()));
         }
         if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
-            LOGGER.debug("Accepting Extended Random of Client.");
+            LOGGER.debug("Preparing Server Extended Random of Extended Random Extension Message.");
             if (!(chooser.getServerExtendedRandom().length == chooser.getClientExtendedRandom().length)) {
-                LOGGER.debug("Extended Random of Client is not same length as Default Extended Random."
-                        + "Generating fresh Extended Random of appropriate length.");
+                LOGGER.debug("Extended Random of Client is not same length as Default Server Extended Random."
+                        + " Generating fresh Server Extended Random of appropriate length.");
                 byte[] generatedExtendedRandom = prepareExtendedRandom(chooser.getClientExtendedRandom().length);
-                // Update Context with new Server extended Random
-                LOGGER.debug("Updating Server Extended Random of current Context.");
-                chooser.getContext().setServerExtendedRandom(generatedExtendedRandom);
                 message.setExtendedRandom(generatedExtendedRandom);
             } else {
                 message.setExtendedRandom(chooser.getServerExtendedRandom());

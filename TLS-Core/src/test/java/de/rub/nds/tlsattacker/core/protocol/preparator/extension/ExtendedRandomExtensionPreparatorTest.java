@@ -89,17 +89,14 @@ public class ExtendedRandomExtensionPreparatorTest {
     }
 
     @Test
-    public void testGenerateSameLengthExtendedRandom() {
+    public void testPrepareSameLengthRandom() {
         context.getConfig().setAddExtendedRandomExtension(true);
         context.getConfig().setDefaultClientExtendedRandom(extendedRandomLong);
-        InboundConnection serverConnection = new InboundConnection();
-        context.setConnection(serverConnection);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(), extendedRandomLong.length);
-        assertEquals(extendedRandomLong.length, message.getExtendedRandom().getValue().length);
-        assertEquals(extendedRandomLong.length, context.getChooser().getServerExtendedRandom().length);
+        assertEquals(message.getExtendedRandomLength().getValue().intValue(), context.getConfig()
+                .getDefaultClientExtendedRandom().length);
     }
 
     @Test

@@ -70,6 +70,8 @@ public class ExtensionParserFactory {
                     parser = new ExtendedRandomExtensionParser(pointer, extensionBytes);
                     break;
                 }
+                // No break here. Invoke getKeyShareParser in case KEY_SHARE_OLD by
+                // falling through to the next case (i.e. KEY_SHARE).
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, type);
                 break;
