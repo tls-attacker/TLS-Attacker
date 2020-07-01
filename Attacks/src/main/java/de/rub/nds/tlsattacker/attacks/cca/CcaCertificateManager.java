@@ -59,19 +59,8 @@ public class CcaCertificateManager {
     private final Map<CcaCertificateType, CcaCertificateChain> certificateKeyMap = new HashMap<>();
     private CcaDelegate ccaDelegate = null;
 
-    private CcaCertificateManager(CcaDelegate ccaDelegate) {
+    public CcaCertificateManager(CcaDelegate ccaDelegate) {
         this.init(ccaDelegate);
-    }
-
-    public static CcaCertificateManager getReference(CcaDelegate ccaDelegate) {
-        if (reference == null) {
-            synchronized (CcaCertificateManager.class) {
-                if (reference == null) {
-                    reference = new CcaCertificateManager(ccaDelegate);
-                }
-            }
-        }
-        return reference;
     }
 
     private static String extractXMLCertificateSubject(String certificateInputDirectory, String rootCertificate) {

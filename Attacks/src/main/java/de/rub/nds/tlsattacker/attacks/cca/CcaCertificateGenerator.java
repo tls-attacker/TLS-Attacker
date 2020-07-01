@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.cca;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
-import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -30,17 +29,19 @@ public class CcaCertificateGenerator {
 
     /**
      *
-     * @param ccaDelegate
+     * @param ccaCertificateManager
      * @param ccaCertificateType
      * @return
      */
-    public static CertificateMessage generateCertificate(CcaDelegate ccaDelegate, CcaCertificateType ccaCertificateType) {
+    public static CertificateMessage generateCertificate(CcaCertificateManager ccaCertificateManager,
+            CcaCertificateType ccaCertificateType) {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (ccaCertificateType != null) {
             switch (ccaCertificateType) {
                 case CLIENT_INPUT:
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
-                    CertificatePair certificatePair = new CertificatePair(ccaDelegate.getClientCertificate());
+                    CertificatePair certificatePair = new CertificatePair(ccaCertificateManager
+                            .getCertificateChain(ccaCertificateType).getEncodedCertificates().get(0));
                     certificatePairsList.add(certificatePair);
                     certificateMessage.setCertificatesList(certificatePairsList);
                     break;
@@ -111,7 +112,7 @@ public class CcaCertificateGenerator {
                 case ROOTv3_CAv3_LEAF_ECv3:
                 case DSAROOTv3_CAv3_LEAF_DHv3:
                 case ROOTv3_CAv3_LEAFv3_nLEAF_RSAv3:
-                    certificateMessage = generateCertificateMessage(ccaDelegate, ccaCertificateType);
+                    certificateMessage = generateCertificateMessage(ccaCertificateManager, ccaCertificateType);
                     break;
                 default:
                     break;
@@ -120,7 +121,7 @@ public class CcaCertificateGenerator {
         return certificateMessage;
     }
 
-    private static CertificateMessage generateCertificateMessage(CcaDelegate ccaDelegate,
+    private static CertificateMessage generateCertificateMessage(CcaCertificateManager ccaCertificateManager,
             CcaCertificateType ccaCertificateType) {
 
         Logger LOGGER = LogManager.getLogger();
@@ -131,7 +132,6 @@ public class CcaCertificateGenerator {
         byte[] encodedLeafCertificate;
         CertificateKeyPair certificateKeyPair;
 
-        CcaCertificateManager ccaCertificateManager = CcaCertificateManager.getReference(ccaDelegate);
         CcaCertificateChain ccaCertificateChain = ccaCertificateManager.getCertificateChain(ccaCertificateType);
 
         encodedLeafCertificate = ccaCertificateChain.getEncodedCertificates().get(0);

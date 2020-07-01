@@ -8,16 +8,14 @@
  */
 package de.rub.nds.tlsattacker.attacks.task;
 
+import de.rub.nds.tlsattacker.attacks.cca.CcaCertificateManager;
 import de.rub.nds.tlsattacker.attacks.cca.CcaWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.cca.vector.CcaVector;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,25 +29,25 @@ public class CcaTask extends TlsTask {
     private final CcaVector ccaVector;
     private State state;
     private final Config tlsConfig;
-    private final CcaDelegate ccaDelegate;
+    private final CcaCertificateManager ccaCertificateManager;
 
-    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, int reexecutions) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager, int reexecutions) {
         super(reexecutions);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
-        this.ccaDelegate = ccaDelegate;
+        this.ccaCertificateManager = ccaCertificateManager;
     }
 
-    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaDelegate ccaDelegate, long additionalTimeout,
-            boolean increasingTimeout, int reexecutions, long additionalTcpTimeout) {
+    public CcaTask(CcaVector ccaVector, Config tlsConfig, CcaCertificateManager ccaCertificateManager,
+            long additionalTimeout, boolean increasingTimeout, int reexecutions, long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.ccaVector = ccaVector;
         this.tlsConfig = tlsConfig;
-        this.ccaDelegate = ccaDelegate;
+        this.ccaCertificateManager = ccaCertificateManager;
     }
 
     private State prepareState() {
-        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaDelegate,
+        WorkflowTrace trace = CcaWorkflowGenerator.generateWorkflow(tlsConfig, ccaCertificateManager,
                 ccaVector.getCcaWorkflowType(), ccaVector.getCcaCertificateType());
         State state = new State(tlsConfig, trace);
         return state;
