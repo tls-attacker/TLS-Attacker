@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.PublicKeyType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
@@ -80,10 +81,10 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
 
             String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0)
                     .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
-            if (algorithm == "1.2.840.113549.1.3.1") {
+            if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
                 premasterSecret = calculatePremasterSecret(chooser.getClientDhModulus(),
                         chooser.getDhClientPrivateKey(), chooser.getDhClientPublicKey());
-            } else if (algorithm == "1.2.840.10045.2.1") {
+            } else if (PublicKeyType.fromOid(algorithm) == PublicKeyType.ECDSA) {
                 if (clientMode) {
 
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();

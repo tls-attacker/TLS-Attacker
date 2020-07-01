@@ -136,7 +136,6 @@ public class CcaCertificateManager {
     private Entry<byte[][], Entry<CustomPrivateKey, CustomPublicKey>> generateCertificateListFromXML(
             CcaCertificateType ccaCertificateType) {
 
-
         // Declare variables for later use
         String keyName = null;
         String pubKeyName = null;
@@ -154,7 +153,6 @@ public class CcaCertificateManager {
         String xmlDirectory = ccaDelegate.getXmlDirectory() + "/";
         String certificateInputDirectory = ccaDelegate.getCertificateInputDirectory() + "/";
         String certificateOutputDirectory = ccaDelegate.getCertificateOutputDirectory() + "/";
-
 
         CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
 

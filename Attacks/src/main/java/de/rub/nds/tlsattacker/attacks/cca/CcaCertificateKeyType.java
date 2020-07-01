@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.cca;
 
 public enum CcaCertificateKeyType {
     RSA("rsa"),
-    DH( "dh"),
+    DH("dh"),
     DSA("dsa"),
     ECDSA("ecdsa");
 
