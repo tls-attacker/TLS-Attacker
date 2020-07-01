@@ -70,6 +70,10 @@ public class State {
     private final WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
+    private long startTimestamp;
+
+    private long endTimestamp;
+
     public State() {
         this(Config.createConfig());
     }
@@ -326,4 +330,19 @@ public class State {
         throw new ConfigurationException(err.toString());
     }
 
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(long startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
 }
