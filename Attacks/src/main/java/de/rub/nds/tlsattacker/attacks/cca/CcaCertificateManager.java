@@ -138,9 +138,9 @@ public class CcaCertificateManager {
 
 
         // Declare variables for later use
-        String keyName = "Default non existent key";
-        String pubKeyName = "Default non existent key";
-        String keyType = "";
+        String keyName = null;
+        String pubKeyName = null;
+        String keyType = null;
         Boolean readKey = false;
         String rootCertificate = ccaCertificateType.toString().split("_")[0].toLowerCase() + ".pem";
 
@@ -150,16 +150,14 @@ public class CcaCertificateManager {
         byte[] pubKeyBytes;
         PrivateKey privateKey;
 
-        // Input/Output directories
         String keyDirectory = ccaDelegate.getKeyDirectory() + "/";
         String xmlDirectory = ccaDelegate.getXmlDirectory() + "/";
         String certificateInputDirectory = ccaDelegate.getCertificateInputDirectory() + "/";
         String certificateOutputDirectory = ccaDelegate.getCertificateOutputDirectory() + "/";
 
-        // Get the corresponding CcaFileManager
+
         CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
 
-        // Get the Subject of the root certificate as an XML string
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
 
         String xmlString = new String(ccaFileManager.getFileContent(ccaCertificateType.toString() + ".xml"));
@@ -191,7 +189,6 @@ public class CcaCertificateManager {
             LOGGER.error("Failed to initialize KeyFileManager. " + kfme);
         }
 
-        // Create signatures
         XmlSignatureEngine xmlSignatureEngine = new XmlSignatureEngine(linker, identifierMap);
         xmlSignatureEngine.computeSignatures();
 
@@ -280,7 +277,6 @@ public class CcaCertificateManager {
             return null;
         }
 
-        // Write certificates to the output directory
         try {
             writeCertificates(certificateOutputDirectory, certificates, encodedCertificates);
         } catch (IOException ioe) {
