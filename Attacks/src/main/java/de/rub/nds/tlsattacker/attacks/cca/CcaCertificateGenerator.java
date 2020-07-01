@@ -134,8 +134,6 @@ public class CcaCertificateGenerator {
         CcaCertificateManager ccaCertificateManager = CcaCertificateManager.getReference(ccaDelegate);
         CcaCertificateChain ccaCertificateChain = ccaCertificateManager.getCertificateChain(ccaCertificateType);
 
-
-
         encodedLeafCertificate = ccaCertificateChain.getEncodedCertificates().get(0);
 
         for (byte[] certificate : ccaCertificateChain.getEncodedCertificates()) {
