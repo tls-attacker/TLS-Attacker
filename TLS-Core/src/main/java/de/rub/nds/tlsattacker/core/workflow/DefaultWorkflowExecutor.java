@@ -78,7 +78,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
-                LOGGER.debug("Skipping all Actions, received an Unexpected message");
+                LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
             }
         }
