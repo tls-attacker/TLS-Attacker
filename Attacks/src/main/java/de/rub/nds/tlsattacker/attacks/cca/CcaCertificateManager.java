@@ -81,7 +81,6 @@ public class CcaCertificateManager {
         registerXmlClasses();
         registerTypes();
 
-        Logger LOGGER = LogManager.getLogger();
         CcaFileManager ccaFileManager = CcaFileManager.getReference(certificateInputDirectory);
 
         // Load X.509 root certificate and get Subject principal
