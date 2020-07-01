@@ -11,12 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDhPublicKey;
@@ -151,35 +146,32 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public CertificateKeyPair(byte[] certBytes, Certificate cert, PrivateKey privateKey, PublicKey publicKey)
-            throws IOException {
-        // TODO: The following code assumes a few default. This is possible
-        // since this constructor is used in only one place.
-        // TODO: Maybe there's a better way to circumvent the problem that I
-        // have to parse the certificate. For know I'll simply
-        // TODO: assume defaults if cert == null
-        if (cert != null) {
-            this.certPublicKeyType = getPublicKeyType(cert);
-            this.certSignatureType = getSignatureType(cert);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            cert.encode(stream);
-            this.certificateBytes = stream.toByteArray();
-            this.publicKeyGroup = getPublicNamedGroup(cert);
-            this.signatureGroup = getSignatureNamedGroup(cert);
-            if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
-                gostCurve = getGostCurve(cert);
-            } else {
-                gostCurve = null;
-            }
+    public CertificateKeyPair(byte[] certificateBytes, PrivateKey privateKey, PublicKey publicKey) {
+        this.certPublicKeyType = CertificateKeyType.RSA;
+        this.certSignatureType = CertificateKeyType.RSA;
+        // To get the same output as cert.encode() but using the raw bytes
+        // pack them accordingly
+        this.certificateBytes = ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateBytes.length
+                + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
+                .intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH), certificateBytes);
+        this.publicKeyGroup = null;
+        this.signatureGroup = null;
+        gostCurve = null;
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
+    }
+
+    public CertificateKeyPair(Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
+        this.certPublicKeyType = getPublicKeyType(cert);
+        this.certSignatureType = getSignatureType(cert);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        cert.encode(stream);
+        this.certificateBytes = stream.toByteArray();
+        this.publicKeyGroup = getPublicNamedGroup(cert);
+        this.signatureGroup = getSignatureNamedGroup(cert);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(cert);
         } else {
-            this.certPublicKeyType = CertificateKeyType.RSA;
-            this.certSignatureType = CertificateKeyType.RSA;
-            // To get the same output as cert.encode() but using the raw bytes
-            // pack them accordingly
-            this.certificateBytes = ArrayConverter.concatenate(ArrayConverter.intToBytes(certBytes.length + 3, 3),
-                    ArrayConverter.intToBytes(certBytes.length, 3), certBytes);
-            this.publicKeyGroup = null;
-            this.signatureGroup = null;
             gostCurve = null;
         }
         this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
