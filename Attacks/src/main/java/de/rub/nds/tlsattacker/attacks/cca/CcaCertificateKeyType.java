@@ -30,6 +30,15 @@ public enum CcaCertificateKeyType {
         return null;
     }
 
+    public static CcaCertificateKeyType fromOid(String oid) {
+        for (CcaCertificateKeyType ccaCertificateKeyType : values()) {
+            if (ccaCertificateKeyType.getOid().equals(oid)) {
+                return ccaCertificateKeyType;
+            }
+        }
+        return null;
+    }
+    
     public String getJavaName() {
         return javaName;
     }
