@@ -23,6 +23,8 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
     public void initialize() throws IOException {
         socket = new Socket(hostname, port);
         socket.setTcpNoDelay(true);
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 }

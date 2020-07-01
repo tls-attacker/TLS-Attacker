@@ -47,6 +47,8 @@ public class ServerUdpTransportHandler extends TransportHandler {
         socket.setSoTimeout((int) getTimeout());
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
         // this could be made an option
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         waitOnReceive();
     }
 

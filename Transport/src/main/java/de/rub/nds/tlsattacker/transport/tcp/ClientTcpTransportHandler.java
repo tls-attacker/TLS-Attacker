@@ -61,7 +61,8 @@ public class ClientTcpTransportHandler extends TransportHandler {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
-
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         socket.setSoTimeout(1);
     }
 

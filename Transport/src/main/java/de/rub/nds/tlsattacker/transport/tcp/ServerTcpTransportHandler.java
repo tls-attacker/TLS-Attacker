@@ -74,6 +74,8 @@ public class ServerTcpTransportHandler extends TransportHandler {
             socket = serverSocket.accept();
             socket.setSoTimeout(1);
         }
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 

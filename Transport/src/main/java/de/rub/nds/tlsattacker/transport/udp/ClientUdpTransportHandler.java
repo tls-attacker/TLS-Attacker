@@ -50,6 +50,8 @@ public class ClientUdpTransportHandler extends TransportHandler {
         socket = new DatagramSocket();
         socket.connect(new InetSocketAddress(hostname, port));
         socket.setSoTimeout((int) getTimeout());
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         setStreams(new PushbackInputStream(new UdpInputStream(socket, false)), new UdpOutputStream(socket));
     }
 

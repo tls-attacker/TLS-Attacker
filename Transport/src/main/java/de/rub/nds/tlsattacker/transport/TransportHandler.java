@@ -35,6 +35,10 @@ public abstract class TransportHandler {
 
     private final ConnectionEndType type;
 
+    protected int srcPort;
+
+    protected int dstPort;
+
     /**
      * True {@link inStream} is expected to reach the End of Stream, meaning
      * read will return -1.
@@ -141,6 +145,14 @@ public abstract class TransportHandler {
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
+    }
+
+    public int getSrcPort() {
+        return srcPort;
+    }
+
+    public int getDstPort() {
+        return dstPort;
     }
 
     public void setIsInStreamTerminating(boolean isInStreamTerminating) {
