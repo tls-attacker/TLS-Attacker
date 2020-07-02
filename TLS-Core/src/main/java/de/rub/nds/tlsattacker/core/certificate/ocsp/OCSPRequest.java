@@ -189,6 +189,7 @@ public class OCSPRequest {
 
         // Download certificate from URL
         HttpURLConnection httpCon = (HttpURLConnection) issuerCertificateUrl.openConnection();
+        httpCon.setConnectTimeout(5000);
         httpCon.setRequestMethod("GET");
 
         int status = httpCon.getResponseCode();
@@ -258,6 +259,7 @@ public class OCSPRequest {
             throw new NotImplementedException("Request type is neither POST nor GET.");
         }
 
+        httpCon.setConnectTimeout(5000);
         int status = httpCon.getResponseCode();
         byte[] response;
         if (status == 200)
