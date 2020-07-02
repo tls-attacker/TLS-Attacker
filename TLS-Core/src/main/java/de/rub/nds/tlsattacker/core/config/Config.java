@@ -3458,6 +3458,8 @@ public class Config implements Serializable {
 
     public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
         this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
+    }
+
     public List<CipherSuite> getClientSupportedEsniCiphersuites() {
         return this.clientSupportedEsniCiphersuites;
     }
