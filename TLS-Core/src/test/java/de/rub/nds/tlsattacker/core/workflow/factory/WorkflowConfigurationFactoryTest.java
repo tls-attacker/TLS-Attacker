@@ -134,6 +134,9 @@ public class WorkflowConfigurationFactoryTest {
             } else {
                 mode = RunningModeType.CLIENT;
             }
+            if (workflowTraceType == WorkflowTraceType.DYNAMIC_HELLO && mode != RunningModeType.CLIENT) {
+                continue;
+            }
             WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType, mode);
             Assert.assertNotNull(newTrace.getMessageActions());
             Assert.assertFalse(newTrace.getMessageActions().isEmpty());
@@ -351,6 +354,7 @@ public class WorkflowConfigurationFactoryTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 for (WorkflowTraceType type : WorkflowTraceType.values()) {
                     try {
+
                         config.setDefaultSelectedCipherSuite(suite);
                         config.setSupportedVersions(version);
                         config.setHighestProtocolVersion(version);
@@ -359,6 +363,9 @@ public class WorkflowConfigurationFactoryTest {
                         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
                         config.setDefaultRunningMode(RunningModeType.CLIENT);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
+                        if (type == WorkflowTraceType.DYNAMIC_HELLO) {
+                            continue;
+                        }
                         config.setDefaultRunningMode(RunningModeType.SERVER);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
                         config.setDefaultRunningMode(RunningModeType.MITM);
