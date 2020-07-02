@@ -1049,7 +1049,7 @@
     <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
-    <defaultSelectedProtocolVersion>TLS10</defaultSelectedProtocolVersion>
+    <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
     <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
     <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
