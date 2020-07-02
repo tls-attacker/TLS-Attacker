@@ -34,9 +34,6 @@ public class CcaDelegate extends Delegate {
             + "that will be generated, as well as the keys to the root certificates. Keys for root certificates need to "
             + "have the same name as the certificate. Required for further CCA tests.")
     private String keyDirectory;
-    @Parameter(names = "-xmlCertificateDirectory", description = "Path to directory that contains XML files describing "
-            + "certificates in the format of X509Attacker. Required for further CCA tests.")
-    private String xmlDirectory;
 
     public CcaDelegate() {
     }
@@ -74,8 +71,7 @@ public class CcaDelegate extends Delegate {
     }
 
     public Boolean directoriesSupplied() {
-        return certificateInputDirectory != null && certificateOutputDirectory != null && xmlDirectory != null
-                && keyDirectory != null;
+        return certificateInputDirectory != null && certificateOutputDirectory != null && keyDirectory != null;
     }
 
     public String getClientCertificatePath() {
@@ -94,9 +90,6 @@ public class CcaDelegate extends Delegate {
         return keyDirectory;
     }
 
-    public String getXmlDirectory() {
-        return xmlDirectory;
-    }
 
     @Override
     public void applyDelegate(Config config) {

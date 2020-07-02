@@ -15,6 +15,7 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.KeyInfo;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
+import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -33,6 +34,7 @@ import javax.crypto.interfaces.DHPublicKey;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -47,6 +49,7 @@ import java.security.spec.ECPoint;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
@@ -129,11 +132,8 @@ public class CcaCertificateManager {
         String rootCertificate = ccaCertificateType.toString().split("_")[0].toLowerCase() + ".pem";
 
         String keyDirectory = ccaDelegate.getKeyDirectory() + "/";
-        String xmlDirectory = ccaDelegate.getXmlDirectory() + "/";
         String certificateInputDirectory = ccaDelegate.getCertificateInputDirectory() + "/";
         String certificateOutputDirectory = ccaDelegate.getCertificateOutputDirectory() + "/";
-
-        CcaFileManager ccaFileManager = CcaFileManager.getReference(xmlDirectory);
 
         KeyFileManager keyFileManager = KeyFileManager.getReference();
         try {
@@ -144,7 +144,9 @@ public class CcaCertificateManager {
 
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
 
-        String xmlString = new String(ccaFileManager.getFileContent(ccaCertificateType.toString() + ".xml"));
+        InputStream inputStream = Attacker.class.getResourceAsStream("/xmlcerts/" + ccaCertificateType.toString()
+                + ".xml");
+        String xmlString = new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
 
         if (xmlString == null) {
             return null;
