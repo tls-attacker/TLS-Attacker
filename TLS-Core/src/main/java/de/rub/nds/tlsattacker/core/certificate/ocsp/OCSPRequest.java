@@ -12,6 +12,7 @@ import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bouncycastle.asn1.x509.Certificate;
 
 import java.io.ByteArrayInputStream;
@@ -22,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
 
@@ -123,11 +125,22 @@ public class OCSPRequest {
         if (this.requestMessage == null) {
             this.requestMessage = createDefaultRequestMessage();
         }
-        return performRequest(requestMessage);
+        return performRequest(requestMessage, "POST");
     }
 
     public OCSPResponse makeRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
-        return performRequest(requestMessage);
+        return performRequest(requestMessage, "POST");
+    }
+
+    public OCSPResponse makeGetRequest() throws IOException, NoSuchAlgorithmException, ParserException {
+        if (this.requestMessage == null) {
+            this.requestMessage = createDefaultRequestMessage();
+        }
+        return performRequest(requestMessage, "GET");
+    }
+
+    public OCSPResponse makeGetRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+        return performRequest(requestMessage, "GET");
     }
 
     private void prepareOcspUrl() {
@@ -222,17 +235,28 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private OCSPResponse performRequest(OCSPRequestMessage requestMessage) throws IOException, ParserException {
+    private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod) throws IOException,
+            ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
-        HttpURLConnection httpCon = (HttpURLConnection) serverUrl.openConnection();
-        httpCon.setRequestMethod("POST");
-        httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
+        HttpURLConnection httpCon = null;
+        if (requestMethod.equals("POST")) {
+            httpCon = (HttpURLConnection) serverUrl.openConnection();
+            httpCon.setRequestMethod("POST");
+            httpCon.setRequestProperty("Content-Type", "application/ocsp-request");
 
-        httpCon.setDoOutput(true);
-        OutputStream os = httpCon.getOutputStream();
-        os.write(encodedRequest);
-        os.flush();
-        os.close();
+            httpCon.setDoOutput(true);
+            OutputStream os = httpCon.getOutputStream();
+            os.write(encodedRequest);
+            os.flush();
+            os.close();
+        } else if (requestMethod.equals("GET")) {
+            byte[] encoded = Base64.getEncoder().encode(encodedRequest);
+            URL requestUrl = new URL(serverUrl.toExternalForm() + "/" + new String(encoded));
+            httpCon = (HttpURLConnection) requestUrl.openConnection();
+            httpCon.setRequestMethod("GET");
+        } else {
+            throw new NotImplementedException("Request type is neither POST nor GET.");
+        }
 
         int status = httpCon.getResponseCode();
         byte[] response;
