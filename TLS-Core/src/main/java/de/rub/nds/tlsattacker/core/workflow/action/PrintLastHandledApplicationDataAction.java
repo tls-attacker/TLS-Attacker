@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -51,13 +52,17 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getChooser().getLastHandledApplicationMessageData();
-        if (stringEncoding != null) {
-            lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
+        byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getLastHandledApplicationMessageData();
+        if (rawBytes != null) {
+            if (stringEncoding != null) {
+                lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
+            } else {
+                lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
+            }
+            CONSOLE.info("Last handled application data: " + lastHandledApplicationData);
         } else {
-            lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
+            CONSOLE.info("Did not receive application data yet");
         }
-        CONSOLE.info("Last handled application data: " + lastHandledApplicationData);
         setExecuted(true);
     }
 

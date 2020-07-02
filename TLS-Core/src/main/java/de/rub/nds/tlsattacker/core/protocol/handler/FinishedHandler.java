@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -75,14 +76,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } else {
             tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
         }
-
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
-                // upon receiving a FINISHED, we set the next receive sequence
-                // number to 0
-                tlsContext.setDtlsNextReceiveSequenceNumber(0);
-            }
-        }
     }
 
     private void adjustApplicationTrafficSecrets() {
@@ -122,10 +115,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             }
 
-        }
-
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            tlsContext.setDtlsNextSendSequenceNumber(0);
         }
     }
 

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,11 +11,9 @@ package de.rub.nds.tlsattacker.transport;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,6 +51,21 @@ public abstract class TransportHandler {
     public abstract void closeConnection() throws IOException;
 
     public abstract void closeClientConnection() throws IOException;
+
+    /**
+     * Reads the specified amount of data from the stream
+     *
+     * @param amountOfData
+     * @return
+     */
+    public byte[] fetchData(int amountOfData) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        for (int i = 0; i < amountOfData; i++) {
+            stream.write(inStream.read());
+        }
+        return stream.toByteArray();
+    }
 
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

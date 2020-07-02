@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -49,7 +50,7 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>(),
+        executorService = new ThreadPoolExecutor(0, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
                 factory);
         this.reexecutions = reexecutions;
         this.size = size;

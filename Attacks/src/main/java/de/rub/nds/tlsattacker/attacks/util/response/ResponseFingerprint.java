@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -318,11 +319,11 @@ public class ResponseFingerprint {
                 return false;
             }
         }
-        int minNumberOfMessages = fingerprint.getNumberOfMessageReceived();
-        if (getNumberRecordsReceived() < minNumberOfMessages) {
-            minNumberOfMessages = this.getNumberRecordsReceived();
+        int minNumberOfRecords = fingerprint.getNumberOfMessageReceived();
+        if (getNumberRecordsReceived() < minNumberOfRecords) {
+            minNumberOfRecords = this.getNumberRecordsReceived();
         }
-        for (int i = 0; i < minNumberOfMessages; i++) {
+        for (int i = 0; i < minNumberOfRecords; i++) {
             ProtocolMessage messageOne = this.getMessageList().get(i);
             ProtocolMessage messageTwo = fingerprint.getMessageList().get(i);
             if (!checkMessagesAreRoughlyEqual(messageOne, messageTwo)) {

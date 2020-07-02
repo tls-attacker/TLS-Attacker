@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -136,7 +137,7 @@ public enum NamedGroup {
             LOGGER.warn("Could not convert NamedGroup. Returning null");
             return null;
         }
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
     }
 
     public static NamedGroup getNamedGroup(byte[] value) {
@@ -234,7 +235,6 @@ public enum NamedGroup {
 
     public boolean isStandardCurve() {
         return this.isCurve() && this != ECDH_X25519 && this != ECDH_X448;
-
     }
 
     public boolean isCurve() {

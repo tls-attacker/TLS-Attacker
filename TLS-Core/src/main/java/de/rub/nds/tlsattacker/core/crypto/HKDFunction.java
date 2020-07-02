@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -50,6 +51,10 @@ public class HKDFunction {
     public static final String SERVER_APPLICATION_TRAFFIC_SECRET = "s ap traffic";
 
     public static final String EXPORTER_MASTER_SECRET = "exp master";
+
+    public static final String ESNI_IV = "esni iv";
+
+    public static final String ESNI_KEY = "esni key";
 
     public static final String RESUMPTION_MASTER_SECRET = "res master";
 

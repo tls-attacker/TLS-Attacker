@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -460,7 +461,7 @@ public enum CipherSuite {
 
     private static int valueToInt(byte[] value) {
         if (value.length >= 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else if (value.length == 1) {
             return value[0];
         } else {
@@ -508,7 +509,7 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon() || this.isPWD();
+        return this.name().contains("DHE_") || this.isAnon() || this.isPWD() || this.isTLS13();
     }
 
     public boolean isPskOrDhPsk() {
@@ -600,6 +601,10 @@ public enum CipherSuite {
         return this.name().contains("28147_CNT");
     }
 
+    public boolean isAEAD() {
+        return this.isCCM() || this.isChachaPoly() || this.isGCM() || this.isOCB();
+    }
+
     public boolean usesSHA384() {
         return this.name().endsWith("SHA384");
     }
@@ -616,6 +621,10 @@ public enum CipherSuite {
         return (this.name().contains("CHACHA20_POLY1305"));
     }
 
+    public boolean usesDH() {
+        return (this.name().contains("_DH"));
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version. TODO: this is still very imprecise and must be improved with new
@@ -629,8 +638,8 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384") && !this.name().contains("IDEA")
-                && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()
+                && !this.name().contains("IDEA") && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
@@ -981,6 +990,16 @@ public enum CipherSuite {
         return list;
     }
 
+    public static List<CipherSuite> getEsniImplemented() {
+        List<CipherSuite> list = new LinkedList();
+        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
+        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        return list;
+    }
+
     public static List<CipherSuite> getNotImplemented() {
         List<CipherSuite> notImplemented = new LinkedList<>();
         for (CipherSuite suite : values()) {
@@ -1004,6 +1023,10 @@ public enum CipherSuite {
         return getImplemented().contains(this);
     }
 
+    public boolean isSHA() {
+        return this.name().endsWith("SHA");
+    }
+
     public boolean isSHA256() {
         return this.name().contains("SHA256");
     }
@@ -1014,6 +1037,14 @@ public enum CipherSuite {
 
     public boolean isSHA384() {
         return this.name().contains("SHA384");
+    }
+
+    public boolean isSHA512() {
+        return this.name().contains("SHA512");
+    }
+
+    public boolean isECDSA() {
+        return this.name().contains("ECDSA");
     }
 
     public boolean isAnon() {

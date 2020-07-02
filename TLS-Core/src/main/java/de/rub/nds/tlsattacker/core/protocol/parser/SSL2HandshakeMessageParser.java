@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
@@ -39,11 +41,13 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
         if ((peek() & (byte) 0x80) != 0) {
             length = parseByteArrayField(SSL2ByteLength.LENGTH);
             mask = 0x3f;
+            message.setPaddingLength(0);
         } else {
             length = parseByteArrayField(SSL2ByteLength.LONG_LENGTH);
             mask = 0x7f;
+            message.setPaddingLength((int) length[2]);
         }
-        int intLength = ((length[0] & mask) << 8) | (length[1] & 0xFF);
+        int intLength = ((length[0] & mask) << Bits.IN_A_BYTE) | (length[1] & 0xFF);
         message.setMessageLength(intLength);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -93,6 +94,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
+            @XmlElement(type = ChangeDefaultPreMasterSecretAction.class, name = "ChangeDefaultPreMasterSecret"),
             @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
             @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
@@ -108,6 +110,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
             @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
             @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
+            @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
             @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
             @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
@@ -133,6 +136,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
             @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
             @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
+            @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),

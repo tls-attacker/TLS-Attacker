@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -20,6 +21,11 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger messageLength;
 
+    // Number of padding bytes for payloads encrypted with a block cipher (not
+    // to be mistaken with PKCS#1 padding)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger paddingLength;
+
     @ModifiableVariableProperty
     private ModifiableByte type;
 
@@ -37,6 +43,18 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
 
     public void setMessageLength(Integer messageLength) {
         this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+    }
+
+    public ModifiableInteger getPaddingLength() {
+        return paddingLength;
+    }
+
+    public void setPaddingLength(ModifiableInteger paddingLength) {
+        this.paddingLength = paddingLength;
+    }
+
+    public void setPaddingLength(Integer paddingLength) {
+        this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
 
     @Override

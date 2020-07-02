@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -359,7 +360,9 @@ public class CertificateKeyPair implements Serializable {
     }
 
     public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
-        publicKey.adjustInContext(context, connectionEnd);
+        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            publicKey.adjustInContext(context, connectionEnd);
+        }
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }

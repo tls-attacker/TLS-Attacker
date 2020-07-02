@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -21,15 +22,15 @@ import org.junit.Test;
 
 public class PointFormatterTest {
 
-    public PointFormatterTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public PointFormatterTest() {
     }
 
     @Before
@@ -51,9 +52,9 @@ public class PointFormatterTest {
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     Point point = curve.getPoint(new BigInteger(i % 257, new Random(i)), new BigInteger(i % 257,
                             new Random(i)));
-                    byte[] byteArray1 = PointFormatter.formatToByteArray(point, ECPointFormat.UNCOMPRESSED);
+                    byte[] byteArray1 = PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     point = PointFormatter.formatFromByteArray(group, byteArray1);
-                    byte[] byteArray2 = PointFormatter.formatToByteArray(point, ECPointFormat.UNCOMPRESSED);
+                    byte[] byteArray2 = PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     assertArrayEquals(byteArray1, byteArray2);
                 }
             }

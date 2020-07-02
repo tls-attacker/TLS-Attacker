@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -58,7 +59,11 @@ public class ECDHEServerKeyExchangePreparatorTest {
         this.tlsContext = new TlsContext();
         BadFixedRandom rnd = new BadFixedRandom((byte) 0x23);
         random = new BadRandom(rnd, null);
-
+        tlsContext
+                .getConfig()
+                .setDefaultServerEcPrivateKey(
+                        new BigInteger(
+                                "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761"));
         loadTestVectorsToContext();
 
         tlsContext.setRandom(random);
@@ -135,7 +140,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
         SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA512);
-        config.setSupportedSignatureAndHashAlgorithms(SigAndHashList);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(SigAndHashList);
     }
 
     @Test

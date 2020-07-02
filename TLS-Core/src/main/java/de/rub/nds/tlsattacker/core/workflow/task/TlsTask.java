@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -58,19 +59,21 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 try {
                     Thread.sleep(additionalTcpTimeout);
                 } catch (InterruptedException ex) {
-                    LOGGER.error("Interrupted during sleep", E);
+                    LOGGER.error("Interrupted during sleep", ex);
                 }
                 hasError = true;
                 exception = E;
             } catch (Exception E) {
-                LOGGER.warn("Encountered an exception during the execution", E);
+                LOGGER.error("Encountered an exception during the execution", E);
                 hasError = true;
                 if (increasingSleepTimes) {
                     sleepTime += additionalSleepTime;
                 }
                 exception = E;
             }
-            this.reset();
+            if (i < reexecutions) {
+                this.reset();
+            }
         }
         if (hasError) {
             LOGGER.error("Could not execute Workflow.", exception);

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,13 +16,17 @@ import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
+import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -84,6 +89,25 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
+
+    /**
+     * The twisted curve to simulate server's x-only ladder
+     */
+    private EllipticCurveOverFp twistedCurve;
+
+    private boolean curveTwistAttack = false;
+
+    @Parameter(names = "-curve_twist_d", hidden = true, description = "Non quadratic residue used to obtain twisted curve", converter = BigIntegerConverter.class)
+    private BigInteger curveTwistD;
+
+    /**
+     * Ignore server's preferences and use the specified PointFormat instead
+     */
+    @Parameter(names = "-point_format", description = "The format used for the public key", converter = PointFormatConverter.class)
+    private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
+
+    @Parameter(names = "-renegotiation", description = "If set to true, the attack will be carried out in a renegotiation handshake")
+    private boolean attackInRenegotiation = false;
 
     /**
      *
@@ -163,7 +187,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      *
      * @param namedGroup
      */
-    public void setNamedCurve(NamedGroup namedGroup) {
+    public void setNamedGroup(NamedGroup namedGroup) {
         this.namedGroup = namedGroup;
     }
 
@@ -257,6 +281,36 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     /**
+     * @return the curveTwistAttack
+     */
+    public boolean isCurveTwistAttack() {
+        return curveTwistAttack;
+    }
+
+    /**
+     * @param curveTwistAttack
+     *            the curveTwistAttack to set
+     */
+    public void setCurveTwistAttack(boolean curveTwistAttack) {
+        this.curveTwistAttack = curveTwistAttack;
+    }
+
+    /**
+     * @return the twistedCurve
+     */
+    public EllipticCurveOverFp getTwistedCurve() {
+        return twistedCurve;
+    }
+
+    /**
+     * @param twistedCurve
+     *            the twistedCurve to set
+     */
+    public void setTwistedCurve(EllipticCurveOverFp twistedCurve) {
+        this.twistedCurve = twistedCurve;
+    }
+
+    /**
      *
      * @return
      */
@@ -292,6 +346,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setStopActionsAfterFatal(true);
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
+        config.setStopActionsAfterIOException(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddServerNameIndicationExtension(true);
@@ -302,5 +357,50 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setDefaultClientNamedGroups(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
+    }
+
+    /**
+     * @return the curveTwistD
+     */
+    public BigInteger getCurveTwistD() {
+        return curveTwistD;
+    }
+
+    /**
+     * @param curveTwistD
+     *            the curveTwistD to set
+     */
+    public void setCurveTwistD(BigInteger curveTwistD) {
+        this.curveTwistD = curveTwistD;
+    }
+
+    /**
+     * @return the pointCompressionFormat
+     */
+    public ECPointFormat getPointCompressionFormat() {
+        return pointCompressionFormat;
+    }
+
+    /**
+     * @param pointCompressionFormat
+     *            the pointCompressionFormat to set
+     */
+    public void setPointCompressionFormat(ECPointFormat pointCompressionFormat) {
+        this.pointCompressionFormat = pointCompressionFormat;
+    }
+
+    /**
+     * @return the attackInRenegotiation
+     */
+    public boolean isAttackInRenegotiation() {
+        return attackInRenegotiation;
+    }
+
+    /**
+     * @param attackInRenegotiation
+     *            the attackInRenegotiation to set
+     */
+    public void setAttackInRenegotiation(boolean attackInRenegotiation) {
+        this.attackInRenegotiation = attackInRenegotiation;
     }
 }

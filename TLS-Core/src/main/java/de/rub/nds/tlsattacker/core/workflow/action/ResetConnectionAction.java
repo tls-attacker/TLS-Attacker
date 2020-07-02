@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,6 +26,10 @@ public class ResetConnectionAction extends ConnectionBoundAction {
     private Boolean asPlanned;
 
     public ResetConnectionAction() {
+    }
+
+    public ResetConnectionAction(String connectionAlias) {
+        super(connectionAlias);
     }
 
     @Override
@@ -51,6 +56,13 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
         tlsContext.setReadSequenceNumber(0);
         tlsContext.setWriteSequenceNumber(0);
+        LOGGER.info("Resetting DTLS numbers and cookie");
+        tlsContext.setDtlsCookie(new byte[] {});
+        tlsContext.setDtlsReadHandshakeMessageSequence(0);
+        tlsContext.setDtlsWriteHandshakeMessageSequence(0);
+        tlsContext.setDtlsReceiveEpoch(0);
+        tlsContext.setDtlsWriteEpoch(0);
+
         LOGGER.info("Reopening Connection");
         try {
             tlsContext.getTransportHandler().initialize();

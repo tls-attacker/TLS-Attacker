@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -32,6 +33,14 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyTransportBlob;
 
+    public GOSTClientKeyExchangeMessage() {
+        super();
+    }
+
+    public GOSTClientKeyExchangeMessage(Config tlsConfig) {
+        super(tlsConfig);
+    }
+
     public void setKeyTransportBlob(ModifiableByteArray keyTransportBlob) {
         this.keyTransportBlob = keyTransportBlob;
     }
@@ -47,14 +56,6 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public GOSTClientComputations getComputations() {
         return computations;
-    }
-
-    public GOSTClientKeyExchangeMessage() {
-        super();
-    }
-
-    public GOSTClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     @Override

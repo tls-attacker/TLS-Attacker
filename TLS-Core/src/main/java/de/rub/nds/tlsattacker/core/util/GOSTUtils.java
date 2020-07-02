@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -93,7 +94,6 @@ public class GOSTUtils {
 
     private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
-            System.out.println(curve);
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
