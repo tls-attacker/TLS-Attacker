@@ -144,7 +144,7 @@ public class ResponseFingerprint {
                 }
             }
             resultString.deleteCharAt(resultString.length() - 1); // remove last
-            // ,
+                                                                  // commatar
             resultString.append("]");
         }
         resultString.append(" ");
