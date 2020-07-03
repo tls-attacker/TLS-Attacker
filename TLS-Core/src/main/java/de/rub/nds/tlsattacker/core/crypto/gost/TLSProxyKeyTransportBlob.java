@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -17,6 +18,17 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 
 public class TLSProxyKeyTransportBlob extends ASN1Object {
+    public static TLSProxyKeyTransportBlob getInstance(Object obj) {
+        if (obj instanceof TLSProxyKeyTransportBlob) {
+            return (TLSProxyKeyTransportBlob) obj;
+        }
+
+        if (obj != null) {
+            return new TLSProxyKeyTransportBlob(ASN1Sequence.getInstance(obj));
+        }
+
+        return null;
+    }
 
     private final GostR3410KeyTransport keyBlob;
     private final DEROctetString cert;
@@ -29,18 +41,6 @@ public class TLSProxyKeyTransportBlob extends ASN1Object {
     public TLSProxyKeyTransportBlob(GostR3410KeyTransport keyBlob, DEROctetString cert) {
         this.keyBlob = keyBlob;
         this.cert = cert;
-    }
-
-    public static TLSProxyKeyTransportBlob getInstance(Object obj) {
-        if (obj instanceof TLSProxyKeyTransportBlob) {
-            return (TLSProxyKeyTransportBlob) obj;
-        }
-
-        if (obj != null) {
-            return new TLSProxyKeyTransportBlob(ASN1Sequence.getInstance(obj));
-        }
-
-        return null;
     }
 
     public GostR3410KeyTransport getKeyBlob() {

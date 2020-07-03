@@ -1,14 +1,14 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -25,7 +25,7 @@ public abstract class Decryptor extends RecordCryptoUnit {
 
     }
 
-    public void decrypt(AbstractRecord object) throws CryptoException {
+    public void decrypt(AbstractRecord object) {
         if (object instanceof BlobRecord) {
             decrypt((BlobRecord) object);
         } else if (object instanceof Record) {
@@ -35,7 +35,7 @@ public abstract class Decryptor extends RecordCryptoUnit {
         }
     }
 
-    public abstract void decrypt(Record object) throws CryptoException;
+    public abstract void decrypt(Record object);
 
-    public abstract void decrypt(BlobRecord object) throws CryptoException;
+    public abstract void decrypt(BlobRecord object);
 }

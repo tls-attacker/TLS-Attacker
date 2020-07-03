@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -51,7 +52,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         LOGGER.debug("Adjusting DSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDsaGenerator(g);
@@ -68,6 +69,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
+    }
+
+    public BigInteger getP() {
+        return p;
+    }
+
+    public BigInteger getQ() {
+        return q;
+    }
+
+    public BigInteger getG() {
+        return g;
     }
 
     @Override
@@ -99,7 +113,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDsaGenerator(g);
@@ -116,6 +130,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override

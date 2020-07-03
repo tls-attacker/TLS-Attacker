@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -45,6 +46,9 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer<SSL2Cli
      * Writes the MessageLength of the SSL2ClientHello into the final byte[]
      */
     private void writeMessageLength(SSL2ClientHelloMessage msg) {
+        if (msg.getPaddingLength().getValue() != 0) {
+            throw new UnsupportedOperationException("Long record headers are not supported");
+        }
         appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
     }

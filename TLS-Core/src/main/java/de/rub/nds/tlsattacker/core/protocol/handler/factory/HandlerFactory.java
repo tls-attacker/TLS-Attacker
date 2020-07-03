@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -134,6 +135,8 @@ public class HandlerFactory {
                     return new EllipticCurvesExtensionHandler(context);
                 case ENCRYPT_THEN_MAC:
                     return new EncryptThenMacExtensionHandler(context);
+                case ENCRYPTED_SERVER_NAME_INDICATION:
+                    return new EncryptedServerNameIndicationExtensionHandler(context);
                 case EXTENDED_MASTER_SECRET:
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:

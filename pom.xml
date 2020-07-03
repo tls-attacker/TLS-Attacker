@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>3.3.1</version>
+    <version>3.4.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
-    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
+    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/). </description>
     
     <licenses>
         <license>
@@ -73,6 +73,11 @@
         <module>TraceTool</module>
     </modules>
     <dependencies>
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>2.1.8</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -156,6 +161,11 @@
             <groupId>org.cryptomator</groupId>
             <artifactId>siv-mode</artifactId>
             <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.rub.nds</groupId>
+            <artifactId>X509Attacker</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -287,7 +297,7 @@
                     </includes>
                     <properties>
                         <year>${project.inceptionYear}</year>
-                        <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
+                        <owner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</owner>
                     </properties>
                 </configuration>
                 <executions>
@@ -406,7 +416,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
+        <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
         <!-- We redefine the signature generation process, whic is enabled by default, 
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->

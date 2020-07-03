@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -89,11 +91,11 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         try {
             byte[] key = HKDFunction.expand(hkdfAlgorithm,
                     HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
-                    new byte[0], curve.getFieldSize() / 8);
+                    new byte[0], curve.getFieldSize() / Bits.IN_A_BYTE);
 
             byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
             byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
-            byte[] encryptedUsername = Arrays.copyOfRange(protectedUsername, curve.getFieldSize() / 8,
+            byte[] encryptedUsername = Arrays.copyOfRange(protectedUsername, curve.getFieldSize() / Bits.IN_A_BYTE,
                     protectedUsername.length);
             SivMode AES_SIV = new SivMode();
             String username = new String(AES_SIV.decrypt(ctrKey, macKey, encryptedUsername));

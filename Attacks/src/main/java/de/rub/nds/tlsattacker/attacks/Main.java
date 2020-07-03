@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,10 +13,12 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.*;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.*;
+import de.rub.nds.tlsattacker.attacks.impl.drown.*;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,8 +68,10 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
-        jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
+        GeneralDrownCommandConfig generalDrownConfig = new GeneralDrownCommandConfig(generalDelegate);
+        jc.addCommand(GeneralDrownCommandConfig.COMMAND, generalDrownConfig);
+        SpecialDrownCommandConfig specialDrownConfig = new SpecialDrownCommandConfig(generalDelegate);
+        jc.addCommand(SpecialDrownCommandConfig.COMMAND, specialDrownConfig);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -119,8 +124,11 @@ public class Main {
                 attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
                         pskBruteForcerAttackServerTest.createConfig());
                 break;
-            case DrownCommandConfig.COMMAND:
-                attacker = new DrownAttacker(drownConfig, drownConfig.createConfig());
+            case GeneralDrownCommandConfig.COMMAND:
+                attacker = new GeneralDrownAttacker(generalDrownConfig, generalDrownConfig.createConfig());
+                break;
+            case SpecialDrownCommandConfig.COMMAND:
+                attacker = new SpecialDrownAttacker(specialDrownConfig, specialDrownConfig.createConfig());
                 break;
             default:
                 throw new ConfigurationException("Command not found");
@@ -137,9 +145,9 @@ public class Main {
             } else {
                 try {
                     Boolean result = attacker.checkVulnerability();
-                    if (result == Boolean.TRUE) {
+                    if (Objects.equals(result, Boolean.TRUE)) {
                         CONSOLE.error("Vulnerable:" + result.toString());
-                    } else if (result == Boolean.FALSE) {
+                    } else if (Objects.equals(result, Boolean.FALSE)) {
                         CONSOLE.info("Vulnerable:" + result.toString());
                     } else {
                         CONSOLE.warn("Vulnerable: Uncertain");

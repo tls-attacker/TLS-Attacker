@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v3.3.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v3.4.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -261,6 +261,7 @@ The following people have contributed code to the TLS-Attacker project:
 - Tim Reisach: GOST
 - Paul Fiterau Brostean: DTLS reintegration
 - Malte Poll: High precision timing measurements
+- Mario Korth: Client Authentication Analysis
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.

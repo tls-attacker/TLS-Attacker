@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -45,8 +46,8 @@ public class ActivateEncryptionActionTest {
         assertTrue(action.isExecuted());
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
         assertFalse(layer.getRecordCipher() instanceof RecordNullCipher);
-        assertFalse(layer.getEncryptor() instanceof RecordNullCipher);
-        assertFalse(layer.getDecryptor() instanceof RecordNullCipher);
+        assertFalse(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertFalse(layer.getDecryptorCipher() instanceof RecordNullCipher);
     }
 
     @Test
