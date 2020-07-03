@@ -173,7 +173,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             }
 
             EqualityError error = FingerPrintChecker.checkEquality(vectorResponseOne.getFingerprint(),
-                    equivalentVector.getFingerprint(), true);
+                    equivalentVector.getFingerprint());
             if (error != EqualityError.NONE) {
                 LOGGER.warn("There is an error beween rescan:" + error + " - " + testedSuite + " - " + testedVersion);
                 result = false;
@@ -234,7 +234,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     continue;
                 }
                 EqualityError error = FingerPrintChecker.checkEquality(responseOne.getFingerprint(),
-                        responseTwo.getFingerprint(), true);
+                        responseTwo.getFingerprint());
                 if (error != EqualityError.NONE) {
                     CONSOLE.info("Found an EqualityError: " + error);
                     LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());

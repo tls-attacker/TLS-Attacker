@@ -86,9 +86,9 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             clearConnections(state);
             if (fingerprint != null) {
                 if (validResponseContent != null) {
-                    conform = FingerPrintChecker.checkEquality(fingerprint, validResponseContent, true) == EqualityError.NONE;
+                    conform = FingerPrintChecker.checkEquality(fingerprint, validResponseContent) == EqualityError.NONE;
                 } else if (invalidResponseContent != null) {
-                    conform = FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent, true) != EqualityError.NONE;
+                    conform = FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent) != EqualityError.NONE;
                 }
             }
 
