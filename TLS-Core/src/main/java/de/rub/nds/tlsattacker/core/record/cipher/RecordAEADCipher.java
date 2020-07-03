@@ -159,10 +159,13 @@ public class RecordAEADCipher extends RecordCipher {
 
         byte[] authenticationTag = Arrays.copyOfRange(wholeCipherText, wholeCipherText.length - aeadTagLength,
                 wholeCipherText.length);
+
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
 
         record.getComputations().setCiphertext(onlyCiphertext);
+        onlyCiphertext = record.getComputations().getCiphertext().getValue();
+
         record.setProtocolMessageBytes(ArrayConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
         // TODO our own authentication tags are always valid
         record.getComputations().setAuthenticationTagValid(true);

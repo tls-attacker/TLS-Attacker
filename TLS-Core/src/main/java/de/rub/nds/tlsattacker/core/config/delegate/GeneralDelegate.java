@@ -33,6 +33,9 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
     private boolean quiet;
 
+    @Parameter(names = "-keylogfile", description = "Path to the keylogfile")
+    protected String keylogfile = null;
+
     public GeneralDelegate() {
     }
 
@@ -60,6 +63,14 @@ public class GeneralDelegate extends Delegate {
         this.quiet = quiet;
     }
 
+    public String getKeylogfile() {
+        return keylogfile;
+    }
+
+    public void setKeylogfile(String keylogfile) {
+        this.keylogfile = keylogfile;
+    }
+
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
@@ -71,6 +82,11 @@ public class GeneralDelegate extends Delegate {
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
+        }
+
+        if (keylogfile != null) {
+            config.setKeylogFilePath(keylogfile);
+            config.setWriteKeylogFile(true);
         }
 
         // remove stupid Oracle JDK security restriction (otherwise, it is not

@@ -154,7 +154,7 @@ public class Config implements Serializable {
 
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
-    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA1;
+    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA256;
 
     /**
      * List of filters to apply on workflow traces before serialization.
@@ -695,6 +695,8 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterIOException = false;
 
+    private Boolean stopTraceAfterUnexpected = false;
+
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -1171,6 +1173,10 @@ public class Config implements Serializable {
     private boolean acceptOnlyFittingDtlsFragments = false;
 
     private boolean acceptContentRewritingDtlsFragments = true;
+
+    private boolean writeKeylogFile = false;
+
+    private String keylogFilePath = null;
 
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -3446,6 +3452,14 @@ public class Config implements Serializable {
         this.addPWDProtectExtension = addPWDProtectExtension;
     }
 
+    public Boolean isStopTraceAfterUnexpected() {
+        return stopTraceAfterUnexpected;
+    }
+
+    public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
+        this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
+    }
+
     public List<CipherSuite> getClientSupportedEsniCiphersuites() {
         return this.clientSupportedEsniCiphersuites;
     }
@@ -3570,4 +3584,19 @@ public class Config implements Serializable {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
 
+    public boolean isWriteKeylogFile() {
+        return writeKeylogFile;
+    }
+
+    public void setWriteKeylogFile(boolean writeKeylogFile) {
+        this.writeKeylogFile = writeKeylogFile;
+    }
+
+    public String getKeylogFilePath() {
+        return keylogFilePath;
+    }
+
+    public void setKeylogFilePath(String keylogFilePath) {
+        this.keylogFilePath = keylogFilePath;
+    }
 }

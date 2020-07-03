@@ -83,6 +83,9 @@ public class TlsContext {
 
     private HttpContext httpContext;
 
+    @XmlTransient
+    private Keylogfile keylogfile;
+
     /**
      * The end point of the TLS connection that this context represents.
      */
@@ -694,6 +697,7 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
+        keylogfile = new Keylogfile(this);
     }
 
     public Chooser getChooser() {
@@ -1379,6 +1383,7 @@ public class TlsContext {
     }
 
     public void setMasterSecret(byte[] masterSecret) {
+        keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
     }
 
@@ -1407,6 +1412,7 @@ public class TlsContext {
     }
 
     public void setPreMasterSecret(byte[] preMasterSecret) {
+        keylogfile.writeKey("PMS_CLIENT_RANDOM", preMasterSecret);
         this.preMasterSecret = preMasterSecret;
     }
 
@@ -1515,6 +1521,7 @@ public class TlsContext {
     }
 
     public void setClientHandshakeTrafficSecret(byte[] clientHandshakeTrafficSecret) {
+        keylogfile.writeKey("CLIENT_HANDSHAKE_TRAFFIC_SECRET", clientHandshakeTrafficSecret);
         this.clientHandshakeTrafficSecret = clientHandshakeTrafficSecret;
     }
 
@@ -1523,6 +1530,7 @@ public class TlsContext {
     }
 
     public void setServerHandshakeTrafficSecret(byte[] serverHandshakeTrafficSecret) {
+        keylogfile.writeKey("SERVER_HANDSHAKE_TRAFFIC_SECRET", serverHandshakeTrafficSecret);
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
@@ -1531,6 +1539,7 @@ public class TlsContext {
     }
 
     public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        keylogfile.writeKey("CLIENT_TRAFFIC_SECRET_0", clientApplicationTrafficSecret);
         this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
@@ -1539,6 +1548,7 @@ public class TlsContext {
     }
 
     public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        keylogfile.writeKey("SERVER_TRAFFIC_SECRET_0", serverApplicationTrafficSecret);
         this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
@@ -1992,6 +2002,7 @@ public class TlsContext {
      *            the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
         this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
     }
 
