@@ -90,7 +90,6 @@ public class CcaDelegate extends Delegate {
         return keyDirectory;
     }
 
-
     @Override
     public void applyDelegate(Config config) {
     }
