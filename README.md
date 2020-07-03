@@ -261,6 +261,7 @@ The following people have contributed code to the TLS-Attacker project:
 - Tim Reisach: GOST
 - Paul Fiterau Brostean: DTLS reintegration
 - Malte Poll: High precision timing measurements
+- Mario Korth: Client Authentication Analysis
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.

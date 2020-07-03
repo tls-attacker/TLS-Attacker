@@ -13,6 +13,7 @@ public enum WorkflowTraceType {
     FULL,
     HANDSHAKE,
     DYNAMIC_HANDSHAKE,
+    DYNAMIC_HELLO,
     HELLO,
     SHORT_HELLO,
     RESUMPTION,

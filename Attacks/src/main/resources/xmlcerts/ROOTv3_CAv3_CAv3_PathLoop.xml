@@ -1,0 +1,418 @@
+<asn1XmlContent>
+
+    <asn1Sequence identifier="ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1" type="Certificate">
+        <keyInfo identifier="key" keyType="RSA">
+            <keyFile>rsakey_3.pem</keyFile>
+        </keyInfo>
+        <asn1Sequence identifier="tbsCertificate" type="TBSCertificate">
+            <asn1Explicit identifier="version">
+                <offset>0</offset>
+                <asn1Integer identifier="version" type="Version">
+                    <value>2</value>
+                </asn1Integer>
+            </asn1Explicit>
+            <asn1Integer identifier="serialNumber" type="CertificateSerialNumber">
+                <value>34</value>
+            </asn1Integer>
+            <asn1Sequence identifier="signature" type="AlgorithmIdentifier" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/signatureAlgorithm" />
+            <asn1Sequence identifier="issuer" type="Name" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/tbsCertificate/subject"/>
+            <asn1Sequence identifier="validity" type="Validity">
+                <asn1PrimitiveUtcTime identifier="notBefore" type="Time">
+                    <value>191212000000Z</value>
+                </asn1PrimitiveUtcTime>
+                <asn1PrimitiveUtcTime identifier="notAfter" type="Time">
+                    <value>201219000000Z</value>
+                </asn1PrimitiveUtcTime>
+            </asn1Sequence>
+            <asn1Sequence identifier="subject" type="Name">
+                <asn1Set identifier="relativeDistinguishedName0" type="RelativeDistinguishedName">
+                    <asn1Sequence identifier="attributeTypeAndValue0" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.6</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitivePrintableString identifier="value" type="AttributeValue">
+                            <value>DE</value>
+                        </asn1PrimitivePrintableString>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue1" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.10</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>RUB</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue2" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.11</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>TLS-Scanner CCA Leaf Certificate (ROOTv3_CAv3_CAv3_PathLoop)</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                </asn1Set>
+            </asn1Sequence>
+            <asn1Sequence identifier="subjectPublicKeyInfo" type="SubjectPublicKeyInfo" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/key" />
+            <asn1Explicit identifier="explicitExtensions">
+                <offset>3</offset>
+                <asn1Sequence identifier="extensions" type="Extensions">
+                    <!--BasicConstraintsExtension-->
+                    <asn1Sequence identifier="extension1" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.19</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>true</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence identifier="basicConstraintsExtension" type="BasicConstraints">
+                                <asn1Boolean identifier="cA">
+                                    <value>false</value>
+                                </asn1Boolean>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!--SubjectKeyIdentifierExtension-->
+                    <asn1Sequence identifier="extension7" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.14</value>
+                        </asn1ObjectIdentifier>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1PrimitiveOctetString identifier="subjectKeyIdentifier" type="SubjectKeyIdentifier">
+                                <value>04</value>
+                            </asn1PrimitiveOctetString>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!-- AuthorityKeyIdentifierExtension -->
+                    <asn1Sequence identifier="extension6">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.35</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>false</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence>
+                                <asn1Implicit>
+                                    <offset>0</offset>
+                                    <asn1PrimitiveOctetString>
+                                        <value>03</value>
+                                    </asn1PrimitiveOctetString>
+                                </asn1Implicit>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                </asn1Sequence>
+            </asn1Explicit>
+        </asn1Sequence>
+        <asn1Sequence identifier="signatureAlgorithm" type="AlgorithmIdentifier">
+            <asn1ObjectIdentifier identifier="algorithm">
+                <value>1.2.840.113549.1.1.11</value>
+            </asn1ObjectIdentifier>
+            <asn1Null />
+        </asn1Sequence>
+        <asn1PrimitiveBitString identifier="signatureValue" />
+    </asn1Sequence>
+
+    <asn1Sequence identifier="ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2" type="Certificate">
+        <keyInfo identifier="key" keyType="RSA">
+            <keyFile>rsakey_2.pem</keyFile>
+        </keyInfo>
+        <asn1Sequence identifier="tbsCertificate" type="TBSCertificate">
+            <asn1Explicit identifier="version">
+                <offset>0</offset>
+                <asn1Integer identifier="version" type="Version">
+                    <value>2</value>
+                </asn1Integer>
+            </asn1Explicit>
+            <asn1Integer identifier="serialNumber" type="CertificateSerialNumber">
+                <value>35</value>
+            </asn1Integer>
+            <asn1Sequence identifier="signature" type="AlgorithmIdentifier" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/signatureAlgorithm" />
+            <asn1Sequence identifier="issuer" type="Name" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/tbsCertificate/subject"/>
+            <asn1Sequence identifier="validity" type="Validity">
+                <asn1PrimitiveUtcTime identifier="notBefore" type="Time">
+                    <value>191212000000Z</value>
+                </asn1PrimitiveUtcTime>
+                <asn1PrimitiveUtcTime identifier="notAfter" type="Time">
+                    <value>201219000000Z</value>
+                </asn1PrimitiveUtcTime>
+            </asn1Sequence>
+            <asn1Sequence identifier="subject" type="Name">
+                <asn1Set identifier="relativeDistinguishedName0" type="RelativeDistinguishedName">
+                    <asn1Sequence identifier="attributeTypeAndValue0" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.6</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitivePrintableString identifier="value" type="AttributeValue">
+                            <value>DE</value>
+                        </asn1PrimitivePrintableString>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue1" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.10</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>RUB</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue2" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.11</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>TLS-Scanner CCA CA 2 v3 (ROOTv3_CAv3_CAv3_PathLoop)</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                </asn1Set>
+            </asn1Sequence>
+            <asn1Sequence identifier="subjectPublicKeyInfo" type="SubjectPublicKeyInfo" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/key" />
+            <asn1Explicit identifier="explicitExtensions">
+                <offset>3</offset>
+                <asn1Sequence identifier="extensions" type="Extensions">
+                    <!--BasicConstraintsExtension-->
+                    <asn1Sequence identifier="extension1" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.19</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>true</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence identifier="basicConstraintsExtension" type="BasicConstraints">
+                                <asn1Boolean identifier="cA">
+                                    <value>true</value>
+                                </asn1Boolean>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!--SubjectKeyIdentifierExtension-->
+                    <asn1Sequence identifier="extension7" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.14</value>
+                        </asn1ObjectIdentifier>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1PrimitiveOctetString identifier="subjectKeyIdentifier" type="SubjectKeyIdentifier">
+                                <value>03</value>
+                            </asn1PrimitiveOctetString>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!-- AuthorityKeyIdentifierExtension -->
+                    <asn1Sequence identifier="extension6">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.35</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>false</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence>
+                                <asn1Implicit>
+                                    <offset>0</offset>
+                                    <asn1PrimitiveOctetString>
+                                        <value>02</value>
+                                    </asn1PrimitiveOctetString>
+                                </asn1Implicit>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!--KeyUsageExtension-->
+                    <asn1Sequence identifier="extension2" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.15</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>true</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1PrimitiveBitString identifier="keyUsage" type="KeyUsage">
+                                <unusedBits>7</unusedBits>
+                                <value>0400</value>
+                            </asn1PrimitiveBitString>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                </asn1Sequence>
+            </asn1Explicit>
+        </asn1Sequence>
+        <asn1Sequence identifier="signatureAlgorithm" type="AlgorithmIdentifier">
+            <asn1ObjectIdentifier identifier="algorithm">
+                <value>1.2.840.113549.1.1.11</value>
+            </asn1ObjectIdentifier>
+            <asn1Null />
+        </asn1Sequence>
+        <asn1PrimitiveBitString identifier="signatureValue" />
+    </asn1Sequence>
+
+
+
+
+    <asn1Sequence identifier="ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1" type="Certificate">
+        <keyInfo identifier="key">
+            <keyFile>rsakey_1.pem</keyFile>
+        </keyInfo>
+        <asn1Sequence identifier="tbsCertificate" type="TBSCertificate">
+            <asn1Explicit identifier="version">
+                <offset>0</offset>
+                <asn1Integer identifier="version" type="Version">
+                    <value>2</value>
+                </asn1Integer>
+            </asn1Explicit>
+            <asn1Integer identifier="serialNumber" type="CertificateSerialNumber">
+                <value>36</value>
+            </asn1Integer>
+            <asn1Sequence identifier="signature" type="AlgorithmIdentifier" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/signatureAlgorithm" />
+            <asn1Sequence identifier="issuer" type="Name" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/tbsCertificate/subject"/>
+            <asn1Sequence identifier="validity" type="Validity">
+                <asn1PrimitiveUtcTime identifier="notBefore" type="Time">
+                    <value>191212000000Z</value>
+                </asn1PrimitiveUtcTime>
+                <asn1PrimitiveUtcTime identifier="notAfter" type="Time">
+                    <value>201219000000Z</value>
+                </asn1PrimitiveUtcTime>
+            </asn1Sequence>
+            <asn1Sequence identifier="subject" type="Name">
+                <asn1Set identifier="relativeDistinguishedName0" type="RelativeDistinguishedName">
+                    <asn1Sequence identifier="attributeTypeAndValue0" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.6</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitivePrintableString identifier="value" type="AttributeValue">
+                            <value>DE</value>
+                        </asn1PrimitivePrintableString>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue1" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.10</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>RUB</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                    </asn1Set>
+                    <asn1Set>
+                    <asn1Sequence identifier="attributeTypeAndValue2" type="AttributeTypeAndValue">
+                        <asn1ObjectIdentifier identifier="type" type="AttributeType">
+                            <value>2.5.4.11</value>
+                        </asn1ObjectIdentifier>
+                        <asn1PrimitiveUtf8String identifier="value" type="AttributeValue">
+                            <value>TLS-Scanner CCA CA 1 v3 (ROOTv3_CAv3_CAv3_PathLoop)</value>
+                        </asn1PrimitiveUtf8String>
+                    </asn1Sequence>
+                </asn1Set>
+            </asn1Sequence>
+            <asn1Sequence identifier="subjectPublicKeyInfo" type="SubjectPublicKeyInfo" fromIdentifier="/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/key" />
+            <asn1Explicit identifier="explicitExtensions">
+                <offset>3</offset>
+                <asn1Sequence identifier="extensions" type="Extensions">
+                    <!--SubjectKeyIdentifierExtension-->
+                    <asn1Sequence identifier="extension7" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.14</value>
+                        </asn1ObjectIdentifier>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1PrimitiveOctetString identifier="subjectKeyIdentifier" type="SubjectKeyIdentifier">
+                                <value>02</value>
+                            </asn1PrimitiveOctetString>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!-- AuthorityKeyIdentifierExtension -->
+                    <asn1Sequence identifier="extension6">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.35</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>false</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence>
+                                <asn1Implicit>
+                                    <offset>0</offset>
+                                    <asn1PrimitiveOctetString>
+                                        <value>03</value>
+                                    </asn1PrimitiveOctetString>
+                                </asn1Implicit>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!--KeyUsageExtension-->
+                    <asn1Sequence identifier="extension2" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.15</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>true</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1PrimitiveBitString identifier="keyUsage" type="KeyUsage">
+                                <unusedBits>7</unusedBits>
+                                <value>0400</value>
+                            </asn1PrimitiveBitString>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                    <!--BasicConstraintsExtension-->
+                    <asn1Sequence identifier="extension3" type="Extension">
+                        <asn1ObjectIdentifier identifier="extnID">
+                            <value>2.5.29.19</value>
+                        </asn1ObjectIdentifier>
+                        <asn1Boolean identifier="critical">
+                            <value>true</value>
+                        </asn1Boolean>
+                        <asn1EncapsulatingOctetString identifier="extnValue">
+                            <asn1Sequence identifier="basicConstraintsExtension" type="BasicConstraints">
+                                <asn1Boolean identifier="cA">
+                                    <value>true</value>
+                                </asn1Boolean>
+                            </asn1Sequence>
+                        </asn1EncapsulatingOctetString>
+                    </asn1Sequence>
+                </asn1Sequence>
+            </asn1Explicit>
+        </asn1Sequence>
+        <asn1Sequence identifier="signatureAlgorithm" type="AlgorithmIdentifier">
+            <asn1ObjectIdentifier identifier="algorithm">
+                <value>1.2.840.113549.1.1.11</value>
+            </asn1ObjectIdentifier>
+            <asn1Null />
+        </asn1Sequence>
+        <asn1PrimitiveBitString identifier="signatureValue" />
+    </asn1Sequence>
+
+
+
+
+    <signatureInfo identifier="ROOTv3_CAv3_CAv3_PathLoop_leaf_certificate1SignatureInfo">
+        <toBeSignedIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/tbsCertificate</toBeSignedIdentifier>
+        <signatureValueTargetIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/signatureValue</signatureValueTargetIdentifier>
+        <keyInfoIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/key</keyInfoIdentifier>
+        <signatureAlgorithmOidIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/signatureAlgorithm/algorithm</signatureAlgorithmOidIdentifier>
+        <parametersIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__leaf_certificate1/signatureAlgorithm/parameters</parametersIdentifier>
+    </signatureInfo>
+
+    <signatureInfo identifier="ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1SignatureInfo">
+        <toBeSignedIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/tbsCertificate</toBeSignedIdentifier>
+        <signatureValueTargetIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/signatureValue</signatureValueTargetIdentifier>
+        <keyInfoIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/key</keyInfoIdentifier>
+        <signatureAlgorithmOidIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/signatureAlgorithm/algorithm</signatureAlgorithmOidIdentifier>
+        <parametersIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/signatureAlgorithm/parameters</parametersIdentifier>
+    </signatureInfo>
+
+
+    <signatureInfo identifier="ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2SignatureInfo">
+        <toBeSignedIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/tbsCertificate</toBeSignedIdentifier>
+        <signatureValueTargetIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/signatureValue</signatureValueTargetIdentifier>
+        <keyInfoIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate1/key</keyInfoIdentifier>
+        <signatureAlgorithmOidIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/signatureAlgorithm/algorithm</signatureAlgorithmOidIdentifier>
+        <parametersIdentifier>/ROOTv3_CAv3_CAv3_PathLoop__ca_certificate2/signatureAlgorithm/parameters</parametersIdentifier>
+    </signatureInfo>
+
+</asn1XmlContent>

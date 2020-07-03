@@ -154,7 +154,7 @@ public class Config implements Serializable {
 
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
-    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA1;
+    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA256;
 
     /**
      * List of filters to apply on workflow traces before serialization.
@@ -694,6 +694,8 @@ public class Config implements Serializable {
     private Boolean earlyStop = false;
 
     private Boolean stopActionsAfterIOException = false;
+
+    private Boolean stopTraceAfterUnexpected = false;
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
@@ -3448,6 +3450,14 @@ public class Config implements Serializable {
 
     public void setAddPWDProtectExtension(Boolean addPWDProtectExtension) {
         this.addPWDProtectExtension = addPWDProtectExtension;
+    }
+
+    public Boolean isStopTraceAfterUnexpected() {
+        return stopTraceAfterUnexpected;
+    }
+
+    public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
+        this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
     }
 
     public List<CipherSuite> getClientSupportedEsniCiphersuites() {
