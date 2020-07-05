@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,22 +37,29 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
+
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+
     @ParametersDelegate
     private AttackDelegate attackDelegate;
+
     @Parameter(names = "-encrypted_premaster_secret", description = "Encrypted premaster secret from the RSA client key "
             + "exchange message. You can retrieve this message from the Wireshark traffic. Find the client key exchange "
             + "message, right click on the \"EncryptedPremaster\" value and copy this value as a Hex Stream.")
     private String encryptedPremasterSecret;
+
     @Parameter(names = "-type", description = "Type of the Bleichenbacher test. FAST contains only basic server test queries. "
             + "FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
+
     @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the original "
             + "message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts with 0x00 0x02).", arity = 1)
     private boolean msgPkcsConform = true;
+
     @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
@@ -113,10 +121,12 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+        config.setStopActionsAfterIOException(true);
+        config.setStopActionsAfterFatal(false);
+        config.setStopReceivingAfterFatal(false);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);
         config.setWorkflowExecutorShouldClose(false);

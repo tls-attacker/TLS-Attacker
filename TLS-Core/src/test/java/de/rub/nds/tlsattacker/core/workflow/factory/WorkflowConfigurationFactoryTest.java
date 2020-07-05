@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -132,6 +133,9 @@ public class WorkflowConfigurationFactoryTest {
                 mode = RunningModeType.MITM;
             } else {
                 mode = RunningModeType.CLIENT;
+            }
+            if (workflowTraceType == WorkflowTraceType.DYNAMIC_HELLO && mode != RunningModeType.CLIENT) {
+                continue;
             }
             WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType, mode);
             Assert.assertNotNull(newTrace.getMessageActions());
@@ -350,6 +354,7 @@ public class WorkflowConfigurationFactoryTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 for (WorkflowTraceType type : WorkflowTraceType.values()) {
                     try {
+
                         config.setDefaultSelectedCipherSuite(suite);
                         config.setSupportedVersions(version);
                         config.setHighestProtocolVersion(version);
@@ -358,6 +363,9 @@ public class WorkflowConfigurationFactoryTest {
                         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
                         config.setDefaultRunningMode(RunningModeType.CLIENT);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
+                        if (type == WorkflowTraceType.DYNAMIC_HELLO) {
+                            continue;
+                        }
                         config.setDefaultRunningMode(RunningModeType.SERVER);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
                         config.setDefaultRunningMode(RunningModeType.MITM);

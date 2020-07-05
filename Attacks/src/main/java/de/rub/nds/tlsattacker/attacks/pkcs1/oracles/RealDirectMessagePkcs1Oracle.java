@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,6 +16,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -54,7 +56,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config, ResponseFingerprint validResponseContent,
             ResponseFingerprint invalidResponseContent, BleichenbacherWorkflowType type) {
         this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
+        this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.type = type;

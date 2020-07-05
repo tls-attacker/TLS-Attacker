@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -61,8 +62,8 @@ public class ResetConnectionActionTest {
         action.execute(state);
         TlsRecordLayer layer = TlsRecordLayer.class.cast(tlsContext.getRecordLayer());
         assertTrue(layer.getRecordCipher() instanceof RecordNullCipher);
-        assertTrue(layer.getEncryptor() instanceof RecordNullCipher);
-        assertTrue(layer.getDecryptor() instanceof RecordNullCipher);
+        assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
+        assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertEquals(tlsContext.getActiveClientKeySetType(), Tls13KeySetType.NONE);
         assertEquals(tlsContext.getActiveServerKeySetType(), Tls13KeySetType.NONE);
         assertFalse(tlsContext.getTransportHandler().isClosed());

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -33,7 +34,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-
         List<TlsContext> allTlsContexts = state.getAllTlsContexts();
 
         if (config.isWorkflowExecutorShouldOpen()) {
@@ -76,6 +76,11 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            }
+
+            if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
+                LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                break;
             }
         }
 

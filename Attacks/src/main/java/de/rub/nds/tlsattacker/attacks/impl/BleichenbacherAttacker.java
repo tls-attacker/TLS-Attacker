@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -216,16 +218,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        if (executor.getSize() > 1) {
-            executor.bulkExecuteStateTasks(stateList);
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
-        } else {
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                executor.bulkExecuteStateTasks(stateVectorPair.getState());
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
+        executor.bulkExecuteStateTasks(stateList);
+        for (StateVectorPair stateVectorPair : stateVectorPairList) {
+            processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
         }
         // Check that the public key send by the server is actually the public
         // key used to generate
@@ -234,7 +229,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // generated statically and not dynamically. We will adjust this in
         // future versions.
         for (StateVectorPair pair : stateVectorPairList) {
-            if (!pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+            if (pair.getState().getTlsContext().getServerRsaModulus() != null
+                    && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
                 throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
             }
         }
@@ -292,7 +288,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
-        if ((pms.length * 8) != publicKey.getModulus().bitLength()) {
+        if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                     + "is not equal to the server public key length. Have you selected the correct value?");
         }

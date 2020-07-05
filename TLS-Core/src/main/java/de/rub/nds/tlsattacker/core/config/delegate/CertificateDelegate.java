@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,11 +12,15 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
+import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -31,6 +36,12 @@ import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
+
+    @Parameter(names = "-cert", description = "PEM encoded certificate file")
+    private String certificate = null;
+
+    @Parameter(names = "-key", description = "PEM encoded private key")
+    private String key = null;
 
     @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate")
     private String keystore = null;
@@ -68,12 +79,56 @@ public class CertificateDelegate extends Delegate {
         this.alias = alias;
     }
 
+    public String getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public void applyDelegate(Config config) {
         Map<String, String> mandatoryParameters = new HashMap<>();
         mandatoryParameters.put("keystore", keystore);
         mandatoryParameters.put("password", password);
         mandatoryParameters.put("alias", alias);
+
+        PrivateKey privateKey = null;
+        if (key != null) {
+            LOGGER.debug("Loading private key");
+            try {
+                privateKey = PemUtil.readPrivateKey(new File(key));
+                CustomPrivateKey customPrivateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+                customPrivateKey.adjustInConfig(config, ConnectionEndType.CLIENT);
+                customPrivateKey.adjustInConfig(config, ConnectionEndType.SERVER);
+
+            } catch (IOException ex) {
+                LOGGER.warn("Could not read private key", ex);
+            }
+        }
+        if (certificate != null) {
+            LOGGER.debug("Loading ceritificate");
+            try {
+                Certificate cert = PemUtil.readCertificate(new File(certificate));
+                if (privateKey != null) {
+                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert, privateKey));
+                } else {
+                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert));
+                }
+                config.setAutoSelectCertificate(false);
+            } catch (Exception ex) {
+                LOGGER.warn("Could not read certificate", ex);
+            }
+        }
         List<String> missingParameters = new ArrayList<>();
         for (String p : mandatoryParameters.keySet()) {
             if (mandatoryParameters.get(p) == null) {
@@ -102,7 +157,6 @@ public class CertificateDelegate extends Delegate {
             }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
-            PrivateKey privateKey = null;
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
             pair.adjustInConfig(config, type);

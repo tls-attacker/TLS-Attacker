@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -16,6 +19,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.IOException;
@@ -56,11 +62,23 @@ public class WorkflowTraceUtilTest {
     private ReceiveAction rcvAlertMessage;
     private ReceiveAction rcvServerHello;
     private ReceiveAction rcvFinishedMessage;
+    private ReceiveAction rcvMultipleProtocolMessages;
+    private ReceiveAction rcvMultipleHandshakeMessages;
+    private ReceiveAction rcvMultipleRecords;
+
+    private HeartbeatMessage msgHeartbeatMessageWithLength;
+    private ServerHelloMessage msgServerHelloWithHeartbeatExtension;
+    private ServerHelloMessage msgServerHelloWithEncryptThenMacExtension;
+    private ServerHelloMessage msgServerHelloMessageWithCipherSuite;
+
+    private Record recWithLength;
 
     private SendAction sHeartbeat;
     private SendAction sAlertMessage;
     private SendAction sClientHello;
     private SendAction sFinishedMessage;
+    private SendAction sHeartbeatExtension;
+    private SendAction sEncryptThenMacExtension;
 
     public WorkflowTraceUtilTest() {
     }
@@ -74,25 +92,74 @@ public class WorkflowTraceUtilTest {
         rcvAlertMessage = new ReceiveAction();
         rcvServerHello = new ReceiveAction();
         rcvFinishedMessage = new ReceiveAction();
+        rcvMultipleProtocolMessages = new ReceiveAction();
+        rcvMultipleHandshakeMessages = new ReceiveAction();
+        rcvMultipleRecords = new ReceiveAction();
+
+        msgHeartbeatMessageWithLength = new HeartbeatMessage();
+        msgHeartbeatMessageWithLength.setPayloadLength(42);
+        msgServerHelloMessageWithCipherSuite = new ServerHelloMessage();
+        msgServerHelloMessageWithCipherSuite.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue());
+        msgServerHelloWithHeartbeatExtension = new ServerHelloMessage();
+        msgServerHelloWithHeartbeatExtension.addExtension(new HeartbeatExtensionMessage());
+        msgServerHelloWithEncryptThenMacExtension = new ServerHelloMessage();
+        msgServerHelloWithEncryptThenMacExtension.addExtension(new EncryptThenMacExtensionMessage());
+
+        recWithLength = new Record();
+        recWithLength.setLength(42);
 
         rcvHeartbeat.setMessages(new HeartbeatMessage());
         rcvAlertMessage.setMessages(new AlertMessage());
         rcvServerHello.setMessages(new ServerHelloMessage());
         rcvFinishedMessage.setMessages(new FinishedMessage());
+        rcvMultipleProtocolMessages.setMessages(new HeartbeatMessage(), new HeartbeatMessage(),
+                msgHeartbeatMessageWithLength);
+        rcvMultipleHandshakeMessages.setMessages(new ServerHelloMessage(), new HeartbeatMessage(),
+                msgServerHelloMessageWithCipherSuite);
+        rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
 
         sHeartbeat = new SendAction();
         sAlertMessage = new SendAction();
         sClientHello = new SendAction();
         sFinishedMessage = new SendAction();
+        sHeartbeatExtension = new SendAction();
+        sEncryptThenMacExtension = new SendAction();
 
         sHeartbeat.setMessages(new HeartbeatMessage());
         sAlertMessage.setMessages(new AlertMessage());
         sClientHello.setMessages(new ClientHelloMessage());
         sFinishedMessage.setMessages(new FinishedMessage());
+        sHeartbeatExtension.setMessages(msgServerHelloWithHeartbeatExtension);
+        sEncryptThenMacExtension.setMessages(msgServerHelloWithEncryptThenMacExtension);
     }
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void testGetLastReceivedMessage() {
+        assertNull(WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+
+        trace.addTlsAction(rcvMultipleProtocolMessages);
+
+        assertNotSame(rcvMultipleProtocolMessages.getMessages().get(0),
+                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+        assertNotSame(rcvMultipleProtocolMessages.getMessages().get(1),
+                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+        assertSame(rcvMultipleProtocolMessages.getMessages().get(2),
+                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+
+        assertNull(WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+
+        trace.addTlsAction(rcvMultipleHandshakeMessages);
+
+        assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(0),
+                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+        assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(1),
+                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+        assertSame(rcvMultipleHandshakeMessages.getMessages().get(2),
+                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
     }
 
     @Test
@@ -165,6 +232,36 @@ public class WorkflowTraceUtilTest {
         assertTrue(WorkflowTraceUtil.didSendMessage(ProtocolMessageType.ALERT, trace));
         assertTrue(WorkflowTraceUtil.didSendMessage(HandshakeMessageType.CLIENT_HELLO, trace));
         assertTrue(WorkflowTraceUtil.didSendMessage(HandshakeMessageType.FINISHED, trace));
+    }
+
+    @Test
+    public void testGetLastReceivedRecord() {
+        assertNull(WorkflowTraceUtil.getLastReceivedRecord(trace));
+
+        trace.addTlsAction(rcvMultipleRecords);
+
+        assertNotSame(rcvMultipleRecords.getRecords().get(0), WorkflowTraceUtil.getLastReceivedRecord(trace));
+        assertNotSame(rcvMultipleRecords.getRecords().get(1), WorkflowTraceUtil.getLastReceivedRecord(trace));
+        assertSame(rcvMultipleRecords.getRecords().get(2), WorkflowTraceUtil.getLastReceivedRecord(trace));
+    }
+
+    @Test
+    public void testGetFirstSendExtension() {
+        assertNull(WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+        assertNull(WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
+
+        trace.addTlsAction(sHeartbeatExtension);
+
+        assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
+                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+        assertNull(WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
+
+        trace.addTlsAction(sEncryptThenMacExtension);
+
+        assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
+                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+        assertSame(msgServerHelloWithEncryptThenMacExtension.getExtensions().get(0),
+                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
     }
 
     private void pwf(String pre, WorkflowTrace trace) {
