@@ -37,8 +37,8 @@ public class OCSPResponse {
     private List<CertificateStatus> certificateStatusList = new LinkedList<>();
     private byte[] encodedResponse;
     private byte[] responderKey;
-    private int responseStatus = -1;
-    private int responseDataVersion = 0; // 0 = OCSP v1
+    private Integer responseStatus;
+    private Integer responseDataVersion;
     private BigInteger nonce;
     private String responseTime;
     private String responseTypeIdentifier;
@@ -71,19 +71,19 @@ public class OCSPResponse {
         this.responderKey = responderKey;
     }
 
-    public int getResponseStatus() {
+    public Integer getResponseStatus() {
         return responseStatus;
     }
 
-    public void setResponseStatus(int responseStatus) {
+    public void setResponseStatus(Integer responseStatus) {
         this.responseStatus = responseStatus;
     }
 
-    public int getResponseDataVersion() {
+    public Integer getResponseDataVersion() {
         return responseDataVersion;
     }
 
-    public void setResponseDataVersion(int responseDataVersion) {
+    public void setResponseDataVersion(Integer responseDataVersion) {
         this.responseDataVersion = responseDataVersion;
     }
 
@@ -183,11 +183,8 @@ public class OCSPResponse {
         sb.append("OCSP Response:");
 
         // If response was not successful or object was empty...
-        if (getResponseStatus() != 0) {
+        if (getResponseStatus() != null) {
             switch (getResponseStatus()) {
-                case -1:
-                    // Empty object
-                    break;
                 case 1:
                     sb.append("\n malformedRequest");
                     break;
@@ -209,7 +206,7 @@ public class OCSPResponse {
         }
 
         sb.append("\n Version: ");
-        if (getResponseDataVersion() == 0) {
+        if (getResponseDataVersion() == null || getResponseDataVersion() == 0) {
             sb.append("1 (0x0)");
         } else {
             sb.append(Integer.toHexString(getResponseDataVersion()));
@@ -246,7 +243,7 @@ public class OCSPResponse {
             } else if (certificateStatus.getCertificateStatus() == 1) {
                 sb.append("revoked");
                 sb.append("\n   Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
-                if (certificateStatus.getRevocationReason() != -1) {
+                if (certificateStatus.getRevocationReason() != null) {
                     sb.append("\n   Revocation Reason: ");
                     switch (certificateStatus.getRevocationReason()) {
                         case 0:

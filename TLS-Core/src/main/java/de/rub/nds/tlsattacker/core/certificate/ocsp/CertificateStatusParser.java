@@ -37,9 +37,9 @@ public class CertificateStatusParser {
         byte[] issuerNameHash = null;
         byte[] issuerKeyHash = null;
         BigInteger serialNumber = null;
-        int certificateStatusValue = 2; // unknown
+        Integer certificateStatusValue = null;
         String timeOfRevocation = null;
-        int revocationReason = -1;
+        Integer revocationReason = null;
         String timeOfLastUpdate = null;
         String timeOfNextUpdate = null;
 

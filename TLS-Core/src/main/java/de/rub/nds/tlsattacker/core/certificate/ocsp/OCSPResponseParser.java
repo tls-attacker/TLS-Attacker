@@ -82,7 +82,7 @@ public class OCSPResponseParser {
 
         List<Asn1Encodable> responderDn = null;
         byte[] responderKey = null;
-        int responseDataVersion = 0; // Assume it's v1 by default
+        Integer responseDataVersion = null;
         String responseTime = null;
 
         /*

@@ -51,8 +51,8 @@ public class OCSPResponseParserTest {
     @Test
     public void testParseResponse() {
 
-        Assert.assertEquals(0, response.getResponseStatus());
-        Assert.assertEquals(0, response.getResponseDataVersion());
+        Assert.assertEquals(new Integer(0), response.getResponseStatus());
+        Assert.assertNull(response.getResponseDataVersion());
         Assert.assertNull(response.getNonce()); // Response contains no nonce
         Assert.assertEquals("20200615155900Z", response.getResponseTime());
         Assert.assertEquals("1.3.6.1.5.5.7.48.1.1", response.getResponseTypeIdentifier());

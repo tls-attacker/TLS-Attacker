@@ -25,9 +25,9 @@ public class CertificateStatus {
     private byte[] issuerNameHash;
     private byte[] issuerKeyHash;
     private BigInteger serialNumber;
-    private int certificateStatus = -1;
+    private Integer certificateStatus;
     private String timeOfRevocation;
-    private int revocationReason;
+    private Integer revocationReason;
     private String timeOfLastUpdate;
     private String timeOfNextUpdate;
 
@@ -71,11 +71,11 @@ public class CertificateStatus {
         this.serialNumber = serialNumber;
     }
 
-    public int getCertificateStatus() {
+    public Integer getCertificateStatus() {
         return certificateStatus;
     }
 
-    public void setCertificateStatus(int certificateStatus) {
+    public void setCertificateStatus(Integer certificateStatus) {
         this.certificateStatus = certificateStatus;
     }
 
@@ -103,11 +103,11 @@ public class CertificateStatus {
         this.timeOfNextUpdate = timeOfNextUpdate;
     }
 
-    public int getRevocationReason() {
+    public Integer getRevocationReason() {
         return revocationReason;
     }
 
-    public void setRevocationReason(int revocationReason) {
+    public void setRevocationReason(Integer revocationReason) {
         this.revocationReason = revocationReason;
     }
 
@@ -122,7 +122,7 @@ public class CertificateStatus {
         StringBuilder sb = new StringBuilder();
         sb.append("Certificate Status");
         // Use status value to determine if object has been filled
-        if (certificateStatus != -1) {
+        if (certificateStatus != null) {
             sb.append("\n Hash Algorithm: ").append(ObjectIdentifierTranslator.translate(getHashAlgorithmIdentifier()));
             sb.append("\n Issuer Name Hash: ").append(Hex.toHexString(getIssuerNameHash()));
             sb.append("\n Issuer Key Hash: ").append(Hex.toHexString(getIssuerKeyHash()));
@@ -133,7 +133,7 @@ public class CertificateStatus {
             } else if (getCertificateStatus() == 1) {
                 sb.append("revoked");
                 sb.append("\n Time of Revocation: ").append(formatDate(getTimeOfRevocation()));
-                if (getRevocationReason() != -1) {
+                if (getRevocationReason() != null) {
                     sb.append("\n Revocation Reason: ");
                     switch (getRevocationReason()) {
                         case 0:

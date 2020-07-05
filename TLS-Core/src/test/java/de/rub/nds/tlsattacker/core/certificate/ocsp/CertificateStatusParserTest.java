@@ -77,16 +77,16 @@ public class CertificateStatusParserTest {
     @Test
     public void testParseCertificateStatusGood() {
         // Certificate has "good" status
-        Assert.assertEquals(0, certificateStatusGood.getCertificateStatus());
+        Assert.assertEquals(new Integer(0), certificateStatusGood.getCertificateStatus());
         Assert.assertNull(certificateStatusGood.getTimeOfRevocation());
-        Assert.assertEquals(-1, certificateStatusGood.getRevocationReason());
+        Assert.assertNull(certificateStatusGood.getRevocationReason());
     }
 
     @Test
     public void testParseCertificateStatusRevoked() {
         // Certificate has "revoked" status, but no reason
-        Assert.assertEquals(1, certificateStatusRevoked.getCertificateStatus());
+        Assert.assertEquals(new Integer(1), certificateStatusRevoked.getCertificateStatus());
         Assert.assertEquals("20200423141917Z", certificateStatusRevoked.getTimeOfRevocation());
-        Assert.assertEquals(-1, certificateStatusRevoked.getRevocationReason());
+        Assert.assertNull(certificateStatusRevoked.getRevocationReason());
     }
 }
