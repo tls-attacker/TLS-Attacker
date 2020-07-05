@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.record;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import java.util.Objects;
 
 public class RecordCryptoComputations {
 
@@ -293,4 +294,94 @@ public class RecordCryptoComputations {
     public void setAuthenticationTagValid(boolean authenticationTagValid) {
         this.authenticationTagValid = authenticationTagValid;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 31 * hash + Objects.hashCode(this.cipherKey);
+        hash = 31 * hash + Objects.hashCode(this.macKey);
+        hash = 31 * hash + Objects.hashCode(this.mac);
+        hash = 31 * hash + Objects.hashCode(this.aeadSalt);
+        hash = 31 * hash + Objects.hashCode(this.explicitNonce);
+        hash = 31 * hash + Objects.hashCode(this.gcmNonce);
+        hash = 31 * hash + Objects.hashCode(this.padding);
+        hash = 31 * hash + Objects.hashCode(this.additionalPaddingLength);
+        hash = 31 * hash + Objects.hashCode(this.plainRecordBytes);
+        hash = 31 * hash + Objects.hashCode(this.authenticatedNonMetaData);
+        hash = 31 * hash + Objects.hashCode(this.ciphertext);
+        hash = 31 * hash + Objects.hashCode(this.cbcInitialisationVector);
+        hash = 31 * hash + Objects.hashCode(this.authenticatedMetaData);
+        hash = 31 * hash + Objects.hashCode(this.authenticationTag);
+        hash = 31 * hash + Objects.hashCode(this.paddingValid);
+        hash = 31 * hash + Objects.hashCode(this.macValid);
+        hash = 31 * hash + Objects.hashCode(this.authenticationTagValid);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RecordCryptoComputations other = (RecordCryptoComputations) obj;
+        if (!Objects.equals(this.cipherKey, other.cipherKey)) {
+            return false;
+        }
+        if (!Objects.equals(this.macKey, other.macKey)) {
+            return false;
+        }
+        if (!Objects.equals(this.mac, other.mac)) {
+            return false;
+        }
+        if (!Objects.equals(this.aeadSalt, other.aeadSalt)) {
+            return false;
+        }
+        if (!Objects.equals(this.explicitNonce, other.explicitNonce)) {
+            return false;
+        }
+        if (!Objects.equals(this.gcmNonce, other.gcmNonce)) {
+            return false;
+        }
+        if (!Objects.equals(this.padding, other.padding)) {
+            return false;
+        }
+        if (!Objects.equals(this.additionalPaddingLength, other.additionalPaddingLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.plainRecordBytes, other.plainRecordBytes)) {
+            return false;
+        }
+        if (!Objects.equals(this.authenticatedNonMetaData, other.authenticatedNonMetaData)) {
+            return false;
+        }
+        if (!Objects.equals(this.ciphertext, other.ciphertext)) {
+            return false;
+        }
+        if (!Objects.equals(this.cbcInitialisationVector, other.cbcInitialisationVector)) {
+            return false;
+        }
+        if (!Objects.equals(this.authenticatedMetaData, other.authenticatedMetaData)) {
+            return false;
+        }
+        if (!Objects.equals(this.authenticationTag, other.authenticationTag)) {
+            return false;
+        }
+        if (!Objects.equals(this.paddingValid, other.paddingValid)) {
+            return false;
+        }
+        if (!Objects.equals(this.macValid, other.macValid)) {
+            return false;
+        }
+        if (!Objects.equals(this.authenticationTagValid, other.authenticationTagValid)) {
+            return false;
+        }
+        return true;
+    }
+
 }

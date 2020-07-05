@@ -55,12 +55,12 @@ public class CcaTask extends TlsTask {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         state = prepareState();
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
-
+            return true;
         } finally {
             try {
                 state.getTlsContext().getTransportHandler().closeConnection();

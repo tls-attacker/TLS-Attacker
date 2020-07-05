@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementF2m;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
@@ -63,10 +65,12 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
         }
         if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
             LOGGER.debug("Adjusting Montgomery EC Point");
+            EllipticCurve curve = CurveFactory.getCurve(group);
             // TODO This is only a temporary solution. Montgomory Curves need to
             // be integrated into the new EC framework
             tlsContext.setServerEcPublicKey(new Point(new FieldElementF2m(new BigInteger(message.getPublicKey()
-                    .getValue()), null), new FieldElementF2m(new BigInteger(message.getPublicKey().getValue()), null)));
+                    .getValue()), curve.getModulus()), new FieldElementF2m(new BigInteger(message.getPublicKey()
+                    .getValue()), curve.getModulus())));
 
         } else if (group != null) {
             LOGGER.debug("Adjusting EC Point");

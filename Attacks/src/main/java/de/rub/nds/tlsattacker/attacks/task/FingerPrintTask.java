@@ -40,20 +40,20 @@ public class FingerPrintTask extends TlsTask {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
-                throw new FingerprintExtractionException(
-                        "Could not extract fingerprint. Not all actions executed as planned");
+                return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(state);
 
             if (fingerprint == null) {
-                throw new FingerprintExtractionException("Could not extract fingerprint. Fingerprint is null");
+                return false;
             }
+            return true;
         } finally {
             try {
                 state.getTlsContext().getTransportHandler().closeConnection();
