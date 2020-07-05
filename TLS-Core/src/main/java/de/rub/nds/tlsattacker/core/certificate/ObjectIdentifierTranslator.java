@@ -9,10 +9,11 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import java.util.HashMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public class ObjectIdentifierTranslator {
-    private static final HashMap<String, String> oidMap = new HashMap<>();
+    private static final BiMap<String, String> oidMap = HashBiMap.create();
 
     static {
         // Algorithms
@@ -92,6 +93,11 @@ public class ObjectIdentifierTranslator {
         String translated = null;
         // Forward check
         translated = oidMap.get(input);
+
+        // Reverse check
+        if (translated == null) {
+            translated = oidMap.inverse().get(input);
+        }
 
         // Return input if not found
         if (translated == null) {
