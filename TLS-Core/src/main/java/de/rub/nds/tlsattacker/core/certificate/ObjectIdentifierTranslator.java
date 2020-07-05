@@ -28,7 +28,7 @@ public class ObjectIdentifierTranslator {
         oidMap.put("1.2.840.113549.1.1.0", "modules"); // ASN.1 modules?
         oidMap.put("1.2.840.113549.1.1.1", "rsaEncryption");
         oidMap.put("1.2.840.113549.1.1.2", "md2WithRSAEncryption");
-        oidMap.put("1.2.840.113549.1.1.3", "md4WithRSAEncryption");
+        oidMap.put("1.2.840.113549.1.1.3", "md4withRSAEncryption");
         oidMap.put("1.2.840.113549.1.1.4", "md5WithRSAEncryption");
         oidMap.put("1.2.840.113549.1.1.5", "sha1-with-rsa-signature");
         oidMap.put("1.2.840.113549.1.1.6", "rsaOAEPEncryptionSet");
