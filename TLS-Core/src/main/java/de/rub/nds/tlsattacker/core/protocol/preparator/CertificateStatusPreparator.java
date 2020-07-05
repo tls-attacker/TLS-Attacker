@@ -20,6 +20,9 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
     private static final Logger LOGGER = LogManager.getLogger();
     private final CertificateStatusMessage msg;
 
+    private final static int TYPE_OCSP = 1;
+    private final static int TYPE_OCSP_MULTI = 2;
+
     public CertificateStatusPreparator(Chooser chooser, CertificateStatusMessage message) {
         super(chooser, message);
         this.msg = message;
@@ -36,7 +39,7 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
     }
 
     private void prepareCertificateStatusType() {
-        msg.setCertificateStatusType(1); // 1: OCSP 2: OCSP_multi
+        msg.setCertificateStatusType(TYPE_OCSP); // 1: OCSP 2: OCSP_multi
         LOGGER.debug("CertificateStatusType: " + msg.getCertificateStatusType().getValue());
     }
 

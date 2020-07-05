@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -128,49 +129,13 @@ public class CertificateStatus {
             sb.append("\n Issuer Key Hash: ").append(Hex.toHexString(getIssuerKeyHash()));
             sb.append("\n Serial Number: ").append(getSerialNumber().toString(16));
             sb.append("\n Certificate Status: ");
-            if (getCertificateStatus() == 0) {
-                sb.append("good");
-            } else if (getCertificateStatus() == 1) {
-                sb.append("revoked");
+            sb.append(RevocationStatus.translate(getCertificateStatus()));
+            if (getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {
                 sb.append("\n Time of Revocation: ").append(formatDate(getTimeOfRevocation()));
                 if (getRevocationReason() != null) {
                     sb.append("\n Revocation Reason: ");
-                    switch (getRevocationReason()) {
-                        case 0:
-                            sb.append("unspecified");
-                            break;
-                        case 1:
-                            sb.append("keyCompromise");
-                            break;
-                        case 2:
-                            sb.append("cACompromise");
-                            break;
-                        case 3:
-                            sb.append("affiliationChanged");
-                            break;
-                        case 4:
-                            sb.append("superseded");
-                            break;
-                        case 5:
-                            sb.append("cessationOfOperation");
-                            break;
-                        case 6:
-                            sb.append("certificateHold");
-                            break;
-                        // case 7 is undefined by standard
-                        case 8:
-                            sb.append("removeFromCRL");
-                            break;
-                        case 9:
-                            sb.append("privilegeWithdrawn");
-                            break;
-                        case 10:
-                            sb.append("aACompromise");
-                            break;
-                    }
+                    sb.append(CrlReason.translate(getRevocationReason()));
                 }
-            } else if (getCertificateStatus() == 2) {
-                sb.append("unknown");
             }
             sb.append("\n Last Update: ").append(formatDate(getTimeOfLastUpdate()));
             sb.append("\n Next Update: ").append(formatDate(getTimeOfNextUpdate()));

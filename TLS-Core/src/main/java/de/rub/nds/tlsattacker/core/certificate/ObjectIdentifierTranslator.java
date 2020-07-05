@@ -67,8 +67,7 @@ public class ObjectIdentifierTranslator {
         oidMap.put("1.3.14.3.2.23", "keyed-hash-seal");
         oidMap.put("1.3.14.3.2.24", "md2WithRSASignature");
         oidMap.put("1.3.14.3.2.25", "md5WithRSASignature");
-        // Special one for SHA-1, the default name is weird
-        oidMap.put("1.3.14.3.2.26", "SHA1 (hashAlgorithmIdentifier)");
+        oidMap.put("1.3.14.3.2.26", "SHA1");
         oidMap.put("1.3.14.3.2.27", "dsaWithSHA1");
         oidMap.put("1.3.14.3.2.28", "dsaWithCommonSHA1");
         oidMap.put("1.3.14.3.2.29", "sha1WithRSAEncryption");

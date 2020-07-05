@@ -18,6 +18,7 @@ import de.rub.nds.asn1.model.Asn1Null;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.math.BigInteger;
@@ -36,6 +37,9 @@ public class OCSPRequestMessage {
     Asn1Explicit extensionExplicitSequence = new Asn1Explicit();
     BigInteger nonce;
 
+    // see RFC 6960: TBSRequest -> [2] requestExtensions
+    private final static int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
+
     boolean extensionsSet = false;
 
     public OCSPRequestMessage() {
@@ -49,7 +53,7 @@ public class OCSPRequestMessage {
         addToRequest(issuerNameHashValue, issuerKeyHashValue, serialNumberValue);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
-        extensionExplicitSequence.setOffset(2);
+        extensionExplicitSequence.setOffset(EXTENSION_ASN1_EXPLICIT_OFFSET);
         extensionExplicitSequence.addChild(extensionSequence);
     }
 
@@ -122,7 +126,7 @@ public class OCSPRequestMessage {
         serialNumber.setValue(serialNumberValue);
         issuerNameHash.setValue(issuerNameHashValue);
         issuerKeyHash.setValue(issuerKeyHashValue);
-        hashAlgorithmId.setValue("1.3.14.3.2.26"); // SHA1
+        hashAlgorithmId.setValue(ObjectIdentifierTranslator.translate("SHA1")); // SHA1
 
         hashAlgorithm.addChild(hashAlgorithmId);
         hashAlgorithm.addChild(hashAlgorithmFiller);

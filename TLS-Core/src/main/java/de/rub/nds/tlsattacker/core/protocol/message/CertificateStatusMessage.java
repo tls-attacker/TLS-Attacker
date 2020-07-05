@@ -59,7 +59,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
             try {
                 response = OCSPResponseParser.parseResponse(getOcspResponseBytes().getValue());
             } catch (IOException | ParserException e) {
-                LOGGER.error("Could not parse embedded OCSP response in CertificateStatusMessage.");
+                LOGGER.error("Could not parse embedded OCSP response in CertificateStatusMessage." + e);
             }
         }
         StringBuilder builder = new StringBuilder();

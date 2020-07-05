@@ -184,24 +184,7 @@ public class OCSPResponse {
 
         // If response was not successful or object was empty...
         if (getResponseStatus() != null) {
-            switch (getResponseStatus()) {
-                case 1:
-                    sb.append("\n malformedRequest");
-                    break;
-                case 2:
-                    sb.append("\n internalError");
-                    break;
-                case 3:
-                    sb.append("\n tryLater");
-                    break;
-                // case 4 is defined as unused in the RFC
-                case 5:
-                    sb.append("\n sigRequired");
-                    break;
-                case 6:
-                    sb.append("\n unauthorized");
-                    break;
-            }
+            sb.append(OCSPResponseStatus.translate(getResponseStatus()));
             return sb.toString();
         }
 
@@ -245,39 +228,7 @@ public class OCSPResponse {
                 sb.append("\n   Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
                 if (certificateStatus.getRevocationReason() != null) {
                     sb.append("\n   Revocation Reason: ");
-                    switch (certificateStatus.getRevocationReason()) {
-                        case 0:
-                            sb.append("unspecified");
-                            break;
-                        case 1:
-                            sb.append("keyCompromise");
-                            break;
-                        case 2:
-                            sb.append("cACompromise");
-                            break;
-                        case 3:
-                            sb.append("affiliationChanged");
-                            break;
-                        case 4:
-                            sb.append("superseded");
-                            break;
-                        case 5:
-                            sb.append("cessationOfOperation");
-                            break;
-                        case 6:
-                            sb.append("certificateHold");
-                            break;
-                        // case 7 is undefined by standard
-                        case 8:
-                            sb.append("removeFromCRL");
-                            break;
-                        case 9:
-                            sb.append("privilegeWithdrawn");
-                            break;
-                        case 10:
-                            sb.append("aACompromise");
-                            break;
-                    }
+                    sb.append(certificateStatus.getRevocationReason());
                 }
             } else if (certificateStatus.getCertificateStatus() == 2) {
                 sb.append("unknown");
