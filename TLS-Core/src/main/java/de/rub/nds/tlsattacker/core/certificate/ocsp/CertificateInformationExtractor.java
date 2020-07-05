@@ -35,10 +35,15 @@ public class CertificateInformationExtractor {
     private final Certificate certificate;
     private List<Asn1Encodable> x509ExtensionSequences;
     private Asn1Sequence authorityInfoAccessEntities;
+    private Asn1Sequence tlsFeatureExtension;
     private Boolean mustStaple;
     private Boolean mustStaplev2;
     private String ocspServerUrl;
     private String certificateIssuerUrl;
+
+    private final static int X509_EXTENSION_ASN1_EXPLICIT_OFFSET = 3;
+    private final static int STATUS_REQUEST_TLS_EXTENSION_ID = 5;
+    private final static int STATUS_REQUEST_V2_TLS_EXTENSION_ID = 17;
 
     public CertificateInformationExtractor(Certificate certificate) {
         this.certificate = certificate;
@@ -69,14 +74,14 @@ public class CertificateInformationExtractor {
 
     public Boolean getMustStaple() throws IOException, ParserException {
         if (mustStaple == null) {
-            mustStaple = parseMustStaple()[0];
+            mustStaple = parseMustStaple();
         }
         return mustStaple;
     }
 
     public Boolean getMustStaplev2() throws IOException, ParserException {
         if (mustStaplev2 == null) {
-            mustStaplev2 = parseMustStaple()[1];
+            mustStaplev2 = parseMustStaplev2();
         }
         return mustStaplev2;
     }
@@ -97,7 +102,7 @@ public class CertificateInformationExtractor {
         return certificateIssuerUrl;
     }
 
-    private void retrieveX509Extensions() throws IOException, ParserException {
+    private void extractX509Extensions() throws IOException, ParserException {
         String ocspUrlResult = null;
 
         byte[] certAsn1 = certificate.getEncoded();
@@ -118,12 +123,7 @@ public class CertificateInformationExtractor {
 
         for (Asn1Encodable enc : innerObjects.getChildren()) {
             if (enc instanceof Asn1Explicit) {
-                /*
-                 * -93 == 0xA3 signed == Offset 3. It's the explicit tag for
-                 * X.509 extension in the DER encoded form, therefore a good
-                 * value to search for.
-                 */
-                if (((Asn1Explicit) enc).getOffset() == 3) {
+                if (((Asn1Explicit) enc).getOffset() == X509_EXTENSION_ASN1_EXPLICIT_OFFSET) {
                     x509Extensions = (Asn1Explicit) enc;
                     break;
                 }
@@ -132,7 +132,7 @@ public class CertificateInformationExtractor {
         x509ExtensionSequences = ((Asn1Sequence) x509Extensions.getChildren().get(0)).getChildren();
     }
 
-    private void retrieveAuthorityInfoAccessEntities() throws NoSuchFieldException {
+    private void extractAuthorityInfoAccessEntities() throws NoSuchFieldException {
         // Now that we found the extensions, search for the
         // 'authorityInfoAccess' extension
         Asn1Sequence authorityInfoAccess = null;
@@ -164,16 +164,12 @@ public class CertificateInformationExtractor {
         this.authorityInfoAccessEntities = (Asn1Sequence) authorityInfoAccessContent.getChildren().get(0);
     }
 
-    private boolean[] parseMustStaple() throws IOException, ParserException {
+    private void extractTlsFeatureExtension() throws IOException, ParserException {
         if (x509ExtensionSequences == null) {
-            retrieveX509Extensions();
+            extractX509Extensions();
         }
 
-        boolean foundMustStaple = false;
-        boolean foundMustStaplev2 = false;
-
-        Asn1Sequence tlsFeatureExtension = null;
-
+        // Search for X.509 'TLS Feature' extension
         for (Asn1Encodable enc : x509ExtensionSequences) {
             if (enc instanceof Asn1Sequence) {
                 Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
@@ -186,32 +182,58 @@ public class CertificateInformationExtractor {
                 }
             }
         }
+    }
 
+    private boolean parseMustStaple() throws IOException, ParserException {
+        if (tlsFeatureExtension == null) {
+            extractTlsFeatureExtension();
+        }
+
+        boolean foundMustStaple = false;
+
+        // Search value inside 'TLS Feature' extension to search for
+        // 'status_request'
         if (tlsFeatureExtension != null) {
             Asn1EncapsulatingOctetString tlsFeaturesContent = (Asn1EncapsulatingOctetString) tlsFeatureExtension
                     .getChildren().get(1);
             Asn1Sequence tlsFeaturesContentSequence = (Asn1Sequence) tlsFeaturesContent.getChildren().get(0);
 
-            /*
-             * 5 = TLS extension "status_request", 17 = TLS extension
-             * "status_request_v2". Taken from:
-             * https://github.com/openssl/openssl
-             * /blob/master/crypto/x509/v3_tlsf.c
-             */
+            for (Asn1Encodable feature : tlsFeaturesContentSequence.getChildren()) {
+                if (feature instanceof Asn1Integer) {
+                    if (((Asn1Integer) feature).getValue().intValue() == STATUS_REQUEST_TLS_EXTENSION_ID) {
+                        foundMustStaple = true;
+                    }
+                }
+            }
+        }
+
+        return foundMustStaple;
+    }
+
+    private boolean parseMustStaplev2() throws IOException, ParserException {
+        if (tlsFeatureExtension == null) {
+            extractTlsFeatureExtension();
+        }
+
+        boolean foundMustStaplev2 = false;
+
+        // Search value inside 'TLS Feature' extension to search for
+        // 'status_request_v2'
+        if (tlsFeatureExtension != null) {
+            Asn1EncapsulatingOctetString tlsFeaturesContent = (Asn1EncapsulatingOctetString) tlsFeatureExtension
+                    .getChildren().get(1);
+            Asn1Sequence tlsFeaturesContentSequence = (Asn1Sequence) tlsFeaturesContent.getChildren().get(0);
 
             for (Asn1Encodable feature : tlsFeaturesContentSequence.getChildren()) {
                 if (feature instanceof Asn1Integer) {
-                    if (((Asn1Integer) feature).getValue().intValue() == 5) {
-                        foundMustStaple = true;
-                    } else if (((Asn1Integer) feature).getValue().intValue() == 17) {
+                    if (((Asn1Integer) feature).getValue().intValue() == STATUS_REQUEST_V2_TLS_EXTENSION_ID) {
                         foundMustStaplev2 = true;
                     }
                 }
             }
-
         }
 
-        return new boolean[] { foundMustStaple, foundMustStaplev2 };
+        return foundMustStaplev2;
     }
 
     private String getStringFromInformationAccessEntry(List<Asn1Encodable> authorityInformationAccessInformation) {
@@ -230,10 +252,10 @@ public class CertificateInformationExtractor {
 
     private String parseOcspServerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (x509ExtensionSequences == null) {
-            retrieveX509Extensions();
+            extractX509Extensions();
         }
         if (authorityInfoAccessEntities == null) {
-            retrieveAuthorityInfoAccessEntities();
+            extractAuthorityInfoAccessEntities();
         }
 
         String ocspUrlResult = null;
@@ -264,10 +286,10 @@ public class CertificateInformationExtractor {
 
     private String parseCertificateIssuerUrl() throws IOException, ParserException, NoSuchFieldException {
         if (x509ExtensionSequences == null) {
-            retrieveX509Extensions();
+            extractX509Extensions();
         }
         if (authorityInfoAccessEntities == null) {
-            retrieveAuthorityInfoAccessEntities();
+            extractAuthorityInfoAccessEntities();
         }
 
         String issuerCertUrlResult = null;
