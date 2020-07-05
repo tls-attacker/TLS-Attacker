@@ -183,7 +183,7 @@ public class OCSPResponse {
         sb.append("OCSP Response:");
 
         // If response was not successful or object was empty...
-        if (getResponseStatus() != null) {
+        if (getResponseStatus() != null && getResponseStatus() > 0) {
             sb.append(OCSPResponseStatus.translate(getResponseStatus()));
             return sb.toString();
         }
