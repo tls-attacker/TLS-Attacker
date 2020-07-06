@@ -25,7 +25,7 @@ public class DtlsHandshakeMessageFragmentHandler extends HandshakeMessageHandler
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(byte[] message, int pointer) {
         return new DtlsHandshakeMessageFragmentParser(pointer, message, tlsContext.getChooser()
-                .getSelectedProtocolVersion());
+                .getSelectedProtocolVersion(), tlsContext.getConfig());
     }
 
     @Override

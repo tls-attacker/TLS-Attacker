@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -30,9 +31,11 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ServerHelloDoneParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE, version);
+    public ServerHelloDoneParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE, version, config);
     }
 
     @Override

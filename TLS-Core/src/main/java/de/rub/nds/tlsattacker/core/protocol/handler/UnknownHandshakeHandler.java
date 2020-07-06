@@ -28,7 +28,8 @@ public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHand
 
     @Override
     public UnknownHandshakeParser getParser(byte[] message, int pointer) {
-        return new UnknownHandshakeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new UnknownHandshakeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

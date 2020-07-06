@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.https;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
@@ -23,6 +24,7 @@ public class HttpsRequestPreparatorTest {
     private TlsContext context;
     private HttpsRequestMessage message;
     private HttpsRequestPreparator preparator;
+    private final Config config = Config.createConfig();
 
     @Before
     public void setUp() {
@@ -30,7 +32,7 @@ public class HttpsRequestPreparatorTest {
 
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
         HttpsRequestParser parser = new HttpsRequestParser(0, rawMessage.getBytes(Charset.forName("UTF-8")),
-                ProtocolVersion.TLS12);
+                ProtocolVersion.TLS12, config);
         message = parser.parse();
 
         preparator = new HttpsRequestPreparator(context.getChooser(), message);

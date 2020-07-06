@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
@@ -31,8 +32,8 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      * @param version
      *            Version of the Protocol
      */
-    public HelloRequestParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.HELLO_REQUEST, version);
+    public HelloRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.HELLO_REQUEST, version, config);
     }
 
     /**

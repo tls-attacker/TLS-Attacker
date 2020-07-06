@@ -174,6 +174,16 @@ public class TlsContext {
     private byte[] preMasterSecret;
 
     /**
+     * Client Extended Random used in Extended Random Extension
+     */
+    private byte[] clientExtendedRandom;
+
+    /**
+     * Server Extended Random used in Extended Random Extension
+     */
+    private byte[] serverExtendedRandom;
+
+    /**
      * Client random, including unix time.
      */
     private byte[] clientRandom;
@@ -1414,6 +1424,22 @@ public class TlsContext {
     public void setPreMasterSecret(byte[] preMasterSecret) {
         keylogfile.writeKey("PMS_CLIENT_RANDOM", preMasterSecret);
         this.preMasterSecret = preMasterSecret;
+    }
+
+    public byte[] getClientExtendedRandom() {
+        return clientExtendedRandom;
+    }
+
+    public void setClientExtendedRandom(byte[] clientExtendedRandom) {
+        this.clientExtendedRandom = clientExtendedRandom;
+    };
+
+    public byte[] getServerExtendedRandom() {
+        return serverExtendedRandom;
+    }
+
+    public void setServerExtendedRandom(byte[] serverExtendedRandom) {
+        this.serverExtendedRandom = serverExtendedRandom;
     }
 
     public byte[] getClientRandom() {

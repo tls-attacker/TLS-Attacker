@@ -902,6 +902,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
@@ -1014,8 +1015,11 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret/>
     <defaultPreMasterSecret/>
+    <defaultClientExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultClientExtendedRandom>
+    <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
+    <parseKeyShareOld>true</parseKeyShareOld>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>

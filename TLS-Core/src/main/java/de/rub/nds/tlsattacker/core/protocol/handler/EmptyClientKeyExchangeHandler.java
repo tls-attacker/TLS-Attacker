@@ -26,7 +26,8 @@ public class EmptyClientKeyExchangeHandler extends ClientKeyExchangeHandler<Empt
 
     @Override
     public EmptyClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new EmptyClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new EmptyClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

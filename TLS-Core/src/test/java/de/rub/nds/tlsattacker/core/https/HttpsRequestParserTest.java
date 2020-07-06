@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.nio.charset.Charset;
@@ -18,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HttpsRequestParserTest {
+
+    private final Config config = Config.createConfig();
 
     public HttpsRequestParserTest() {
     }
@@ -33,7 +36,7 @@ public class HttpsRequestParserTest {
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
         HttpsRequestParser parser = new HttpsRequestParser(0,
-                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12);
+                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
         parser.parse();
     }
 
@@ -46,7 +49,7 @@ public class HttpsRequestParserTest {
         String message = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
         HttpsRequestParser parser = new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")),
-                ProtocolVersion.TLS12);
+                ProtocolVersion.TLS12, config);
         HttpsRequestMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getRequestType().getValue(), "GET");

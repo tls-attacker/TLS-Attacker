@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -33,9 +34,11 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public CertificateRequestParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.CERTIFICATE_REQUEST, version);
+    public CertificateRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.CERTIFICATE_REQUEST, version, config);
     }
 
     @Override
@@ -101,10 +104,10 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * @param msg
      *            Message to write in
      */
-    private void parseSignatureHashAlgorithms(CertificateRequestMessage message) {
-        message.setSignatureHashAlgorithms(parseByteArrayField(message.getSignatureHashAlgorithmsLength().getValue()));
+    private void parseSignatureHashAlgorithms(CertificateRequestMessage msg) {
+        msg.setSignatureHashAlgorithms(parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));
         LOGGER.debug("SignatureHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(message.getSignatureHashAlgorithms().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     /**
@@ -122,7 +125,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     /**
      * Checks if the DistinguishedNamesLength has a value greater than Zero
      *
-     * @param message
+     * @param msg
      *            Message to check
      * @return True if the field has a value greater than Zero
      */

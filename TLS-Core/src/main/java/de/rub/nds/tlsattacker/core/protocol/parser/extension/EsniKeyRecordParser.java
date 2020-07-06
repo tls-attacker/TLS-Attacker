@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +33,11 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private EsniKeyRecord record;
+    private Config config;
 
-    public EsniKeyRecordParser(int startposition, byte[] array) {
+    public EsniKeyRecordParser(int startposition, byte[] array, Config config) {
         super(startposition, array);
+        this.config = config;
     }
 
     @Override
@@ -128,7 +131,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
             byte[] extensionBytes = extensionStream.toByteArray();
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0,
-                    HandshakeMessageType.UNKNOWN);
+                    HandshakeMessageType.UNKNOWN, config);
             ExtensionMessage extensionMessage = parser.parse();
             record.getExtensions().add(extensionMessage);
             i = i + ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH + contentLength;

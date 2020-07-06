@@ -70,6 +70,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = SessionTicketTLSExtensionMessage.class, name = "SessionTicketTLSExtension"),
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension"),
             @XmlElement(type = SignedCertificateTimestampExtensionMessage.class, name = "SignedCertificateTimestampExtension"),
+            @XmlElement(type = ExtendedRandomExtensionMessage.class, name = "ExtendedRandomExtension"),
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),

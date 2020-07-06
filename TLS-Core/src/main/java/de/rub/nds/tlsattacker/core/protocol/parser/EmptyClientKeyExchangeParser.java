@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -29,9 +30,10 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
      */
-    public EmptyClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
-        super(startposition, array, version);
+    public EmptyClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override

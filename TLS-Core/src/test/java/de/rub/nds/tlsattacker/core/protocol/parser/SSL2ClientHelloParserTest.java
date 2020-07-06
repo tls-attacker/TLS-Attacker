@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -49,6 +50,7 @@ public class SSL2ClientHelloParserTest {
     private final byte[] cipherSuites;
     private final byte[] sessionId;
     private final byte[] challenge;
+    private final Config config = Config.createConfig();
 
     public SSL2ClientHelloParserTest(byte[] message, ProtocolVersion version, int messageLength,
             HandshakeMessageType type, byte[] protocolVersion, int cipherSuiteLength, int sessionIdLength,
@@ -71,7 +73,7 @@ public class SSL2ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(0, message, version);
+        SSL2ClientHelloParser parser = new SSL2ClientHelloParser(0, message, version, config);
         SSL2ClientHelloMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getMessageLength().getValue() == messageLength);

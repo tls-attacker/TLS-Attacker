@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.junit.Test;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,12 +28,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 
 public class EsniKeyRecordParserTest {
 
+    private Config config = Config.createConfig();
+
     @Test
     public void test1() {
 
         byte[] recordBytes = ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -104,7 +107,7 @@ public class EsniKeyRecordParserTest {
 
         byte[] recordBytes = ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac5818118633259444120004130113020104000000005dcc3a45000000005dda12050000");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -178,7 +181,7 @@ public class EsniKeyRecordParserTest {
         byte[] recordBytes = ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0046001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412001E001Efa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325940004130113020104000000005dcc3a45000000005dda12050000");
 
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
@@ -261,7 +264,7 @@ public class EsniKeyRecordParserTest {
 
         byte[] recordBytes = ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050014ffce0010a7284c9a52f15c13644b947261774657");
-        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes);
+        EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
 
         byte[] expectedVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion().getByteValue();
