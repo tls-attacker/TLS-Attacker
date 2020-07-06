@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +59,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
                 }
             }
             if (selectedSuite == null) {
-                throw new WorkflowExecutionException("No Ciphersuites in common");
+                selectedSuite = chooser.getConfig().getDefaultSelectedCipherSuite();
+                LOGGER.warn("No CipherSuites in common, falling back to defaultSelectedCipherSuite");
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }

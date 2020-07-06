@@ -114,6 +114,8 @@ public class WorkflowConfigurationFactory {
                 return createSyncProxyWorkflow();
             case DYNAMIC_HANDSHAKE:
                 return createDynamicHandshakeWorkflow();
+            case DYNAMIC_HELLO:
+                return createDynamicHelloWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -781,7 +783,9 @@ public class WorkflowConfigurationFactory {
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
-        messages.add(message);
+        if (message != null) {
+            messages.add(message);
+        }
     }
 
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
@@ -901,6 +905,26 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
                 trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
             }
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createDynamicHelloWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            }
+        } else {
+            LOGGER.error("Not implemented for ConnectionEndType.SERVER");
         }
         return trace;
     }

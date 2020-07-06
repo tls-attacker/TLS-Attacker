@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class Record extends AbstractRecord {
 
@@ -170,6 +171,51 @@ public class Record extends AbstractRecord {
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
                 + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.contentType);
+        hash = 41 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 41 * hash + Objects.hashCode(this.length);
+        hash = 41 * hash + Objects.hashCode(this.epoch);
+        hash = 41 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 41 * hash + Objects.hashCode(this.computations);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Record other = (Record) obj;
+        if (!Objects.equals(this.contentType, other.contentType)) {
+            return false;
+        }
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.length, other.length)) {
+            return false;
+        }
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
+            return false;
+        }
+        if (!Objects.equals(this.computations, other.computations)) {
+            return false;
+        }
+        return true;
     }
 
 }

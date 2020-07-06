@@ -260,15 +260,25 @@ public abstract class Chooser {
 
     public abstract KeyShareStoreEntry getServerKeyShare();
 
+    public abstract BigInteger getDsaClientPublicKey();
+
+    public abstract BigInteger getDsaClientPrivateKey();
+
+    public abstract BigInteger getDsaClientPrimeP();
+
+    public abstract BigInteger getDsaClientPrimeQ();
+
+    public abstract BigInteger getDsaClientGenerator();
+
     public abstract BigInteger getDsaServerPublicKey();
 
     public abstract BigInteger getDsaServerPrivateKey();
 
-    public abstract BigInteger getDsaPrimeP();
+    public abstract BigInteger getDsaServerPrimeP();
 
-    public abstract BigInteger getDsaPrimeQ();
+    public abstract BigInteger getDsaServerPrimeQ();
 
-    public abstract BigInteger getDsaGenerator();
+    public abstract BigInteger getDsaServerGenerator();
 
     public abstract byte[] getHandshakeSecret();
 

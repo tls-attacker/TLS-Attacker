@@ -26,9 +26,10 @@ public class StateExecutionTask extends TlsTask {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
+        return true;
     }
 
     public State getState() {
