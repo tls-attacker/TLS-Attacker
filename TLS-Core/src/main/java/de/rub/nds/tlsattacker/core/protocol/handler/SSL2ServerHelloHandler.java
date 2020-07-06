@@ -34,7 +34,8 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
 
     @Override
     public SSL2ServerHelloParser getParser(byte[] message, int pointer) {
-        return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
+        return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

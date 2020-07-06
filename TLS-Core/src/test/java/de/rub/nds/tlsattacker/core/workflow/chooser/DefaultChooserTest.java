@@ -418,7 +418,7 @@ public class DefaultChooserTest {
      * Test of getServerExtendedRandom of class DefaultChooser.
      */
     @Test
-    public void testGetServerExtendedRandom(){
+    public void testGetServerExtendedRandom() {
         byte[] serverExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
         config.setDefaultServerExtendedRandom(serverExtendedRandom);
         assertArrayEquals(serverExtendedRandom, config.getDefaultServerExtendedRandom());

@@ -29,7 +29,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
     }
 
     public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-                                      KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;

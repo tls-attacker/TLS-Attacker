@@ -29,7 +29,7 @@ public class PWDClientKeyExchangeParser extends ClientKeyExchangeParser<PWDClien
     }
 
     public PWDClientKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-                                      KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;

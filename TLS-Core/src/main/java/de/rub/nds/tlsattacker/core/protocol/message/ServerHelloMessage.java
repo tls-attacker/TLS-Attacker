@@ -142,7 +142,7 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddSupportedVersionsExtension()) {
                 addExtension(new SupportedVersionsExtensionMessage());
             }
-            if (tlsConfig.isAddExtendedRandomExtension()){
+            if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
             }
         }

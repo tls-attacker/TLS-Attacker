@@ -22,7 +22,8 @@ public class SupplementalDataHandler extends HandshakeMessageHandler<Supplementa
 
     @Override
     public SupplementalDataParser getParser(byte[] message, int pointer) {
-        return new SupplementalDataParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new SupplementalDataParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

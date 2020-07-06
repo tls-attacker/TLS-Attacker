@@ -28,7 +28,8 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
 
     @Override
     public ApplicationMessageParser getParser(byte[] message, int pointer) {
-        return new ApplicationMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new ApplicationMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

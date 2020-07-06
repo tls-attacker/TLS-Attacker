@@ -57,7 +57,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param config
      *            A Config used in the current context
      */
-    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version, Config config) {
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType,
+            ProtocolVersion version, Config config) {
         super(pointer, array, version, config);
         this.expectedType = expectedType;
         this.version = version;

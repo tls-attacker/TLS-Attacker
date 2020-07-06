@@ -20,7 +20,8 @@ public class HttpsResponseHandler extends ProtocolMessageHandler<HttpsResponseMe
 
     @Override
     public HttpsResponseParser getParser(byte[] message, int pointer) {
-        return new HttpsResponseParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
+        return new HttpsResponseParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

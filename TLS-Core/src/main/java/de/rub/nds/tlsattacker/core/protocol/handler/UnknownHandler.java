@@ -23,7 +23,8 @@ public class UnknownHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     @Override
     public UnknownParser getParser(byte[] message, int pointer) {
-        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new UnknownParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

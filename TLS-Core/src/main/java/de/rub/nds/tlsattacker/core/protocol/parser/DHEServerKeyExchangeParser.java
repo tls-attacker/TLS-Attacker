@@ -46,7 +46,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      *            A Config used in the current context
      */
     public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-                                      KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;

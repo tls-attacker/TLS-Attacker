@@ -29,7 +29,8 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
 
     @Override
     public SrpServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -52,7 +53,6 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
             adjustServerPrivateKey(message);
         }
     }
-
 
     private void adjustSRPGenerator(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPGenerator(new BigInteger(1, message.getGenerator().getValue()));

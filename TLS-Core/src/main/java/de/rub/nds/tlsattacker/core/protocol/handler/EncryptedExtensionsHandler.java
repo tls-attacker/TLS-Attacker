@@ -36,7 +36,8 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     @Override
     public EncryptedExtensionsParser getParser(byte[] message, int pointer) {
-        return new EncryptedExtensionsParser(pointer, message, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
+        return new EncryptedExtensionsParser(pointer, message, tlsContext.getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

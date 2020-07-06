@@ -36,7 +36,8 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     @Override
     public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext.getConfig());
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+                tlsContext.getConfig());
     }
 
     @Override

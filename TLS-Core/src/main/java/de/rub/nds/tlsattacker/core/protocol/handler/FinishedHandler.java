@@ -43,7 +43,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public FinishedParser getParser(byte[] message, int pointer) {
-        return new FinishedParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new FinishedParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

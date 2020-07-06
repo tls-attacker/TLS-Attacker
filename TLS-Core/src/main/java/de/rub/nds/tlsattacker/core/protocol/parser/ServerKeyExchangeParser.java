@@ -36,7 +36,8 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * @param config
      *            A Config used in the current context
      */
-    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version, Config config) {
+    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType,
+            ProtocolVersion version, Config config) {
         super(pointer, array, expectedType, version, config);
     }
 

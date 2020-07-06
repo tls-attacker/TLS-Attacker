@@ -44,7 +44,8 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * @param config
      *            A Config used in the current context
      */
-    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version, Config config) {
+    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
+            Config config) {
         super(pointer, array, type, version, config);
     }
 
