@@ -220,10 +220,6 @@ public abstract class Parser<T> {
         return array.length - pointer;
     }
 
-    public byte[] getArray() {
-        return array;
-    }
-
     /**
      * Returns the parsed object.
      *

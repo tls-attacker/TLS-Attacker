@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,41 +26,20 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
         super(pointer, array, HandshakeMessageType.CERTIFICATE_STATUS, version);
     }
 
-    public void parseCertificateEntryContent(CertificateStatusMessage msg) {
-        LOGGER.debug("Parsing status_request CertificateEntry extension as CertificateStatusMessage");
-        // Skip ahead type & length, as they're from the extension and we don't
-        // care about them
-        setPointer(getPointer() + HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        parseCertificateStatusType(msg);
-        parseOcspResponseLength(msg);
-        parseOcspResponse(msg);
-    }
-
     @Override
     protected void parseHandshakeMessageContent(CertificateStatusMessage msg) {
         LOGGER.debug("Parsing CertificateStatusMessage");
-        parseCertificateStatusType(msg);
-        parseOcspResponseLength(msg);
-        parseOcspResponse(msg);
+        CertificateStatusGenericParser parser = new CertificateStatusGenericParser(0, parseByteArrayField(msg
+                .getLength().getValue()));
+        CertificateStatusObject certificateStatus = parser.parse();
+
+        msg.setCertificateStatusType(certificateStatus.getType());
+        msg.setOcspResponseLength(certificateStatus.getLength());
+        msg.setOcspResponseBytes(certificateStatus.getOcspResponse());
     }
 
     @Override
     protected CertificateStatusMessage createHandshakeMessage() {
         return new CertificateStatusMessage();
-    }
-
-    private void parseCertificateStatusType(CertificateStatusMessage msg) {
-        msg.setCertificateStatusType(parseIntField(HandshakeByteLength.CERTIFICATE_STATUS_TYPE_LENGTH));
-        LOGGER.debug("CertificateStatusType: " + msg.getCertificateStatusType().getValue());
-    }
-
-    private void parseOcspResponseLength(CertificateStatusMessage msg) {
-        msg.setOcspResponseLength(parseIntField(HandshakeByteLength.CERTIFICATE_STATUS_RESPONSE_LENGTH));
-        LOGGER.debug("OCSP Response Length: " + msg.getOcspResponseLength().getValue());
-    }
-
-    private void parseOcspResponse(CertificateStatusMessage msg) {
-        msg.setOcspResponseBytes(parseByteArrayField(msg.getOcspResponseLength().getValue()));
-        LOGGER.debug("OCSP Response: " + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes().getValue()));
     }
 }

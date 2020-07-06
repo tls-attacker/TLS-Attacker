@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 
 /**
  * This extension is defined in RFC6066
@@ -31,12 +30,21 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableInteger requestExtensionLength;
     @ModifiableVariableProperty
     private ModifiableByteArray requestExtension;
+
     /**
      * As a TLS 1.3 CertificateEntry extension, this extension uses the format
-     * of a CertificateStatus message. If this is the case, let's treat it as an
-     * embedded CertificateStatus message.
+     * of a CertificateStatus message. If this is the case, let's have the same
+     * fields as such a message.
      */
-    private CertificateStatusMessage certificateStatus;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger certificateStatusType;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger ocspResponseLength;
+
+    @ModifiableVariableProperty
+    private ModifiableByteArray ocspResponseBytes;
 
     public CertificateStatusRequestExtensionMessage() {
         super(ExtensionType.STATUS_REQUEST);
@@ -103,11 +111,28 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
         this.requestExtension = safelySetValue(this.requestExtension, requestExtension);
     }
 
-    public CertificateStatusMessage getCertificateStatus() {
-        return certificateStatus;
+    // TLS 1.3 entries - same as CertificateStatus message
+    public ModifiableInteger getCertificateStatusType() {
+        return certificateStatusType;
     }
 
-    public void setCertificateStatus(CertificateStatusMessage certificateStatus) {
-        this.certificateStatus = certificateStatus;
+    public void setCertificateStatusType(ModifiableInteger certificateStatusType) {
+        this.certificateStatusType = certificateStatusType;
+    }
+
+    public ModifiableInteger getOcspResponseLength() {
+        return ocspResponseLength;
+    }
+
+    public void setOcspResponseLength(ModifiableInteger ocspResponseLength) {
+        this.ocspResponseLength = ocspResponseLength;
+    }
+
+    public ModifiableByteArray getOcspResponseBytes() {
+        return ocspResponseBytes;
+    }
+
+    public void setOcspResponseBytes(ModifiableByteArray ocspResponseBytes) {
+        this.ocspResponseBytes = ocspResponseBytes;
     }
 }
