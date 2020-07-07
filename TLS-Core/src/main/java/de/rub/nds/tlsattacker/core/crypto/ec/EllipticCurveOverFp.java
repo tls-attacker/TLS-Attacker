@@ -103,7 +103,10 @@ public class EllipticCurveOverFp extends EllipticCurve {
     @Override
     protected Point inverseAffine(Point p) {
         // -p == (x, -y)
-
+        if (!(p.getX() instanceof FieldElementFp && p.getY() instanceof FieldElementFp)) {
+            LOGGER.warn("Trying to invert non Fp point with Fp curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         FieldElementFp x = (FieldElementFp) p.getX();
         FieldElementFp yInv = (FieldElementFp) p.getY().addInv();
         return new Point(x, yInv);
@@ -111,6 +114,10 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
+        if (!(p.getX() instanceof FieldElementFp && p.getY() instanceof FieldElementFp && q.getX() instanceof FieldElementFp && q.getY() instanceof FieldElementFp)) {
+            LOGGER.warn("Trying to add non Fp points with Fp curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         try {
             FieldElementFp x1 = (FieldElementFp) p.getX();
             FieldElementFp y1 = (FieldElementFp) p.getY();

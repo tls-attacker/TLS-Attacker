@@ -15,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
- * Please notice that the coordinates of affine points are binary polynomials.<br />
+ * Please notice that the coordinates of affine points are binary
+ * polynomials.<br />
  * They are represented by BigIntegers, where the i-th bit represents the i-th
  * coefficient.
  */
@@ -29,15 +30,12 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
      *
-     * @param a
-     *            A BigInteger representing the binary polynomial a in the
-     *            equation of the curve.
-     * @param b
-     *            A BigInteger representing the binary polynomial b in the
-     *            equation of the curve.
-     * @param polynomial
-     *            A BigInteger representing the binary reduction polynomial that
-     *            defines the field over which the curve is defined.
+     * @param a A BigInteger representing the binary polynomial a in the
+     * equation of the curve.
+     * @param b A BigInteger representing the binary polynomial b in the
+     * equation of the curve.
+     * @param polynomial A BigInteger representing the binary reduction
+     * polynomial that defines the field over which the curve is defined.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial) {
         super(polynomial);
@@ -50,23 +48,17 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * polynomial is the reduction polynomial of the field.<br />
      * With base point (x, y) and base point order q.
      *
-     * @param a
-     *            A BigInteger representing the binary polynomial a in the
-     *            equation of the curve.
-     * @param b
-     *            A BigInteger representing the binary polynomial b in the
-     *            equation of the curve.
-     * @param polynomial
-     *            A BigInteger representing the binary reduction polynomial that
-     *            defines the field over which the curve is defined.
-     * @param x
-     *            A BigInteger representing the binary polynomial that
-     *            represents the x-coordinate of the base point.
-     * @param y
-     *            A BigInteger representing the binary polynomial that
-     *            represents the y-coordinate of the base point.
-     * @param q
-     *            The order of the base point.
+     * @param a A BigInteger representing the binary polynomial a in the
+     * equation of the curve.
+     * @param b A BigInteger representing the binary polynomial b in the
+     * equation of the curve.
+     * @param polynomial A BigInteger representing the binary reduction
+     * polynomial that defines the field over which the curve is defined.
+     * @param x A BigInteger representing the binary polynomial that represents
+     * the x-coordinate of the base point.
+     * @param y A BigInteger representing the binary polynomial that represents
+     * the y-coordinate of the base point.
+     * @param q The order of the base point.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
             BigInteger q) {
@@ -112,6 +104,10 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point inverseAffine(Point p) {
+        if (!(p.getX() instanceof FieldElementF2m && p.getY() instanceof FieldElementF2m)) {
+            LOGGER.warn("Trying to invert non F2m point with F2m curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         // -p == (x, x+y)
 
         FieldElementF2m x = (FieldElementF2m) p.getX();
@@ -122,6 +118,10 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
+        if (!(p.getX() instanceof FieldElementF2m && p.getY() instanceof FieldElementF2m && q.getX() instanceof FieldElementF2m && q.getY() instanceof FieldElementF2m)) {
+            LOGGER.warn("Trying to add non F2m points with F2m curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         try {
             FieldElementF2m x1 = (FieldElementF2m) p.getX();
             FieldElementF2m y1 = (FieldElementF2m) p.getY();
