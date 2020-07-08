@@ -114,7 +114,8 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
-        if (!(p.getX() instanceof FieldElementFp && p.getY() instanceof FieldElementFp && q.getX() instanceof FieldElementFp && q.getY() instanceof FieldElementFp)) {
+        if (!(p.getX() instanceof FieldElementFp && p.getY() instanceof FieldElementFp
+                && q.getX() instanceof FieldElementFp && q.getY() instanceof FieldElementFp)) {
             LOGGER.warn("Trying to add non Fp points with Fp curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }

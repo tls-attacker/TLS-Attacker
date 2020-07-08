@@ -29,7 +29,8 @@ public abstract class EllipticCurve {
      * constructors must be able to set the coefficients for the curve. They can
      * use this constructor to set the value of modulus.
      *
-     * @param modulus The modulus of the field over which the curve is defined.
+     * @param modulus
+     *            The modulus of the field over which the curve is defined.
      */
     protected EllipticCurve(BigInteger modulus) {
         this.modulus = modulus;
@@ -41,10 +42,14 @@ public abstract class EllipticCurve {
      * use this constructor to set the values of modulus, basePoint and
      * basePointOrder.
      *
-     * @param modulus The modulus of the field over which the curve is defined.
-     * @param basePointX The x coordinate of the base point.
-     * @param basePointY The y coordinate of the base point.
-     * @param basePointOrder The order of the base point.
+     * @param modulus
+     *            The modulus of the field over which the curve is defined.
+     * @param basePointX
+     *            The x coordinate of the base point.
+     * @param basePointY
+     *            The y coordinate of the base point.
+     * @param basePointOrder
+     *            The order of the base point.
      */
     protected EllipticCurve(BigInteger modulus, BigInteger basePointX, BigInteger basePointY, BigInteger basePointOrder) {
         this.modulus = modulus;
@@ -58,10 +63,12 @@ public abstract class EllipticCurve {
      * calculations would require dividing by 0, the result will be the point at
      * infinity.
      *
-     * @param p A point which's coordinates are elements of the field over which
-     * the curve is defined or the point at infinity.
-     * @param q A point which's coordinates are elements of the field over which
-     * the curve is defined or the point at infinity.
+     * @param p
+     *            A point which's coordinates are elements of the field over
+     *            which the curve is defined or the point at infinity.
+     * @param q
+     *            A point which's coordinates are elements of the field over
+     *            which the curve is defined or the point at infinity.
      */
     public Point add(Point p, Point q) {
         if (p.isAtInfinity()) {
@@ -88,8 +95,9 @@ public abstract class EllipticCurve {
      * the point is not on the curve and the calculations would require dividing
      * by 0, the result will be the point at infinity.
      *
-     * @param p A point which's coordinates are elements of the field over which
-     * the curve is defined or the point at infinity.
+     * @param p
+     *            A point which's coordinates are elements of the field over
+     *            which the curve is defined or the point at infinity.
      */
     public Point mult(BigInteger k, Point p) {
         if (k.compareTo(BigInteger.ZERO) < 0) {
@@ -116,8 +124,9 @@ public abstract class EllipticCurve {
      * Returns the unique point q with the property p + q = O on this curve. If
      * p is null the result will be null.
      *
-     * @param p A point which's coordinates are elements of the field over which
-     * the curve is defined or the point at infinity.
+     * @param p
+     *            A point which's coordinates are elements of the field over
+     *            which the curve is defined or the point at infinity.
      */
     public Point inverse(Point p) {
         if (p.isAtInfinity()) {
@@ -134,16 +143,19 @@ public abstract class EllipticCurve {
      * possible, this method should be used instead of creating a point via its
      * own constructor.
      *
-     * @param x The x coordinate of the point.
-     * @param y The y coordinate of the point.
+     * @param x
+     *            The x coordinate of the point.
+     * @param y
+     *            The y coordinate of the point.
      */
     abstract public Point getPoint(BigInteger x, BigInteger y);
 
     /**
      * Returns true iff the point p is on the curve.
      *
-     * @param p An affine point which's coordinates are elements of the field
-     * over which the curve is defined or the point at infinity.
+     * @param p
+     *            An affine point which's coordinates are elements of the field
+     *            over which the curve is defined or the point at infinity.
      */
     abstract public boolean isOnCurve(Point p);
 
@@ -151,8 +163,9 @@ public abstract class EllipticCurve {
      * Returns the unique (affine) point q with the property p + q = O on this
      * curve.
      *
-     * @param p An affine point which's coordinates are elements of the field
-     * over which the curve is defined.
+     * @param p
+     *            An affine point which's coordinates are elements of the field
+     *            over which the curve is defined.
      */
     abstract protected Point inverseAffine(Point p);
 
@@ -161,10 +174,12 @@ public abstract class EllipticCurve {
      * not on the curve and the calculations would require dividing by 0, the
      * result will be the point at infinity.
      *
-     * @param p An affine point which's coordinates are elements of the field
-     * over which the curve is defined.
-     * @param q An affine point which's coordinates are elements of the field
-     * over which the curve is defined. Must not be equal to -p.
+     * @param p
+     *            An affine point which's coordinates are elements of the field
+     *            over which the curve is defined.
+     * @param q
+     *            An affine point which's coordinates are elements of the field
+     *            over which the curve is defined. Must not be equal to -p.
      */
     abstract protected Point additionFormular(Point p, Point q);
 
