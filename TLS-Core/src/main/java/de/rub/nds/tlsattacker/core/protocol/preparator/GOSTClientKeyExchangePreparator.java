@@ -212,8 +212,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     private void prepareKeyBlob() throws IOException {
         try {
-            Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg.getComputations()
-                    .getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
+            Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg
+                    .getComputations().getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
             SubjectPublicKeyInfo ephemeralKey = SubjectPublicKeyInfo.getInstance(GOSTUtils.generatePublicKey(
                     chooser.getSelectedGostCurve(), ecPoint).getEncoded());
 
