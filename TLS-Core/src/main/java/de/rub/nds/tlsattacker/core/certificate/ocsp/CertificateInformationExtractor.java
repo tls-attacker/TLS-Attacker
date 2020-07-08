@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
+import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
 import de.rub.nds.asn1.model.Asn1Explicit;
@@ -19,11 +20,16 @@ import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import org.bouncycastle.asn1.x509.Certificate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -316,5 +322,53 @@ public class CertificateInformationExtractor {
         // If we found the OCSP information, let's extract it and we're
         // done!
         return getStringFromInformationAccessEntry(certificateIssuerInformation);
+    }
+
+    public Certificate retrieveIssuerCertificate() throws IOException, ParserException, NoSuchFieldException {
+        /*
+         * Certificate chain recreation sucks. We only support .crt /
+         * DER-encoded certificates for extraction, as this seems to be the most
+         * common one out there and is somewhat easy to parse with BouncyCastle.
+         * This only works somewhat reliably with an intermediate CA as issuer.
+         * Any root CA will likely fail, as an URL to the issuer certificate is
+         * often not given in the intermediate's certificate (since they're
+         * often stored locally). So take care, the following code will likely
+         * fail often.
+         */
+
+        // Get URL for the issuer certificate from main certificate
+        String issuerCertificateUrlString = getCertificateIssuerUrl();
+        URL issuerCertificateUrl = null;
+
+        if (issuerCertificateUrlString != null) {
+            issuerCertificateUrl = new URL(issuerCertificateUrlString);
+        } else {
+            throw new RuntimeException("Didn't get any issuer certificate URL from certificate.");
+        }
+
+        // Download certificate from URL
+        HttpURLConnection httpCon = (HttpURLConnection) issuerCertificateUrl.openConnection();
+        httpCon.setConnectTimeout(5000);
+        httpCon.setRequestMethod("GET");
+
+        int status = httpCon.getResponseCode();
+        byte[] response;
+        if (status == 200)
+            response = ByteStreams.toByteArray(httpCon.getInputStream());
+        else
+            throw new RuntimeException("Response not successful: Received status code " + status);
+
+        httpCon.disconnect();
+
+        // Recreate TLS certificate length information
+        byte[] certificateWithLength = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+        ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+                certificateWithLength));
+
+        // Parse and create a Certificate object
+        org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
+        return tlsCertificate.getCertificateAt(0);
     }
 }
