@@ -22,9 +22,9 @@ import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 
@@ -39,13 +39,15 @@ public class OCSPRequestMessage {
 
     // see RFC 6960: TBSRequest -> [2] requestExtensions
     private final static int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
+    private final static int NONCE_RANDOM_SEED = 42;
+    private final static int NONCE_LENGTH_BIT = 128;
 
     boolean extensionsSet = false;
 
     public OCSPRequestMessage() {
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
-        extensionExplicitSequence.setOffset(2);
+        extensionExplicitSequence.setOffset(EXTENSION_ASN1_EXPLICIT_OFFSET);
         extensionExplicitSequence.addChild(extensionSequence);
     }
 
@@ -126,7 +128,7 @@ public class OCSPRequestMessage {
         serialNumber.setValue(serialNumberValue);
         issuerNameHash.setValue(issuerNameHashValue);
         issuerKeyHash.setValue(issuerKeyHashValue);
-        hashAlgorithmId.setValue(ObjectIdentifierTranslator.translate("SHA1")); // SHA1
+        hashAlgorithmId.setValue(ObjectIdentifierTranslator.translate("SHA1"));
 
         hashAlgorithm.addChild(hashAlgorithmId);
         hashAlgorithm.addChild(hashAlgorithmFiller);
@@ -163,9 +165,9 @@ public class OCSPRequestMessage {
         if (extensionOid.equals(NONCE.getOID())) {
             Asn1PrimitiveOctetString nonceOctetString = new Asn1PrimitiveOctetString();
 
-            SecureRandom rand = new SecureRandom();
+            Random rand = new Random(NONCE_RANDOM_SEED);
             if (nonce == null) {
-                nonce = new BigInteger(128, rand);
+                nonce = new BigInteger(NONCE_LENGTH_BIT, rand);
             }
 
             nonceOctetString.setValue(nonce.toByteArray());
