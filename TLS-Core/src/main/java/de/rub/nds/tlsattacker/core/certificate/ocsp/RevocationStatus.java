@@ -22,13 +22,13 @@ public class RevocationStatus {
     }
 
     public static String translate(Integer input) {
-        String translated = null;
+        String translated;
         translated = statusMap.get(input);
         return translated;
     }
 
     public static Integer translate(String input) {
-        Integer translated = null;
+        Integer translated;
         translated = statusMap.inverse().get(input);
         return translated;
     }

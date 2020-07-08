@@ -127,10 +127,10 @@ public class CertificateInformationExtractor {
         // Get sequence containing X.509 extensions
         Asn1Explicit x509Extensions = null;
 
-        for (Asn1Encodable enc : innerObjects.getChildren()) {
-            if (enc instanceof Asn1Explicit) {
-                if (((Asn1Explicit) enc).getOffset() == X509_EXTENSION_ASN1_EXPLICIT_OFFSET) {
-                    x509Extensions = (Asn1Explicit) enc;
+        for (Asn1Encodable singleObject : innerObjects.getChildren()) {
+            if (singleObject instanceof Asn1Explicit) {
+                if (((Asn1Explicit) singleObject).getOffset() == X509_EXTENSION_ASN1_EXPLICIT_OFFSET) {
+                    x509Extensions = (Asn1Explicit) singleObject;
                     break;
                 }
             }
@@ -143,14 +143,14 @@ public class CertificateInformationExtractor {
         // 'authorityInfoAccess' extension
         Asn1Sequence authorityInfoAccess = null;
 
-        for (Asn1Encodable enc : x509ExtensionSequences) {
-            if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
-                        .get(0));
+        for (Asn1Encodable singleExtension : x509ExtensionSequences) {
+            if (singleExtension instanceof Asn1Sequence) {
+                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) singleExtension)
+                        .getChildren().get(0));
                 // This is the objectIdentifier value for
                 // authorityInfoAccess
                 if (objectIdentifier.getValue().equals(AUTHORITY_INFO_ACCESS.getOID())) {
-                    authorityInfoAccess = (Asn1Sequence) enc;
+                    authorityInfoAccess = (Asn1Sequence) singleExtension;
                     break;
                 }
             }
@@ -264,8 +264,6 @@ public class CertificateInformationExtractor {
             extractAuthorityInfoAccessEntities();
         }
 
-        String ocspUrlResult = null;
-
         List<Asn1Encodable> ocspInformation = null;
 
         // Now let's check if we have OCSP information embedded...
@@ -297,8 +295,6 @@ public class CertificateInformationExtractor {
         if (authorityInfoAccessEntities == null) {
             extractAuthorityInfoAccessEntities();
         }
-
-        String issuerCertUrlResult = null;
 
         List<Asn1Encodable> certificateIssuerInformation = null;
 
@@ -338,7 +334,7 @@ public class CertificateInformationExtractor {
 
         // Get URL for the issuer certificate from main certificate
         String issuerCertificateUrlString = getCertificateIssuerUrl();
-        URL issuerCertificateUrl = null;
+        URL issuerCertificateUrl;
 
         if (issuerCertificateUrlString != null) {
             issuerCertificateUrl = new URL(issuerCertificateUrlString);

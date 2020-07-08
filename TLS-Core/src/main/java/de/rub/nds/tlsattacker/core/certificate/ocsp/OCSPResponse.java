@@ -18,6 +18,7 @@ import de.rub.nds.asn1.model.Asn1PrimitiveUtf8String;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.util.encoders.Hex;
@@ -221,17 +222,13 @@ public class OCSPResponse {
             sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
             sb.append("\n   Serial Number: ").append("0x").append(certificateStatus.getSerialNumber().toString(16));
             sb.append("\n   Certificate Status: ");
-            if (certificateStatus.getCertificateStatus() == 0) {
-                sb.append("good");
-            } else if (certificateStatus.getCertificateStatus() == 1) {
-                sb.append("revoked");
-                sb.append("\n   Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
+            sb.append(RevocationStatus.translate(certificateStatus.getCertificateStatus()));
+            if (certificateStatus.getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {
+                sb.append("\n    Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
                 if (certificateStatus.getRevocationReason() != null) {
-                    sb.append("\n   Revocation Reason: ");
-                    sb.append(certificateStatus.getRevocationReason());
+                    sb.append("\n    Revocation Reason: ");
+                    sb.append(CrlReason.translate(certificateStatus.getRevocationReason()));
                 }
-            } else if (certificateStatus.getCertificateStatus() == 2) {
-                sb.append("unknown");
             }
             sb.append("\n   Last Update: ").append(formatDate(certificateStatus.getTimeOfLastUpdate()));
             sb.append("\n   Next Update: ").append(formatDate(certificateStatus.getTimeOfNextUpdate()));

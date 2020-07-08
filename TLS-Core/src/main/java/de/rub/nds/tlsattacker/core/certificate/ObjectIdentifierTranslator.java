@@ -89,7 +89,7 @@ public class ObjectIdentifierTranslator {
     }
 
     public static String translate(String input) {
-        String translated = null;
+        String translated;
         // Forward check
         translated = oidMap.get(input);
 

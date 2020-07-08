@@ -30,13 +30,13 @@ public class CrlReason {
     }
 
     public static String translate(Integer input) {
-        String translated = null;
+        String translated;
         translated = reasonMap.get(input);
         return translated;
     }
 
     public static Integer translate(String input) {
-        Integer translated = null;
+        Integer translated;
         translated = reasonMap.inverse().get(input);
         return translated;
     }
