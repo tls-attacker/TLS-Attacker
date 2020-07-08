@@ -40,11 +40,11 @@ public class OCSPResponse {
     private Integer responseStatus;
     private Integer responseDataVersion;
     private BigInteger nonce;
-    private String responseTime;
+    private String producedAt;
     private String responseTypeIdentifier;
     private String signatureAlgorithmIdentifier;
-    private Asn1Encodable signature;
-    private List<Asn1Encodable> responderDn;
+    private byte[] signature;
+    private List<Asn1Encodable> responderName;
     private Certificate certificate;
 
     public List<CertificateStatus> getCertificateStatusList() {
@@ -87,12 +87,12 @@ public class OCSPResponse {
         this.responseDataVersion = responseDataVersion;
     }
 
-    public String getResponseTime() {
-        return responseTime;
+    public String getProducedAt() {
+        return producedAt;
     }
 
-    public void setResponseTime(String responseTime) {
-        this.responseTime = responseTime;
+    public void setProducedAt(String producedAt) {
+        this.producedAt = producedAt;
     }
 
     public String getResponseTypeIdentifier() {
@@ -111,20 +111,20 @@ public class OCSPResponse {
         this.signatureAlgorithmIdentifier = signatureAlgorithmIdentifier;
     }
 
-    public Asn1Encodable getSignature() {
+    public byte[] getSignature() {
         return signature;
     }
 
-    public void setSignature(Asn1Encodable signature) {
+    public void setSignature(byte[] signature) {
         this.signature = signature;
     }
 
-    public List<Asn1Encodable> getResponderDn() {
-        return responderDn;
+    public List<Asn1Encodable> getResponderName() {
+        return responderName;
     }
 
-    public void setResponderDn(List<Asn1Encodable> responderDn) {
-        this.responderDn = responderDn;
+    public void setResponderName(List<Asn1Encodable> responderName) {
+        this.responderName = responderName;
     }
 
     public Certificate getCertificate() {
@@ -150,9 +150,9 @@ public class OCSPResponse {
         return outputFormatter.format(date);
     }
 
-    private String parseDn() {
+    private String parseResponderName() {
         StringBuilder sb = new StringBuilder();
-        for (Asn1Encodable enc : responderDn) {
+        for (Asn1Encodable enc : responderName) {
             if (enc instanceof Asn1Set) {
                 Asn1Sequence sequence = (Asn1Sequence) ((Asn1Set) enc).getChildren().get(0);
                 List<Asn1Encodable> dnKeyValue = sequence.getChildren();
@@ -194,15 +194,15 @@ public class OCSPResponse {
         } else {
             sb.append(Integer.toHexString(getResponseDataVersion()));
         }
-        sb.append("\n Produced at: ").append(formatDate(getResponseTime()));
+        sb.append("\n Produced at: ").append(formatDate(getProducedAt()));
         sb.append("\n Response Type: ");
         if (getResponseTypeIdentifier().equals(BASIC.getOID())) {
             sb.append("OCSP Basic Response");
         } else {
             sb.append(getResponseTypeIdentifier());
         }
-        if (getResponderDn() != null) {
-            sb.append("\n Responder DN: ").append(parseDn());
+        if (getResponderName() != null) {
+            sb.append("\n Responder DN: ").append(parseResponderName());
         } else if (getResponderKey() != null) {
             sb.append("\n Responder ID: ").append(Hex.toHexString(getResponderKey()));
         }
@@ -239,20 +239,6 @@ public class OCSPResponse {
 
         sb.append("\n Signature Algorithm: ").append(
                 ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
-
-        byte[] signature = null;
-        if (getSignature() instanceof Asn1PrimitiveBitString) {
-            Asn1PrimitiveBitString signatureBitString = (Asn1PrimitiveBitString) getSignature();
-            signature = signatureBitString.getValue();
-        } else if (getSignature() instanceof Asn1EncapsulatingBitString) {
-            Asn1EncapsulatingBitString signatureBitString = (Asn1EncapsulatingBitString) getSignature();
-            signature = signatureBitString.getContent().getValue();
-
-            // Remove leading 0x00 byte
-            if (signature[0] == 0x00 && (signature.length % 2) == 1) {
-                signature = Arrays.copyOfRange(signature, 1, signature.length);
-            }
-        }
 
         if (includeSignatureAndCertificate) {
             if (signature != null) {

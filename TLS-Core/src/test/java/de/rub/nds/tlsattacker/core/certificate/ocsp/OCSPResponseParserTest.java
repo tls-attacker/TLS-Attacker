@@ -54,7 +54,7 @@ public class OCSPResponseParserTest {
         Assert.assertEquals(new Integer(0), response.getResponseStatus());
         Assert.assertNull(response.getResponseDataVersion());
         Assert.assertNull(response.getNonce()); // Response contains no nonce
-        Assert.assertEquals("20200615155900Z", response.getResponseTime());
+        Assert.assertEquals("20200615155900Z", response.getProducedAt());
         Assert.assertEquals("1.3.6.1.5.5.7.48.1.1", response.getResponseTypeIdentifier());
         Assert.assertEquals("1.2.840.113549.1.1.11", response.getSignatureAlgorithmIdentifier());
         Assert.assertTrue(response.getCertificateStatusList().get(0) instanceof CertificateStatus);
@@ -74,7 +74,7 @@ public class OCSPResponseParserTest {
                 121, -94, 85, 90, -64, 63, -125, 81, 36, -26, 29, 94, 99, -29, -127, -58, -13, 33, 14, 115, -114, 57,
                 12, -75, 33, 57, 119, -64, 17, 68, 27, 27, -8, 20, 29, 107, -101, -32, 94, -68 };
 
-        Assert.assertArrayEquals(expectedSignature, ((Asn1PrimitiveBitString) response.getSignature()).getValue());
+        Assert.assertArrayEquals(expectedSignature, response.getSignature());
     }
 
     @Test
@@ -87,16 +87,16 @@ public class OCSPResponseParserTest {
         Assert.assertNull(response.getResponderKey());
 
         // Check for Distinguished Name Structure
-        List<Asn1Encodable> dnCountry = (((Asn1Sequence) ((Asn1Set) response.getResponderDn().get(0)).getChildren()
+        List<Asn1Encodable> dnCountry = (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(0)).getChildren()
                 .get(0)).getChildren());
         Assert.assertEquals("2.5.4.6", ((Asn1ObjectIdentifier) dnCountry.get(0)).getValue());
         Assert.assertEquals("US", ((Asn1PrimitivePrintableString) dnCountry.get(1)).getValue());
-        List<Asn1Encodable> dnOrganization = (((Asn1Sequence) ((Asn1Set) response.getResponderDn().get(1))
+        List<Asn1Encodable> dnOrganization = (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(1))
                 .getChildren().get(0)).getChildren());
         Assert.assertEquals("2.5.4.10", ((Asn1ObjectIdentifier) dnOrganization.get(0)).getValue());
         Assert.assertEquals("Let's Encrypt", ((Asn1PrimitivePrintableString) dnOrganization.get(1)).getValue());
-        List<Asn1Encodable> dnCommonName = (((Asn1Sequence) ((Asn1Set) response.getResponderDn().get(2)).getChildren()
-                .get(0)).getChildren());
+        List<Asn1Encodable> dnCommonName = (((Asn1Sequence) ((Asn1Set) response.getResponderName().get(2))
+                .getChildren().get(0)).getChildren());
         Assert.assertEquals("2.5.4.3", ((Asn1ObjectIdentifier) dnCommonName.get(0)).getValue());
         Assert.assertEquals("Let's Encrypt Authority X3",
                 ((Asn1PrimitivePrintableString) dnCommonName.get(1)).getValue());
@@ -104,7 +104,7 @@ public class OCSPResponseParserTest {
 
     @Test
     public void testParseResponseResponderKey() {
-        Assert.assertNull(responseWithNonce.getResponderDn());
+        Assert.assertNull(responseWithNonce.getResponderName());
 
         byte[] expectedResponderKey = { -100, 77, 0, -103, 0, 14, -117, -80, 1, -127, 117, -95, -70, -16, -48, 37, -41,
                 -96, 28, 71 };
