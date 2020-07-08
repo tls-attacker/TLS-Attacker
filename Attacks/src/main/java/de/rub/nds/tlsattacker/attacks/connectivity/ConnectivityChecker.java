@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.attacks.connectivity;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
@@ -51,6 +52,9 @@ public class ConnectivityChecker {
      */
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;
+        if (connection instanceof AliasedConnection) {
+            ((AliasedConnection) connection).normalize((AliasedConnection) connection);
+        }
     }
 
     /**
