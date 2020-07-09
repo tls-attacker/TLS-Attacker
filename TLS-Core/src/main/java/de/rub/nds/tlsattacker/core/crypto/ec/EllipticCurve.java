@@ -91,9 +91,9 @@ public abstract class EllipticCurve {
     }
 
     /**
-     * Returns k*p on this curve. If k or p is null, the result will be null. If
-     * the point is not on the curve and the calculations would require dividing
-     * by 0, the result will be the point at infinity.
+     * Returns k*p on this curve. If the point is not on the curve and the
+     * calculations would require dividing by 0, the result will be the point at
+     * infinity.
      *
      * @param p
      *            A point which's coordinates are elements of the field over
@@ -106,7 +106,7 @@ public abstract class EllipticCurve {
         }
 
         // Double-and-add
-        Point q = new Point(); // q == O
+        Point q = getPoint(BigInteger.ZERO, BigInteger.ZERO); // q == O
 
         for (int i = k.bitLength(); i > 0; i--) {
 
