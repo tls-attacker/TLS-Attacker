@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler {
@@ -27,10 +28,22 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
 
     @Override
     public void initialize() throws IOException {
-        socket = new Socket(hostname, port);
-        socket.setTcpNoDelay(true);
-        srcPort = socket.getLocalPort();
-        dstPort = socket.getPort();
-        setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
+        long connectTimeout = System.currentTimeMillis() + this.connectionTimeout;
+        while (System.currentTimeMillis() < connectTimeout || this.connectionTimeout == 0) {
+            try {
+                socket = new Socket(hostname, port);
+                socket.setTcpNoDelay(true);
+                srcPort = socket.getLocalPort();
+                dstPort = socket.getPort();
+                setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
+                break;
+            } catch (ConnectException E) {
+                try {
+                    Thread.sleep(500);
+                } catch (Exception ignore) {
+
+                }
+            }
+        }
     }
 }

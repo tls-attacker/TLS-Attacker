@@ -14,14 +14,19 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 public class ClientTcpTransportHandler extends TransportHandler {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Socket socket;
     protected String hostname;
@@ -54,8 +59,24 @@ public class ClientTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        socket = new Socket();
-        socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
+        long timeoutTime = System.currentTimeMillis() + this.connectionTimeout;
+        while (System.currentTimeMillis() < timeoutTime || this.connectionTimeout == 0) {
+            try {
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
+                if (!socket.isConnected()) {
+                    throw new ConnectException("Could not connect to " + hostname + ":" + port);
+                }
+                break;
+            } catch (Exception e) {
+                LOGGER.warn("Server @" + hostname + ":" + port + " is not available yet");
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ignore) {
+                }
+            }
+        }
+
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
