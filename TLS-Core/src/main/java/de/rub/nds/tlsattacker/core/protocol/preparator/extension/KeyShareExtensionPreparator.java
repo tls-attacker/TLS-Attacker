@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,19 +38,21 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
+        if (msg.getKeyShareList() == null) {
+            msg.setKeyShareList(new LinkedList<KeyShareEntry>());
+        }
         stream = new ByteArrayOutputStream();
-        if (msg.getKeyShareList() != null) {
-            for (KeyShareEntry entry : msg.getKeyShareList()) {
-                KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
-                preparator.prepare();
-                KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
-                try {
-                    stream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from KeySharePair", ex);
-                }
+        for (KeyShareEntry entry : msg.getKeyShareList()) {
+            KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
+            preparator.prepare();
+            KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
+            try {
+                stream.write(serializer.serialize());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write byte[] from KeySharePair", ex);
             }
         }
+
         prepareKeyShareListBytes(msg);
         prepareKeyShareListLength(msg);
     }
