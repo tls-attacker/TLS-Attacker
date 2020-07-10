@@ -65,6 +65,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
             @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
+            @XmlElement(type = GreaseExtensionMessage.class, name = "GreaseExtension"),
             @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
             @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
             @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),

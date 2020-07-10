@@ -154,6 +154,24 @@ public class ExtensionParserFactory {
             case PWD_CLEAR:
                 parser = new PWDClearExtensionParser(pointer, extensionBytes);
                 break;
+            case GREASE_00:
+            case GREASE_01:
+            case GREASE_02:
+            case GREASE_03:
+            case GREASE_04:
+            case GREASE_05:
+            case GREASE_06:
+            case GREASE_07:
+            case GREASE_08:
+            case GREASE_09:
+            case GREASE_10:
+            case GREASE_11:
+            case GREASE_12:
+            case GREASE_13:
+            case GREASE_14:
+            case GREASE_15:
+                parser = new GreaseExtensionParser(pointer, extensionBytes);
+                break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);
                 break;
