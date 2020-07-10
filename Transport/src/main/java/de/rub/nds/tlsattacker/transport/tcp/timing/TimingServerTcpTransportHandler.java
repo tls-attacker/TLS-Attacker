@@ -9,10 +9,15 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler implements TimeableTransportHandler {
+
+    public TimingServerTcpTransportHandler(Connection con) {
+        super(con);
+    }
 
     public TimingServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, port);

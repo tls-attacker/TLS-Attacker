@@ -27,65 +27,61 @@ public class TransportHandlerFactory {
 
     public static TransportHandler createTransportHandler(Connection con) {
         ConnectionEndType localConEndType = con.getLocalConnectionEndType();
-        Long timeout = new Long(con.getTimeout());
-        if (con.getFirstTimeout() == null) {
-            con.setFirstTimeout(con.getTimeout());
-        }
-        Long firstTimeout = new Long(con.getFirstTimeout());
+
         switch (con.getTransportHandlerType()) {
             case TCP:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientTcpTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new ClientTcpTransportHandler(con);
                 } else {
-                    return new ServerTcpTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new ServerTcpTransportHandler(con);
                 }
             case EAP_TLS:
                 throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientUdpTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new ClientUdpTransportHandler(con);
                 } else {
-                    return new ServerUdpTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new ServerUdpTransportHandler(con);
                 }
             case NON_BLOCKING_TCP:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
                 } else {
-                    return new ServerTCPNonBlockingTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new ServerTCPNonBlockingTransportHandler(con);
                 }
             case STREAM:
                 throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             case TCP_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new TimingClientTcpTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new TimingClientTcpTransportHandler(con);
                 } else {
-                    return new TimingServerTcpTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new TimingServerTcpTransportHandler(con);
                 }
             case UDP_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new TimingClientUdpTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new TimingClientUdpTransportHandler(con);
                 } else {
-                    return new TimingServerUdpTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new TimingServerUdpTransportHandler(con);
                 }
             case TCP_PROXY_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new TimingProxyClientTcpTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new TimingProxyClientTcpTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
                             "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientTcpNoDelayTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new ClientTcpNoDelayTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
                             "This transport handler type is only supported in client mode");
                 }
             case TCP_FRAGMENTATION:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientTcpFragmentationTransportHandler(firstTimeout, timeout, con.getIp(), con.getPort());
+                    return new ClientTcpFragmentationTransportHandler(con);
                 } else {
-                    return new ServerTcpFragmentationTransportHandler(firstTimeout, timeout, con.getPort());
+                    return new ServerTcpFragmentationTransportHandler(con);
                 }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");

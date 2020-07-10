@@ -36,6 +36,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     protected String proxyControlHostName = "127.0.0.1";
     protected int proxyControlPort = 5555;
     protected Long measurement = null;
+    protected long connectionTimeout;
 
     @Override
     public byte[] fetchData() throws IOException {
@@ -60,6 +61,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         this.proxyDataPort = connection.getProxyDataPort();
         this.proxyControlHostName = connection.getProxyControlHostname();
         this.proxyControlPort = connection.getProxyControlPort();
+        this.connectionTimeout = connection.getConnectionTimeout();
         setIsInStreamTerminating(false);
     }
 
@@ -67,6 +69,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
+        this.connectionTimeout = timeout;
         setIsInStreamTerminating(false);
     }
 
@@ -95,10 +98,10 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     @Override
     public void initialize() throws IOException {
         controlSocket = new Socket();
-        controlSocket.connect(new InetSocketAddress(proxyControlHostName, proxyControlPort), (int) timeout);
+        controlSocket.connect(new InetSocketAddress(proxyControlHostName, proxyControlPort), (int) connectionTimeout);
 
         dataSocket = new Socket();
-        dataSocket.connect(new InetSocketAddress(proxyDataHostName, proxyDataPort), (int) timeout);
+        dataSocket.connect(new InetSocketAddress(proxyDataHostName, proxyDataPort), (int) connectionTimeout);
         if (!dataSocket.isConnected()) {
             throw new IOException("Could not connect to " + proxyDataHostName + ":" + proxyDataPort);
         }

@@ -45,6 +45,13 @@ public abstract class TransportHandler {
      */
     private boolean isInStreamTerminating = true;
 
+    public TransportHandler(Connection con) {
+        this.firstTimeout = con.getFirstTimeout();
+        this.type = con.getLocalConnectionEndType();
+        this.timeout = con.getTimeout();
+        this.isInStreamTerminating = false;
+    }
+
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
         this.firstTimeout = firstTimeout;
         this.timeout = timeout;

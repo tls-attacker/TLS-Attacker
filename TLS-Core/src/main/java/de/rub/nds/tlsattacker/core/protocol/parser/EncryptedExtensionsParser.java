@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+
 public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedExtensionsMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,6 +33,8 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
                 parseExtensionBytes(msg);
+            } else {
+                msg.setExtensions(new ArrayList<>());
             }
         }
     }

@@ -20,12 +20,13 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "alias", "ip", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
-        "proxyControlHostname", "timeout", "firstTimeout", "transportHandlerType" })
+        "proxyControlHostname", "timeout", "firstTimeout", "connectionTimeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60000;
     public static final Integer DEFAULT_FIRST_TIMEOUT = DEFAULT_TIMEOUT;
     public static final String DEFAULT_HOSTNAME = "localhost";
     public static final String DEFAULT_IP = "127.0.0.1";
@@ -161,6 +162,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             firstTimeout = defaultCon.getFirstTimeout();
             if (firstTimeout == null) {
                 firstTimeout = DEFAULT_FIRST_TIMEOUT;
+            }
+        }
+        if (connectionTimeout == null) {
+            connectionTimeout = defaultCon.getConnectionTimeout();
+            if (connectionTimeout == null) {
+                connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
             }
         }
         if (hostname == null || hostname.isEmpty()) {

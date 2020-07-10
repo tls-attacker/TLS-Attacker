@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +29,11 @@ public class ServerUdpTransportHandler extends TransportHandler {
     private final int port;
 
     private DatagramSocket socket;
+
+    public ServerUdpTransportHandler(Connection con) {
+        super(con);
+        this.port = con.getPort();
+    }
 
     public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER, false);

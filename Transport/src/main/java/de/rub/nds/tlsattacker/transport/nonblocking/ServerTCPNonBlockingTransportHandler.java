@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -37,6 +38,11 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     private FutureTask<Socket> task;
 
     private Thread thread;
+
+    public ServerTCPNonBlockingTransportHandler(Connection con) {
+        super(con);
+        this.port = con.getPort();
+    }
 
     public ServerTCPNonBlockingTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);

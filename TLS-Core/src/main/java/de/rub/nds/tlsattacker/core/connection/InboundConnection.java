@@ -48,8 +48,9 @@ public class InboundConnection extends AliasedConnection {
         this.proxyControlHostname = other.proxyControlHostname;
         this.proxyControlPort = other.proxyControlPort;
         this.timeout = other.timeout;
-        this.firstTimeout = other.timeout;
+        this.firstTimeout = other.firstTimeout;
         this.transportHandlerType = other.transportHandlerType;
+        this.connectionTimeout = other.connectionTimeout;
     }
 
     @Override

@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 import java.io.IOException;
@@ -17,6 +18,10 @@ import java.net.Socket;
 import java.util.Arrays;
 
 public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHandler {
+
+    public ServerTcpFragmentationTransportHandler(Connection con) {
+        super(con);
+    }
 
     public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, port);
@@ -27,8 +32,8 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
         super(firstTimeout, timeout, serverSocket);
     }
 
-    public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, Socket socket) throws IOException {
-        super(firstTimeout, timeout, socket);
+    public ServerTcpFragmentationTransportHandler(Connection con, Socket socket) throws IOException {
+        super(con, socket);
     }
 
     @Override

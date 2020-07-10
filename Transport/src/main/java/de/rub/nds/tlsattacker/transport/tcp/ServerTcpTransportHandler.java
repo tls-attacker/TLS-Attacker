@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -28,6 +29,11 @@ public class ServerTcpTransportHandler extends TransportHandler {
      */
     private boolean externalServerSocket = false;
 
+    public ServerTcpTransportHandler(Connection con) {
+        super(con);
+        this.port = con.getPort();
+    }
+
     public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
@@ -39,8 +45,8 @@ public class ServerTcpTransportHandler extends TransportHandler {
         this.serverSocket = serverSocket;
     }
 
-    public ServerTcpTransportHandler(long firstTimeout, long timeout, Socket socket) throws IOException {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
+        super(con);
         this.port = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout(1);

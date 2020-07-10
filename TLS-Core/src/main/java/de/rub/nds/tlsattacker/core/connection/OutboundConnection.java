@@ -50,6 +50,7 @@ public class OutboundConnection extends AliasedConnection {
         this.timeout = other.timeout;
         this.firstTimeout = other.firstTimeout;
         this.transportHandlerType = other.transportHandlerType;
+        this.connectionTimeout = other.connectionTimeout;
     }
 
     @Override

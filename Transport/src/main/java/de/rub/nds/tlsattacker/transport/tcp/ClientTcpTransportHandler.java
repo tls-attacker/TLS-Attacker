@@ -23,14 +23,13 @@ import java.net.SocketTimeoutException;
 
 public class ClientTcpTransportHandler extends TransportHandler {
 
-    private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
     protected Socket socket;
     protected String hostname;
     protected int port;
     protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection
+        this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(), connection
                 .getIp(), connection.getPort());
     }
 
