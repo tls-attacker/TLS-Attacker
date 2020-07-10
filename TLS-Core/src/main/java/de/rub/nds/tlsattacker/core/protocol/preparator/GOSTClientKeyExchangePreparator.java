@@ -201,7 +201,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         if (wrapped.length <= cek.length) {
             System.arraycopy(wrapped, 0, cek, 0, cek.length);
         } else {
-            //This case is for fuzzing purposes only.
+            // This case is for fuzzing purposes only.
             System.arraycopy(wrapped, 0, cek, 0, wrapped.length);
         }
         msg.getComputations().setEncryptedKey(cek);

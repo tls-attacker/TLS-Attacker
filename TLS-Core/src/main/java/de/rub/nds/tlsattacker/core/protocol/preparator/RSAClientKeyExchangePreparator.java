@@ -117,7 +117,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];
         }
-        //Make sure that the private key is not negative
+        // Make sure that the private key is not negative
         BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey.abs(), chooser
                 .getServerRsaModulus().abs());
         return decrypted.toByteArray();
