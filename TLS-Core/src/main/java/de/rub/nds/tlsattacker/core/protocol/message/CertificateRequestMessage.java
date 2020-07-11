@@ -49,6 +49,14 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray distinguishedNames;
 
+    // TLS 1.3 only
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger certificateRequestContextLength;
+
+    // TLS 1.3 only
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    private ModifiableByteArray certificateRequestContext;
+
     public CertificateRequestMessage() {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
     }
@@ -132,6 +140,30 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public void setDistinguishedNames(byte[] distinguishedNames) {
         this.distinguishedNames = ModifiableVariableFactory.safelySetValue(this.distinguishedNames, distinguishedNames);
+    }
+
+    public ModifiableInteger getCertificateRequestContextLength() {
+        return certificateRequestContextLength;
+    }
+
+    public void setCertificateRequestContextLength(ModifiableInteger certificateRequestContextLength) {
+        this.certificateRequestContextLength = certificateRequestContextLength;
+    }
+
+    public void setCertificateRequestContextLength(int certificateRequestContextLength) {
+        this.certificateRequestContextLength = ModifiableVariableFactory.safelySetValue(this.certificateRequestContextLength, certificateRequestContextLength);
+    }
+
+    public ModifiableByteArray getCertificateRequestContext() {
+        return certificateRequestContext;
+    }
+
+    public void setCertificateRequestContext(ModifiableByteArray certificateRequestContext) {
+        this.certificateRequestContext = certificateRequestContext;
+    }
+
+    public void setCertificateRequestContext(byte[] certificateRequestContext) {
+        this.certificateRequestContext = ModifiableVariableFactory.safelySetValue(this.certificateRequestContext, certificateRequestContext);;
     }
 
     @Override

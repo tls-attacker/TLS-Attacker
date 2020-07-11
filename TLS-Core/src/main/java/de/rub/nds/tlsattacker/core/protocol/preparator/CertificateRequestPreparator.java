@@ -11,9 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,14 +39,25 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
-        prepareClientCertificateTypes(certTypes, msg);
-        prepareClientCertificateTypesCount(msg);
-        prepareDistinguishedNames(msg);
-        prepareDistinguishedNamesLength(msg);
-        sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
-        prepareSignatureHashAlgorithms(msg);
-        prepareSignatureHashAlgorithmsLength(msg);
+        if (chooser.getSelectedProtocolVersion().compare(ProtocolVersion.TLS13) == -1) {
+            certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
+            prepareClientCertificateTypes(certTypes, msg);
+            prepareClientCertificateTypesCount(msg);
+            prepareDistinguishedNames(msg);
+            prepareDistinguishedNamesLength(msg);
+            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
+            prepareSignatureHashAlgorithms(msg);
+            prepareSignatureHashAlgorithmsLength(msg);
+        } else {
+            prepareCertificateReqeustContext(msg);
+            prepareCertificateRequstContextLength(msg);
+            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
+            prepareSignatureHashAlgorithms(msg);
+            prepareSignatureHashAlgorithmsLength(msg);
+            msg.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+            prepareExtensions();
+            prepareExtensionLength();
+        }
     }
 
     private byte[] convertClientCertificateTypes(List<ClientCertificateType> typeList) {
@@ -105,6 +118,17 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithmsLength(msg.getSignatureHashAlgorithms().getValue().length);
         LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
+    }
+
+    private void prepareCertificateReqeustContext(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContext(chooser.getConfig().getDefaultCertificateRequestContext());
+        LOGGER.debug("CertificateRequestContext: "
+                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+    }
+
+    private void prepareCertificateRequstContextLength(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContextLength(msg.getCertificateRequestContext().getValue().length);
+        LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 
 }

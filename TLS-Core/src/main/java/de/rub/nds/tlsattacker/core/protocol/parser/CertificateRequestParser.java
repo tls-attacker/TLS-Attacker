@@ -14,9 +14,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class CertificateRequestParser extends HandshakeMessageParser<CertificateRequestMessage> {
 
@@ -41,16 +43,27 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     @Override
     protected void parseHandshakeMessageContent(CertificateRequestMessage msg) {
         LOGGER.debug("Parsing CertificateRequestMessage");
-        parseClientCertificateTypesCount(msg);
-        parseClientCertificateTypes(msg);
-        if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12) {
-            parseSignatureHashAlgorithmsLength(msg);
-            parseSignatureHashAlgorithms(msg);
+        if (getVersion().compare(ProtocolVersion.TLS13) == -1) {
+            parseClientCertificateTypesCount(msg);
+            parseClientCertificateTypes(msg);
+            if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12) {
+                parseSignatureHashAlgorithmsLength(msg);
+                parseSignatureHashAlgorithms(msg);
+            }
+            parseDistinguishedNamesLength(msg);
+            if (hasDistinguishedNamesLength(msg)) {
+                parseDistinguishedNames(msg);
+            }
+        } else {
+            parseCertificateRequestContextLength(msg);
+            parseCertificateRequestContext(msg);
+            if (hasExtensionLengthField(msg)) {
+                parseExtensionLength(msg);
+                parseExtensionBytes(msg);
+                setSignatureAndHashAlgorithmsFromExtension(msg);
+            }
         }
-        parseDistinguishedNamesLength(msg);
-        if (hasDistinguishedNamesLength(msg)) {
-            parseDistinguishedNames(msg);
-        }
+
     }
 
     @Override
@@ -98,7 +111,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * Reads the next bytes as the SignatureHashAlgorithms and writes them in
      * the message
      *
-     * @param msg
+     * @param message
      *            Message to write in
      */
     private void parseSignatureHashAlgorithms(CertificateRequestMessage message) {
@@ -122,7 +135,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     /**
      * Checks if the DistinguishedNamesLength has a value greater than Zero
      *
-     * @param message
+     * @param msg
      *            Message to check
      * @return True if the field has a value greater than Zero
      */
@@ -140,7 +153,24 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseDistinguishedNames(CertificateRequestMessage msg) {
         msg.setDistinguishedNames(parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
         LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+    }
 
+    private void parseCertificateRequestContextLength(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
+        LOGGER.debug("CertificateRequestContextLength: " + msg.getCertificateRequestContextLength().getValue());
+    }
+
+    private void parseCertificateRequestContext(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContext(parseByteArrayField(msg.getCertificateRequestContextLength().getValue()));
+        LOGGER.debug("CertificateRequestContext: " + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+    }
+
+    private void setSignatureAndHashAlgorithmsFromExtension(CertificateRequestMessage msg) {
+        SignatureAndHashAlgorithmsExtensionMessage ext = msg.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
+        if (ext != null) {
+            msg.setSignatureHashAlgorithms(ext.getSignatureAndHashAlgorithms().getValue());
+            msg.setSignatureHashAlgorithmsLength(ext.getSignatureAndHashAlgorithmsLength().getValue());
+        }
     }
 
 }
