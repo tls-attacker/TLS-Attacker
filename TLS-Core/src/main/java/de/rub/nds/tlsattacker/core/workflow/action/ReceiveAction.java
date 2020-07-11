@@ -252,6 +252,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
+    public Boolean getCheckOnlyExpected() {
+        return checkOnlyExpected;
+    }
+
+    public void setCheckOnlyExpected(Boolean checkOnlyExpected) {
+        this.checkOnlyExpected = checkOnlyExpected;
+    }
+
     @Override
     public void reset() {
         messages = null;
