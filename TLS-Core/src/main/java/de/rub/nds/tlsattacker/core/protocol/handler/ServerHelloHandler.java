@@ -106,7 +106,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         }
 
-        if (suite != null) {
+        if (suite != null && !suite.name().startsWith("GREASE")) {
             tlsContext.setSelectedCipherSuite(suite);
             LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
         } else {
@@ -220,7 +220,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret = new byte[macLength];
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
@@ -243,7 +243,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
                     pos = 0;
                 }
-                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
