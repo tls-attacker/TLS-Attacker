@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -514,8 +516,8 @@ public class Config implements Serializable {
      */
     private Boolean addSessionTicketTLSExtension = false;
 
-    /***
-     * If we generate ClientHello with extended Random Extension
+    /**
+     * * If we generate ClientHello with extended Random Extension
      */
     private Boolean addExtendedRandomExtension = false;
 
@@ -921,9 +923,9 @@ public class Config implements Serializable {
 
     private PRFAlgorithm defaultPRFAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
 
-    private Byte defaultAlertDescription = 0;
+    private AlertDescription defaultAlertDescription = AlertDescription.CLOSE_NOTIFY;
 
-    private Byte defaultAlertLevel = 0;
+    private AlertLevel defaultAlertLevel = AlertLevel.WARNING;
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
@@ -1763,19 +1765,19 @@ public class Config implements Serializable {
         this.defaultServerEcPublicKey = defaultServerEcPublicKey;
     }
 
-    public byte getDefaultAlertDescription() {
+    public AlertDescription getDefaultAlertDescription() {
         return defaultAlertDescription;
     }
 
-    public void setDefaultAlertDescription(byte defaultAlertDescription) {
+    public void setDefaultAlertDescription(AlertDescription defaultAlertDescription) {
         this.defaultAlertDescription = defaultAlertDescription;
     }
 
-    public byte getDefaultAlertLevel() {
+    public AlertLevel getDefaultAlertLevel() {
         return defaultAlertLevel;
     }
 
-    public void setDefaultAlertLevel(byte defaultAlertLevel) {
+    public void setDefaultAlertLevel(AlertLevel defaultAlertLevel) {
         this.defaultAlertLevel = defaultAlertLevel;
     }
 
