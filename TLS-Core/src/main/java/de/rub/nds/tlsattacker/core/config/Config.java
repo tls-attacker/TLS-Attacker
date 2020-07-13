@@ -1109,7 +1109,7 @@ public class Config implements Serializable {
     /**
      * Min iterations for finding the PWD password element
      */
-    private int defaultPWDIterations = 40;
+    private Integer defaultPWDIterations = 40;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDPrivate = ArrayConverter
@@ -1186,9 +1186,10 @@ public class Config implements Serializable {
     private Long defaultEsniNotAfter = 1582655135231L + 2592000000L;
 
     private List<ExtensionMessage> defaultEsniExtensions = new LinkedList();
-    private boolean acceptOnlyFittingDtlsFragments = false;
 
-    private boolean acceptContentRewritingDtlsFragments = true;
+    private Boolean acceptOnlyFittingDtlsFragments = false;
+
+    private Boolean acceptContentRewritingDtlsFragments = true;
 
     private boolean writeKeylogFile = false;
 
@@ -1298,19 +1299,19 @@ public class Config implements Serializable {
         }
     }
 
-    public boolean isAcceptOnlyFittingDtlsFragments() {
+    public Boolean isAcceptOnlyFittingDtlsFragments() {
         return acceptOnlyFittingDtlsFragments;
     }
 
-    public void setAcceptOnlyFittingDtlsFragments(boolean acceptOnlyFittingDtlsFragments) {
+    public void setAcceptOnlyFittingDtlsFragments(Boolean acceptOnlyFittingDtlsFragments) {
         this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
     }
 
-    public boolean isAcceptContentRewritingDtlsFragments() {
+    public Boolean isAcceptContentRewritingDtlsFragments() {
         return acceptContentRewritingDtlsFragments;
     }
 
-    public void setAcceptContentRewritingDtlsFragments(boolean acceptContentRewritingDtlsFragments) {
+    public void setAcceptContentRewritingDtlsFragments(Boolean acceptContentRewritingDtlsFragments) {
         this.acceptContentRewritingDtlsFragments = acceptContentRewritingDtlsFragments;
     }
 
@@ -3420,11 +3421,11 @@ public class Config implements Serializable {
         this.defaultPWDPassword = password;
     }
 
-    public int getDefaultPWDIterations() {
+    public Integer getDefaultPWDIterations() {
         return defaultPWDIterations;
     }
 
-    public void setDefaultPWDIterations(int defaultPWDIterations) {
+    public void setDefaultPWDIterations(Integer defaultPWDIterations) {
         this.defaultPWDIterations = defaultPWDIterations;
     }
 
