@@ -84,8 +84,7 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param request
-     *            The RequestedEncryption operation
+     * @param request The RequestedEncryption operation
      * @return The EncryptionResult
      */
     private byte[] encrypt(byte[] plaintext, byte[] iv) throws CryptoException {
@@ -130,7 +129,15 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     public int calculatePaddingLength(Record record, int dataLength) {
-        int additionalPadding = context.getConfig().getDefaultAdditionalPadding() % 256;
+
+        int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+        if (additionalPadding > 256) {
+            LOGGER.warn("Additional padding is too big. setting it to max possible value");
+            additionalPadding = 256;
+        } else if (additionalPadding < 0) {
+            LOGGER.warn("Additional padding is negative, setting it to 0");
+            additionalPadding = 256;
+        }
         record.getComputations().setAdditionalPaddingLength(additionalPadding);
         additionalPadding = record.getComputations().getAdditionalPaddingLength().getValue();
         if (additionalPadding % encryptCipher.getBlocksize() != 0) {
