@@ -130,7 +130,7 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     public int calculatePaddingLength(Record record, int dataLength) {
-        int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+        int additionalPadding = context.getConfig().getDefaultAdditionalPadding() % 256;
         record.getComputations().setAdditionalPaddingLength(additionalPadding);
         additionalPadding = record.getComputations().getAdditionalPaddingLength().getValue();
         if (additionalPadding % encryptCipher.getBlocksize() != 0) {
