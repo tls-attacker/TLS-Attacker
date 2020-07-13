@@ -84,7 +84,8 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param request The RequestedEncryption operation
+     * @param request
+     *            The RequestedEncryption operation
      * @return The EncryptionResult
      */
     private byte[] encrypt(byte[] plaintext, byte[] iv) throws CryptoException {
@@ -144,7 +145,7 @@ public final class RecordBlockCipher extends RecordCipher {
             LOGGER.warn("Additional padding is not a multiple of the blocksize");
         }
         return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize()))
-                + context.getConfig().getDefaultAdditionalPadding();
+                + additionalPadding;
     }
 
     public byte[] getEncryptionIV() {

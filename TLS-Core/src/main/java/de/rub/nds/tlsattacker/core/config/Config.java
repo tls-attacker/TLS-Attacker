@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.EsniVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -1179,13 +1180,13 @@ public class Config implements Serializable {
 
     private List<CipherSuite> defaultEsniServerCiphersuites = new LinkedList();
 
-    private int defaultEsniPaddedLength = 260;
+    private Integer defaultEsniPaddedLength = 260;
 
     private Long defaultEsniNotBefore = 1582655135231L;
 
     private Long defaultEsniNotAfter = 1582655135231L + 2592000000L;
 
-    private List<ExtensionMessage> defaultEsniExtensions = new LinkedList();
+    private List<ExtensionType> defaultEsniExtensions = new LinkedList();
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
@@ -3601,11 +3602,11 @@ public class Config implements Serializable {
         this.defaultEsniServerCiphersuites = defaultEsniServerCiphersuites;
     }
 
-    public int getDefaultEsniPaddedLength() {
+    public Integer getDefaultEsniPaddedLength() {
         return defaultEsniPaddedLength;
     }
 
-    public void setDefaultEsniPaddedLength(int defaultEsniPaddedLength) {
+    public void setDefaultEsniPaddedLength(Integer defaultEsniPaddedLength) {
         this.defaultEsniPaddedLength = defaultEsniPaddedLength;
     }
 
@@ -3625,11 +3626,11 @@ public class Config implements Serializable {
         this.defaultEsniNotAfter = defaultEsniNotAfter;
     }
 
-    public List<ExtensionMessage> getDefaultEsniExtensions() {
+    public List<ExtensionType> getDefaultEsniExtensions() {
         return defaultEsniExtensions;
     }
 
-    public void setDefaultEsniExtensions(List<ExtensionMessage> defaultEsniExtensions) {
+    public void setDefaultEsniExtensions(List<ExtensionType> defaultEsniExtensions) {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
 
