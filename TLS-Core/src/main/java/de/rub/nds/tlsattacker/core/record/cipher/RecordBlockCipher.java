@@ -144,8 +144,7 @@ public final class RecordBlockCipher extends RecordCipher {
         if (additionalPadding % encryptCipher.getBlocksize() != 0) {
             LOGGER.warn("Additional padding is not a multiple of the blocksize");
         }
-        return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize()))
-                + additionalPadding;
+        return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize())) + additionalPadding;
     }
 
     public byte[] getEncryptionIV() {
