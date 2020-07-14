@@ -27,7 +27,7 @@ public class CertificateStatus {
     private byte[] issuerKeyHash;
     private BigInteger serialNumber;
     private Integer certificateStatus;
-    private String timeOfRevocation;
+    private String revocationTime;
     private Integer revocationReason;
     private String timeOfLastUpdate;
     private String timeOfNextUpdate;
@@ -80,12 +80,12 @@ public class CertificateStatus {
         this.certificateStatus = certificateStatus;
     }
 
-    public String getTimeOfRevocation() {
-        return timeOfRevocation;
+    public String getRevocationTime() {
+        return revocationTime;
     }
 
-    public void setTimeOfRevocation(String timeOfRevocation) {
-        this.timeOfRevocation = timeOfRevocation;
+    public void setRevocationTime(String revocationTime) {
+        this.revocationTime = revocationTime;
     }
 
     public String getTimeOfLastUpdate() {
@@ -131,7 +131,7 @@ public class CertificateStatus {
             sb.append("\n Certificate Status: ");
             sb.append(RevocationStatus.translate(getCertificateStatus()));
             if (getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {
-                sb.append("\n Time of Revocation: ").append(formatDate(getTimeOfRevocation()));
+                sb.append("\n Revocation Time: ").append(formatDate(getRevocationTime()));
                 if (getRevocationReason() != null) {
                     sb.append("\n Revocation Reason: ");
                     sb.append(CrlReason.translate(getRevocationReason()));

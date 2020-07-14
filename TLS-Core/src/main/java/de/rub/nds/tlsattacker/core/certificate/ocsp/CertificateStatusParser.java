@@ -38,7 +38,7 @@ public class CertificateStatusParser {
         byte[] issuerKeyHash = null;
         BigInteger serialNumber = null;
         Integer certificateStatusValue = null;
-        String timeOfRevocation = null;
+        String revocationTime = null;
         Integer revocationReason = null;
         String timeOfLastUpdate = null;
         String timeOfNextUpdate = null;
@@ -104,7 +104,7 @@ public class CertificateStatusParser {
                 case 1:
                     certificateStatusValue = 1; // revoked
                     List<Asn1Encodable> revocationObjects = certStatusExplicitObject.getChildren();
-                    timeOfRevocation = ((Asn1PrimitiveGeneralizedTime) revocationObjects.get(0)).getValue();
+                    revocationTime = ((Asn1PrimitiveGeneralizedTime) revocationObjects.get(0)).getValue();
 
                     // Optional revocation reason
                     if (revocationObjects.size() > 1) {
@@ -148,7 +148,7 @@ public class CertificateStatusParser {
         certificateStatus.setIssuerKeyHash(issuerKeyHash);
         certificateStatus.setSerialNumber(serialNumber);
         certificateStatus.setCertificateStatus(certificateStatusValue);
-        certificateStatus.setTimeOfRevocation(timeOfRevocation);
+        certificateStatus.setRevocationTime(revocationTime);
         certificateStatus.setRevocationReason(revocationReason);
         certificateStatus.setTimeOfLastUpdate(timeOfLastUpdate);
         certificateStatus.setTimeOfNextUpdate(timeOfNextUpdate);

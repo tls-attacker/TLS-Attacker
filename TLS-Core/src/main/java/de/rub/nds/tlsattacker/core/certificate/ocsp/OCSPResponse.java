@@ -10,9 +10,7 @@
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.Asn1EncapsulatingBitString;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
-import de.rub.nds.asn1.model.Asn1PrimitiveBitString;
 import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
 import de.rub.nds.asn1.model.Asn1PrimitiveUtf8String;
 import de.rub.nds.asn1.model.Asn1Sequence;
@@ -27,7 +25,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -224,7 +221,7 @@ public class OCSPResponse {
             sb.append("\n   Certificate Status: ");
             sb.append(RevocationStatus.translate(certificateStatus.getCertificateStatus()));
             if (certificateStatus.getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {
-                sb.append("\n    Time of Revocation: ").append(formatDate(certificateStatus.getTimeOfRevocation()));
+                sb.append("\n    Revocation Time: ").append(formatDate(certificateStatus.getRevocationTime()));
                 if (certificateStatus.getRevocationReason() != null) {
                     sb.append("\n    Revocation Reason: ");
                     sb.append(CrlReason.translate(certificateStatus.getRevocationReason()));
