@@ -420,7 +420,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     private void prepareClientHelloKeyShare(EncryptedServerNameIndicationExtensionMessage msg) {
         int keyShareListBytesLength = 0;
-        byte[] keyShareListBytesLengthFild = null;
+        byte[] keyShareListBytesLengthField = null;
         byte[] keyShareListBytes = null;
         ByteArrayOutputStream clientHelloKeyShareStream = new ByteArrayOutputStream();
         boolean isClientHelloExensionsFound = false;
@@ -455,10 +455,10 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
             keyShareListBytesLength = keyShareListBytes.length;
         }
 
-        keyShareListBytesLengthFild = ArrayConverter.intToBytes(keyShareListBytesLength,
+        keyShareListBytesLengthField = ArrayConverter.intToBytes(keyShareListBytesLength,
                 ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         try {
-            clientHelloKeyShareStream.write(keyShareListBytesLengthFild);
+            clientHelloKeyShareStream.write(keyShareListBytesLengthField);
             clientHelloKeyShareStream.write(keyShareListBytes);
         } catch (IOException e) {
             throw new PreparationException("Failed to write ClientHelloKeyShare", e);
