@@ -26,11 +26,11 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger modulus;
+    private BigInteger modulus;
 
-    private final BigInteger generator;
+    private BigInteger generator;
 
-    private final BigInteger publicKey;
+    private BigInteger publicKey;
 
     public CustomDhPublicKey(BigInteger modulus, BigInteger generator, BigInteger publicKey) {
         this.modulus = modulus;
@@ -151,4 +151,17 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         }
         return Objects.equals(this.publicKey, other.publicKey);
     }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    public void setGenerator(BigInteger generator) {
+        this.generator = generator;
+    }
+
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
 }

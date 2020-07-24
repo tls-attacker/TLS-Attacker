@@ -117,7 +117,15 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting Record");
         record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
         if (version.isTLS13()) {
-            record.getComputations().setPadding(new byte[context.getConfig().getDefaultAdditionalPadding()]);
+            int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+            if (additionalPadding > 65536) {
+                LOGGER.warn("Additional padding is too big. setting it to max possible value");
+                additionalPadding = 65536;
+            } else if (additionalPadding < 0) {
+                LOGGER.warn("Additional padding is negative, setting it to 0");
+                additionalPadding = 0;
+            }
+            record.getComputations().setPadding(new byte[additionalPadding]);
             record.getComputations().setPlainRecordBytes(
                     ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
                             .getContentType().getValue() }, record.getComputations().getPadding().getValue()));

@@ -137,7 +137,7 @@ public final class RecordBlockCipher extends RecordCipher {
             additionalPadding = 256;
         } else if (additionalPadding < 0) {
             LOGGER.warn("Additional padding is negative, setting it to 0");
-            additionalPadding = 256;
+            additionalPadding = 0;
         }
         record.getComputations().setAdditionalPaddingLength(additionalPadding);
         additionalPadding = record.getComputations().getAdditionalPaddingLength().getValue();

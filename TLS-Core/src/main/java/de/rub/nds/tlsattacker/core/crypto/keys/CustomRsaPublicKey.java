@@ -25,9 +25,9 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger publicExponent;
+    private BigInteger publicExponent;
 
-    private final BigInteger modulus;
+    private BigInteger modulus;
 
     private CustomRsaPublicKey() {
         publicExponent = null;
@@ -129,5 +129,13 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
             return false;
         }
         return Objects.equals(this.modulus, other.modulus);
+    }
+
+    public void setPublicExponent(BigInteger publicExponent) {
+        this.publicExponent = publicExponent;
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
     }
 }

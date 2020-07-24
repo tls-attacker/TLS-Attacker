@@ -114,6 +114,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
                             .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
+                } else {
+                    continue;
                 }
 
                 try {
