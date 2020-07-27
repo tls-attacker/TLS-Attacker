@@ -29,7 +29,7 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new EndOfEarlyDataParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new EndOfEarlyDataParser(pointer, message, tlsContext.getLastRecordVersion(), tlsContext.getConfig());
     }
 
     @Override

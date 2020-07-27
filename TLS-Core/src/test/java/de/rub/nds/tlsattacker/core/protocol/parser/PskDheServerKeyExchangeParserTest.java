@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
@@ -40,6 +41,7 @@ public class PskDheServerKeyExchangeParserTest {
     private int PskIdentityHintLength;
     private byte[] PskIdentityHint;
     private ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public PskDheServerKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
             int PskIdentityHintLength, byte[] PskIdentityHint, ProtocolVersion version) {
@@ -56,7 +58,7 @@ public class PskDheServerKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        PskDheServerKeyExchangeParser parser = new PskDheServerKeyExchangeParser(0, message, version);
+        PskDheServerKeyExchangeParser parser = new PskDheServerKeyExchangeParser(0, message, version, config);
         PskDheServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

@@ -52,6 +52,10 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_NAME_LIST = 2;
     /**
+     * ExtendedRandomLength in the ExtendedRandomExtension
+     */
+    public static final int EXTENDED_RANDOM_LENGTH = 2;
+    /**
      * KeyShareGroup length in the KeySahreExtension
      */
     public static final int KEY_SHARE_GROUP = 2;

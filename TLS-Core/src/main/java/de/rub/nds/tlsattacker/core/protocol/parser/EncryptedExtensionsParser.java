@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
@@ -19,8 +20,8 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EncryptedExtensionsParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version);
+    public EncryptedExtensionsParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, config);
     }
 
     @Override

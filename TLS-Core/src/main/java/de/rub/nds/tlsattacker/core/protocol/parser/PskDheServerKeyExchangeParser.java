@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -34,9 +35,11 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public PskDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, version, KeyExchangeAlgorithm.DHE_PSK);
+    public PskDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, KeyExchangeAlgorithm.DHE_PSK, config);
         this.version = version;
     }
 

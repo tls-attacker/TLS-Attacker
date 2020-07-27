@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -64,6 +65,7 @@ public class ECDHClientKeyExchangeParserTest {
     private int serializedKeyLength;
     private byte[] serializedKey;
     private ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public ECDHClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
             int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
@@ -81,7 +83,7 @@ public class ECDHClientKeyExchangeParserTest {
     @Test
     public void testParse() {
         ECDHClientKeyExchangeParser<ECDHClientKeyExchangeMessage> parser = new ECDHClientKeyExchangeParser(0, message,
-                version);
+                version, config);
         ECDHClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

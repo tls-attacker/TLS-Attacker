@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
@@ -19,8 +20,8 @@ public class EndOfEarlyDataParser extends HandshakeMessageParser<EndOfEarlyDataM
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EndOfEarlyDataParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.END_OF_EARLY_DATA, version);
+    public EndOfEarlyDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.END_OF_EARLY_DATA, version, config);
     }
 
     @Override

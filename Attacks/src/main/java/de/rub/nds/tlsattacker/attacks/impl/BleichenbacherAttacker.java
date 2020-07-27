@@ -109,7 +109,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     @Override
     public Boolean isVulnerable() {
         errorType = getEqualityError();
-        if (errorType != EqualityError.NONE) {
+        if (errorType != null && errorType != EqualityError.NONE) {
             vulnerableType = config.getWorkflowType();
             return true;
         }

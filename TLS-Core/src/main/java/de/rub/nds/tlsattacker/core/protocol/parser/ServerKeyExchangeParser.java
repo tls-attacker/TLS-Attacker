@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
@@ -32,9 +33,12 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      *            The Handshake message type that is expected
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
-        super(pointer, array, expectedType, version);
+    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType,
+            ProtocolVersion version, Config config) {
+        super(pointer, array, expectedType, version, config);
     }
 
 }

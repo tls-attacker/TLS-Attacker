@@ -40,6 +40,8 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientEsniInnerParser;
@@ -240,6 +242,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
 
     private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
         KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
+        keyShareEntry.setPrivateKey(chooser.getConfig().getDefaultEsniClientPrivateKey());
         KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
         keyShareEntryPreparator.prepare();
         LOGGER.debug("ClientPrivateKey: "
@@ -382,6 +385,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareEsniKey(EncryptedServerNameIndicationExtensionMessage msg) {
+
         byte[] key = null;
         byte[] esniMasterSecret = msg.getEncryptedSniComputation().getEsniMasterSecret().getValue();
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
@@ -415,36 +419,53 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareClientHelloKeyShare(EncryptedServerNameIndicationExtensionMessage msg) {
-        ByteArrayOutputStream clientKeyShareStream = new ByteArrayOutputStream();
+        int keyShareListBytesLength = 0;
+        byte[] keyShareListBytesLengthField = null;
+        byte[] keyShareListBytes = null;
         ByteArrayOutputStream clientHelloKeyShareStream = new ByteArrayOutputStream();
+        boolean isClientHelloExensionsFound = false;
+        if (clientHelloMessage != null) {
 
-        for (KeyShareStoreEntry pair : chooser.getClientKeyShares()) {
-            KeyShareEntry entry = new KeyShareEntry();
-            KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
-            entry.setGroup(pair.getGroup().getValue());
-            entry.setPublicKeyLength(pair.getPublicKey().length);
-            entry.setPublicKey(pair.getPublicKey());
-            try {
-                clientKeyShareStream.write(serializer.serialize());
-            } catch (IOException e) {
-                throw new PreparationException("Failed to write esniContents", e);
+            List<ExtensionMessage> clientHelloExtensions = clientHelloMessage.getExtensions();
+            for (ExtensionMessage m : clientHelloExtensions) {
+                if (m instanceof KeyShareExtensionMessage) {
+                    KeyShareExtensionMessage keyShareExtensionMessage = (KeyShareExtensionMessage) m;
+                    keyShareListBytesLength = keyShareExtensionMessage.getKeyShareListLength().getValue();
+                    keyShareListBytes = keyShareExtensionMessage.getKeyShareListBytes().getValue();
+                    isClientHelloExensionsFound = true;
+                    break;
+                }
             }
         }
-        byte[] keyShareListBytes = clientKeyShareStream.toByteArray();
-        int keyShareListBytesLength = keyShareListBytes.length;
-        byte[] keyShareListBytesLengthFild = ArrayConverter.intToBytes(keyShareListBytesLength,
-                ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        try {
-            clientHelloKeyShareStream.write(keyShareListBytesLengthFild);
-            clientHelloKeyShareStream.write(keyShareListBytes);
-        } catch (IOException e) {
-            throw new PreparationException("Failed to write esniContents", e);
+        if (!isClientHelloExensionsFound) {
+            ByteArrayOutputStream keyShareListStream = new ByteArrayOutputStream();
+            for (KeyShareStoreEntry pair : chooser.getClientKeyShares()) {
+                KeyShareEntry entry = new KeyShareEntry();
+                KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
+                entry.setGroup(pair.getGroup().getValue());
+                entry.setPublicKeyLength(pair.getPublicKey().length);
+                entry.setPublicKey(pair.getPublicKey());
+                try {
+                    keyShareListStream.write(serializer.serialize());
+                } catch (IOException e) {
+                    throw new PreparationException("Failed to write esniContents", e);
+                }
+            }
+            keyShareListBytes = keyShareListStream.toByteArray();
+            keyShareListBytesLength = keyShareListBytes.length;
         }
 
+        keyShareListBytesLengthField = ArrayConverter.intToBytes(keyShareListBytesLength,
+                ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        try {
+            clientHelloKeyShareStream.write(keyShareListBytesLengthField);
+            clientHelloKeyShareStream.write(keyShareListBytes);
+        } catch (IOException e) {
+            throw new PreparationException("Failed to write ClientHelloKeyShare", e);
+        }
         byte[] clientHelloKeyShareBytes = clientHelloKeyShareStream.toByteArray();
         msg.getEncryptedSniComputation().setClientHelloKeyShare(clientHelloKeyShareBytes);
-        LOGGER.debug("clientHelloKeyShare: "
-                + ArrayConverter.bytesToHexString(msg.getEncryptedSniComputation().getClientHelloKeyShare().getValue()));
+        LOGGER.debug("clientHelloKeyShare: " + ArrayConverter.bytesToHexString(clientHelloKeyShareBytes));
     }
 
     private void prepareEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -513,7 +534,7 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     private void prepareServerNonce(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] receivedClientNonce = chooser.getEsniClientNonce();
         msg.setServerNonce(receivedClientNonce);
-        LOGGER.debug("ServerNonce: " + msg.getServerNonce().getValue());
+        LOGGER.debug("ServerNonce: " + ArrayConverter.bytesToHexString(msg.getServerNonce().getValue()));
     }
 
     private byte[] generateEsniContents(EncryptedServerNameIndicationExtensionMessage msg) {

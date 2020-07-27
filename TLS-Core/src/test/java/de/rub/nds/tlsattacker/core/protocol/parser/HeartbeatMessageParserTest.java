@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class HeartbeatMessageParserTest {
     private final int payloadLength;
     private final byte[] payload;
     private final byte[] padding;
+    private final Config config = Config.createConfig();
 
     public HeartbeatMessageParserTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
             int payloadLength, byte[] payload, byte[] padding) {
@@ -62,7 +64,7 @@ public class HeartbeatMessageParserTest {
      */
     @Test
     public void testParse() {
-        HeartbeatMessageParser parser = new HeartbeatMessageParser(0, message, ProtocolVersion.TLS12);
+        HeartbeatMessageParser parser = new HeartbeatMessageParser(0, message, ProtocolVersion.TLS12, config);
         HeartbeatMessage msg = parser.parse();
         assertTrue(heartBeatType == msg.getHeartbeatMessageType().getValue());
         assertTrue(payloadLength == msg.getPayloadLength().getValue());

@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -39,6 +40,7 @@ public class ServerHelloDoneParserTest {
     private HandshakeMessageType type;
     private int length;
     private ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public ServerHelloDoneParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
         this.message = message;
@@ -52,7 +54,7 @@ public class ServerHelloDoneParserTest {
      */
     @Test
     public void testParse() {
-        ServerHelloDoneParser parser = new ServerHelloDoneParser(0, message, version);
+        ServerHelloDoneParser parser = new ServerHelloDoneParser(0, message, version, config);
         ServerHelloDoneMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

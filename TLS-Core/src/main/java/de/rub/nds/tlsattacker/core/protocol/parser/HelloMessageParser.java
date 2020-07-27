@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -40,9 +41,12 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      *            Expected Type value for the Message
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version) {
-        super(pointer, array, type, version);
+    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
+            Config config) {
+        super(pointer, array, type, version, config);
     }
 
     protected boolean hasSessionID(HelloMessage message) {

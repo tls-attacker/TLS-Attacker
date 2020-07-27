@@ -72,10 +72,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -517,6 +514,11 @@ public class Config implements Serializable {
      */
     private Boolean addSessionTicketTLSExtension = false;
 
+    /***
+     * If we generate ClientHello with extended Random Extension
+     */
+    private Boolean addExtendedRandomExtension = false;
+
     /**
      * If we generate ClientHello with SignedCertificateTimestamp extension
      */
@@ -884,12 +886,24 @@ public class Config implements Serializable {
     private byte[] defaultPreMasterSecret = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientExtendedRandom = ArrayConverter
+            .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultServerExtendedRandom = ArrayConverter
+            .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientRandom = ArrayConverter
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerRandom = ArrayConverter
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
+
+    // Parse Extensions of Type 40 as key share extension instead of
+    // Extended Random like in TLS13-Drafts 14 - 22.
+    private Boolean parseKeyShareOld = true;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
@@ -1125,6 +1139,13 @@ public class Config implements Serializable {
     private Boolean parseInvalidRecordsUnencrypted = false;
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
+
+    /**
+     * Private Key of the Client for the EncryptedServerNameIndication
+     * extension.
+     */
+    private BigInteger defaultEsniClientPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
     /**
      * Supported Ciphersuites for EncryptedServerNameIndication extension.
@@ -1406,6 +1427,14 @@ public class Config implements Serializable {
 
     public void setUseFreshRandom(Boolean useFreshRandom) {
         this.useFreshRandom = useFreshRandom;
+    }
+
+    public Boolean isParseKeyShareOld() {
+        return parseKeyShareOld;
+    }
+
+    public void setParseKeyShareOld(boolean parseKeyShareOld) {
+        this.parseKeyShareOld = parseKeyShareOld;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -1851,6 +1880,30 @@ public class Config implements Serializable {
 
     public void setDefaultSelectedCompressionMethod(CompressionMethod defaultSelectedCompressionMethod) {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
+    }
+
+    public boolean isAddExtendedRandomExtension() {
+        return this.addExtendedRandomExtension;
+    }
+
+    public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) {
+        this.addExtendedRandomExtension = addExtendedRandomExtension;
+    }
+
+    public byte[] getDefaultClientExtendedRandom() {
+        return Arrays.copyOf(defaultClientExtendedRandom, defaultClientExtendedRandom.length);
+    }
+
+    public byte[] getDefaultServerExtendedRandom() {
+        return Arrays.copyOf(defaultServerExtendedRandom, defaultServerExtendedRandom.length);
+    }
+
+    public void setDefaultClientExtendedRandom(byte[] defaultClientExtendedRandom) {
+        this.defaultClientExtendedRandom = defaultClientExtendedRandom;
+    }
+
+    public void setDefaultServerExtendedRandom(byte[] defaultServerExtendedRandom) {
+        this.defaultServerExtendedRandom = defaultServerExtendedRandom;
     }
 
     public byte[] getDefaultServerRandom() {
@@ -3599,4 +3652,13 @@ public class Config implements Serializable {
     public void setKeylogFilePath(String keylogFilePath) {
         this.keylogFilePath = keylogFilePath;
     }
+
+    public BigInteger getDefaultEsniClientPrivateKey() {
+        return defaultEsniClientPrivateKey;
+    }
+
+    public void setDefaultEsniClientPrivateKey(BigInteger defaultEsniClientPrivateKey) {
+        this.defaultEsniClientPrivateKey = defaultEsniClientPrivateKey;
+    }
+
 }

@@ -902,6 +902,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
@@ -1014,8 +1015,11 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret/>
     <defaultPreMasterSecret/>
+    <defaultClientExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultClientExtendedRandom>
+    <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
+    <parseKeyShareOld>true</parseKeyShareOld>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
@@ -1129,6 +1133,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
     <parseInvalidRecordsUnencrypted>false</parseInvalidRecordsUnencrypted>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <defaultEsniClientPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultEsniClientPrivateKey>
     <defaultEsniClientNonce>A7 28 4C 9A 52 F1 5C 13 64 4B 94 72 61 77 46 57</defaultEsniClientNonce>
     <defaultEsniServerNonce>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultEsniServerNonce>
     <defaultEsniRecordBytes>FF 01 00 12 4B 2A 00 24 00 1D 00 20 FA 57 2D 03 E2 1E 15 F9 CA 1A A7 FB 85 F6 1B 9F C7 84 58 A7 80 50 AC 58 18 11 86 33 25 94 44 12 00 02 13 01 01 04 00 00 00 00 5D CC 3A 45 00 00 00 00 5D DA 12 05 00 00</defaultEsniRecordBytes>

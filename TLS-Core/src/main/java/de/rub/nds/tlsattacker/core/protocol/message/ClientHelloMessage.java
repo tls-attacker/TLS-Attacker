@@ -191,6 +191,9 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddPWDClearExtension()) {
                 addExtension(new PWDClearExtensionMessage());
             }
+            if (tlsConfig.isAddExtendedRandomExtension()) {
+                addExtension(new ExtendedRandomExtensionMessage());
+            }
             if (tlsConfig.isAddPreSharedKeyExtension()) {
                 addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
             }
