@@ -61,6 +61,8 @@ public class HandlerFactory {
                     return new CertificateMessageHandler(context);
                 case CERTIFICATE_REQUEST:
                     return new CertificateRequestHandler(context);
+                case CERTIFICATE_STATUS:
+                    return new CertificateStatusHandler(context);
                 case CERTIFICATE_VERIFY:
                     return new CertificateVerifyHandler(context);
                 case CLIENT_HELLO:
