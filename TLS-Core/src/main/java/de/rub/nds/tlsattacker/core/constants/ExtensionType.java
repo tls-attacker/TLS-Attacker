@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -45,6 +46,9 @@ public enum ExtensionType {
     PWD_CLEAR(new byte[] { (byte) 0, (byte) 30 }),
     PASSWORD_SALT(new byte[] { (byte) 0, (byte) 31 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
+    EXTENDED_RANDOM(new byte[] { (byte) 0, (byte) 40 }), // Shares same IANA ID
+                                                         // as old keyshare
+                                                         // extension.
     KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
                                                        // extension before TLS
                                                        // 1.3 Draft 23
@@ -54,6 +58,8 @@ public enum ExtensionType {
     PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
     KEY_SHARE(new byte[] { (byte) 0, (byte) 51 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
+    ENCRYPTED_SERVER_NAME_INDICATION(new byte[] { (byte) 0xFF, (byte) 0xCE }),
+
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),
@@ -91,7 +97,7 @@ public enum ExtensionType {
 
     private static int valueToInt(byte[] value) {
         if (value.length == 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else {
             return -1;
         }
@@ -136,6 +142,7 @@ public enum ExtensionType {
         list.add(EXTENDED_MASTER_SECRET);
         list.add(HEARTBEAT);
         list.add(KEY_SHARE);
+        list.add(EXTENDED_RANDOM);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
         list.add(PRE_SHARED_KEY);
@@ -174,6 +181,7 @@ public enum ExtensionType {
         list.add(EXTENDED_MASTER_SECRET);
         list.add(HEARTBEAT);
         list.add(KEY_SHARE);
+        list.add(EXTENDED_RANDOM);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
         list.add(PRE_SHARED_KEY);
@@ -214,6 +222,7 @@ public enum ExtensionType {
         list.add(TOKEN_BINDING);
         list.add(RENEGOTIATION_INFO);
         list.add(HEARTBEAT);
+        list.add(EXTENDED_RANDOM);
         return list;
     }
 }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -52,9 +54,12 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *            The expected type of the parsed HandshakeMessage
      * @param version
      *            The Version with which this message should be parsed
+     * @param config
+     *            A Config used in the current context
      */
-    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
-        super(pointer, array, version);
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType,
+            ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
         this.expectedType = expectedType;
         this.version = version;
     }
@@ -126,7 +131,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         int pointer = 0;
         while (pointer < extensionBytes.length) {
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
-                    message.getHandshakeMessageType());
+                    message.getHandshakeMessageType(), this.getConfig());
             extensionMessages.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing Extensions");

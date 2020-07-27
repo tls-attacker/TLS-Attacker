@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -19,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class PWDServerKeyExchangeParserTest {
+
+    private final Config config = Config.createConfig();
 
     public PWDServerKeyExchangeParserTest() {
     }
@@ -47,7 +51,7 @@ public class PWDServerKeyExchangeParserTest {
 
         byte[] scalar = ArrayConverter.hexStringToByteArray(("2f 70 48 96 69 9f c4 24 d3 ce c3 37 17 64 4f 5a\n"
                 + "             df 7f 68 48 34 24 ee 51 49 2b b9 66 13 fc 49 21").replaceAll("\\s+", ""));
-        PWDServerKeyExchangeParser parser = new PWDServerKeyExchangeParser(0, message, ProtocolVersion.TLS12);
+        PWDServerKeyExchangeParser parser = new PWDServerKeyExchangeParser(0, message, ProtocolVersion.TLS12, config);
         PWDServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(135, (long) msg.getLength().getValue());

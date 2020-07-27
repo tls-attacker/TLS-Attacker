@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
@@ -41,6 +43,7 @@ public class PskEcDhClientKeyExchangeParserTest {
     private final HandshakeMessageType type;
     private final int length;
     private final ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public PskEcDhClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
             ProtocolVersion version) {
@@ -52,7 +55,7 @@ public class PskEcDhClientKeyExchangeParserTest {
 
     @Test
     public void testParse() {
-        PskEcDhClientKeyExchangeParser parser = new PskEcDhClientKeyExchangeParser(0, message, version);
+        PskEcDhClientKeyExchangeParser parser = new PskEcDhClientKeyExchangeParser(0, message, version, config);
         PskEcDhClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(type.getValue(), msg.getType().getValue().byteValue());

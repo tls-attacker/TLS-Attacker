@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class Record extends AbstractRecord {
 
@@ -47,15 +49,15 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
-    /**
-     * protocol message bytes after decryption
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_RECORD)
-    private ModifiableByteArray fragment;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
+    /**
+     * This is the implicit sequence number in TLS and also the explicit
+     * sequence number in DTLS This could also have been a seperate field within
+     * the computations struct but i chose to only keep one of them as the whole
+     * situation is already complicated enough
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
@@ -150,14 +152,6 @@ public class Record extends AbstractRecord {
         context.setLastRecordVersion(version);
     }
 
-    public ModifiableByteArray getFragment() {
-        return fragment;
-    }
-
-    public void setFragment(ModifiableByteArray fragment) {
-        this.fragment = fragment;
-    }
-
     public RecordCryptoComputations getComputations() {
         return computations;
     }
@@ -177,6 +171,51 @@ public class Record extends AbstractRecord {
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
                 + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.contentType);
+        hash = 41 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 41 * hash + Objects.hashCode(this.length);
+        hash = 41 * hash + Objects.hashCode(this.epoch);
+        hash = 41 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 41 * hash + Objects.hashCode(this.computations);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Record other = (Record) obj;
+        if (!Objects.equals(this.contentType, other.contentType)) {
+            return false;
+        }
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.length, other.length)) {
+            return false;
+        }
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
+            return false;
+        }
+        if (!Objects.equals(this.computations, other.computations)) {
+            return false;
+        }
+        return true;
     }
 
 }

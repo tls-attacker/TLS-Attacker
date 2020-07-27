@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.https;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ public class HttpsResponseSerializerTest {
     private final byte[] msg;
     private final ProtocolVersion version;
     private final byte[] expPart;
+    private final Config config = Config.createConfig();
 
     public HttpsResponseSerializerTest(byte[] msg, ProtocolVersion version, byte[] expPart) {
         this.msg = msg;
@@ -43,7 +46,7 @@ public class HttpsResponseSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
-        HttpsResponseParser parser = new HttpsResponseParser(0, msg, version);
+        HttpsResponseParser parser = new HttpsResponseParser(0, msg, version, config);
         HttpsResponseMessage parsedMsg = parser.parse();
         HttpsResponseSerializer serializer = new HttpsResponseSerializer(parsedMsg, version);
 

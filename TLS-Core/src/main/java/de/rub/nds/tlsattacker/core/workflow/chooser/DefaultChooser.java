@@ -1,12 +1,19 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
+
+import java.math.BigInteger;
+import java.util.List;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -15,16 +22,19 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -33,9 +43,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.math.BigInteger;
-import java.util.List;
-import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
@@ -243,6 +250,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        if (context.getSSL2CipherSuite() != null) {
+            return context.getSSL2CipherSuite();
+        } else {
+            return config.getDefaultSSL2CipherSuite();
+        }
+    }
+
+    @Override
     public byte[] getPreMasterSecret() {
         if (context.getPreMasterSecret() != null) {
             return copy(context.getPreMasterSecret());
@@ -251,6 +267,10 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Client Random
+     */
     @Override
     public byte[] getClientRandom() {
         if (context.getClientRandom() != null) {
@@ -260,6 +280,28 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    @Override
+    public byte[] getClientExtendedRandom() {
+        if (context.getClientExtendedRandom() != null) {
+            return copy(context.getClientExtendedRandom());
+        } else {
+            return config.getDefaultClientExtendedRandom();
+        }
+    }
+
+    @Override
+    public byte[] getServerExtendedRandom() {
+        if (context.getServerExtendedRandom() != null) {
+            return copy(context.getServerExtendedRandom());
+        } else {
+            return config.getDefaultServerExtendedRandom();
+        }
+    }
+
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Server Random
+     */
     @Override
     public byte[] getServerRandom() {
         if (context.getServerRandom() != null) {
@@ -876,6 +918,51 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getDsaClientPrivateKey() {
+        if (context.getClientDsaPrivateKey() != null) {
+            return context.getClientDsaPrivateKey();
+        } else {
+            return config.getDefaultClientDsaPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPublicKey() {
+        if (context.getClientDsaPublicKey() != null) {
+            return context.getClientDsaPublicKey();
+        } else {
+            return config.getDefaultClientDsaPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPrimeP() {
+        if (context.getClientDsaPrimeP() != null) {
+            return context.getClientDsaPrimeP();
+        } else {
+            return config.getDefaultClientDsaPrimeP();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPrimeQ() {
+        if (context.getClientDsaPrimeQ() != null) {
+            return context.getClientDsaPrimeQ();
+        } else {
+            return config.getDefaultClientDsaPrimeQ();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientGenerator() {
+        if (context.getClientDsaGenerator() != null) {
+            return context.getClientDsaGenerator();
+        } else {
+            return config.getDefaultClientDsaGenerator();
+        }
+    }
+
+    @Override
     public BigInteger getDsaServerPrivateKey() {
         if (context.getServerDsaPrivateKey() != null) {
             return context.getServerDsaPrivateKey();
@@ -894,7 +981,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaPrimeP() {
+    public BigInteger getDsaServerPrimeP() {
         if (context.getServerDsaPrimeP() != null) {
             return context.getServerDsaPrimeP();
         } else {
@@ -903,7 +990,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaPrimeQ() {
+    public BigInteger getDsaServerPrimeQ() {
         if (context.getServerDsaPrimeQ() != null) {
             return context.getServerDsaPrimeQ();
         } else {
@@ -912,7 +999,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaGenerator() {
+    public BigInteger getDsaServerGenerator() {
         if (context.getServerDsaGenerator() != null) {
             return context.getServerDsaGenerator();
         } else {
@@ -950,5 +1037,106 @@ public class DefaultChooser extends Chooser {
     @Override
     public String getPWDPassword() {
         return config.getDefaultPWDPassword();
+    }
+
+    @Override
+    public byte[] getEsniClientNonce() {
+        if (context.getEsniClientNonce() != null) {
+            return this.context.getEsniClientNonce();
+        } else {
+            return config.getDefaultEsniClientNonce();
+        }
+    }
+
+    @Override
+    public byte[] getEsniServerNonce() {
+        if (context.getEsniServerNonce() != null) {
+            return this.context.getEsniServerNonce();
+        } else {
+            return config.getDefaultEsniServerNonce();
+        }
+    }
+
+    @Override
+    public byte[] getEsniRecordBytes() {
+        if (context.getEsniRecordBytes() != null) {
+            return context.getEsniRecordBytes();
+        } else {
+            return config.getDefaultEsniRecordBytes();
+        }
+    }
+
+    @Override
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
+        if (context.getEsniRecordVersion() != null) {
+            return context.getEsniRecordVersion();
+        } else {
+            return config.getDefaultEsniRecordVersion();
+        }
+    }
+
+    @Override
+    public byte[] getEsniRecordChecksum() {
+        if (context.getEsniRecordChecksum() != null) {
+            return context.getEsniRecordChecksum();
+        } else {
+            return config.getDefaultEsniRecordChecksum();
+        }
+    }
+
+    @Override
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        if (context.getEsniServerKeyShareEntries() != null && context.getEsniServerKeyShareEntries().size() > 0) {
+            return context.getEsniServerKeyShareEntries();
+        } else {
+            return config.getDefaultEsniServerKeyShareEntries();
+        }
+    }
+
+    @Override
+    public List<CipherSuite> getEsniServerCiphersuites() {
+
+        if (context.getEsniServerCiphersuites() != null) {
+            return context.getEsniServerCiphersuites();
+        } else {
+            return config.getDefaultEsniServerCiphersuites();
+        }
+    }
+
+    @Override
+    public Integer getEsniPaddedLength() {
+
+        if (context.getEsniPaddedLength() != null) {
+            return context.getEsniPaddedLength();
+        } else {
+            return config.getDefaultEsniPaddedLength();
+        }
+    }
+
+    @Override
+    public Long getEsniNotBefore() {
+        if (context.getEsniKeysNotBefore() != null) {
+            return this.context.getEsniKeysNotBefore();
+        } else {
+            return config.getDefaultEsniNotBefore();
+        }
+    }
+
+    @Override
+    public Long getEsniNotAfter() {
+        if (context.getEsniNotAfter() != null) {
+            return context.getEsniNotAfter();
+        } else {
+            return config.getDefaultEsniNotAfter();
+        }
+    }
+
+    @Override
+    public List<ExtensionMessage> getEsniExtensions() {
+        if (context.getEsniExtensions() != null) {
+            return context.getEsniExtensions();
+        } else {
+            return config.getDefaultEsniExtensions();
+        }
     }
 }

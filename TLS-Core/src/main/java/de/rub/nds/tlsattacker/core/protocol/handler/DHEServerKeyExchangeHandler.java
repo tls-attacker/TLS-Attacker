@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -29,7 +30,8 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     @Override
     public DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -52,9 +54,6 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
         }
     }
 
-    /**
-     * @param context
-     */
     private void adjustDhGenerator(DHEServerKeyExchangeMessage message) {
         tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
         LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -28,6 +30,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -67,6 +70,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -78,6 +82,9 @@ public class TlsContext {
     private List<Session> sessionList;
 
     private HttpContext httpContext;
+
+    @XmlTransient
+    private Keylogfile keylogfile;
 
     /**
      * The end point of the TLS connection that this context represents.
@@ -157,9 +164,24 @@ public class TlsContext {
     private byte[] masterSecret;
 
     /**
+     * Cleartext portion of the master secret for SSLv2 export ciphers.
+     */
+    private byte[] clearKey;
+
+    /**
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
+
+    /**
+     * Client Extended Random used in Extended Random Extension
+     */
+    private byte[] clientExtendedRandom;
+
+    /**
+     * Server Extended Random used in Extended Random Extension
+     */
+    private byte[] serverExtendedRandom;
 
     /**
      * Client random, including unix time.
@@ -176,6 +198,11 @@ public class TlsContext {
      */
     private CipherSuite selectedCipherSuite = null;
 
+    /*
+     * (Preferred) cipher suite for SSLv2.
+     */
+    private SSL2CipherSuite ssl2CipherSuite = null;
+
     /**
      * Selected compression algorithm.
      */
@@ -190,6 +217,13 @@ public class TlsContext {
      * Client session ID.
      */
     private byte[] clientSessionId;
+
+    /**
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
+     * TLS, this is explicitly transmitted in the handshake and cannot be
+     * derived from other data.
+     */
+    private byte[] ssl2Iv;
 
     /**
      * Server certificate parsed from the server certificate message.
@@ -595,6 +629,37 @@ public class TlsContext {
      */
     private boolean tls13SoftDecryption = false;
 
+    /**
+     * Nonce sent by the Client in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniClientNonce;
+
+    /**
+     * Nonce sent by the Server in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniServerNonce;
+
+    /**
+     * Contains the keyRecord for the EncryptedServerNameIndication extension
+     */
+    private byte[] esniRecordBytes;
+
+    private EsniDnsKeyRecordVersion esniRecordVersion;
+
+    private byte[] esniRecordChecksum;
+
+    private List<KeyShareStoreEntry> esniServerKeyShareEntries;
+
+    private List<CipherSuite> esniServerCiphersuites = new LinkedList();
+
+    private Integer esniPaddedLength;
+
+    private Long esniNotBefore;
+
+    private Long esniNotAfter;
+
+    private List<ExtensionMessage> esniExtensions;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -642,6 +707,7 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
+        keylogfile = new Keylogfile(this);
     }
 
     public Chooser getChooser() {
@@ -1322,7 +1388,12 @@ public class TlsContext {
         return selectedCipherSuite;
     }
 
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        return ssl2CipherSuite;
+    }
+
     public void setMasterSecret(byte[] masterSecret) {
+        keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
     }
 
@@ -1330,8 +1401,20 @@ public class TlsContext {
         this.selectedCipherSuite = selectedCipherSuite;
     }
 
+    public void setSSL2CipherSuite(SSL2CipherSuite ssl2CipherSuite) {
+        this.ssl2CipherSuite = ssl2CipherSuite;
+    }
+
     public byte[] getClientServerRandom() {
         return ArrayConverter.concatenate(clientRandom, serverRandom);
+    }
+
+    public byte[] getClearKey() {
+        return clearKey;
+    }
+
+    public void setClearKey(byte[] clearKey) {
+        this.clearKey = clearKey;
     }
 
     public byte[] getPreMasterSecret() {
@@ -1339,7 +1422,24 @@ public class TlsContext {
     }
 
     public void setPreMasterSecret(byte[] preMasterSecret) {
+        keylogfile.writeKey("PMS_CLIENT_RANDOM", preMasterSecret);
         this.preMasterSecret = preMasterSecret;
+    }
+
+    public byte[] getClientExtendedRandom() {
+        return clientExtendedRandom;
+    }
+
+    public void setClientExtendedRandom(byte[] clientExtendedRandom) {
+        this.clientExtendedRandom = clientExtendedRandom;
+    };
+
+    public byte[] getServerExtendedRandom() {
+        return serverExtendedRandom;
+    }
+
+    public void setServerExtendedRandom(byte[] serverExtendedRandom) {
+        this.serverExtendedRandom = serverExtendedRandom;
     }
 
     public byte[] getClientRandom() {
@@ -1380,6 +1480,14 @@ public class TlsContext {
 
     public void setClientSessionId(byte[] clientSessionId) {
         this.clientSessionId = clientSessionId;
+    }
+
+    public byte[] getSSL2Iv() {
+        return ssl2Iv;
+    }
+
+    public void setSSL2Iv(byte[] ssl2Iv) {
+        this.ssl2Iv = ssl2Iv;
     }
 
     public Certificate getServerCertificate() {
@@ -1439,6 +1547,7 @@ public class TlsContext {
     }
 
     public void setClientHandshakeTrafficSecret(byte[] clientHandshakeTrafficSecret) {
+        keylogfile.writeKey("CLIENT_HANDSHAKE_TRAFFIC_SECRET", clientHandshakeTrafficSecret);
         this.clientHandshakeTrafficSecret = clientHandshakeTrafficSecret;
     }
 
@@ -1447,6 +1556,7 @@ public class TlsContext {
     }
 
     public void setServerHandshakeTrafficSecret(byte[] serverHandshakeTrafficSecret) {
+        keylogfile.writeKey("SERVER_HANDSHAKE_TRAFFIC_SECRET", serverHandshakeTrafficSecret);
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
@@ -1455,6 +1565,7 @@ public class TlsContext {
     }
 
     public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        keylogfile.writeKey("CLIENT_TRAFFIC_SECRET_0", clientApplicationTrafficSecret);
         this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
@@ -1463,6 +1574,7 @@ public class TlsContext {
     }
 
     public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        keylogfile.writeKey("SERVER_TRAFFIC_SECRET_0", serverApplicationTrafficSecret);
         this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
@@ -1916,6 +2028,7 @@ public class TlsContext {
      *            the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
         this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
     }
 
@@ -2274,6 +2387,96 @@ public class TlsContext {
 
     public void setSelectedGostCurve(GOSTCurve selectedGostCurve) {
         this.selectedGostCurve = selectedGostCurve;
+    }
+
+    public byte[] getEsniClientNonce() {
+        return this.esniClientNonce;
+    }
+
+    public void setEsniClientNonce(byte[] esniClientNonce) {
+        this.esniClientNonce = esniClientNonce;
+
+    }
+
+    public byte[] getEsniServerNonce() {
+        return this.esniServerNonce;
+    }
+
+    public void setEsniServerNonce(byte[] esniServerNonce) {
+        this.esniServerNonce = esniServerNonce;
+
+    }
+
+    public byte[] getEsniRecordBytes() {
+        return esniRecordBytes;
+    }
+
+    public void setEsniRecordBytes(byte[] esniRecordBytes) {
+        this.esniRecordBytes = esniRecordBytes;
+    }
+
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
+        return esniRecordVersion;
+    }
+
+    public void setEsniRecordVersion(EsniDnsKeyRecordVersion esniRecordVersion) {
+        this.esniRecordVersion = esniRecordVersion;
+    }
+
+    public byte[] getEsniRecordChecksum() {
+        return esniRecordChecksum;
+    }
+
+    public void setEsniRecordChecksum(byte[] esniRecordChecksum) {
+        this.esniRecordChecksum = esniRecordChecksum;
+    }
+
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        return this.esniServerKeyShareEntries;
+    }
+
+    public void setEsniServerKeyShareEntries(List<KeyShareStoreEntry> esniServerKeyShareEntries) {
+        this.esniServerKeyShareEntries = esniServerKeyShareEntries;
+    }
+
+    public List<CipherSuite> getEsniServerCiphersuites() {
+        return esniServerCiphersuites;
+    }
+
+    public void setEsniServerCiphersuites(List<CipherSuite> esniServerCiphersuites) {
+        this.esniServerCiphersuites = esniServerCiphersuites;
+    }
+
+    public Integer getEsniPaddedLength() {
+        return esniPaddedLength;
+    }
+
+    public void setEsniPaddedLength(Integer esniPaddedLength) {
+        this.esniPaddedLength = esniPaddedLength;
+    }
+
+    public Long getEsniKeysNotBefore() {
+        return esniNotBefore;
+    }
+
+    public void setEsniKeysNotBefore(Long esniKeysNotBefore) {
+        this.esniNotBefore = esniKeysNotBefore;
+    }
+
+    public Long getEsniNotAfter() {
+        return esniNotAfter;
+    }
+
+    public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
+        this.esniNotAfter = esniKeysNotAfter;
+    }
+
+    public List<ExtensionMessage> getEsniExtensions() {
+        return esniExtensions;
+    }
+
+    public void setEsniExtensions(List<ExtensionMessage> esniExtensions) {
+        this.esniExtensions = esniExtensions;
     }
 
 }

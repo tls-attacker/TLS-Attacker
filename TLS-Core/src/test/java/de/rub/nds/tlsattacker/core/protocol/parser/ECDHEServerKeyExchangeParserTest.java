@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -85,6 +87,7 @@ public class ECDHEServerKeyExchangeParserTest {
     private int sigLength;
     private byte[] signature;
     private ProtocolVersion version;
+    private Config config = Config.createConfig();
 
     public ECDHEServerKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
             byte[] namedCurve, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
@@ -109,7 +112,7 @@ public class ECDHEServerKeyExchangeParserTest {
     public void testParse() {// TODO make protocolversion a parameter and test
                              // for other versions too
         ECDHEServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> parser = new ECDHEServerKeyExchangeParser(0,
-                message, version);
+                message, version, config);
         ECDHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(length == msg.getLength().getValue());

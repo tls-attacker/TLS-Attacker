@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,12 +16,14 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -37,6 +40,8 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public abstract class Chooser {
 
@@ -101,7 +106,13 @@ public abstract class Chooser {
 
     public abstract CipherSuite getSelectedCipherSuite();
 
+    public abstract SSL2CipherSuite getSSL2CipherSuite();
+
     public abstract byte[] getPreMasterSecret();
+
+    public abstract byte[] getClientExtendedRandom();
+
+    public abstract byte[] getServerExtendedRandom();
 
     public abstract byte[] getClientRandom();
 
@@ -249,15 +260,25 @@ public abstract class Chooser {
 
     public abstract KeyShareStoreEntry getServerKeyShare();
 
+    public abstract BigInteger getDsaClientPublicKey();
+
+    public abstract BigInteger getDsaClientPrivateKey();
+
+    public abstract BigInteger getDsaClientPrimeP();
+
+    public abstract BigInteger getDsaClientPrimeQ();
+
+    public abstract BigInteger getDsaClientGenerator();
+
     public abstract BigInteger getDsaServerPublicKey();
 
     public abstract BigInteger getDsaServerPrivateKey();
 
-    public abstract BigInteger getDsaPrimeP();
+    public abstract BigInteger getDsaServerPrimeP();
 
-    public abstract BigInteger getDsaPrimeQ();
+    public abstract BigInteger getDsaServerPrimeQ();
 
-    public abstract BigInteger getDsaGenerator();
+    public abstract BigInteger getDsaServerGenerator();
 
     public abstract byte[] getHandshakeSecret();
 
@@ -266,4 +287,26 @@ public abstract class Chooser {
     public abstract byte[] getServerPWDSalt();
 
     public abstract String getPWDPassword();
+
+    public abstract byte[] getEsniClientNonce();
+
+    public abstract byte[] getEsniServerNonce();
+
+    public abstract byte[] getEsniRecordBytes();
+
+    public abstract EsniDnsKeyRecordVersion getEsniRecordVersion();
+
+    public abstract byte[] getEsniRecordChecksum();
+
+    public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
+
+    public abstract List<CipherSuite> getEsniServerCiphersuites();
+
+    public abstract Integer getEsniPaddedLength();
+
+    public abstract Long getEsniNotBefore();
+
+    public abstract Long getEsniNotAfter();
+
+    public abstract List<ExtensionMessage> getEsniExtensions();
 }

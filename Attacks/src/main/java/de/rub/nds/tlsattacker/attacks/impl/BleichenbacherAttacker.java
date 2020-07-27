@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,13 +12,13 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.VectorResponse;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherVulnerabilityMap;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1VectorGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.VectorFingerprintPair;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -59,7 +61,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private final ParallelExecutor executor;
 
-    private List<VectorFingerprintPair> fingerprintPairList;
+    private List<VectorResponse> fingerprintPairList;
 
     /**
      *
@@ -146,15 +148,15 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             // Socket Equality Errors can be caused by problems on on the
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
-            List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
+            List<VectorResponse> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
                     pkcs1Vectors, publicKey);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
             BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
             BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
                     error2);
             if (mapOne.looksIdentical(mapTwo)) {
-                List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(
-                        config.getWorkflowType(), pkcs1Vectors, publicKey);
+                List<VectorResponse> thirdBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
+                        pkcs1Vectors, publicKey);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
                 BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
                         thirdBleichenbacherVectorMap, error3);
@@ -180,10 +182,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
      * @param bleichenbacherVectorMap
      * @return
      */
-    public EqualityError getEqualityError(List<VectorFingerprintPair> bleichenbacherVectorMap) {
+    public EqualityError getEqualityError(List<VectorResponse> bleichenbacherVectorMap) {
         ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
-        for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
-            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint(), false);
+        for (VectorResponse pair : bleichenbacherVectorMap) {
+            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint());
             if (error != EqualityError.NONE) {
                 CONSOLE.info("Found an EqualityError!");
                 CONSOLE.info(EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
@@ -193,20 +195,20 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return EqualityError.NONE;
     }
 
-    private void printBleichenbacherVectormap(List<VectorFingerprintPair> bleichenbacherVectorMap) {
+    private void printBleichenbacherVectormap(List<VectorResponse> bleichenbacherVectorMap) {
         LOGGER.debug("Vectormap:");
         LOGGER.debug("---------------");
-        for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
+        for (VectorResponse pair : bleichenbacherVectorMap) {
             LOGGER.debug(pair);
         }
         LOGGER.debug("---------------");
     }
 
-    private List<VectorFingerprintPair> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
+    private List<VectorResponse> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
             List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
-        List<VectorFingerprintPair> bleichenbacherVectorMap = new LinkedList<>();
+        List<VectorResponse> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
@@ -216,16 +218,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        if (executor.getSize() > 1) {
-            executor.bulkExecuteStateTasks(stateList);
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
-        } else {
-            for (StateVectorPair stateVectorPair : stateVectorPairList) {
-                executor.bulkExecuteStateTasks(stateVectorPair.getState());
-                processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
-            }
+        executor.bulkExecuteStateTasks(stateList);
+        for (StateVectorPair stateVectorPair : stateVectorPairList) {
+            processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
         }
         // Check that the public key send by the server is actually the public
         // key used to generate
@@ -234,7 +229,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // generated statically and not dynamically. We will adjust this in
         // future versions.
         for (StateVectorPair pair : stateVectorPairList) {
-            if (!pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+            if (pair.getState().getTlsContext().getServerRsaModulus() != null
+                    && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
                 throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
             }
         }
@@ -243,10 +239,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
-            List<VectorFingerprintPair> bleichenbacherVectorMap) {
+            List<VectorResponse> bleichenbacherVectorMap) {
         if (stateVectorPair.getState().getWorkflowTrace().executedAsPlanned()) {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
-            bleichenbacherVectorMap.add(new VectorFingerprintPair(fingerprint, stateVectorPair.getVector()));
+            bleichenbacherVectorMap.add(new VectorResponse(stateVectorPair.getVector(), fingerprint));
         } else {
             LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
@@ -292,7 +288,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
-        if ((pms.length * 8) != publicKey.getModulus().bitLength()) {
+        if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                     + "is not equal to the server public key length. Have you selected the correct value?");
         }
@@ -342,7 +338,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return shakyScans;
     }
 
-    public List<VectorFingerprintPair> getFingerprintPairList() {
+    public List<VectorResponse> getFingerprintPairList() {
         return fingerprintPairList;
     }
 }
