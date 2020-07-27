@@ -811,10 +811,6 @@ public class WorkflowConfigurationFactory {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.IMAP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.IMAP_S_READY.getStarttlsMessage(), "US-ASCII"));
@@ -836,12 +832,6 @@ public class WorkflowConfigurationFactory {
                         StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.SMTP_S_OK.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.SMTP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
