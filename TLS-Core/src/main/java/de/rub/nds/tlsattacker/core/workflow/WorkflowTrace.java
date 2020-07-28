@@ -331,6 +331,51 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
+    /**
+     * Get the first MessageAction of the workflow trace.
+     *
+     * @return the first MessageAction of the workflow trace. Null if no message
+     *         actions are defined
+     */
+    public MessageAction getFirstMessageAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof MessageAction) {
+                return (MessageAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the first SendingAction of the workflow trace.
+     *
+     * @return the first SendingAction of the workflow trace. Null if no sending
+     *         actions are defined
+     */
+    public SendingAction getFirstSendingAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof SendingAction) {
+                return (SendingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the first ReceivingActionAction of the workflow trace.
+     *
+     * @return the first ReceivingActionAction of the workflow trace. Null if no
+     *         receiving actions are defined
+     */
+    public ReceivingAction getFirstReceivingAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof ReceivingAction) {
+                return (ReceivingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
     public String getName() {
         return name;
     }
