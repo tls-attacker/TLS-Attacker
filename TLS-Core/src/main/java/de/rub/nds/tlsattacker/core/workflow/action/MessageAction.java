@@ -34,6 +34,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+            @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
             @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
             @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
             @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),

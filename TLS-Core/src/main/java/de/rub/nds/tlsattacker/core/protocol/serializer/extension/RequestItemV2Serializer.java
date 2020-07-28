@@ -30,9 +30,11 @@ public class RequestItemV2Serializer extends Serializer<RequestItemV2> {
         appendInt(reqItem.getResponderIdListLength().getValue(),
                 ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID);
 
-        for (ResponderId id : reqItem.getResponderIdList()) {
-            ResponderIdSerializer serializer = new ResponderIdSerializer(id);
-            appendBytes(serializer.serialize());
+        if (reqItem.getResponderIdList() != null) {
+            for (ResponderId id : reqItem.getResponderIdList()) {
+                ResponderIdSerializer serializer = new ResponderIdSerializer(id);
+                appendBytes(serializer.serialize());
+            }
         }
 
         appendInt(reqItem.getRequestExtensionsLength().getValue(),

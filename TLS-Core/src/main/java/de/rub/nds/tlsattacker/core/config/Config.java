@@ -1144,6 +1144,13 @@ public class Config implements Serializable {
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     /**
+     * Private Key of the Client for the EncryptedServerNameIndication
+     * extension.
+     */
+    private BigInteger defaultEsniClientPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    /**
      * Supported Ciphersuites for EncryptedServerNameIndication extension.
      */
     private List<CipherSuite> clientSupportedEsniCiphersuites = new LinkedList();
@@ -3649,4 +3656,13 @@ public class Config implements Serializable {
     public void setKeylogFilePath(String keylogFilePath) {
         this.keylogFilePath = keylogFilePath;
     }
+
+    public BigInteger getDefaultEsniClientPrivateKey() {
+        return defaultEsniClientPrivateKey;
+    }
+
+    public void setDefaultEsniClientPrivateKey(BigInteger defaultEsniClientPrivateKey) {
+        this.defaultEsniClientPrivateKey = defaultEsniClientPrivateKey;
+    }
+
 }
