@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
@@ -185,6 +186,7 @@ public class PWDComputations extends KeyExchangeComputations {
         return keyMaterial;
     }
 
+    @XmlTransient
     private EllipticCurve curve;
 
     /**
