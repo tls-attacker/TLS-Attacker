@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,16 +27,28 @@ import org.apache.logging.log4j.Logger;
 public class WorkflowExecutorRunnable implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final Socket socket;
-    private final State globalState;
+    protected final Socket socket;
+    protected final State globalState;
+    protected final ThreadedServerWorkflowExecutor parent;
 
-    public WorkflowExecutorRunnable(State globalState, Socket socket) {
+    public WorkflowExecutorRunnable(State globalState, Socket socket, ThreadedServerWorkflowExecutor parent) {
         this.globalState = globalState;
         this.socket = socket;
+        this.parent = parent;
     }
 
     @Override
     public void run() {
+        String ctx_str = String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
+        // add local port and remote address onto logging thread context
+        // see https://logging.apache.org/log4j/2.x/manual/thread-context.html
+        try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(ctx_str)) {
+            this.runInternal();
+        }
+        parent.clientDone(socket);
+    }
+
+    protected void runInternal() {
         LOGGER.info("Spawning workflow on socket " + socket);
         // Currently, WorkflowTraces cannot be copied with external modules
         // if they define custome actions. This is because copying relies
@@ -53,26 +66,34 @@ public class WorkflowExecutorRunnable implements Runnable {
         // execution. Let's hope this is true in practice ;)
         State state = new State(globalState.getConfig(), localTrace);
 
-        // Do this post state init only if you know what yout are doing.
+        initConnectionForState(state);
         TlsContext serverCtx = state.getInboundTlsContexts().get(0);
-        AliasedConnection serverCon = serverCtx.getConnection();
-        serverCon.setHostname(socket.getInetAddress().getHostAddress());
-        serverCon.setPort(socket.getLocalPort());
-        long timeout = new Long(serverCon.getTimeout());
-        ServerTcpTransportHandler th;
-        try {
-            th = new ServerTcpTransportHandler(timeout, socket);
-        } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for " + socket);
-            LOGGER.error("Aborting workflow trace execution on " + socket);
-            return;
-        }
-        serverCtx.setTransportHandler(th);
 
         LOGGER.info("Exectuting workflow for " + socket + " (" + serverCtx + ")");
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
         workflowExecutor.executeWorkflow();
         LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");
+    }
+
+    protected void initConnectionForState(State state) {
+        // According to an old comment this initialization is a zone of danger:
+        // "Do this post state init only if you know what you are doing."
+        // I guess, be careful down here
+        TlsContext serverCtx = state.getInboundTlsContexts().get(0);
+        AliasedConnection serverCon = serverCtx.getConnection();
+        serverCon.setHostname(socket.getInetAddress().getHostAddress());// getting the hostname is slow, so we just set the ip
+        serverCon.setIp(socket.getInetAddress().getHostAddress());
+        serverCon.setPort(socket.getPort());
+        long timeout = new Long(serverCon.getTimeout());
+        ServerTcpTransportHandler th;
+        try {
+            th = new ServerTcpTransportHandler(timeout, socket);
+        } catch (IOException ex) {
+            LOGGER.error("Could not prepare TransportHandler for {}: {}",socket, ex);
+            LOGGER.error("Aborting workflow trace execution on {}",socket);
+            return;
+        }
+        serverCtx.setTransportHandler(th);
     }
 
 }
