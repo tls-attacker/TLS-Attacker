@@ -37,12 +37,30 @@ public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private Boolean optional = null;
+
     public SendAction() {
         super();
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
+    public SendAction(boolean optional, List<ProtocolMessage> messages) {
         super(messages);
+        this.optional = optional ? optional : null;
+        if (!optional) {
+            boolean tmp = true;
+            for (ProtocolMessage message : messages) {
+                tmp = tmp && !message.isRequired();
+            }
+            this.optional = tmp ? tmp : null;
+        }
+    }
+
+    public SendAction(List<ProtocolMessage> messages) {
+        this(false, messages);
+    }
+
+    public SendAction(boolean optional, ProtocolMessage... messages) {
+        this(optional, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -82,9 +100,11 @@ public class SendAction extends MessageAction implements SendingAction {
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
-            setExecuted(false);
+            if (!optional) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(E);
+            }
+            setExecuted(optional);
         }
     }
 
@@ -236,4 +256,11 @@ public class SendAction extends MessageAction implements SendingAction {
         return handshakeMessageTypes;
     }
 
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
+    }
 }
