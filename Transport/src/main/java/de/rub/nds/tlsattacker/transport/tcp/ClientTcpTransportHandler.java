@@ -22,8 +22,6 @@ import java.io.PushbackInputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 public class ClientTcpTransportHandler extends TransportHandler {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -96,32 +94,12 @@ public class ClientTcpTransportHandler extends TransportHandler {
         closeConnection();
     }
 
-    /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and
-     * Data is received during the Check the current State of the
-     * TransportHandler will get messed up and an Exception will be thrown.
-     *
-     * @return The current SocketState
-     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
-     */
-    public SocketState getSocketState() throws InvalidTransportHandlerStateException {
-        try {
-            if (socket.getInputStream().available() > 0) {
-                return SocketState.DATA_AVAILABLE;
-            }
-            int read = socket.getInputStream().read();
-            if (read == -1) {
-                return SocketState.CLOSED;
-            } else {
-                throw new InvalidTransportHandlerStateException("Received Data during SocketState check");
-            }
-        } catch (SocketTimeoutException ex) {
-            return SocketState.TIMEOUT;
-        } catch (SocketException ex) {
-            return SocketState.SOCKET_EXCEPTION;
-        } catch (IOException ex) {
-            return SocketState.IO_EXCEPTION;
-        }
+
+    public SocketState getSocketState(boolean withTimeout) throws InvalidTransportHandlerStateException {
+        return this.getTcpSocketState(socket, withTimeout);
     }
 
+    public SocketState getSocketState() throws InvalidTransportHandlerStateException {
+        return getSocketState(false);
+    }
 }

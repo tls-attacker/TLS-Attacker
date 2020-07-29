@@ -12,6 +12,9 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -124,5 +127,14 @@ public class ServerTcpTransportHandler extends TransportHandler {
         } else {
             return port;
         }
+    }
+
+
+    public SocketState getSocketState(boolean withTimeout) throws InvalidTransportHandlerStateException {
+        return this.getTcpSocketState(socket, withTimeout);
+    }
+
+    public SocketState getSocketState() throws InvalidTransportHandlerStateException {
+        return getSocketState(false);
     }
 }

@@ -13,7 +13,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
+
+import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -170,4 +175,42 @@ public abstract class TransportHandler {
         return isInStreamTerminating;
     }
 
+
+    /**
+     * Checks the current SocketState. NOTE: If you check the SocketState and
+     * Data is received during the Check the current State of the
+     * TransportHandler will get messed up and an Exception will be thrown.
+     *
+     * @return The current SocketState
+     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
+     */
+    protected SocketState getTcpSocketState(Socket socket, boolean withTimeout) throws InvalidTransportHandlerStateException {
+        try {
+            if (inStream.available() > 0) {
+                return SocketState.DATA_AVAILABLE;
+            }
+
+            if (!withTimeout) {
+                socket.setSoTimeout(1);
+            } else {
+                socket.setSoTimeout((int) timeout);
+            }
+
+            int read = inStream.read();
+            socket.setSoTimeout(1);
+
+            if (read == -1) {
+                inStream.unread(-1);
+                return SocketState.CLOSED;
+            } else {
+                throw new InvalidTransportHandlerStateException("Received Data during SocketState check");
+            }
+        } catch (SocketTimeoutException ex) {
+            return SocketState.TIMEOUT;
+        } catch (SocketException ex) {
+            return SocketState.SOCKET_EXCEPTION;
+        } catch (IOException ex) {
+            return SocketState.IO_EXCEPTION;
+        }
+    }
 }

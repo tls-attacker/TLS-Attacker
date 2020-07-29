@@ -192,6 +192,8 @@ public class Config implements Serializable {
      */
     private OutboundConnection defaultClientConnection;
 
+    private boolean receiveFinalSocketStateWithTimeout = false;
+
     /**
      * The default connection parameters to use when running TLS-Server.
      */
@@ -2969,6 +2971,14 @@ public class Config implements Serializable {
 
     public void setDefaultServerConnection(InboundConnection defaultServerConnection) {
         this.defaultServerConnection = defaultServerConnection;
+    }
+
+    public boolean isReceiveFinalSocketStateWithTimeout() {
+        return receiveFinalSocketStateWithTimeout;
+    }
+
+    public void setReceiveFinalSocketStateWithTimeout(boolean receiveFinalSocketStateWithTimeout) {
+        this.receiveFinalSocketStateWithTimeout = receiveFinalSocketStateWithTimeout;
     }
 
     public RunningModeType getDefaultRunningMode() {

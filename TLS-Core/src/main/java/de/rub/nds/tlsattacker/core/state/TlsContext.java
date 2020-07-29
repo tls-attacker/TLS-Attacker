@@ -69,6 +69,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
+
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import org.bouncycastle.crypto.tls.Certificate;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
@@ -90,6 +92,8 @@ public class TlsContext {
      * The end point of the TLS connection that this context represents.
      */
     private AliasedConnection connection;
+
+    private SocketState finalSocketState;
 
     /**
      * Shared key established during the handshake.
@@ -2456,5 +2460,13 @@ public class TlsContext {
 
     public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
         this.esniNotAfter = esniKeysNotAfter;
+    }
+
+    public SocketState getFinalSocketState() {
+        return finalSocketState;
+    }
+
+    public void setFinalSocketState(SocketState finalSocketState) {
+        this.finalSocketState = finalSocketState;
     }
 }
