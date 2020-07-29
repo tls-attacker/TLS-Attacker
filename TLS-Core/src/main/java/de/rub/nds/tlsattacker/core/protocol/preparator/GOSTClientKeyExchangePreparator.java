@@ -198,11 +198,15 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), sBoxName);
 
         byte[] cek = new byte[32];
-        if (wrapped.length <= cek.length) {
-            System.arraycopy(wrapped, 0, cek, 0, cek.length);
-        } else {
-            // This case is for fuzzing purposes only.
-            System.arraycopy(wrapped, 0, cek, 0, wrapped.length);
+        try {
+            if (wrapped.length <= cek.length) {
+                System.arraycopy(wrapped, 0, cek, 0, cek.length);
+            } else {
+                // This case is for fuzzing purposes only.
+                System.arraycopy(wrapped, 0, cek, 0, wrapped.length - 1);
+            }
+        } catch (ArrayIndexOutOfBoundsException E) {
+            LOGGER.warn("Something going wrong here...");
         }
         msg.getComputations().setEncryptedKey(cek);
 
