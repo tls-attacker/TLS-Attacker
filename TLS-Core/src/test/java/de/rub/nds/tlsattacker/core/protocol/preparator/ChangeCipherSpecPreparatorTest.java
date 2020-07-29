@@ -35,6 +35,6 @@ public class ChangeCipherSpecPreparatorTest {
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertTrue(message.getCcsProtocolType().getValue() == 1);
+        assertTrue(message.getCcsProtocolType().getValue()[0] == 1);
     }
 }

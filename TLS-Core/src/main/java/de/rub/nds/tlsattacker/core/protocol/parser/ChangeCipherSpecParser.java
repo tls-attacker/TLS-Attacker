@@ -54,7 +54,7 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
      *            Message to write in
      */
     private void parseCcsProtocolType(ChangeCipherSpecMessage msg) {
-        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        msg.setCcsProtocolType(parseByteArrayField(this.getBytesLeft()));
         LOGGER.debug("CcsProtocolType: " + msg.getCcsProtocolType().getValue());
     }
 

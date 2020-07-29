@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
@@ -23,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty
-    ModifiableByte ccsProtocolType;
+    ModifiableByteArray ccsProtocolType;
 
     public ChangeCipherSpecMessage(Config tlsConfig) {
         super();
@@ -35,15 +37,15 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }
 
-    public ModifiableByte getCcsProtocolType() {
+    public ModifiableByteArray getCcsProtocolType() {
         return ccsProtocolType;
     }
 
-    public void setCcsProtocolType(ModifiableByte ccsProtocolType) {
+    public void setCcsProtocolType(ModifiableByteArray ccsProtocolType) {
         this.ccsProtocolType = ccsProtocolType;
     }
 
-    public void setCcsProtocolType(byte value) {
+    public void setCcsProtocolType(byte[] value) {
         this.ccsProtocolType = ModifiableVariableFactory.safelySetValue(ccsProtocolType, value);
     }
 
@@ -53,7 +55,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
         sb.append("ChangeCipherSpecMessage:");
         sb.append("\n  CCS ProtocolType: ");
         if (ccsProtocolType != null && ccsProtocolType.getValue() != null) {
-            sb.append(String.format("%02X ", ccsProtocolType.getValue()));
+            sb.append(ArrayConverter.bytesToHexString(ccsProtocolType.getValue()));
         } else {
             sb.append("null");
         }

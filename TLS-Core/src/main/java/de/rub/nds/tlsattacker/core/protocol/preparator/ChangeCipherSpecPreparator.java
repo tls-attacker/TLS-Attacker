@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -33,8 +34,8 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
     }
 
     private void prepareCcsProtocolType(ChangeCipherSpecMessage msg) {
-        msg.setCcsProtocolType(CCS_PROTOCOL_TYPE);
-        LOGGER.debug("CCSProtocollType: " + msg.getCcsProtocolType().getValue());
+        msg.setCcsProtocolType(new byte[]{CCS_PROTOCOL_TYPE});
+        LOGGER.debug("CCSProtocollType: " + ArrayConverter.bytesToHexString(msg.getCcsProtocolType().getValue()));
     }
 
 }
