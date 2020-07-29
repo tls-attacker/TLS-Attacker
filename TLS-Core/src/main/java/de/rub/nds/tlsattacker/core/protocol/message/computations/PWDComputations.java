@@ -186,9 +186,6 @@ public class PWDComputations extends KeyExchangeComputations {
         return keyMaterial;
     }
 
-    @XmlTransient
-    private EllipticCurve curve;
-
     /**
      * shared secret derived from the shared password between server and client
      */
@@ -202,14 +199,6 @@ public class PWDComputations extends KeyExchangeComputations {
 
     @Override
     public void setSecretsInConfig(Config config) {
-    }
-
-    public void setCurve(EllipticCurve curve) {
-        this.curve = curve;
-    }
-
-    public EllipticCurve getCurve() {
-        return curve;
     }
 
     public Point getPasswordElement() {
