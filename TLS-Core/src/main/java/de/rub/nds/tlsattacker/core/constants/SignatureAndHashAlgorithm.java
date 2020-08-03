@@ -114,6 +114,9 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(ECDSA_SHA256);
         algoList.add(ECDSA_SHA384);
         algoList.add(ECDSA_SHA512);
+        algoList.add(RSA_PSS_RSAE_SHA256);
+        algoList.add(RSA_PSS_RSAE_SHA384);
+        algoList.add(RSA_PSS_RSAE_SHA512);
         algoList.add(GOSTR34102001_GOSTR3411);
         algoList.add(GOSTR34102012_256_GOSTR34112012_256);
         algoList.add(GOSTR34102012_512_GOSTR34112012_512);
@@ -281,6 +284,40 @@ public enum SignatureAndHashAlgorithm {
 
             signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
                     1));
+        }
+    }
+
+    public boolean suitedForSigingTls13Messages() {
+        switch (this) {
+            case ECDSA_SHA256:
+            case ECDSA_SHA384:
+            case ECDSA_SHA512:
+            case RSA_PSS_PSS_SHA256:
+            case RSA_PSS_PSS_SHA384:
+            case RSA_PSS_PSS_SHA512:
+            case RSA_PSS_RSAE_SHA256:
+            case RSA_PSS_RSAE_SHA384:
+            case RSA_PSS_RSAE_SHA512:
+            case ED25519:
+            case ED448:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public boolean suitedForSigingTls13Certs() {
+        switch (this) {
+            case RSA_SHA256:
+            case RSA_SHA384:
+            case RSA_SHA512:
+            case RSA_SHA1:
+            case ECDSA_SHA1:
+                return true;
+
+            default:
+                return suitedForSigingTls13Messages();
         }
     }
 
