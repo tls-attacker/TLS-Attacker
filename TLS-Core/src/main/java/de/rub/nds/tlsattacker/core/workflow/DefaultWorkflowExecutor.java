@@ -56,6 +56,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         state.getWorkflowTrace().reset();
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
+        tlsActions = tlsActions.subList(state.getConfig().getSkipFirstNActions(), tlsActions.size());
         for (TlsAction action : tlsActions) {
 
             // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?

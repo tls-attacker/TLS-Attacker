@@ -107,6 +107,14 @@ public class Config implements Serializable {
 
     }
 
+    public Integer getSkipFirstNActions() {
+        return skipFirstNActions;
+    }
+
+    public void setSkipFirstNActions(Integer skipFirstNActions) {
+        this.skipFirstNActions = skipFirstNActions;
+    }
+
     public static Config createConfig(File f) {
         return ConfigIO.read(f);
     }
@@ -844,6 +852,12 @@ public class Config implements Serializable {
     private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
+
+    /**
+     * The WorkflowExecutor shall skip the first N actions when executing a workflow.
+     */
+    private Integer skipFirstNActions = 0;
+
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
