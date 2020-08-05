@@ -44,8 +44,9 @@ public class WorkflowExecutorRunnable implements Runnable {
         // see https://logging.apache.org/log4j/2.x/manual/thread-context.html
         try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(ctx_str)) {
             this.runInternal();
+        } finally {
+            parent.clientDone(socket);
         }
-        parent.clientDone(socket);
     }
 
     protected void runInternal() {
@@ -89,8 +90,8 @@ public class WorkflowExecutorRunnable implements Runnable {
         try {
             th = new ServerTcpTransportHandler(timeout, socket);
         } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for {}: {}",socket, ex);
-            LOGGER.error("Aborting workflow trace execution on {}",socket);
+            LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
+            LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
         serverCtx.setTransportHandler(th);
