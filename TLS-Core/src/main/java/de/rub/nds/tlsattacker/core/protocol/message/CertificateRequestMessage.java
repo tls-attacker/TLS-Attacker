@@ -151,7 +151,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     public void setCertificateRequestContextLength(int certificateRequestContextLength) {
-        this.certificateRequestContextLength = ModifiableVariableFactory.safelySetValue(this.certificateRequestContextLength, certificateRequestContextLength);
+        this.certificateRequestContextLength = ModifiableVariableFactory.safelySetValue(
+                this.certificateRequestContextLength, certificateRequestContextLength);
     }
 
     public ModifiableByteArray getCertificateRequestContext() {
@@ -163,7 +164,9 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     public void setCertificateRequestContext(byte[] certificateRequestContext) {
-        this.certificateRequestContext = ModifiableVariableFactory.safelySetValue(this.certificateRequestContext, certificateRequestContext);;
+        this.certificateRequestContext = ModifiableVariableFactory.safelySetValue(this.certificateRequestContext,
+                certificateRequestContext);
+        ;
     }
 
     @Override

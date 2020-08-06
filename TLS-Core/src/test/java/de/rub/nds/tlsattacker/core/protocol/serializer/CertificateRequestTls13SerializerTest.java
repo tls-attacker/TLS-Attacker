@@ -42,8 +42,9 @@ public class CertificateRequestTls13SerializerTest {
     private byte[] certificateRequestContext;
     private int certificateRequestContextLength;
 
-    public CertificateRequestTls13SerializerTest(byte[] message, int start, byte[] expectedPart, int length, HandshakeMessageType type,
-            int certificateRequestContextLength, byte[] certificateRequestContext, ProtocolVersion version) {
+    public CertificateRequestTls13SerializerTest(byte[] message, int start, byte[] expectedPart, int length,
+            HandshakeMessageType type, int certificateRequestContextLength, byte[] certificateRequestContext,
+            ProtocolVersion version) {
         this.message = message;
         this.start = start;
         this.length = length;

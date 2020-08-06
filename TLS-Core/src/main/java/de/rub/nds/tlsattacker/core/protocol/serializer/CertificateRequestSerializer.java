@@ -124,11 +124,13 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
 
     private void writeCertificateRquestContext(CertificateRequestMessage msg) {
         appendBytes(msg.getCertificateRequestContext().getValue());
-        LOGGER.debug("CertificateRquestContext: " + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+        LOGGER.debug("CertificateRquestContext: "
+                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 
     private void writeCertificateRquestContextLength(CertificateRequestMessage msg) {
-        appendInt(msg.getCertificateRequestContextLength().getValue(), HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
+        appendInt(msg.getCertificateRequestContextLength().getValue(),
+                HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
         LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 

@@ -82,8 +82,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 } else {
                     msg.setSessionId(chooser.getServerSessionId());
                 }
-            }
-            else {
+            } else {
                 msg.setSessionId(new byte[0]);
             }
         } else {

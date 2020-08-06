@@ -51,8 +51,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType() &&
-                tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
+                && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecompressor();
@@ -101,8 +101,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
-            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() &&
-                    tlsContext.getConfig().getTls13BackwardsCompatibilityMode()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    && tlsContext.getConfig().getTls13BackwardsCompatibilityMode()) {
                 if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                     setServerRecordCipher();
                 } else {

@@ -51,7 +51,8 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmList = chooser.getConfig().getDefaultClientSupportedSignatureAndHashAlgorithms();
+        List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmList = chooser.getConfig()
+                .getDefaultClientSupportedSignatureAndHashAlgorithms();
         if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             signatureAndHashAlgorithmList = chooser.getConfig().getDefaultServerSupportedSignatureAndHashAlgorithms();
         }

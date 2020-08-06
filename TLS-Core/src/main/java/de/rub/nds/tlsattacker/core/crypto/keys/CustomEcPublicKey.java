@@ -200,7 +200,8 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public int keysize() {
-        if (group == null || group.getCoordinateSizeInBit() == null) return 0;
+        if (group == null || group.getCoordinateSizeInBit() == null)
+            return 0;
         return group.getCoordinateSizeInBit();
     }
 }

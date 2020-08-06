@@ -44,13 +44,13 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         stream = new ByteArrayOutputStream();
 
-
         if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
             List<KeyShareEntry> serverList = new ArrayList<>();
             List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
             for (KeyShareStoreEntry i : clientShares) {
                 if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                    KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                    KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig()
+                            .getKeySharePrivate());
                     serverList.add(keyShareEntry);
                     break;
                 }

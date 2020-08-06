@@ -52,7 +52,7 @@ public enum ExtensionType {
     PRE_SHARED_KEY(new byte[] { (byte) 0, (byte) 41 }),
     EARLY_DATA(new byte[] { (byte) 0, (byte) 42 }),
     SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),
-    COOKIE(new byte[] {0x00, (byte) 44}),
+    COOKIE(new byte[] { 0x00, (byte) 44 }),
     PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
     CERTIFICATE_AUTHORITIES(new byte[] { (byte) 0, (byte) 47 }),
     OID_FILTERS(new byte[] { (byte) 0, (byte) 48 }),

@@ -244,7 +244,8 @@ public enum SignatureAndHashAlgorithm {
                     break;
             }
 
-            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
+            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
+                    1));
         }
     }
 

@@ -72,14 +72,16 @@ public class CertificateRequestPreparatorTest {
         algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
         context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
-        context.getConfig().setDefaultCertificateRequestContext(new byte[] {0,1,2});
+        context.getConfig().setDefaultCertificateRequestContext(new byte[] { 0, 1, 2 });
         preparator.prepare();
         assertArrayEquals(new byte[] { 0, 1, 2 }, message.getCertificateRequestContext().getValue());
         assertTrue(3 == message.getCertificateRequestContextLength().getValue());
         assertArrayEquals(new byte[] { 2, 0, 6, 3 }, message.getSignatureHashAlgorithms().getValue());
         assertTrue(4 == message.getSignatureHashAlgorithmsLength().getValue());
         assertNotNull(message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class));
-        assertArrayEquals(new byte[] { 2, 0, 6, 3 }, message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).getSignatureAndHashAlgorithms().getValue());
+        assertArrayEquals(new byte[] { 2, 0, 6, 3 },
+                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).getSignatureAndHashAlgorithms()
+                        .getValue());
     }
 
     @Test

@@ -230,10 +230,10 @@ public class CertificateByteChooser {
                         continue;
                     }
                 }
-                if (neededPublicKeyType == CertificateKeyType.RSA &&
-                        sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS") &&
-                        sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 &&
-                        pair.getPublicKey().keysize() < 2048) {
+                if (neededPublicKeyType == CertificateKeyType.RSA
+                        && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
+                        && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512
+                        && pair.getPublicKey().keysize() < 2048) {
                     continue;
                 }
                 return pair;

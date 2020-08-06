@@ -369,15 +369,15 @@ public class CertificateKeyPair implements Serializable {
         context.setSelectedGroup(publicKeyGroup);
         context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this, context.getChooser());
+            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this,
+                    context.getChooser());
 
-            if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512 ||
-                    sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256 ||
-                    sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
+            if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
                 context.setSelectedGostCurve(gostCurve);
                 LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
-
 
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
             context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
