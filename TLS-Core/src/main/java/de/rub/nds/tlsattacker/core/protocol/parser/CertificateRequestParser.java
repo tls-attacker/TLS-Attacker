@@ -43,7 +43,15 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     @Override
     protected void parseHandshakeMessageContent(CertificateRequestMessage msg) {
         LOGGER.debug("Parsing CertificateRequestMessage");
-        if (getVersion().compare(ProtocolVersion.TLS13) == -1) {
+        if (getVersion() == ProtocolVersion.TLS13) {
+            parseCertificateRequestContextLength(msg);
+            parseCertificateRequestContext(msg);
+            if (hasExtensionLengthField(msg)) {
+                parseExtensionLength(msg);
+                parseExtensionBytes(msg);
+                setSignatureAndHashAlgorithmsFromExtension(msg);
+            }
+        } else {
             parseClientCertificateTypesCount(msg);
             parseClientCertificateTypes(msg);
             if (getVersion() == ProtocolVersion.TLS12 || getVersion() == ProtocolVersion.DTLS12) {
@@ -53,14 +61,6 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
             parseDistinguishedNamesLength(msg);
             if (hasDistinguishedNamesLength(msg)) {
                 parseDistinguishedNames(msg);
-            }
-        } else {
-            parseCertificateRequestContextLength(msg);
-            parseCertificateRequestContext(msg);
-            if (hasExtensionLengthField(msg)) {
-                parseExtensionLength(msg);
-                parseExtensionBytes(msg);
-                setSignatureAndHashAlgorithmsFromExtension(msg);
             }
         }
 

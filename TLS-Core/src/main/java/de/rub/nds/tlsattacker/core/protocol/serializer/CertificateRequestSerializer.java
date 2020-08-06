@@ -38,7 +38,14 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateRequestMessage");
-        if (version.compare(ProtocolVersion.TLS13) == -1) {
+        if (version == ProtocolVersion.TLS13) {
+            writeCertificateRquestContextLength(msg);
+            writeCertificateRquestContext(msg);
+            if (msg.getExtensionsLength() != null) {
+                writeExtensionLength();
+                writeExtensionBytes();
+            }
+        } else {
             writeClientCertificateTypesCount(msg);
             writeClientCertificateTypes(msg);
             if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
@@ -48,13 +55,6 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
             writeDistinguishedNamesLength(msg);
             if (hasDistinguishedNames(msg)) {
                 writeDistinguishedNames(msg);
-            }
-        } else {
-            writeCertificateRquestContextLength(msg);
-            writeCertificateRquestContext(msg);
-            if (msg.getExtensionsLength() != null) {
-                writeExtensionLength();
-                writeExtensionBytes();
             }
         }
 

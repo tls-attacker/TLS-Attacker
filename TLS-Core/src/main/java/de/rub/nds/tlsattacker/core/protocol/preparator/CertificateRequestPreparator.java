@@ -39,16 +39,7 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        if (chooser.getSelectedProtocolVersion().compare(ProtocolVersion.TLS13) == -1) {
-            certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
-            prepareClientCertificateTypes(certTypes, msg);
-            prepareClientCertificateTypesCount(msg);
-            prepareDistinguishedNames(msg);
-            prepareDistinguishedNamesLength(msg);
-            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
-            prepareSignatureHashAlgorithms(msg);
-            prepareSignatureHashAlgorithmsLength(msg);
-        } else {
+        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             prepareCertificateReqeustContext(msg);
             prepareCertificateRequstContextLength(msg);
             sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
@@ -57,6 +48,15 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
             msg.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
             prepareExtensions();
             prepareExtensionLength();
+        } else {
+            certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
+            prepareClientCertificateTypes(certTypes, msg);
+            prepareClientCertificateTypesCount(msg);
+            prepareDistinguishedNames(msg);
+            prepareDistinguishedNamesLength(msg);
+            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
+            prepareSignatureHashAlgorithms(msg);
+            prepareSignatureHashAlgorithmsLength(msg);
         }
     }
 
