@@ -107,12 +107,20 @@ public class Config implements Serializable {
 
     }
 
-    public Integer getSkipFirstNActions() {
-        return skipFirstNActions;
+    public Boolean isResetTrace() {
+        return resetTrace;
     }
 
-    public void setSkipFirstNActions(Integer skipFirstNActions) {
-        this.skipFirstNActions = skipFirstNActions;
+    public void setResetTrace(Boolean resetTrace) {
+        this.resetTrace = resetTrace;
+    }
+
+    public Boolean isSkipExecutedActions() {
+        return skipExecutedActions;
+    }
+
+    public void setSkipExecutedActions(Boolean skipExecutedActions) {
+        this.skipExecutedActions = skipExecutedActions;
     }
 
     public static Config createConfig(File f) {
@@ -854,9 +862,13 @@ public class Config implements Serializable {
     private Boolean stopActionsAfterFatal = false;
 
     /**
-     * The WorkflowExecutor shall skip the first N actions when executing a workflow.
+     * The WorkflowExecutor shall skip all already executed actions.
      */
-    private Integer skipFirstNActions = 0;
+    private Boolean skipExecutedActions = false;
+    /**
+     * Whether the WorkflowExecutor shall reset the WorkflowTrace.
+     */
+    private Boolean resetTrace = true;
 
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
