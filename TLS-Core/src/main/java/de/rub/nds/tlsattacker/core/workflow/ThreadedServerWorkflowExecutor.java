@@ -187,6 +187,14 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         LOGGER.info("All sockets closed");
     }
 
+    public InetAddress getBoundAddress() {
+        return bindAddr;
+    }
+
+    public int getBoundPort() {
+        return port;
+    }
+
     // Straight from the java docs for ExecutorService
     private void shutdownAndAwaitTermination() {
         pool.shutdown(); // Disable new tasks from being submitted
