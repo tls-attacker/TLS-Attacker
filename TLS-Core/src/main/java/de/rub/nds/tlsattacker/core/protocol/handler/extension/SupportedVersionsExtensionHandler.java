@@ -61,20 +61,6 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             context.setClientSupportedProtocolVersions(versionList);
             context.setHighestClientProtocolVersion(ProtocolVersion.getHighestProtocolVersion(versionList));
-            List<ProtocolVersion> clientVersions = new ArrayList<>(context.getClientSupportedProtocolVersions());
-            ProtocolVersion.sort(clientVersions, false);
-            boolean found = false;
-            for (ProtocolVersion i : clientVersions) {
-                if (context.getConfig().getHighestProtocolVersion().compare(i) >= 0) {
-                    context.setSelectedProtocolVersion(i);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                LOGGER.warn("No common protocol version could be found.");
-                context.setSelectedProtocolVersion(context.getConfig().getDefaultSelectedProtocolVersion());
-            }
         } else {
             if (versionList.size() == 1) {
                 context.setSelectedProtocolVersion(versionList.get(0));
