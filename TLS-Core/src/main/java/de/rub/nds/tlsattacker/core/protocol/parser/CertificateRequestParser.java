@@ -10,13 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,11 +45,8 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         if (getVersion() == ProtocolVersion.TLS13) {
             parseCertificateRequestContextLength(msg);
             parseCertificateRequestContext(msg);
-            if (hasExtensionLengthField(msg)) {
-                parseExtensionLength(msg);
-                parseExtensionBytes(msg);
-                setSignatureAndHashAlgorithmsFromExtension(msg);
-            }
+            parseExtensionLength(msg);
+            parseExtensionBytes(msg);
         } else {
             parseClientCertificateTypesCount(msg);
             parseClientCertificateTypes(msg);
@@ -167,14 +161,4 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         LOGGER.debug("CertificateRequestContext: "
                 + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
-
-    private void setSignatureAndHashAlgorithmsFromExtension(CertificateRequestMessage msg) {
-        SignatureAndHashAlgorithmsExtensionMessage ext = msg
-                .getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
-        if (ext != null) {
-            msg.setSignatureHashAlgorithms(ext.getSignatureAndHashAlgorithms().getValue());
-            msg.setSignatureHashAlgorithmsLength(ext.getSignatureAndHashAlgorithmsLength().getValue());
-        }
-    }
-
 }

@@ -20,7 +20,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -37,9 +40,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray clientCertificateTypes;
 
+    // In TLS 1.3 this is moved to an extension
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureHashAlgorithmsLength;
 
+    // In TLS 1.3 this is moved to an extension
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureHashAlgorithms;
 
@@ -63,6 +68,10 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public CertificateRequestMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
+        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
+            this.setExtensions(new LinkedList<ExtensionMessage>());
+            this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+        }
     }
 
     public ModifiableInteger getClientCertificateTypesCount() {

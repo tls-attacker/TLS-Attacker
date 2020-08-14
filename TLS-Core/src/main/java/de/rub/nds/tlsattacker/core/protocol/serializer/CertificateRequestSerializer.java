@@ -41,10 +41,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
         if (version == ProtocolVersion.TLS13) {
             writeCertificateRquestContextLength(msg);
             writeCertificateRquestContext(msg);
-            if (msg.getExtensionsLength() != null) {
-                writeExtensionLength();
-                writeExtensionBytes();
-            }
+            writeExtensionLength();
+            writeExtensionBytes();
         } else {
             writeClientCertificateTypesCount(msg);
             writeClientCertificateTypes(msg);

@@ -25,19 +25,12 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class CertificateRequestTls13ParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0d0000020102"), 0,
-                ArrayConverter.hexStringToByteArray("0d0000020102"), 2, HandshakeMessageType.CERTIFICATE_REQUEST, 1,
-                ArrayConverter.hexStringToByteArray("02"), ProtocolVersion.TLS13 },
-        /*
-         * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG,
-         * HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3, RSA_DSS_ECDSA_TYPES,
-         * 0,null, 0, null,ProtocolVersion.SSL3 }
-         */});
-        // Testdata is correct, however Certificate request and other
-        // Client-Authentication related messages are not yet supported for
-        // TLS-Version < 1.2
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0d00000201020000"), 0,
+                ArrayConverter.hexStringToByteArray("0d00000201020000"), 2, HandshakeMessageType.CERTIFICATE_REQUEST,
+                1, ArrayConverter.hexStringToByteArray("02"), ProtocolVersion.TLS13 }, });
     }
 
     private byte[] message;

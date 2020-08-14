@@ -97,8 +97,9 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
     private void prepareProtocolVersion() {
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
-        if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13)
+        if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             ourVersion = ProtocolVersion.TLS12;
+        }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
         int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
