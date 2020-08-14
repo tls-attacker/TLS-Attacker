@@ -17,15 +17,11 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveX25519;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
@@ -173,7 +169,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void setServerRecordCipher() {
-        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());

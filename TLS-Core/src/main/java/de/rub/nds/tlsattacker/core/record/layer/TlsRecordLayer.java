@@ -173,32 +173,12 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public void decryptAndDecompressRecord(AbstractRecord record) {
         if (record instanceof Record) {
-            if (tlsContext.isTls13SoftDecryption()
-                    && tlsContext.getTalkingConnectionEndType() != tlsContext.getConnection()
-                            .getLocalConnectionEndType()) {
-                if (null == ((Record) record).getContentMessageType()) {
-                    LOGGER.debug("Deactivating soft decryption since we received a non alert record");
-                    tlsContext.setTls13SoftDecryption(false);
-                } else {
-                    switch (((Record) record).getContentMessageType()) {
-                        case ALERT:
-                            LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
-                            setRecordCipher(new RecordNullCipher(tlsContext));
-                            updateDecryptionCipher();
-                            break;
-                        case CHANGE_CIPHER_SPEC:
-                            LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
-                            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
-                            return;
-                        default:
-                            LOGGER.debug("Deactivating soft decryption since we received a non alert record");
-                            tlsContext.setTls13SoftDecryption(false);
-                            break;
-                    }
-                }
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && record
+                            .getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
+                decryptor.decrypt(record);
+                decompressor.decompress(record);
             }
-            decryptor.decrypt(record);
-            decompressor.decompress(record);
         } else {
             LOGGER.warn("Decrypting received non Record:" + record.toString());
             decryptor.decrypt(record);

@@ -71,7 +71,6 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     }
 
     private void setServerRecordCipher() {
-        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
