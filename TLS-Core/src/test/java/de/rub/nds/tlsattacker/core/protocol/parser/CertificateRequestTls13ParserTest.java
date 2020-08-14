@@ -28,25 +28,29 @@ public class CertificateRequestTls13ParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0d00000201020000"), 0,
-                ArrayConverter.hexStringToByteArray("0d00000201020000"), 2, HandshakeMessageType.CERTIFICATE_REQUEST,
-                1, ArrayConverter.hexStringToByteArray("02"), ProtocolVersion.TLS13 }, });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0d00000401020000"),
+                HandshakeMessageType.CERTIFICATE_REQUEST, 1, ArrayConverter.hexStringToByteArray("02"), 0, new byte[0],
+                ProtocolVersion.TLS13 } });
     }
 
     private byte[] message;
     private HandshakeMessageType type;
-    private ProtocolVersion version;
-    private byte[] certificateRequestContext;
     private int certificateRequestContextLength;
+    private byte[] certificateRequestContext;
+    private int extensionLength;
+    private byte[] extensionBytes;
+    private ProtocolVersion version;
 
-    public CertificateRequestTls13ParserTest(byte[] message, int start, byte[] expectedPart, int length,
-            HandshakeMessageType type, int certificateRequestContextLength, byte[] certificateRequestContext,
-            ProtocolVersion version) {
+    public CertificateRequestTls13ParserTest(byte[] message, HandshakeMessageType type,
+            int certificateRequestContextLength, byte[] certificateRequestContext, int extensionLength,
+            byte[] extensionBytes, ProtocolVersion version) {
         this.message = message;
         this.type = type;
-        this.version = version;
-        this.certificateRequestContext = certificateRequestContext;
         this.certificateRequestContextLength = certificateRequestContextLength;
+        this.certificateRequestContext = certificateRequestContext;
+        this.extensionLength = extensionLength;
+        this.extensionBytes = extensionBytes;
+        this.version = version;
     }
 
     @Test
@@ -56,5 +60,7 @@ public class CertificateRequestTls13ParserTest {
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);
         assertArrayEquals(msg.getCertificateRequestContext().getValue(), certificateRequestContext);
+        assertTrue(msg.getExtensionsLength().getValue() == extensionLength);
+        assertArrayEquals(msg.getExtensionBytes().getValue(), extensionBytes);
     }
 }

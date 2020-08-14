@@ -9,14 +9,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParserTest;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestTls13ParserTest;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,25 +32,23 @@ public class CertificateRequestTls13SerializerTest {
     }
 
     private byte[] message;
-    private int start;
-    private int length;
-    private byte[] expectedPart;
     private HandshakeMessageType type;
-    private ProtocolVersion version;
-    private byte[] certificateRequestContext;
     private int certificateRequestContextLength;
+    private byte[] certificateRequestContext;
+    private int extensionLength;
+    private byte[] extensionBytes;
+    private ProtocolVersion version;
 
-    public CertificateRequestTls13SerializerTest(byte[] message, int start, byte[] expectedPart, int length,
-            HandshakeMessageType type, int certificateRequestContextLength, byte[] certificateRequestContext,
-            ProtocolVersion version) {
+    public CertificateRequestTls13SerializerTest(byte[] message, HandshakeMessageType type,
+            int certificateRequestContextLength, byte[] certificateRequestContext, int extensionLength,
+            byte[] extensionBytes, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.length = length;
-        this.expectedPart = expectedPart;
         this.type = type;
-        this.version = version;
-        this.certificateRequestContext = certificateRequestContext;
         this.certificateRequestContextLength = certificateRequestContextLength;
+        this.certificateRequestContext = certificateRequestContext;
+        this.extensionLength = extensionLength;
+        this.extensionBytes = extensionBytes;
+        this.version = version;
     }
 
     /**
@@ -61,14 +57,17 @@ public class CertificateRequestTls13SerializerTest {
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
-        CertificateRequestMessage message = new CertificateRequestMessage();
-        message.setLength(length);
-        message.setType(type.getValue());
-        message.setCertificateRequestContext(certificateRequestContext);
-        message.setCertificateRequestContextLength(certificateRequestContextLength);
-
-        CertificateRequestSerializer serializer = new CertificateRequestSerializer(message, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        CertificateRequestMessage msg = new CertificateRequestMessage();
+        msg.setCompleteResultingMessage(message);
+        msg.setLength(message.length - HandshakeByteLength.MESSAGE_LENGTH_FIELD - HandshakeByteLength.MESSAGE_TYPE);
+        msg.setType(type.getValue());
+        msg.setCertificateRequestContext(certificateRequestContext);
+        msg.setCertificateRequestContextLength(certificateRequestContextLength);
+        msg.setExtensionsLength(extensionLength);
+        msg.setExtensionBytes(extensionBytes);
+        CertificateRequestSerializer serializer = new CertificateRequestSerializer(msg, version);
+        System.out.println(ArrayConverter.bytesToHexString(serializer.serialize()));
+        assertArrayEquals(this.message, serializer.serialize());
     }
 
 }
