@@ -175,7 +175,6 @@ public class CertificateRequestMessage extends HandshakeMessage {
     public void setCertificateRequestContext(byte[] certificateRequestContext) {
         this.certificateRequestContext = ModifiableVariableFactory.safelySetValue(this.certificateRequestContext,
                 certificateRequestContext);
-        ;
     }
 
     @Override
