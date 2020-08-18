@@ -42,10 +42,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         super(ExtensionType.KEY_SHARE);
         keyShareList = new LinkedList<>();
         for (KeyShareStoreEntry storeEntry : tlsConfig.getDefaultClientKeyShareEntries()) {
-            if (storeEntry.getGroup().isTls13()) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(storeEntry.getGroup(), tlsConfig.getKeySharePrivate());
-                keyShareList.add(keyShareEntry);
-            }
+            KeyShareEntry keyShareEntry = new KeyShareEntry(storeEntry.getGroup(), tlsConfig.getKeySharePrivate());
+            keyShareList.add(keyShareEntry);
         }
     }
 
