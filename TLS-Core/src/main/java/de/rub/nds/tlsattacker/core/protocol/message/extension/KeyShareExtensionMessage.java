@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,11 +41,9 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public KeyShareExtensionMessage(Config tlsConfig) {
         super(ExtensionType.KEY_SHARE);
         keyShareList = new LinkedList<>();
-        for (NamedGroup group : tlsConfig.getDefaultClientNamedGroups()) {
-            if (group.isTls13()) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
-                keyShareList.add(keyShareEntry);
-            }
+        for (KeyShareStoreEntry storeEntry : tlsConfig.getDefaultClientKeyShareEntries()) {
+            KeyShareEntry keyShareEntry = new KeyShareEntry(storeEntry.getGroup(), tlsConfig.getKeySharePrivate());
+            keyShareList.add(keyShareEntry);
         }
     }
 

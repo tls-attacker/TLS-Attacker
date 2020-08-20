@@ -22,8 +22,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -126,6 +129,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     public final List<ExtensionMessage> getExtensions() {
         return extensions;
+    }
+
+    public final <T extends ExtensionMessage> T getExtension(Class<T> extensionClass) {
+        if (this.getExtensions() == null) return null;
+        List<ExtensionMessage> extensionMessages = new ArrayList<>(this.getExtensions());
+        Optional<ExtensionMessage> extension = extensionMessages.stream().filter(i -> i.getClass().equals(extensionClass)).findFirst();
+        if (extension.isPresent()) {
+            return extensionClass.cast(extension.get());
+        }
+        return null;
     }
 
     public final void setExtensions(List<ExtensionMessage> extensions) {

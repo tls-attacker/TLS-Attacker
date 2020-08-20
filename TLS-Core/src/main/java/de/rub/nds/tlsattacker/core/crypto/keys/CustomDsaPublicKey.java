@@ -166,4 +166,9 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         }
         return Objects.equals(this.publicKey, other.publicKey);
     }
+
+    @Override
+    public int keysize() {
+        return p.bitLength();
+    }
 }

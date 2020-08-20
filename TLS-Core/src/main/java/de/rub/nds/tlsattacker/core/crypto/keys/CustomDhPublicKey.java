@@ -151,4 +151,9 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         }
         return Objects.equals(this.publicKey, other.publicKey);
     }
+
+    @Override
+    public int keysize() {
+        return modulus.bitLength();
+    }
 }

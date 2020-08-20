@@ -200,6 +200,9 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CCM</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_AES_128_GCM_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_AES_256_GCM_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_CHACHA20_POLY1305_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_AES_128_CCM_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_AES_128_CCM_8_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_PSK_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_PSK_DHE_WITH_AES_128_CCM_8</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_PSK_DHE_WITH_AES_256_CCM_8</defaultClientSupportedCiphersuites>
@@ -524,6 +527,9 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CCM</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_AES_128_GCM_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_AES_256_GCM_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_CHACHA20_POLY1305_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_AES_128_CCM_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_AES_128_CCM_8_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_PSK_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_PSK_DHE_WITH_AES_128_CCM_8</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_PSK_DHE_WITH_AES_256_CCM_8</defaultServerSupportedCiphersuites>

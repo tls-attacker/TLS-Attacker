@@ -197,4 +197,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         }
         return true;
     }
+
+    @Override
+    public int keysize() {
+        if (group == null || group.getCoordinateSizeInBit() == null)
+            return 0;
+        return group.getCoordinateSizeInBit();
+    }
 }

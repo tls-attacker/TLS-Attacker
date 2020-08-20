@@ -251,6 +251,7 @@ public class ReceiveMessageHelper {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragments = null;
         for (RecordGroup group : RecordGroup.generateRecordGroups(recordGroup.getRecords())) {
+
             List<RecordGroup> subGroups = group.splitIntoProcessableSubgroups();
             for (RecordGroup subGroup : subGroups) {
 

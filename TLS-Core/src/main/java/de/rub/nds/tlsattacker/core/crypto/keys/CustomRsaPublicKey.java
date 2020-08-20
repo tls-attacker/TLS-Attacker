@@ -130,4 +130,9 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
         }
         return Objects.equals(this.modulus, other.modulus);
     }
+
+    @Override
+    public int keysize() {
+        return modulus.bitLength();
+    }
 }

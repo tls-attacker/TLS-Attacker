@@ -31,8 +31,7 @@ public class AcceptorCallable implements Callable<Socket> {
         try {
             return serverSocket.accept();
         } catch (IOException ex) {
-            LOGGER.warn("Could not open Accept connection!");
-            LOGGER.debug(ex);
+            LOGGER.warn("Could not open Accept connection!", ex);
         }
         return null;
     }

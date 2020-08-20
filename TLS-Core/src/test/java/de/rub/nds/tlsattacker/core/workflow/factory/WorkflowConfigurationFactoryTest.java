@@ -17,12 +17,15 @@ import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -269,12 +272,11 @@ public class WorkflowConfigurationFactoryTest {
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
         handshakeWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                 RunningModeType.CLIENT);
-
         lastAction = handshakeWorkflow.getLastMessageAction();
-
-        Assert.assertEquals(CertificateMessage.class, lastAction.getMessages().get(0).getClass());
-        Assert.assertEquals(CertificateVerifyMessage.class, lastAction.getMessages().get(1).getClass());
-        Assert.assertEquals(FinishedMessage.class, lastAction.getMessages().get(2).getClass());
+        Assert.assertEquals(ChangeCipherSpecMessage.class, lastAction.getMessages().get(0).getClass());
+        Assert.assertEquals(CertificateMessage.class, lastAction.getMessages().get(1).getClass());
+        Assert.assertEquals(CertificateVerifyMessage.class, lastAction.getMessages().get(2).getClass());
+        Assert.assertEquals(FinishedMessage.class, lastAction.getMessages().get(3).getClass());
 
         // ! TLS13 config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS10);
