@@ -57,7 +57,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
                 || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
-                        .isAddExtensionsInSSL())) {
+                .isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }
@@ -76,14 +76,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareSessionID() {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            if (chooser.getConfig().getTls13BackwardsCompatibilityMode()) {
-                if (chooser.getContext().getServerSessionId() == null) {
-                    msg.setSessionId(chooser.getClientSessionId());
-                } else {
-                    msg.setSessionId(chooser.getServerSessionId());
-                }
+            if (chooser.getContext().getServerSessionId() == null) {
+                msg.setSessionId(chooser.getClientSessionId());
             } else {
-                msg.setSessionId(new byte[0]);
+                msg.setSessionId(chooser.getServerSessionId());
             }
         } else {
             if (chooser.getContext().getServerSessionId() == null) {
