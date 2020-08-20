@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -37,9 +38,11 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
      *            parse
      * @param version
      *            The Version for which this message should be parsed
+     * @param config
+     *            A Config used in the current context
      */
-    public SupplementalDataParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version);
+    public SupplementalDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
     }
 
     @Override

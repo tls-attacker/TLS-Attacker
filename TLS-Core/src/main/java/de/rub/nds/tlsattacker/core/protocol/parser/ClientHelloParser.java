@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -31,9 +32,11 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      *            The byte[] which the HelloMessageParser is supposed to parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
+    public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
     }
 
     @Override
@@ -97,9 +100,9 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * @param msg
      *            Message to write in
      */
-    private void parseCompressionLength(ClientHelloMessage message) {
-        message.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
-        LOGGER.debug("CompressionLength: " + message.getCompressionLength().getValue());
+    private void parseCompressionLength(ClientHelloMessage msg) {
+        msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
+        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
     }
 
     /**
@@ -108,8 +111,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * @param msg
      *            Message to write in
      */
-    private void parseCompressions(ClientHelloMessage message) {
-        message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
-        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(message.getCompressions().getValue()));
+    private void parseCompressions(ClientHelloMessage msg) {
+        msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 }

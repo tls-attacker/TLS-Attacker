@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import java.math.BigInteger;
 import java.util.List;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -266,6 +267,10 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Client Random
+     */
     @Override
     public byte[] getClientRandom() {
         if (context.getClientRandom() != null) {
@@ -275,6 +280,28 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    @Override
+    public byte[] getClientExtendedRandom() {
+        if (context.getClientExtendedRandom() != null) {
+            return copy(context.getClientExtendedRandom());
+        } else {
+            return config.getDefaultClientExtendedRandom();
+        }
+    }
+
+    @Override
+    public byte[] getServerExtendedRandom() {
+        if (context.getServerExtendedRandom() != null) {
+            return copy(context.getServerExtendedRandom());
+        } else {
+            return config.getDefaultServerExtendedRandom();
+        }
+    }
+
+    /**
+     * Additional Check for Extended Random. If extended Random was negotiated,
+     * we add the additional bytes to the Server Random
+     */
     @Override
     public byte[] getServerRandom() {
         if (context.getServerRandom() != null) {
@@ -891,6 +918,51 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getDsaClientPrivateKey() {
+        if (context.getClientDsaPrivateKey() != null) {
+            return context.getClientDsaPrivateKey();
+        } else {
+            return config.getDefaultClientDsaPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPublicKey() {
+        if (context.getClientDsaPublicKey() != null) {
+            return context.getClientDsaPublicKey();
+        } else {
+            return config.getDefaultClientDsaPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPrimeP() {
+        if (context.getClientDsaPrimeP() != null) {
+            return context.getClientDsaPrimeP();
+        } else {
+            return config.getDefaultClientDsaPrimeP();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientPrimeQ() {
+        if (context.getClientDsaPrimeQ() != null) {
+            return context.getClientDsaPrimeQ();
+        } else {
+            return config.getDefaultClientDsaPrimeQ();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaClientGenerator() {
+        if (context.getClientDsaGenerator() != null) {
+            return context.getClientDsaGenerator();
+        } else {
+            return config.getDefaultClientDsaGenerator();
+        }
+    }
+
+    @Override
     public BigInteger getDsaServerPrivateKey() {
         if (context.getServerDsaPrivateKey() != null) {
             return context.getServerDsaPrivateKey();
@@ -909,7 +981,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaPrimeP() {
+    public BigInteger getDsaServerPrimeP() {
         if (context.getServerDsaPrimeP() != null) {
             return context.getServerDsaPrimeP();
         } else {
@@ -918,7 +990,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaPrimeQ() {
+    public BigInteger getDsaServerPrimeQ() {
         if (context.getServerDsaPrimeQ() != null) {
             return context.getServerDsaPrimeQ();
         } else {
@@ -927,7 +999,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaGenerator() {
+    public BigInteger getDsaServerGenerator() {
         if (context.getServerDsaGenerator() != null) {
             return context.getServerDsaGenerator();
         } else {

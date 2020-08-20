@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -55,7 +56,7 @@ public class CertificateRequestTls13ParserTest {
 
     @Test
     public void testParse() {
-        CertificateRequestParser parser = new CertificateRequestParser(0, message, version);
+        CertificateRequestParser parser = new CertificateRequestParser(0, message, version, Config.createConfig());
         CertificateRequestMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getCertificateRequestContextLength().getValue() == certificateRequestContextLength);

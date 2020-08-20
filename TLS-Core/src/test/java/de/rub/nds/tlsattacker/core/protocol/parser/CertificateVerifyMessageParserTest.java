@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -48,6 +49,7 @@ public class CertificateVerifyMessageParserTest {
     private byte[] sigHashAlgo;
     private int signatureLength;
     private byte[] signature;
+    private final Config config = Config.createConfig();
 
     public CertificateVerifyMessageParserTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
@@ -64,7 +66,7 @@ public class CertificateVerifyMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateVerifyParser parser = new CertificateVerifyParser(0, message, ProtocolVersion.TLS12);
+        CertificateVerifyParser parser = new CertificateVerifyParser(0, message, ProtocolVersion.TLS12, config);
         CertificateVerifyMessage certVerifyMessage = parser.parse();
         assertTrue(certVerifyMessage.getLength().getValue() == length);
         assertTrue(certVerifyMessage.getType().getValue() == type.getValue());

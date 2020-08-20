@@ -75,7 +75,7 @@ public class EncryptedServerNameIndicationExtensionParser extends
     private void parseRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
         int digestLen = parseIntField(ExtensionByteLength.RECORD_DIGEST_LENGTH);
         msg.setRecordDigestLength(digestLen);
-        LOGGER.debug("recordDigestLength: " + msg.getRecordDigestLength().getOriginalValue());
+        LOGGER.debug("recordDigestLength: " + msg.getRecordDigestLength().getValue());
     }
 
     private void parseRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {

@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
@@ -31,9 +32,11 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public SrpClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
-        super(startposition, array, version);
+    public SrpClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override
@@ -55,9 +58,9 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      * @param msg
      *            Message to write in
      */
-    private void parsePublicKeyLength(SrpClientKeyExchangeMessage message) {
-        message.setPublicKeyLength(parseIntField(HandshakeByteLength.SRP_PUBLICKEY_LENGTH));
-        LOGGER.debug("PublicKeyLength: " + message.getPublicKeyLength().getValue());
+    private void parsePublicKeyLength(SrpClientKeyExchangeMessage msg) {
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.SRP_PUBLICKEY_LENGTH));
+        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -66,8 +69,8 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      * @param msg
      *            Message to write in
      */
-    private void parsePublicKey(SrpClientKeyExchangeMessage message) {
-        message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
-        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(message.getPublicKey().getValue()));
+    private void parsePublicKey(SrpClientKeyExchangeMessage msg) {
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

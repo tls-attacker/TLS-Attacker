@@ -51,6 +51,7 @@ public class CyclicParserSerializerTest {
         ProtocolMessageParser parser = null;
         ProtocolMessagePreparator preparator = null;
         ProtocolMessage message = null;
+        Config config = null;
         ProtocolMessageSerializer serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
@@ -96,6 +97,7 @@ public class CyclicParserSerializerTest {
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
+                        config = context.getConfig();
                         preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
                                 context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
@@ -119,8 +121,8 @@ public class CyclicParserSerializerTest {
                     }
                     byte[] serializedMessage = serializer.serialize();
                     try {
-                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
-                                serializedMessage, version);
+                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                                serializedMessage, version, config);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);

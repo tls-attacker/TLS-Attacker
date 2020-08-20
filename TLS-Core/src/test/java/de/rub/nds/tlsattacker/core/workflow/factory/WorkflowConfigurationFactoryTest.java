@@ -137,6 +137,9 @@ public class WorkflowConfigurationFactoryTest {
             } else {
                 mode = RunningModeType.CLIENT;
             }
+            if (workflowTraceType == WorkflowTraceType.DYNAMIC_HELLO && mode != RunningModeType.CLIENT) {
+                continue;
+            }
             WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType, mode);
             Assert.assertNotNull(newTrace.getMessageActions());
             Assert.assertFalse(newTrace.getMessageActions().isEmpty());
@@ -353,6 +356,7 @@ public class WorkflowConfigurationFactoryTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 for (WorkflowTraceType type : WorkflowTraceType.values()) {
                     try {
+
                         config.setDefaultSelectedCipherSuite(suite);
                         config.setSupportedVersions(version);
                         config.setHighestProtocolVersion(version);
@@ -361,6 +365,9 @@ public class WorkflowConfigurationFactoryTest {
                         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
                         config.setDefaultRunningMode(RunningModeType.CLIENT);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
+                        if (type == WorkflowTraceType.DYNAMIC_HELLO) {
+                            continue;
+                        }
                         config.setDefaultRunningMode(RunningModeType.SERVER);
                         workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
                         config.setDefaultRunningMode(RunningModeType.MITM);
@@ -395,8 +402,6 @@ public class WorkflowConfigurationFactoryTest {
         Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
         Assert.assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
         Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
-        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
-        Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
 
         config.setStarttlsType(StarttlsType.POP3);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -415,10 +420,7 @@ public class WorkflowConfigurationFactoryTest {
         Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
         Assert.assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
         Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
-        Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
+        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
         Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
-        Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(5).getClass());
-        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(6).getClass());
-        Assert.assertEquals(GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(7).getClass());
     }
 }

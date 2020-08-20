@@ -34,7 +34,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-
         List<TlsContext> allTlsContexts = state.getAllTlsContexts();
 
         if (config.isWorkflowExecutorShouldOpen()) {
@@ -77,6 +76,11 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            }
+
+            if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
+                LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                break;
             }
         }
 

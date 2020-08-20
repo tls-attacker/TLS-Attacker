@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,11 +38,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            prepareCertificateReqeustContext(msg);
-            prepareCertificateRequstContextLength(msg);
-            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
-            prepareSignatureHashAlgorithms(msg);
-            prepareSignatureHashAlgorithmsLength(msg);
+            prepareCertificateRequestContext(msg);
+            prepareCertificateRequestContextLength(msg);
             prepareExtensions();
             prepareExtensionLength();
         } else {
@@ -118,13 +114,13 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
         LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
-    private void prepareCertificateReqeustContext(CertificateRequestMessage msg) {
+    private void prepareCertificateRequestContext(CertificateRequestMessage msg) {
         msg.setCertificateRequestContext(chooser.getConfig().getDefaultCertificateRequestContext());
         LOGGER.debug("CertificateRequestContext: "
                 + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 
-    private void prepareCertificateRequstContextLength(CertificateRequestMessage msg) {
+    private void prepareCertificateRequestContextLength(CertificateRequestMessage msg) {
         msg.setCertificateRequestContextLength(msg.getCertificateRequestContext().getValue().length);
         LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }

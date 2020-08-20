@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChangeCipherSpecByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -30,9 +31,11 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version) {
-        super(startposition, array, version);
+    public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override

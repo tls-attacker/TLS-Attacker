@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
+
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
@@ -45,16 +47,18 @@ public class CertificateStatusRequestExtensionHandler extends
 
     @Override
     public void adjustTLSExtensionContext(CertificateStatusRequestExtensionMessage message) {
-        context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType
-                .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
-        LOGGER.debug("Adjusted the Certificate Status Request Type in the TLSContext to "
-                + context.getCertificateStatusRequestExtensionRequestType());
-        context.setCertificateStatusRequestExtensionRequestExtension(message.getRequestExtension().getValue());
-        LOGGER.debug("Adjusted the Certificate Status Request Request Extension to "
-                + bytesToHexString(context.getCertificateStatusRequestExtensionRequestExtension()));
-        context.setCertificateStatusRequestExtensionResponderIDList(message.getResponderIDList().getValue());
-        LOGGER.debug("Adjusted the Certificate Status Request Responder ID List to "
-                + bytesToHexString(context.getCertificateStatusRequestExtensionResponderIDList()));
+        if (context.getTalkingConnectionEndType() == CLIENT) {
+            context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType
+                    .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
+            LOGGER.debug("Adjusted the Certificate Status Request Type in the TLSContext to "
+                    + context.getCertificateStatusRequestExtensionRequestType());
+            context.setCertificateStatusRequestExtensionRequestExtension(message.getRequestExtension().getValue());
+            LOGGER.debug("Adjusted the Certificate Status Request Request Extension to "
+                    + bytesToHexString(context.getCertificateStatusRequestExtensionRequestExtension()));
+            context.setCertificateStatusRequestExtensionResponderIDList(message.getResponderIDList().getValue());
+            LOGGER.debug("Adjusted the Certificate Status Request Responder ID List to "
+                    + bytesToHexString(context.getCertificateStatusRequestExtensionResponderIDList()));
+        }
     }
 
 }

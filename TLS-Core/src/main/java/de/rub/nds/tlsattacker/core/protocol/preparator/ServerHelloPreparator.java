@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +59,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (selectedSuite == null) {
-                throw new WorkflowExecutionException("No Ciphersuites in common");
+                selectedSuite = chooser.getConfig().getDefaultSelectedCipherSuite();
+                LOGGER.warn("No CipherSuites in common, falling back to defaultSelectedCipherSuite");
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
@@ -79,7 +79,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (selectedCompressionMethod == null) {
-                throw new WorkflowExecutionException("No Compression in common");
+                selectedCompressionMethod = chooser.getConfig().getDefaultSelectedCompressionMethod();
+                LOGGER.warn("No CompressionMethod in common, falling back to defaultSelectedCompressionMethod");
             }
             msg.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
         }

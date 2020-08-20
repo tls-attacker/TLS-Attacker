@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -21,8 +22,8 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HelloVerifyRequestParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, HandshakeMessageType.HELLO_VERIFY_REQUEST, version);
+    public HelloVerifyRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, config);
     }
 
     @Override

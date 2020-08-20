@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -21,10 +22,10 @@ public class ExtensionParserFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
-            HandshakeMessageType handshakeMessageType) {
+            HandshakeMessageType handshakeMessageType, Config config) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new ParserException(
-                    "Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
+                    "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
@@ -59,7 +60,19 @@ public class ExtensionParserFactory {
             case SUPPORTED_VERSIONS:
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
                 break;
-            case KEY_SHARE_OLD: // Extension was moved
+            case EXTENDED_RANDOM:
+                if ((config == null) || !config.isParseKeyShareOld()) {
+                    parser = new ExtendedRandomExtensionParser(pointer, extensionBytes);
+                }
+                break;
+            case KEY_SHARE_OLD:
+                if ((config == null) || !config.isParseKeyShareOld()) {
+                    parser = new ExtendedRandomExtensionParser(pointer, extensionBytes);
+                    break;
+                }
+                // No break here. Invoke getKeyShareParser in case KEY_SHARE_OLD
+                // by
+                // falling through to the next case (i.e. KEY_SHARE).
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, type);
                 break;

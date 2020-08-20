@@ -76,7 +76,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
         </RsaPrivateKey>
     </defaultExplicitCertificateKeyPair>
     <autoAdjustSignatureAndHashAlgorithm>true</autoAdjustSignatureAndHashAlgorithm>
-    <preferredHashAlgorithm>SHA1</preferredHashAlgorithm>
+    <preferredHashAlgorithm>SHA256</preferredHashAlgorithm>
     <outputFilters>DEFAULT</outputFilters>
     <applyFiltersInPlace>false</applyFiltersInPlace>
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
@@ -908,6 +908,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
@@ -944,6 +945,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
+    <stopTraceAfterUnexpected>false</stopTraceAfterUnexpected>
     <defaultServerDhGenerator>2</defaultServerDhGenerator>
     <defaultServerDhModulus>5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807</defaultServerDhModulus>
     <defaultClientDhGenerator>2</defaultClientDhGenerator>
@@ -1019,8 +1021,11 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret/>
     <defaultPreMasterSecret/>
+    <defaultClientExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultClientExtendedRandom>
+    <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
+    <parseKeyShareOld>true</parseKeyShareOld>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
@@ -1134,6 +1139,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
     <parseInvalidRecordsUnencrypted>false</parseInvalidRecordsUnencrypted>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <defaultEsniClientPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultEsniClientPrivateKey>
     <defaultEsniClientNonce>A7 28 4C 9A 52 F1 5C 13 64 4B 94 72 61 77 46 57</defaultEsniClientNonce>
     <defaultEsniServerNonce>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultEsniServerNonce>
     <defaultEsniRecordBytes>FF 01 00 12 4B 2A 00 24 00 1D 00 20 FA 57 2D 03 E2 1E 15 F9 CA 1A A7 FB 85 F6 1B 9F C7 84 58 A7 80 50 AC 58 18 11 86 33 25 94 44 12 00 02 13 01 01 04 00 00 00 00 5D CC 3A 45 00 00 00 00 5D DA 12 05 00 00</defaultEsniRecordBytes>
@@ -1152,4 +1158,5 @@ C7 84 58 A7 80 50 AC 58  18 11 86 33 25 94 44 12
     <defaultEsniNotAfter>1585247135231</defaultEsniNotAfter>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
+    <writeKeylogFile>false</writeKeylogFile>
 </config>

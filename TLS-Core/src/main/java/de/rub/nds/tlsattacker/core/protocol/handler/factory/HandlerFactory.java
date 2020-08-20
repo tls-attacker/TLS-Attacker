@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +61,8 @@ public class HandlerFactory {
                     return new CertificateMessageHandler(context);
                 case CERTIFICATE_REQUEST:
                     return new CertificateRequestHandler(context);
+                case CERTIFICATE_STATUS:
+                    return new CertificateStatusHandler(context);
                 case CERTIFICATE_VERIFY:
                     return new CertificateVerifyHandler(context);
                 case CLIENT_HELLO:
@@ -139,6 +142,8 @@ public class HandlerFactory {
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:
                     return new HeartbeatExtensionHandler(context);
+                case EXTENDED_RANDOM:
+                    return new ExtendedRandomExtensionHandler(context);
                 case KEY_SHARE_OLD:
                 case KEY_SHARE:
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {

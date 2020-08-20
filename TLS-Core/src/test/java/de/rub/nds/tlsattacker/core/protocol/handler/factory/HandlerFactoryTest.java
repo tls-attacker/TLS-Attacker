@@ -71,6 +71,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.ENCRYPT_THEN_MAC, null) instanceof EncryptThenMacExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.EXTENDED_MASTER_SECRET, null) instanceof ExtendedMasterSecretExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.HEARTBEAT, null) instanceof HeartbeatExtensionHandler);
+        context.getConfig().setParseKeyShareOld(true);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE_OLD,
                 HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE,
@@ -101,6 +102,8 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_PROTECT, null) instanceof PWDProtectExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_CLEAR, null) instanceof PWDClearExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PASSWORD_SALT, null) instanceof PasswordSaltExtensionHandler);
+        context.getConfig().setParseKeyShareOld(false);
+        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.EXTENDED_RANDOM, null) instanceof ExtendedRandomExtensionHandler);
     }
 
     @Test

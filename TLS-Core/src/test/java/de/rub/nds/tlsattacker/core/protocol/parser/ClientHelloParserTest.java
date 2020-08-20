@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -112,6 +113,7 @@ public class ClientHelloParserTest {
     private final Byte cookieLength;
     private final byte[] cookie;
     private final int numberOfExtensions;
+    private final Config config = Config.createConfig();
 
     public ClientHelloParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
             byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
@@ -142,7 +144,7 @@ public class ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        ClientHelloParser parser = new ClientHelloParser(0, message, version);
+        ClientHelloParser parser = new ClientHelloParser(0, message, version, config);
         ClientHelloMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
