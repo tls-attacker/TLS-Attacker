@@ -50,7 +50,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public void adjustTLSContext(CertificateRequestMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustCertifiateRequestContext(message);
             adjustServerSupportedSignatureAndHashAlgorithms(message);
         } else {

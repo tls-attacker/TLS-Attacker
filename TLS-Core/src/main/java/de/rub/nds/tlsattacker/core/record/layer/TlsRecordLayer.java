@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -178,6 +179,13 @@ public class TlsRecordLayer extends RecordLayer {
                             .getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
+            } else {
+                // Do not decrypt the record
+                record.prepareComputations();
+                ((Record) record).setSequenceNumber(BigInteger.valueOf(tlsContext.getReadSequenceNumber()));
+                byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
+                record.setCleanProtocolMessageBytes(protocolMessageBytes);
+                // tlsContext.increaseReadSequenceNumber();
             }
         } else {
             LOGGER.warn("Decrypting received non Record:" + record.toString());

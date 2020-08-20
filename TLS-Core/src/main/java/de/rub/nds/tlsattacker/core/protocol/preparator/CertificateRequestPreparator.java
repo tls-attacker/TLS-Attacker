@@ -39,7 +39,7 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareCertificateReqeustContext(msg);
             prepareCertificateRequstContextLength(msg);
             sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());

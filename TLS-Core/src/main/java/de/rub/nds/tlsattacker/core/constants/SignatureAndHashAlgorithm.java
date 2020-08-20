@@ -258,7 +258,7 @@ public enum SignatureAndHashAlgorithm {
         clientPreferredHash.removeIf(i -> i.getHashAlgorithm() != chooser.getConfig().getPreferredHashAlgorithm());
         algorithms.addAll(0, clientPreferredHash);
 
-        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             algorithms.removeIf(i -> i.toString().contains("RSA_SHA"));
         }
 
