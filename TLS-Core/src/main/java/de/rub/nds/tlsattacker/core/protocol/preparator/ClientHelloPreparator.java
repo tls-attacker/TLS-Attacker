@@ -57,7 +57,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         }
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
                 || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
-                .isAddExtensionsInSSL())) {
+                        .isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }
