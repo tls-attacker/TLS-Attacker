@@ -79,8 +79,9 @@ public class TlsAttackerSocket {
         ApplicationMessage message = new ApplicationMessage();
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         byte[] sendingBytes = new byte[16384];
-        int actuallyRead = 0;
+        int actuallyRead;
         do {
+            actuallyRead = 0;
             try {
                 actuallyRead = stream.read(sendingBytes);
                 if (actuallyRead > 0) {
