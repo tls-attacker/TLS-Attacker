@@ -25,11 +25,18 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
+
+    private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
+            (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
+            (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
+            (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
+            (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
@@ -60,12 +67,7 @@ public class ServerHelloMessage extends HelloMessage {
             }
 
             if (tlsConfig.isAddKeyShareExtension()) {
-                if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
-                        && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
-                    addExtension(new DraftKeyShareExtensionMessage(tlsConfig));
-                } else {
-                    addExtension(new KeyShareExtensionMessage(tlsConfig));
-                }
+                addExtension(new KeyShareExtensionMessage(tlsConfig));
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 addExtension(new EncryptedServerNameIndicationExtensionMessage());
@@ -176,6 +178,14 @@ public class ServerHelloMessage extends HelloMessage {
     public void setSelectedCompressionMethod(byte value) {
         this.selectedCompressionMethod = ModifiableVariableFactory
                 .safelySetValue(this.selectedCompressionMethod, value);
+    }
+
+    public Boolean isTls13HelloRetryRequest() {
+        if (this.getRandom() != null && this.getRandom().getValue() != null) {
+            return Arrays.equals(this.getRandom().getValue(), HELLO_RETRY_REQUEST_RANDOM);
+        } else {
+            return null;
+        }
     }
 
     @Override

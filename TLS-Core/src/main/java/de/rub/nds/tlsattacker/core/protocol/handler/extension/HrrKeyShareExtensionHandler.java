@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HRRKeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HRRKeyShareExtensionPreparator;
@@ -43,6 +44,7 @@ public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExt
 
     @Override
     public void adjustTLSExtensionContext(HRRKeyShareExtensionMessage message) {
+        context.setSelectedGroup(NamedGroup.getNamedGroup(message.getSelectedGroup().getValue()));
     }
 
 }

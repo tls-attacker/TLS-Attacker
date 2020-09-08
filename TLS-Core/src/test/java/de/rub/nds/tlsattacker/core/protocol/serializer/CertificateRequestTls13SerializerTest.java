@@ -66,7 +66,6 @@ public class CertificateRequestTls13SerializerTest {
         msg.setExtensionsLength(extensionLength);
         msg.setExtensionBytes(extensionBytes);
         CertificateRequestSerializer serializer = new CertificateRequestSerializer(msg, version);
-        System.out.println(ArrayConverter.bytesToHexString(serializer.serialize()));
         assertArrayEquals(this.message, serializer.serialize());
     }
 
