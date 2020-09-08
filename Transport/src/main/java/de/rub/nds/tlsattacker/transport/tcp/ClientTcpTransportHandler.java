@@ -86,9 +86,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
             if (socket.getInputStream().available() > 0) {
                 return SocketState.DATA_AVAILABLE;
             }
-            socket.setSoTimeout(1);
             int read = socket.getInputStream().read();
-            socket.setSoTimeout((int) timeout);
             if (read == -1) {
                 return SocketState.CLOSED;
             } else {
