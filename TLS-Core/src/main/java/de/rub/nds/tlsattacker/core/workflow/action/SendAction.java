@@ -80,7 +80,6 @@ public class SendAction extends MessageAction implements SendingAction {
         } catch (IOException E) {
             tlsContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
-            E.printStackTrace();
             setExecuted(false);
         }
     }
