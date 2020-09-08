@@ -182,4 +182,9 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     public void setPublicKey(BigInteger publicKey) {
         this.publicKey = publicKey;
     }
+
+    @Override
+    public int keysize() {
+        return p.bitLength();
+    }
 }

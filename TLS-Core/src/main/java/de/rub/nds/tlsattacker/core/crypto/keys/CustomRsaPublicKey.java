@@ -138,4 +138,9 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     public void setModulus(BigInteger modulus) {
         this.modulus = modulus;
     }
+
+    @Override
+    public int keysize() {
+        return modulus.bitLength();
+    }
 }

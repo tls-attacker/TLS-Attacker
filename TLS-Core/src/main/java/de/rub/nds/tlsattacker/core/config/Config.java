@@ -2406,15 +2406,10 @@ public class Config implements Serializable {
         this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
-    public final void setSupportedSignatureAndHashAlgorithms(
+    public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms = new ArrayList(
                 Arrays.asList(supportedSignatureAndHashAlgorithms));
-    }
-
-    public final void setSupportedSignatureAndHashAlgorithms(
-            List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
     public List<ProtocolVersion> getSupportedVersions() {

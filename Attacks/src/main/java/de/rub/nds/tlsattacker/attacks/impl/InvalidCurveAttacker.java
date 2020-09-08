@@ -257,7 +257,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         }
         WorkflowTrace trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
                 WorkflowTraceType.HELLO, RunningModeType.CLIENT);
-        if (individualConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (individualConfig.getHighestProtocolVersion().isTLS13()) {
 
             // replace specific receive action with generic
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
@@ -299,7 +299,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
             byte[] explicitPMS, Config individualConfig) {
         WorkflowTrace trace;
-        if (individualConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (individualConfig.getHighestProtocolVersion().isTLS13()) {
             trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                     RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(ReceiveOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));

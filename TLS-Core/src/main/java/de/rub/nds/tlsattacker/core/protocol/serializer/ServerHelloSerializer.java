@@ -61,14 +61,10 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
         LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
         writeRandom();
-        if (!version.isTLS13()) {
-            writeSessionIDLength();
-            writeSessionID();
-        }
+        writeSessionIDLength();
+        writeSessionID();
         writeSelectedCiphersuite();
-        if (!version.isTLS13()) {
-            writeSelectedComressionMethod();
-        }
+        writeSelectedComressionMethod();
         if (hasExtensionLengthField()) {
             writeExtensionLength();
             if (hasExtensions()) {

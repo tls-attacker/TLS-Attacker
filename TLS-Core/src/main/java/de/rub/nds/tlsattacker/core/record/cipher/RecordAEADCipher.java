@@ -151,15 +151,8 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
-        byte[] wholeCipherText;
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
-                || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
-                || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                    additionalAuthenticatedData, plainBytes);
-        } else {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, plainBytes);
-        }
+        byte[] wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                additionalAuthenticatedData, plainBytes);
         if (aeadTagLength >= wholeCipherText.length) {
             throw new CryptoException("Could not encrypt data. Supposed Tag is longer than the ciphertext");
         }
@@ -228,16 +221,9 @@ public class RecordAEADCipher extends RecordCipher {
         // the decryption
 
         try {
-            byte[] plainRecordBytes;
-            if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
-                    || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
-                    || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                        additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
-            } else {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                        ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
-            }
+            byte[] plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                    additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
             plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
