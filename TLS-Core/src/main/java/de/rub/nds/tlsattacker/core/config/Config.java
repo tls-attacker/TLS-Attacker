@@ -518,7 +518,7 @@ public class Config implements Serializable {
     private Boolean addSessionTicketTLSExtension = false;
 
     /**
-     * * If we generate ClientHello with extended Random Extension
+     * If we generate ClientHello with extended Random Extension
      */
     private Boolean addExtendedRandomExtension = false;
 
