@@ -80,7 +80,6 @@ public abstract class TransportHandler {
                     try {
                         // dont ask - the java api does not allow this
                         // otherwise...
-                        System.out.println("Aha?");
                         Thread.sleep(1);
                         int read = inStream.read();
                         if (read == -1) {
