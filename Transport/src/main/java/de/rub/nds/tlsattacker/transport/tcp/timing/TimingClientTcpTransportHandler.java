@@ -30,7 +30,6 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
 
     @Override
     public void sendData(byte[] data) throws IOException {
-        socket.setSoTimeout(1000);
         super.sendData(data);
         long startTime = System.nanoTime();
         // read will block until data is available
