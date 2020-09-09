@@ -35,7 +35,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     protected int proxyDataPort = 4444;
     protected String proxyControlHostName = "127.0.0.1";
     protected int proxyControlPort = 5555;
-    protected long measurement = 0;
+    protected Long measurement = null;
 
     @Override
     public byte[] fetchData() throws IOException {
@@ -60,20 +60,23 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
         this.proxyDataPort = connection.getProxyDataPort();
         this.proxyControlHostName = connection.getProxyControlHostname();
         this.proxyControlPort = connection.getProxyControlPort();
+        setIsInStreamTerminating(false);
     }
 
     public TimingProxyClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
+        setIsInStreamTerminating(false);
     }
 
     @Override
-    public void setProxy(String dataChanelHost, int dataChanelPort, String controlChanelHost, int controlChanelPort) {
-        proxyDataHostName = dataChanelHost;
+    public void setProxy(String dataChannelHost, int dataChanelPort, String controlChannelHost, int controlChanelPort) {
+        proxyDataHostName = dataChannelHost;
         proxyDataPort = dataChanelPort;
-        proxyControlHostName = controlChanelHost;
+        proxyControlHostName = controlChannelHost;
         proxyControlPort = controlChanelPort;
+
     }
 
     @Override
@@ -149,7 +152,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     }
 
     @Override
-    public long getLastMeasurement() {
+    public Long getLastMeasurement() {
         return measurement;
     }
 }
