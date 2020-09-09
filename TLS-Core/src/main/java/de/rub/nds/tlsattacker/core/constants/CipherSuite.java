@@ -1089,7 +1089,7 @@ public enum CipherSuite {
     public boolean isDSS() {
         return this.name().contains("DSS");
     }
-    
+
     public boolean isGOST() {
         return this.name().contains("GOST");
     }

@@ -317,7 +317,7 @@ public class CertificateKeyPair implements Serializable {
                     .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
             return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
-           LOGGER.warn("Could not determine EC public key group", ex);
+            LOGGER.warn("Could not determine EC public key group", ex);
             return null;
         }
     }

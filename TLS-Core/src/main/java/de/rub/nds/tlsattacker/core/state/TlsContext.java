@@ -396,7 +396,7 @@ public class TlsContext {
     private NamedGroup selectedGroup;
 
     private NamedGroup ecCertificateCurve;
-    
+
     private NamedGroup ecCertificateSignatureCurve;
 
     private Point clientEcPublicKey;
