@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
 import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
@@ -112,6 +114,8 @@ public class WorkflowConfigurationFactory {
                 return createSyncProxyWorkflow();
             case DYNAMIC_HANDSHAKE:
                 return createDynamicHandshakeWorkflow();
+            case DYNAMIC_HELLO:
+                return createDynamicHelloWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -166,6 +170,10 @@ public class WorkflowConfigurationFactory {
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
+        if (config.isAddEncryptedServerNameIndicationExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
@@ -180,7 +188,8 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
@@ -247,6 +256,12 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = this.createHelloWorkflow(connection);
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                ccs.setRequired(false);
+                messages.add(ccs);
+            }
             if (config.isClientAuthentication()) {
                 messages.add(new CertificateMessage(config));
                 messages.add(new CertificateVerifyMessage(config));
@@ -563,11 +578,13 @@ public class WorkflowConfigurationFactory {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
                     if (msg instanceof ClientHelloMessage) {
                         List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
-                        for (int x = 0; x < extensions.size(); x++) {
-                            if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
-                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
-                                x--;
+                        if (extensions != null) {
+                            for (int x = 0; x < extensions.size(); x++) {
+                                if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
+                                        || extensions.get(x) instanceof EarlyDataExtensionMessage) {
+                                    ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
+                                    x--;
+                                }
                             }
                         }
                     }
@@ -773,7 +790,9 @@ public class WorkflowConfigurationFactory {
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
-        messages.add(message);
+        if (message != null) {
+            messages.add(message);
+        }
     }
 
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
@@ -799,10 +818,6 @@ public class WorkflowConfigurationFactory {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.IMAP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.IMAP_S_READY.getStarttlsMessage(), "US-ASCII"));
@@ -824,12 +839,6 @@ public class WorkflowConfigurationFactory {
                         StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
                         StarttlsMessage.SMTP_S_OK.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage(), "US-ASCII"));
-                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.SMTP_TLS.getStarttlsMessage(), "US-ASCII"));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
@@ -893,6 +902,26 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
                 trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
             }
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createDynamicHelloWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion().isTLS13()) {
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else {
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
+            }
+        } else {
+            LOGGER.error("Not implemented for ConnectionEndType.SERVER");
         }
         return trace;
     }

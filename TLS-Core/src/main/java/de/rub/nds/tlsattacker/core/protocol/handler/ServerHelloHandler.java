@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,20 +11,17 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveX25519;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
@@ -72,16 +70,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public ServerHelloParser getParser(byte[] message, int pointer) {
-        return new ServerHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new ServerHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
     public void adjustTLSContext(ServerHelloMessage message) {
         adjustSelectedProtocolVersion(message);
-        if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustSelectedCompression(message);
-            adjustSelectedSessionID(message);
-        }
+        adjustSelectedCompression(message);
+        adjustSelectedSessionID(message);
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
@@ -173,7 +170,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void setServerRecordCipher() {
-        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
@@ -343,6 +339,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         Point sharedSecret = curve
                 .mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / 8, true);
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / Bits.IN_A_BYTE, true);
     }
 }

@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ public class ApplicationMessageParserTest {
     private final int start;
     private final byte[] expectedPart;
     private final byte[] data;
+    private final Config config = Config.createConfig();
 
     public ApplicationMessageParserTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
         this.message = message;
@@ -47,7 +50,7 @@ public class ApplicationMessageParserTest {
      */
     @Test
     public void testParse() {
-        ApplicationMessageParser parser = new ApplicationMessageParser(start, message, ProtocolVersion.TLS12);
+        ApplicationMessageParser parser = new ApplicationMessageParser(start, message, ProtocolVersion.TLS12, config);
         ApplicationMessage applcationMessage = parser.parse();
         assertArrayEquals(applcationMessage.getCompleteResultingMessage().getValue(), expectedPart);
         assertArrayEquals(applcationMessage.getData().getValue(), data);

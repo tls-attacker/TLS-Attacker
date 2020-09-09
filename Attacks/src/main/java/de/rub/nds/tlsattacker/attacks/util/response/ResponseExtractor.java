@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,18 +40,10 @@ public class ResponseExtractor {
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
-        boolean receivedTransportHandlerException = state.getTlsContext().isReceivedTransportHandlerException();
-        boolean receivedAnEncryptedAlert = didReceiveEncryptedAlert(action);
-        int numberRecordsReceived = action.getReceivedRecords().size();
-        int numberOfMessageReceived = action.getReceivedMessages().size();
-        List<Class<AbstractRecord>> recordClasses = extractRecordClasses(action);
-        List<Class<ProtocolMessage>> messageClasses = extractMessageClasses(action);
         List<ProtocolMessage> messageList = action.getReceivedMessages();
         List<AbstractRecord> recordList = action.getReceivedRecords();
         SocketState socketState = extractSocketState(state);
-        return new ResponseFingerprint(receivedTransportHandlerException, receivedAnEncryptedAlert,
-                numberRecordsReceived, numberOfMessageReceived, recordClasses, messageClasses, messageList, recordList,
-                socketState);
+        return new ResponseFingerprint(messageList, recordList, socketState);
     }
 
     /**

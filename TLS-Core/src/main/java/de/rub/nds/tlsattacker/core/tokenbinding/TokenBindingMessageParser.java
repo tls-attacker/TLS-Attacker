@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -19,8 +21,8 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, version);
+    public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
     }
 
     @Override

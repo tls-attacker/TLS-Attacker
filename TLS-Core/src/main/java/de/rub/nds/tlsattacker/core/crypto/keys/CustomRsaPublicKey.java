@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -128,5 +129,10 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
             return false;
         }
         return Objects.equals(this.modulus, other.modulus);
+    }
+
+    @Override
+    public int keysize() {
+        return modulus.bitLength();
     }
 }

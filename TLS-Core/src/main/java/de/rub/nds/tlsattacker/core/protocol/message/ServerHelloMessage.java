@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -20,36 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.DraftKeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
@@ -67,102 +39,112 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
-        if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage());
-        }
-        if (tlsConfig.isAddECPointFormatExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
-            addExtension(new ECPointFormatExtensionMessage());
-        }
-        if (tlsConfig.isAddMaxFragmentLengthExtension()) {
-            addExtension(new MaxFragmentLengthExtensionMessage());
-        }
-        if (tlsConfig.isAddServerNameIndicationExtension()) {
-            ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-            ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
-                    .getBytes(Charset.forName("US-ASCII")));
-            extension.getServerNameList().add(pair);
-            addExtension(extension);
-        }
-        if (tlsConfig.isAddKeyShareExtension()) {
-            if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
-                    && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
-                addExtension(new DraftKeyShareExtensionMessage(tlsConfig));
-            } else {
-                addExtension(new KeyShareExtensionMessage(tlsConfig));
+        if (!tlsConfig.getHighestProtocolVersion().isSSL()
+                || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+            if (tlsConfig.isAddHeartbeatExtension()) {
+                addExtension(new HeartbeatExtensionMessage());
             }
-        }
-        if (tlsConfig.isAddExtendedMasterSecretExtension()) {
-            addExtension(new ExtendedMasterSecretExtensionMessage());
-        }
-        if (tlsConfig.isAddSessionTicketTLSExtension()) {
-            addExtension(new SessionTicketTLSExtensionMessage());
-        }
-        if (tlsConfig.isAddSignedCertificateTimestampExtension()) {
-            addExtension(new SignedCertificateTimestampExtensionMessage());
-        }
-        if (tlsConfig.isAddPaddingExtension()) {
-            addExtension(new PaddingExtensionMessage());
-        }
-        if (tlsConfig.isAddRenegotiationInfoExtension()) {
-            addExtension(new RenegotiationInfoExtensionMessage());
-        }
-        if (tlsConfig.isAddTokenBindingExtension()) {
-            addExtension(new TokenBindingExtensionMessage());
-        }
-        if (tlsConfig.isAddCertificateStatusRequestExtension()) {
-            addExtension(new CertificateStatusRequestExtensionMessage());
-        }
-        if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage(tlsConfig));
-        }
-        if (tlsConfig.isAddSRPExtension()) {
-            addExtension(new SRPExtensionMessage());
-        }
-        if (tlsConfig.isAddSRTPExtension()) {
-            addExtension(new SrtpExtensionMessage());
-        }
-        if (tlsConfig.isAddTruncatedHmacExtension()) {
-            addExtension(new TruncatedHmacExtensionMessage());
-        }
-        if (tlsConfig.isAddUserMappingExtension()) {
-            addExtension(new UserMappingExtensionMessage());
-        }
-        if (tlsConfig.isAddCertificateTypeExtension()) {
-            addExtension(new CertificateTypeExtensionMessage());
-        }
-        if (tlsConfig.isAddClientAuthzExtension()) {
-            addExtension(new ClientAuthzExtensionMessage());
-        }
-        if (tlsConfig.isAddServerAuthzExtension()) {
-            addExtension(new ServerAuthzExtensionMessage());
-        }
-        if (tlsConfig.isAddClientCertificateTypeExtension()) {
-            addExtension(new ClientCertificateTypeExtensionMessage());
-        }
-        if (tlsConfig.isAddServerCertificateTypeExtension()) {
-            addExtension(new ServerCertificateTypeExtensionMessage());
-        }
-        if (tlsConfig.isAddEncryptThenMacExtension()) {
-            addExtension(new EncryptThenMacExtensionMessage());
-        }
-        if (tlsConfig.isAddCachedInfoExtension()) {
-            addExtension(new CachedInfoExtensionMessage());
-        }
-        if (tlsConfig.isAddClientCertificateUrlExtension()) {
-            addExtension(new ClientCertificateUrlExtensionMessage());
-        }
-        if (tlsConfig.isAddTrustedCaIndicationExtension()) {
-            addExtension(new TrustedCaIndicationExtensionMessage());
-        }
-        if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
-            addExtension(new CertificateStatusRequestV2ExtensionMessage());
-        }
-        if (tlsConfig.isAddPreSharedKeyExtension()) {
-            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
-        }
-        if (tlsConfig.isAddSupportedVersionsExtension()) {
-            addExtension(new SupportedVersionsExtensionMessage());
+            if (tlsConfig.isAddECPointFormatExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+                addExtension(new ECPointFormatExtensionMessage());
+            }
+            if (tlsConfig.isAddMaxFragmentLengthExtension()) {
+                addExtension(new MaxFragmentLengthExtensionMessage());
+            }
+            if (tlsConfig.isAddServerNameIndicationExtension()) {
+                ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
+                ServerNamePair pair = new ServerNamePair();
+                pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
+                        .getBytes(Charset.forName("US-ASCII")));
+                extension.getServerNameList().add(pair);
+                addExtension(extension);
+            }
+
+            if (tlsConfig.isAddKeyShareExtension()) {
+                if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
+                        && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
+                    addExtension(new DraftKeyShareExtensionMessage(tlsConfig));
+                } else {
+                    addExtension(new KeyShareExtensionMessage(tlsConfig));
+                }
+            }
+            if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
+                addExtension(new EncryptedServerNameIndicationExtensionMessage());
+            }
+            if (tlsConfig.isAddExtendedMasterSecretExtension()) {
+                addExtension(new ExtendedMasterSecretExtensionMessage());
+            }
+            if (tlsConfig.isAddSessionTicketTLSExtension()) {
+                addExtension(new SessionTicketTLSExtensionMessage());
+            }
+            if (tlsConfig.isAddSignedCertificateTimestampExtension()) {
+                addExtension(new SignedCertificateTimestampExtensionMessage());
+            }
+            if (tlsConfig.isAddPaddingExtension()) {
+                addExtension(new PaddingExtensionMessage());
+            }
+            if (tlsConfig.isAddRenegotiationInfoExtension()) {
+                addExtension(new RenegotiationInfoExtensionMessage());
+            }
+            if (tlsConfig.isAddTokenBindingExtension()) {
+                addExtension(new TokenBindingExtensionMessage());
+            }
+            if (tlsConfig.isAddCertificateStatusRequestExtension()) {
+                addExtension(new CertificateStatusRequestExtensionMessage());
+            }
+            if (tlsConfig.isAddAlpnExtension()) {
+                addExtension(new AlpnExtensionMessage(tlsConfig));
+            }
+            if (tlsConfig.isAddSRPExtension()) {
+                addExtension(new SRPExtensionMessage());
+            }
+            if (tlsConfig.isAddSRTPExtension()) {
+                addExtension(new SrtpExtensionMessage());
+            }
+            if (tlsConfig.isAddTruncatedHmacExtension()) {
+                addExtension(new TruncatedHmacExtensionMessage());
+            }
+            if (tlsConfig.isAddUserMappingExtension()) {
+                addExtension(new UserMappingExtensionMessage());
+            }
+            if (tlsConfig.isAddCertificateTypeExtension()) {
+                addExtension(new CertificateTypeExtensionMessage());
+            }
+            if (tlsConfig.isAddClientAuthzExtension()) {
+                addExtension(new ClientAuthzExtensionMessage());
+            }
+            if (tlsConfig.isAddServerAuthzExtension()) {
+                addExtension(new ServerAuthzExtensionMessage());
+            }
+            if (tlsConfig.isAddClientCertificateTypeExtension()) {
+                addExtension(new ClientCertificateTypeExtensionMessage());
+            }
+            if (tlsConfig.isAddServerCertificateTypeExtension()) {
+                addExtension(new ServerCertificateTypeExtensionMessage());
+            }
+            if (tlsConfig.isAddEncryptThenMacExtension()) {
+                addExtension(new EncryptThenMacExtensionMessage());
+            }
+            if (tlsConfig.isAddCachedInfoExtension()) {
+                addExtension(new CachedInfoExtensionMessage());
+            }
+            if (tlsConfig.isAddClientCertificateUrlExtension()) {
+                addExtension(new ClientCertificateUrlExtensionMessage());
+            }
+            if (tlsConfig.isAddTrustedCaIndicationExtension()) {
+                addExtension(new TrustedCaIndicationExtensionMessage());
+            }
+            if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
+                addExtension(new CertificateStatusRequestV2ExtensionMessage());
+            }
+            if (tlsConfig.isAddPreSharedKeyExtension()) {
+                addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
+            }
+            if (tlsConfig.isAddSupportedVersionsExtension()) {
+                addExtension(new SupportedVersionsExtensionMessage());
+            }
+            if (tlsConfig.isAddExtendedRandomExtension()) {
+                addExtension(new ExtendedRandomExtensionMessage());
+            }
         }
     }
 

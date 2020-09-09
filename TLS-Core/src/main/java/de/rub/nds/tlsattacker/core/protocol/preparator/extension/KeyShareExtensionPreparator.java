@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,11 +13,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +43,21 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         stream = new ByteArrayOutputStream();
+
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+            List<KeyShareEntry> serverList = new ArrayList<>();
+            List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
+            for (KeyShareStoreEntry i : clientShares) {
+                if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
+                    KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig()
+                            .getKeySharePrivate());
+                    serverList.add(keyShareEntry);
+                    break;
+                }
+            }
+            msg.setKeyShareList(serverList);
+        }
+
         if (msg.getKeyShareList() != null) {
             for (KeyShareEntry entry : msg.getKeyShareList()) {
                 KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);

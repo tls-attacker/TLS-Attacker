@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -82,12 +83,13 @@ public class TokenbindingMessagePreparatorTest {
         preparator.prepare();
         Serializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
-        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12);
+        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12,
+                config);
         TokenBindingMessage selfParsed = selfParser.parse();
         assertNotNull(selfParsed);
         String base64 = "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
-        TokenBindingMessageParser parser = new TokenBindingMessageParser(0, decode, ProtocolVersion.TLS12);
+        TokenBindingMessageParser parser = new TokenBindingMessageParser(0, decode, ProtocolVersion.TLS12, config);
         TokenBindingMessage parsedMessage = parser.parse();
         byte[] xBytes = new byte[32];
         System.arraycopy(parsedMessage.getPoint().getValue(), 0, xBytes, 0, 32);

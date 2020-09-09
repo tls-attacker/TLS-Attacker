@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -57,12 +58,6 @@ public class TlsRecordLayer extends RecordLayer {
         compressor = new RecordCompressor(tlsContext);
         decompressor = new RecordDecompressor(tlsContext);
     }
-
-    /**
-     * @param rawRecordData
-     *            The RawRecordData that should be parsed
-     * @return list of parsed records or null, if there was not enough data
-     */
 
     @Override
     public void updateCompressor() {
@@ -177,46 +172,25 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    // TODO for DTLS we should memorize the cipher (states) for every epoch
-    // which would allow us to select the cipher depending on the cipher in the
-    // epoch
-    public void decryptRecord(AbstractRecord record) {
+    public void decryptAndDecompressRecord(AbstractRecord record) {
         if (record instanceof Record) {
-            try {
-                if (tlsContext.isTls13SoftDecryption()
-                        && tlsContext.getTalkingConnectionEndType() != tlsContext.getConnection()
-                                .getLocalConnectionEndType()) {
-                    if (null == ((Record) record).getContentMessageType()) {
-                        LOGGER.debug("Deactivating soft decryption since we received a non alert record");
-                        tlsContext.setTls13SoftDecryption(false);
-                    } else {
-                        switch (((Record) record).getContentMessageType()) {
-                            case ALERT:
-                                LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
-                                setRecordCipher(new RecordNullCipher(tlsContext));
-                                updateDecryptionCipher();
-                                break;
-                            case CHANGE_CIPHER_SPEC:
-                                LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
-                                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
-                                return;
-                            default:
-                                LOGGER.debug("Deactivating soft decryption since we received a non alert record");
-                                tlsContext.setTls13SoftDecryption(false);
-                                break;
-                        }
-                    }
-                }
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && record
+                            .getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
-            } catch (CryptoException E) {
-                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
-                LOGGER.warn("Could not decrypt Record, parsing as unencrypted");
-                LOGGER.debug(E);
+            } else {
+                // Do not decrypt the record
+                record.prepareComputations();
+                ((Record) record).setSequenceNumber(BigInteger.valueOf(tlsContext.getReadSequenceNumber()));
+                byte[] protocolMessageBytes = record.getProtocolMessageBytes().getValue();
+                record.setCleanProtocolMessageBytes(protocolMessageBytes);
+                // tlsContext.increaseReadSequenceNumber();
             }
         } else {
-            LOGGER.warn("Not decrypting received non Record:" + record.toString());
-            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
+            LOGGER.warn("Decrypting received non Record:" + record.toString());
+            decryptor.decrypt(record);
+            decompressor.decompress(record);
         }
     }
 
@@ -226,12 +200,12 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public RecordCipher getEncryptor() {
+    public RecordCipher getEncryptorCipher() {
         return encryptor.getRecordMostRecentCipher();
     }
 
     @Override
-    public RecordCipher getDecryptor() {
+    public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordMostRecentCipher();
     }
 

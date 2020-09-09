@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,6 +37,7 @@ public enum HandshakeMessageType {
     CERTIFICATE_VERIFY((byte) 15),
     CLIENT_KEY_EXCHANGE((byte) 16),
     FINISHED((byte) 20),
+    CERTIFICATE_STATUS((byte) 22),
     SUPPLEMENTAL_DATA((byte) 23);
 
     private int value;

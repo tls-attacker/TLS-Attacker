@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -50,6 +51,10 @@ public class ExtensionByteLength {
      * ServerNameListLength in the ServerNameIndicationExtension
      */
     public static final int SERVER_NAME_LIST = 2;
+    /**
+     * ExtendedRandomLength in the ExtendedRandomExtension
+     */
+    public static final int EXTENDED_RANDOM_LENGTH = 2;
     /**
      * KeyShareGroup length in the KeySahreExtension
      */
@@ -250,6 +255,42 @@ public class ExtensionByteLength {
      * ServerKeyExchange for some reason
      */
     public static final int PASSWORD_SALT = 2;
+
+    /**
+     * Fields in the DNS Record of the EncryptedServerNameIndicationExtension
+     */
+    public static final int ESNI_RECORD_VERSION = 2;
+
+    public static final int ESNI_RECORD_CHECKSUM = 4;
+
+    public static final int ESNI_RECORD_PADDED_LENGTH = 2;
+
+    public static final int ESNI_RECORD_NOT_BEFORE = 8;
+
+    public static final int ESNI_RECORD_NOT_AFTER = 8;
+
+    public static final int ESNI_RECORD_EXTENSIONS = 2;
+
+    /**
+     * Length of encryptedSni in the EncryptedServerNameIndicationExtension
+     */
+    public static final int ENCRYPTED_SNI_LENGTH = 2;
+
+    /**
+     * Nonce in EncryptedServerNameIndicationExtension
+     */
+    public static final int NONCE = 16;
+
+    /**
+     * PaddedLength in the ClientEsniInner of the
+     * EncryptedServerNameIndicationExtension
+     */
+    public static final int PADDED_LEMGTH = 2;
+
+    /**
+     * recordDdigestLength in EncryptedServerNameIndicationExtension
+     */
+    public static final int RECORD_DIGEST_LENGTH = 2;
 
     private ExtensionByteLength() {
     }

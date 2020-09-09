@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -26,11 +27,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 
 @RunWith(Parameterized.class)
 public class SSL2ClientMasterKeySerializerTest {
-
-    private final ProtocolVersion version = ProtocolVersion.SSL2;
-    private SSL2ClientMasterKeyMessage message;
-    private byte[] expectedClientMasterKeyMessage;
-
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         byte[] expectedClientMasterKeyMessage = ArrayConverter
@@ -42,6 +38,10 @@ public class SSL2ClientMasterKeySerializerTest {
         return Arrays.asList(new Object[][] { { 138, HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue(), cipher, 0,
                 128, 0, new byte[0], encryptedKey, expectedClientMasterKeyMessage } });
     }
+
+    private final ProtocolVersion version = ProtocolVersion.SSL2;
+    private SSL2ClientMasterKeyMessage message;
+    private byte[] expectedClientMasterKeyMessage;
 
     public SSL2ClientMasterKeySerializerTest(int messageLength, byte messageType, byte[] cipher, int clearKeyLength,
             int encryptedKeyLength, int keyArgLength, byte[] clearKeyData, byte[] encryptedKey,
@@ -56,6 +56,8 @@ public class SSL2ClientMasterKeySerializerTest {
         this.message.setKeyArgLength(keyArgLength);
         this.message.setClearKeyData(clearKeyData);
         this.message.setEncryptedKeyData(encryptedKey);
+        this.message.setPaddingLength(0);
+        this.message.setKeyArgData(new byte[keyArgLength]);
     }
 
     @Test

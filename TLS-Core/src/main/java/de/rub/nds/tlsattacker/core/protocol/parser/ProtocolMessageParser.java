@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +28,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
 
     private final ProtocolVersion version;
 
+    private final Config config;
+
     /**
      * Constructor for the Parser class
      *
@@ -37,10 +41,13 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public ProtocolMessageParser(int pointer, byte[] array, ProtocolVersion version) {
+    public ProtocolMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array);
         this.version = version;
+        this.config = config;
     }
 
     @Override
@@ -67,5 +74,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
 
     protected ProtocolVersion getVersion() {
         return version;
+    }
+
+    protected Config getConfig() {
+        return config;
     }
 }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -55,14 +56,12 @@ public class AlgorithmResolverTest {
                 CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL2() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV);
+        assertNull(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV);
+        assertNull(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV));
     }
 
     @Test(expected = UnsupportedOperationException.class)

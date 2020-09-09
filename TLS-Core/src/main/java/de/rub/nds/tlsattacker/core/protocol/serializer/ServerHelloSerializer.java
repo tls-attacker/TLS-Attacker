@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -60,14 +61,10 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
         LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
         writeRandom();
-        if (!version.isTLS13()) {
-            writeSessionIDLength();
-            writeSessionID();
-        }
+        writeSessionIDLength();
+        writeSessionID();
         writeSelectedCiphersuite();
-        if (!version.isTLS13()) {
-            writeSelectedComressionMethod();
-        }
+        writeSelectedComressionMethod();
         if (hasExtensionLengthField()) {
             writeExtensionLength();
             if (hasExtensions()) {

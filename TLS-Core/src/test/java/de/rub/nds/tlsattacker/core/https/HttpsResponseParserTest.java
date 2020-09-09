@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.nio.charset.Charset;
@@ -17,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HttpsResponseParserTest {
+
+    private final Config config = Config.createConfig();
 
     public HttpsResponseParserTest() {
     }
@@ -33,7 +37,7 @@ public class HttpsResponseParserTest {
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
         HttpsResponseParser parser = new HttpsResponseParser(0,
-                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12);
+                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
         parser.parse();
     }
 
@@ -47,7 +51,7 @@ public class HttpsResponseParserTest {
                 + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         HttpsResponseParser parser = new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")),
-                ProtocolVersion.TLS12);
+                ProtocolVersion.TLS12, config);
         HttpsResponseMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getResponseStatusCode().getValue(), "200 OK");

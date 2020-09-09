@@ -1,22 +1,18 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDhPublicKey;
@@ -36,8 +32,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -49,6 +48,7 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
@@ -147,6 +147,38 @@ public class CertificateKeyPair implements Serializable {
         } else {
             gostCurve = null;
         }
+    }
+
+    public CertificateKeyPair(byte[] certificateBytes, PrivateKey privateKey, PublicKey publicKey) {
+        this.certPublicKeyType = CertificateKeyType.RSA;
+        this.certSignatureType = CertificateKeyType.RSA;
+        // To get the same output as cert.encode() but using the raw bytes
+        // pack them accordingly
+        this.certificateBytes = ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateBytes.length
+                + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
+                .intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH), certificateBytes);
+        this.publicKeyGroup = null;
+        this.signatureGroup = null;
+        gostCurve = null;
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
+    }
+
+    public CertificateKeyPair(Certificate cert, PrivateKey privateKey, PublicKey publicKey) throws IOException {
+        this.certPublicKeyType = getPublicKeyType(cert);
+        this.certSignatureType = getSignatureType(cert);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        cert.encode(stream);
+        this.certificateBytes = stream.toByteArray();
+        this.publicKeyGroup = getPublicNamedGroup(cert);
+        this.signatureGroup = getSignatureNamedGroup(cert);
+        if (certPublicKeyType == CertificateKeyType.GOST01 || certPublicKeyType == CertificateKeyType.GOST12) {
+            gostCurve = getGostCurve(cert);
+        } else {
+            gostCurve = null;
+        }
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
     }
 
     public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
@@ -264,23 +296,9 @@ public class CertificateKeyPair implements Serializable {
         // the signature group is
         // the same as for the public key
         try {
-            X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
-            if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2001)");
-                return null;
-            }
-            if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                LOGGER.debug("SignatureKey is not part of a NamedGroup (GOST 2012)");
-                return null;
-            }
-            BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();
-            ECNamedCurveSpec spec = (ECNamedCurveSpec) ecKey.getParams();
-            NamedGroup group = NamedGroup.fromJavaName(spec.getName());
-            if (group == null) {
-                return null;
-            } else {
-                return group;
-            }
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+            return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
@@ -295,18 +313,9 @@ public class CertificateKeyPair implements Serializable {
             return null;
         }
         try {
-            X509CertificateObject obj = new X509CertificateObject(cert.getCertificateAt(0));
-            if (obj.getPublicKey() instanceof BCECGOST3410PublicKey) {
-                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2001)");
-                return null;
-            }
-            if (obj.getPublicKey() instanceof BCECGOST3410_2012PublicKey) {
-                LOGGER.debug("PublicKey is not part of a NamedGroup (GOST 2012)");
-                return null;
-            }
-            BCECPublicKey ecKey = (BCECPublicKey) obj.getPublicKey();
-            ECNamedCurveSpec spec = (ECNamedCurveSpec) ecKey.getParams();
-            return NamedGroup.fromJavaName(spec.getName());
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+            return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
@@ -341,6 +350,10 @@ public class CertificateKeyPair implements Serializable {
         return publicKeyGroup;
     }
 
+    public GOSTCurve getGostCurve() {
+        return gostCurve;
+    }
+
     public void adjustInConfig(Config config, ConnectionEndType connectionEnd) {
         publicKey.adjustInConfig(config, connectionEnd);
         if (privateKey != null) {
@@ -361,40 +374,16 @@ public class CertificateKeyPair implements Serializable {
         }
         context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            // TODO rething auto selection
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;
-            HashAlgorithm hashAlgorithm = context.getConfig().getPreferredHashAlgorithm();
-            switch (certPublicKeyType) {
-                case ECDSA:
-                    signatureAlgorithm = SignatureAlgorithm.ECDSA;
-                    break;
-                case RSA:
-                    signatureAlgorithm = SignatureAlgorithm.RSA;
-                    break;
-                case DSS:
-                    signatureAlgorithm = SignatureAlgorithm.DSA;
-                    break;
-                case GOST01:
-                    signatureAlgorithm = SignatureAlgorithm.GOSTR34102001;
-                    hashAlgorithm = HashAlgorithm.GOSTR3411;
-                    context.setSelectedGostCurve(gostCurve);
-                    LOGGER.debug("Adjusting selected gost curve:" + gostCurve);
+            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this,
+                    context.getChooser());
 
-                    break;
-                case GOST12:
-                    if (gostCurve.is512bit2012()) {
-                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_512;
-                        hashAlgorithm = HashAlgorithm.GOSTR34112012_512;
-                    } else {
-                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
-                        hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
-                    }
-                    context.setSelectedGostCurve(gostCurve);
-                    LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
-                    break;
+            if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
+                context.setSelectedGostCurve(gostCurve);
+                LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
-            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
-                    signatureAlgorithm, hashAlgorithm);
+
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
             context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
         }

@@ -1,3 +1,4 @@
+*.iml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -44,3 +45,5 @@ Utils/.settings/org.eclipse.jdt.core.prefs
 test.sh
 .settings/
 .classpath
+.idea
+*.iml

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
@@ -49,6 +51,7 @@ public class SupplementalDataParserTest {
     private int supplementalDataLength;
     private byte[] supplementalDataBytes;
     private ProtocolVersion version;
+    private final Config config = Config.createConfig();
 
     public SupplementalDataParserTest(byte[] message, HandshakeMessageType type, int length,
             int supplementalDataLength, byte[] supplementalDataBytes, ProtocolVersion version) {
@@ -62,7 +65,7 @@ public class SupplementalDataParserTest {
 
     @Test
     public void testParse() {
-        SupplementalDataParser parser = new SupplementalDataParser(0, message, version);
+        SupplementalDataParser parser = new SupplementalDataParser(0, message, version, config);
         SupplementalDataMessage suppDataMessage = parser.parse();
         assertArrayEquals(suppDataMessage.getCompleteResultingMessage().getValue(), message);
         assertTrue(suppDataMessage.getType().getValue() == type.getValue());

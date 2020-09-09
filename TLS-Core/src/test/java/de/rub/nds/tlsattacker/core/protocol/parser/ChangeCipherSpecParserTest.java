@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import java.util.Arrays;
@@ -31,6 +33,7 @@ public class ChangeCipherSpecParserTest {
     private final byte[] message;
     private final ProtocolVersion version;
     private final byte ccsType;
+    private final Config config = Config.createConfig();
 
     public ChangeCipherSpecParserTest(byte[] message, byte ccsType, ProtocolVersion version) {
         this.message = message;
@@ -43,7 +46,7 @@ public class ChangeCipherSpecParserTest {
      */
     @Test
     public void testParse() {
-        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(0, message, version);
+        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(0, message, version, config);
         ChangeCipherSpecMessage ccsMessagee = parser.parse();
         assertArrayEquals(message, ccsMessagee.getCompleteResultingMessage().getValue());
         assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue());

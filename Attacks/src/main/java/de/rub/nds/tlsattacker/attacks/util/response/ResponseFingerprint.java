@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,7 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,18 +27,6 @@ import java.util.Objects;
  */
 public class ResponseFingerprint {
 
-    private final boolean receivedTransportHandlerException;
-
-    private final boolean encryptedAlert;
-
-    private final int numberRecordsReceived;
-
-    private final int numberOfMessageReceived;
-
-    private final List<Class<AbstractRecord>> recordClasses;
-
-    private final List<Class<ProtocolMessage>> messageClasses;
-
     private final List<ProtocolMessage> messageList;
 
     private final List<AbstractRecord> recordList;
@@ -44,26 +35,12 @@ public class ResponseFingerprint {
 
     /**
      *
-     * @param receivedTransportHandlerException
-     * @param encryptedAlert
-     * @param numberRecordsReceived
-     * @param numberOfMessageReceived
-     * @param recordClasses
-     * @param messageClasses
      * @param messageList
      * @param recordList
      * @param socketState
      */
-    public ResponseFingerprint(boolean receivedTransportHandlerException, boolean encryptedAlert,
-            int numberRecordsReceived, int numberOfMessageReceived, List<Class<AbstractRecord>> recordClasses,
-            List<Class<ProtocolMessage>> messageClasses, List<ProtocolMessage> messageList,
-            List<AbstractRecord> recordList, SocketState socketState) {
-        this.receivedTransportHandlerException = receivedTransportHandlerException;
-        this.encryptedAlert = encryptedAlert;
-        this.numberRecordsReceived = numberRecordsReceived;
-        this.numberOfMessageReceived = numberOfMessageReceived;
-        this.recordClasses = recordClasses;
-        this.messageClasses = messageClasses;
+    public ResponseFingerprint(List<ProtocolMessage> messageList, List<AbstractRecord> recordList,
+            SocketState socketState) {
         this.messageList = messageList;
         this.recordList = recordList;
         this.socketState = socketState;
@@ -89,54 +66,6 @@ public class ResponseFingerprint {
      *
      * @return
      */
-    public boolean isReceivedTransportHandlerException() {
-        return receivedTransportHandlerException;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isEncryptedAlert() {
-        return encryptedAlert;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getNumberRecordsReceived() {
-        return numberRecordsReceived;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getNumberOfMessageReceived() {
-        return numberOfMessageReceived;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<Class<AbstractRecord>> getRecordClasses() {
-        return recordClasses;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<Class<ProtocolMessage>> getMessageClasses() {
-        return messageClasses;
-    }
-
-    /**
-     *
-     * @return
-     */
     public List<ProtocolMessage> getMessageList() {
         return messageList;
     }
@@ -148,14 +77,6 @@ public class ResponseFingerprint {
     @Override
     public String toString() {
 
-        StringBuilder recordClasses = new StringBuilder();
-        for (Class<AbstractRecord> someClass : this.recordClasses) {
-            recordClasses.append(someClass.getSimpleName()).append(",");
-        }
-        StringBuilder messageClasses = new StringBuilder();
-        for (Class<ProtocolMessage> someClass : this.messageClasses) {
-            messageClasses.append(someClass.getSimpleName()).append(",");
-        }
         StringBuilder messages = new StringBuilder();
         for (ProtocolMessage someMessage : this.messageList) {
             messages.append(someMessage.toCompactString()).append(",");
@@ -165,11 +86,8 @@ public class ResponseFingerprint {
             records.append(someRecord.getClass().getSimpleName()).append(",");
         }
 
-        return "ResponseFingerprint[" + "Exception=" + receivedTransportHandlerException + ", Encrypted="
-                + encryptedAlert + ", #Records=" + numberRecordsReceived + ", #Messages=" + numberOfMessageReceived
-                + ", RecordClasses=[" + recordClasses.toString() + "], MessageClasses=[" + messageClasses.toString()
-                + "], Messages=[" + messages.toString() + "], Reccords=[" + records.toString() + "], NetworkState="
-                + socketState + ']';
+        return "ResponseFingerprint[ Messages=[" + messages.toString() + "], Reccords=[" + records.toString()
+                + "], SocketState=" + socketState + ']';
     }
 
     public String toHumanReadable() {
@@ -216,9 +134,20 @@ public class ResponseFingerprint {
             }
             resultString.append(" ");
         }
-        if (encryptedAlert) {
-            resultString.append(" ENC ");
+        if (recordList != null && recordList.size() > 0) {
+            resultString.append(" [");
+            for (AbstractRecord record : recordList) {
+                if (record instanceof Record) {
+                    resultString.append("R(" + ((Record) record).getLength().getValue() + "),");
+                } else {
+                    resultString.append("B(" + ((Record) record).getLength().getValue() + "),");
+                }
+            }
+            resultString.deleteCharAt(resultString.length() - 1); // remove last
+                                                                  // commatar
+            resultString.append("]");
         }
+        resultString.append(" ");
         if (socketState != null) {
             switch (socketState) {
                 case CLOSED:
@@ -244,18 +173,12 @@ public class ResponseFingerprint {
         return resultString.toString();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + (this.receivedTransportHandlerException ? 1 : 0);
-        hash = 53 * hash + (this.encryptedAlert ? 1 : 0);
-        hash = 53 * hash + this.numberRecordsReceived;
-        hash = 53 * hash + this.numberOfMessageReceived;
-        hash = 53 * hash + Objects.hashCode(this.socketState);
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.messageList);
+        hash = 29 * hash + Objects.hashCode(this.recordList);
+        hash = 29 * hash + Objects.hashCode(this.socketState);
         return hash;
     }
 
@@ -276,21 +199,6 @@ public class ResponseFingerprint {
             return false;
         }
         final ResponseFingerprint other = (ResponseFingerprint) obj;
-        if (this.receivedTransportHandlerException != other.receivedTransportHandlerException) {
-            return false;
-        }
-        if (this.encryptedAlert != other.encryptedAlert) {
-            return false;
-        }
-        if (this.numberRecordsReceived != other.numberRecordsReceived) {
-            return false;
-        }
-        if (!this.recordClasses.equals(other.recordClasses)) {
-            return false;
-        }
-        if (!this.messageClasses.equals(other.messageClasses)) {
-            return false;
-        }
         if (this.messageList.size() == other.messageList.size()) {
             for (int i = 0; i < this.messageList.size(); i++) {
                 if (!this.messageList.get(i).toCompactString().equals(other.messageList.get(i).toCompactString())) {
@@ -300,8 +208,42 @@ public class ResponseFingerprint {
         } else {
             return false;
         }
-        if (this.numberOfMessageReceived != other.numberOfMessageReceived) {
-            return false;
+        if (this.recordList != null && other.recordList != null) {
+            if (this.recordList.size() == other.recordList.size()) {
+                for (int i = 0; i < this.recordList.size(); i++) {
+                    if (!this.recordList.get(i).getClass().equals(other.recordList.get(i).getClass())) {
+                        return false;
+                    }
+                    // This also finds fragmentations issues
+                    if (this.recordList.get(i).getCompleteRecordBytes().getValue().length != other.recordList.get(i)
+                            .getCompleteRecordBytes().getValue().length) {
+                        return false;
+                    }
+                    if (this.recordList.get(i) instanceof Record && other.recordList.get(i) instanceof Record) {
+                        // Comparing Records
+                        Record thisRecord = (Record) this.getRecordList().get(i);
+                        Record otherRecord = (Record) other.getRecordList().get(i);
+                        if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType()
+                                .getValue()) {
+                            return false;
+                        }
+
+                        if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord.getProtocolVersion()
+                                .getValue())) {
+                            return false;
+                        }
+
+                    } else {
+                        // Comparing BlobRecords
+                        if (Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
+                                .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
         }
         return this.socketState == other.socketState;
     }
@@ -318,9 +260,9 @@ public class ResponseFingerprint {
                 return false;
             }
         }
-        int minNumberOfMessages = fingerprint.getNumberOfMessageReceived();
-        if (getNumberRecordsReceived() < minNumberOfMessages) {
-            minNumberOfMessages = this.getNumberRecordsReceived();
+        int minNumberOfMessages = fingerprint.getMessageList().size();
+        if (this.messageList.size() < minNumberOfMessages) {
+            minNumberOfMessages = this.messageList.size();
         }
         for (int i = 0; i < minNumberOfMessages; i++) {
             ProtocolMessage messageOne = this.getMessageList().get(i);

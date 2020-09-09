@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -33,9 +35,11 @@ public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<Ps
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public PskDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
-        super(pointer, array, version, KeyExchangeAlgorithm.DHE_PSK);
+    public PskDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, KeyExchangeAlgorithm.DHE_PSK, config);
         this.version = version;
     }
 

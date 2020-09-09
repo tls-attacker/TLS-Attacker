@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,20 +40,20 @@ public class FingerPrintTask extends TlsTask {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         try {
             WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
             executor.executeWorkflow();
 
             if (!state.getWorkflowTrace().executedAsPlanned()) {
-                throw new FingerprintExtractionException(
-                        "Could not extract fingerprint. Not all actions executed as planned");
+                return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(state);
 
             if (fingerprint == null) {
-                throw new FingerprintExtractionException("Could not extract fingerprint. Fingerprint is null");
+                return false;
             }
+            return true;
         } finally {
             try {
                 state.getTlsContext().getTransportHandler().closeConnection();

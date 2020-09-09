@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -21,8 +22,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -56,6 +60,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
      */
     @XmlElementWrapper
     @XmlElements(value = {
+            @XmlElement(type = EncryptedServerNameIndicationExtensionMessage.class, name = "EncryptedServerNameIndicationExtension"),
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
@@ -68,6 +73,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = SessionTicketTLSExtensionMessage.class, name = "SessionTicketTLSExtension"),
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension"),
             @XmlElement(type = SignedCertificateTimestampExtensionMessage.class, name = "SignedCertificateTimestampExtension"),
+            @XmlElement(type = ExtendedRandomExtensionMessage.class, name = "ExtendedRandomExtension"),
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
@@ -123,6 +129,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     public final List<ExtensionMessage> getExtensions() {
         return extensions;
+    }
+
+    public final <T extends ExtensionMessage> T getExtension(Class<T> extensionClass) {
+        if (this.getExtensions() == null) return null;
+        List<ExtensionMessage> extensionMessages = new ArrayList<>(this.getExtensions());
+        Optional<ExtensionMessage> extension = extensionMessages.stream().filter(i -> i.getClass().equals(extensionClass)).findFirst();
+        if (extension.isPresent()) {
+            return extensionClass.cast(extension.get());
+        }
+        return null;
     }
 
     public final void setExtensions(List<ExtensionMessage> extensions) {

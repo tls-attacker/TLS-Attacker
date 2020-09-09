@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.https;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
@@ -23,6 +25,7 @@ public class HttpsRequestHandlerTest {
     private TlsContext context;
     private HttpsRequestMessage message;
     private HttpsRequestHandler handler;
+    private final Config config = Config.createConfig();
 
     @Before
     public void setUp() {
@@ -30,7 +33,7 @@ public class HttpsRequestHandlerTest {
 
         String rawMessage = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
         HttpsRequestParser parser = new HttpsRequestParser(0, rawMessage.getBytes(Charset.forName("UTF-8")),
-                ProtocolVersion.TLS12);
+                ProtocolVersion.TLS12, config);
         message = parser.parse();
 
         handler = new HttpsRequestHandler(context);
