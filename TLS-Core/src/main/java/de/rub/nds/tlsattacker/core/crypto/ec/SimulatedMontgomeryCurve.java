@@ -10,11 +10,15 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Montgomery Curve that internally uses a Weierstrass Curve
  */
 public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final EllipticCurveOverFp weierstrassEquivalent;
 
@@ -59,8 +63,8 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
                 .multiply(getB().getData().modInverse(getModulus())).mod(getModulus());
         BigInteger y = modSqrt(val, getModulus());
         if (y == null) {
-            // no solution for given x was found
-            return null;
+            LOGGER.warn("Could not create a point on Curve. Creating with y == 0");
+            return getPoint(x, BigInteger.ZERO);
         } else {
             return getPoint(x, y);
         }

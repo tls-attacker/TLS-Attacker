@@ -34,7 +34,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
-        this(timeout, timeout, hostname, port);
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, timeout, hostname, port);
     }
 
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {

@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import java.math.BigInteger;
 import java.util.List;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -1128,15 +1127,6 @@ public class DefaultChooser extends Chooser {
             return context.getEsniNotAfter();
         } else {
             return config.getDefaultEsniNotAfter();
-        }
-    }
-
-    @Override
-    public List<ExtensionMessage> getEsniExtensions() {
-        if (context.getEsniExtensions() != null) {
-            return context.getEsniExtensions();
-        } else {
-            return config.getDefaultEsniExtensions();
         }
     }
 }

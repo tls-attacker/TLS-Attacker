@@ -106,12 +106,7 @@ public class ClientHelloMessage extends HelloMessage {
                 addExtension(new SupportedVersionsExtensionMessage());
             }
             if (tlsConfig.isAddKeyShareExtension()) {
-                if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
-                        && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
-                    addExtension(new DraftKeyShareExtensionMessage(tlsConfig));
-                } else {
-                    addExtension(new KeyShareExtensionMessage(tlsConfig));
-                }
+                addExtension(new KeyShareExtensionMessage(tlsConfig));
             }
             if (tlsConfig.isAddEarlyDataExtension()) {
                 addExtension(new EarlyDataExtensionMessage());

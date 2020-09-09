@@ -82,19 +82,21 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustHandshakeTrafficSecrets();
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
-                setServerRecordCipher();
+        if (!message.isTls13HelloRetryRequest()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                adjustHandshakeTrafficSecrets();
+                if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
+                    setServerRecordCipher();
+                }
             }
-        }
-        adjustPRF(message);
-        if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {
-            LOGGER.info("Resuming Session");
-            LOGGER.debug("Loading Mastersecret");
-            Session session = tlsContext.getSession(tlsContext.getChooser().getServerSessionId());
-            tlsContext.setMasterSecret(session.getMasterSecret());
-            setRecordCipher();
+            adjustPRF(message);
+            if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {
+                LOGGER.info("Resuming Session");
+                LOGGER.debug("Loading Mastersecret");
+                Session session = tlsContext.getSession(tlsContext.getChooser().getServerSessionId());
+                tlsContext.setMasterSecret(session.getMasterSecret());
+                setRecordCipher();
+            }
         }
     }
 
@@ -274,6 +276,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
         Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
         tlsContext.setServerEcPublicKey(publicPoint);
+        tlsContext.setSelectedGroup(keyShare.getGroup());
         BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
 
         switch (keyShare.getGroup()) {

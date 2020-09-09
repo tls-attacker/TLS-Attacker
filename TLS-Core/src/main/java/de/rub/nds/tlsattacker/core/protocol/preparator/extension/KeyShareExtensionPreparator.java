@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +43,9 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
+        if (msg.getKeyShareList() == null) {
+            msg.setKeyShareList(new LinkedList<KeyShareEntry>());
+        }
         stream = new ByteArrayOutputStream();
 
         if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
@@ -70,6 +74,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                 }
             }
         }
+
         prepareKeyShareListBytes(msg);
         prepareKeyShareListLength(msg);
     }

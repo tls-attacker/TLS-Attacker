@@ -130,14 +130,21 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     public int calculatePaddingLength(Record record, int dataLength) {
+
         int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+        if (additionalPadding > 256) {
+            LOGGER.warn("Additional padding is too big. setting it to max possible value");
+            additionalPadding = 256;
+        } else if (additionalPadding < 0) {
+            LOGGER.warn("Additional padding is negative, setting it to 0");
+            additionalPadding = 0;
+        }
         record.getComputations().setAdditionalPaddingLength(additionalPadding);
         additionalPadding = record.getComputations().getAdditionalPaddingLength().getValue();
         if (additionalPadding % encryptCipher.getBlocksize() != 0) {
             LOGGER.warn("Additional padding is not a multiple of the blocksize");
         }
-        return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize()))
-                + context.getConfig().getDefaultAdditionalPadding();
+        return (encryptCipher.getBlocksize() - (dataLength % encryptCipher.getBlocksize())) + additionalPadding;
     }
 
     public byte[] getEncryptionIV() {
