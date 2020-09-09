@@ -129,4 +129,13 @@ public abstract class TransportHandler {
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
+
+    public void setIsInStreamTerminating(boolean isInStreamTerminating) {
+        this.isInStreamTerminating = isInStreamTerminating;
+    }
+
+    public boolean isIsInStreamTerminating() {
+        return isInStreamTerminating;
+    }
+
 }
