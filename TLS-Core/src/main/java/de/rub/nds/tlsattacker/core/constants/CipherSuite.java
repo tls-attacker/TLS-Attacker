@@ -1062,6 +1062,18 @@ public enum CipherSuite {
         return this.name().contains("PWD");
     }
 
+    public boolean isRSA() {
+        return this.name().contains("RSA");
+    }
+
+    public boolean isDSS() {
+        return this.name().contains("DSS");
+    }
+    
+    public boolean isGOST() {
+        return this.name().contains("GOST");
+    }
+
     // Note: We don't consider DES as weak for these purposes.
     public boolean isWeak() {
         return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
