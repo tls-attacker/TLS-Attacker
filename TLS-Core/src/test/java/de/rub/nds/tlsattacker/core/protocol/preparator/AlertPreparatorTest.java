@@ -46,11 +46,11 @@ public class AlertPreparatorTest {
 
     @Test
     public void testPrepareFromDefaultConfig() {
-        context.getConfig().setDefaultAlertDescription((byte) 2);
-        context.getConfig().setDefaultAlertLevel((byte) 2);
+        context.getConfig().setDefaultAlertDescription(AlertDescription.BAD_CERTIFICATE);
+        context.getConfig().setDefaultAlertLevel(AlertLevel.FATAL);
         preparator.prepare();
-        assertTrue(message.getLevel().getValue() == 2);
-        assertTrue(message.getDescription().getValue() == 2);
+        assertTrue(message.getDescription().getValue() == AlertDescription.BAD_CERTIFICATE.getValue());
+        assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
     }
 
     @Test

@@ -36,6 +36,7 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
 
     public KeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);
+        keyShareList = new LinkedList<>();
     }
 
     public KeyShareExtensionMessage(Config tlsConfig) {

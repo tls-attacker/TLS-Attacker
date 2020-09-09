@@ -9,6 +9,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Wrapper;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
@@ -41,6 +43,9 @@ import org.bouncycastle.util.Pack;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class GOST28147WrapEngine implements Wrapper {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /*
      * RFC 4357 6.5. CryptoPro KEK Diversification Algorithm Given a random
      * 64-bit UKM and a GOST 28147-89 key K, this algorithm creates a new GOST
@@ -129,12 +134,14 @@ public class GOST28147WrapEngine implements Wrapper {
         mac.update(input, inOff, inLen);
 
         byte[] wrappedKey = new byte[inLen + mac.getMacSize()];
-
-        cipher.processBlock(input, inOff, wrappedKey, 0);
-        cipher.processBlock(input, inOff + 8, wrappedKey, 8);
-        cipher.processBlock(input, inOff + 16, wrappedKey, 16);
-        cipher.processBlock(input, inOff + 24, wrappedKey, 24);
-
+        try {
+            cipher.processBlock(input, inOff, wrappedKey, 0);
+            cipher.processBlock(input, inOff + 8, wrappedKey, 8);
+            cipher.processBlock(input, inOff + 16, wrappedKey, 16);
+            cipher.processBlock(input, inOff + 24, wrappedKey, 24);
+        } catch (Exception E) {
+            LOGGER.warn("Could not wrap key. Continuing with partially wrapped key", E);
+        }
         mac.doFinal(wrappedKey, inLen);
 
         return wrappedKey;

@@ -198,7 +198,16 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
         byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), sBoxName);
 
         byte[] cek = new byte[32];
-        System.arraycopy(wrapped, 0, cek, 0, cek.length);
+        try {
+            if (wrapped.length <= cek.length) {
+                System.arraycopy(wrapped, 0, cek, 0, cek.length);
+            } else {
+                // This case is for fuzzing purposes only.
+                System.arraycopy(wrapped, 0, cek, 0, wrapped.length - 1);
+            }
+        } catch (ArrayIndexOutOfBoundsException E) {
+            LOGGER.warn("Something going wrong here...");
+        }
         msg.getComputations().setEncryptedKey(cek);
 
         byte[] mac = new byte[wrapped.length - cek.length];
@@ -211,23 +220,27 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     }
 
     private void prepareKeyBlob() throws IOException {
-        Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg.getComputations()
-                .getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
-        SubjectPublicKeyInfo ephemeralKey = SubjectPublicKeyInfo.getInstance(GOSTUtils.generatePublicKey(
-                chooser.getSelectedGostCurve(), ecPoint).getEncoded());
+        try {
+            Point ecPoint = Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(), msg
+                    .getComputations().getClientPublicKeyY().getValue(), chooser.getSelectedGostCurve());
+            SubjectPublicKeyInfo ephemeralKey = SubjectPublicKeyInfo.getInstance(GOSTUtils.generatePublicKey(
+                    chooser.getSelectedGostCurve(), ecPoint).getEncoded());
 
-        Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey()
-                .getValue(), getMaskKey(), msg.getComputations().getMacKey().getValue());
-        ASN1ObjectIdentifier paramSet = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet()
-                .getValue());
-        GostR3410TransportParameters params = new GostR3410TransportParameters(paramSet, ephemeralKey, msg
-                .getComputations().getUkm().getValue());
-        GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
-        DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
-        TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
-
-        msg.setKeyTransportBlob(blob.getEncoded());
-        LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+            Gost2814789EncryptedKey encryptedKey = new Gost2814789EncryptedKey(msg.getComputations().getEncryptedKey()
+                    .getValue(), getMaskKey(), msg.getComputations().getMacKey().getValue());
+            ASN1ObjectIdentifier paramSet = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet()
+                    .getValue());
+            GostR3410TransportParameters params = new GostR3410TransportParameters(paramSet, ephemeralKey, msg
+                    .getComputations().getUkm().getValue());
+            GostR3410KeyTransport transport = new GostR3410KeyTransport(encryptedKey, params);
+            DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
+            TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
+            msg.setKeyTransportBlob(blob.getEncoded());
+            LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+        } catch (Exception E) {
+            msg.setKeyTransportBlob(new byte[0]);
+            LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");
+        }
     }
 
     private byte[] getProxyKeyBlobs() {

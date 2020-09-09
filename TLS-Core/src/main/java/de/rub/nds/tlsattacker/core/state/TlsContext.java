@@ -652,7 +652,7 @@ public class TlsContext {
 
     private Long esniNotAfter;
 
-    private List<ExtensionMessage> esniExtensions;
+    private List<ExtensionType> esniExtensions;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -2455,14 +2455,6 @@ public class TlsContext {
 
     public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
         this.esniNotAfter = esniKeysNotAfter;
-    }
-
-    public List<ExtensionMessage> getEsniExtensions() {
-        return esniExtensions;
-    }
-
-    public void setEsniExtensions(List<ExtensionMessage> esniExtensions) {
-        this.esniExtensions = esniExtensions;
     }
 
     public NamedGroup getEcCertificateSignatureCurve() {

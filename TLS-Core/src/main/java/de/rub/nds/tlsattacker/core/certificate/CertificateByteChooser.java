@@ -167,6 +167,10 @@ public class CertificateByteChooser {
         } else {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser
                     .getSelectedCipherSuite());
+            if (keyExchangeAlgorithm == null) {
+                LOGGER.warn("CipherSuite does not specify a certificate kex. Using  RSA.");
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
+            }
             switch (keyExchangeAlgorithm) {
                 case DH_RSA:
                 case DHE_RSA:

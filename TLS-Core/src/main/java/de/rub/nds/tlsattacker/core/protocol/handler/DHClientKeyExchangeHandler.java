@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
@@ -44,7 +45,12 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     public void adjustTLSContext(DHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustClientPublicKey(message);
         setRecordCipher();
         spawnNewSession();
+    }
+
+    private void adjustClientPublicKey(DHClientKeyExchangeMessage message) {
+        tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
     }
 }

@@ -39,11 +39,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final Point point;
+    private Point point;
 
-    private final NamedGroup group;
+    private NamedGroup group;
 
-    private final GOSTCurve gostCurve;
+    private GOSTCurve gostCurve;
 
     private CustomEcPublicKey() {
         this.point = null;
@@ -198,10 +198,23 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         return true;
     }
 
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public void setGroup(NamedGroup group) {
+        this.group = group;
+    }
+
+    public void setGostCurve(GOSTCurve gostCurve) {
+        this.gostCurve = gostCurve;
+    }
+
     @Override
     public int keysize() {
-        if (group == null || group.getCoordinateSizeInBit() == null)
+        if (group == null || group.getCoordinateSizeInBit() == null) {
             return 0;
+        }
         return group.getCoordinateSizeInBit();
     }
 }

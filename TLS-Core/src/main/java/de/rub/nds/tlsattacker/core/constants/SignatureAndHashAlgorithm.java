@@ -102,6 +102,23 @@ public enum SignatureAndHashAlgorithm {
         return algoList;
     }
 
+    public static List<SignatureAndHashAlgorithm> getTls13SignatureAndHashAlgorithms() {
+        List<SignatureAndHashAlgorithm> algos = new LinkedList<>();
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA512);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        return algos;
+    }
+
     private int value;
 
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
@@ -306,8 +323,9 @@ public enum SignatureAndHashAlgorithm {
                     break;
             }
 
-            if (found)
+            if (found) {
                 break;
+            }
         }
 
         if (sigHashAlgo == null) {

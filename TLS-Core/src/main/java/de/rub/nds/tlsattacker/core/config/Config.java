@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -27,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.EsniVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -514,7 +517,7 @@ public class Config implements Serializable {
      */
     private Boolean addSessionTicketTLSExtension = false;
 
-    /***
+    /**
      * If we generate ClientHello with extended Random Extension
      */
     private Boolean addExtendedRandomExtension = false;
@@ -921,9 +924,9 @@ public class Config implements Serializable {
 
     private PRFAlgorithm defaultPRFAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
 
-    private Byte defaultAlertDescription = 0;
+    private AlertDescription defaultAlertDescription = AlertDescription.CLOSE_NOTIFY;
 
-    private Byte defaultAlertLevel = 0;
+    private AlertLevel defaultAlertLevel = AlertLevel.WARNING;
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
@@ -1107,7 +1110,7 @@ public class Config implements Serializable {
     /**
      * Min iterations for finding the PWD password element
      */
-    private int defaultPWDIterations = 40;
+    private Integer defaultPWDIterations = 40;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDPrivate = ArrayConverter
@@ -1184,16 +1187,17 @@ public class Config implements Serializable {
 
     private List<CipherSuite> defaultEsniServerCiphersuites = new LinkedList();
 
-    private int defaultEsniPaddedLength = 260;
+    private Integer defaultEsniPaddedLength = 260;
 
     private Long defaultEsniNotBefore = 1582655135231L;
 
     private Long defaultEsniNotAfter = 1582655135231L + 2592000000L;
 
-    private List<ExtensionMessage> defaultEsniExtensions = new LinkedList();
-    private boolean acceptOnlyFittingDtlsFragments = false;
+    private List<ExtensionType> defaultEsniExtensions = new LinkedList();
 
-    private boolean acceptContentRewritingDtlsFragments = true;
+    private Boolean acceptOnlyFittingDtlsFragments = false;
+
+    private Boolean acceptContentRewritingDtlsFragments = true;
 
     private boolean writeKeylogFile = false;
 
@@ -1303,19 +1307,19 @@ public class Config implements Serializable {
         }
     }
 
-    public boolean isAcceptOnlyFittingDtlsFragments() {
+    public Boolean isAcceptOnlyFittingDtlsFragments() {
         return acceptOnlyFittingDtlsFragments;
     }
 
-    public void setAcceptOnlyFittingDtlsFragments(boolean acceptOnlyFittingDtlsFragments) {
+    public void setAcceptOnlyFittingDtlsFragments(Boolean acceptOnlyFittingDtlsFragments) {
         this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
     }
 
-    public boolean isAcceptContentRewritingDtlsFragments() {
+    public Boolean isAcceptContentRewritingDtlsFragments() {
         return acceptContentRewritingDtlsFragments;
     }
 
-    public void setAcceptContentRewritingDtlsFragments(boolean acceptContentRewritingDtlsFragments) {
+    public void setAcceptContentRewritingDtlsFragments(Boolean acceptContentRewritingDtlsFragments) {
         this.acceptContentRewritingDtlsFragments = acceptContentRewritingDtlsFragments;
     }
 
@@ -1770,19 +1774,19 @@ public class Config implements Serializable {
         this.defaultServerEcPublicKey = defaultServerEcPublicKey;
     }
 
-    public byte getDefaultAlertDescription() {
+    public AlertDescription getDefaultAlertDescription() {
         return defaultAlertDescription;
     }
 
-    public void setDefaultAlertDescription(byte defaultAlertDescription) {
+    public void setDefaultAlertDescription(AlertDescription defaultAlertDescription) {
         this.defaultAlertDescription = defaultAlertDescription;
     }
 
-    public byte getDefaultAlertLevel() {
+    public AlertLevel getDefaultAlertLevel() {
         return defaultAlertLevel;
     }
 
-    public void setDefaultAlertLevel(byte defaultAlertLevel) {
+    public void setDefaultAlertLevel(AlertLevel defaultAlertLevel) {
         this.defaultAlertLevel = defaultAlertLevel;
     }
 
@@ -3420,11 +3424,11 @@ public class Config implements Serializable {
         this.defaultPWDPassword = password;
     }
 
-    public int getDefaultPWDIterations() {
+    public Integer getDefaultPWDIterations() {
         return defaultPWDIterations;
     }
 
-    public void setDefaultPWDIterations(int defaultPWDIterations) {
+    public void setDefaultPWDIterations(Integer defaultPWDIterations) {
         this.defaultPWDIterations = defaultPWDIterations;
     }
 
@@ -3600,11 +3604,11 @@ public class Config implements Serializable {
         this.defaultEsniServerCiphersuites = defaultEsniServerCiphersuites;
     }
 
-    public int getDefaultEsniPaddedLength() {
+    public Integer getDefaultEsniPaddedLength() {
         return defaultEsniPaddedLength;
     }
 
-    public void setDefaultEsniPaddedLength(int defaultEsniPaddedLength) {
+    public void setDefaultEsniPaddedLength(Integer defaultEsniPaddedLength) {
         this.defaultEsniPaddedLength = defaultEsniPaddedLength;
     }
 
@@ -3624,11 +3628,11 @@ public class Config implements Serializable {
         this.defaultEsniNotAfter = defaultEsniNotAfter;
     }
 
-    public List<ExtensionMessage> getDefaultEsniExtensions() {
+    public List<ExtensionType> getDefaultEsniExtensions() {
         return defaultEsniExtensions;
     }
 
-    public void setDefaultEsniExtensions(List<ExtensionMessage> defaultEsniExtensions) {
+    public void setDefaultEsniExtensions(List<ExtensionType> defaultEsniExtensions) {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
 

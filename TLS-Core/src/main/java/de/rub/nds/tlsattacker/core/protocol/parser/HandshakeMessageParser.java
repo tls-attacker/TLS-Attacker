@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
@@ -129,9 +130,19 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         int pointer = 0;
+        HandshakeMessageType type;
+        // This is not so nice but the KeyShareExtension message has to be
+        // parsed with a different
+        //
+        if (message instanceof ServerHelloMessage && ((ServerHelloMessage) message).isTls13HelloRetryRequest()) {
+            type = HandshakeMessageType.HELLO_RETRY_REQUEST;
+        } else {
+            type = message.getHandshakeMessageType();
+        }
         while (pointer < extensionBytes.length) {
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
-                    message.getHandshakeMessageType(), this.getConfig());
+
+            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer, type,
+                    this.getConfig());
             extensionMessages.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing Extensions");

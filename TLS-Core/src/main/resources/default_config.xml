@@ -1032,8 +1032,8 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <dtlsDefaultCookie/>
     <defaultCertificateRequestContext/>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
-    <defaultAlertDescription>0</defaultAlertDescription>
-    <defaultAlertLevel>0</defaultAlertLevel>
+    <defaultAlertDescription>CLOSE_NOTIFY</defaultAlertDescription>
+    <defaultAlertLevel>WARNING</defaultAlertLevel>
     <defaultEcCertificateCurve>SECP256R1</defaultEcCertificateCurve>
     <defaultClientEcPublicKey>
         <xFieldElementFp>

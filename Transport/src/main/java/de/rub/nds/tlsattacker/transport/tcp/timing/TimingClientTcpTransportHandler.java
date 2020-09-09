@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
 
-    private long measurement = 0;
+    private Long measurement = null;
     private boolean prependEarlyReadData = false;
     private int earlyReadData = 0;
 
@@ -54,7 +54,7 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
     }
 
     @Override
-    public long getLastMeasurement() {
+    public Long getLastMeasurement() {
         return measurement;
     }
 

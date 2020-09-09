@@ -42,7 +42,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDClientKeyExchangeMessage");
         msg.prepareComputations();
-        msg.getComputations().setCurve(CurveFactory.getCurve(chooser.getSelectedNamedGroup()));
+        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
         LOGGER.debug(chooser.getSelectedNamedGroup().getJavaName());
 
         try {
@@ -52,7 +52,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         prepareScalarElement(msg);
         byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(), msg
-                .getComputations().getPrivateKeyScalar(), msg.getComputations().getCurve());
+                .getComputations().getPrivateKeyScalar(), curve);
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -61,15 +61,17 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     public void prepareAfterParse(boolean clientMode) {
         if (!clientMode) {
             msg.prepareComputations();
+            EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
             byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(), chooser.getContext()
-                    .getServerPWDPrivate(), msg.getComputations().getCurve());
+                    .getServerPWDPrivate(), curve);
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
     }
 
     protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {
-        Point passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
@@ -117,7 +119,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
-        EllipticCurve curve = msg.getComputations().getCurve();
+        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 

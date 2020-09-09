@@ -19,7 +19,7 @@ public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler i
     }
 
     @Override
-    public long getLastMeasurement() {
+    public Long getLastMeasurement() {
         throw new UnsupportedOperationException("Not supported yet."); // To
         // change
         // body

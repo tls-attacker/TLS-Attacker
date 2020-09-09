@@ -77,7 +77,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
             @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
-            @XmlElement(type = DraftKeyShareExtensionMessage.class, name = "DraftKeyShareExtension"),
             @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
