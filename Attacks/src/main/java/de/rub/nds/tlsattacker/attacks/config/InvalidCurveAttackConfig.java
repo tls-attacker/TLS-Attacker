@@ -59,6 +59,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
     private int protocolFlows = 15;
+    
+    @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
+    private int keyOffset = 0;
 
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
@@ -402,5 +405,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public void setAttackInRenegotiation(boolean attackInRenegotiation) {
         this.attackInRenegotiation = attackInRenegotiation;
+    }
+
+    public int getKeyOffset() {
+        return keyOffset;
+    }
+
+    public void setKeyOffset(int keyOffset) {
+        this.keyOffset = keyOffset;
     }
 }
