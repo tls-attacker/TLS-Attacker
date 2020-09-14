@@ -60,7 +60,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
     private int protocolFlows = 15;
     
-    @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
+    @Parameter(names = "-key_offset", description = "Offset of the first attempted secretkey")
     private int keyOffset = 0;
 
     // These are for scanning only
