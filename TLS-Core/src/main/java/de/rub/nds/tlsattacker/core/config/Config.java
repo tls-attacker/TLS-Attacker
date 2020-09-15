@@ -250,9 +250,9 @@ public class Config implements Serializable {
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
     private BigInteger defaultKeySharePrivateKey = new BigInteger("FFFF", 16);
-    
+
     private List<NamedGroup> defaultClientKeyShareNamedGroups;
-    
+
     private List<KeyShareStoreEntry> defaultClientKeyStoreEntries;
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;

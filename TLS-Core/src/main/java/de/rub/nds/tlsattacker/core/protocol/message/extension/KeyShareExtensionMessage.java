@@ -41,12 +41,12 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
 
     public KeyShareExtensionMessage(Config tlsConfig) {
         super(ExtensionType.KEY_SHARE);
-        keyShareList = new LinkedList<>();       
+        keyShareList = new LinkedList<>();
         for (NamedGroup group : tlsConfig.getDefaultClientKeyShareNamedGroups()) {
-            if(group.isTls13() && NamedGroup.getImplemented().contains(group)) {
+            if (group.isTls13() && NamedGroup.getImplemented().contains(group)) {
                 KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
                 keyShareList.add(keyShareEntry);
-            }   
+            }
         }
     }
 

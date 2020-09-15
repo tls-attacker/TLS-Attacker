@@ -168,7 +168,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         List<TlsTask> taskList = new LinkedList<>();
         for (int i = 1; i <= protocolFlows; i++) {
             setPremasterSecret(curve, i + config.getKeyOffset(), point);
-            InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i + config.getKeyOffset());
+            InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i
+                    + config.getKeyOffset());
             taskList.add(taskToAdd);
         }
         executor.bulkExecuteTasks(taskList);
