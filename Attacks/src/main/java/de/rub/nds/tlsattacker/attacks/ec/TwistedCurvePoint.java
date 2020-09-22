@@ -48,6 +48,11 @@ public class TwistedCurvePoint {
         this.d = d;
     }
 
+    /**
+     * Provides a Twisted Curve point with small order.
+     * @param group
+     * @return TwistedCurvePoint
+     */
     public static TwistedCurvePoint smallOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:
@@ -160,6 +165,12 @@ public class TwistedCurvePoint {
         }
     }
 
+    /**
+     * Provides a Twisted Curve point with an order that is greater than
+     * the order of the point returned by smallOrder(group).
+     * @param group
+     * @return TwistedCurvePoint
+     */
     public static TwistedCurvePoint alternativeOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:
@@ -257,6 +268,14 @@ public class TwistedCurvePoint {
         }
     }
 
+    
+    /**
+     * Provides a Twisted Curve point with an order that is far greater than
+     * the order of the point returned by smallOrder(group) and 
+     * alternativeOrder(group). 
+     * @param group
+     * @return TwistedCurvePoint
+     */
     public static TwistedCurvePoint largeOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:

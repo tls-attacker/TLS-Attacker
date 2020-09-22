@@ -32,6 +32,11 @@ public class InvalidCurvePoint {
         this.namedGroup = namedGroup;
     }
 
+    /**
+     * Provides an Invalid Curve point of small order (usually 5 or 7)
+     * @param group
+     * @return InvalidCurvePoint
+     */
     public static InvalidCurvePoint smallOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:
@@ -113,7 +118,13 @@ public class InvalidCurvePoint {
                 return null;
         }
     }
-
+    
+    /**
+     * Provides an Invalid Curve point with an order that is greater than
+     * the order of the point returned by smallOrder(group)
+     * @param group
+     * @return InvalidCurvePoint
+     */
     public static InvalidCurvePoint alternativeOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:
@@ -196,6 +207,13 @@ public class InvalidCurvePoint {
         }
     }
 
+    /**
+     * Provides an Invalid Curve point with an order that is far greater than
+     * the order of the point returned by smallOrder(group) and 
+     * alternativeOrder(group). 
+     * @param group
+     * @return InvalidCurvePoint
+     */
     public static InvalidCurvePoint largeOrder(NamedGroup group) {
         switch (group) {
             case SECP160K1:
