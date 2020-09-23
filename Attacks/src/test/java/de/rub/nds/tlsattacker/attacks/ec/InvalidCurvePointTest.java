@@ -41,7 +41,7 @@ public class InvalidCurvePointTest {
             InvalidCurvePoint invP = InvalidCurvePoint.smallOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }
@@ -57,7 +57,7 @@ public class InvalidCurvePointTest {
             InvalidCurvePoint invP = InvalidCurvePoint.alternativeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }
@@ -73,7 +73,7 @@ public class InvalidCurvePointTest {
             InvalidCurvePoint invP = InvalidCurvePoint.largeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }

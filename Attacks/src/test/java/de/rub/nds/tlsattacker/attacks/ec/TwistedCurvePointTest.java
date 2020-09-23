@@ -36,7 +36,7 @@ public class TwistedCurvePointTest {
             TwistedCurvePoint invP = TwistedCurvePoint.smallOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }
@@ -49,7 +49,7 @@ public class TwistedCurvePointTest {
             TwistedCurvePoint invP = TwistedCurvePoint.alternativeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }
@@ -62,7 +62,7 @@ public class TwistedCurvePointTest {
             TwistedCurvePoint invP = TwistedCurvePoint.largeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
-                assertEquals(true, isOrderCorrect(invP));
+                assertTrue(isOrderCorrect(invP));
             }
         }
     }
