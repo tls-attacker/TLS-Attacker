@@ -37,7 +37,7 @@ public class InvalidCurvePointTest {
     public void testSmallOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             InvalidCurvePoint invP = InvalidCurvePoint.smallOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());
@@ -53,7 +53,7 @@ public class InvalidCurvePointTest {
     public void testAlternativeOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             InvalidCurvePoint invP = InvalidCurvePoint.alternativeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());
@@ -69,7 +69,7 @@ public class InvalidCurvePointTest {
     public void testLargeOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             InvalidCurvePoint invP = InvalidCurvePoint.largeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getNamedGroup());

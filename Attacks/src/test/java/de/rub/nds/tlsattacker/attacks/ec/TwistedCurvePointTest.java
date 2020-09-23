@@ -32,7 +32,7 @@ public class TwistedCurvePointTest {
     public void testSmallOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             TwistedCurvePoint invP = TwistedCurvePoint.smallOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
@@ -45,7 +45,7 @@ public class TwistedCurvePointTest {
     public void testAlternativeOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             TwistedCurvePoint invP = TwistedCurvePoint.alternativeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
@@ -58,7 +58,7 @@ public class TwistedCurvePointTest {
     public void testLargeOrder() {
         List<NamedGroup> knownGroups = new ArrayList<>(Arrays.asList(NamedGroup.values()));
         for (NamedGroup group : knownGroups) {
-            assertEquals(true, pointsForGroupAreOrdered(group));
+            assertTrue(pointsForGroupAreOrdered(group));
             TwistedCurvePoint invP = TwistedCurvePoint.largeOrder(group);
             if (invP != null) {
                 assertEquals(group, invP.getIntendedNamedGroup());
