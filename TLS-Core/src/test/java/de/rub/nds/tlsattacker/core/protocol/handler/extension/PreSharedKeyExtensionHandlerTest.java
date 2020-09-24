@@ -5,13 +5,10 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +23,6 @@ public class PreSharedKeyExtensionHandlerTest {
     private TlsContext context;
     private PskSet pskSet1;
     private PskSet pskSet2;
-    private List<PskSet> pskSetList;
 
     @Before
     public void setUp()
@@ -52,7 +48,7 @@ public class PreSharedKeyExtensionHandlerTest {
         handler.adjustTLSContext(msg);
 
         assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());//context.getChooser().getPskSets().get(selectedIdentity).getPreSharedKey());
-        assertTrue(context.getSelectedIdentityIndex() == selectedIdentity);
+        assertEquals(context.getSelectedIdentityIndex(), selectedIdentity);
     }
 
     @Test
