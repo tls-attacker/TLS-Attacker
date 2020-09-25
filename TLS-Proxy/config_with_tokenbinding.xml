@@ -1,0 +1,10 @@
+<Config>
+	<addTokenBindingExtension>true</addTokenBindingExtension>
+	<addExtendedMasterSecretExtension>true</addExtendedMasterSecretExtension>
+	<addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
+    <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
+    <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
+    <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
+</Config>
