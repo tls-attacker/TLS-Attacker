@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -20,9 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
@@ -38,9 +45,6 @@ import static org.junit.Assert.assertTrue;
 public class ForwardRecordsActionTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
     private State state;
     private Config config;
     private TlsContext ctx1;
@@ -49,7 +53,6 @@ public class ForwardRecordsActionTest {
     private final String ctx2Alias = "ctx2";
     ForwardRecordsAction action;
     WorkflowTrace trace;
-
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +67,7 @@ public class ForwardRecordsActionTest {
         ctx2 = state.getTlsContext(ctx2Alias);
 
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
-        byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 };
+        byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 0x32 };
         th.setFetchableByte(alertMsg);
         ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
@@ -85,43 +88,23 @@ public class ForwardRecordsActionTest {
         assertTrue(action.executedAsPlanned());
     }
 
-    @Test
+    @Test(expected = WorkflowExecutionException.class)
     public void executingTwiceThrowsException() throws Exception {
         action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
         action.execute(state);
         assertTrue(action.isExecuted());
-        exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Action already executed!");
         action.execute(state);
     }
 
-    @Test
+    @Test(expected = WorkflowExecutionException.class)
     public void executingWithNullAliasThrowsException() throws Exception {
         action = new ForwardRecordsAction(null, ctx2Alias);
-        exception.expect(WorkflowExecutionException.class);
-        exception
-                .expectMessage("Can't execute ForwardRecordsAction with empty receive alias (if using XML: add <from/>");
-        action.execute(state);
-
-        action = new ForwardRecordsAction(ctx1Alias, null);
-        exception.expect(WorkflowExecutionException.class);
-        exception
-                .expectMessage("Can't execute ForwardRecordsAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
-    @Test
+    @Test(expected = WorkflowExecutionException.class)
     public void executingWithEmptyAliasThrowsException() throws Exception {
         action = new ForwardRecordsAction("", ctx2Alias);
-        exception.expect(WorkflowExecutionException.class);
-        exception
-                .expectMessage("Can't execute ForwardRecordsAction with empty receive alias (if using XML: add <from/>");
-        action.execute(state);
-
-        action = new ForwardRecordsAction(ctx1Alias, "");
-        exception.expect(WorkflowExecutionException.class);
-        exception
-                .expectMessage("Can't execute ForwardRecordsAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
@@ -169,7 +152,6 @@ public class ForwardRecordsActionTest {
     @Test
     public void marshalingAndUnmarshalingYieldsEqualObject() {
         action = new ForwardRecordsAction(ctx1Alias, ctx2Alias);
-        // action.filter();
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
         TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardRecordsAction.class);
