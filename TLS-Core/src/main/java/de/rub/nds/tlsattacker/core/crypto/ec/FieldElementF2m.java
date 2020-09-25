@@ -157,4 +157,17 @@ public class FieldElementF2m extends FieldElement implements Serializable {
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];
     }
+
+    /**
+     * Returns (this^2)^exponent)
+     * 
+     * @param exponent
+     */
+    public FieldElementF2m squarePow(int exponent) {
+        FieldElement square = this.mult(this);
+        for (int i = 1; i < exponent; i++) {
+            square = square.mult(square);
+        }
+        return (FieldElementF2m) square;
+    }
 }
