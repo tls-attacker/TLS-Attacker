@@ -34,21 +34,21 @@ import org.apache.logging.log4j.Logger;
 public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final int backlog = 50;
-    private final int poolSize = 3;
+    private static final int BACKLOG = 50;
+    private static final int POOL_SIZE = 3;
 
     private ServerSocket serverSocket;
     private final InetAddress bindAddr;
-    private final int port;
+    private final int bindPort;
     private List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
     private boolean shutdown = true;
     protected final ExecutorService pool;
 
-    public ThreadedServerWorkflowExecutor(State state) {
+    public ThreadedServerWorkflowExecutor(State state, ExecutorService pool) {
         super(WorkflowExecutorType.THREADED_SERVER, state);
 
-        port = config.getDefaultServerConnection().getPort();
+        bindPort = config.getDefaultServerConnection().getPort();
         String hostname = config.getDefaultServerConnection().getHostname();
         if (hostname != null) {
             InetAddress _bindAddr;
@@ -70,8 +70,12 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         } else {
             bindAddr = null;
         }
-        pool = Executors.newFixedThreadPool(poolSize);
+        this.pool = pool;
         addHook();
+    }
+
+    public ThreadedServerWorkflowExecutor(State state) {
+        this(state, Executors.newFixedThreadPool(POOL_SIZE));
     }
 
     public void addHook() {
@@ -102,13 +106,13 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        String bindaddr_str = "any";
-        if (bindAddr != null) {
-            bindaddr_str = bindAddr.toString();
-        }
-        LOGGER.info("Listening on {}:{}...", bindaddr_str, port);
-        LOGGER.info("--- use SIGINT to shutdown ---");
         initialize();
+        String bindaddr_str = "any";
+        if (getBoundAddress() != null) {
+            bindaddr_str = getBoundAddress().toString();
+        }
+        LOGGER.info("Listening on {}:{}...", bindaddr_str, getBoundPort());
+        LOGGER.info("--- use SIGINT to shutdown ---");
 
         try {
             while (!killed) {
@@ -150,13 +154,13 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void initialize() {
-        LOGGER.info("Initializing server connection end at port " + port);
+        LOGGER.info("Initializing server connection end at port " + bindPort);
         if ((serverSocket != null) && (!serverSocket.isClosed())) {
             LOGGER.debug("Server socket already initialized");
             return;
         }
         try {
-            serverSocket = new ServerSocket(port, backlog, bindAddr);
+            serverSocket = new ServerSocket(bindPort, BACKLOG, bindAddr);
             serverSocket.setReuseAddress(true);
         } catch (IOException ex) {
             throw new RuntimeException("Could not instantiate server socket");
@@ -188,11 +192,11 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public InetAddress getBoundAddress() {
-        return bindAddr;
+        return serverSocket.getInetAddress();
     }
 
     public int getBoundPort() {
-        return port;
+        return serverSocket.getLocalPort();
     }
 
     // Straight from the java docs for ExecutorService
