@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import java.math.BigInteger;
 import java.util.List;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -34,10 +33,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -119,15 +116,6 @@ public class DefaultChooser extends Chooser {
             return context.getClientSupportedSignatureAndHashAlgorithms();
         } else {
             return config.getDefaultClientSupportedSignatureAndHashAlgorithms();
-        }
-    }
-
-    @Override
-    public List<SNIEntry> getClientSNIEntryList() {
-        if (context.getClientSNIEntryList() != null) {
-            return context.getClientSNIEntryList();
-        } else {
-            return config.getDefaultClientSNIEntryList();
         }
     }
 
@@ -1128,15 +1116,6 @@ public class DefaultChooser extends Chooser {
             return context.getEsniNotAfter();
         } else {
             return config.getDefaultEsniNotAfter();
-        }
-    }
-
-    @Override
-    public List<ExtensionMessage> getEsniExtensions() {
-        if (context.getEsniExtensions() != null) {
-            return context.getEsniExtensions();
-        } else {
-            return config.getDefaultEsniExtensions();
         }
     }
 }

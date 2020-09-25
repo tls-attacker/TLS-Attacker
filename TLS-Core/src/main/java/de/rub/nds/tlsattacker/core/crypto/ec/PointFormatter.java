@@ -120,7 +120,8 @@ public class PointFormatter {
         EllipticCurve curve = CurveFactory.getCurve(group);
         int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
         if (compressedPoint.length == 0) {
-            throw new UnparseablePointException("Could not parse point. Point is empty");
+            LOGGER.warn("Could not parse point. Point is empty. Returning Basepoint");
+            return curve.getBasePoint();
         }
         if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
             int pointFormat = inputStream.read();
@@ -129,8 +130,10 @@ public class PointFormatter {
                 case 2:
                 case 3:
                     if (compressedPoint.length != elementLength + 1) {
-                        throw new UnparseablePointException("Could not parse point. Point needs to be "
-                                + (elementLength + 1) + " bytes long, but was " + compressedPoint.length + "bytes long");
+                        LOGGER.warn("Could not parse point. Point needs to be " + (elementLength + 1)
+                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+
+                        return curve.getBasePoint();
                     }
                     try {
                         inputStream.read(xCoordinate);
@@ -146,9 +149,9 @@ public class PointFormatter {
 
                 case 4:
                     if (compressedPoint.length != elementLength * 2 + 1) {
-                        throw new UnparseablePointException("Could not parse point. Point needs to be "
-                                + (elementLength * 2 + 1) + " bytes long, but was " + compressedPoint.length
-                                + "bytes long");
+                        LOGGER.warn("Could not parse point. Point needs to be " + (elementLength * 2 + 1)
+                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+                        return curve.getBasePoint();
                     }
 
                     byte[] yCoordinate = new byte[elementLength];
@@ -167,8 +170,9 @@ public class PointFormatter {
             }
         } else {
             if (compressedPoint.length != elementLength) {
-                throw new UnparseablePointException("Could not parse point. Point needs to be " + elementLength
-                        + " bytes long, but was " + compressedPoint.length + "bytes long");
+                LOGGER.warn("Could not parse point. Point needs to be " + elementLength + " bytes long, but was "
+                        + compressedPoint.length + "bytes long. Returning Basepoint");
+                return curve.getBasePoint();
             }
             byte[] xCoordinate = new byte[elementLength];
             try {

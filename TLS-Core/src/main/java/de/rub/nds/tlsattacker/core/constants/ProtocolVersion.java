@@ -14,6 +14,14 @@ import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 
 import java.util.*;
 
+class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
+
+    @Override
+    public int compare(ProtocolVersion o1, ProtocolVersion o2) {
+        return o1.compare(o2);
+    }
+}
+
 public enum ProtocolVersion {
 
     SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),
@@ -73,6 +81,18 @@ public enum ProtocolVersion {
             return null;
         }
         return MAP.get(i);
+    }
+
+    public static void sort(List<ProtocolVersion> versions) {
+        sort(versions, true);
+    }
+
+    public static void sort(List<ProtocolVersion> versions, boolean ascending) {
+        Comparator<ProtocolVersion> comparator = new ProtocolVersionComparator();
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+        versions.sort(comparator);
     }
 
     public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
@@ -178,4 +198,14 @@ public enum ProtocolVersion {
                 || this == ProtocolVersion.DTLS12;
     }
 
+    public int compare(ProtocolVersion o1) {
+        if (o1 == this) {
+            return 0;
+        }
+
+        if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
+            return 1;
+        }
+        return -1;
+    }
 }

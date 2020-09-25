@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
@@ -185,8 +186,6 @@ public class PWDComputations extends KeyExchangeComputations {
         return keyMaterial;
     }
 
-    private EllipticCurve curve;
-
     /**
      * shared secret derived from the shared password between server and client
      */
@@ -200,14 +199,6 @@ public class PWDComputations extends KeyExchangeComputations {
 
     @Override
     public void setSecretsInConfig(Config config) {
-    }
-
-    public void setCurve(EllipticCurve curve) {
-        this.curve = curve;
-    }
-
-    public EllipticCurve getCurve() {
-        return curve;
     }
 
     public Point getPasswordElement() {

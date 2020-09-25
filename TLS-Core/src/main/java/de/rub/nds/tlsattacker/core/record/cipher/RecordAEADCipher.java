@@ -117,7 +117,15 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting Record");
         record.getComputations().setCipherKey(getKeySet().getWriteKey(context.getChooser().getConnectionEndType()));
         if (version.isTLS13()) {
-            record.getComputations().setPadding(new byte[context.getConfig().getDefaultAdditionalPadding()]);
+            int additionalPadding = context.getConfig().getDefaultAdditionalPadding();
+            if (additionalPadding > 65536) {
+                LOGGER.warn("Additional padding is too big. setting it to max possible value");
+                additionalPadding = 65536;
+            } else if (additionalPadding < 0) {
+                LOGGER.warn("Additional padding is negative, setting it to 0");
+                additionalPadding = 0;
+            }
+            record.getComputations().setPadding(new byte[additionalPadding]);
             record.getComputations().setPlainRecordBytes(
                     ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(), new byte[] { record
                             .getContentType().getValue() }, record.getComputations().getPadding().getValue()));
@@ -143,16 +151,11 @@ public class RecordAEADCipher extends RecordCipher {
                 ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
-        byte[] wholeCipherText;
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
-                || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
-                || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                    additionalAuthenticatedData, plainBytes);
-        } else {
-            wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, plainBytes);
+        byte[] wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                additionalAuthenticatedData, plainBytes);
+        if (aeadTagLength >= wholeCipherText.length) {
+            throw new CryptoException("Could not encrypt data. Supposed Tag is longer than the ciphertext");
         }
-
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
 
         record.getComputations().setAuthenticatedNonMetaData(onlyCiphertext);
@@ -218,16 +221,9 @@ public class RecordAEADCipher extends RecordCipher {
         // the decryption
 
         try {
-            byte[] plainRecordBytes;
-            if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.TLS13
-                    || version == ProtocolVersion.TLS13_DRAFT25 || version == ProtocolVersion.TLS13_DRAFT26
-                    || version == ProtocolVersion.TLS13_DRAFT27 || version == ProtocolVersion.TLS13_DRAFT28) {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                        additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
-            } else {
-                plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                        ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
-            }
+            byte[] plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
+                    additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
             plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();

@@ -27,11 +27,11 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger p;
-    private final BigInteger q;
-    private final BigInteger g;
+    private BigInteger p;
+    private BigInteger q;
+    private BigInteger g;
 
-    private final BigInteger publicKey;
+    private BigInteger publicKey;
 
     public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger publicKey) {
         this.p = p;
@@ -165,5 +165,26 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
             return false;
         }
         return Objects.equals(this.publicKey, other.publicKey);
+    }
+
+    public void setP(BigInteger p) {
+        this.p = p;
+    }
+
+    public void setQ(BigInteger q) {
+        this.q = q;
+    }
+
+    public void setG(BigInteger g) {
+        this.g = g;
+    }
+
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    @Override
+    public int keysize() {
+        return p.bitLength();
     }
 }

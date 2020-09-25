@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
@@ -82,6 +83,11 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
         computations.setAuthenticatedNonMetaData(cleanBytes);
+
+        // For unusual handshakes we need the length here if TLS 1.3 is
+        // negotiated as a version.
+        record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, cipherSuite).getSize());
+
         computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
         computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
                 computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()

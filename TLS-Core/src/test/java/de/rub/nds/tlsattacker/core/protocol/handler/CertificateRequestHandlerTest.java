@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
@@ -64,7 +65,7 @@ public class CertificateRequestHandlerTest {
      * Test of adjustTLSContext method, of class CertificateRequestHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testAdjustTLSContextTLS12() {
         CertificateRequestMessage message = new CertificateRequestMessage();
         message.setClientCertificateTypes(new byte[] { 1, 2, 3, 4, 5, 6 });
         message.setDistinguishedNames(new byte[] { 0, 1, 2, 3, });
@@ -78,6 +79,21 @@ public class CertificateRequestHandlerTest {
         assertTrue(context.getClientCertificateTypes().contains(ClientCertificateType.RSA_EPHEMERAL_DH_RESERVED));
         assertTrue(context.getClientCertificateTypes().contains(ClientCertificateType.RSA_FIXED_DH));
         assertTrue(context.getClientCertificateTypes().contains(ClientCertificateType.RSA_SIGN));
+        assertTrue(context.getServerSupportedSignatureAndHashAlgorithms().size() == 2);
+    }
+
+    /**
+     * Test of adjustTLSContext method, of class CertificateRequestHandler.
+     */
+    @Test
+    public void testAdjustTLSContextTLS13() {
+        CertificateRequestMessage message = new CertificateRequestMessage();
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+
+        message.setCertificateRequestContext(new byte[] { 1, 2, 3, 4, 5, 6 });
+        message.setSignatureHashAlgorithms(new byte[] { 03, 01, 01, 03 });
+        handler.adjustTLSContext(message);
+        assertArrayEquals(context.getCertificateRequestContext(), ArrayConverter.hexStringToByteArray("010203040506"));
         assertTrue(context.getServerSupportedSignatureAndHashAlgorithms().size() == 2);
     }
 

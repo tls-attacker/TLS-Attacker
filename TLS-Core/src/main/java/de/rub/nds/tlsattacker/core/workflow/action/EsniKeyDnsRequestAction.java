@@ -25,6 +25,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -32,6 +33,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 public class EsniKeyDnsRequestAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private List<ExtensionMessage> extensions;
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
@@ -91,7 +94,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
-        tlsContext.setEsniExtensions(esniKeyRecord.getExtensions());
+        extensions = esniKeyRecord.getExtensions();
         setExecuted(true);
     }
 

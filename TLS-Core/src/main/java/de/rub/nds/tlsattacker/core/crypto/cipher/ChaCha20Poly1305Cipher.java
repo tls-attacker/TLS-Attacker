@@ -39,6 +39,19 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     private final Poly1305 mac = new Poly1305();
 
     public ChaCha20Poly1305Cipher(byte[] key) {
+        if (key.length != 32) {
+            LOGGER.warn("Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: " + key.length
+                    + ". Padding/Trimming to 32 Byte.");
+            if (key.length > 32) {
+                key = Arrays.copyOfRange(key, 0, 32);
+            } else {
+                byte[] tempKey = new byte[32];
+                for (int i = 0; i < key.length; i++) {
+                    tempKey[i] = key[i];
+                }
+                key = tempKey;
+            }
+        }
         this.key = key;
     }
 

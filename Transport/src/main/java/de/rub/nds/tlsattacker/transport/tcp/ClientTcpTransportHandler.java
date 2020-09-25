@@ -34,7 +34,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
-        this(timeout, timeout, hostname, port);
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, timeout, hostname, port);
     }
 
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
@@ -87,9 +87,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
             if (socket.getInputStream().available() > 0) {
                 return SocketState.DATA_AVAILABLE;
             }
-            socket.setSoTimeout(1);
             int read = socket.getInputStream().read();
-            socket.setSoTimeout((int) timeout);
             if (read == -1) {
                 return SocketState.CLOSED;
             } else {

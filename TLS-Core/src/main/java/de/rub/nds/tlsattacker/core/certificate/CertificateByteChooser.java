@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
+import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
 import java.security.PrivateKey;
@@ -165,8 +167,18 @@ public class CertificateByteChooser {
         } else {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser
                     .getSelectedCipherSuite());
+            if (keyExchangeAlgorithm == null) {
+                LOGGER.warn("CipherSuite does not specify a certificate kex. Using  RSA.");
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
+            }
             switch (keyExchangeAlgorithm) {
                 case DH_RSA:
+                case DHE_RSA:
+                case ECDH_RSA:
+                case ECDHE_RSA:
+                case RSA:
+                case SRP_SHA_RSA:
+                case PSK_RSA:
                     if (prefereredSignatureCertSignatureType != CertificateKeyType.RSA) {
                         LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
                     }
@@ -180,17 +192,6 @@ public class CertificateByteChooser {
                         LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
                     }
                     prefereredSignatureCertSignatureType = CertificateKeyType.ECDSA;
-                    break;
-                case DHE_RSA:
-                case ECDH_RSA:
-                case ECDHE_RSA:
-                case RSA:
-                case SRP_SHA_RSA:
-                case PSK_RSA:
-                    if (prefereredSignatureCertSignatureType != CertificateKeyType.RSA) {
-                        LOGGER.warn("PreferedSignatureType does not match Ciphersuite - ignoring preference");
-                    }
-                    prefereredSignatureCertSignatureType = CertificateKeyType.RSA;
                     break;
                 case DHE_DSS:
                 case DH_DSS:
@@ -220,6 +221,8 @@ public class CertificateByteChooser {
         for (CertificateKeyPair pair : keyPairList) {
             if (pair.getCertPublicKeyType() == neededPublicKeyType
                     && pair.getCertSignatureType() == prefereredSignatureCertSignatureType) {
+
+                SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
                 nextBestChoice = pair;
                 if (neededPublicKeyType == CertificateKeyType.ECDSA) {
                     if (pair.getSignatureGroup() == null) {
@@ -230,6 +233,12 @@ public class CertificateByteChooser {
                     if (namedGroup != pair.getPublicKeyGroup() || pair.getSignatureGroup() != pair.getSignatureGroup()) {
                         continue;
                     }
+                }
+                if (neededPublicKeyType == CertificateKeyType.RSA
+                        && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
+                        && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512
+                        && pair.getPublicKey().keysize() < 2048) {
+                    continue;
                 }
                 return pair;
             }

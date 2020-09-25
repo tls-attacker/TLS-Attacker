@@ -17,15 +17,11 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveX25519;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
-import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
@@ -81,26 +77,26 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     @Override
     public void adjustTLSContext(ServerHelloMessage message) {
         adjustSelectedProtocolVersion(message);
-        if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustSelectedCompression(message);
-            adjustSelectedSessionID(message);
-        }
+        adjustSelectedCompression(message);
+        adjustSelectedSessionID(message);
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustHandshakeTrafficSecrets();
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
-                setServerRecordCipher();
+        if (!message.isTls13HelloRetryRequest()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                adjustHandshakeTrafficSecrets();
+                if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
+                    setServerRecordCipher();
+                }
             }
-        }
-        adjustPRF(message);
-        if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {
-            LOGGER.info("Resuming Session");
-            LOGGER.debug("Loading Mastersecret");
-            Session session = tlsContext.getSession(tlsContext.getChooser().getServerSessionId());
-            tlsContext.setMasterSecret(session.getMasterSecret());
-            setRecordCipher();
+            adjustPRF(message);
+            if (tlsContext.hasSession(tlsContext.getChooser().getServerSessionId())) {
+                LOGGER.info("Resuming Session");
+                LOGGER.debug("Loading Mastersecret");
+                Session session = tlsContext.getSession(tlsContext.getChooser().getServerSessionId());
+                tlsContext.setMasterSecret(session.getMasterSecret());
+                setRecordCipher();
+            }
         }
     }
 
@@ -176,7 +172,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void setServerRecordCipher() {
-        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
@@ -281,6 +276,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
         Point publicPoint = PointFormatter.formatFromByteArray(keyShare.getGroup(), keyShare.getPublicKey());
         tlsContext.setServerEcPublicKey(publicPoint);
+        tlsContext.setSelectedGroup(keyShare.getGroup());
         BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
 
         switch (keyShare.getGroup()) {

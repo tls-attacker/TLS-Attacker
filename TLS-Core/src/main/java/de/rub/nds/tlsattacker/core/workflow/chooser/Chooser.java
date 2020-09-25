@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -40,8 +39,6 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public abstract class Chooser {
 
@@ -75,8 +72,6 @@ public abstract class Chooser {
     public abstract List<ECPointFormat> getServerSupportedPointFormats();
 
     public abstract List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms();
-
-    public abstract List<SNIEntry> getClientSNIEntryList();
 
     public abstract ProtocolVersion getLastRecordVersion();
 
@@ -307,6 +302,4 @@ public abstract class Chooser {
     public abstract Long getEsniNotBefore();
 
     public abstract Long getEsniNotAfter();
-
-    public abstract List<ExtensionMessage> getEsniExtensions();
 }

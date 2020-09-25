@@ -17,6 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHas
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +51,14 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (SignatureAndHashAlgorithm algo : chooser.getConfig().getDefaultClientSupportedSignatureAndHashAlgorithms()) {
+        List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmList;
+        if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            signatureAndHashAlgorithmList = chooser.getConfig().getDefaultServerSupportedSignatureAndHashAlgorithms();
+        } else {
+            signatureAndHashAlgorithmList = chooser.getConfig().getDefaultClientSupportedSignatureAndHashAlgorithms();
+        }
+
+        for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithmList) {
             try {
                 stream.write(algo.getByteValue());
             } catch (IOException ex) {

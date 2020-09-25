@@ -13,11 +13,17 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +43,25 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
+        if (msg.getKeyShareList() == null) {
+            msg.setKeyShareList(new LinkedList<KeyShareEntry>());
+        }
         stream = new ByteArrayOutputStream();
+
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+            List<KeyShareEntry> serverList = new ArrayList<>();
+            List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
+            for (KeyShareStoreEntry i : clientShares) {
+                if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
+                    KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig()
+                            .getKeySharePrivate());
+                    serverList.add(keyShareEntry);
+                    break;
+                }
+            }
+            msg.setKeyShareList(serverList);
+        }
+
         if (msg.getKeyShareList() != null) {
             for (KeyShareEntry entry : msg.getKeyShareList()) {
                 KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
@@ -50,6 +74,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                 }
             }
         }
+
         prepareKeyShareListBytes(msg);
         prepareKeyShareListLength(msg);
     }

@@ -71,15 +71,12 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
             setVersion(version);
         }
         parseRandom(msg);
-        if (!getVersion().isTLS13()) {
-            parseSessionIDLength(msg);
-            parseSessionID(msg);
-        }
+        parseSessionIDLength(msg);
+        parseSessionID(msg);
         parseSelectedCiphersuite(msg);
-        if (!getVersion().isTLS13()) {
-            parseSelectedComressionMethod(msg);
-        }
-        LOGGER.trace("Checking for ExtensionLengthField");
+        parseSelectedComressionMethod(msg);
+
+        LOGGER.trace("Checking for ExtensionLength Field");
         if (hasExtensionLengthField(msg)) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);

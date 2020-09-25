@@ -34,7 +34,9 @@ import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -348,6 +350,10 @@ public class CertificateKeyPair implements Serializable {
         return publicKeyGroup;
     }
 
+    public GOSTCurve getGostCurve() {
+        return gostCurve;
+    }
+
     public void adjustInConfig(Config config, ConnectionEndType connectionEnd) {
         publicKey.adjustInConfig(config, connectionEnd);
         if (privateKey != null) {
@@ -368,40 +374,16 @@ public class CertificateKeyPair implements Serializable {
         }
         context.setEcCertificateCurve(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            // TODO rething auto selection
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA;
-            HashAlgorithm hashAlgorithm = context.getConfig().getPreferredHashAlgorithm();
-            switch (certPublicKeyType) {
-                case ECDSA:
-                    signatureAlgorithm = SignatureAlgorithm.ECDSA;
-                    break;
-                case RSA:
-                    signatureAlgorithm = SignatureAlgorithm.RSA;
-                    break;
-                case DSS:
-                    signatureAlgorithm = SignatureAlgorithm.DSA;
-                    break;
-                case GOST01:
-                    signatureAlgorithm = SignatureAlgorithm.GOSTR34102001;
-                    hashAlgorithm = HashAlgorithm.GOSTR3411;
-                    context.setSelectedGostCurve(gostCurve);
-                    LOGGER.debug("Adjusting selected gost curve:" + gostCurve);
+            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this,
+                    context.getChooser());
 
-                    break;
-                case GOST12:
-                    if (gostCurve.is512bit2012()) {
-                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_512;
-                        hashAlgorithm = HashAlgorithm.GOSTR34112012_512;
-                    } else {
-                        signatureAlgorithm = SignatureAlgorithm.GOSTR34102012_256;
-                        hashAlgorithm = HashAlgorithm.GOSTR34112012_256;
-                    }
-                    context.setSelectedGostCurve(gostCurve);
-                    LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
-                    break;
+            if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
+                    || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
+                context.setSelectedGostCurve(gostCurve);
+                LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
-            SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
-                    signatureAlgorithm, hashAlgorithm);
+
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
             context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
         }
