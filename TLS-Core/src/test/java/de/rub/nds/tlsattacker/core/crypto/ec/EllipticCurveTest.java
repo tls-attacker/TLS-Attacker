@@ -161,11 +161,7 @@ public class EllipticCurveTest {
 
         // two points share the same x-coordinate - apply inverse if neccessary
         if (!decompressed.getY().getData().equals(basePoint.getY().getData())) {
-            if (curve instanceof EllipticCurveOverFp) {
-                decompressed = curve.inverseAffine(decompressed);
-            } else {
-                decompressed = curve.inverse(decompressed);
-            }
+            decompressed = curve.inverse(decompressed);
         }
         assertEquals(decompressed, basePoint);
 
