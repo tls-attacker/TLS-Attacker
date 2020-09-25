@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -25,12 +34,13 @@ public class PreSharedKeyExtensionHandlerTest {
     private PskSet pskSet2;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         context = new TlsContext();
 
-        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 }, CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-        pskSet2 = new PskSet(new byte[] { 0x01}, new byte[] { 0x01 }, "1", new byte[] { 0x01 }, CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
+        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 },
+                CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
+        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 },
+                CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
         List<PskSet> pskSetList = new ArrayList<PskSet>();
         pskSetList.add(pskSet1);
         pskSetList.add(pskSet2);
@@ -40,37 +50,34 @@ public class PreSharedKeyExtensionHandlerTest {
     }
 
     @Test
-    public void testAdjustTlsContext()
-    {
+    public void testAdjustTlsContext() {
         int selectedIdentity = 1;
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         msg.setSelectedIdentity(selectedIdentity);
         handler.adjustTLSContext(msg);
 
-        assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());//context.getChooser().getPskSets().get(selectedIdentity).getPreSharedKey());
+        assertArrayEquals(context.getPsk(), pskSet2.getPreSharedKey());
         assertEquals(context.getSelectedIdentityIndex(), selectedIdentity);
     }
 
     @Test
-    public void testAdjustTlsContextWithoutSelectedIdentity()
-    {
+    public void testAdjustTlsContextWithoutSelectedIdentity() {
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         handler.adjustTLSContext(msg);
 
-        assertArrayEquals(context.getEarlyDataPSKIdentity(), pskSet1.getPreSharedKeyIdentity());//context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
-        assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet1.getCipherSuite().getByteValue());//context.getChooser().getPskSets().get(0).getCipherSuite().getByteValue());
+        assertArrayEquals(context.getEarlyDataPSKIdentity(), pskSet1.getPreSharedKeyIdentity());
+        assertArrayEquals(context.getEarlyDataCipherSuite().getByteValue(), pskSet1.getCipherSuite().getByteValue());
     }
 
     @Test
-    public void testAdjustTlsContextServerEndType()
-    {
+    public void testAdjustTlsContextServerEndType() {
         context.setConnection(new InboundConnection());
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
 
         PSKIdentity id1 = new PSKIdentity();
         PSKIdentity id2 = new PSKIdentity();
         id1.setIdentity(new byte[] { 0x03 });
-        id2.setIdentity(new byte[] { 0x01});
+        id2.setIdentity(new byte[] { 0x01 });
 
         List<PSKIdentity> identityList = new ArrayList<PSKIdentity>();
         identityList.add(id1);
@@ -85,20 +92,17 @@ public class PreSharedKeyExtensionHandlerTest {
     }
 
     @Test
-    public void testGetParser()
-    {
+    public void testGetParser() {
         assertTrue(handler.getParser(new byte[0], 0) instanceof PreSharedKeyExtensionParser);
     }
 
     @Test
-    public void testGetPreparator()
-    {
+    public void testGetPreparator() {
         assertTrue(handler.getPreparator(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionPreparator);
     }
 
     @Test
-    public void testGetSerializer()
-    {
+    public void testGetSerializer() {
         assertTrue(handler.getSerializer(new PreSharedKeyExtensionMessage()) instanceof PreSharedKeyExtensionSerializer);
     }
 }
