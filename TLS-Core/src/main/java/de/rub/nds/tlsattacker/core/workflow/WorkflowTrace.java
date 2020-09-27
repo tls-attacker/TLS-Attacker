@@ -457,6 +457,15 @@ public class WorkflowTrace implements Serializable {
     }
 
 
+    public <T extends TlsAction> T getFirstAction(Class<T> actionCls) {
+        List<TlsAction> actions = this.getTlsActions();
+        for (TlsAction action : actions) {
+            if (action.getClass().equals(actionCls)) {
+                return actionCls.cast(action);
+            }
+        }
+        return null;
+    }
 
     public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
