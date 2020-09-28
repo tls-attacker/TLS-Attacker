@@ -172,6 +172,14 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         return new FieldElementF2m(value, this.getModulus());
     }
 
+    /**
+     * Returns a point on the curve for the given x coordinate - or the
+     * basepoint if such a point does not exist. Of the two possible points, the
+     * function always returns the point whose value of z is odd.
+     * 
+     * @param x
+     *            The x coordinate of the point
+     */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
         FieldElementF2m xField = new FieldElementF2m(x, this.getModulus());
@@ -189,7 +197,11 @@ public class EllipticCurveOverF2m extends EllipticCurve {
                 return this.getBasePoint();
             } else {
                 FieldElementF2m y = (FieldElementF2m) xField.mult(z);
-                return getPoint(x, y.getData());
+                Point created = getPoint(x, y.getData());
+                if (!z.getData().testBit(0)) {
+                    created = inverse(created);
+                }
+                return created;
             }
         }
     }

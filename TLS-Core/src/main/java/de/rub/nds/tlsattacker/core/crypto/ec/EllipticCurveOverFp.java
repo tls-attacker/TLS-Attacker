@@ -156,6 +156,11 @@ public class EllipticCurveOverFp extends EllipticCurve {
         return new FieldElementFp(value, this.getModulus());
     }
 
+    /**
+     * Returns a point on the curve for the given x coordinate - or the
+     * basepoint if such a point does not exist. Of the two possible points, the
+     * function always returns the point whose y coordinate is odd.
+     */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
         BigInteger y = x.pow(3).add(x.multiply(getA().getData())).add(getB().getData()).mod(getModulus());
@@ -164,7 +169,11 @@ public class EllipticCurveOverFp extends EllipticCurve {
             LOGGER.warn("Was unable to create point on curve - using basepoint instead");
             return this.getBasePoint();
         } else {
-            return getPoint(x, y);
+            Point created = getPoint(x, y);
+            if (!y.testBit(0)) {
+                created = inverse(created);
+            }
+            return created;
         }
     }
 
