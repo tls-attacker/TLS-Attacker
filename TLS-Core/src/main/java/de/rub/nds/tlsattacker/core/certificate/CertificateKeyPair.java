@@ -43,8 +43,10 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -312,13 +314,21 @@ public class CertificateKeyPair implements Serializable {
             return null;
         }
         try {
-            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
-                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
-            return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
+            ASN1Encodable parameters = cert.getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm()
+                    .getParameters();
+            if (parameters instanceof ASN1ObjectIdentifier) {
+                ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                        .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+                return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
+            } else if (parameters instanceof DLSequence) {
+                DLSequence sequence = (DLSequence) parameters;
+                System.out.println(parameters);
+            }
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
         }
+        return null;
     }
 
     public CertificateKeyType getCertPublicKeyType() {
@@ -450,5 +460,25 @@ public class CertificateKeyPair implements Serializable {
                 + certSignatureType + ", certificateBytes=" + Arrays.toString(certificateBytes) + ", publicKey="
                 + publicKey + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
                 + publicKeyGroup + '}';
+    }
+
+    public boolean isUseable(CertificateKeyType neededPublicKeyType,
+            CertificateKeyType prefereredSignatureCertSignatureType) {
+
+        if (neededPublicKeyType == CertificateKeyType.ECDH || neededPublicKeyType == CertificateKeyType.ECDSA) {
+            if (certPublicKeyType == CertificateKeyType.ECDH || certPublicKeyType == CertificateKeyType.ECDSA) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (neededPublicKeyType == certPublicKeyType
+                    && prefereredSignatureCertSignatureType == prefereredSignatureCertSignatureType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 }
