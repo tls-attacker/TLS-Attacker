@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.math.BigInteger;
 import java.util.Random;
 import org.junit.After;
@@ -20,6 +21,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class PointFormatterTest {
 
@@ -46,6 +48,7 @@ public class PointFormatterTest {
      * Test of formatToByteArray method, of class PointFormatter.
      */
     @Test
+    @Category(IntegrationTests.class)
     public void cyclicTest() {
         for (int i = 0; i < 100; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
@@ -63,6 +66,7 @@ public class PointFormatterTest {
     }
 
     @Test
+    @Category(IntegrationTests.class)
     public void compressionFormatCyclicTest() {
         for (int i = 1; i < 50; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
