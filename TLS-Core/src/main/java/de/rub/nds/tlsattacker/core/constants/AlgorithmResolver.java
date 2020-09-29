@@ -156,6 +156,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
         } else if (cipher.contains("ECCPWD")) {
             return KeyExchangeAlgorithm.ECCPWD;
+        } else if (cipher.contains("TLS_GOSTR341094")) {
+            return KeyExchangeAlgorithm.VKO_GOST01;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {

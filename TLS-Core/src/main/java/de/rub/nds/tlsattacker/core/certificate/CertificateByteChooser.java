@@ -220,8 +220,7 @@ public class CertificateByteChooser {
 
         CertificateKeyPair nextBestChoice = null;
         for (CertificateKeyPair pair : keyPairList) {
-            if (pair.getCertPublicKeyType() == neededPublicKeyType
-                    && pair.getCertSignatureType() == prefereredSignatureCertSignatureType) {
+            if (pair.isUseable(neededPublicKeyType, prefereredSignatureCertSignatureType)) {
 
                 SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
                 nextBestChoice = pair;

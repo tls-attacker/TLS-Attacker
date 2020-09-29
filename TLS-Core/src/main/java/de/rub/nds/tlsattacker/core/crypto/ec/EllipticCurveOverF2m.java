@@ -16,8 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
- * Please notice that the coordinates of affine points are binary
- * polynomials.<br />
+ * Please notice that the coordinates of affine points are binary polynomials.<br />
  * They are represented by BigIntegers, where the i-th bit represents the i-th
  * coefficient.
  */
@@ -31,12 +30,15 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
      *
-     * @param a A BigInteger representing the binary polynomial a in the
-     * equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the
-     * equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction
-     * polynomial that defines the field over which the curve is defined.
+     * @param a
+     *            A BigInteger representing the binary polynomial a in the
+     *            equation of the curve.
+     * @param b
+     *            A BigInteger representing the binary polynomial b in the
+     *            equation of the curve.
+     * @param polynomial
+     *            A BigInteger representing the binary reduction polynomial that
+     *            defines the field over which the curve is defined.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial) {
         super(polynomial);
@@ -49,17 +51,23 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * polynomial is the reduction polynomial of the field.<br />
      * With base point (x, y) and base point order q.
      *
-     * @param a A BigInteger representing the binary polynomial a in the
-     * equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the
-     * equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction
-     * polynomial that defines the field over which the curve is defined.
-     * @param x A BigInteger representing the binary polynomial that represents
-     * the x-coordinate of the base point.
-     * @param y A BigInteger representing the binary polynomial that represents
-     * the y-coordinate of the base point.
-     * @param q The order of the base point.
+     * @param a
+     *            A BigInteger representing the binary polynomial a in the
+     *            equation of the curve.
+     * @param b
+     *            A BigInteger representing the binary polynomial b in the
+     *            equation of the curve.
+     * @param polynomial
+     *            A BigInteger representing the binary reduction polynomial that
+     *            defines the field over which the curve is defined.
+     * @param x
+     *            A BigInteger representing the binary polynomial that
+     *            represents the x-coordinate of the base point.
+     * @param y
+     *            A BigInteger representing the binary polynomial that
+     *            represents the y-coordinate of the base point.
+     * @param q
+     *            The order of the base point.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
             BigInteger q) {
@@ -169,7 +177,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * basepoint if such a point does not exist. Of the two possible points, the
      * function always returns the point whose value of z is odd.
      *
-     * @param x The x coordinate of the point
+     * @param x
+     *            The x coordinate of the point
      */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
@@ -200,7 +209,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Solves z^2 + z = beta using the algorithm D.1.6 of ANSI X9.62
      *
-     * @param beta An element of F2m
+     * @param beta
+     *            An element of F2m
      * @return The result z for the quadratic equation or null if non-existent
      */
     public FieldElementF2m solveQuadraticEquation(FieldElement beta) {
