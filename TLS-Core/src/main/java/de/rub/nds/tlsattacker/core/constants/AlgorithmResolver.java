@@ -167,6 +167,57 @@ public class AlgorithmResolver {
     }
 
     /**
+     * Returns the certificate type required for the cipher suite
+     *
+     * @param suite
+     * @return
+     */
+    public CertificateKeyType getCertificateType(CipherSuite suite) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
+        switch (keyExchangeAlgorithm) {
+            case DHE_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+            case PSK_RSA:
+                return CertificateKeyType.RSA;
+            case DH_RSA:
+                return CertificateKeyType.DH;
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+                return CertificateKeyType.ECDH;
+            case ECDHE_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return CertificateKeyType.ECDSA;
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                return CertificateKeyType.DSS;
+            case VKO_GOST01:
+                return CertificateKeyType.GOST01;
+            case VKO_GOST12:
+                return CertificateKeyType.GOST12;
+            case DHE_PSK:
+            case DH_ANON:
+            case ECCPWD:
+            case ECDHE_PSK:
+            case ECDH_ANON:
+            case NULL:
+            case PSK:
+            case SRP_SHA:
+            case KRB5:
+                return CertificateKeyType.NONE;
+            case ECDH_ECNRA:
+            case ECMQV_ECNRA:
+                return CertificateKeyType.ECNRA;
+            case FORTEZZA_KEA:
+                return CertificateKeyType.FORTEZZA;
+        }
+        throw new UnsupportedOperationException("Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
+    }
+
+    /**
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
