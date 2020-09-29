@@ -217,7 +217,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         FieldElementF2m gamma;
         FieldElementF2m z;
         do {
-            Random randNum = new Random();
+            Random randNum = new Random(0);
             BigInteger tauData = new BigInteger(32, randNum);
             FieldElementF2m tau = new FieldElementF2m(tauData, beta.getModulus());
             FieldElementF2m w = new FieldElementF2m(beta.getData(), beta.getModulus());
