@@ -172,7 +172,7 @@ public class AlgorithmResolver {
      * @param suite
      * @return
      */
-    public CertificateKeyType getCertificateKeyType(CipherSuite suite) {
+    public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
         switch (keyExchangeAlgorithm) {
             case DHE_RSA:

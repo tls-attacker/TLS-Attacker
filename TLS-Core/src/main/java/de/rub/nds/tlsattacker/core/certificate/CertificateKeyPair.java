@@ -34,9 +34,7 @@ import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,11 +48,6 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.provider.X509CertificateObject;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateKeyPair implements Serializable {
@@ -207,6 +200,12 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.840.113549.1.1.1":
                 return CertificateKeyType.RSA;
             case "1.2.840.10045.2.1":
+                return CertificateKeyType.ECDH;
+            case "1.2.840.10045.4.1":
+            case "1.2.840.10045.4.2":
+            case "1.2.840.10045.4.3.1":
+            case "1.2.840.10045.4.3.2":
+            case "1.2.840.10045.4.3.3":
             case "1.2.840.10045.4.3.4":
                 return CertificateKeyType.ECDSA;
             case "1.2.840.113549.1.3.1":
