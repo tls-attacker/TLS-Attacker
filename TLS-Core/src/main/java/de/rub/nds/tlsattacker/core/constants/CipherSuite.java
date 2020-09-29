@@ -566,7 +566,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
+            String[] hashFunctionNames = {"MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"};
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -630,8 +630,7 @@ public enum CipherSuite {
      * version. TODO: this is still very imprecise and must be improved with new
      * ciphers.
      *
-     * @param version
-     *            The ProtocolVersion to check
+     * @param version The ProtocolVersion to check
      * @return True if the Ciphersuite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
@@ -1080,10 +1079,6 @@ public enum CipherSuite {
 
     public boolean isPWD() {
         return this.name().contains("PWD");
-    }
-
-    public boolean isRSA() {
-        return this.name().contains("RSA");
     }
 
     public boolean isDSS() {
