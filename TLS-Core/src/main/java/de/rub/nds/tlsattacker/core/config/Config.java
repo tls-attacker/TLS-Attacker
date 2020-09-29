@@ -868,8 +868,6 @@ public class Config implements Serializable {
 
     private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
 
-    private List<SNIEntry> defaultClientSNIEntryList;
-
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
     private ProtocolVersion defaultSelectedProtocolVersion = ProtocolVersion.TLS12;
@@ -2047,18 +2045,6 @@ public class Config implements Serializable {
 
     public void setDefaultLastRecordProtocolVersion(ProtocolVersion defaultLastRecordProtocolVersion) {
         this.defaultLastRecordProtocolVersion = defaultLastRecordProtocolVersion;
-    }
-
-    public List<SNIEntry> getDefaultClientSNIEntryList() {
-        return defaultClientSNIEntryList;
-    }
-
-    public void setDefaultClientSNIEntryList(List<SNIEntry> defaultClientSNIEntryList) {
-        this.defaultClientSNIEntryList = defaultClientSNIEntryList;
-    }
-
-    public final void setDefaultClientSNIEntries(SNIEntry... defaultClientSNIEntryList) {
-        this.defaultClientSNIEntryList = new ArrayList(Arrays.asList(defaultClientSNIEntryList));
     }
 
     public List<ECPointFormat> getDefaultServerSupportedPointFormats() {
