@@ -485,6 +485,14 @@ public enum CipherSuite {
         return cipherSuites;
     }
 
+    public boolean isRealCipherSuite() {
+        if (isSCSV() || isGrease()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static CipherSuite getCipherSuite(byte[] value) {
         return getCipherSuite(valueToInt(value));
     }
