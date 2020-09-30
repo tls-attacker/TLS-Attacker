@@ -46,7 +46,25 @@ public enum ProtocolVersion {
     TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
     TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
-    DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
+    DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD }),
+
+    // GREASE constants
+    GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
+    GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),
+    GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }),
+    GREASE_03(new byte[] { (byte) 0x3A, (byte) 0x3A }),
+    GREASE_04(new byte[] { (byte) 0x4A, (byte) 0x4A }),
+    GREASE_05(new byte[] { (byte) 0x5A, (byte) 0x5A }),
+    GREASE_06(new byte[] { (byte) 0x6A, (byte) 0x6A }),
+    GREASE_07(new byte[] { (byte) 0x7A, (byte) 0x7A }),
+    GREASE_08(new byte[] { (byte) 0x8A, (byte) 0x8A }),
+    GREASE_09(new byte[] { (byte) 0x9A, (byte) 0x9A }),
+    GREASE_10(new byte[] { (byte) 0xAA, (byte) 0xAA }),
+    GREASE_11(new byte[] { (byte) 0xBA, (byte) 0xBA }),
+    GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }),
+    GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }),
+    GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }),
+    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA });
 
     private byte[] value;
 
@@ -165,6 +183,7 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
+            if (pv.isGrease()) continue;
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
             }
@@ -193,15 +212,22 @@ public enum ProtocolVersion {
         return this == SSL2 || this == SSL3;
     }
 
+    public boolean isGrease() {
+        return this.name().startsWith("GREASE");
+    }
+
     public boolean usesExplicitIv() {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
                 || this == ProtocolVersion.DTLS12;
     }
 
     public int compare(ProtocolVersion o1) {
-        if (o1 == this) {
+        if (o1 == this || (o1.isGrease() && this.isGrease())) {
             return 0;
         }
+
+        if (this.isGrease()) return -1;
+        if (o1.isGrease()) return 1;
 
         if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
             return 1;

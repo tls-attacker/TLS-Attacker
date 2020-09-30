@@ -72,7 +72,25 @@ public enum SignatureAndHashAlgorithm {
     RSA_PSS_PSS_SHA512(0x080b),
     GOSTR34102001_GOSTR3411(0xEDED),
     GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
-    GOSTR34102012_512_GOSTR34112012_512(0xEFEF);
+    GOSTR34102012_512_GOSTR34112012_512(0xEFEF),
+
+    // GREASE constants
+    GREASE_00(0x0A0A),
+    GREASE_01(0x1A1A),
+    GREASE_02(0x2A2A),
+    GREASE_03(0x3A3A),
+    GREASE_04(0x4A4A),
+    GREASE_05(0x5A5A),
+    GREASE_06(0x6A6A),
+    GREASE_07(0x7A7A),
+    GREASE_08(0x8A8A),
+    GREASE_09(0x9A9A),
+    GREASE_10(0xAAAA),
+    GREASE_11(0xBABA),
+    GREASE_12(0xCACA),
+    GREASE_13(0xDADA),
+    GREASE_14(0xEAEA),
+    GREASE_15(0xFAFA);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -334,5 +352,9 @@ public enum SignatureAndHashAlgorithm {
         }
 
         return sigHashAlgo;
+    }
+
+    public boolean isGrease() {
+        return this.name().startsWith("GREASE");
     }
 }
