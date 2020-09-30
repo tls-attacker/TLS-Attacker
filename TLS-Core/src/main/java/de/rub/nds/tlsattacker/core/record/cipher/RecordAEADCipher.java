@@ -153,7 +153,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
         byte[] wholeCipherText = encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
                 additionalAuthenticatedData, plainBytes);
-        if (aeadTagLength >= wholeCipherText.length) {
+        if (aeadTagLength > wholeCipherText.length) {
             throw new CryptoException("Could not encrypt data. Supposed Tag is longer than the ciphertext");
         }
         byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
