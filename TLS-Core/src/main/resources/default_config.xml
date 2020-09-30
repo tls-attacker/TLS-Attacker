@@ -87,6 +87,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
         <port>443</port>
         <hostname>localhost</hostname>
     </defaultClientConnection>
+    <receiveFinalSocketStateWithTimeout>false</receiveFinalSocketStateWithTimeout>
     <defaultServerConnection>
         <alias>server</alias>
         <port>443</port>
@@ -112,6 +113,9 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA384</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedSignatureAndHashAlgorithms>ECDSA_SHA512</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA256</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA384</defaultClientSupportedSignatureAndHashAlgorithms>
+    <defaultClientSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA512</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</defaultClientSupportedSignatureAndHashAlgorithms>
@@ -944,6 +948,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <distinguishedNames/>
     <enforceSettings>false</enforceSettings>
     <earlyStop>false</earlyStop>
+    <stealthMode>false</stealthMode>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
     <stopTraceAfterUnexpected>false</stopTraceAfterUnexpected>
     <defaultServerDhGenerator>2</defaultServerDhGenerator>
@@ -1008,6 +1013,9 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>ECDSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA256</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA384</defaultServerSupportedSignatureAndHashAlgorithms>
+    <defaultServerSupportedSignatureAndHashAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102001_GOSTR3411</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102012_256_GOSTR34112012_256</defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedSignatureAndHashAlgorithms>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithms>
