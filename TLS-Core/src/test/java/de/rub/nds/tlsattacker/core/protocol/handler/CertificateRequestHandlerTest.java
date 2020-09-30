@@ -10,9 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
@@ -87,11 +90,14 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testAdjustTLSContextTLS13() {
-        CertificateRequestMessage message = new CertificateRequestMessage();
+        Config config = Config.createConfig();
+        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
+
+        CertificateRequestMessage message = new CertificateRequestMessage(config);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
 
         message.setCertificateRequestContext(new byte[] { 1, 2, 3, 4, 5, 6 });
-        message.setSignatureHashAlgorithms(new byte[] { 03, 01, 01, 03 });
+        message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).setSignatureAndHashAlgorithms(new byte[] { 03, 01, 01, 03 });
         handler.adjustTLSContext(message);
         assertArrayEquals(context.getCertificateRequestContext(), ArrayConverter.hexStringToByteArray("010203040506"));
         assertTrue(context.getServerSupportedSignatureAndHashAlgorithms().size() == 2);
