@@ -71,6 +71,7 @@
         <module>Attacks</module>
         <module>TLS-Forensics</module>
         <module>TraceTool</module>
+        <module>TLS-Proxy</module>
     </modules>
     <dependencies>
         <dependency>
