@@ -94,7 +94,6 @@ public class ClientTcpTransportHandler extends TransportHandler {
         closeConnection();
     }
 
-
     public SocketState getSocketState(boolean withTimeout) throws InvalidTransportHandlerStateException {
         return this.getTcpSocketState(socket, withTimeout);
     }

@@ -129,7 +129,6 @@ public class ServerTcpTransportHandler extends TransportHandler {
         }
     }
 
-
     public SocketState getSocketState(boolean withTimeout) throws InvalidTransportHandlerStateException {
         return this.getTcpSocketState(socket, withTimeout);
     }

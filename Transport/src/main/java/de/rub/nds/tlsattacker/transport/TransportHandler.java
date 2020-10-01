@@ -175,7 +175,6 @@ public abstract class TransportHandler {
         return isInStreamTerminating;
     }
 
-
     /**
      * Checks the current SocketState. NOTE: If you check the SocketState and
      * Data is received during the Check the current State of the
@@ -184,7 +183,8 @@ public abstract class TransportHandler {
      * @return The current SocketState
      * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
      */
-    protected SocketState getTcpSocketState(Socket socket, boolean withTimeout) throws InvalidTransportHandlerStateException {
+    protected SocketState getTcpSocketState(Socket socket, boolean withTimeout)
+            throws InvalidTransportHandlerStateException {
         try {
             if (inStream.available() > 0) {
                 return SocketState.DATA_AVAILABLE;

@@ -95,20 +95,20 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-
         try {
             TransportHandler handler = state.getTlsContext().getTransportHandler();
             if (handler instanceof ClientTcpTransportHandler) {
-                SocketState socketSt = ((ClientTcpTransportHandler)handler).getSocketState(config.isReceiveFinalSocketStateWithTimeout());
+                SocketState socketSt = ((ClientTcpTransportHandler) handler).getSocketState(config
+                        .isReceiveFinalSocketStateWithTimeout());
                 state.getTlsContext().setFinalSocketState(socketSt);
             } else if (handler instanceof ServerTcpTransportHandler) {
-                SocketState socketSt = ((ServerTcpTransportHandler)handler).getSocketState(config.isReceiveFinalSocketStateWithTimeout());
+                SocketState socketSt = ((ServerTcpTransportHandler) handler).getSocketState(config
+                        .isReceiveFinalSocketStateWithTimeout());
                 state.getTlsContext().setFinalSocketState(socketSt);
             }
         } catch (InvalidTransportHandlerStateException e) {
             state.getTlsContext().setFinalSocketState(SocketState.DATA_AVAILABLE);
         }
-
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
             for (TlsContext ctx : state.getAllTlsContexts()) {

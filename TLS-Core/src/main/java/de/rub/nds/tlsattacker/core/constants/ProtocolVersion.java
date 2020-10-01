@@ -183,7 +183,8 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
-            if (pv.isGrease()) continue;
+            if (pv.isGrease())
+                continue;
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
             }
@@ -226,8 +227,10 @@ public enum ProtocolVersion {
             return 0;
         }
 
-        if (this.isGrease()) return -1;
-        if (o1.isGrease()) return 1;
+        if (this.isGrease())
+            return -1;
+        if (o1.isGrease())
+            return 1;
 
         if (ArrayConverter.bytesToInt(this.getValue()) > ArrayConverter.bytesToInt(o1.getValue())) {
             return 1;
