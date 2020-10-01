@@ -291,6 +291,9 @@ public class CertificateKeyPair implements Serializable {
         if (!(publicKey instanceof CustomEcPublicKey)) {
             return null;
         }
+        if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {
+            return null;
+        }
         // TODO Okay - we currently do not support mixed group ecdsa
         // pubKey/signature certficiates
         // i am not sure if they are actually allowed to exist- we assume that
