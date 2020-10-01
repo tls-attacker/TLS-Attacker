@@ -316,22 +316,17 @@ public class CertificateKeyPair implements Serializable {
         if (!(publicKey instanceof CustomEcPublicKey)) {
             return null;
         }
+        if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {
+            return null;
+        }
         try {
-            ASN1Encodable parameters = cert.getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm()
-                    .getParameters();
-            if (parameters instanceof ASN1ObjectIdentifier) {
-                ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
-                        .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
-                return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
-            } else if (parameters instanceof DLSequence) {
-                DLSequence sequence = (DLSequence) parameters;
-                System.out.println(parameters);
-            }
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
+            return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
             return null;
         }
-        return null;
     }
 
     public CertificateKeyType getCertPublicKeyType() {
