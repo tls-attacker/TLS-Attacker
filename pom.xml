@@ -99,16 +99,17 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.66</version>
+            <version>1.64</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.60</version>
+            <version>1.64</version>
         </dependency>
         <dependency>
             <groupId>com.openpojo</groupId>
@@ -159,6 +160,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
                     <executions>
                         <execution>
                             <id>copy</id>
@@ -197,13 +199,20 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>3.0.0-M5</version>
+                        </dependency>
+                    </dependencies>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
                         <includes>
                             <include>**/*.java</include>
                         </includes>
                         <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
-                        <excludedGroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</excludedGroups>
+                        <excludedGroups>${slowTests}</excludedGroups>
                         <argLine>
                             -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
                         </argLine>
@@ -213,13 +222,20 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.0.0-M5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>3.0.0-M5</version>
+                        </dependency>
+                    </dependencies>
                     <configuration>
                         <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
                         <excludes>
                             <exclude>**/*.java</exclude>
                         </excludes>
                         <!-- Integration tests and slow tests are started -->
-                        <groups>${includegroups}</groups>
+                        <groups>${slowTests}</groups>
                     </configuration>
                     <executions>
                         <execution>
@@ -315,7 +331,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.1</version>
+                                    <version>3.3.9</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>1.8,11</version>
@@ -328,7 +344,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -341,7 +357,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -401,7 +417,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>3.1.1</version>
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                 </configuration>
@@ -409,12 +425,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.8</version>
+                <version>3.13.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
+                <version>3.0.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -438,5 +454,6 @@
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
         <jmockit.version>1.49</jmockit.version>
+        <slowTests>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</slowTests>
     </properties>
 </project>
