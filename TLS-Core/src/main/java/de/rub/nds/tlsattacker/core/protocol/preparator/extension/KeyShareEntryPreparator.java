@@ -92,8 +92,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                     entry.getPrivateKey());
             entry.setPublicKey(publicKey);
         } else {
-            throw new UnsupportedOperationException("The group \"" + entry.getGroupConfig().name()
-                    + "\" is not supported yet");
+            LOGGER.warn("The group \"" + entry.getGroupConfig().name() + "\" is not supported yet.");
+            entry.setPublicKey(new byte[1]);
         }
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
     }
