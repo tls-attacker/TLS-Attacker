@@ -222,7 +222,6 @@ public class CertificateByteChooser {
         for (CertificateKeyPair pair : keyPairList) {
             if (pair.isUseable(neededPublicKeyType, prefereredSignatureCertSignatureType)) {
 
-                SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
                 nextBestChoice = pair;
                 if (neededPublicKeyType == CertificateKeyType.ECDSA || neededPublicKeyType == CertificateKeyType.ECDH) {
                     if (pair.getSignatureGroup() == null) {
@@ -234,6 +233,8 @@ public class CertificateByteChooser {
                         continue;
                     }
                 }
+
+                SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
                 if (neededPublicKeyType == CertificateKeyType.RSA
                         && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
                         && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512

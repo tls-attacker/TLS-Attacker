@@ -465,13 +465,16 @@ public class CertificateKeyPair implements Serializable {
 
         if (neededPublicKeyType == CertificateKeyType.ECDH || neededPublicKeyType == CertificateKeyType.ECDSA) {
             if (certPublicKeyType == CertificateKeyType.ECDH || certPublicKeyType == CertificateKeyType.ECDSA) {
-                return true;
+                if (prefereredSignatureCertSignatureType == certSignatureType) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
         } else {
-            if (neededPublicKeyType == certPublicKeyType
-                    && prefereredSignatureCertSignatureType == prefereredSignatureCertSignatureType) {
+            if (neededPublicKeyType == certPublicKeyType && prefereredSignatureCertSignatureType == certSignatureType) {
                 return true;
             } else {
                 return false;

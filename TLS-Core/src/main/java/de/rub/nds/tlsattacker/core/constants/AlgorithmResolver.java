@@ -184,6 +184,7 @@ public class AlgorithmResolver {
             case PSK_RSA:
                 return CertificateKeyType.RSA;
             case DH_RSA:
+            case DH_DSS:
                 return CertificateKeyType.DH;
             case ECDH_ECDSA:
             case ECDH_RSA:
@@ -193,7 +194,6 @@ public class AlgorithmResolver {
             case CECPQ1_ECDSA:
                 return CertificateKeyType.ECDSA;
             case DHE_DSS:
-            case DH_DSS:
             case SRP_SHA_DSS:
                 return CertificateKeyType.DSS;
             case VKO_GOST01:
