@@ -51,8 +51,8 @@ public class ForwardRecordsActionTest {
     private final String ctx1Alias = "ctx1";
     private TlsContext ctx2;
     private final String ctx2Alias = "ctx2";
-    ForwardRecordsAction action;
-    WorkflowTrace trace;
+    private ForwardRecordsAction action;
+    private WorkflowTrace trace;
 
     @Before
     public void setUp() throws Exception {
