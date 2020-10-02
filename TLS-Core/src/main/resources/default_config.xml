@@ -838,13 +838,14 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultAdditionalPadding>0</defaultAdditionalPadding>
     <defaultSelectedNamedGroup>SECP256R1</defaultSelectedNamedGroup>
     <defaultKeySharePrivateKey>65535</defaultKeySharePrivateKey>
-    <defaultClientKeyShareEntries>
+    <defaultClientKeyShareNamedGroups>ECDH_X25519</defaultClientKeyShareNamedGroups>
+    <defaultClientKeyStoreEntries>
         <group>ECDH_X25519</group>
         <publicKey>
 2A 98 1D B6 CD D0 2A 06  C1 76 31 02 C9 E7 41 36
 5A C4 E6 F7 2B 31 76 A6  BD 6A 35 23 D3 EC 0F 4C
 </publicKey>
-    </defaultClientKeyShareEntries>
+    </defaultClientKeyStoreEntries>
     <defaultServerKeyShareEntry>
         <group>ECDH_X25519</group>
         <publicKey>

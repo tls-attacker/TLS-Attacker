@@ -58,6 +58,8 @@ public enum NamedGroup {
     FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096),
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
+    EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
