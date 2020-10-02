@@ -485,6 +485,14 @@ public enum CipherSuite {
         return cipherSuites;
     }
 
+    public boolean isRealCipherSuite() {
+        if (isSCSV() || isGrease()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static CipherSuite getCipherSuite(byte[] value) {
         return getCipherSuite(valueToInt(value));
     }
@@ -1080,6 +1088,14 @@ public enum CipherSuite {
 
     public boolean isPWD() {
         return this.name().contains("PWD");
+    }
+
+    public boolean isDSS() {
+        return this.name().contains("DSS");
+    }
+
+    public boolean isGOST() {
+        return this.name().contains("GOST");
     }
 
     // Note: We don't consider DES as weak for these purposes.
