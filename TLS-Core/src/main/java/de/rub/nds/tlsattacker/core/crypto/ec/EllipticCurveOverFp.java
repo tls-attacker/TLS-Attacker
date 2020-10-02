@@ -156,11 +156,25 @@ public class EllipticCurveOverFp extends EllipticCurve {
         return new FieldElementFp(value, this.getModulus());
     }
 
+    /**
+     * Returns a point on the curve for the given x coordinate - or the
+     * basepoint if such a point does not exist. Of the two possible points, the
+     * function always returns the point whose y coordinate is odd.
+     */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
         BigInteger y = x.pow(3).add(x.multiply(getA().getData())).add(getB().getData()).mod(getModulus());
-        y = y.modPow(getModulus().add(BigInteger.ONE).shiftRight(2), getModulus());
-        return getPoint(x, y);
+        y = modSqrt(y, getModulus());
+        if (y == null) {
+            LOGGER.warn("Was unable to create point on curve - using basepoint instead");
+            return this.getBasePoint();
+        } else {
+            Point created = getPoint(x, y);
+            if (!y.testBit(0)) {
+                created = inverse(created);
+            }
+            return created;
+        }
     }
 
     /**
@@ -175,5 +189,65 @@ public class EllipticCurveOverFp extends EllipticCurve {
      */
     public FieldElementFp getB() {
         return b;
+    }
+
+    private int legendreSymbol(BigInteger a, BigInteger p) {
+        BigInteger ls = a.modPow(p.subtract(BigInteger.ONE).divide(new BigInteger("2")), p);
+        if (ls.compareTo(p.subtract(BigInteger.ONE)) == 0) {
+            return -1;
+        } else {
+            return ls.intValue();
+        }
+    }
+
+    public BigInteger modSqrt(BigInteger a, BigInteger p) {
+        if (legendreSymbol(a, p) != 1 || a.compareTo(BigInteger.ZERO) == 0 || a.compareTo(new BigInteger("2")) == 0) {
+            // no solution exists
+            return null;
+        } else {
+            if (p.mod(new BigInteger("4")).compareTo(new BigInteger("3")) == 0) {
+                // faster method for this case
+                return a.modPow(p.add(BigInteger.ONE).divide(new BigInteger("4")), p);
+            } else {
+                // Tonelli Shanks
+                BigInteger r = p.subtract(BigInteger.ONE);
+                BigInteger e = BigInteger.ZERO;
+
+                while (r.mod(new BigInteger("2")).compareTo(BigInteger.ZERO) == 0) {
+                    r = r.divide(new BigInteger("2"));
+                    e = e.add(BigInteger.ONE);
+                }
+
+                // find n with (n|p) = -1
+                BigInteger n = new BigInteger("2");
+                while (legendreSymbol(n, p) != -1) {
+                    n = n.add(BigInteger.ONE);
+                }
+
+                BigInteger z = n.modPow(r, p);
+                BigInteger y = z;
+                BigInteger s = e;
+                BigInteger x = a.modPow(r.subtract(BigInteger.ONE).divide(new BigInteger("2")), p);
+
+                BigInteger b = a.multiply(x.pow(2)).mod(p);
+                x = a.multiply(x).mod(p);
+                while (b.mod(p).compareTo(BigInteger.ONE) != 0) {
+                    BigInteger m = BigInteger.ONE;
+                    while (b.modPow(new BigInteger("2").pow(m.intValue()), p).compareTo(BigInteger.ONE) != 0) {
+                        m = m.add(BigInteger.ONE);
+                    }
+
+                    BigInteger t = y.modPow(new BigInteger("2").pow(s.intValue() - m.intValue() - 1), p);
+                    y = t.pow(2).mod(p);
+                    s = m;
+
+                    x = t.multiply(x).mod(p);
+                    b = y.multiply(b).mod(p);
+
+                }
+
+                return x;
+            }
+        }
     }
 }

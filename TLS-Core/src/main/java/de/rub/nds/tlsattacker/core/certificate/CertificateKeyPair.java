@@ -34,9 +34,7 @@ import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -45,16 +43,13 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.provider.X509CertificateObject;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateKeyPair implements Serializable {
@@ -207,6 +202,12 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.840.113549.1.1.1":
                 return CertificateKeyType.RSA;
             case "1.2.840.10045.2.1":
+                return CertificateKeyType.ECDH;
+            case "1.2.840.10045.4.1":
+            case "1.2.840.10045.4.2":
+            case "1.2.840.10045.4.3.1":
+            case "1.2.840.10045.4.3.2":
+            case "1.2.840.10045.4.3.3":
             case "1.2.840.10045.4.3.4":
                 return CertificateKeyType.ECDSA;
             case "1.2.840.113549.1.3.1":
@@ -290,6 +291,9 @@ public class CertificateKeyPair implements Serializable {
         if (!(publicKey instanceof CustomEcPublicKey)) {
             return null;
         }
+        if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {
+            return null;
+        }
         // TODO Okay - we currently do not support mixed group ecdsa
         // pubKey/signature certficiates
         // i am not sure if they are actually allowed to exist- we assume that
@@ -310,6 +314,9 @@ public class CertificateKeyPair implements Serializable {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
         if (!(publicKey instanceof CustomEcPublicKey)) {
+            return null;
+        }
+        if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {
             return null;
         }
         try {
@@ -373,6 +380,7 @@ public class CertificateKeyPair implements Serializable {
             privateKey.adjustInContext(context, connectionEnd);
         }
         context.setEcCertificateCurve(publicKeyGroup);
+        context.setEcCertificateSignatureCurve(signatureGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(this,
                     context.getChooser());
@@ -450,5 +458,28 @@ public class CertificateKeyPair implements Serializable {
                 + certSignatureType + ", certificateBytes=" + Arrays.toString(certificateBytes) + ", publicKey="
                 + publicKey + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
                 + publicKeyGroup + '}';
+    }
+
+    public boolean isUseable(CertificateKeyType neededPublicKeyType,
+            CertificateKeyType prefereredSignatureCertSignatureType) {
+
+        if (neededPublicKeyType == CertificateKeyType.ECDH || neededPublicKeyType == CertificateKeyType.ECDSA) {
+            if (certPublicKeyType == CertificateKeyType.ECDH || certPublicKeyType == CertificateKeyType.ECDSA) {
+                if (prefereredSignatureCertSignatureType == certSignatureType) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            if (neededPublicKeyType == certPublicKeyType && prefereredSignatureCertSignatureType == certSignatureType) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 }
