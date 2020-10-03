@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -17,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -79,11 +81,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
-    @XmlElement
-    protected Boolean earlyCleanShutdown = null;
-
-    @XmlElement
-    protected Boolean checkOnlyExpected = null;
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = ActionOption.class, name = "ActionOption") })
+    private Set<ActionOption> actionOptions = new HashSet<>();
 
     public ReceiveAction() {
         super();
@@ -99,29 +99,23 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
+    public ReceiveAction(Set<ActionOption> actionOptions, List<ProtocolMessage> messages) {
         this(messages);
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        this.actionOptions = actionOptions;
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage... messages) {
-        this(receiveOptions, new ArrayList(Arrays.asList(messages)));
+    public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
+        this(actionOptions, new ArrayList(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage> messages) {
+    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
-        switch (receiveOption) {
-            case CHECK_ONLY_EXPECTED:
-                this.checkOnlyExpected = true;
-                break;
-            case EARLY_CLEAN_SHUTDOWN:
-                this.earlyCleanShutdown = true;
-        }
+        actionOptions = new HashSet();
+        actionOptions.add(actionOption);
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage... messages) {
-        this(receiveOption, new ArrayList<>(Arrays.asList(messages)));
+    public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
+        this(actionOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public ReceiveAction(String connectionAlias) {
@@ -159,7 +153,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
-        tlsContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
+        tlsContext.setEarlyCleanShutdown(getActionOptions().contains(ActionOption.EARLY_CLEAN_SHUTDOWN));
     }
 
     @Override
@@ -212,19 +206,30 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         int j = 0;
         for (int i = 0; i < expectedMessages.size(); i++) {
             if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
-                return false;
+                return false; 
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
                         && expectedMessages.get(i).isRequired()) {
-                    return false;
+                    if (receivedMessageCanBeIgnored(messages.get(j))) {
+                        j++; 
+                        i--; 
+                    } else {
+                        return false;
+                    }
+
                 } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
                     j++;
                 }
             }
         }
 
-        if (j < messages.size() && (checkOnlyExpected == null || checkOnlyExpected == false)) {
-            return false; // additional messages are not allowed
+        if (j < messages.size()) {
+            for (; j < messages.size(); j++) {
+                if (!receivedMessageCanBeIgnored(messages.get(j))
+                        && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+                    return false; // additional messages are not allowed
+                }
+            }
         }
 
         return true;
@@ -338,14 +343,24 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    public enum ReceiveOption {
-        EARLY_CLEAN_SHUTDOWN,
-        CHECK_ONLY_EXPECTED;
-
-        public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
-            HashSet<ReceiveOption> options = new HashSet<>();
-            options.addAll(Arrays.asList(receiveOptions));
-            return options;
+    private boolean receivedMessageCanBeIgnored(ProtocolMessage msg) {
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+            if (msg instanceof AlertMessage) {
+                AlertMessage alert = (AlertMessage) msg;
+                if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
+                    return true;
+                }
+            }
         }
+
+        return false;
+    }
+
+    public Set<ActionOption> getActionOptions() {
+        return actionOptions;
+    }
+
+    public void setActionOptions(Set<ActionOption> actionOptions) {
+        this.actionOptions = actionOptions;
     }
 }

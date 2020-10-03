@@ -704,6 +704,18 @@ public class Config implements Serializable {
 
     private Boolean stopTraceAfterUnexpected = false;
 
+    /**
+     * Actions count as executedAsPlanned even if Alerts with severity level
+     * 'Warning' have been received along with expected messages
+     */
+    private Boolean ignoreUnexpectedWarnings = false;
+
+    /**
+     * Actions count as executedAsPlanned regardless of the messages received
+     * after all expected and optional messages
+     */
+    private Boolean checkOnlyExpectedMessages = false;
+
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
     private BigInteger defaultServerDhModulus = new BigInteger(
@@ -3656,6 +3668,22 @@ public class Config implements Serializable {
 
     public void setDefaultClientKeyStoreEntries(List<KeyShareStoreEntry> defaultClientKeyStoreEntries) {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
+    }
+
+    public Boolean isIgnoreUnexpectedWarnings() {
+        return ignoreUnexpectedWarnings;
+    }
+
+    public void setIgnoreUnexpectedWarnings(Boolean ignoreUnexpectedWarnings) {
+        this.ignoreUnexpectedWarnings = ignoreUnexpectedWarnings;
+    }
+
+    public Boolean isCheckOnlyExpectedMessages() {
+        return checkOnlyExpectedMessages;
+    }
+
+    public void setCheckOnlyExpectedMessages(Boolean checkOnlyExpectedMessages) {
+        this.checkOnlyExpectedMessages = checkOnlyExpectedMessages;
     }
 
 }
