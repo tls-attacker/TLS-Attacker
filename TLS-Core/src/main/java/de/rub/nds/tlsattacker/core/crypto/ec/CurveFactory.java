@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CurveFactory {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Returns a named elliptic curve.
@@ -23,6 +26,7 @@ public class CurveFactory {
      */
     public static EllipticCurve getCurve(NamedGroup name) {
         if (name.isGrease()) {
+            LOGGER.warn("Using a GREASE elliptic curve, which is effectively a SECP256R1 curve.");
             return new EllipticCurveSECP256R1();
         }
 
