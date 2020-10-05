@@ -287,7 +287,7 @@ public enum SignatureAndHashAlgorithm {
         }
     }
 
-    public boolean suitedForSigingTls13Messages() {
+    public boolean suitedForSigningTls13Messages() {
         switch (this) {
             case ECDSA_SHA256:
             case ECDSA_SHA384:
@@ -307,7 +307,7 @@ public enum SignatureAndHashAlgorithm {
         }
     }
 
-    public boolean suitedForSigingTls13Certs() {
+    public boolean suitedForSigningTls13Certs() {
         switch (this) {
             case RSA_SHA256:
             case RSA_SHA384:
@@ -317,7 +317,7 @@ public enum SignatureAndHashAlgorithm {
                 return true;
 
             default:
-                return suitedForSigingTls13Messages();
+                return suitedForSigningTls13Messages();
         }
     }
 
