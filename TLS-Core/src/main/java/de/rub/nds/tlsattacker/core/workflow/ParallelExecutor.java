@@ -71,7 +71,7 @@ public class ParallelExecutor {
         return submit;
     }
 
-    public Future addStateTask(State state) {
+    public Future addClientStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
@@ -79,10 +79,10 @@ public class ParallelExecutor {
         return addTask(new StateExecutionServerTask(state, socket, reexecutions));
     }
 
-    public void bulkExecuteStateTasks(List<State> stateList) {
+    public void bulkExecuteClientStateTasks(List<State> stateList) {
         List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
-            futureList.add(addStateTask(state));
+            futureList.add(addClientStateTask(state));
         }
         for (Future future : futureList) {
             try {
@@ -93,8 +93,8 @@ public class ParallelExecutor {
         }
     }
 
-    public void bulkExecuteStateTasks(State... states) {
-        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+    public void bulkExecuteClientStateTasks(State... states) {
+        this.bulkExecuteClientStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
     public void bulkExecuteTasks(List<TlsTask> taskList) {
