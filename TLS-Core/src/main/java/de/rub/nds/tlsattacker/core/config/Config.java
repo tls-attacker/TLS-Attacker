@@ -62,6 +62,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
@@ -705,16 +706,10 @@ public class Config implements Serializable {
     private Boolean stopTraceAfterUnexpected = false;
 
     /**
-     * Actions count as executedAsPlanned even if Alerts with severity level
-     * 'Warning' have been received along with expected messages
-     */
-    private Boolean ignoreUnexpectedWarnings = false;
-
-    /**
-     * Actions count as executedAsPlanned regardless of the messages received
-     * after all expected and optional messages
-     */
-    private Boolean checkOnlyExpectedMessages = false;
+     * ActionOptions that are automatically applied to Actions of the
+     * MessageFactory
+     */ 
+    private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
@@ -3670,20 +3665,12 @@ public class Config implements Serializable {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
     }
 
-    public Boolean isIgnoreUnexpectedWarnings() {
-        return ignoreUnexpectedWarnings;
+    public List<ActionOption> getMessageFactoryActionOptions() {
+        return messageFactoryActionOptions;
     }
 
-    public void setIgnoreUnexpectedWarnings(Boolean ignoreUnexpectedWarnings) {
-        this.ignoreUnexpectedWarnings = ignoreUnexpectedWarnings;
-    }
-
-    public Boolean isCheckOnlyExpectedMessages() {
-        return checkOnlyExpectedMessages;
-    }
-
-    public void setCheckOnlyExpectedMessages(Boolean checkOnlyExpectedMessages) {
-        this.checkOnlyExpectedMessages = checkOnlyExpectedMessages;
+    public void setMessageFactoryActionOptions(List<ActionOption> messageFactoryActionOptions) {
+        this.messageFactoryActionOptions = messageFactoryActionOptions;
     }
 
 }
