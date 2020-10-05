@@ -106,7 +106,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         }
 
-        if (suite != null && !suite.name().startsWith("GREASE")) {
+        if (suite != null) {
             tlsContext.setSelectedCipherSuite(suite);
             LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
         } else {
