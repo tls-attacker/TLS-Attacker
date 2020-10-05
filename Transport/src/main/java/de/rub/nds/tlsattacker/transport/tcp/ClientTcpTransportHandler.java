@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.TcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,10 +21,9 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class ClientTcpTransportHandler extends TransportHandler {
+public class ClientTcpTransportHandler extends TcpTransportHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected Socket socket;
     protected String hostname;
     protected int port;
     protected long connectionTimeout;
@@ -94,11 +91,4 @@ public class ClientTcpTransportHandler extends TransportHandler {
         closeConnection();
     }
 
-    public SocketState getSocketState(boolean withTimeout) throws InvalidTransportHandlerStateException {
-        return this.getTcpSocketState(socket, withTimeout);
-    }
-
-    public SocketState getSocketState() throws InvalidTransportHandlerStateException {
-        return getSocketState(false);
-    }
 }

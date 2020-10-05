@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.TcpTransportHandler;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -23,15 +24,13 @@ import java.util.concurrent.TimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
+public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final int port;
 
     private ServerSocket serverSocket;
-
-    private Socket clientSocket;
 
     private AcceptorCallable callable;
 
@@ -54,8 +53,8 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         if (serverSocket != null) {
             serverSocket.close();
         }
-        if (clientSocket != null) {
-            clientSocket.close();
+        if (socket != null) {
+            socket.close();
         }
     }
 
@@ -73,9 +72,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         if (task != null) {
             if (task.isDone()) {
                 try {
-                    clientSocket = task.get();
-                    clientSocket.setSoTimeout(1);
-                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
+                    socket = task.get();
+                    socket.setSoTimeout(1);
+                    setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
                 } catch (InterruptedException | ExecutionException ex) {
                     LOGGER.warn("Could not retrieve clientSocket");
                     LOGGER.debug(ex);
@@ -91,9 +90,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     public void recheck(long timeout) throws IOException {
         try {
             if (task != null) {
-                clientSocket = task.get(timeout, TimeUnit.MILLISECONDS);
-                if (clientSocket != null) {
-                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
+                socket = task.get(timeout, TimeUnit.MILLISECONDS);
+                if (socket != null) {
+                    setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
                 }
             }
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
@@ -105,10 +104,10 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     @Override
     public boolean isClosed() throws IOException {
         if (isInitialized()) {
-            if (clientSocket != null && clientSocket.isClosed()) {
+            if (socket != null && socket.isClosed()) {
                 if (serverSocket.isClosed()) {
                     return true;
-                } else if (clientSocket == null && serverSocket.isClosed()) {
+                } else if (socket == null && serverSocket.isClosed()) {
                     return true;
                 }
             }
@@ -120,8 +119,8 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     @Override
     public void closeClientConnection() throws IOException {
-        if (clientSocket != null && !clientSocket.isClosed()) {
-            clientSocket.close();
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
         }
     }
 

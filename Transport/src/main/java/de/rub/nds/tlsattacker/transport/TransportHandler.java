@@ -174,43 +174,4 @@ public abstract class TransportHandler {
     public boolean isIsInStreamTerminating() {
         return isInStreamTerminating;
     }
-
-    /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and
-     * Data is received during the Check the current State of the
-     * TransportHandler will get messed up and an Exception will be thrown.
-     *
-     * @return The current SocketState
-     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
-     */
-    protected SocketState getTcpSocketState(Socket socket, boolean withTimeout)
-            throws InvalidTransportHandlerStateException {
-        try {
-            if (inStream.available() > 0) {
-                return SocketState.DATA_AVAILABLE;
-            }
-
-            if (!withTimeout) {
-                socket.setSoTimeout(1);
-            } else {
-                socket.setSoTimeout((int) timeout);
-            }
-
-            int read = inStream.read();
-            socket.setSoTimeout(1);
-
-            if (read == -1) {
-                inStream.unread(-1);
-                return SocketState.CLOSED;
-            } else {
-                throw new InvalidTransportHandlerStateException("Received Data during SocketState check");
-            }
-        } catch (SocketTimeoutException ex) {
-            return SocketState.TIMEOUT;
-        } catch (SocketException ex) {
-            return SocketState.SOCKET_EXCEPTION;
-        } catch (IOException ex) {
-            return SocketState.IO_EXCEPTION;
-        }
-    }
 }

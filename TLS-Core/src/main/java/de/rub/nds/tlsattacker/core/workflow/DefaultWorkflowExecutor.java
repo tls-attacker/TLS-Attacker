@@ -22,11 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import de.rub.nds.tlsattacker.transport.TcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -93,19 +91,13 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        try {
-            TransportHandler handler = state.getTlsContext().getTransportHandler();
-            if (handler instanceof ClientTcpTransportHandler) {
-                SocketState socketSt = ((ClientTcpTransportHandler) handler).getSocketState(config
-                        .isReceiveFinalSocketStateWithTimeout());
-                state.getTlsContext().setFinalSocketState(socketSt);
-            } else if (handler instanceof ServerTcpTransportHandler) {
-                SocketState socketSt = ((ServerTcpTransportHandler) handler).getSocketState(config
-                        .isReceiveFinalSocketStateWithTimeout());
-                state.getTlsContext().setFinalSocketState(socketSt);
-            }
-        } catch (InvalidTransportHandlerStateException e) {
-            state.getTlsContext().setFinalSocketState(SocketState.DATA_AVAILABLE);
+        TransportHandler handler = state.getTlsContext().getTransportHandler();
+        if (handler instanceof TcpTransportHandler) {
+            SocketState socketSt = ((TcpTransportHandler) handler).getSocketState(config
+                    .isReceiveFinalSocketStateWithTimeout());
+            state.getTlsContext().setFinalSocketState(socketSt);
+        } else {
+            state.getTlsContext().setFinalSocketState(SocketState.UNAVAILABLE);
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
