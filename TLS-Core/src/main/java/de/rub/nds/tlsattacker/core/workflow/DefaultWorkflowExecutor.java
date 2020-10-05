@@ -81,6 +81,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            } catch(Exception e) {
+                LOGGER.error("", e);
+                throw e;
             } finally {
                 state.setEndTimestamp(System.currentTimeMillis());
             }
