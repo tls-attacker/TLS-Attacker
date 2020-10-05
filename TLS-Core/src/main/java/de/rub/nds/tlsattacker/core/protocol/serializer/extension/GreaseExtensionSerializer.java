@@ -22,7 +22,7 @@ public class GreaseExtensionSerializer extends ExtensionSerializer<GreaseExtensi
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendBytes(msg.getRandomData());
+        appendBytes(msg.getRandomData().getValue());
         return getAlreadySerialized();
     }
 }

@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 
 public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessage> {
@@ -18,7 +19,9 @@ public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessag
 
     @Override
     public void parseExtensionMessageContent(GreaseExtensionMessage msg) {
-        parseByteArrayField(msg.getExtensionLength().getValue());
+        msg.setRandomData(parseByteArrayField(msg.getExtensionLength().getValue()));
+        msg.setData(msg.getRandomData().getValue());
+        msg.setType(ExtensionType.getExtensionType(msg.getExtensionType().getValue()));
     }
 
     @Override

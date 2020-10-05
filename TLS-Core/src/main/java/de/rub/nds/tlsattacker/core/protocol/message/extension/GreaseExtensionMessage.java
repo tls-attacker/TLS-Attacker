@@ -9,6 +9,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,11 +21,15 @@ import java.util.Random;
 public class GreaseExtensionMessage extends ExtensionMessage {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private byte[] randomData;
-    private byte[] type;
+    @ModifiableVariableProperty
+    private ModifiableByteArray randomData;
+
+    private byte[] data;
+    private ExtensionType type;
 
     public GreaseExtensionMessage() {
-        super();
+        super(ExtensionType.GREASE_00);
+        this.type = ExtensionType.GREASE_00;
     }
 
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {
@@ -30,8 +37,8 @@ public class GreaseExtensionMessage extends ExtensionMessage {
         if (!type.name().startsWith("GREASE_")) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
-        this.type = type.getValue();
-        this.randomData = data;
+        this.data = data;
+        this.type = type;
     }
 
     public GreaseExtensionMessage(ExtensionType type, int length) {
@@ -43,28 +50,40 @@ public class GreaseExtensionMessage extends ExtensionMessage {
         Random random = new Random(0);
         byte[] b = new byte[length];
         random.nextBytes(b);
-        this.type = type.getValue();
-        this.randomData = b;
+        this.data = b;
+        this.type = type;
     }
 
     @Override
     public ExtensionType getExtensionTypeConstant() {
-        return ExtensionType.getExtensionType(this.type);
+        return this.type;
     }
 
-    public byte[] getRandomData() {
+    public ModifiableByteArray getRandomData() {
         return randomData;
     }
 
-    public void setRandomData(byte[] randomData) {
+    public void setRandomData(byte[] bytes) {
+        this.randomData = ModifiableVariableFactory.safelySetValue(randomData, bytes);
+    }
+
+    public void setRandomData(ModifiableByteArray randomData) {
         this.randomData = randomData;
     }
 
-    public byte[] getType() {
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public ExtensionType getType() {
         return type;
     }
 
-    public void setType(byte[] type) {
+    public void setType(ExtensionType type) {
         this.type = type;
     }
 }

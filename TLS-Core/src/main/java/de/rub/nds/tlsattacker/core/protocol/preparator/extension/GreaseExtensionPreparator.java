@@ -14,13 +14,16 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class GreaseExtensionPreparator extends ExtensionPreparator<GreaseExtensionMessage> {
+    GreaseExtensionMessage msg;
+
     public GreaseExtensionPreparator(Chooser chooser, GreaseExtensionMessage message,
             ExtensionSerializer<GreaseExtensionMessage> serializer) {
         super(chooser, message, serializer);
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-
+        msg.setRandomData(msg.getData());
     }
 }
