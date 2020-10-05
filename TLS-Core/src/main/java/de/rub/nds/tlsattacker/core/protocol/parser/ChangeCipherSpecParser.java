@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChangeCipherSpecByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -54,8 +55,8 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
      *            Message to write in
      */
     private void parseCcsProtocolType(ChangeCipherSpecMessage msg) {
-        msg.setCcsProtocolType(parseByteArrayField(this.getBytesLeft()));
-        LOGGER.debug("CcsProtocolType: " + msg.getCcsProtocolType().getValue());
+        msg.setCcsProtocolType(parseByteArrayField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        LOGGER.debug("CcsProtocolType: " + ArrayConverter.bytesToHexString(msg.getCcsProtocolType().getValue()));
     }
 
 }
