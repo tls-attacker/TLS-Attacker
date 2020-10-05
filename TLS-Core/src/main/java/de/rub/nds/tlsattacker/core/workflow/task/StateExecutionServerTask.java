@@ -38,7 +38,7 @@ public class StateExecutionServerTask extends TlsTask {
         this.serverSocket = serverSocket;
     }
 
-    private Socket acceptConnection() {
+    private Socket acceptConnection() throws IOException {
         try {
             new Thread(() -> {
                 boolean success = false;
@@ -61,17 +61,18 @@ public class StateExecutionServerTask extends TlsTask {
             return serverSocket.accept();
         } catch (IOException e) {
             LOGGER.error(e);
+            throw e;
         }
-
-        return null;
     }
 
     @Override
     public boolean execute() {
         stateFinished = false;
-        Socket socket = acceptConnection();
-        if (socket == null) {
-            throw new RuntimeException("error accepting the connection");
+        Socket socket;
+        try {
+            socket = acceptConnection();
+        } catch (IOException E) {
+            throw new RuntimeException("error accepting the connection", E);
         }
 
         // Do this post state init only if you know what yout are doing.
