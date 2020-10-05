@@ -3674,6 +3674,10 @@ public class Config implements Serializable {
         this.defaultClientKeyShareNamedGroups = defaultClientKeyShareNamedGroups;
     }
 
+    public void setDefaultClientKeyShareNamedGroups(NamedGroup... defaultClientKeyShareNamedGroups) {
+        this.defaultClientKeyShareNamedGroups = new ArrayList<>(Arrays.asList(defaultClientKeyShareNamedGroups));
+    }
+
     public List<KeyShareStoreEntry> getDefaultClientKeyStoreEntries() {
         return defaultClientKeyStoreEntries;
     }
