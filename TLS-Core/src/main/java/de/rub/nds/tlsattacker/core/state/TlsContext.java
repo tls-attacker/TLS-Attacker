@@ -701,9 +701,10 @@ public class TlsContext {
         recordLayerType = config.getRecordLayerType();
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
-        random = new Random(0);
         if (config.isStealthMode()) {
             random = new Random();
+        } else {
+            random = new Random(0);
         }
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
