@@ -379,7 +379,8 @@ public class CertificateKeyPair implements Serializable {
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }
-        if (AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
+        if (!context.getChooser().getSelectedCipherSuite().isTLS13()
+                && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
             context.setSelectedGroup(publicKeyGroup);
         } else {
             context.setEcCertificateCurve(publicKeyGroup);
