@@ -28,22 +28,7 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
 
     @Override
     public void initialize() throws IOException {
-        long connectTimeout = System.currentTimeMillis() + this.connectionTimeout;
-        while (System.currentTimeMillis() < connectTimeout || this.connectionTimeout == 0) {
-            try {
-                socket = new Socket(hostname, port);
-                socket.setTcpNoDelay(true);
-                srcPort = socket.getLocalPort();
-                dstPort = socket.getPort();
-                setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
-                break;
-            } catch (ConnectException E) {
-                try {
-                    Thread.sleep(500);
-                } catch (Exception ignore) {
-
-                }
-            }
-        }
+        super.initialize();
+        socket.setTcpNoDelay(true);
     }
 }

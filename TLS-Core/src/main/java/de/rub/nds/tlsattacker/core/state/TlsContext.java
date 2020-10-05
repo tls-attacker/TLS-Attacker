@@ -71,8 +71,8 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import org.bouncycastle.crypto.tls.Certificate;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -1972,6 +1972,10 @@ public class TlsContext {
                 throw new ConfigurationException("Connection end not set");
             }
             transportHandler = TransportHandlerFactory.createTransportHandler(connection);
+            if (transportHandler instanceof ClientTcpTransportHandler) {
+                ((ClientTcpTransportHandler) transportHandler).setRetryFailedSocketInitialization(
+                        config.isRetryFailedClientTcpSocketInitialization());
+            }
         }
 
         try {

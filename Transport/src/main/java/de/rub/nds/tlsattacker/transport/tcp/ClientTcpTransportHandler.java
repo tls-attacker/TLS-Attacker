@@ -27,6 +27,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     protected String hostname;
     protected int port;
     protected long connectionTimeout;
+    private boolean retryFailedSocketInitialization = false;
 
     public ClientTcpTransportHandler(Connection connection) {
         this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(), connection
@@ -64,7 +65,11 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 }
                 break;
             } catch (Exception e) {
-                LOGGER.warn("Server @" + hostname + ":" + port + " is not available yet");
+                if (!retryFailedSocketInitialization) {
+                    LOGGER.warn("Socket initialization to {}:{} failed", hostname, port, e);
+                    break;
+                }
+                LOGGER.warn("Server @{}:{} is not available yet", hostname, port);
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ignore) {
@@ -91,4 +96,11 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         closeConnection();
     }
 
+    public boolean isRetryFailedSocketInitialization() {
+        return retryFailedSocketInitialization;
+    }
+
+    public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
+        this.retryFailedSocketInitialization = retryFailedSocketInitialization;
+    }
 }

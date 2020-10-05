@@ -195,6 +195,12 @@ public class Config implements Serializable {
     private boolean receiveFinalSocketStateWithTimeout = false;
 
     /**
+     * Setting this to true results in multiple attempts to initialize
+     * a connection to the server when a ClientTcpTransportHandler is used.
+     */
+    private Boolean retryFailedClientTcpSocketInitialization = false;
+
+    /**
      * The default connection parameters to use when running TLS-Server.
      */
     private InboundConnection defaultServerConnection;
@@ -3686,4 +3692,11 @@ public class Config implements Serializable {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
     }
 
+    public Boolean isRetryFailedClientTcpSocketInitialization() {
+        return retryFailedClientTcpSocketInitialization;
+    }
+
+    public void setRetryFailedClientTcpSocketInitialization(Boolean retryFailedClientTcpSocketInitialization) {
+        this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
+    }
 }
