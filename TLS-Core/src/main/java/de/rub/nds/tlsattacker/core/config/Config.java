@@ -192,7 +192,13 @@ public class Config implements Serializable {
      */
     private OutboundConnection defaultClientConnection;
 
-    private boolean receiveFinalSocketStateWithTimeout = false;
+    /**
+     * After executing a workflow trace, the final state of the TCP socket is
+     * stored inside the context. By default the socket timeout for determining
+     * this state is set to 1ms. If execution speed is not important, this can be set
+     * to true, so that the regular connection timeout settings are used.
+     */
+    private Boolean receiveFinalTcpSocketStateWithTimeout = false;
 
     /**
      * Setting this to true results in multiple attempts to initialize
@@ -2983,12 +2989,12 @@ public class Config implements Serializable {
         this.defaultServerConnection = defaultServerConnection;
     }
 
-    public boolean isReceiveFinalSocketStateWithTimeout() {
-        return receiveFinalSocketStateWithTimeout;
+    public Boolean isReceiveFinalTcpSocketStateWithTimeout() {
+        return receiveFinalTcpSocketStateWithTimeout;
     }
 
-    public void setReceiveFinalSocketStateWithTimeout(boolean receiveFinalSocketStateWithTimeout) {
-        this.receiveFinalSocketStateWithTimeout = receiveFinalSocketStateWithTimeout;
+    public void setReceiveFinalTcpSocketStateWithTimeout(Boolean receiveFinalTcpSocketStateWithTimeout) {
+        this.receiveFinalTcpSocketStateWithTimeout = receiveFinalTcpSocketStateWithTimeout;
     }
 
     public RunningModeType getDefaultRunningMode() {
