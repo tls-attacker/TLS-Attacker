@@ -206,13 +206,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         int j = 0;
         for (int i = 0; i < expectedMessages.size(); i++) {
             if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
-                return false; 
+                return false;
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
                         && expectedMessages.get(i).isRequired()) {
                     if (receivedMessageCanBeIgnored(messages.get(j))) {
-                        j++; 
-                        i--; 
+                        j++;
+                        i--;
                     } else {
                         return false;
                     }
@@ -223,12 +223,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             }
         }
 
-        if (j < messages.size()) {
-            for (; j < messages.size(); j++) {
-                if (!receivedMessageCanBeIgnored(messages.get(j))
-                        && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
-                    return false; // additional messages are not allowed
-                }
+        for (; j < messages.size(); j++) {
+            if (!receivedMessageCanBeIgnored(messages.get(j))
+                    && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+                return false; // additional messages are not allowed
             }
         }
 
