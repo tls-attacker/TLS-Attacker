@@ -82,11 +82,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
-                state.setEndTimestamp(System.currentTimeMillis());
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
-            } catch (Exception e) {
+            } finally {
                 state.setEndTimestamp(System.currentTimeMillis());
-                throw e;
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
@@ -121,7 +119,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        state.setEndTimestamp(System.currentTimeMillis());
 
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
