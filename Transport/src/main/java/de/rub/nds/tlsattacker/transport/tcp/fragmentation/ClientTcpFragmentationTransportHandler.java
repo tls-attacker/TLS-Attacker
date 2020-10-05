@@ -27,6 +27,7 @@ import java.util.Arrays;
 public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHandler {
 
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
+    private int packetChunks = 3;
 
     public ClientTcpFragmentationTransportHandler(Connection connection) {
         this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection
@@ -48,7 +49,7 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
             throw new IOException("Transporthandler is not initalized!");
         }
         int pointer = 0;
-        int chunk_size = (int) Math.ceil((double) data.length / 3);
+        int chunk_size = (int) Math.ceil((double) data.length / packetChunks);
 
         while (pointer < data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {
@@ -65,5 +66,13 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
             }
 
         }
+    }
+
+    public int getPacketChunks() {
+        return packetChunks;
+    }
+
+    public void setPacketChunks(int packetChunks) {
+        this.packetChunks = packetChunks;
     }
 }

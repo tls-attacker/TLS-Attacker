@@ -19,6 +19,8 @@ import java.util.Arrays;
 
 public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHandler {
 
+    private int packetChunks = 3;
+
     public ServerTcpFragmentationTransportHandler(Connection con) {
         super(con);
     }
@@ -42,7 +44,7 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
             throw new IOException("Transporthandler is not initalized!");
         }
         int pointer = 0;
-        int chunk_size = (int) Math.ceil((double) data.length / 3);
+        int chunk_size = (int) Math.ceil((double) data.length / packetChunks);
 
         while (pointer < data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {
@@ -54,5 +56,13 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
             outStream.write(slice);
             outStream.flush();
         }
+    }
+
+    public int getPacketChunks() {
+        return packetChunks;
+    }
+
+    public void setPacketChunks(int packetChunks) {
+        this.packetChunks = packetChunks;
     }
 }
