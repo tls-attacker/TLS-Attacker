@@ -312,7 +312,9 @@ public class AlgorithmResolver {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a Cipher");
         }
-        throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
+
+        LOGGER.warn("The cipher algorithm in " + cipherSuite + " is not supported yet. Falling back to NULL.");
+        return CipherAlgorithm.NULL;
     }
 
     /**
