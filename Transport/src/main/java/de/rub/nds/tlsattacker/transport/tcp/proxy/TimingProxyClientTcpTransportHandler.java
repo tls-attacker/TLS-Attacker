@@ -26,8 +26,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
-public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler implements ProxyableTransportHandler,
-        TimeableTransportHandler {
+public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler implements
+        ProxyableTransportHandler, TimeableTransportHandler {
 
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
@@ -110,7 +110,6 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     public void closeClientConnection() throws IOException {
         closeConnection();
     }
-
 
     @Override
     public Long getLastMeasurement() {

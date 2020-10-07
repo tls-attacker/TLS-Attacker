@@ -1973,8 +1973,8 @@ public class TlsContext {
             }
             transportHandler = TransportHandlerFactory.createTransportHandler(connection);
             if (transportHandler instanceof ClientTcpTransportHandler) {
-                ((ClientTcpTransportHandler) transportHandler).setRetryFailedSocketInitialization(
-                        config.isRetryFailedClientTcpSocketInitialization());
+                ((ClientTcpTransportHandler) transportHandler).setRetryFailedSocketInitialization(config
+                        .isRetryFailedClientTcpSocketInitialization());
             }
         }
 

@@ -81,7 +81,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.error("", e);
                 throw e;
             } finally {
@@ -113,7 +113,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 }
             }
         }
-
 
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();

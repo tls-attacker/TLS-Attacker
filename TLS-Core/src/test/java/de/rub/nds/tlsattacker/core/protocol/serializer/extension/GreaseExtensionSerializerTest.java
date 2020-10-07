@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -25,7 +34,8 @@ public class GreaseExtensionSerializerTest {
     private final int extensionLength;
     private final byte[] randomData;
 
-    public GreaseExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, byte[] randomData) {
+    public GreaseExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+            int extensionLength, byte[] randomData) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -33,7 +43,6 @@ public class GreaseExtensionSerializerTest {
         this.extensionLength = extensionLength;
         this.randomData = randomData;
     }
-
 
     /**
      * Test of serializeExtensionContent method, of class

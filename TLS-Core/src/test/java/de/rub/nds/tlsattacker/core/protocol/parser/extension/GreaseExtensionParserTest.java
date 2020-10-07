@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,14 +27,9 @@ public class GreaseExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-                ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"),
-                0,
-                ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"),
-                ExtensionType.GREASE_01,
-                10,
-                new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-        } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"), 0,
+                ArrayConverter.hexStringToByteArray("1a1a000a0102030405060708090a"), ExtensionType.GREASE_01, 10,
+                new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } } });
     }
 
     private final byte[] extension;
@@ -35,7 +39,8 @@ public class GreaseExtensionParserTest {
     private final int extensionLength;
     private final byte[] randomData;
 
-    public GreaseExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, byte[] randomData) {
+    public GreaseExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+            int extensionLength, byte[] randomData) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;

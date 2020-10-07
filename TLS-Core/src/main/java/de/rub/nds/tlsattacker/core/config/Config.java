@@ -195,14 +195,14 @@ public class Config implements Serializable {
     /**
      * After executing a workflow trace, the final state of the TCP socket is
      * stored inside the context. By default the socket timeout for determining
-     * this state is set to 1ms. If execution speed is not important, this can be set
-     * to true, so that the regular connection timeout settings are used.
+     * this state is set to 1ms. If execution speed is not important, this can
+     * be set to true, so that the regular connection timeout settings are used.
      */
     private Boolean receiveFinalTcpSocketStateWithTimeout = false;
 
     /**
-     * Setting this to true results in multiple attempts to initialize
-     * a connection to the server when a ClientTcpTransportHandler is used.
+     * Setting this to true results in multiple attempts to initialize a
+     * connection to the server when a ClientTcpTransportHandler is used.
      */
     private Boolean retryFailedClientTcpSocketInitialization = false;
 
