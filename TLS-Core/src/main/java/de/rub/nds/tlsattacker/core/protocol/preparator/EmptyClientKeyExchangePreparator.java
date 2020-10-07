@@ -10,10 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PublicKeyType;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -51,7 +49,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
-    protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculateDHPremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
@@ -68,8 +66,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
 
     protected byte[] computeECPremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
-        int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
+        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLength);
     }
 
     @Override
@@ -83,17 +81,20 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
             String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0)
                     .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
-                premasterSecret = calculatePremasterSecret(chooser.getClientDhModulus(),
-                        chooser.getDhClientPrivateKey(), chooser.getDhClientPublicKey());
+                BigInteger modulus = chooser.getClientDhModulus();
+                BigInteger publicKey = chooser.getServerDhPublicKey();
+                BigInteger privateKey = chooser.getClientDhPrivateKey();
+                LOGGER.debug(modulus.bitLength());
+                premasterSecret = calculateDHPremasterSecret(modulus, privateKey, publicKey);
             } else if (PublicKeyType.fromOid(algorithm) == PublicKeyType.ECDSA) {
                 if (clientMode) {
-
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
                     EllipticCurve curve = CurveFactory.getCurve(usedGroup);
                     Point publicKey = chooser.getServerEcPublicKey();
-                    premasterSecret = computeECPremasterSecret(curve, publicKey, chooser.getClientEcPrivateKey());
+                    BigInteger privateKey = chooser.getClientEcPrivateKey();
+                    premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);
                 } else {
                     LOGGER.debug("Not Implemented.");
                 }
