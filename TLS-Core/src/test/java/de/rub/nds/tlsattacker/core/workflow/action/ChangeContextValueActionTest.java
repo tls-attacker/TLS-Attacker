@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
@@ -23,6 +24,8 @@ import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.crypto.NoSuchPaddingException;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -54,6 +57,19 @@ public class ChangeContextValueActionTest {
 
     @After
     public void tearDown() {
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testException1() {
+        ChangeContextValueAction<ProtocolVersion> b = (ChangeContextValueAction<ProtocolVersion>)trace.getTlsActions().get(0);
+        b.getNewValueList();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testException2() {
+        trace.addTlsAction(new ChangeContextValueAction<CipherSuite>("", CipherSuite.GREASE_00, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
+        ChangeContextValueAction<CipherSuite> b = (ChangeContextValueAction<CipherSuite>)trace.getTlsActions().get(1);
+        b.getNewValue();
     }
 
     /**
@@ -114,29 +130,35 @@ public class ChangeContextValueActionTest {
     @Test
     @Category(SlowTests.class)
     public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeProtocolVersionAction.class);
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeContextValueAction.class);
     }
 
     @Test
     @Category(SlowTests.class)
     public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeProtocolVersionAction.class);
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeContextValueAction.class);
     }
 
     @Test
     @Category(SlowTests.class)
     public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        List<CipherSuite> ls = new ArrayList<CipherSuite>();
+        ls.add(CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA);
+        ls.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
 
-        ChangeContextValueAction<byte[]> action2 = new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[]{0x01, 0x02, 0x03});
+        ChangeContextValueAction<byte[]> action2 = new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[] {
+                0x01, 0x02, 0x03 });
+        ChangeContextValueAction<CipherSuite> action3 = new ChangeContextValueAction<CipherSuite>("clientSupportedCiphersuites", ls);
+        ChangeContextValueAction<PRFAlgorithm> action4 = new ChangeContextValueAction<PRFAlgorithm>("prfAlgorithm", PRFAlgorithm.TLS_PRF_SHA256);
 
         trace.addTlsActions(action2);
+        trace.addTlsActions(action3);
+        trace.addTlsActions(action4);
         WorkflowTrace copy = state.getWorkflowTraceCopy();
 
-        ChangeContextValueAction<ProtocolVersion> actionCopy = (ChangeContextValueAction<ProtocolVersion>)copy.getTlsActions().get(0);
-        assertEquals(action, actionCopy);
-
-        ChangeContextValueAction<byte[]> actionCopy2 = (ChangeContextValueAction<byte[]>)copy.getTlsActions().get(1);
-        assertEquals(action2, actionCopy2);
+        assertEquals(action,  (ChangeContextValueAction<ProtocolVersion>) copy.getTlsActions().get(0));
+        assertEquals(action2, (ChangeContextValueAction<byte[]>) copy.getTlsActions().get(1));
+        assertEquals(action3, (ChangeContextValueAction<CipherSuite>) copy.getTlsActions().get(2));
+        assertEquals(action4, (ChangeContextValueAction<PRFAlgorithm>) copy.getTlsActions().get(3));
     }
-
 }

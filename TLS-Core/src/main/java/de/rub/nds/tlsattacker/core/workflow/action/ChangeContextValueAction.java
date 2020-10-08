@@ -15,17 +15,39 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+/**
+ * This action allows to change a value of the {@link TlsContext}. The field that should be changed is referenced by a string.
+ *
+ * WARNING: This might not work for every field inside the context,
+ * especially when the WorkflowTrace is copied. There might be
+ * serialization/deserialization issues with the types used in the {@link TlsContext}.
+ *
+ * @param <T> Object type of the field inside the {@link TlsContext}
+ */
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private T newValue;
-    private T oldValue = null;
+    @XmlElementWrapper(name = "newValueList")
+    @XmlElement(name = "newValue")
+    private List<T> newValueList;
+
+    private T oldValue;
+    private List<T> oldValueList;
+
     private String fieldName;
+
+    @XmlElement
+    private Boolean usesList = null;
 
     public ChangeContextValueAction(String fieldName, T newValue) {
         super();
@@ -33,19 +55,18 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
         this.fieldName = fieldName;
     }
 
+    public ChangeContextValueAction(String fieldName, List<T> newValueList) {
+        super();
+        this.usesList = true;
+        this.newValueList = newValueList;
+        this.fieldName = fieldName;
+    }
+
+    public ChangeContextValueAction(String fieldName, T... newValueList) {
+        this(fieldName, Arrays.asList(newValueList));
+    }
+
     public ChangeContextValueAction() {
-    }
-
-    public void setNewValue(T newValue) {
-        this.newValue = newValue;
-    }
-
-    public T getNewValue() {
-        return newValue;
-    }
-
-    public T getOldValue() {
-        return oldValue;
     }
 
     @Override
@@ -60,11 +81,18 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             Field field = tlsContext.getClass().getDeclaredField(this.fieldName);
             field.setAccessible(true);
 
-            oldValue = (T)field.get(tlsContext);
+            if (!isUsesList()) {
+                oldValue = (T) field.get(tlsContext);
+                field.set(tlsContext, this.newValue);
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                        oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
+            } else {
+                oldValueList = (List<T>) field.get(tlsContext);
+                field.set(tlsContext, this.newValueList);
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                        oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
+            }
 
-            field.set(tlsContext, this.newValue);
-
-            LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
             setExecuted(true);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -102,12 +130,14 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             return false;
         }
 
-        if (this.getNewValue().getClass().isArray()) {
-            // If T is an array (e.g. byte[]), we need to use reflection to check equality
+        if (!isUsesList() && this.getNewValue() != null && this.getNewValue().getClass().isArray()) {
+            // If T is an array (e.g. byte[]), we need to use reflection to
+            // check equality
             if (this.newValue != null && other.newValue != null) {
                 int length = Array.getLength(this.newValue);
                 int length2 = Array.getLength(other.newValue);
-                if (length != length2) return false;
+                if (length != length2)
+                    return false;
 
                 for (int i = 0; i < length; i++) {
                     if (!Array.get(this.newValue, i).equals(Array.get(other.newValue, i))) {
@@ -118,7 +148,8 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (this.oldValue != null && other.oldValue != null) {
                 int length = Array.getLength(this.oldValue);
                 int length2 = Array.getLength(other.oldValue);
-                if (length != length2) return false;
+                if (length != length2)
+                    return false;
 
                 for (int i = 0; i < length; i++) {
                     if (!Array.get(this.oldValue, i).equals(Array.get(other.oldValue, i))) {
@@ -126,22 +157,77 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
                     }
                 }
             }
-            if (this.oldValue == null && other.oldValue != null) return false;
-            if (this.newValue == null && other.newValue != null) return false;
+            if (this.oldValue == null && other.oldValue != null)
+                return false;
+            if (this.newValue == null && other.newValue != null)
+                return false;
             return true;
         }
 
-        if (!Objects.equals(this.oldValue, other.oldValue) ||
-            !Objects.equals(this.newValue, other.newValue)) {
-            return false;
+        if (!isUsesList()) {
+            return Objects.equals(this.oldValue, other.oldValue) && Objects.equals(this.newValue, other.newValue);
+        } else {
+            return this.newValueList.equals(other.newValueList)
+                    && (this.oldValueList == other.oldValueList || this.oldValueList.equals(other.oldValueList));
         }
-
-        return true;
     }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    private boolean isUsesList() {
+        if (usesList != null) {
+            return usesList;
+        }
+        return false;
+    }
+
+    public void setNewValue(T newValue) {
+        if (isUsesList()) {
+            throw new UnsupportedOperationException("The action was initialized with a list");
+        }
+        this.newValue = newValue;
+    }
+
+    public void setNewValue(List<T> newValue) {
+        if (!isUsesList()) {
+            throw new UnsupportedOperationException("The action was not initialized with a list");
+        }
+        this.newValueList = newValue;
+    }
+
+    public void setNewValue(T... newValue) {
+        this.setNewValue(Arrays.asList(newValue));
+    }
+
+    public T getNewValue() {
+        if (isUsesList()) {
+            throw new UnsupportedOperationException("The action was initialized with a list");
+        }
+        return newValue;
+    }
+
+    public List<T> getNewValueList() {
+        if (!isUsesList()) {
+            throw new UnsupportedOperationException("The action was not initialized with a list");
+        }
+        return newValueList;
+    }
+
+    public T getOldValue() {
+        if (isUsesList()) {
+            throw new UnsupportedOperationException("The action was initialized with a list");
+        }
+        return oldValue;
+    }
+
+    public List<T> getOldValueList() {
+        if (!isUsesList()) {
+            throw new UnsupportedOperationException("The action was not initialized with a list");
+        }
+        return oldValueList;
     }
 
     public String getFieldName() {
