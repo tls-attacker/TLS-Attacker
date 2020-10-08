@@ -12,5 +12,6 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 public enum ActionOption {
     EARLY_CLEAN_SHUTDOWN,
     IGNORE_UNEXPECTED_WARNINGS,
+    MAY_FAIL,
     CHECK_ONLY_EXPECTED;
 }

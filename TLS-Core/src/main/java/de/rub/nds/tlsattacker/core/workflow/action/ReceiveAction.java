@@ -81,10 +81,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ActionOption.class, name = "ActionOption") })
-    private Set<ActionOption> actionOptions = new HashSet<>();
-
     public ReceiveAction() {
         super();
     }
@@ -99,9 +95,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ActionOption> actionOptions, List<ProtocolMessage> messages) {
+    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
-        this.actionOptions = actionOptions;
+        setActionOptions(myActionOptions);
     }
 
     public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
@@ -110,8 +106,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
-        actionOptions = new HashSet();
-        actionOptions.add(actionOption);
+        HashSet myActionOptions = new HashSet();
+        myActionOptions.add(actionOption);
+        setActionOptions(myActionOptions);
     }
 
     public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
@@ -225,7 +222,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         for (; j < messages.size(); j++) {
             if (!receivedMessageCanBeIgnored(messages.get(j))
-                    && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+                    && !getActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
                 return false; // additional messages are not allowed
             }
         }
@@ -352,13 +349,5 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         return false;
-    }
-
-    public Set<ActionOption> getActionOptions() {
-        return actionOptions;
-    }
-
-    public void setActionOptions(Set<ActionOption> actionOptions) {
-        this.actionOptions = actionOptions;
     }
 }
