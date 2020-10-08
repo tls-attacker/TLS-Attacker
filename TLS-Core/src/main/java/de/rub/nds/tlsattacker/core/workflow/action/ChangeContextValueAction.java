@@ -24,13 +24,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This action allows to change a value of the {@link TlsContext}. The field that should be changed is referenced by a string.
+ * This action allows to change a value of the {@link TlsContext}. The field
+ * that should be changed is referenced by a string.
  *
- * WARNING: This might not work for every field inside the context,
- * especially when the WorkflowTrace is copied. There might be
- * serialization/deserialization issues with the types used in the {@link TlsContext}.
+ * WARNING: This might not work for every field inside the context, especially
+ * when the WorkflowTrace is copied. There might be
+ * serialization/deserialization issues with the types used in the
+ * {@link TlsContext}.
  *
- * @param <T> Object type of the field inside the {@link TlsContext}
+ * @param <T>
+ *            Object type of the field inside the {@link TlsContext}
  */
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
@@ -84,13 +87,13 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (!isUsesList()) {
                 oldValue = (T) field.get(tlsContext);
                 field.set(tlsContext, this.newValue);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
-                        oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValue == null ? "null"
+                        : oldValue.toString(), newValue.toString()));
             } else {
                 oldValueList = (List<T>) field.get(tlsContext);
                 field.set(tlsContext, this.newValueList);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
-                        oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValueList == null ? "null"
+                        : oldValueList.toString(), newValueList.toString()));
             }
 
             setExecuted(true);

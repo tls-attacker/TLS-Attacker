@@ -61,14 +61,16 @@ public class ChangeContextValueActionTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testException1() {
-        ChangeContextValueAction<ProtocolVersion> b = (ChangeContextValueAction<ProtocolVersion>)trace.getTlsActions().get(0);
+        ChangeContextValueAction<ProtocolVersion> b = (ChangeContextValueAction<ProtocolVersion>) trace.getTlsActions()
+                .get(0);
         b.getNewValueList();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testException2() {
-        trace.addTlsAction(new ChangeContextValueAction<CipherSuite>("", CipherSuite.GREASE_00, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
-        ChangeContextValueAction<CipherSuite> b = (ChangeContextValueAction<CipherSuite>)trace.getTlsActions().get(1);
+        trace.addTlsAction(new ChangeContextValueAction<CipherSuite>("", CipherSuite.GREASE_00,
+                CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
+        ChangeContextValueAction<CipherSuite> b = (ChangeContextValueAction<CipherSuite>) trace.getTlsActions().get(1);
         b.getNewValue();
     }
 
@@ -148,15 +150,17 @@ public class ChangeContextValueActionTest {
 
         ChangeContextValueAction<byte[]> action2 = new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[] {
                 0x01, 0x02, 0x03 });
-        ChangeContextValueAction<CipherSuite> action3 = new ChangeContextValueAction<CipherSuite>("clientSupportedCiphersuites", ls);
-        ChangeContextValueAction<PRFAlgorithm> action4 = new ChangeContextValueAction<PRFAlgorithm>("prfAlgorithm", PRFAlgorithm.TLS_PRF_SHA256);
+        ChangeContextValueAction<CipherSuite> action3 = new ChangeContextValueAction<CipherSuite>(
+                "clientSupportedCiphersuites", ls);
+        ChangeContextValueAction<PRFAlgorithm> action4 = new ChangeContextValueAction<PRFAlgorithm>("prfAlgorithm",
+                PRFAlgorithm.TLS_PRF_SHA256);
 
         trace.addTlsActions(action2);
         trace.addTlsActions(action3);
         trace.addTlsActions(action4);
         WorkflowTrace copy = state.getWorkflowTraceCopy();
 
-        assertEquals(action,  (ChangeContextValueAction<ProtocolVersion>) copy.getTlsActions().get(0));
+        assertEquals(action, (ChangeContextValueAction<ProtocolVersion>) copy.getTlsActions().get(0));
         assertEquals(action2, (ChangeContextValueAction<byte[]>) copy.getTlsActions().get(1));
         assertEquals(action3, (ChangeContextValueAction<CipherSuite>) copy.getTlsActions().get(2));
         assertEquals(action4, (ChangeContextValueAction<PRFAlgorithm>) copy.getTlsActions().get(3));
