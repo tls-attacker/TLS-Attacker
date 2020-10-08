@@ -19,7 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public class ChangeTlsContextAction<T> extends ConnectionBoundAction {
+public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,13 +27,13 @@ public class ChangeTlsContextAction<T> extends ConnectionBoundAction {
     private T oldValue = null;
     private String fieldName;
 
-    public ChangeTlsContextAction(String fieldName, T newValue) {
+    public ChangeContextValueAction(String fieldName, T newValue) {
         super();
         this.newValue = newValue;
         this.fieldName = fieldName;
     }
 
-    public ChangeTlsContextAction() {
+    public ChangeContextValueAction() {
     }
 
     public void setNewValue(T newValue) {
@@ -97,7 +97,7 @@ public class ChangeTlsContextAction<T> extends ConnectionBoundAction {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ChangeTlsContextAction<T> other = (ChangeTlsContextAction<T>) obj;
+        final ChangeContextValueAction<T> other = (ChangeContextValueAction<T>) obj;
         if (!Objects.equals(this.fieldName, other.getFieldName())) {
             return false;
         }

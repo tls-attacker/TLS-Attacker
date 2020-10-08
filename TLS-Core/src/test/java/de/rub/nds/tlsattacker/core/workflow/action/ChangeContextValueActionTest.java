@@ -30,18 +30,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-public class ChangeTlsContextActionTest {
+public class ChangeContextValueActionTest {
 
     private State state;
     private TlsContext tlsContext;
-    private ChangeTlsContextAction<ProtocolVersion> action;
+    private ChangeContextValueAction<ProtocolVersion> action;
     private WorkflowTrace trace;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, CryptoException {
         Config config = Config.createConfig();
-        action = new ChangeTlsContextAction<ProtocolVersion>("selectedProtocolVersion", ProtocolVersion.SSL2);
+        action = new ChangeContextValueAction<ProtocolVersion>("selectedProtocolVersion", ProtocolVersion.SSL2);
         trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(config, trace);
@@ -127,15 +127,15 @@ public class ChangeTlsContextActionTest {
     @Category(SlowTests.class)
     public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
 
-        ChangeTlsContextAction<byte[]> action2 = new ChangeTlsContextAction<byte[]>("handshakeSecret", new byte[]{0x01, 0x02, 0x03});
+        ChangeContextValueAction<byte[]> action2 = new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[]{0x01, 0x02, 0x03});
 
         trace.addTlsActions(action2);
         WorkflowTrace copy = state.getWorkflowTraceCopy();
 
-        ChangeTlsContextAction<ProtocolVersion> actionCopy = (ChangeTlsContextAction<ProtocolVersion>)copy.getTlsActions().get(0);
+        ChangeContextValueAction<ProtocolVersion> actionCopy = (ChangeContextValueAction<ProtocolVersion>)copy.getTlsActions().get(0);
         assertEquals(action, actionCopy);
 
-        ChangeTlsContextAction<byte[]> actionCopy2 = (ChangeTlsContextAction<byte[]>)copy.getTlsActions().get(1);
+        ChangeContextValueAction<byte[]> actionCopy2 = (ChangeContextValueAction<byte[]>)copy.getTlsActions().get(1);
         assertEquals(action2, actionCopy2);
     }
 
