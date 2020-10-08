@@ -287,6 +287,7 @@ public enum SignatureAndHashAlgorithm {
             SignatureAlgorithm sig = i.getSignatureAlgorithm();
 
             switch (certPublicKeyType) {
+                case ECDH:
                 case ECDSA:
                     if (sig == SignatureAlgorithm.ECDSA) {
                         found = true;

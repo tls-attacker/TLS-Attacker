@@ -397,6 +397,8 @@ public class TlsContext {
 
     private NamedGroup ecCertificateCurve;
 
+    private NamedGroup ecCertificateSignatureCurve;
+
     private Point clientEcPublicKey;
 
     private Point serverEcPublicKey;
@@ -2453,5 +2455,13 @@ public class TlsContext {
 
     public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
         this.esniNotAfter = esniKeysNotAfter;
+    }
+
+    public NamedGroup getEcCertificateSignatureCurve() {
+        return ecCertificateSignatureCurve;
+    }
+
+    public void setEcCertificateSignatureCurve(NamedGroup ecCertificateSignatureCurve) {
+        this.ecCertificateSignatureCurve = ecCertificateSignatureCurve;
     }
 }

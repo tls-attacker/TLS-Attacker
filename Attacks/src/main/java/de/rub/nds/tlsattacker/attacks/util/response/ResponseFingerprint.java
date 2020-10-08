@@ -235,7 +235,7 @@ public class ResponseFingerprint {
 
                     } else {
                         // Comparing BlobRecords
-                        if (Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
+                        if (!Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
                                 .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
                             return false;
                         }

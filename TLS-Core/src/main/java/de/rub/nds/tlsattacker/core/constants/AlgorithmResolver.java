@@ -156,6 +156,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
         } else if (cipher.contains("ECCPWD")) {
             return KeyExchangeAlgorithm.ECCPWD;
+        } else if (cipher.contains("TLS_GOSTR341094")) {
+            return KeyExchangeAlgorithm.VKO_GOST01;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
@@ -164,6 +166,57 @@ public class AlgorithmResolver {
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
                 + " is not supported yet.");
+    }
+
+    /**
+     * Returns the certificate type required for the cipher suite
+     *
+     * @param suite
+     * @return
+     */
+    public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
+        switch (keyExchangeAlgorithm) {
+            case DHE_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+            case PSK_RSA:
+                return CertificateKeyType.RSA;
+            case DH_RSA:
+            case DH_DSS:
+                return CertificateKeyType.DH;
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+                return CertificateKeyType.ECDH;
+            case ECDHE_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return CertificateKeyType.ECDSA;
+            case DHE_DSS:
+            case SRP_SHA_DSS:
+                return CertificateKeyType.DSS;
+            case VKO_GOST01:
+                return CertificateKeyType.GOST01;
+            case VKO_GOST12:
+                return CertificateKeyType.GOST12;
+            case DHE_PSK:
+            case DH_ANON:
+            case ECCPWD:
+            case ECDHE_PSK:
+            case ECDH_ANON:
+            case NULL:
+            case PSK:
+            case SRP_SHA:
+            case KRB5:
+                return CertificateKeyType.NONE;
+            case ECDH_ECNRA:
+            case ECMQV_ECNRA:
+                return CertificateKeyType.ECNRA;
+            case FORTEZZA_KEA:
+                return CertificateKeyType.FORTEZZA;
+        }
+        throw new UnsupportedOperationException("Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
     }
 
     /**

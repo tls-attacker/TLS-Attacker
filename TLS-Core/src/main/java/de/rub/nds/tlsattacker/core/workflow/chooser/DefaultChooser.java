@@ -892,7 +892,7 @@ public class DefaultChooser extends Chooser {
         if (context.getClientKeyShareStoreEntryList() != null) {
             return context.getClientKeyShareStoreEntryList();
         } else {
-            return config.getDefaultClientKeyShareEntries();
+            return config.getDefaultClientKeyStoreEntries();
         }
     }
 
