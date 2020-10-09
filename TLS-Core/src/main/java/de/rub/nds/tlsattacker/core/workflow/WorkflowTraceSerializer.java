@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -56,7 +57,7 @@ public class WorkflowTraceSerializer {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
-                    SendAction.class, ReceiveAction.class);
+                    SendAction.class, ReceiveAction.class, TlsContext.class);
         }
         return context;
     }
