@@ -84,7 +84,6 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();
                 BigInteger privateKey = chooser.getClientDhPrivateKey();
-                LOGGER.debug(modulus.bitLength());
                 premasterSecret = calculateDHPremasterSecret(modulus, privateKey, publicKey);
             } else if (PublicKeyType.fromOid(algorithm) == PublicKeyType.ECDSA) {
                 if (clientMode) {
