@@ -96,6 +96,8 @@ public class WorkflowConfigurationFactory {
                 return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
+            case DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
+                return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
             case RESUMPTION:
@@ -922,6 +924,17 @@ public class WorkflowConfigurationFactory {
             }
         } else {
             LOGGER.error("Not implemented for ConnectionEndType.SERVER");
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createDynamicClientRenegotiationWithoutResumption() {
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new FlushSessionCacheAction());
+        WorkflowTrace renegotiationTrace = createDynamicHandshakeWorkflow();
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
         }
         return trace;
     }
