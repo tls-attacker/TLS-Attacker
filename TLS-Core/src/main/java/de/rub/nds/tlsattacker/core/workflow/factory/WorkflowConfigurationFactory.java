@@ -169,6 +169,9 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the given connection end.
+     *
+     * @param connection
+     * @return
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowtrace(connection);
@@ -422,7 +425,9 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new RenegotiationAction());
         WorkflowTrace renegotiationTrace = createResumptionWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -434,7 +439,9 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -448,7 +455,9 @@ public class WorkflowConfigurationFactory {
                 new HelloRequestMessage(config));
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -934,7 +943,9 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createDynamicHandshakeWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }

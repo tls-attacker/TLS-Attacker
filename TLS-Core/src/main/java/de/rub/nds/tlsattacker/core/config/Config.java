@@ -849,6 +849,11 @@ public class Config implements Serializable {
     private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
+
+    private Boolean stopReceivingAfterWarning = false;
+
+    private Boolean stopActionsAfterWarning = false;
+
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
@@ -1307,6 +1312,22 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+    }
+
+    public Boolean getStopReceivingAfterWarning() {
+        return stopReceivingAfterWarning;
+    }
+
+    public void setStopReceivingAfterWarning(Boolean stopReceivingAfterWarning) {
+        this.stopReceivingAfterWarning = stopReceivingAfterWarning;
+    }
+
+    public Boolean getStopActionsAfterWarning() {
+        return stopActionsAfterWarning;
+    }
+
+    public void setStopActionsAfterWarning(Boolean stopActionsAfterWarning) {
+        this.stopActionsAfterWarning = stopActionsAfterWarning;
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
