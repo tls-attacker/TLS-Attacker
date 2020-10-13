@@ -162,15 +162,11 @@ public class CertificateByteChooser {
                 .getPreferedCertificateSignatureType();
 
         CertificateKeyType neededPublicKeyType;
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser
+                .getSelectedCipherSuite());
+        if (chooser.getSelectedProtocolVersion().isTLS13() || keyExchangeAlgorithm == null) {
             neededPublicKeyType = prefereredSignatureCertSignatureType;
         } else {
-            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser
-                    .getSelectedCipherSuite());
-            if (keyExchangeAlgorithm == null) {
-                LOGGER.warn("CipherSuite does not specify a certificate kex. Using  RSA.");
-                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
-            }
             switch (keyExchangeAlgorithm) {
                 case DH_RSA:
                 case DHE_RSA:
