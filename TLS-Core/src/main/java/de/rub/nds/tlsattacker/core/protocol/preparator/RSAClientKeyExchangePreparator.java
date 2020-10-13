@@ -173,6 +173,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 preparePremasterSecret(msg);
                 if (premasterSecret.length > 2) {
                     msg.getComputations().setPremasterSecretProtocolVersion(Arrays.copyOfRange(premasterSecret, 0, 2));
+                    LOGGER.debug("PMS Protocol Version {}", msg.getComputations().getPremasterSecretProtocolVersion().getValue());
                 } else {
                     LOGGER.warn("Decrypted PMS is not long enough to contain protocol version bytes");
                 }
