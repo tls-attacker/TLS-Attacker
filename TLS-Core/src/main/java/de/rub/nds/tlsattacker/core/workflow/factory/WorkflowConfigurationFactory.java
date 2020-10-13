@@ -9,8 +9,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -104,10 +108,14 @@ public class WorkflowConfigurationFactory {
                 return createFullResumptionWorkflow();
             case SIMPLE_MITM_PROXY:
                 return createSimpleMitmProxyWorkflow();
+            case TLS13_PSK:
+                return createTls13PskWorkflow(false);
+            case FULL_TLS13_PSK:
+                return createFullTls13PskWorkflow(false);
             case ZERO_RTT:
-                return createZeroRttWorkflow();
+                return createTls13PskWorkflow(true);
             case FULL_ZERO_RTT:
-                return createFullZeroRttWorkflow();
+                return createFullTls13PskWorkflow(true);
             case FALSE_START:
                 return createFalseStartWorkflow();
             case RSA_SYNC_PROXY:
@@ -517,7 +525,7 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private WorkflowTrace createZeroRttWorkflow() {
+    private WorkflowTrace createTls13PskWorkflow(boolean zeroRtt) {
         AliasedConnection connection = getConnection();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
@@ -538,7 +546,9 @@ public class WorkflowConfigurationFactory {
             earlyDataMsg = new ApplicationMessage();
         }
         clientHelloMessages.add(clientHello);
-        clientHelloMessages.add(earlyDataMsg);
+        if (zeroRtt) {
+            clientHelloMessages.add(earlyDataMsg);
+        }
 
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, clientHelloMessages));
 
@@ -549,27 +559,34 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             serverHello = new ServerHelloMessage();
             encExtMsg = new EncryptedExtensionsMessage();
-            encExtMsg.addExtension(new EarlyDataExtensionMessage());
         } else {
             serverHello = new ServerHelloMessage(config);
             encExtMsg = new EncryptedExtensionsMessage(config);
+        }
+        if (zeroRtt) {
             encExtMsg.addExtension(new EarlyDataExtensionMessage());
         }
 
         serverMessages.add(serverHello);
+        if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+            ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+            ccs.setRequired(false);
+            serverMessages.add(ccs);
+        }
         serverMessages.add(encExtMsg);
         serverMessages.add(serverFin);
 
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, serverMessages));
 
-        clientMessages.add(new EndOfEarlyDataMessage());
+        if (zeroRtt) {
+            clientMessages.add(new EndOfEarlyDataMessage());
+        }
         clientMessages.add(new FinishedMessage(config));
-        clientMessages.add(new ApplicationMessage(config));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, clientMessages));
         return trace;
     }
 
-    private WorkflowTrace createFullZeroRttWorkflow() {
+    private WorkflowTrace createFullTls13PskWorkflow(boolean zeroRtt) {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the 2nd ClientHello
@@ -594,7 +611,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(MessageActionFactory.createAction(ourConnection, ConnectionEndType.SERVER,
                 new NewSessionTicketMessage(false)));
         trace.addTlsAction(new ResetConnectionAction());
-        WorkflowTrace zeroRttTrace = createZeroRttWorkflow();
+        WorkflowTrace zeroRttTrace = createTls13PskWorkflow(zeroRtt);
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {
             trace.addTlsAction(zeroRttAction);
         }
