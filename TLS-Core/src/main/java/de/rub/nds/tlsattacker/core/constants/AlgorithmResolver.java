@@ -164,8 +164,8 @@ public class AlgorithmResolver {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a KeyExchangeAlgorithm");
         }
-        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
-                + " is not supported yet.");
+        LOGGER.warn("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
+        return KeyExchangeAlgorithm.RSA;
     }
 
     /**
