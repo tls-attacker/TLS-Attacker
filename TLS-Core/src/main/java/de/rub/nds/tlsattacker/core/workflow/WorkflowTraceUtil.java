@@ -388,7 +388,7 @@ public class WorkflowTraceUtil {
         }
         return null;
     }
-    
+
     public static TlsAction getLastActionForMessage(@Nonnull HandshakeMessageType type, @Nonnull WorkflowTrace trace) {
         TlsAction receiving = getLastReceivingActionForMessage(type, trace);
         TlsAction sending = getLastSendingActionForMessage(type, trace);
@@ -414,7 +414,7 @@ public class WorkflowTraceUtil {
 
         return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending) ? receiving : sending;
     }
-    
+
     public static TlsAction getLastSendingActionForMessage(@Nonnull ProtocolMessageType type,
             @Nonnull WorkflowTrace trace) {
         if (!getSendingActionsForMessage(type, trace).isEmpty()) {
@@ -432,7 +432,7 @@ public class WorkflowTraceUtil {
         }
         return null;
     }
-    
+
     public static TlsAction getLastReceivingActionForMessage(@Nonnull ProtocolMessageType type,
             @Nonnull WorkflowTrace trace) {
         if (!getReceivingActionsForMessage(type, trace).isEmpty()) {
@@ -441,7 +441,7 @@ public class WorkflowTraceUtil {
         }
         return null;
     }
-    
+
     public static TlsAction getLastReceivingActionForMessage(@Nonnull HandshakeMessageType type,
             @Nonnull WorkflowTrace trace) {
         if (!getReceivingActionsForMessage(type, trace).isEmpty()) {

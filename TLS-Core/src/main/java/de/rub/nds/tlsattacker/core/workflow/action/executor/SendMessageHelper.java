@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     public SendMessageHelper() {
     }
 
@@ -51,12 +51,12 @@ public class SendMessageHelper {
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig().getDtlsMaximumFragmentLength());
         List<AbstractRecord> preservedRecords = new LinkedList<>();
-        if(context.getConfig().isPreserveMessageRecordRelation()) {
+        if (context.getConfig().isPreserveMessageRecordRelation()) {
             preservedRecords = records;
             records = new LinkedList<>();
         }
         for (int i = 0; i < messages.size(); i++) {
-            if(context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
+            if (context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
                 records.add(preservedRecords.get(i));
             }
             ProtocolMessage message = messages.get(i);

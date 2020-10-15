@@ -280,27 +280,33 @@ public class WorkflowTraceMutator {
         truncate(trace, type, WorkflowTruncationMode.AT, null, untilLast);
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean sending, Boolean untilLast) {
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean sending,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean sending, Boolean untilLast) {
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean sending,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
-    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
-    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
-    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
-    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
@@ -312,19 +318,23 @@ public class WorkflowTraceMutator {
         truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
-    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
-    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
-    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 
-    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+            Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 

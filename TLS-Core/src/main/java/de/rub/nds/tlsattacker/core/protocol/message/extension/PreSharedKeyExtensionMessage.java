@@ -159,10 +159,10 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
         binders = new LinkedList<>();
 
         int pskLimit = pskSets.size();
-        if(limitPsksToOne) {
+        if (limitPsksToOne) {
             pskLimit = 1;
         }
-        
+
         for (int x = 0; x < pskLimit; x++) {
             PSKIdentity pskIdentity = new PSKIdentity();
             pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
