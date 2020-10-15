@@ -388,6 +388,68 @@ public class WorkflowTraceUtil {
         }
         return null;
     }
+    
+    public static TlsAction getLastActionForMessage(@Nonnull HandshakeMessageType type, @Nonnull WorkflowTrace trace) {
+        TlsAction receiving = getLastReceivingActionForMessage(type, trace);
+        TlsAction sending = getLastSendingActionForMessage(type, trace);
+        if (receiving == null && sending == null)
+            return null;
+        else if (receiving == null)
+            return sending;
+        else if (sending == null)
+            return receiving;
+
+        return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending) ? receiving : sending;
+    }
+
+    public static TlsAction getLastActionForMessage(@Nonnull ProtocolMessageType type, @Nonnull WorkflowTrace trace) {
+        TlsAction receiving = getLastReceivingActionForMessage(type, trace);
+        TlsAction sending = getLastSendingActionForMessage(type, trace);
+        if (receiving == null && sending == null)
+            return null;
+        else if (receiving == null)
+            return sending;
+        else if (sending == null)
+            return receiving;
+
+        return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending) ? receiving : sending;
+    }
+    
+    public static TlsAction getLastSendingActionForMessage(@Nonnull ProtocolMessageType type,
+            @Nonnull WorkflowTrace trace) {
+        if (!getSendingActionsForMessage(type, trace).isEmpty()) {
+            List<SendingAction> sndActions = getSendingActionsForMessage(type, trace);
+            return (TlsAction) sndActions.get(sndActions.size() - 1);
+        }
+        return null;
+    }
+
+    public static TlsAction getLastSendingActionForMessage(@Nonnull HandshakeMessageType type,
+            @Nonnull WorkflowTrace trace) {
+        if (!getSendingActionsForMessage(type, trace).isEmpty()) {
+            List<SendingAction> sndActions = getSendingActionsForMessage(type, trace);
+            return (TlsAction) sndActions.get(sndActions.size() - 1);
+        }
+        return null;
+    }
+    
+    public static TlsAction getLastReceivingActionForMessage(@Nonnull ProtocolMessageType type,
+            @Nonnull WorkflowTrace trace) {
+        if (!getReceivingActionsForMessage(type, trace).isEmpty()) {
+            List<ReceivingAction> rcvActions = getReceivingActionsForMessage(type, trace);
+            return (TlsAction) rcvActions.get(rcvActions.size() - 1);
+        }
+        return null;
+    }
+    
+    public static TlsAction getLastReceivingActionForMessage(@Nonnull HandshakeMessageType type,
+            @Nonnull WorkflowTrace trace) {
+        if (!getReceivingActionsForMessage(type, trace).isEmpty()) {
+            List<ReceivingAction> rcvActions = getReceivingActionsForMessage(type, trace);
+            return (TlsAction) rcvActions.get(rcvActions.size() - 1);
+        }
+        return null;
+    }
 
     private WorkflowTraceUtil() {
     }

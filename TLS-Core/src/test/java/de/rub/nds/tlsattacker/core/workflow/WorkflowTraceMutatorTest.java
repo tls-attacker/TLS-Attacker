@@ -178,7 +178,7 @@ public class WorkflowTraceMutatorTest {
     public void testTruncatingAfterReceivingWorkflow() {
         trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
 
-        WorkflowTraceMutator.truncateReceivingAfter(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateReceivingAfter(trace, HandshakeMessageType.FINISHED, false);
 
         assertEquals(1, trace.getTlsActions().size());
         assertTrue(trace.getTlsActions().get(0) instanceof ReceiveAction);
@@ -189,7 +189,7 @@ public class WorkflowTraceMutatorTest {
         trace.addTlsActions(new ReceiveAction(new ClientHelloMessage()), new ReceiveAction(new FinishedMessage()),
                 new SendAction(new FinishedMessage()));
 
-        WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
         assertEquals(1, trace.getTlsActions().size());
         assertEquals(ClientHelloMessage.class, ((ReceiveAction) trace.getTlsActions().get(0)).getExpectedMessages()
                 .get(0).getClass());
@@ -199,7 +199,7 @@ public class WorkflowTraceMutatorTest {
     public void testTruncatingAfterSendingWorkflow() {
         trace.addTlsActions(new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
 
-        WorkflowTraceMutator.truncateSendingAfter(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateSendingAfter(trace, HandshakeMessageType.FINISHED, false);
 
         assertEquals(1, trace.getTlsActions().size());
         assertTrue(trace.getTlsActions().get(0) instanceof SendAction);
@@ -209,7 +209,7 @@ public class WorkflowTraceMutatorTest {
     public void testTruncatingAtSendingWorkflow() {
         trace.addTlsActions(new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
 
-        WorkflowTraceMutator.truncateSendingAt(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateSendingAt(trace, HandshakeMessageType.FINISHED, false);
 
         assertEquals(0, trace.getTlsActions().size());
     }
@@ -218,7 +218,7 @@ public class WorkflowTraceMutatorTest {
     public void testTruncateAt() {
         trace.addTlsActions(new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
 
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.FINISHED, false);
 
         assertEquals(0, trace.getTlsActions().size());
     }
@@ -231,18 +231,18 @@ public class WorkflowTraceMutatorTest {
                         config)), new ReceiveAction(new FinishedMessage(config)));
 
         // Delete after first finished message
-        WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED);
+        WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
         assertEquals(3, trace.getTlsActions().size());
         assertEquals(3, ((SendAction) trace.getTlsActions().get(2)).getSendMessages().size());
 
         // Delete after ServerHelloDoneMessage
-        WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.SERVER_HELLO_DONE);
+        WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.SERVER_HELLO_DONE, false);
         assertEquals(2, trace.getTlsActions().size());
         assertTrue(trace.getTlsActions().get(1) instanceof ReceiveAction);
         assertEquals(3, ((ReceiveAction) trace.getTlsActions().get(1)).getExpectedMessages().size());
 
         // Delete from ServerHello
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO);
+        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO, false);
         assertEquals(1, trace.getTlsActions().size());
     }
 
@@ -254,14 +254,14 @@ public class WorkflowTraceMutatorTest {
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         // Delete after first ClientKeyExchange message
-        WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE, false);
         assertEquals(3, trace.getTlsActions().size());
 
         // Delete ClientKeyEchange message
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE, false);
         assertEquals(2, trace.getTlsActions().size());
 
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO_DONE);
+        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO_DONE, false);
         assertEquals(1, trace.getTlsActions().size());
     }
 }
