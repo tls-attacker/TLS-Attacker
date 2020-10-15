@@ -70,7 +70,7 @@ public class RecordGroup {
     }
 
     public ProtocolMessageType getProtocolMessageType() {
-        if (!records.isEmpty()) {
+        if (!records.isEmpty() && records.get(0).getContentMessageType() != null) {
             return ProtocolMessageType.getContentType(records.get(0).getContentMessageType().getValue());
         }
         return null;
