@@ -694,6 +694,17 @@ public class Config implements Serializable {
     private List<PskSet> defaultPskSets = new LinkedList<>();
 
     /**
+     * Always includes at most 1 PSK in the PreShareKey Extension.
+     */
+    private Boolean limitPsksToOne = false;
+    
+    /**
+     * If records are predefined for a SendAction, assign each message
+     * a predefined record and place automatically generated ones in between.
+     */
+    private Boolean preserveMessageRecordRelation = false;
+    
+    /**
      * Do we use a psk for our secrets?
      */
     private Boolean usePsk = false;
@@ -3705,4 +3716,21 @@ public class Config implements Serializable {
     public void setRetryFailedClientTcpSocketInitialization(Boolean retryFailedClientTcpSocketInitialization) {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
+    
+    public Boolean isLimitPsksToOne() {
+        return limitPsksToOne;
+    }
+
+    public void setLimitPsksToOne(Boolean limitPsksToOne) {
+        this.limitPsksToOne = limitPsksToOne;
+    }
+
+    public Boolean isPreserveMessageRecordRelation() {
+        return preserveMessageRecordRelation;
+    }
+
+    public void setPreserveMessageRecordRelation(Boolean preserveMessageRecordRelation) {
+        this.preserveMessageRecordRelation = preserveMessageRecordRelation;
+    }
+
 }
