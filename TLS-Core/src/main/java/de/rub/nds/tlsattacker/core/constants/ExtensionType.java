@@ -235,7 +235,7 @@ public enum ExtensionType {
         switch (extType) {
             case SERVER_NAME_INDICATION:
             case MAX_FRAGMENT_LENGTH:
-            case EC_POINT_FORMATS:
+            case ELLIPTIC_CURVES:
             case USE_SRTP:
             case HEARTBEAT:
             case ALPN:
