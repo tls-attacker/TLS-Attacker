@@ -302,4 +302,6 @@ public abstract class Chooser {
     public abstract Long getEsniNotBefore();
 
     public abstract Long getEsniNotAfter();
+
+    public abstract List<String> getProposedAlpnProtocols();
 }

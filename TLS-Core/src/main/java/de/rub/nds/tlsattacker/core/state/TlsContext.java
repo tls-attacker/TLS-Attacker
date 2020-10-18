@@ -70,7 +70,6 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -516,7 +515,9 @@ public class TlsContext {
      */
     private boolean tokenBindingNegotiatedSuccessfully = false;
 
-    private byte[] AlpnAnnouncedProtocols;
+    private List<String> proposedAlpnProtocols;
+
+    private String selectedAlpnProtocol;
 
     private List<CertificateType> certificateTypeClientDesiredTypes;
 
@@ -1418,7 +1419,9 @@ public class TlsContext {
 
     public void setClientExtendedRandom(byte[] clientExtendedRandom) {
         this.clientExtendedRandom = clientExtendedRandom;
-    };
+    }
+
+    ;
 
     public byte[] getServerExtendedRandom() {
         return serverExtendedRandom;
@@ -1667,12 +1670,20 @@ public class TlsContext {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public byte[] getAlpnAnnouncedProtocols() {
-        return AlpnAnnouncedProtocols;
+    public String getSelectedAlpnProtocol() {
+        return selectedAlpnProtocol;
     }
 
-    public void setAlpnAnnouncedProtocols(byte[] AlpnAnnouncedProtocols) {
-        this.AlpnAnnouncedProtocols = AlpnAnnouncedProtocols;
+    public void setSelectedAlpnProtocol(String selectedAlpnProtocol) {
+        this.selectedAlpnProtocol = selectedAlpnProtocol;
+    }
+
+    public List<String> getProposedAlpnProtocols() {
+        return proposedAlpnProtocols;
+    }
+
+    public void setProposedAlpnProtocols(List<String> proposedAlpnProtocols) {
+        this.proposedAlpnProtocols = proposedAlpnProtocols;
     }
 
     public byte[] getSecureRemotePasswordExtensionIdentifier() {

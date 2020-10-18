@@ -26,7 +26,7 @@ public class AlpnExtensionPreparatorTest {
     private AlpnExtensionPreparator preparator;
     private AlpnExtensionMessage msg;
     private final String announcedProtocols = "h2";
-    private final byte announcedProtocolsLength = 2;
+    private final byte proposedAlpnProtocolLength = 2;
     private final int ALPNExtensionLength = 3;
     private byte[] protocolsWithLength;
 
@@ -35,7 +35,7 @@ public class AlpnExtensionPreparatorTest {
         context = new TlsContext();
         msg = new AlpnExtensionMessage(Config.createConfig());
         preparator = new AlpnExtensionPreparator(context.getChooser(), msg, new AlpnExtensionSerializer(msg));
-        protocolsWithLength = ArrayConverter.concatenate(new byte[] { announcedProtocolsLength },
+        protocolsWithLength = ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength },
                 announcedProtocols.getBytes());
     }
 
@@ -47,8 +47,8 @@ public class AlpnExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.ALPN.getValue(), msg.getExtensionType().getValue());
-        assertEquals(ALPNExtensionLength, (long) msg.getAlpnExtensionLength().getValue());
-        assertArrayEquals(protocolsWithLength, msg.getAlpnAnnouncedProtocols().getValue());
+        assertEquals(ALPNExtensionLength, (long) msg.getProposedAlpnProtocolsLength().getValue());
+        assertArrayEquals(protocolsWithLength, msg.getProposedAlpnProtocols().getValue());
     }
 
 }

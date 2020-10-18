@@ -323,7 +323,9 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
-    private List<String> alpnAnnouncedProtocols;
+    private List<String> defaultProposedAlpnProtocols;
+
+    private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
 
     /**
      * Default SRP Identifier
@@ -1309,8 +1311,16 @@ public class Config implements Serializable {
             throw new ConfigurationException("Could not create default config", ex);
         }
 
-        alpnAnnouncedProtocols = new LinkedList<>();
-        alpnAnnouncedProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+        defaultProposedAlpnProtocols = new LinkedList<>();
+        defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public String getDefaultSelectedAlpnProtocol() {
+        return defaultSelectedAlpnProtocol;
+    }
+
+    public void setDefaultSelectedAlpnProtocol(String defaultSelectedAlpnProtocol) {
+        this.defaultSelectedAlpnProtocol = defaultSelectedAlpnProtocol;
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
@@ -3186,16 +3196,16 @@ public class Config implements Serializable {
         this.usePsk = usePsk;
     }
 
-    public List<String> getAlpnAnnouncedProtocols() {
-        return alpnAnnouncedProtocols;
+    public List<String> getDefaultProposedAlpnProtocols() {
+        return defaultProposedAlpnProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(List<String> alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    public void setDefaultProposedAlpnProtocols(List<String> defaultProposedAlpnProtocols) {
+        this.defaultProposedAlpnProtocols = defaultProposedAlpnProtocols;
     }
 
     public void setAlpnAnnouncedProtocols(String... alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
+        this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
     }
 
     public NamedGroup getDefaultEcCertificateCurve() {

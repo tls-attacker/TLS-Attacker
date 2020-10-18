@@ -1118,4 +1118,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultEsniNotAfter();
         }
     }
+
+    @Override
+    public List<String> getProposedAlpnProtocols() {
+        if (context.getProposedAlpnProtocols() != null) {
+            return context.getProposedAlpnProtocols();
+        } else {
+            return config.getDefaultProposedAlpnProtocols();
+        }
+    }
 }
