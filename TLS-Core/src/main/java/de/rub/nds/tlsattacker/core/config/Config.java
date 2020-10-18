@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -322,7 +323,7 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
-    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
+    private List<String> alpnAnnouncedProtocols;
 
     /**
      * Default SRP Identifier
@@ -1307,6 +1308,9 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+
+        alpnAnnouncedProtocols = new LinkedList<>();
+        alpnAnnouncedProtocols.add(AlpnProtocol.HTTP_2.getConstant());
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
@@ -3182,12 +3186,16 @@ public class Config implements Serializable {
         this.usePsk = usePsk;
     }
 
-    public String[] getAlpnAnnouncedProtocols() {
+    public List<String> getAlpnAnnouncedProtocols() {
         return alpnAnnouncedProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
+    public void setAlpnAnnouncedProtocols(List<String> alpnAnnouncedProtocols) {
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    }
+
+    public void setAlpnAnnouncedProtocols(String... alpnAnnouncedProtocols) {
+        this.alpnAnnouncedProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
     }
 
     public NamedGroup getDefaultEcCertificateCurve() {

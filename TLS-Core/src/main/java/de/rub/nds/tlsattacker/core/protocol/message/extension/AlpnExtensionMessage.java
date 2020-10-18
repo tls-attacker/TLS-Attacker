@@ -42,7 +42,7 @@ public class AlpnExtensionMessage extends ExtensionMessage {
         super(ExtensionType.ALPN);
         alpnEntryList = new LinkedList<>();
         for (String string : config.getAlpnAnnouncedProtocols()) {
-            alpnEntryList.add(new AlpnEntry(string.getBytes()));
+            alpnEntryList.add(new AlpnEntry(string));
         }
     }
 

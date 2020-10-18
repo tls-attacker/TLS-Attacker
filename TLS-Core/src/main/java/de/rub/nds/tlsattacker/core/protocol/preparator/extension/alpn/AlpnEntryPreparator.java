@@ -24,8 +24,8 @@ public class AlpnEntryPreparator extends Preparator<AlpnEntry> {
 
     @Override
     public void prepare() {
-        entry.setAlpnEntryBytes(entry.getAlpnEntryConfig());
-        entry.setAlpnEntryLength(entry.getAlpnEntryBytes().getValue().length);
+        entry.setAlpnEntry(entry.getAlpnEntryConfig());
+        entry.setAlpnEntryLength(entry.getAlpnEntry().getValue().getBytes().length);
     }
 
 }
