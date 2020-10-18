@@ -3204,7 +3204,7 @@ public class Config implements Serializable {
         this.defaultProposedAlpnProtocols = defaultProposedAlpnProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(String... alpnAnnouncedProtocols) {
+    public void setDefaultProposedAlpnProtocols(String... alpnAnnouncedProtocols) {
         this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
     }
 
