@@ -82,7 +82,8 @@ public class WorkflowExecutorRunnable implements Runnable {
         // I guess, be careful down here
         TlsContext serverCtx = state.getInboundTlsContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
-        serverCon.setHostname(socket.getInetAddress().getHostAddress());// getting the hostname is slow, so we just set the ip
+        // getting the hostname is slow, so we just set the ip
+        serverCon.setHostname(socket.getInetAddress().getHostAddress());
         serverCon.setIp(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getPort());
         long timeout = new Long(serverCon.getTimeout());

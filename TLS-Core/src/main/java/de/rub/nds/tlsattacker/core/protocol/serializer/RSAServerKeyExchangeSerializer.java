@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,8 +60,8 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage
+     * into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
@@ -69,8 +78,8 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the
+     * final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -78,7 +87,8 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     }
 
     /**
-     * Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[]
+     * Writes the Signature of the DHEServerKeyExchangeMessage into the final
+     * byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());

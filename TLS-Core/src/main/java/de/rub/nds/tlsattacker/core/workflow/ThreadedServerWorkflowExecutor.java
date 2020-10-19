@@ -57,15 +57,15 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             } catch (UnknownHostException e) {
                 LOGGER.error("Failed to resolve bind address {} - Falling back to loopback: {}", hostname, e);
                 // we could also fallback to null, which would be any address
-                // but I think in the case of an error we might just want to either exit or
-                // fallback to a rather closed
+                // but I think in the case of an error we might just want to
+                // either exit or fallback to a rather closed
                 // option, like loopback
                 _bindAddr = InetAddress.getLoopbackAddress();
             }
             bindAddr = _bindAddr;
-            // Java did not allow me to set the bindAddr field in the *single line* try
-            // block and the catch
-            // block at the same time, because it might already be set...
+            // Java did not allow me to set the bindAddr field in the
+            // *single line* try block and the catch block at the same
+            // time, because it might already be set...
             // So now we have a temporary variable as a workaround
         } else {
             bindAddr = null;

@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import org.apache.logging.log4j.LogManager;
@@ -60,12 +69,11 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     }
 
     protected byte[] generateToBeSigned() {
-        byte[] rsaParams = ArrayConverter
-                .concatenate(
-                        ArrayConverter.intToBytes(msg.getModulusLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
-                        msg.getModulus().getValue(),
-                        ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
-                        msg.getPublicKey().getValue());
+        byte[] rsaParams = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(msg.getModulusLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
+                msg.getModulus().getValue(),
+                ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(), HandshakeByteLength.RSA_MODULUS_LENGTH),
+                msg.getPublicKey().getValue());
         return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(), rsaParams);
 
     }

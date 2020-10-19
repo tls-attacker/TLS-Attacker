@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +27,8 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
 
     private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -86,11 +96,11 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the
-     * message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
+     * the message
      *
      * @param msg
-     *                Message to write in
+     *            Message to write in
      */
     private void parseSignatureAndHashAlgorithm(RSAServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
@@ -99,10 +109,11 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the message
+     * Reads the next bytes as the SignatureLength and writes them in the
+     * message
      *
      * @param msg
-     *                Message to write in
+     *            Message to write in
      */
     private void parseSignatureLength(RSAServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
@@ -113,7 +124,7 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
      * Reads the next bytes as the Signature and writes them in the message
      *
      * @param msg
-     *                Message to write in
+     *            Message to write in
      */
     private void parseSignature(RSAServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));

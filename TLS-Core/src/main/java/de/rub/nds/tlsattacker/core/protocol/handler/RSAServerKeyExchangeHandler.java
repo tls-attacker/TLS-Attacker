@@ -1,3 +1,12 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import java.math.BigInteger;
@@ -21,7 +30,8 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
         return new RSAServerKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()), tlsContext.getConfig());
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -31,7 +41,8 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
 
     @Override
     public ProtocolMessageSerializer getSerializer(RSAServerKeyExchangeMessage message) {
-        return new RSAServerKeyExchangeSerializer<RSAServerKeyExchangeMessage>(message, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new RSAServerKeyExchangeSerializer<RSAServerKeyExchangeMessage>(message, tlsContext.getChooser()
+                .getSelectedProtocolVersion());
     }
 
     @Override
