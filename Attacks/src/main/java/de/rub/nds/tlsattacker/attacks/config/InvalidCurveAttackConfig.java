@@ -60,6 +60,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
     private int protocolFlows = 15;
 
+    @Parameter(names = "-key_offset", description = "Offset of the first attempted secretkey")
+    private int keyOffset = 0;
+
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
     private BigInteger premasterSecret;
@@ -347,6 +350,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         config.setStopActionsAfterIOException(true);
+        config.setStopTraceAfterUnexpected(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddServerNameIndicationExtension(true);
@@ -402,5 +406,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public void setAttackInRenegotiation(boolean attackInRenegotiation) {
         this.attackInRenegotiation = attackInRenegotiation;
+    }
+
+    public int getKeyOffset() {
+        return keyOffset;
+    }
+
+    public void setKeyOffset(int keyOffset) {
+        this.keyOffset = keyOffset;
     }
 }

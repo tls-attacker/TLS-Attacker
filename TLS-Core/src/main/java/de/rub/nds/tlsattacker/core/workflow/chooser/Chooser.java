@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -31,7 +30,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -74,8 +72,6 @@ public abstract class Chooser {
     public abstract List<ECPointFormat> getServerSupportedPointFormats();
 
     public abstract List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms();
-
-    public abstract List<SNIEntry> getClientSNIEntryList();
 
     public abstract ProtocolVersion getLastRecordVersion();
 

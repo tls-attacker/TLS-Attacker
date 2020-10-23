@@ -81,6 +81,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             if (ksEntryList.size() > 0) {
                 context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList
                         .get(0).getPublicKey()));
+                NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
+                LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
+                context.setSelectedGroup(selectedGroup);
             }
         } else {
             context.setClientKeyShareStoreEntryList(ksEntryList);
