@@ -20,8 +20,15 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     private ModifiableInteger maxEarlyDataSize;
 
+    private boolean newSessionTicketExtension = false;
+
     public EarlyDataExtensionMessage() {
         super(ExtensionType.EARLY_DATA);
+    }
+
+    public EarlyDataExtensionMessage(boolean newSessionTicketExtension) {
+        super(ExtensionType.EARLY_DATA);
+        this.newSessionTicketExtension = newSessionTicketExtension;
     }
 
     /**
@@ -41,5 +48,13 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     public void setMaxEarlyDataSize(int maxEarlyDataSize) {
         this.maxEarlyDataSize = ModifiableVariableFactory.safelySetValue(this.maxEarlyDataSize, maxEarlyDataSize);
+    }
+
+    public boolean isNewSessionTicketExtension() {
+        return newSessionTicketExtension;
+    }
+
+    public void setNewSessionTicketExtension(boolean newSessionTicketExtension) {
+        this.newSessionTicketExtension = newSessionTicketExtension;
     }
 }

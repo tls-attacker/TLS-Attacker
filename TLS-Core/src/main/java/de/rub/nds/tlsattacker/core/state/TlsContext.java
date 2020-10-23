@@ -160,7 +160,7 @@ public class TlsContext {
     /**
      * Maximum number of bytes to transmit as early-data.
      */
-    private long maxEarlyDataSize;
+    private Integer maxEarlyDataSize;
 
     /**
      * Master secret established during the handshake.
@@ -2035,7 +2035,7 @@ public class TlsContext {
     /**
      * @return the maxEarlyDataSize
      */
-    public long getMaxEarlyDataSize() {
+    public Integer getMaxEarlyDataSize() {
         return maxEarlyDataSize;
     }
 
@@ -2043,7 +2043,7 @@ public class TlsContext {
      * @param maxEarlyDataSize
      *            the maxEarlyDataSize to set
      */
-    public void setMaxEarlyDataSize(long maxEarlyDataSize) {
+    public void setMaxEarlyDataSize(Integer maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
     }
 

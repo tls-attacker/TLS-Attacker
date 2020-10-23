@@ -1118,4 +1118,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultEsniNotAfter();
         }
     }
+
+    @Override
+    public Integer getMaxEarlyDataSize() {
+        if (context.getMaxEarlyDataSize() != null) {
+            return context.getMaxEarlyDataSize();
+        } else {
+            return config.getDefaultMaxEarlyDataSize();
+        }
+    }
 }

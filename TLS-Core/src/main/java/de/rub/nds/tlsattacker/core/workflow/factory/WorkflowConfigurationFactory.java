@@ -527,6 +527,15 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createTls13PskWorkflow(boolean zeroRtt) {
         AliasedConnection connection = getConnection();
+        ChangeCipherSpecMessage ccsS = new ChangeCipherSpecMessage();
+        ChangeCipherSpecMessage ccsC = new ChangeCipherSpecMessage();
+
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            ccsS.setRequired(false);
+        } else {
+            ccsC.setRequired(false);
+        }
+
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
 
@@ -547,6 +556,9 @@ public class WorkflowConfigurationFactory {
         }
         clientHelloMessages.add(clientHello);
         if (zeroRtt) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                clientHelloMessages.add(ccsC);
+            }
             clientHelloMessages.add(earlyDataMsg);
         }
 
@@ -569,9 +581,10 @@ public class WorkflowConfigurationFactory {
 
         serverMessages.add(serverHello);
         if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-            ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-            ccs.setRequired(false);
-            serverMessages.add(ccs);
+            serverMessages.add(ccsS);
+            if (!zeroRtt) {
+                clientMessages.add(ccsC);
+            }
         }
         serverMessages.add(encExtMsg);
         serverMessages.add(serverFin);
@@ -593,7 +606,8 @@ public class WorkflowConfigurationFactory {
         for (TlsAction action : trace.getTlsActions()) {
             if (action.isMessageAction()) {
                 for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
-                    if (msg instanceof ClientHelloMessage) {
+                    if ((msg instanceof ClientHelloMessage && ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
+                            || (msg instanceof ServerHelloMessage && ourConnection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
                         List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
                         if (extensions != null) {
                             for (int x = 0; x < extensions.size(); x++) {
@@ -609,7 +623,7 @@ public class WorkflowConfigurationFactory {
             }
         }
         trace.addTlsAction(MessageActionFactory.createAction(ourConnection, ConnectionEndType.SERVER,
-                new NewSessionTicketMessage(false)));
+                new NewSessionTicketMessage(config, false)));
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace zeroRttTrace = createTls13PskWorkflow(zeroRtt);
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {

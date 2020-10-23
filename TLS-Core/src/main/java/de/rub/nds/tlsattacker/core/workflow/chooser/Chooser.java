@@ -81,6 +81,8 @@ public abstract class Chooser {
 
     public abstract MaxFragmentLength getMaxFragmentLength();
 
+    public abstract Integer getMaxEarlyDataSize();
+
     public abstract HeartbeatMode getHeartbeatMode();
 
     public abstract boolean isUseExtendedMasterSecret();

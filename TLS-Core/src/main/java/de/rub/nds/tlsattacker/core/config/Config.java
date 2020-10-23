@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -53,12 +52,10 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -492,6 +489,11 @@ public class Config implements Serializable {
      * If we generate ClientHello with the EarlyData extension
      */
     private Boolean addEarlyDataExtension = false;
+
+    /**
+     * The maximum amount of early data included in the EarlyDataExtension
+     */
+    private Integer defaultMaxEarlyDataSize = 16384;
 
     /**
      * If we generate ClientHello with the EncryptedServerNameIndication
@@ -3731,6 +3733,14 @@ public class Config implements Serializable {
 
     public void setPreserveMessageRecordRelation(Boolean preserveMessageRecordRelation) {
         this.preserveMessageRecordRelation = preserveMessageRecordRelation;
+    }
+
+    public Integer getDefaultMaxEarlyDataSize() {
+        return defaultMaxEarlyDataSize;
+    }
+
+    public void setDefaultMaxEarlyDataSize(Integer defaultMaxEarlyDataSize) {
+        this.defaultMaxEarlyDataSize = defaultMaxEarlyDataSize;
     }
 
 }
