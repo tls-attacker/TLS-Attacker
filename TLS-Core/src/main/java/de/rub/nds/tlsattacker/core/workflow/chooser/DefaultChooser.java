@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -36,7 +35,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -118,15 +116,6 @@ public class DefaultChooser extends Chooser {
             return context.getClientSupportedSignatureAndHashAlgorithms();
         } else {
             return config.getDefaultClientSupportedSignatureAndHashAlgorithms();
-        }
-    }
-
-    @Override
-    public List<SNIEntry> getClientSNIEntryList() {
-        if (context.getClientSNIEntryList() != null) {
-            return context.getClientSNIEntryList();
-        } else {
-            return config.getDefaultClientSNIEntryList();
         }
     }
 
@@ -903,7 +892,7 @@ public class DefaultChooser extends Chooser {
         if (context.getClientKeyShareStoreEntryList() != null) {
             return context.getClientKeyShareStoreEntryList();
         } else {
-            return config.getDefaultClientKeyShareEntries();
+            return config.getDefaultClientKeyStoreEntries();
         }
     }
 

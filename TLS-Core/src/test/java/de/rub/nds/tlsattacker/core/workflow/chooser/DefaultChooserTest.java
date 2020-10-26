@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -26,7 +25,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -143,20 +141,6 @@ public class DefaultChooserTest {
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
         context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
-    }
-
-    /**
-     * Test of getClientSNIEntryList method, of class DefaultChooser.
-     */
-    @Test
-    public void testGetClientSNIEntryList() {
-        List<SNIEntry> listSNI = new LinkedList<>();
-        listSNI.add(new SNIEntry("Test", NameType.HOST_NAME));
-        config.setDefaultClientSNIEntryList(listSNI);
-        assertTrue(config.getDefaultClientSNIEntryList().size() == 1);
-        assertTrue(chooser.getClientSNIEntryList().size() == 1);
-        context.setClientSNIEntryList(new LinkedList<SNIEntry>());
-        assertTrue(context.getClientSNIEntryList().isEmpty());
     }
 
     /**
