@@ -10,6 +10,8 @@
 package de.rub.nds.tlsattacker.attacks;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.JCommander.Builder;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.attacks.config.*;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.*;
@@ -35,53 +37,81 @@ public class Main {
      */
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
-        JCommander jc = new JCommander(generalDelegate);
+        Builder builder = JCommander.newBuilder().addObject(generalDelegate);
+
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
-        jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
+        builder.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 
         PskBruteForcerAttackServerCommandConfig pskBruteForcerAttackServerTest = new PskBruteForcerAttackServerCommandConfig(
                 generalDelegate);
-        jc.addCommand(PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackServerTest);
+        builder.addCommand(PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackServerTest);
 
         PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest = new PskBruteForcerAttackClientCommandConfig(
                 generalDelegate);
-        jc.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
+        builder.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
+
         InvalidCurveAttackConfig ellipticTest = new InvalidCurveAttackConfig(generalDelegate);
-        jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
+        builder.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
+
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
-        jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
+        builder.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
 
         Lucky13CommandConfig lucky13 = new Lucky13CommandConfig(generalDelegate);
-        jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
+        builder.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
 
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig(generalDelegate);
-        jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
+        builder.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
+
         TLSPoodleCommandConfig tlsPoodle = new TLSPoodleCommandConfig(generalDelegate);
-        jc.addCommand(TLSPoodleCommandConfig.ATTACK_COMMAND, tlsPoodle);
+        builder.addCommand(TLSPoodleCommandConfig.ATTACK_COMMAND, tlsPoodle);
+
         Cve20162107CommandConfig cve20162107 = new Cve20162107CommandConfig(generalDelegate);
-        jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
+        builder.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
+
         EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig(generalDelegate);
-        jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+        builder.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+
         EarlyFinishedCommandConfig earlyFin = new EarlyFinishedCommandConfig(generalDelegate);
-        jc.addCommand(EarlyFinishedCommandConfig.ATTACK_COMMAND, earlyFin);
+        builder.addCommand(EarlyFinishedCommandConfig.ATTACK_COMMAND, earlyFin);
+
         PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
-        jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+        builder.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
-        jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
+        builder.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
+
         GeneralDrownCommandConfig generalDrownConfig = new GeneralDrownCommandConfig(generalDelegate);
-        jc.addCommand(GeneralDrownCommandConfig.COMMAND, generalDrownConfig);
+        builder.addCommand(GeneralDrownCommandConfig.COMMAND, generalDrownConfig);
+
         SpecialDrownCommandConfig specialDrownConfig = new SpecialDrownCommandConfig(generalDelegate);
-        jc.addCommand(SpecialDrownCommandConfig.COMMAND, specialDrownConfig);
-        jc.parse(args);
-        if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
-            if (jc.getParsedCommand() == null) {
-                jc.usage();
+        builder.addCommand(SpecialDrownCommandConfig.COMMAND, specialDrownConfig);
+
+        JCommander jc = builder.build();
+
+        try {
+            jc.parse(args);
+        } catch (ParameterException ex) {
+            String parsedCommand = ex.getJCommander().getParsedCommand();
+            if (parsedCommand != null) {
+                ex.getJCommander().getUsageFormatter().usage(parsedCommand);
             } else {
-                jc.usage(jc.getParsedCommand());
+                ex.usage();
             }
             return;
         }
+
+        if (jc.getParsedCommand() == null) {
+            jc.usage();
+            return;
+        }
+
+        if (generalDelegate.isHelp()) {
+            jc.getUsageFormatter().usage(jc.getParsedCommand());
+            return;
+        }
+
         Attacker<? extends TLSDelegateConfig> attacker = null;
+
         switch (jc.getParsedCommand()) {
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
                 attacker = new BleichenbacherAttacker(bleichenbacherTest, bleichenbacherTest.createConfig());
@@ -131,41 +161,28 @@ public class Main {
                 attacker = new SpecialDrownAttacker(specialDrownConfig, specialDrownConfig.createConfig());
                 break;
             default:
-                throw new ConfigurationException("Command not found");
+                break;
         }
-        if (attacker == null) {
-            throw new ConfigurationException("Attacker not found");
-        }
-        if (isPrintHelpForCommand(jc, attacker.getConfig())) {
-            jc.usage(jc.getParsedCommand());
-        } else {
 
-            if (attacker.getConfig().isExecuteAttack()) {
-                attacker.attack();
-            } else {
-                try {
-                    Boolean result = attacker.checkVulnerability();
-                    if (Objects.equals(result, Boolean.TRUE)) {
-                        CONSOLE.error("Vulnerable:" + result.toString());
-                    } else if (Objects.equals(result, Boolean.FALSE)) {
-                        CONSOLE.info("Vulnerable:" + result.toString());
-                    } else {
-                        CONSOLE.warn("Vulnerable: Uncertain");
-                    }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.info("The selected attacker is currently not implemented");
+        if (attacker == null) {
+            throw new ConfigurationException("Command not found");
+        }
+
+        if (attacker.getConfig().isExecuteAttack()) {
+            attacker.attack();
+        } else {
+            try {
+                Boolean result = attacker.checkVulnerability();
+                if (Objects.equals(result, Boolean.TRUE)) {
+                    CONSOLE.error("Vulnerable:" + result.toString());
+                } else if (Objects.equals(result, Boolean.FALSE)) {
+                    CONSOLE.info("Vulnerable:" + result.toString());
+                } else {
+                    CONSOLE.warn("Vulnerable: Uncertain");
                 }
+            } catch (UnsupportedOperationException E) {
+                LOGGER.info("The selected attacker is currently not implemented");
             }
         }
-    }
-
-    /**
-     *
-     * @param jc
-     * @param config
-     * @return
-     */
-    public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
-        return config.getGeneralDelegate().isHelp();
     }
 }
