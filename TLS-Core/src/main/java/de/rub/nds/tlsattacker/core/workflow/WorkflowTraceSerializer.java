@@ -118,8 +118,7 @@ public class WorkflowTraceSerializer {
             m.marshal(workflowTrace, tempStream);
             try {
                 outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-            } catch (TransformerException | XPathExpressionException | XPathFactoryConfigurationException
-                    | ParserConfigurationException | SAXException ex) {
+            } catch (TransformerException | XPathExpressionException | ParserConfigurationException | SAXException ex) {
                 throw new RuntimeException("Could not format XML");
             }
         }
