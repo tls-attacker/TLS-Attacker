@@ -1,0 +1,63 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.certificate.transparency.logs;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public class ChromeCtLogListParser implements CtLogListParser {
+
+    private JSONParser jsonParser = new JSONParser();
+
+    @Override
+    public CtLogList parseLogList(String filename) {
+
+        CtLogList ctLogList = new CtLogList();
+
+        InputStream inputStream = ChromeCtLogListParser.class.getClassLoader().getResourceAsStream(filename);
+        InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+        try {
+            JSONObject jsonFile = (JSONObject) jsonParser.parse(bufferedReader);
+            JSONArray operators = (JSONArray) jsonFile.get("operators");
+
+            for (Object operatorObj : operators) {
+                JSONObject operator = (JSONObject) operatorObj;
+                JSONArray logs = (JSONArray) operator.get("logs");
+
+                for (Object logObj : logs) {
+                    JSONObject log = (JSONObject) logObj;
+
+                    String description = (String) log.get("description");
+                    byte[] logId = Base64.getDecoder().decode((String) log.get("log_id"));
+                    byte[] publicKey = Base64.getDecoder().decode((String) log.get("key"));
+
+                    CtLog ctLog = new CtLog(description, logId, publicKey);
+                    ctLogList.addCtLog(ctLog);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return ctLogList;
+    }
+}
