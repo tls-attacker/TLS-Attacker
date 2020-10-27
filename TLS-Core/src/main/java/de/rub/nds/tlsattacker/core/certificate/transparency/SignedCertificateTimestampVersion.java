@@ -23,4 +23,13 @@ public enum SignedCertificateTimestampVersion {
                         + "\" is not supported.");
         }
     }
+
+    public static byte encodeVersion(SignedCertificateTimestampVersion version) throws ParserException {
+        switch (version) {
+            case V1:
+                return 0b0;
+            default:
+                throw new ParserException("Unknown version");
+        }
+    }
 }

@@ -10,15 +10,20 @@
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.asn1.parser.ParserException;
+import org.bouncycastle.crypto.tls.Certificate;
 
 import java.util.Arrays;
 
 public class SignedCertificateTimestampListParser {
 
-    public static SignedCertificateTimestampList parseTimestampList(byte[] encodedTimestampList) throws ParserException {
+    public static SignedCertificateTimestampList parseTimestampList(byte[] encodedTimestampList,
+            Certificate certificateChain, boolean isPreCertificateSct) throws ParserException {
 
         SignedCertificateTimestampList sctList = new SignedCertificateTimestampList();
         sctList.setEncodedTimestampList(encodedTimestampList);
+
+        org.bouncycastle.asn1.x509.Certificate leafCertificate = certificateChain.getCertificateAt(0);
+        org.bouncycastle.asn1.x509.Certificate issuerCertificate = certificateChain.getCertificateAt(1);
 
         // Extract total length of certificate timestamp list
         int length = encodedTimestampList[0] << 8 | encodedTimestampList[1] & 0x00ff;
@@ -34,8 +39,20 @@ public class SignedCertificateTimestampListParser {
             int entryLength = encodedTimestampList[index] << 8 | encodedTimestampList[index + 1] & 0x00ff;
 
             // Decode and parse Signed Certificate Timestamp list entry
-            byte[] encodedEntryData = Arrays.copyOfRange(encodedTimestampList, index + 2, index + entryLength);
+            byte[] encodedEntryData = Arrays.copyOfRange(encodedTimestampList, index + 2, index + 2 + entryLength);
             SignedCertificateTimestamp sct = SignedCertificateTimestampParser.parseTimestamp(encodedEntryData);
+
+            // Add certificates required for SCT signature validation
+            sct.setCertificate(leafCertificate);
+            sct.setIssuerCertificate(issuerCertificate);
+
+            // Add two-byte LogEntryType (0 = X.509 Certificate, 1 =
+            // PreCertificate)
+            if (isPreCertificateSct) {
+                sct.setLogEntryType(new byte[] { 0, 1 });
+            } else {
+                sct.setLogEntryType(new byte[] { 0, 0 });
+            }
 
             // Add parsed SCT to the SCT-List data structure
             sctList.getCertificateTimestampList().add(sct);

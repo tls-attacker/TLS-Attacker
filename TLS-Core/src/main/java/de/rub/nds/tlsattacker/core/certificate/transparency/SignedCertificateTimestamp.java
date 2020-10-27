@@ -10,6 +10,10 @@
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLog;
+import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLogList;
+import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLogListLoader;
+import org.bouncycastle.asn1.x509.Certificate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -18,15 +22,46 @@ import java.util.Locale;
 
 public class SignedCertificateTimestamp {
 
+    // Context, which will be injected from TLS-Scanner and is required for
+    // signature validation
+    private Certificate certificate;
+    private Certificate issuerCertificate;
+    private byte[] logEntryType;
+
+    // Content of the SCT itself
     private byte[] encodedTimestamp;
     private SignedCertificateTimestampVersion version;
     private byte[] logId;
     private long timestamp;
     private byte[] extensions;
-    private byte[] signature;
+    private SignedCertificateTimestampSignature signature;
 
     public SignedCertificateTimestampVersion getVersion() {
         return version;
+    }
+
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
+    }
+
+    public Certificate getIssuerCertificate() {
+        return issuerCertificate;
+    }
+
+    public void setIssuerCertificate(Certificate issuerCertificate) {
+        this.issuerCertificate = issuerCertificate;
+    }
+
+    public byte[] getLogEntryType() {
+        return logEntryType;
+    }
+
+    public void setLogEntryType(byte[] logEntryType) {
+        this.logEntryType = logEntryType;
     }
 
     public void setVersion(SignedCertificateTimestampVersion version) {
@@ -57,11 +92,11 @@ public class SignedCertificateTimestamp {
         this.extensions = extensions;
     }
 
-    public byte[] getSignature() {
+    public SignedCertificateTimestampSignature getSignature() {
         return signature;
     }
 
-    public void setSignature(byte[] signature) {
+    public void setSignature(SignedCertificateTimestampSignature signature) {
         this.signature = signature;
     }
 
@@ -70,6 +105,10 @@ public class SignedCertificateTimestamp {
     }
 
     public String toString() {
+
+        CtLogList logList = CtLogListLoader.loadLogList();
+        CtLog ctLog = logList.getCtLog(logId);
+
         StringBuilder sb = new StringBuilder();
         sb.append("Signed Certificate Timestamp:");
 
@@ -79,6 +118,9 @@ public class SignedCertificateTimestamp {
         } else {
             sb.append(Integer.toHexString(encodedTimestamp[0]));
         }
+
+        sb.append("\n Log: ");
+        sb.append(ctLog.getDescription());
 
         sb.append("\n Log ID: ");
         sb.append(ArrayConverter.bytesToHexString(this.logId).replaceAll("\\n", "\n    "));
@@ -94,8 +136,7 @@ public class SignedCertificateTimestamp {
             sb.append(ArrayConverter.bytesToHexString(extensions).replaceAll("\\n", "\n    "));
         }
 
-        sb.append("\n Signature: ");
-        sb.append(ArrayConverter.bytesToHexString(signature).replaceAll("\\n", "\n    "));
+        sb.append((signature.toString(this, ctLog)));
 
         return sb.toString();
     }
