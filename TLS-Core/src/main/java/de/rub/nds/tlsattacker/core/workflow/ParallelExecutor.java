@@ -9,9 +9,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
-import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,8 +20,14 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.task.ITask;
+import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
+import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
 
 /**
  *
@@ -40,72 +43,71 @@ public class ParallelExecutor {
 
     private final int reexecutions;
 
-    public ParallelExecutor(int size, int reexecutions) {
-
-        executorService = new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>());
+    private ParallelExecutor(int size, int reexecutions, ExecutorService executorService) {
+        this.executorService = executorService;
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {
             throw new IllegalArgumentException("Reexecutions is below zero");
         }
+    }
+
+    public ParallelExecutor(ExecutorService executorService, int reexecutions) {
+        this(-1, reexecutions, executorService);
+    }
+
+    public ParallelExecutor(int size, int reexecutions) {
+        this(size, reexecutions,
+                new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
-                factory);
-        this.reexecutions = reexecutions;
-        this.size = size;
-        if (reexecutions < 0) {
-            throw new IllegalArgumentException("Reexecutions is below zero");
-        }
+        this(size, reexecutions,
+                new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory));
     }
 
-    public Future addTask(TlsTask task) {
+    public Future<ITask> addTask(TlsTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
-        Future<?> submit = executorService.submit(task);
-        return submit;
+        return executorService.submit(task);
     }
 
-    public Future addStateTask(State state) {
+    public Future<ITask> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
-    public void bulkExecuteStateTasks(List<State> stateList) {
-        List<Future> futureList = new LinkedList<>();
-        for (State state : stateList) {
-            futureList.add(addStateTask(state));
+    public List<ITask> bulkExecuteStateTasks(List<State> stateList) {
+        List<TlsTask> tasks = new ArrayList<>(stateList.size());
+        for (State s : stateList) {
+            tasks.add(new StateExecutionTask(s, reexecutions));
         }
-        for (Future future : futureList) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException ex) {
-                throw new RuntimeException("Failed to execute tasks!", ex);
-            }
-        }
+        return bulkExecuteTasks(tasks);
     }
 
-    public void bulkExecuteStateTasks(State... states) {
-        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+    public List<ITask> bulkExecuteStateTasks(State... states) {
+        return this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
-    public void bulkExecuteTasks(List<TlsTask> taskList) {
-        List<Future> futureList = new LinkedList<>();
+    public List<ITask> bulkExecuteTasks(List<TlsTask> taskList) {
+        List<Future<ITask>> futureList = new LinkedList<>();
+        List<ITask> ret = new ArrayList<>(futureList.size());
         for (TlsTask tlStask : taskList) {
             futureList.add(addTask(tlStask));
         }
-        for (Future future : futureList) {
+        for (Future<ITask> future : futureList) {
             try {
-                future.get();
+                ret.add(future.get());
             } catch (InterruptedException | ExecutionException ex) {
+                ret.add(null);
                 throw new RuntimeException("Failed to execute tasks!", ex);
             }
         }
+        return ret;
     }
 
-    public void bulkExecuteTasks(TlsTask... tasks) {
-        this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
+    public List<ITask> bulkExecuteTasks(TlsTask... tasks) {
+        return this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }
 
     public int getSize() {

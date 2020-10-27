@@ -147,6 +147,13 @@ public class State {
         return config;
     }
 
+    public void setConfig(Config config) {
+        this.config = config;
+        for (TlsContext ctx : getAllTlsContexts()) {
+            ctx.setConfig(config);
+        }
+    }
+
     public WorkflowTrace getWorkflowTrace() {
         return workflowTrace;
     }

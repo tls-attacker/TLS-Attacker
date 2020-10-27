@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -42,8 +43,15 @@ public class ClassicPaddingTraceGenerator extends PaddingTraceGenerator {
      */
     @Override
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
+        RunningModeType runningMode = config.getDefaultRunningMode();
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.CLIENT);
+                runningMode);
+        if (runningMode == RunningModeType.SERVER) {
+            // we assume that the client sends the first application message
+            ApplicationMessage recvMsg = new ApplicationMessage(config);
+            ReceiveAction recvAction = new ReceiveAction(recvMsg);
+            trace.addTlsAction(recvAction);
+        }
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setRecords(new LinkedList<AbstractRecord>());

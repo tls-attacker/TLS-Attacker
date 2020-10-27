@@ -93,4 +93,8 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
     }
 
     public abstract void reset();
+
+    public int getReexecutions() {
+        return reexecutions;
+    }
 }
