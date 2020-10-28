@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.core.certificate.transparency.logs;
 
 public class CtLog {
     private String description;
+    private String operator;
     private byte[] logId;
     private byte[] publicKey;
 
-    public CtLog(String description, byte[] logId, byte[] publicKey) {
+    public CtLog(String description, String operator, byte[] logId, byte[] publicKey) {
         this.description = description;
+        this.operator = operator;
         this.logId = logId;
         this.publicKey = publicKey;
     }
@@ -26,6 +28,14 @@ public class CtLog {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public byte[] getLogId() {

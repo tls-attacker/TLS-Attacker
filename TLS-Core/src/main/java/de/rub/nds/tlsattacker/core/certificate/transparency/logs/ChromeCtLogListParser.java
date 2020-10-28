@@ -40,6 +40,7 @@ public class ChromeCtLogListParser implements CtLogListParser {
 
             for (Object operatorObj : operators) {
                 JSONObject operator = (JSONObject) operatorObj;
+                String operatorName = (String) operator.get("name");
                 JSONArray logs = (JSONArray) operator.get("logs");
 
                 for (Object logObj : logs) {
@@ -49,7 +50,7 @@ public class ChromeCtLogListParser implements CtLogListParser {
                     byte[] logId = Base64.getDecoder().decode((String) log.get("log_id"));
                     byte[] publicKey = Base64.getDecoder().decode((String) log.get("key"));
 
-                    CtLog ctLog = new CtLog(description, logId, publicKey);
+                    CtLog ctLog = new CtLog(description, operatorName, logId, publicKey);
                     ctLogList.addCtLog(ctLog);
                 }
             }
