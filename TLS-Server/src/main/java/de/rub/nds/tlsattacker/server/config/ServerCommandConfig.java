@@ -37,8 +37,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "server";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -75,7 +73,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
