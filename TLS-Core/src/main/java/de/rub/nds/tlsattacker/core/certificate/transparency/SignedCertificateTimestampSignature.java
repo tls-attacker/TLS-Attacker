@@ -1,9 +1,9 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
  * and Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -137,10 +137,8 @@ public class SignedCertificateTimestampSignature {
      * information on how to construct a precertificate entry:
      * https://tools.ietf.org/html/rfc6962#section-3.2
      *
-     * @param leafCertificate
-     *            The leaf certificate
-     * @param issuerCertificate
-     *            The issuer certificate
+     * @param leafCertificate   The leaf certificate
+     * @param issuerCertificate The issuer certificate
      * @return Precertificate as DER-encoded byte[]
      */
     private byte[] convertToPreCertificate(Certificate leafCertificate, Certificate issuerCertificate)
@@ -184,13 +182,13 @@ public class SignedCertificateTimestampSignature {
         for (ASN1ObjectIdentifier objectIdentifier : extensions.getExtensionOIDs()) {
             if (!ExtensionObjectIdentifier.PRECERTIFICATE_POISON.equals(objectIdentifier.getId())
                     && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID().equals(
-                            objectIdentifier.getId())) {
+                    objectIdentifier.getId())) {
                 Extension extension = extensions.getExtension(objectIdentifier);
                 extensionList.add(extension);
             }
         }
 
-        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[] {})));
+        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[]{})));
         TBSCertificate modifiedTbsCertificate = tbsCertificateGenerator.generateTBSCertificate();
 
         // Append DER encoded TBSCertificate
@@ -218,12 +216,15 @@ public class SignedCertificateTimestampSignature {
     public String toString(SignedCertificateTimestamp sct, CtLog ctLog) {
         StringBuilder sb = new StringBuilder();
 
-        boolean signatureValid = verifySignature(sct, ctLog);
-
         sb.append("\n Signature: ");
         sb.append(signatureAndhashAlgorithm.getSignatureAlgorithm() + " with "
                 + signatureAndhashAlgorithm.getHashAlgorithm());
-        sb.append(signatureValid ? " (valid)" : " (invalid)");
+        if (ctLog != null) {
+            boolean signatureValid = verifySignature(sct, ctLog);
+            sb.append(signatureValid ? " (valid)" : " (invalid)");
+        } else {
+            sb.append(" (not tested)");
+        }
         sb.append(ArrayConverter.bytesToHexString(signature).replaceAll("\\n", "\n    "));
 
         return sb.toString();
