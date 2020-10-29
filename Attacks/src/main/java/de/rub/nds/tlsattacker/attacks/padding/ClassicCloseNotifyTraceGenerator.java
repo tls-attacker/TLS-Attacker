@@ -47,8 +47,9 @@ public class ClassicCloseNotifyTraceGenerator extends PaddingTraceGenerator {
      */
     @Override
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
+        RunningModeType runningMode = config.getDefaultRunningMode();
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.CLIENT);
+                runningMode);
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         AlertMessage alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
