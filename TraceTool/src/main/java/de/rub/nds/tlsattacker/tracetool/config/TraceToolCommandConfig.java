@@ -33,8 +33,6 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "tracetool";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private WorkflowInputDelegate workflowInputDelegate;
@@ -55,7 +53,6 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
 
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowInputDelegate = new WorkflowInputDelegate();
