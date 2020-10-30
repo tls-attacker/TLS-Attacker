@@ -34,6 +34,10 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
 
+    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        this(pointer, array, version, null, config);
+    }
+
     @Override
     protected T createHandshakeMessage() {
         return (T) new RSAServerKeyExchangeMessage();

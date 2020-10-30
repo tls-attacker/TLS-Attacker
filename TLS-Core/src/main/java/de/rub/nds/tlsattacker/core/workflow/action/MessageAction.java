@@ -46,6 +46,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
             @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
+            @XmlElement(type = RSAServerKeyExchangeMessage.class, name = "RSAServerKeyExchange"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GOSTClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
