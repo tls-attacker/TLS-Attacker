@@ -174,7 +174,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public synchronized void closeSockets() {
-        for (Socket s : sockets) {
+        for (Socket s : sockets.toArray(new Socket[] {})) {
             LOGGER.debug("Closing socket " + s);
             clientDone(s);
         }
