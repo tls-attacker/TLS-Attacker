@@ -75,10 +75,10 @@ public class ClassicDynamicPaddingTraceGenerator extends PaddingTraceGenerator {
             case SERVER:
                 trace.addTlsAction(new ReceiveTillAction(new ClientHelloMessage(config)));
                 // sh, cert, ske, shd
-                trace.addTlsAction(new SendAction(new ServerHelloMessage()));
+                trace.addTlsAction(new SendAction(new ServerHelloMessage(config)));
                 trace.addTlsAction(new SendDynamicServerCertificateAction());
                 trace.addTlsAction(new SendDynamicServerKeyExchangeAction());
-                trace.addTlsAction(new SendAction(new ServerHelloDoneMessage()));
+                trace.addTlsAction(new SendAction(new ServerHelloDoneMessage(config)));
 
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage(config)));
                 trace.addTlsAction(new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
