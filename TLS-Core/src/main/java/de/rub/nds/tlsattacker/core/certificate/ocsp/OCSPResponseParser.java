@@ -63,7 +63,7 @@ public class OCSPResponseParser {
 
         // If we don't get a valid response, abort.
         if (responseStatus != 0) {
-            return responseMessage;
+            return null;
         }
 
         // Unpack responseBytes & check if it's an OCSP basic response.

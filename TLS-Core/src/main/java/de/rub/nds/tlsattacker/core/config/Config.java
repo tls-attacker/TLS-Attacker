@@ -267,7 +267,9 @@ public class Config implements Serializable {
 
     private BigInteger defaultKeySharePrivateKey = new BigInteger("FFFF", 16);
 
-    private List<KeyShareStoreEntry> defaultClientKeyShareEntries;
+    private List<NamedGroup> defaultClientKeyShareNamedGroups;
+
+    private List<KeyShareStoreEntry> defaultClientKeyStoreEntries;
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;
 
@@ -1301,9 +1303,11 @@ public class Config implements Serializable {
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
         filtersKeepUserSettings = true;
-        defaultClientKeyShareEntries = new LinkedList<>();
-        defaultClientKeyShareEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
+        defaultClientKeyStoreEntries = new LinkedList<>();
+        defaultClientKeyStoreEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
                 .hexStringToByteArray("2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C")));
+        defaultClientKeyShareNamedGroups = new LinkedList<>();
+        defaultClientKeyShareNamedGroups.add(NamedGroup.ECDH_X25519);
         defaultServerKeyShareEntry = new KeyShareStoreEntry(NamedGroup.ECDH_X25519,
                 ArrayConverter.hexStringToByteArray("2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         pskKeyExchangeModes = new LinkedList<>();
@@ -3260,14 +3264,6 @@ public class Config implements Serializable {
         this.defaultKeySharePrivateKey = defaultKeySharePrivateKey;
     }
 
-    public List<KeyShareStoreEntry> getDefaultClientKeyShareEntries() {
-        return defaultClientKeyShareEntries;
-    }
-
-    public void setDefaultClientKeyShareEntries(List<KeyShareStoreEntry> defaultClientKeyShareEntries) {
-        this.defaultClientKeyShareEntries = defaultClientKeyShareEntries;
-    }
-
     public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
         return defaultServerKeyShareEntry;
     }
@@ -3670,6 +3666,22 @@ public class Config implements Serializable {
 
     public void setDefaultEsniClientPrivateKey(BigInteger defaultEsniClientPrivateKey) {
         this.defaultEsniClientPrivateKey = defaultEsniClientPrivateKey;
+    }
+
+    public List<NamedGroup> getDefaultClientKeyShareNamedGroups() {
+        return defaultClientKeyShareNamedGroups;
+    }
+
+    public void setDefaultClientKeyShareNamedGroups(List<NamedGroup> defaultClientKeyShareNamedGroups) {
+        this.defaultClientKeyShareNamedGroups = defaultClientKeyShareNamedGroups;
+    }
+
+    public List<KeyShareStoreEntry> getDefaultClientKeyStoreEntries() {
+        return defaultClientKeyStoreEntries;
+    }
+
+    public void setDefaultClientKeyStoreEntries(List<KeyShareStoreEntry> defaultClientKeyStoreEntries) {
+        this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
     }
 
 }

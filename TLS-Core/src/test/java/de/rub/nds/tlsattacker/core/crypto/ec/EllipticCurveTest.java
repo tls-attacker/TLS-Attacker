@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,8 @@ public class EllipticCurveTest {
                 this.testCurveGroupLaws(curve, basePoint, basePointOrder);
 
                 this.testCurveArithmetic(curve, basePoint, basePointOrder);
+
+                this.testDecompression(curve, basePoint);
 
                 counter++;
             } catch (UnsupportedOperationException e) {
@@ -150,6 +153,21 @@ public class EllipticCurveTest {
             result = curve.add(r1, r2);
             assertNotEquals(r1, inf);
             assertEquals(inv, result);
+        }
+    }
+
+    private void testDecompression(EllipticCurve curve, Point basePoint) {
+        Point decompressed = curve.createAPointOnCurve(basePoint.getX().getData());
+
+        // two points share the same x-coordinate - apply inverse if neccessary
+        if (!decompressed.getY().getData().equals(basePoint.getY().getData())) {
+            decompressed = curve.inverse(decompressed);
+        }
+        assertEquals(decompressed, basePoint);
+
+        if (curve instanceof EllipticCurveOverF2m) {
+            Point decompressed0 = curve.createAPointOnCurve(BigInteger.ZERO);
+            assertTrue(curve.isOnCurve(decompressed0));
         }
     }
 }
