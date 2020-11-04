@@ -849,6 +849,13 @@ public class Config implements Serializable {
     private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
+
+    private Boolean finishWithCloseNotify = false;
+
+    private Boolean ignoreRetransmittedCss = false;
+
+    private int maxRetransmissions = 3;
+
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
@@ -2975,6 +2982,30 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isFinishWithCloseNotify() {
+        return finishWithCloseNotify;
+    }
+
+    public void setFinishWithCloseNotify(Boolean finishWithCloseNotify) {
+        this.finishWithCloseNotify = finishWithCloseNotify;
+    }
+
+    public Boolean isIgnoreRetransmittedCss() {
+        return ignoreRetransmittedCss;
+    }
+
+    public void setIgnoreRetransmittedCss(Boolean ignoreRetransmittedCss) {
+        this.ignoreRetransmittedCss = ignoreRetransmittedCss;
+    }
+
+    public int getMaxRetransmissions() {
+        return maxRetransmissions;
+    }
+
+    public void setMaxRetransmissions(int maxRetransmissions) {
+        this.maxRetransmissions = maxRetransmissions;
     }
 
     public List<FilterType> getOutputFilters() {

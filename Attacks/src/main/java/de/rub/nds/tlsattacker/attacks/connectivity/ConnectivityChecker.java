@@ -90,7 +90,8 @@ public class ConnectivityChecker {
         ReceiveTillAction receiveTillAction = new ReceiveTillAction(new ServerHelloDoneMessage());
         trace.addTlsAction(receiveTillAction);
         State state = new State(config, trace);
-        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
         executor.executeWorkflow();
         if (receiveTillAction.getRecords().size() > 0) {
             if (receiveTillAction.getRecords().get(0) instanceof Record) {

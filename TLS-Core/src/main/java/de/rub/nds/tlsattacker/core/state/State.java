@@ -12,11 +12,15 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
@@ -102,6 +106,13 @@ public class State {
      * Normalize trace and initialize TLS contexts.
      */
     public final void initState() {
+        // TODO: Suche nach geeigneter Stelle
+        if (config.isFinishWithCloseNotify() && config.getHighestProtocolVersion().isDTLS()) {
+            AlertMessage alert = new AlertMessage();
+            alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+            workflowTrace.addTlsAction(new SendAction(alert));
+        }
+
         // Keep a snapshot to restore user defined trace values after filtering.
         if (config.isFiltersKeepUserSettings()) {
             originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
