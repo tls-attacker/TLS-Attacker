@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.dtls.CssManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -502,6 +503,8 @@ public class TlsContext {
      */
     private FragmentManager globalDtlsFragmentManager;
 
+    private CssManager globalDtlsCssManager;
+
     /**
      * supported protocol versions
      */
@@ -701,6 +704,7 @@ public class TlsContext {
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
+        globalDtlsCssManager = new CssManager(config);
         keylogfile = new Keylogfile(this);
     }
 
@@ -1313,6 +1317,10 @@ public class TlsContext {
 
     public FragmentManager getDtlsFragmentManager() {
         return globalDtlsFragmentManager;
+    }
+
+    public CssManager getDtlsCssManager() {
+        return globalDtlsCssManager;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

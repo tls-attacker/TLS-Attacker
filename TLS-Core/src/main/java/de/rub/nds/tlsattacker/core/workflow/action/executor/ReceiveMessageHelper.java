@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.CssManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -282,7 +283,16 @@ public class ReceiveMessageHelper {
                     }
 
                 } else {
-                    cleanProtocolMessageBytes = subGroup.getCleanBytes();
+                    if (context.getConfig().isIgnoreRetransmittedCss()
+                            && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                        CssManager cssManager = context.getDtlsCssManager();
+                        for (AbstractRecord record : subGroup.getRecords()) {
+                            cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
+                        }
+                        cleanProtocolMessageBytes = cssManager.getUninterpretedCssMessages(subGroup.getDtlsEpoch());
+                    } else {
+                        cleanProtocolMessageBytes = subGroup.getCleanBytes();
+                    }
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
                                     || context.getConfig().getParseInvalidRecordNormally());

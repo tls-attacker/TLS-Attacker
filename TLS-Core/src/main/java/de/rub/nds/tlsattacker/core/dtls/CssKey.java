@@ -1,0 +1,62 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.dtls;
+
+/**
+ *
+ * @author Nurullah Erinola - nurullah.erinola@rub.de
+ */
+public class CssKey {
+
+    private Integer epoch;
+
+    public CssKey(Integer epoch) {
+        super();
+        this.epoch = epoch;
+    }
+
+    public Integer getEpoch() {
+        return epoch;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((epoch == null) ? 0 : epoch.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CssKey other = (CssKey) obj;
+        if (epoch == null) {
+            if (other.epoch != null) {
+                return false;
+            }
+        } else if (!epoch.equals(other.epoch)) {
+            return false;
+        }
+        return true;
+    }
+
+    public String toString() {
+        return String.format("Key{epoch:%d}", epoch);
+    }
+}
