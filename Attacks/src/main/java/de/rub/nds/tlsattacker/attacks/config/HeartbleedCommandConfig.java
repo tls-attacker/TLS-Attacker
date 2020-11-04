@@ -111,6 +111,13 @@ public class HeartbleedCommandConfig extends AttackConfig {
         }
         config.setAddECPointFormatExtension(containsEc);
         config.setAddEllipticCurveExtension(containsEc);
+        // TODO: Prüfe, welche Flags gesetzt werden müssen
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            config.setStopActionsAfterFatal(true);
+            config.setStopActionsAfterIOException(true);
+            config.setEarlyStop(true);
+            config.setStopReceivingAfterFatal(false);
+        }
         return config;
     }
 }
