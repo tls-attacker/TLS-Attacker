@@ -320,6 +320,14 @@ public class WorkflowConfigurationFactory {
 
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ClientHelloMessage(config)));
+        }
+
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config)));
         return trace;
@@ -857,6 +865,12 @@ public class WorkflowConfigurationFactory {
         }
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
+        if (config.getHighestProtocolVersion().isDTLS()) {
+            trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
+                    new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                    new ClientHelloMessage(config)));
+        }
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
@@ -917,6 +931,10 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            } else if (config.getHighestProtocolVersion().isDTLS()) {
+                trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage(config)));
+                trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+                trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             } else {
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             }
