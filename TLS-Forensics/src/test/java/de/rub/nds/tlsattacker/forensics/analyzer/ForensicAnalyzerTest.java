@@ -30,14 +30,14 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 
 public class ForensicAnalyzerTest {
 
-    static Condition<TlsAction> HasNonEmptyMessages = new Condition<TlsAction>() {
+    static Condition<TlsAction> hasNonEmptyMessages = new Condition<TlsAction>() {
         @Override
         public boolean matches(TlsAction value) {
             return value.isMessageAction() && !((MessageAction) value).getMessages().isEmpty();
         }
     };
 
-    static Condition<TlsAction> HasAnyUnknownMessages = new Condition<TlsAction>() {
+    static Condition<TlsAction> hasAnyUnknownMessages = new Condition<TlsAction>() {
         @Override
         public boolean matches(TlsAction value) {
             return value.isMessageAction()
@@ -60,7 +60,7 @@ public class ForensicAnalyzerTest {
         WorkflowTrace realWorkflowTrace = forensicAnalyzer.getRealWorkflowTrace(executedWorkflow, rsaPrivateKey);
         // System.out.println(WorkflowTraceSerializer.write(realWorkflowTrace));
         assertThat(realWorkflowTrace.getTlsActions()).hasSize(4);
-        assertThat(realWorkflowTrace.getTlsActions()).are(HasNonEmptyMessages);
-        assertThat(realWorkflowTrace.getTlsActions()).areNot(HasAnyUnknownMessages);
+        assertThat(realWorkflowTrace.getTlsActions()).are(hasNonEmptyMessages);
+        assertThat(realWorkflowTrace.getTlsActions()).areNot(hasAnyUnknownMessages);
     }
 }
