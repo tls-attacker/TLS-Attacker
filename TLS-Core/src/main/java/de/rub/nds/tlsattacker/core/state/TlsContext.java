@@ -1428,8 +1428,6 @@ public class TlsContext {
         this.clientExtendedRandom = clientExtendedRandom;
     }
 
-    ;
-
     public byte[] getServerExtendedRandom() {
         return serverExtendedRandom;
     }
