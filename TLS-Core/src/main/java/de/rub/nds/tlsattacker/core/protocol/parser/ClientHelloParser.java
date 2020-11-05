@@ -27,11 +27,15 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Constructor for the Parser class
      *
-     * @param pointer Position in the array where the HelloMessageParser is
-     * supposed to start parsing
-     * @param array The byte[] which the HelloMessageParser is supposed to parse
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param pointer
+     *            Position in the array where the HelloMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the HelloMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
@@ -76,7 +80,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Reads the next bytes as the CypherSuiteLength and writes them in the
      * message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCipherSuiteLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
@@ -86,7 +91,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Reads the next bytes as the CypherSuites and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
@@ -97,7 +103,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Reads the next bytes as the CompressionLength and writes them in the
      * message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCompressionLength(ClientHelloMessage msg) {
         msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
@@ -107,7 +114,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Reads the next bytes as the Compression and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCompressions(ClientHelloMessage msg) {
         msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
