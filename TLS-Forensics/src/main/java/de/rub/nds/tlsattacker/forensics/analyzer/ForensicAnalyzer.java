@@ -29,7 +29,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,15 +80,6 @@ public class ForensicAnalyzer {
         if (rsaPrivateKey != null) {
             context.getConfig().setDefaultClientRSAPrivateKey(rsaPrivateKey);
             context.getConfig().setDefaultServerRSAPrivateKey(rsaPrivateKey);
-        } else {
-            /*
-             * context.getConfig().setDefaultClientRSAPrivateKey(
-             * context.getConfig
-             * ().getDefaultClientRSAPrivateKey().add(BigInteger.ONE));
-             * context.getConfig().setDefaultServerRSAPrivateKey(
-             * context.getConfig
-             * ().getDefaultServerRSAPrivateKey().add(BigInteger.ONE));
-             */
         }
         context.setRecordLayer(new TlsRecordLayer(context));
         adjustPrivateKeys(state, executedWorkflow);
