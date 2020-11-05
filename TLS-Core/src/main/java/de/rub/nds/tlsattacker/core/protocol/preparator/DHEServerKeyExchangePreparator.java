@@ -106,7 +106,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void preparePublicKey(T msg) {
-        BigInteger publicKey = chooser.getDhServerPublicKey();
+        BigInteger publicKey = chooser.getServerDhPublicKey();
         try {
 
             BigInteger generator = msg.getComputations().getGenerator().getValue();
@@ -125,7 +125,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void setComputedPrivateKey(T msg) {
-        msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
+        msg.getComputations().setPrivateKey(chooser.getServerDhPrivateKey());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 

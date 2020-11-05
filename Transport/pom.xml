@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>3.5.0</version>
+        <version>3.7.0</version>
     </parent>
     <artifactId>Transport</artifactId>
     <packaging>jar</packaging>
@@ -26,10 +26,21 @@
             <artifactId>Utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.3</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 </project>

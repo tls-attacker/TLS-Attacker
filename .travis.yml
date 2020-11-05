@@ -1,18 +1,44 @@
 language: java
 
-sudo: false
+os: linux
+dist: bionic
+script: mvn clean test
 
-script: mvn clean package -Dmaven.javadoc.skip=true
+stages:
+  - name: test
+  - name: package
+    if: branch = master
 
-jdk:
-  - oraclejdk8
-  - openjdk8
+jobs:
+  include:
+    - stage: test
+      name: "Test against OracleJDK 8 @ Ubuntu Trusty (14.04)"
+      jdk: oraclejdk8
+      dist: trusty
 
-branches:
-  only:
-    - master
+    - stage: test
+      name: "Test against OracleJDK 11 @ Ubuntu Bionic (18.04)"
+      jdk: oraclejdk11
+      dist: bionic
+
+    - stage: test
+      name: "Test against OpenJDK 8 @ Ubuntu Bionic (18.04)"
+      jdk: openjdk8
+      dist: bionic
+
+    - stage: test
+      name: "Test against OpenJDK 11 @ Ubuntu Bionic (18.04)"
+      jdk: openjdk11
+      dist: bionic
+
+    - stage: package
+      name: "Packaging JARs"
+      jdk: openjdk11
+      script: mvn clean package -Dmaven.javadoc.skip=true
 
 notifications:
   email:
+    if: branch = master
     recipients:
-    - juraj.somorovsky@hackmanit.de
+      - juraj.somorovsky@hackmanit.de
+
