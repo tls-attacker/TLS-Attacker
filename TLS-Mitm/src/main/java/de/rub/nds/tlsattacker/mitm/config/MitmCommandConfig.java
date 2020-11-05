@@ -39,8 +39,6 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "mitm";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -77,7 +75,6 @@ public class MitmCommandConfig extends TLSDelegateConfig {
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
