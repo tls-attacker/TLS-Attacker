@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,14 +37,21 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
-        prepareClientCertificateTypes(certTypes, msg);
-        prepareClientCertificateTypesCount(msg);
-        prepareDistinguishedNames(msg);
-        prepareDistinguishedNamesLength(msg);
-        sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
-        prepareSignatureHashAlgorithms(msg);
-        prepareSignatureHashAlgorithmsLength(msg);
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            prepareCertificateRequestContext(msg);
+            prepareCertificateRequestContextLength(msg);
+            prepareExtensions();
+            prepareExtensionLength();
+        } else {
+            certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
+            prepareClientCertificateTypes(certTypes, msg);
+            prepareClientCertificateTypesCount(msg);
+            prepareDistinguishedNames(msg);
+            prepareDistinguishedNamesLength(msg);
+            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
+            prepareSignatureHashAlgorithms(msg);
+            prepareSignatureHashAlgorithmsLength(msg);
+        }
     }
 
     private byte[] convertClientCertificateTypes(List<ClientCertificateType> typeList) {
@@ -104,6 +112,17 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithmsLength(msg.getSignatureHashAlgorithms().getValue().length);
         LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
+    }
+
+    private void prepareCertificateRequestContext(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContext(chooser.getConfig().getDefaultCertificateRequestContext());
+        LOGGER.debug("CertificateRequestContext: "
+                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+    }
+
+    private void prepareCertificateRequestContextLength(CertificateRequestMessage msg) {
+        msg.setCertificateRequestContextLength(msg.getCertificateRequestContext().getValue().length);
+        LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 
 }

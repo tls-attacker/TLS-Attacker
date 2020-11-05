@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -155,5 +156,18 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      */
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];
+    }
+
+    /**
+     * Returns (this^2)^exponent)
+     * 
+     * @param exponent
+     */
+    public FieldElementF2m squarePow(int exponent) {
+        FieldElement square = this.mult(this);
+        for (int i = 1; i < exponent; i++) {
+            square = square.mult(square);
+        }
+        return (FieldElementF2m) square;
     }
 }

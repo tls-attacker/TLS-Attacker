@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,16 +10,9 @@
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.IllegalDtlsFragmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,88 +24,69 @@ public class FragmentCollector {
 
     protected static final Logger LOGGER = LogManager.getLogger(FragmentCollector.class.getName());
 
-    /**
-     * The message length of fragments stored by the collector, as as determined
-     * by the message length of the first fragment stored.
-     */
     private Integer messageLength;
 
-    /**
-     * The message sequence of fragments stored by the collector, as as
-     * determined by the message sequence of the first fragment stored.
-     */
     private Integer messageSeq;
 
-    /**
-     * The type of fragments stored by the collector, as determined by the type
-     * of the first fragment stored.
-     */
     private Byte type;
 
-    /**
-     * A variable which configures the collector whether to store unfitting
-     * fragments, that is, fragments whose message length, sequence or type
-     * differs from those of the collector in case the collector is not empty.
-     */
-    private boolean onlyFitting;
+    private boolean interpreted = false;
 
-    /**
-     * A set which keeps fragments sorted firstly by their offset, secondly by
-     * their length
-     */
-    private final TreeSet<DtlsHandshakeMessageFragment> fragmentData;
+    private final Config config;
 
-    public FragmentCollector(Config config) {
-        fragmentData = new TreeSet<>(new Comparator<DtlsHandshakeMessageFragment>() {
-            @Override
-            public int compare(DtlsHandshakeMessageFragment o1, DtlsHandshakeMessageFragment o2) {
-                int comp = o1.getFragmentOffset().getValue().compareTo(o2.getFragmentOffset().getValue());
-                if (comp == 0) {
-                    // if two fragments start at the same offset, we sort by
-                    // length from longest to shortest
-                    comp = o2.getFragmentLength().getValue().compareTo(o1.getFragmentLength().getValue());
-                }
-                return comp;
-            }
-        });
-        onlyFitting = config.isDtlsOnlyFitting();
+    private FragmentStream fragmentStream;
+
+    public FragmentCollector(Config config, Byte type, int messageSeq, int messageLength) {
+        this.config = config;
+        fragmentStream = new FragmentStream(messageLength);
+        this.type = type;
+        this.messageLength = messageLength;
+        this.messageSeq = messageSeq;
     }
 
     /**
-     * Adds a fragment to the collection, unless the fragment is already
-     * contained, or the fragment doesn't fit and
-     * {@link FragmentCollector#onlyFitting} is set to true. In case the
-     * collector is empty, also updates the "type" (given by type, message
-     * sequence, message length) of the collector with that of the fragment.
-     * 
-     * @return true if the fragment was added or false if it wasn't.
+     * Adds a fragment into the fragmentStream. If the would not be added an
+     * IllegalDtlsFragmentException is thrown. This can for example be the case
+     * if the fragment is not fitting into the data stream. If a fragment would
+     * be added but is rewriting previous messages in the stream, these messages
+     * are marked as not interpreted. and the parameters of the
+     * fragmentCollector are rewritten.
+     *
      */
-    // TODO perhaps it would make sense to extract this "type" to a separate
-    // internal class?
-    // instance of this class could be then extracted from the collector and
-    // from the fragment
-    public boolean addFragment(DtlsHandshakeMessageFragment fragment) {
-        // this is the invariant of the collector
-        assert (messageLength == null && type == null && messageSeq == null && fragmentData.isEmpty())
-                || (messageLength != null && type != null && messageSeq != null && !fragmentData.isEmpty());
-        if (isEmpty()) {
-            type = fragment.getType().getValue();
-            messageSeq = fragment.getMessageSeq().getValue();
-            messageLength = fragment.getLength().getValue();
-        }
-
-        boolean isFitting = isFitting(fragment);
-
-        if (!fragmentData.contains(fragment) && (isFitting || !onlyFitting)) {
-            if (!isFitting) {
-                LOGGER.warn(String.format("Adding an unffiting fragment! \n"
-                        + "(type, message sequence, message length) of collector is "
-                        + "(%s,%s,%s)\n and of added fragment is (%s,%s%s)", type, messageSeq, messageLength, fragment
-                        .getType().getValue(), fragment.getMessageSeq().getValue(), fragment.getLength().getValue()));
+    public void addFragment(DtlsHandshakeMessageFragment fragment) {
+        if (wouldAdd(fragment)) {
+            if (isFragmentOverwritingContent(fragment)) {
+                LOGGER.warn("Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
+                fragmentStream = new FragmentStream(messageLength);
+                this.messageLength = fragment.getLength().getValue();
+                this.messageSeq = fragment.getMessageSeq().getValue();
+                this.type = fragment.getType().getValue();
+                interpreted = false;
             }
-            fragmentData.add(fragment);
-            return true;
+            fragmentStream.insertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset().getValue());
         } else {
+            throw new IllegalDtlsFragmentException("Tried to insert an illegal DTLS fragment.");
+        }
+    }
+
+    /**
+     * Tests if a Fragment would be added into the fragmentStream. The test
+     * depends on config flags and if the fragment is fitting into the stream.
+     *
+     * @param fragment
+     *            the fragment that should be tested.
+     * @return True if it would be added, false otherwise
+     */
+    public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
+        if (config.isAcceptContentRewritingDtlsFragments() || !isFragmentOverwritingContent(fragment)) {
+            if (!config.isAcceptOnlyFittingDtlsFragments() || isFitting(fragment)) {
+                return true;
+            } else {
+                LOGGER.warn("Would not add not fitting fragment");
+                return false;
+            }
+        } else {
+            LOGGER.warn("Received history rewriting fragment");
             return false;
         }
     }
@@ -119,25 +94,32 @@ public class FragmentCollector {
     /**
      * Returns true for fragments which "fit" the collector, that is they share
      * the type, length and message sequence with the first fragment added to
-     * the collector. Fragments also fit if the collector is empty.
-     * 
+     * the collector.
+     *
      * @param fragment
      * @return true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
-        if (fragmentData.isEmpty()) {
-            return true;
+        if (fragment.getType().getValue() == type && fragment.getMessageSeq().getValue() == this.messageSeq
+                && fragment.getLength().getValue() == this.messageLength) {
+            return fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
+                    .getValue());
         } else {
-            return fragment.getType().getValue().equals(type) && fragment.getMessageSeq().getValue().equals(messageSeq)
-                    && fragment.getLength().getValue().equals(messageLength);
+            return false;
         }
     }
 
     /**
-     * Returns a list with stored fragments.
+     * Tests if the fragment if added to the fragmentStream would rewrite
+     * previously received messages
+     *
+     * @param fragment
+     *            Fragment that should betested
+     * @return True if the fragment would overwrite paste messages
      */
-    public List<DtlsHandshakeMessageFragment> getStoredFragments() {
-        return new ArrayList<>(fragmentData);
+    public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
+        return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
+                .getValue());
     }
 
     /**
@@ -147,10 +129,7 @@ public class FragmentCollector {
      */
     public DtlsHandshakeMessageFragment buildCombinedFragment() {
         if (!isMessageComplete()) {
-            LOGGER.warn("Returning incompletely received message! Missing pieces are replaced by 0 in content.");
-        }
-        if (isEmpty()) {
-            throw new WorkflowExecutionException("The FragmentCollector is empty, cannot build combined fragment!");
+            LOGGER.warn("Returning incompletely received message! Missing pieces are ignored in the content.");
         }
 
         DtlsHandshakeMessageFragment message = new DtlsHandshakeMessageFragment();
@@ -162,6 +141,7 @@ public class FragmentCollector {
         message.setContent(getCombinedContent());
         DtlsHandshakeMessageFragmentSerializer serializer = new DtlsHandshakeMessageFragmentSerializer(message, null);
         message.setCompleteResultingMessage(serializer.serialize());
+        this.setInterpreted(interpreted);
         return message;
     }
 
@@ -171,47 +151,7 @@ public class FragmentCollector {
      * fragmentData}.
      */
     private byte[] getCombinedContent() {
-        try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            int currentOffset = 0;
-            for (DtlsHandshakeMessageFragment fragment : fragmentData) {
-                Integer fragOffset = fragment.getFragmentOffset().getValue();
-                Integer fragLength = fragment.getFragmentLength().getValue();
-                // fragment contains bytes already received
-                if (currentOffset > fragOffset + fragLength) {
-                    continue;
-                } else {
-                    // fragment starts at an offset we haven't yet arrived at
-                    if (fragOffset > currentOffset) {
-                        LOGGER.warn("Missing bytes between offsets " + fragOffset + " and " + currentOffset
-                                + ". Filling gap with 0s.");
-                        stream.write(new byte[fragOffset - currentOffset]);
-                        currentOffset = fragOffset;
-                    }
-                    // the place to start copying
-                    int offsetDiff = currentOffset - fragOffset;
-                    stream.write(fragment.getContent().getValue(), offsetDiff, fragLength - offsetDiff);
-                    currentOffset += (fragLength - offsetDiff);
-                }
-            }
-            byte[] array = stream.toByteArray();
-            if (!messageLength.equals(array.length)) {
-                LOGGER.warn("Assembled message length is different than expected message length. "
-                        + "Truncating/Filling with 0s.");
-                array = Arrays.copyOf(array, messageLength);
-            }
-            return array;
-        } catch (IOException e) {
-            LOGGER.error("Failure merging content, return 0 byte array", e);
-            return new byte[messageLength];
-        }
-    }
-
-    /**
-     * Returns true if no fragments have been added, false otherwise.
-     */
-    public boolean isEmpty() {
-        return fragmentData.isEmpty();
+        return fragmentStream.getCompleteTruncatedStream();
     }
 
     /**
@@ -219,32 +159,25 @@ public class FragmentCollector {
      * message. Otherwise returns false.
      */
     public boolean isMessageComplete() {
-        if (isEmpty()) {
-            return false;
-        } else {
-            int currentOffset = 0;
-            for (DtlsHandshakeMessageFragment fragment : fragmentData) {
-                if (currentOffset > fragment.getFragmentOffset().getValue() + fragment.getFragmentLength().getValue()) {
-                    continue;
-                } else {
-                    if (fragment.getFragmentOffset().getValue() > currentOffset) {
-                        return false;
-                    } else {
-                        currentOffset = fragment.getFragmentOffset().getValue()
-                                + fragment.getFragmentLength().getValue();
-                    }
-                }
-                if (currentOffset >= messageLength) {
-                    break;
-                }
-            }
-
-            if (currentOffset > messageLength) {
-                LOGGER.warn("Assembled message is longer than message length");
-            }
-
-            return currentOffset >= messageLength;
-        }
+        return fragmentStream.isComplete(messageLength);
     }
 
+    /**
+     * Returns true if the message from this fragment stream has already been
+     * handled by the calling layer
+     *
+     * @return
+     */
+    public boolean isInterpreted() {
+        return interpreted;
+    }
+
+    /**
+     * Marks this message as already handled by the calling layer
+     *
+     * @param interpreted
+     */
+    public void setInterpreted(boolean interpreted) {
+        this.interpreted = interpreted;
+    }
 }

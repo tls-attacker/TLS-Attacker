@@ -1,19 +1,29 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.Signature;
+import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.PSSParameterSpec;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,6 +102,23 @@ public enum SignatureAndHashAlgorithm {
         return algoList;
     }
 
+    public static List<SignatureAndHashAlgorithm> getTls13SignatureAndHashAlgorithms() {
+        List<SignatureAndHashAlgorithm> algos = new LinkedList<>();
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA512);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
+        algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        return algos;
+    }
+
     private int value;
 
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
@@ -109,7 +136,7 @@ public enum SignatureAndHashAlgorithm {
 
     private static int valueToInt(byte[] value) {
         if (value.length >= 2) {
-            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+            return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
         } else if (value.length == 1) {
             return value[0];
         } else {
@@ -192,6 +219,10 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public String getJavaName() {
+        if (this.toString().contains("RSA_PSS")) {
+            return this.getHashAlgorithm().getJavaName().replaceAll("-", "") + "withRSA/PSS";
+        }
+
         String hashAlgorithmName = getHashAlgorithm().getJavaName();
         if (!hashAlgorithmName.contains("GOST")) {
             hashAlgorithmName = hashAlgorithmName.replace("-", "");
@@ -200,4 +231,109 @@ public enum SignatureAndHashAlgorithm {
         return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
 
+    public void setupSignature(Signature signature) throws InvalidAlgorithmParameterException {
+        if (this.getSignatureAlgorithm().toString().startsWith("RSA_PSS")) {
+            String hashName = this.getHashAlgorithm().getJavaName();
+            int saltLength = 0;
+            switch (this.getHashAlgorithm()) {
+                case SHA1:
+                    saltLength = 20;
+                    break;
+                case MD5:
+                    saltLength = 16;
+                    break;
+                case SHA256:
+                case GOSTR3411:
+                case GOSTR34112012_256:
+                    saltLength = 32;
+                    break;
+                case SHA224:
+                    saltLength = 28;
+                    break;
+                case SHA384:
+                    saltLength = 48;
+                    break;
+                case GOSTR34112012_512:
+                case SHA512:
+                    saltLength = 64;
+                    break;
+                case NONE:
+                    break;
+            }
+
+            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
+                    1));
+        }
+    }
+
+    public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
+        Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
+                Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
+                Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
+        List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
+        List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
+        clientPreferredHash.removeIf(i -> i.getHashAlgorithm() != chooser.getConfig().getPreferredHashAlgorithm());
+        algorithms.addAll(0, clientPreferredHash);
+
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            algorithms.removeIf(i -> i.toString().contains("RSA_SHA"));
+        }
+
+        SignatureAndHashAlgorithm sigHashAlgo = null;
+        CertificateKeyType certPublicKeyType = keyPair.getCertPublicKeyType();
+
+        boolean found = false;
+        for (SignatureAndHashAlgorithm i : algorithms) {
+            SignatureAlgorithm sig = i.getSignatureAlgorithm();
+
+            switch (certPublicKeyType) {
+                case ECDH:
+                case ECDSA:
+                    if (sig == SignatureAlgorithm.ECDSA) {
+                        found = true;
+                        sigHashAlgo = i;
+                    }
+                    break;
+                case RSA:
+                    if (sig.toString().contains("RSA")) {
+                        found = true;
+                        sigHashAlgo = i;
+                    }
+                    break;
+                case DSS:
+                    if (sig == SignatureAlgorithm.DSA) {
+                        found = true;
+                        sigHashAlgo = i;
+                    }
+                    break;
+                case GOST01:
+                    if (sig == SignatureAlgorithm.GOSTR34102001) {
+                        found = true;
+                        sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
+                    }
+                    break;
+                case GOST12:
+                    if (sig == SignatureAlgorithm.GOSTR34102012_256 || sig == SignatureAlgorithm.GOSTR34102012_512) {
+                        found = true;
+                        if (keyPair.getGostCurve().is512bit2012()) {
+                            sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
+                        } else {
+                            sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
+                        }
+                    }
+                    break;
+            }
+
+            if (found) {
+                break;
+            }
+        }
+
+        if (sigHashAlgo == null) {
+            LOGGER.warn("Could not auto select SignatureAndHashAlgorithm, setting default value");
+            sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
+        }
+
+        return sigHashAlgo;
+    }
 }

@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HRRKeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HRRKeyShareExtensionPreparator;
@@ -42,6 +44,7 @@ public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExt
 
     @Override
     public void adjustTLSExtensionContext(HRRKeyShareExtensionMessage message) {
+        context.setSelectedGroup(NamedGroup.getNamedGroup(message.getSelectedGroup().getValue()));
     }
 
 }

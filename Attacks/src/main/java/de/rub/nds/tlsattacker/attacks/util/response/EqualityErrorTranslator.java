@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,18 +26,6 @@ public class EqualityErrorTranslator {
             ResponseFingerprint fingerprint2) {
         StringBuilder builder = new StringBuilder();
         switch (error) {
-            case ALERT_COUNT:
-                builder.append("The server seems to respond with a different number of alerts.");
-                break;
-            case ALERT_MESSAGE_CONTENT:
-                builder.append("The server seems to answer with differnt alerts.");
-                break;
-            case ALERT_RECORD_CONTENT:
-                builder.append("The server seems to respond with different record conntents.");
-                break;
-            case ENCRYPTED_ALERT:
-                builder.append("The server seems to encrypt some but not all of its alert records.");
-                break;
             case MESSAGE_CLASS:
                 builder.append("The server responds with different protocol messages.");
                 break;
@@ -61,11 +50,14 @@ public class EqualityErrorTranslator {
             case RECORD_VERSION:
                 builder.append("The server seems to respond with records which have different protocol versions.");
                 break;
-            case SOCKET_EXCEPTION:
-                builder.append("The server seems to ocassionally respond with a socket exception.");
-                break;
             case SOCKET_STATE:
                 builder.append("The server seems to ocassionally move the TCP socket in different states.");
+                break;
+            case MESSAGE_CONTENT:
+                builder.append("The server responded with different message contents");
+                break;
+            case RECORD_CONTENT:
+                builder.append("The server responded with different record contents.");
                 break;
             default:
                 builder.append(error.toString());

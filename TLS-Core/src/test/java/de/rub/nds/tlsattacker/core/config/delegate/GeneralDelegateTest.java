@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,8 +13,7 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.After;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -108,13 +108,40 @@ public class GeneralDelegateTest {
     }
 
     /**
+     * Test of getKeylogfile method, of class GeneralDelegate.
+     */
+    @Test
+    public void testIsKeylogfile() {
+        args = new String[2];
+        args[0] = "-keylogfile";
+        args[1] = "abc";
+        assertNull(delegate.getKeylogfile());
+        jcommander.parse(args);
+        assertEquals("abc", delegate.getKeylogfile());
+    }
+
+    /**
+     * Test of setKeylogfile method, of class GeneralDelegate.
+     */
+    @Test
+    public void testSetKeylogfile() {
+        assertNull(delegate.getKeylogfile());
+        delegate.setKeylogfile("abc");
+        assertEquals("abc", delegate.getKeylogfile());
+    }
+
+    /**
      * Test of applyDelegate method, of class GeneralDelegate.
      */
     @Test
     public void testApplyDelegate() {
         // Just check that applyDelegate does not throw an Exception
         // TODO check that loglevel gets set
-        delegate.applyDelegate(Config.createConfig());
+        Config config = Config.createConfig();
+        delegate.setKeylogfile("abc");
+        delegate.applyDelegate(config);
+        assertTrue(config.isWriteKeylogFile());
+        assertEquals("abc", config.getKeylogFilePath());
     }
 
     @Test

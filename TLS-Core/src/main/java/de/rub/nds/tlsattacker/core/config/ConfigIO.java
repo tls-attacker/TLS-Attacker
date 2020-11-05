@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,7 +16,6 @@ import javax.xml.bind.JAXB;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactoryConfigurationException;
 import org.xml.sax.SAXException;
 
 public class ConfigIO {
@@ -34,8 +34,8 @@ public class ConfigIO {
         JAXB.marshal(config, tempStream);
         try {
             os.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-        } catch (IOException | TransformerException | XPathExpressionException | XPathFactoryConfigurationException
-                | ParserConfigurationException | SAXException ex) {
+        } catch (IOException | TransformerException | XPathExpressionException | ParserConfigurationException
+                | SAXException ex) {
             throw new RuntimeException("Could not format XML");
         }
     }

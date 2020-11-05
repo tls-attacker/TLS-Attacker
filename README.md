@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v3.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v3.6.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -13,7 +13,27 @@ In order to compile and use TLS-Attacker, you need to have Java and Maven instal
 ```bash
 $ sudo apt-get install maven
 ```
-TLS-Attacker currently needs Java JDK 8 to run. If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
+TLS-Attacker currently needs Java JDK 8 to run. Since version 3.5.0, TLS-Attacker also required ASN.1-Tool and X509-Attacker as a dependency.
+
+Installing ASN.1 Tool:
+```bash
+$ git clone https://github.com/RUB-NDS/ASN.1-Tool
+$ cd ASN.1-Tool
+$ mvn clean install
+$ cd ..
+
+```
+
+Installing X509-Attacker:
+```bash
+$ git clone https://github.com/RUB-NDS/x509-Attacker
+$ cd X509-Attacker
+$ mvn clean install
+$ cd ..
+```
+
+
+If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
 ```bash
 $ cd TLS-Attacker
 $ mvn clean install
@@ -261,6 +281,8 @@ The following people have contributed code to the TLS-Attacker project:
 - Tim Reisach: GOST
 - Paul Fiterau Brostean: DTLS reintegration
 - Malte Poll: High precision timing measurements
+- Mario Korth: Client Authentication Analysis
+- Nils Hanke: OCSP
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,8 +37,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "client";
 
-    @ParametersDelegate
-    private GeneralDelegate generalDelegate;
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
@@ -77,7 +76,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();

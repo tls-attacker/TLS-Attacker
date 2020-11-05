@@ -1,18 +1,21 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
@@ -21,10 +24,11 @@ import org.bouncycastle.util.Arrays;
  * Class used to split HandshakeMessages into DTLS fragments.
  */
 public class MessageFragmenter {
-    private Integer maxFragmentLength;
 
-    public MessageFragmenter(Config config) {
-        maxFragmentLength = config.getDtlsMaximumFragmentLength();
+    private final int maxFragmentLength;
+
+    public MessageFragmenter(int maxFragmentLength) {
+        this.maxFragmentLength = maxFragmentLength;
     }
 
     /**
@@ -58,15 +62,8 @@ public class MessageFragmenter {
             byte[] fragmentBytes = Arrays.copyOfRange(handshakeBytes, currentOffset,
                     Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
             DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(),
-                    fragmentBytes);
+                    fragmentBytes, message.getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);
-            // TODO it is unfortunate we need to resort to this
-            // an option would be to add variables to the context for storing
-            // the current fragment offset/message length
-            fragment.setFragmentOffset(currentOffset);
-            fragment.setLength(handshakeBytes.length);
-            byte[] bytes = fragment.getHandler(context).getSerializer(fragment).serialize();
-            fragment.setCompleteResultingMessage(bytes);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);

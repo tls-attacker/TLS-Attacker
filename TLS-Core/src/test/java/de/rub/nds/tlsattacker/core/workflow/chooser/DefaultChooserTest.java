@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -142,20 +141,6 @@ public class DefaultChooserTest {
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
         context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
-    }
-
-    /**
-     * Test of getClientSNIEntryList method, of class DefaultChooser.
-     */
-    @Test
-    public void testGetClientSNIEntryList() {
-        List<SNIEntry> listSNI = new LinkedList<>();
-        listSNI.add(new SNIEntry("Test", NameType.HOST_NAME));
-        config.setDefaultClientSNIEntryList(listSNI);
-        assertTrue(config.getDefaultClientSNIEntryList().size() == 1);
-        assertTrue(chooser.getClientSNIEntryList().size() == 1);
-        context.setClientSNIEntryList(new LinkedList<SNIEntry>());
-        assertTrue(context.getClientSNIEntryList().isEmpty());
     }
 
     /**
@@ -401,6 +386,32 @@ public class DefaultChooserTest {
     }
 
     /**
+     * Test of getClientExtendedRandom method of class DefaultChooser.
+     */
+    @Test
+    public void testGetClientExtendedRandom() {
+        byte[] clientExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        config.setDefaultClientExtendedRandom(clientExtendedRandom);
+        assertArrayEquals(clientExtendedRandom, config.getDefaultClientExtendedRandom());
+        assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
+        context.setClientExtendedRandom(clientExtendedRandom);
+        assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
+    }
+
+    /**
+     * Test of getServerExtendedRandom of class DefaultChooser.
+     */
+    @Test
+    public void testGetServerExtendedRandom() {
+        byte[] serverExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        config.setDefaultServerExtendedRandom(serverExtendedRandom);
+        assertArrayEquals(serverExtendedRandom, config.getDefaultServerExtendedRandom());
+        assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
+        context.setServerExtendedRandom(serverExtendedRandom);
+        assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
+    }
+
+    /**
      * Test of getSelectedCompressionMethod method, of class DefaultChooser.
      */
     @Test
@@ -569,9 +580,9 @@ public class DefaultChooserTest {
         context.setServerDhPrivateKey(null);
         config.setDefaultServerDhPrivateKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultServerDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getDhServerPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getServerDhPrivateKey());
         context.setServerDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhServerPrivateKey());
+        assertEquals(BigInteger.TEN, chooser.getServerDhPrivateKey());
     }
 
     /**
@@ -582,9 +593,9 @@ public class DefaultChooserTest {
         context.setClientDhPrivateKey(null);
         config.setDefaultClientDhPrivateKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultClientDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getDhClientPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getClientDhPrivateKey());
         context.setClientDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhClientPrivateKey());
+        assertEquals(BigInteger.TEN, chooser.getClientDhPrivateKey());
     }
 
     /**
@@ -595,9 +606,9 @@ public class DefaultChooserTest {
         context.setServerDhPublicKey(null);
         config.setDefaultServerDhPublicKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultServerDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getDhServerPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getServerDhPublicKey());
         context.setServerDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhServerPublicKey());
+        assertEquals(BigInteger.TEN, chooser.getServerDhPublicKey());
     }
 
     /**
@@ -608,9 +619,9 @@ public class DefaultChooserTest {
         context.setClientDhPublicKey(null);
         config.setDefaultClientDhPublicKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultClientDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getDhClientPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getClientDhPublicKey());
         context.setClientDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhClientPublicKey());
+        assertEquals(BigInteger.TEN, chooser.getClientDhPublicKey());
     }
 
     /**

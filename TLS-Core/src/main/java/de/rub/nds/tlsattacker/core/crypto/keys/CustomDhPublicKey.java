@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,11 +26,11 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger modulus;
+    private BigInteger modulus;
 
-    private final BigInteger generator;
+    private BigInteger generator;
 
-    private final BigInteger publicKey;
+    private BigInteger publicKey;
 
     public CustomDhPublicKey(BigInteger modulus, BigInteger generator, BigInteger publicKey) {
         this.modulus = modulus;
@@ -41,6 +42,14 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         modulus = null;
         generator = null;
         publicKey = null;
+    }
+
+    public BigInteger getModulus() {
+        return modulus;
+    }
+
+    public BigInteger getGenerator() {
+        return generator;
     }
 
     @Override
@@ -141,5 +150,22 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
             return false;
         }
         return Objects.equals(this.publicKey, other.publicKey);
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    public void setGenerator(BigInteger generator) {
+        this.generator = generator;
+    }
+
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    @Override
+    public int keysize() {
+        return modulus.bitLength();
     }
 }

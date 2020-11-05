@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -134,7 +135,7 @@ public class SerializationFullTest {
         messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());
         messages.add(new UnknownHandshakeMessage());
-        messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
+        messages.add(new UnknownMessage(config, ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
         HttpsRequestMessage message = new HttpsRequestMessage();
         message.setRequestPath("someString");

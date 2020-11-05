@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
@@ -42,6 +44,7 @@ public class UnknownHandshakeParserTest {
     private HandshakeMessageType type;
     private int length;
     private byte[] data;
+    private final Config config = Config.createConfig();
 
     public UnknownHandshakeParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
             int length, byte[] data) {
@@ -56,7 +59,7 @@ public class UnknownHandshakeParserTest {
      */
     @Test
     public void testParse() {
-        UnknownHandshakeParser parser = new UnknownHandshakeParser(0, message, ProtocolVersion.TLS12);
+        UnknownHandshakeParser parser = new UnknownHandshakeParser(0, message, ProtocolVersion.TLS12, config);
         UnknownHandshakeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

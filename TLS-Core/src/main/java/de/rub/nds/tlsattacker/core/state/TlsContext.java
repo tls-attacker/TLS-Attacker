@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -28,6 +30,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -67,6 +70,7 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 public class TlsContext {
 
@@ -78,6 +82,9 @@ public class TlsContext {
     private List<Session> sessionList;
 
     private HttpContext httpContext;
+
+    @XmlTransient
+    private Keylogfile keylogfile;
 
     /**
      * The end point of the TLS connection that this context represents.
@@ -157,9 +164,24 @@ public class TlsContext {
     private byte[] masterSecret;
 
     /**
+     * Cleartext portion of the master secret for SSLv2 export ciphers.
+     */
+    private byte[] clearKey;
+
+    /**
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
+
+    /**
+     * Client Extended Random used in Extended Random Extension
+     */
+    private byte[] clientExtendedRandom;
+
+    /**
+     * Server Extended Random used in Extended Random Extension
+     */
+    private byte[] serverExtendedRandom;
 
     /**
      * Client random, including unix time.
@@ -176,6 +198,11 @@ public class TlsContext {
      */
     private CipherSuite selectedCipherSuite = null;
 
+    /*
+     * (Preferred) cipher suite for SSLv2.
+     */
+    private SSL2CipherSuite ssl2CipherSuite = null;
+
     /**
      * Selected compression algorithm.
      */
@@ -190,6 +217,13 @@ public class TlsContext {
      * Client session ID.
      */
     private byte[] clientSessionId;
+
+    /**
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
+     * TLS, this is explicitly transmitted in the handshake and cannot be
+     * derived from other data.
+     */
+    private byte[] ssl2Iv;
 
     /**
      * Server certificate parsed from the server certificate message.
@@ -238,6 +272,10 @@ public class TlsContext {
     private List<CachedObject> cachedInfoExtensionObjects;
 
     private List<RequestItemV2> statusRequestV2RequestList;
+
+    private CertificateType selectedClientCertificateType;
+
+    private CertificateType selectedServerCertificateType;
 
     /**
      * These are the padding bytes as used in the padding extension.
@@ -359,6 +397,8 @@ public class TlsContext {
 
     private NamedGroup ecCertificateCurve;
 
+    private NamedGroup ecCertificateSignatureCurve;
+
     private Point clientEcPublicKey;
 
     private Point serverEcPublicKey;
@@ -444,40 +484,23 @@ public class TlsContext {
     private long readSequenceNumber = 0;
 
     /**
-     * the sequence number to be used in the fragments of the next message sent
+     * the latest epoch the peer used
      */
-    private int dtlsNextSendSequenceNumber = 0;
-
-    /**
-     * the sequence number used in fragments
-     */
-    private int dtlsCurrentSendSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the next message
-     * received
-     */
-    private int dtlsNextReceiveSequenceNumber = 0;
-
-    /**
-     * the sequence number expected in the fragments of the current message
-     */
-    private int dtlsCurrentReceiveSequenceNumber = 0;
+    private int dtlsReadEpoch = 0;
 
     /**
      * the epoch applied to transmitted DTLS records
      */
-    private int dtlsSendEpoch = 0;
+    private int dtlsWriteEpoch = 0;
 
-    /**
-     * the epoch expected in the next record
-     */
-    private int dtlsNextReceiveEpoch = 0;
+    private int dtlsReadHandshakeMessageSequence = 0;
+
+    private int dtlsWriteHandshakeMessageSequence = 0;
 
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
-    private FragmentManager dtlsFragmentManager;
+    private FragmentManager globalDtlsFragmentManager;
 
     /**
      * supported protocol versions
@@ -601,12 +624,35 @@ public class TlsContext {
     private boolean reversePrepareAfterParse = false;
 
     /**
-     * When running tls 1.3 as a server, when we activate decryption of client
-     * messages we need to set this flag to true. When this flag is active the
-     * server will try to parse the next record it receives as an unencrypted
-     * one, if its protocolmessage type is alert
+     * Nonce sent by the Client in the EncryptedServerNameIndication extension
      */
-    private boolean tls13SoftDecryption = false;
+    private byte[] esniClientNonce;
+
+    /**
+     * Nonce sent by the Server in the EncryptedServerNameIndication extension
+     */
+    private byte[] esniServerNonce;
+
+    /**
+     * Contains the keyRecord for the EncryptedServerNameIndication extension
+     */
+    private byte[] esniRecordBytes;
+
+    private EsniDnsKeyRecordVersion esniRecordVersion;
+
+    private byte[] esniRecordChecksum;
+
+    private List<KeyShareStoreEntry> esniServerKeyShareEntries;
+
+    private List<CipherSuite> esniServerCiphersuites = new LinkedList();
+
+    private Integer esniPaddedLength;
+
+    private Long esniNotBefore;
+
+    private Long esniNotAfter;
+
+    private List<ExtensionType> esniExtensions;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -654,7 +700,8 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
-        dtlsFragmentManager = new FragmentManager(config);
+        globalDtlsFragmentManager = new FragmentManager(config);
+        keylogfile = new Keylogfile(this);
     }
 
     public Chooser getChooser() {
@@ -664,12 +711,20 @@ public class TlsContext {
         return chooser;
     }
 
-    public boolean isTls13SoftDecryption() {
-        return tls13SoftDecryption;
+    public CertificateType getSelectedClientCertificateType() {
+        return selectedClientCertificateType;
     }
 
-    public void setTls13SoftDecryption(boolean tls13SoftDecryption) {
-        this.tls13SoftDecryption = tls13SoftDecryption;
+    public void setSelectedClientCertificateType(CertificateType selectedClientCertificateType) {
+        this.selectedClientCertificateType = selectedClientCertificateType;
+    }
+
+    public CertificateType getSelectedServerCertificateType() {
+        return selectedServerCertificateType;
+    }
+
+    public void setSelectedServerCertificateType(CertificateType selectedServerCertificateType) {
+        this.selectedServerCertificateType = selectedServerCertificateType;
     }
 
     public boolean isReversePrepareAfterParse() {
@@ -678,6 +733,30 @@ public class TlsContext {
 
     public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
         this.reversePrepareAfterParse = reversePrepareAfterParse;
+    }
+
+    public int getDtlsReadHandshakeMessageSequence() {
+        return dtlsReadHandshakeMessageSequence;
+    }
+
+    public void setDtlsReadHandshakeMessageSequence(int dtlsReadHandshakeMessageSequence) {
+        this.dtlsReadHandshakeMessageSequence = dtlsReadHandshakeMessageSequence;
+    }
+
+    public void increaseDtlsReadHandshakeMessageSequence() {
+        this.dtlsReadHandshakeMessageSequence++;
+    }
+
+    public void increaseDtlsWriteHandshakeMessageSequence() {
+        this.dtlsWriteHandshakeMessageSequence++;
+    }
+
+    public int getDtlsWriteHandshakeMessageSequence() {
+        return dtlsWriteHandshakeMessageSequence;
+    }
+
+    public void setDtlsWriteHandshakeMessageSequence(int dtlsWriteHandshakeMessageSequence) {
+        this.dtlsWriteHandshakeMessageSequence = dtlsWriteHandshakeMessageSequence;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {
@@ -1208,80 +1287,32 @@ public class TlsContext {
         this.readSequenceNumber++;
     }
 
-    public int getDtlsNextSendSequenceNumber() {
-        return dtlsNextSendSequenceNumber;
+    public void increaseDtlsReadEpoch() {
+        this.dtlsReadEpoch++;
     }
 
-    public void setDtlsNextSendSequenceNumber(int dtlsNextSendSequenceNumber) {
-        this.dtlsNextSendSequenceNumber = dtlsNextSendSequenceNumber;
+    public void increaseDtlsWriteEpoch() {
+        this.dtlsWriteEpoch++;
     }
 
-    public void increaseDtlsNextSendSequenceNumber() {
-        this.dtlsNextSendSequenceNumber++;
+    public int getDtlsWriteEpoch() {
+        return dtlsWriteEpoch;
     }
 
-    public int getDtlsCurrentSendSequenceNumber() {
-        return dtlsCurrentSendSequenceNumber;
+    public void setDtlsWriteEpoch(int dtlsWriteEpoch) {
+        this.dtlsWriteEpoch = dtlsWriteEpoch;
     }
 
-    public void setDtlsCurrentSendSequenceNumber(int dtlsCurrentSendSequenceNumber) {
-        this.dtlsCurrentSendSequenceNumber = dtlsCurrentSendSequenceNumber;
+    public int getDtlsReceiveEpoch() {
+        return dtlsReadEpoch;
     }
 
-    public void increaseDtlsCurrentSendSequenceNumber() {
-        this.dtlsCurrentSendSequenceNumber++;
-    }
-
-    public int getDtlsCurrentReceiveSequenceNumber() {
-        return dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void setDtlsCurrentReceiveSequenceNumber(int dtlsCurrentReceiveSequenceNumber) {
-        this.dtlsCurrentReceiveSequenceNumber = dtlsCurrentReceiveSequenceNumber;
-    }
-
-    public void increaseDtlsCurrentReceiveSequenceNumber() {
-        dtlsCurrentReceiveSequenceNumber++;
-    }
-
-    public int getDtlsNextReceiveSequenceNumber() {
-        return dtlsNextReceiveSequenceNumber;
-    }
-
-    public void setDtlsNextReceiveSequenceNumber(int dtlsNextReceiveSequenceNumber) {
-        this.dtlsNextReceiveSequenceNumber = dtlsNextReceiveSequenceNumber;
-    }
-
-    public int getDtlsSendEpoch() {
-        return dtlsSendEpoch;
-    }
-
-    public void increaseDtlsSendEpoch() {
-        dtlsSendEpoch++;
-    }
-
-    public void setDtlsSendEpoch(int sendEpoch) {
-        this.dtlsSendEpoch = sendEpoch;
-    }
-
-    public int getDtlsNextReceiveEpoch() {
-        return dtlsNextReceiveEpoch;
-    }
-
-    public void setDtlsNextReceiveEpoch(int receiveEpoch) {
-        this.dtlsNextReceiveEpoch = receiveEpoch;
-    }
-
-    public void increaseDtlsNextReceiveEpoch() {
-        dtlsNextReceiveEpoch++;
+    public void setDtlsReceiveEpoch(int sendEpoch) {
+        this.dtlsReadEpoch = sendEpoch;
     }
 
     public FragmentManager getDtlsFragmentManager() {
-        return dtlsFragmentManager;
-    }
-
-    public void increaseDtlsNextReceiveSequenceNumber() {
-        dtlsNextReceiveSequenceNumber++;
+        return globalDtlsFragmentManager;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -1343,7 +1374,12 @@ public class TlsContext {
         return selectedCipherSuite;
     }
 
+    public SSL2CipherSuite getSSL2CipherSuite() {
+        return ssl2CipherSuite;
+    }
+
     public void setMasterSecret(byte[] masterSecret) {
+        keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
     }
 
@@ -1351,8 +1387,20 @@ public class TlsContext {
         this.selectedCipherSuite = selectedCipherSuite;
     }
 
+    public void setSSL2CipherSuite(SSL2CipherSuite ssl2CipherSuite) {
+        this.ssl2CipherSuite = ssl2CipherSuite;
+    }
+
     public byte[] getClientServerRandom() {
         return ArrayConverter.concatenate(clientRandom, serverRandom);
+    }
+
+    public byte[] getClearKey() {
+        return clearKey;
+    }
+
+    public void setClearKey(byte[] clearKey) {
+        this.clearKey = clearKey;
     }
 
     public byte[] getPreMasterSecret() {
@@ -1360,7 +1408,24 @@ public class TlsContext {
     }
 
     public void setPreMasterSecret(byte[] preMasterSecret) {
+        keylogfile.writeKey("PMS_CLIENT_RANDOM", preMasterSecret);
         this.preMasterSecret = preMasterSecret;
+    }
+
+    public byte[] getClientExtendedRandom() {
+        return clientExtendedRandom;
+    }
+
+    public void setClientExtendedRandom(byte[] clientExtendedRandom) {
+        this.clientExtendedRandom = clientExtendedRandom;
+    };
+
+    public byte[] getServerExtendedRandom() {
+        return serverExtendedRandom;
+    }
+
+    public void setServerExtendedRandom(byte[] serverExtendedRandom) {
+        this.serverExtendedRandom = serverExtendedRandom;
     }
 
     public byte[] getClientRandom() {
@@ -1401,6 +1466,14 @@ public class TlsContext {
 
     public void setClientSessionId(byte[] clientSessionId) {
         this.clientSessionId = clientSessionId;
+    }
+
+    public byte[] getSSL2Iv() {
+        return ssl2Iv;
+    }
+
+    public void setSSL2Iv(byte[] ssl2Iv) {
+        this.ssl2Iv = ssl2Iv;
     }
 
     public Certificate getServerCertificate() {
@@ -1460,6 +1533,7 @@ public class TlsContext {
     }
 
     public void setClientHandshakeTrafficSecret(byte[] clientHandshakeTrafficSecret) {
+        keylogfile.writeKey("CLIENT_HANDSHAKE_TRAFFIC_SECRET", clientHandshakeTrafficSecret);
         this.clientHandshakeTrafficSecret = clientHandshakeTrafficSecret;
     }
 
@@ -1468,6 +1542,7 @@ public class TlsContext {
     }
 
     public void setServerHandshakeTrafficSecret(byte[] serverHandshakeTrafficSecret) {
+        keylogfile.writeKey("SERVER_HANDSHAKE_TRAFFIC_SECRET", serverHandshakeTrafficSecret);
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
@@ -1476,6 +1551,7 @@ public class TlsContext {
     }
 
     public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        keylogfile.writeKey("CLIENT_TRAFFIC_SECRET_0", clientApplicationTrafficSecret);
         this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
@@ -1484,6 +1560,7 @@ public class TlsContext {
     }
 
     public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        keylogfile.writeKey("SERVER_TRAFFIC_SECRET_0", serverApplicationTrafficSecret);
         this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
@@ -1937,6 +2014,7 @@ public class TlsContext {
      *            the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
         this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
     }
 
@@ -2297,4 +2375,93 @@ public class TlsContext {
         this.selectedGostCurve = selectedGostCurve;
     }
 
+    public byte[] getEsniClientNonce() {
+        return this.esniClientNonce;
+    }
+
+    public void setEsniClientNonce(byte[] esniClientNonce) {
+        this.esniClientNonce = esniClientNonce;
+
+    }
+
+    public byte[] getEsniServerNonce() {
+        return this.esniServerNonce;
+    }
+
+    public void setEsniServerNonce(byte[] esniServerNonce) {
+        this.esniServerNonce = esniServerNonce;
+
+    }
+
+    public byte[] getEsniRecordBytes() {
+        return esniRecordBytes;
+    }
+
+    public void setEsniRecordBytes(byte[] esniRecordBytes) {
+        this.esniRecordBytes = esniRecordBytes;
+    }
+
+    public EsniDnsKeyRecordVersion getEsniRecordVersion() {
+        return esniRecordVersion;
+    }
+
+    public void setEsniRecordVersion(EsniDnsKeyRecordVersion esniRecordVersion) {
+        this.esniRecordVersion = esniRecordVersion;
+    }
+
+    public byte[] getEsniRecordChecksum() {
+        return esniRecordChecksum;
+    }
+
+    public void setEsniRecordChecksum(byte[] esniRecordChecksum) {
+        this.esniRecordChecksum = esniRecordChecksum;
+    }
+
+    public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
+        return this.esniServerKeyShareEntries;
+    }
+
+    public void setEsniServerKeyShareEntries(List<KeyShareStoreEntry> esniServerKeyShareEntries) {
+        this.esniServerKeyShareEntries = esniServerKeyShareEntries;
+    }
+
+    public List<CipherSuite> getEsniServerCiphersuites() {
+        return esniServerCiphersuites;
+    }
+
+    public void setEsniServerCiphersuites(List<CipherSuite> esniServerCiphersuites) {
+        this.esniServerCiphersuites = esniServerCiphersuites;
+    }
+
+    public Integer getEsniPaddedLength() {
+        return esniPaddedLength;
+    }
+
+    public void setEsniPaddedLength(Integer esniPaddedLength) {
+        this.esniPaddedLength = esniPaddedLength;
+    }
+
+    public Long getEsniKeysNotBefore() {
+        return esniNotBefore;
+    }
+
+    public void setEsniKeysNotBefore(Long esniKeysNotBefore) {
+        this.esniNotBefore = esniKeysNotBefore;
+    }
+
+    public Long getEsniNotAfter() {
+        return esniNotAfter;
+    }
+
+    public void setEsniKeysNotAfter(Long esniKeysNotAfter) {
+        this.esniNotAfter = esniKeysNotAfter;
+    }
+
+    public NamedGroup getEcCertificateSignatureCurve() {
+        return ecCertificateSignatureCurve;
+    }
+
+    public void setEcCertificateSignatureCurve(NamedGroup ecCertificateSignatureCurve) {
+        this.ecCertificateSignatureCurve = ecCertificateSignatureCurve;
+    }
 }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -93,6 +94,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
+            @XmlElement(type = ChangeDefaultPreMasterSecretAction.class, name = "ChangeDefaultPreMasterSecret"),
             @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
             @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
@@ -108,6 +110,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = DeepCopyBufferedMessagesAction.class, name = "DeepCopyBufferedMessages"),
             @XmlElement(type = DeepCopyBufferedRecordsAction.class, name = "DeepCopyBufferedRecords"),
             @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
+            @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
             @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
             @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
@@ -132,6 +135,8 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = SendAction.class, name = "Send"),
             @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
             @XmlElement(type = SendDynamicServerKeyExchangeAction.class, name = "SendDynamicServerKeyExchange"),
+            @XmlElement(type = SendDynamicServerCertificateAction.class, name = "SendDynamicCertificate"),
+            @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
             @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
@@ -319,6 +324,51 @@ public class WorkflowTrace implements Serializable {
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = tlsActions.size() - 1; i >= 0; i--) {
+            if (tlsActions.get(i) instanceof ReceivingAction) {
+                return (ReceivingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the first MessageAction of the workflow trace.
+     *
+     * @return the first MessageAction of the workflow trace. Null if no message
+     *         actions are defined
+     */
+    public MessageAction getFirstMessageAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof MessageAction) {
+                return (MessageAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the first SendingAction of the workflow trace.
+     *
+     * @return the first SendingAction of the workflow trace. Null if no sending
+     *         actions are defined
+     */
+    public SendingAction getFirstSendingAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof SendingAction) {
+                return (SendingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the first ReceivingActionAction of the workflow trace.
+     *
+     * @return the first ReceivingActionAction of the workflow trace. Null if no
+     *         receiving actions are defined
+     */
+    public ReceivingAction getFirstReceivingAction() {
+        for (int i = 0; i < tlsActions.size(); i++) {
             if (tlsActions.get(i) instanceof ReceivingAction) {
                 return (ReceivingAction) (tlsActions.get(i));
             }

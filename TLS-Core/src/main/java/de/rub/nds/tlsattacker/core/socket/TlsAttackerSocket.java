@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -79,8 +80,9 @@ public class TlsAttackerSocket {
         ApplicationMessage message = new ApplicationMessage();
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
         byte[] sendingBytes = new byte[16384];
-        int actuallyRead = 0;
+        int actuallyRead;
         do {
+            actuallyRead = 0;
             try {
                 actuallyRead = stream.read(sendingBytes);
                 if (actuallyRead > 0) {

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,7 +17,7 @@ public class BouncyCastleProviderChecker {
 
     static boolean isLoaded() {
         for (Provider p : Security.getProviders()) {
-            if (p.getClass().equals(BouncyCastleProvider.class)) {
+            if (p.getClass().getName().equals(BouncyCastleProvider.class.getName())) {
                 return true;
             }
         }

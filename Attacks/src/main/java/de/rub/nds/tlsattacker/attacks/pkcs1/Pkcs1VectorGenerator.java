@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -100,7 +102,7 @@ public class Pkcs1VectorGenerator {
         Arrays.fill(keyBytes, (byte) 42);
         keyBytes[0] = protocolVersion.getMajor();
         keyBytes[1] = protocolVersion.getMinor();
-        int publicKeyByteLength = publicKeyBitLength / 8;
+        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
 
         // create plain padded keys
         List<Pkcs1Vector> pkcs1Vectors = new LinkedList<>();
@@ -142,7 +144,7 @@ public class Pkcs1VectorGenerator {
         Arrays.fill(keyBytes, (byte) 42);
         keyBytes[0] = protocolVersion.getMajor();
         keyBytes[1] = protocolVersion.getMinor();
-        int publicKeyByteLength = publicKeyBitLength / 8;
+        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
         return new Pkcs1Vector("Correctly formatted PKCS#1 PMS message", getPaddedKey(publicKeyByteLength, keyBytes));
     }
 

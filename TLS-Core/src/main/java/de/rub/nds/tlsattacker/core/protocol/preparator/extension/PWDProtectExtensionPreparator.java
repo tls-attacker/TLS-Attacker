@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -71,16 +73,15 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
         byte[] key = HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
-                new byte[0], curve.getModulus().bitLength() / 8);
+                new byte[0], curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
 
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
         SivMode AES_SIV = new SivMode();
         byte[] protectedUsername = AES_SIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes());
-        msg.setUsername(ArrayConverter.concatenate(
-                ArrayConverter.bigIntegerToByteArray(clientPublicKey, curve.getModulus().bitLength() / 8, true),
-                protectedUsername));
+        msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey, curve
+                .getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
         LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
     }
 

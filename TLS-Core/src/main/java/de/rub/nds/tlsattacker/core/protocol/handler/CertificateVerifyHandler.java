@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,7 +37,8 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
 
     @Override
     public CertificateVerifyParser getParser(byte[] message, int pointer) {
-        return new CertificateVerifyParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new CertificateVerifyParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override

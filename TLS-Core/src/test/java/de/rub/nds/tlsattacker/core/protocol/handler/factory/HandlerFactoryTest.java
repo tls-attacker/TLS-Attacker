@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -35,7 +36,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.ALERT, null) instanceof AlertHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.APPLICATION_DATA, null) instanceof ApplicationMessageHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.HEARTBEAT, null) instanceof HeartbeatMessageHandler);
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null) instanceof UnknownHandler);
+        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null) instanceof UnknownMessageHandler);
     }
 
     @Test
@@ -70,6 +71,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.ENCRYPT_THEN_MAC, null) instanceof EncryptThenMacExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.EXTENDED_MASTER_SECRET, null) instanceof ExtendedMasterSecretExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.HEARTBEAT, null) instanceof HeartbeatExtensionHandler);
+        context.getConfig().setParseKeyShareOld(true);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE_OLD,
                 HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE,
@@ -100,6 +102,8 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_PROTECT, null) instanceof PWDProtectExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_CLEAR, null) instanceof PWDClearExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PASSWORD_SALT, null) instanceof PasswordSaltExtensionHandler);
+        context.getConfig().setParseKeyShareOld(false);
+        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.EXTENDED_RANDOM, null) instanceof ExtendedRandomExtensionHandler);
     }
 
     @Test

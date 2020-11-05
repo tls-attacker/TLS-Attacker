@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -79,7 +80,10 @@ public class PseudoRandomFunction {
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
             throws CryptoException {
-
+        if (prfAlgorithm == null) {
+            LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
+            prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
+        }
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:

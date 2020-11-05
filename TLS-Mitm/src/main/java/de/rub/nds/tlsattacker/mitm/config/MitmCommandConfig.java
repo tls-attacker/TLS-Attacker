@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -37,8 +38,6 @@ public class MitmCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "mitm";
 
-    @ParametersDelegate
-    private GeneralDelegate generalDelegate;
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
@@ -76,7 +75,6 @@ public class MitmCommandConfig extends TLSDelegateConfig {
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();

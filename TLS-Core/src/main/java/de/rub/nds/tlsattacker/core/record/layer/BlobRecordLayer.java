@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,13 +10,13 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordDecompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
@@ -30,8 +31,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BlobRecordLayer extends RecordLayer {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 
@@ -74,11 +79,8 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void decryptRecord(AbstractRecord record) {
-        byte[] data = record.getProtocolMessageBytes().getValue();
-        data = cipher.decrypt(new DecryptionRequest(null, data, context.getChooser().getConnectionEndType()))
-                .getDecryptedCipherText();
-        record.setCleanProtocolMessageBytes(data);
+    public void decryptAndDecompressRecord(AbstractRecord record) {
+        decryptor.decrypt(record);
         decompressor.decompress(record);
     }
 
@@ -111,12 +113,12 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public void updateEncryptionCipher() {
-        encryptor.setRecordCipher(cipher);
+        encryptor.addNewRecordCipher(cipher);
     }
 
     @Override
     public void updateDecryptionCipher() {
-        decryptor.setRecordCipher(cipher);
+        decryptor.addNewRecordCipher(cipher);
     }
 
     @Override
@@ -125,13 +127,13 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
-    public RecordCipher getEncryptor() {
-        return encryptor.getRecordCipher();
+    public RecordCipher getEncryptorCipher() {
+        return encryptor.getRecordMostRecentCipher();
     }
 
     @Override
-    public RecordCipher getDecryptor() {
-        return decryptor.getRecordCipher();
+    public RecordCipher getDecryptorCipher() {
+        return decryptor.getRecordMostRecentCipher();
     }
 
 }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,12 +39,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+            @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
             @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
             @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
             @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchange"),
             @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
             @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),

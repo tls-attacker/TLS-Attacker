@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -21,15 +22,7 @@ public enum EqualityError {
     /**
      *
      */
-    SOCKET_EXCEPTION,
-    /**
-     *
-     */
     SOCKET_STATE,
-    /**
-     *
-     */
-    ALERT_COUNT,
     /**
      *
      */
@@ -49,15 +42,7 @@ public enum EqualityError {
     /**
      *
      */
-    ALERT_RECORD_CONTENT,
-    /**
-     *
-     */
-    ALERT_MESSAGE_CONTENT,
-    /**
-     *
-     */
-    ENCRYPTED_ALERT,
+    MESSAGE_CONTENT,
     /**
      *
      */
@@ -69,6 +54,10 @@ public enum EqualityError {
     /**
      *
      */
-    RECORD_VERSION;
+    RECORD_VERSION,
+    /**
+     *
+     */
+    RECORD_CONTENT;
 
 }

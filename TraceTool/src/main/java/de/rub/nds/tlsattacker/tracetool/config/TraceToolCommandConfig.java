@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -32,8 +33,6 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "tracetool";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private WorkflowInputDelegate workflowInputDelegate;
@@ -54,7 +53,6 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
 
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowInputDelegate = new WorkflowInputDelegate();

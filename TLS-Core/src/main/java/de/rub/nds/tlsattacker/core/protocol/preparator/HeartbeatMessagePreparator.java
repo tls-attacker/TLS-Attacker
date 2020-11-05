@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -27,7 +28,15 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
     }
 
     private byte[] generatePayload() {
-        byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
+        int payloadLength = chooser.getConfig().getHeartbeatPayloadLength();
+        if (payloadLength < 0) {
+            LOGGER.warn("HeartBeat payload length is smaller than 0. Setting it to 0 instead");
+            payloadLength = 0;
+        } else if (payloadLength > 65536) {
+            LOGGER.warn("HeartBeat payload length is bigger than the max value. Setting it to max value.");
+            payloadLength = 65536;
+        }
+        byte[] payload = new byte[payloadLength];
         chooser.getContext().getRandom().nextBytes(payload);
         return payload;
     }

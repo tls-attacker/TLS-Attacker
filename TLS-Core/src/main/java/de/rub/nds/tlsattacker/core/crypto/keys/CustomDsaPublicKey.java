@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -26,11 +27,11 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger p;
-    private final BigInteger q;
-    private final BigInteger g;
+    private BigInteger p;
+    private BigInteger q;
+    private BigInteger g;
 
-    private final BigInteger publicKey;
+    private BigInteger publicKey;
 
     public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger publicKey) {
         this.p = p;
@@ -51,7 +52,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         LOGGER.debug("Adjusting DSA public key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientDsaGenerator(g);
@@ -68,6 +69,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
+    }
+
+    public BigInteger getP() {
+        return p;
+    }
+
+    public BigInteger getQ() {
+        return q;
+    }
+
+    public BigInteger getG() {
+        return g;
     }
 
     @Override
@@ -99,7 +113,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else
+        } else {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientDsaGenerator(g);
@@ -116,6 +130,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
+        }
     }
 
     @Override
@@ -150,5 +165,26 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
             return false;
         }
         return Objects.equals(this.publicKey, other.publicKey);
+    }
+
+    public void setP(BigInteger p) {
+        this.p = p;
+    }
+
+    public void setQ(BigInteger q) {
+        this.q = q;
+    }
+
+    public void setG(BigInteger g) {
+        this.g = g;
+    }
+
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    @Override
+    public int keysize() {
+        return p.bitLength();
     }
 }

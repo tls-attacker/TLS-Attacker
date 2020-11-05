@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -54,8 +55,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 msg.setIncludeInDigest(false);
             }
         }
-        prepareExtensions();
-        prepareExtensionLength();
+        if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
+                        .isAddExtensionsInSSL())) {
+            prepareExtensions();
+            prepareExtensionLength();
+        }
     }
 
     // for DTLS, the random value of a second ClientHello message should be
@@ -71,7 +76,11 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareSessionID() {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            msg.setSessionId(new byte[0]);
+            if (chooser.getContext().getServerSessionId() == null) {
+                msg.setSessionId(chooser.getClientSessionId());
+            } else {
+                msg.setSessionId(chooser.getServerSessionId());
+            }
         } else {
             if (chooser.getContext().getServerSessionId() == null) {
                 msg.setSessionId(chooser.getClientSessionId());

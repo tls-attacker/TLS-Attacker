@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,9 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.FieldElementF2m;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
@@ -31,7 +35,8 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     public ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -60,8 +65,15 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
             LOGGER.debug("Adjusting Montgomery EC PublicKey");
             // TODO This is only a temporary solution. Montgomory Curves need to
             // be integrated into the new EC framework
-            tlsContext.setClientEcPublicKey(new Point(new FieldElementF2m(new BigInteger(serializedPoint), null),
-                    new FieldElementF2m(new BigInteger(serializedPoint), null)));
+            RFC7748Curve curve = (RFC7748Curve) CurveFactory.getCurve(usedGroup);
+            BigInteger xCoordinate;
+            if (serializedPoint.length != 0) {
+                xCoordinate = new BigInteger(serializedPoint);
+            } else {
+                LOGGER.warn("Encoding 0 length byte-array");
+                xCoordinate = BigInteger.ZERO;
+            }
+            tlsContext.setClientEcPublicKey(curve.createAPointOnCurve(new BigInteger(serializedPoint)));
         } else {
             LOGGER.debug("Adjusting EC Point");
             Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);

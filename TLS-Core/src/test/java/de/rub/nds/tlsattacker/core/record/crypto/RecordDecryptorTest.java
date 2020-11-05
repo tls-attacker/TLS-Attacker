@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -52,35 +53,6 @@ public class RecordDecryptorTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
     }
 
-    /**
-     * Test of the decrypt method for TLS 1.3, of class RecordDecryptor.
-     *
-     * @throws java.security.NoSuchAlgorithmException
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
-     */
-    @Test
-    public void testDecrypt() throws NoSuchAlgorithmException, CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        context.setClientHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
-        context.setServerHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
-        context.setConnection(new OutboundConnection());
-        record.setProtocolMessageBytes(ArrayConverter
-                .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
-        record.setLength(record.getProtocolMessageBytes().getValue().length);
-        context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
-        decryptor = new RecordDecryptor(recordCipher, context);
-        decryptor.decrypt(record);
-        // assertTrue(record.getContentMessageType() ==
-        // ProtocolMessageType.HANDSHAKE);
-        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 6);
-        assertArrayEquals(record.getCleanProtocolMessageBytes().getValue(),
-                ArrayConverter.hexStringToByteArray("080000020000"));
-    }
-
     @Test
     public void testDecryptTLS12Block() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -114,19 +86,14 @@ public class RecordDecryptorTest {
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3"), record
-                .getComputations().getInitialisationVector().getValue());
-        assertEquals(11, (long) record.getComputations().getPaddingLength().getValue());
+                .getComputations().getCbcInitialisationVector().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
                 .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
-                .getComputations().getNonMetaDataMaced().getValue());
+                .getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
                 .getComputations().getMac().getValue());
-        assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD"),
-                record.getComputations().getUnpaddedRecordBytes().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
                 .getPadding().getValue());
         assertArrayEquals(
@@ -142,6 +109,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        // TODO This test does nothing?!
 
     }
 
@@ -152,7 +120,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -162,7 +130,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -172,7 +140,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -183,7 +151,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -194,7 +162,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
     @Test
@@ -205,7 +173,7 @@ public class RecordDecryptorTest {
         context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-
+        // TODO This test does nothing?!
     }
 
 }

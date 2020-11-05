@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
@@ -25,7 +27,8 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     public DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -42,7 +45,12 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     public void adjustTLSContext(DHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustClientPublicKey(message);
         setRecordCipher();
         spawnNewSession();
+    }
+
+    private void adjustClientPublicKey(DHClientKeyExchangeMessage message) {
+        tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
     }
 }

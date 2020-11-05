@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.protocol.parser.ParserResult;
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -77,12 +79,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         }
         try {
             if (message.getAdjustContext()) {
-                // we update the current and next send sequence numbers for DTLS
-                // we only do this for full fledged messages (not for fragments)
                 if (tlsContext.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && message.isHandshakeMessage()
                         && !message.isDtlsHandshakeMessageFragment()) {
-                    tlsContext.setDtlsCurrentSendSequenceNumber(tlsContext.getDtlsNextSendSequenceNumber());
-                    tlsContext.increaseDtlsNextSendSequenceNumber();
+                    tlsContext.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }
             updateDigest(message);
@@ -112,6 +111,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public ParserResult parseMessage(byte[] message, int pointer, boolean onlyParse) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
+
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS() && parsedMessage instanceof HandshakeMessage
+                && !(parsedMessage instanceof DtlsHandshakeMessageFragment)) {
+            ((HandshakeMessage) parsedMessage).setMessageSequence(tlsContext.getDtlsReadHandshakeMessageSequence());
+        }
         try {
             if (!onlyParse) {
                 prepareAfterParse(parsedMessage);
@@ -129,14 +133,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     private void updateDigest(ProtocolMessage message) {
         if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig())
-                        .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
-                LOGGER.debug("Included in digest fragmented version of: " + message.toCompactString());
+                DtlsHandshakeMessageFragment fragment = new MessageFragmenter(tlsContext.getConfig()
+                        .getDtlsMaximumFragmentLength()).wrapInSingleFragment((HandshakeMessage) message, tlsContext);
                 tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
             } else {
-                LOGGER.debug("Included in digest: " + message.toCompactString());
                 tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
             }
+            LOGGER.debug("Included in digest: " + message.toCompactString());
         }
     }
 

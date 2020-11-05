@@ -1,3 +1,4 @@
+*.iml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -48,3 +49,5 @@ resources/*.pem
 test.sh
 .settings/
 .classpath
+.idea
+*.iml

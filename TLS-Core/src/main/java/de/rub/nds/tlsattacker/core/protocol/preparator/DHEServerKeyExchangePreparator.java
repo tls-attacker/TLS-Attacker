@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -105,7 +106,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void preparePublicKey(T msg) {
-        BigInteger publicKey = chooser.getDhServerPublicKey();
+        BigInteger publicKey = chooser.getServerDhPublicKey();
         try {
 
             BigInteger generator = msg.getComputations().getGenerator().getValue();
@@ -124,7 +125,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void setComputedPrivateKey(T msg) {
-        msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
+        msg.getComputations().setPrivateKey(chooser.getServerDhPrivateKey());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -47,30 +48,27 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
-        prepareSequenceNumber(record);
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            preparePaddingLength(record);
-        }
-
         if (isDTLS()) {
             prepareEpoch(record);
-            prepareDtlsSequenceNumber(record);
+        }
+        prepareSequenceNumber(record);
+        compressor.compress(record);
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            // The CCS message in TLS 1.3 is an exception that does not get
+            // encrypted
+            record.prepareComputations();
+            record.setProtocolMessageBytes(record.getCleanProtocolMessageBytes().getValue());
+        } else {
+            encryptor.encrypt(record);
         }
 
-        compressor.compress(record);
-
-        encryptor.encrypt(record);
         prepareLength(record);
     }
 
     private void prepareContentType(Record record) {
-        if ((chooser.getSelectedProtocolVersion().isTLS13() || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
-                && chooser.getContext().getActiveKeySetTypeWrite() != Tls13KeySetType.NONE) {
-            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
-        } else {
-            record.setContentType(type.getValue());
-        }
+
+        record.setContentType(type.getValue());
         prepareConentMessageType(type);
         LOGGER.debug("ContentType: " + type.getValue());
     }
@@ -90,30 +88,17 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareEpoch(Record record) {
-        record.setEpoch(chooser.getContext().getDtlsSendEpoch());
+        record.setEpoch(chooser.getContext().getDtlsWriteEpoch());
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 
-    private void prepareDtlsSequenceNumber(Record record) {
-        // the dtls sequence number takes is updated in the same way as the
-        // implicit sequence number in TLS
-        record.setSequenceNumber(record.getComputations().getSequenceNumber().getValue());
-
-        LOGGER.debug("DtlsSequenceNumber: " + record.getSequenceNumber().getValue());
-    }
-
     private void prepareSequenceNumber(Record record) {
-        record.getComputations().setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
-        LOGGER.debug("SequenceNumber: " + record.getComputations().getSequenceNumber().getValue());
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
+        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
     private void prepareLength(Record record) {
         record.setLength(record.getProtocolMessageBytes().getValue().length);
         LOGGER.debug("Length: " + record.getLength().getValue());
-    }
-
-    private void preparePaddingLength(Record record) {
-        record.getComputations().setPaddingLength(chooser.getConfig().getPaddingLength());
-        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
     }
 }

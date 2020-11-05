@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,13 +25,14 @@ public class UnknownMessage extends ProtocolMessage {
     private ProtocolMessageType recordContentMessageType;
 
     public UnknownMessage() {
-        this(ProtocolMessageType.UNKNOWN);
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
-    public UnknownMessage(ProtocolMessageType recordContentMessageType) {
+    public UnknownMessage(Config config) {
         super();
-        this.recordContentMessageType = recordContentMessageType;
-        protocolMessageType = ProtocolMessageType.UNKNOWN;
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
@@ -62,7 +64,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new UnknownHandler(context, recordContentMessageType);
+        return new UnknownMessageHandler(context, recordContentMessageType);
     }
 
     @Override

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -29,6 +30,21 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableInteger requestExtensionLength;
     @ModifiableVariableProperty
     private ModifiableByteArray requestExtension;
+
+    /**
+     * As a TLS 1.3 CertificateEntry extension, this extension uses the format
+     * of a CertificateStatus message. If this is the case, let's have the same
+     * fields as such a message.
+     */
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger certificateStatusType;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger ocspResponseLength;
+
+    @ModifiableVariableProperty
+    private ModifiableByteArray ocspResponseBytes;
 
     public CertificateStatusRequestExtensionMessage() {
         super(ExtensionType.STATUS_REQUEST);
@@ -80,7 +96,7 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     }
 
     public void setRequestExtensionLength(int requestExtensionLength) {
-        this.requestExtensionLength = safelySetValue(this.responderIDListLength, requestExtensionLength);
+        this.requestExtensionLength = safelySetValue(this.requestExtensionLength, requestExtensionLength);
     }
 
     public ModifiableByteArray getRequestExtension() {
@@ -95,4 +111,28 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
         this.requestExtension = safelySetValue(this.requestExtension, requestExtension);
     }
 
+    // TLS 1.3 entries - same as CertificateStatus message
+    public ModifiableInteger getCertificateStatusType() {
+        return certificateStatusType;
+    }
+
+    public void setCertificateStatusType(ModifiableInteger certificateStatusType) {
+        this.certificateStatusType = certificateStatusType;
+    }
+
+    public ModifiableInteger getOcspResponseLength() {
+        return ocspResponseLength;
+    }
+
+    public void setOcspResponseLength(ModifiableInteger ocspResponseLength) {
+        this.ocspResponseLength = ocspResponseLength;
+    }
+
+    public ModifiableByteArray getOcspResponseBytes() {
+        return ocspResponseBytes;
+    }
+
+    public void setOcspResponseBytes(ModifiableByteArray ocspResponseBytes) {
+        this.ocspResponseBytes = ocspResponseBytes;
+    }
 }

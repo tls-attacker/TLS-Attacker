@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -66,21 +67,22 @@ public class KeyGenerator {
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getClientDhModulus(),
+            return new CustomDHPrivateKey(chooser.getClientDhPrivateKey(), chooser.getClientDhModulus(),
                     chooser.getClientDhGenerator());
         } else {
-            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getServerDhModulus(),
+            return new CustomDHPrivateKey(chooser.getServerDhPrivateKey(), chooser.getServerDhModulus(),
                     chooser.getServerDhGenerator());
         }
     }
 
     public static DSAPrivateKey getDSAPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            // TODO
-            throw new UnsupportedOperationException("DSA currently only supported for Servers");
+            return new CustomDSAPrivateKey(chooser.getDsaClientPrivateKey(), chooser.getDsaClientPrimeP(),
+                    chooser.getDsaClientPrimeQ(), chooser.getDsaClientGenerator());
         } else {
-            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaPrimeP(),
-                    chooser.getDsaPrimeQ(), chooser.getDsaGenerator());
+
+            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaServerPrimeP(),
+                    chooser.getDsaServerPrimeQ(), chooser.getDsaServerGenerator());
         }
     }
 

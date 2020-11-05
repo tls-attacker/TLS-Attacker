@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -17,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -68,6 +70,7 @@ public class DHClientKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
+        message.setPublicKey(new byte[] { 1 });
         message.prepareComputations();
         message.getComputations()
                 .setPremasterSecret(
@@ -89,5 +92,6 @@ public class DHClientKeyExchangeHandlerTest {
                 ArrayConverter
                         .hexStringToByteArray("4a0a7f6a0598acb36684359e1a19d848ab03b3ba1167430471166d94dcf8315d1c4290c9d9e40c50ae834df7b4f4bdef"),
                 context.getMasterSecret());
+        assertTrue(context.getClientDhPublicKey().equals(BigInteger.ONE));
     }
 }

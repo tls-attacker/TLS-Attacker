@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -34,6 +35,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+            @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
             @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
             @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
             @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
@@ -207,20 +209,22 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (messages == null) {
             return false;
         }
-
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (expectedMessages.size() > messages.size()) {
+        int j = 0;
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
                 return false;
-            }
-        } else {
-            if (messages.size() != expectedMessages.size()) {
-                return false;
+            } else if (j < messages.size()) {
+                if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
+                        && expectedMessages.get(i).isRequired()) {
+                    return false;
+                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
+                    j++;
+                }
             }
         }
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
-                return false;
-            }
+
+        if (j < messages.size() && (checkOnlyExpected == null || checkOnlyExpected == false)) {
+            return false; // additional messages are not allowed
         }
 
         return true;

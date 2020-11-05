@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -27,7 +28,8 @@ public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<Psk
 
     @Override
     public PskDheServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskDheServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new PskDheServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -50,10 +52,6 @@ public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<Psk
         }
     }
 
-    /**
-     *
-     * @param context
-     */
     private void adjustPSKGenerator(PskDheServerKeyExchangeMessage message) {
         tlsContext.setPSKGenerator(new BigInteger(1, message.getGenerator().getValue()));
         LOGGER.debug("PSK Generator: " + tlsContext.getPSKGenerator());

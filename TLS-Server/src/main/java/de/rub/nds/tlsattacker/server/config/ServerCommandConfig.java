@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -35,8 +36,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "server";
 
-    @ParametersDelegate
-    private GeneralDelegate generalDelegate;
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
@@ -74,7 +73,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
@@ -115,9 +113,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public Config createConfig() {
         Config config = super.createConfig();
 
-        // Run FULL trace if no workflow trace (type) is set explicitly
         if (config.getWorkflowTraceType() == null) {
-            config.setWorkflowTraceType(WorkflowTraceType.FULL);
+            config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;
     }

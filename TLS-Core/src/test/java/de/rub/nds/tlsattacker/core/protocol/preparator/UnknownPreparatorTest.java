@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,13 +20,13 @@ public class UnknownPreparatorTest {
 
     private TlsContext context;
     private UnknownMessage message;
-    private UnknownPreparator preparator;
+    private UnknownMessagePreparator preparator;
 
     @Before
     public void setUp() {
         this.context = new TlsContext();
-        this.message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
-        this.preparator = new UnknownPreparator(context.getChooser(), message);
+        this.message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
+        this.preparator = new UnknownMessagePreparator(context.getChooser(), message);
     }
 
     /**

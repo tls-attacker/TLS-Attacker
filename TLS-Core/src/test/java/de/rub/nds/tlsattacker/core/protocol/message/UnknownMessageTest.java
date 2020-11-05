@@ -1,13 +1,15 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -21,7 +23,7 @@ public class UnknownMessageTest {
 
     @Before
     public void setUp() {
-        message = new UnknownMessage(ProtocolMessageType.UNKNOWN);
+        message = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
     }
 
     @After

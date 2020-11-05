@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -86,6 +88,7 @@ public class ServerHelloParserTest {
     private final byte[] selectedCiphersuite;
     private final byte selectedCompression;
     private final Integer extensionLength;
+    private final Config config = Config.createConfig();
 
     public ServerHelloParserTest(byte[] message, byte messageType, int messageLength, ProtocolVersion version,
             byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
@@ -109,7 +112,7 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser = new ServerHelloParser(0, message, version);
+        ServerHelloParser parser = new ServerHelloParser(0, message, version, config);
         ServerHelloMessage helloMessage = parser.parse();
         assertTrue(helloMessage.getType().getValue() == messageType);
         assertTrue(helloMessage.getLength().getValue() == messageLength);

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,50 +39,6 @@ public enum KeyExchangeAlgorithm {
     ECDH_ECNRA,
     CECPQ1_ECDSA,
     ECCPWD;
-
-    public CertificateKeyType getRequiredCertPublicKeyType() {
-        switch (this) {
-            case DHE_DSS:
-            case SRP_SHA_DSS:
-                return CertificateKeyType.DSS;
-            case ECDHE_RSA:
-            case PSK_RSA:
-            case RSA:
-            case DHE_RSA:
-            case SRP_SHA_RSA:
-                return CertificateKeyType.RSA;
-            case DH_DSS:
-            case DH_RSA:
-                return CertificateKeyType.DH;
-            case ECDH_ECNRA:
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECMQV_ECDSA:
-            case CECPQ1_ECDSA:
-            case ECDH_RSA:
-                return CertificateKeyType.ECDSA;
-            case NULL:
-            case DHE_PSK:
-            case DH_ANON:
-            case ECDHE_PSK:
-            case ECDH_ANON:
-            case PSK:
-            case SRP_SHA:
-            case ECCPWD:
-                return CertificateKeyType.NONE;
-            case VKO_GOST01:
-                return CertificateKeyType.GOST01;
-            case VKO_GOST12:
-                return CertificateKeyType.GOST12;
-
-            case ECMQV_ECNRA:
-            case FORTEZZA_KEA:
-            case KRB5:
-
-            default:
-                throw new UnsupportedOperationException("Currently unsupported");
-        }
-    }
 
     public boolean isKeyExchangeRsa() {
         return this.equals(this.RSA);

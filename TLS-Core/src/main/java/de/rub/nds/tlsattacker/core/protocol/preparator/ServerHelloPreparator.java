@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -38,11 +38,13 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareSessionIDLength();
 
         prepareCipherSuite();
-        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
-            prepareCompressionMethod();
+        prepareCompressionMethod();
+        if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
+                        .isAddExtensionsInSSL())) {
+            prepareExtensions();
+            prepareExtensionLength();
         }
-        prepareExtensions();
-        prepareExtensionLength();
     }
 
     private void prepareCipherSuite() {
@@ -57,7 +59,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (selectedSuite == null) {
-                throw new WorkflowExecutionException("No Ciphersuites in common");
+                selectedSuite = chooser.getConfig().getDefaultSelectedCipherSuite();
+                LOGGER.warn("No CipherSuites in common, falling back to defaultSelectedCipherSuite");
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
@@ -76,7 +79,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (selectedCompressionMethod == null) {
-                throw new WorkflowExecutionException("No Compression in common");
+                selectedCompressionMethod = chooser.getConfig().getDefaultSelectedCompressionMethod();
+                LOGGER.warn("No CompressionMethod in common, falling back to defaultSelectedCompressionMethod");
             }
             msg.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
         }
@@ -84,8 +88,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            msg.setSessionId(new byte[0]);
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
@@ -94,6 +98,10 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
     private void prepareProtocolVersion() {
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            ourVersion = ProtocolVersion.TLS12;
+        }
+
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
         int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
         int intRepresentationClientVersion = clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];

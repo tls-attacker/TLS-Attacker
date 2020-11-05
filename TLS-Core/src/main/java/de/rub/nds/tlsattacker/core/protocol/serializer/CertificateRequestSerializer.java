@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -37,16 +38,24 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateRequestMessage");
-        writeClientCertificateTypesCount(msg);
-        writeClientCertificateTypes(msg);
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
-            writeSignatureHandshakeAlgorithmsLength(msg);
-            writeSignatureHandshakeAlgorithms(msg);
+        if (version.isTLS13()) {
+            writeCertificateRquestContextLength(msg);
+            writeCertificateRquestContext(msg);
+            writeExtensionLength();
+            writeExtensionBytes();
+        } else {
+            writeClientCertificateTypesCount(msg);
+            writeClientCertificateTypes(msg);
+            if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
+                writeSignatureHandshakeAlgorithmsLength(msg);
+                writeSignatureHandshakeAlgorithms(msg);
+            }
+            writeDistinguishedNamesLength(msg);
+            if (hasDistinguishedNames(msg)) {
+                writeDistinguishedNames(msg);
+            }
         }
-        writeDistinguishedNamesLength(msg);
-        if (hasDistinguishedNames(msg)) {
-            writeDistinguishedNames(msg);
-        }
+
         return getAlreadySerialized();
     }
 
@@ -109,6 +118,18 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());
         LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+    }
+
+    private void writeCertificateRquestContext(CertificateRequestMessage msg) {
+        appendBytes(msg.getCertificateRequestContext().getValue());
+        LOGGER.debug("CertificateRquestContext: "
+                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+    }
+
+    private void writeCertificateRquestContextLength(CertificateRequestMessage msg) {
+        appendInt(msg.getCertificateRequestContextLength().getValue(),
+                HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
+        LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 
 }

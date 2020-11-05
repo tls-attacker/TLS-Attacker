@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -50,6 +51,7 @@ public class CyclicParserSerializerTest {
         ProtocolMessageParser parser = null;
         ProtocolMessagePreparator preparator = null;
         ProtocolMessage message = null;
+        Config config = null;
         ProtocolMessageSerializer serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
@@ -95,6 +97,7 @@ public class CyclicParserSerializerTest {
                         context.setSelectedProtocolVersion(version);
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
+                        config = context.getConfig();
                         preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
                                 context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
@@ -118,8 +121,8 @@ public class CyclicParserSerializerTest {
                     }
                     byte[] serializedMessage = serializer.serialize();
                     try {
-                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
-                                serializedMessage, version);
+                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                                serializedMessage, version, config);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);
@@ -141,6 +144,7 @@ public class CyclicParserSerializerTest {
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    LOGGER.error(ex);
                     fail("Could not execute " + testName + " - " + version.name());
                 }
                 /*
@@ -294,6 +298,7 @@ public class CyclicParserSerializerTest {
     private Class<? extends ProtocolMessageSerializer> getSerializer(String testName) throws ClassNotFoundException {
         String serializerName = "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
         try {
+            System.out.println(serializerName);
             return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName);
         } catch (ClassNotFoundException E) {
             try {

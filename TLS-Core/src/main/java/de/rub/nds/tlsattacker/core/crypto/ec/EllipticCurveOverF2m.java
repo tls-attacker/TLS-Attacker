@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,9 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
@@ -17,6 +21,8 @@ import java.math.BigInteger;
  * coefficient.
  */
 public class EllipticCurveOverF2m extends EllipticCurve {
+
+    private final static Logger LOGGER = LogManager.getLogger();
 
     private final FieldElementF2m a;
     private final FieldElementF2m b;
@@ -107,6 +113,10 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point inverseAffine(Point p) {
+        if (!(p.getX() instanceof FieldElementF2m && p.getY() instanceof FieldElementF2m)) {
+            LOGGER.warn("Trying to invert non F2m point with F2m curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         // -p == (x, x+y)
 
         FieldElementF2m x = (FieldElementF2m) p.getX();
@@ -117,6 +127,11 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
+        if (!(p.getX() instanceof FieldElementF2m && p.getY() instanceof FieldElementF2m
+                && q.getX() instanceof FieldElementF2m && q.getY() instanceof FieldElementF2m)) {
+            LOGGER.warn("Trying to add non F2m points with F2m curve. Returning point at (0,0)");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
+        }
         try {
             FieldElementF2m x1 = (FieldElementF2m) p.getX();
             FieldElementF2m y1 = (FieldElementF2m) p.getY();
@@ -147,7 +162,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            return new Point();
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
+            return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
 
@@ -156,8 +172,68 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         return new FieldElementF2m(value, this.getModulus());
     }
 
+    /**
+     * Returns a point on the curve for the given x coordinate - or the
+     * basepoint if such a point does not exist. Of the two possible points, the
+     * function always returns the point whose value of z is odd.
+     *
+     * @param x
+     *            The x coordinate of the point
+     */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
-        throw new UnsupportedOperationException("Currently not supported");
+        FieldElementF2m xField = new FieldElementF2m(x, this.getModulus());
+        if (x.equals(BigInteger.ZERO)) {
+            FieldElementF2m y = b.squarePow(this.getModulus().bitLength() - 2);
+            return getPoint(x, y.getData());
+        } else {
+            FieldElementF2m xInv = (FieldElementF2m) xField.multInv();
+            FieldElementF2m xInvSq = (FieldElementF2m) xInv.mult(xInv);
+            FieldElementF2m product = (FieldElementF2m) b.mult(xInvSq);
+            FieldElementF2m beta = (FieldElementF2m) xField.add(a).add(product);
+            FieldElementF2m z = (FieldElementF2m) solveQuadraticEquation(beta);
+            if (z == null) {
+                LOGGER.warn("Was unable to create point on curve - using basepoint instead");
+                return this.getBasePoint();
+            } else {
+                FieldElementF2m y = (FieldElementF2m) xField.mult(z);
+                Point created = getPoint(x, y.getData());
+                if (!z.getData().testBit(0)) {
+                    created = inverse(created);
+                }
+                return created;
+            }
+        }
+    }
+
+    /**
+     * Solves z^2 + z = beta using the algorithm D.1.6 of ANSI X9.62
+     *
+     * @param beta
+     *            An element of F2m
+     * @return The result z for the quadratic equation or null if non-existent
+     */
+    public FieldElementF2m solveQuadraticEquation(FieldElement beta) {
+        FieldElementF2m gamma;
+        FieldElementF2m z;
+        Random randNum = new Random(0);
+        do {
+            BigInteger tauData = new BigInteger(32, randNum);
+            FieldElementF2m tau = new FieldElementF2m(tauData, beta.getModulus());
+            FieldElementF2m w = new FieldElementF2m(beta.getData(), beta.getModulus());
+            z = new FieldElementF2m(BigInteger.ZERO, beta.getModulus());
+
+            for (int i = 1; i < (beta.getModulus().bitLength() - 1); i++) {
+                z = (FieldElementF2m) z.mult(z).add(w.mult(w).mult(tau));
+                w = (FieldElementF2m) w.mult(w).add(beta);
+            }
+
+            if (!w.getData().equals(BigInteger.ZERO)) {
+                LOGGER.warn("No solution to quadratic equation exists!");
+                return null;
+            }
+            gamma = (FieldElementF2m) z.mult(z).add(z);
+        } while (gamma.getData().equals(BigInteger.ZERO));
+        return z;
     }
 }

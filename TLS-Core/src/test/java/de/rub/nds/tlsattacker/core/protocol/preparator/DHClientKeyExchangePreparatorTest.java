@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -81,7 +82,7 @@ public class DHClientKeyExchangePreparatorTest {
     @Test
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
-        message.setPublicKey(context.getChooser().getDhClientPublicKey().toByteArray());
+        message.setPublicKey(context.getChooser().getClientDhPublicKey().toByteArray());
         preparator.prepareAfterParse(false);
     }
 

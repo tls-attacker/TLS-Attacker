@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -117,8 +118,7 @@ public class WorkflowTraceSerializer {
             m.marshal(workflowTrace, tempStream);
             try {
                 outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-            } catch (TransformerException | XPathExpressionException | XPathFactoryConfigurationException
-                    | ParserConfigurationException | SAXException ex) {
+            } catch (TransformerException | XPathExpressionException | ParserConfigurationException | SAXException ex) {
                 throw new RuntimeException("Could not format XML");
             }
         }

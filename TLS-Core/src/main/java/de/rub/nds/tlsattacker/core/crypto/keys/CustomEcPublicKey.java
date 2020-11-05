@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -17,11 +18,15 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
+import java.security.spec.ECPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,11 +39,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     private final static Logger LOGGER = LogManager.getLogger();
 
-    private final Point point;
+    private Point point;
 
-    private final NamedGroup group;
+    private NamedGroup group;
 
-    private final GOSTCurve gostCurve;
+    private GOSTCurve gostCurve;
 
     private CustomEcPublicKey() {
         this.point = null;
@@ -64,6 +69,18 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         point = CurveFactory.getCurve(gostCurve).getPoint(x, y);
     }
 
+    public Point getPoint() {
+        return point;
+    }
+
+    public NamedGroup getGroup() {
+        return group;
+    }
+
+    public GOSTCurve getGostCurve() {
+        return gostCurve;
+    }
+
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting EC public key in context");
@@ -73,11 +90,15 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             switch (ownerOfKey) {
                 case CLIENT:
                     context.setClientEcPublicKey(point);
-                    context.setSelectedGroup(group);
+                    if (group != null) {
+                        context.setEcCertificateCurve(group);
+                    }
                     break;
                 case SERVER:
                     context.setServerEcPublicKey(point);
-                    context.setSelectedGroup(group);
+                    if (group != null) {
+                        context.setEcCertificateCurve(group);
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
@@ -102,7 +123,14 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            ECParameterSpec ecParameters = this.getParams();
+            ECPublicKeySpec pubKey = new ECPublicKeySpec(getW(), ecParameters);
+            PublicKey publicKey = KeyFactory.getInstance("EC").generatePublic(pubKey);
+            return publicKey.getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("Could not encode the private EC key", ex);
+        }
     }
 
     @Override
@@ -125,11 +153,15 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             switch (ownerOfKey) {
                 case CLIENT:
                     config.setDefaultClientEcPublicKey(point);
-                    config.setDefaultSelectedNamedGroup(group);
+                    if (group != null) {
+                        config.setDefaultEcCertificateCurve(group);
+                    }
                     break;
                 case SERVER:
                     config.setDefaultServerEcPublicKey(point);
-                    config.setDefaultSelectedNamedGroup(group);
+                    if (group != null) {
+                        config.setDefaultEcCertificateCurve(group);
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
@@ -164,5 +196,25 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
             return false;
         }
         return true;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public void setGroup(NamedGroup group) {
+        this.group = group;
+    }
+
+    public void setGostCurve(GOSTCurve gostCurve) {
+        this.gostCurve = gostCurve;
+    }
+
+    @Override
+    public int keysize() {
+        if (group == null || group.getCoordinateSizeInBit() == null) {
+            return 0;
+        }
+        return group.getCoordinateSizeInBit();
     }
 }

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -47,6 +48,11 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2Ser
      * Writes the MessageLength of the SSL2ServerHello into the final byte[]
      */
     private void writeMessageLength(SSL2ServerHelloMessage message) {
+        if (message.getPaddingLength().getValue() != 0) {
+            throw new UnsupportedOperationException("Long record headers are not supported");
+        }
+        // TODO: This looks wrong, I'd assume the value has to be masked (see
+        // e.g. SSL2ClientHelloSerializer)
         appendInt(message.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }

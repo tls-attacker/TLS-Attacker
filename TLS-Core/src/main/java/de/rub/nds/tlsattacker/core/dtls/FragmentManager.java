@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,7 +12,9 @@ package de.rub.nds.tlsattacker.core.dtls;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -34,22 +37,20 @@ public class FragmentManager {
         this.config = config;
     }
 
-    /**
-     * Adds a fragment to the collector corresponding to the fragment's
-     * messageSeq and the given epoch. Instantiates a new collector if no
-     * collector exists.
-     * 
-     * @return true if the fragment was added successfully, or false if it was
-     *         rejected by the collector.
-     */
-    public boolean addMessageFragment(DtlsHandshakeMessageFragment fragment, Integer epoch) {
-        FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), epoch);
+    public boolean addMessageFragment(DtlsHandshakeMessageFragment fragment) {
+        FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), fragment.getEpoch().getValue());
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            collector = new FragmentCollector(config);
+            collector = new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq()
+                    .getValue(), fragment.getLength().getValue());
             fragments.put(key, collector);
         }
-        return collector.addFragment(fragment);
+        if (collector.wouldAdd(fragment)) {
+            collector.addFragment(fragment);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -65,30 +66,71 @@ public class FragmentManager {
         return collector.isMessageComplete();
     }
 
+    public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(boolean onlyIfComplete) {
+
+        List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
+        List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
+        orderedFragmentKeys.sort(new Comparator<FragmentKey>() {
+            @Override
+            public int compare(FragmentKey fragmentKey1, FragmentKey fragmentKey2) {
+                if (fragmentKey1.getEpoch() > fragmentKey2.getEpoch()) {
+                    return -1;
+                } else if (fragmentKey1.getEpoch() < fragmentKey2.getEpoch()) {
+                    return 1;
+                } else {
+                    return fragmentKey1.getMessageSeq().compareTo(fragmentKey2.getMessageSeq());
+                }
+            }
+        });
+
+        for (FragmentKey key : orderedFragmentKeys) {
+            FragmentCollector fragmentCollector = fragments.get(key);
+            if (!fragmentCollector.isInterpreted()) {
+                if (fragmentCollector == null) {
+                    LOGGER.error("Trying to access unreceived message fragment");
+                } else {
+                    if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
+                        LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
+                                + key.getEpoch());
+                    } else {
+                        handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
+                        fragmentCollector.setInterpreted(true);
+                    }
+                }
+            }
+        }
+        return handshakeFragmentList;
+    }
+
+    public boolean areAllMessageFragmentsComplete() {
+        for (FragmentCollector collector : fragments.values()) {
+            if (!collector.isMessageComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Returns the stored fragmented message with the given messageSeq and
      * epoch, as a single combined fragment. Returns null if no message was
      * stored with this messageSeq, or if the message is incomplete.
+     * 
+     * @param messageSeq
+     * @param epoch
+     * @return
      */
-    public DtlsHandshakeMessageFragment getFragmentedMessage(Integer messageSeq, Integer epoch) {
-        FragmentKey key = new FragmentKey(messageSeq, epoch);
-        FragmentCollector collector = fragments.get(key);
-        if (collector == null || !collector.isMessageComplete()) {
-            return null;
-        }
-        return collector.buildCombinedFragment();
-    }
-
-    /**
-     * Returns the stored fragments for the given messageSeq and epoch.
-     */
-    public List<DtlsHandshakeMessageFragment> getStoredFragments(Integer messageSeq, Integer epoch) {
+    public DtlsHandshakeMessageFragment getCombinedMessageFragment(Integer messageSeq, Integer epoch) {
         FragmentKey key = new FragmentKey(messageSeq, epoch);
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            return new ArrayList<>();
+            LOGGER.warn("Trying to access not received handshake fragment.");
+            return null;
+        } else if (!collector.isMessageComplete()) {
+            LOGGER.warn("Did not receive all fragments for msq_sqn:" + messageSeq + " epoch: " + epoch);
+            return null;
         }
-        return collector.getStoredFragments();
+        return collector.buildCombinedFragment();
     }
 
     /**
@@ -99,58 +141,4 @@ public class FragmentManager {
         fragments.remove(key);
     }
 
-    static class FragmentKey {
-        private Integer messageSeq;
-        private Integer epoch;
-
-        public FragmentKey(Integer messageSeq, Integer epoch) {
-            super();
-            this.messageSeq = messageSeq;
-            this.epoch = epoch;
-        }
-
-        public Integer getEpoch() {
-            return epoch;
-        }
-
-        public Integer getMessageSeq() {
-            return messageSeq;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((epoch == null) ? 0 : epoch.hashCode());
-            result = prime * result + ((messageSeq == null) ? 0 : messageSeq.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            FragmentKey other = (FragmentKey) obj;
-            if (epoch == null) {
-                if (other.epoch != null)
-                    return false;
-            } else if (!epoch.equals(other.epoch))
-                return false;
-            if (messageSeq == null) {
-                if (other.messageSeq != null)
-                    return false;
-            } else if (!messageSeq.equals(other.messageSeq))
-                return false;
-            return true;
-        }
-
-        public String toString() {
-            return String.format("Key{messageSeq:%d,epoch:%d}", messageSeq, epoch);
-        }
-
-    }
 }

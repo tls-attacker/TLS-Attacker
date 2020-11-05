@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +27,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.security.ssl.SSLSocketImpl;
 
 /**
  * BasicTlsClient for integration tests. A TLS Client thread that establishes a
@@ -110,10 +110,10 @@ public class BasicTlsClient extends Thread {
         }
     }
 
-    private SSLSocketImpl getFreshSocket(ProtocolVersion version) throws IOException, Exception {
+    private SSLSocket getFreshSocket(ProtocolVersion version) throws IOException, Exception {
         SSLContext allowAllContext = getAllowAllContext();
         SSLSocketFactory sslFact = allowAllContext.getSocketFactory();
-        SSLSocketImpl socket = (SSLSocketImpl) sslFact.createSocket(serverHost, serverPort);
+        SSLSocket socket = (SSLSocket) sslFact.createSocket(serverHost, serverPort);
         socket.setEnabledCipherSuites(new String[] { cipherSuite.name() });
 
         String versions[] = new String[1];

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -23,59 +24,16 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.xml.bind.annotation.XmlTransient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
 
-    private EllipticCurve curve;
-
-    /**
-     * shared secret derived from the shared password between server and client
-     */
-    private Point passwordElement;
-
-    /**
-     * private secret used to calculate the premaster secret and part of the
-     * scalar that gets send to the peer
-     */
-    private BigInteger privateKeyScalar;
-
-    public static class PWDKeyMaterial {
-
-        public BigInteger privateKeyScalar;
-        public BigInteger scalar;
-        public Point element;
-    }
-
-    @Override
-    public void setSecretsInConfig(Config config) {
-    }
-
-    public void setCurve(EllipticCurve curve) {
-        this.curve = curve;
-    }
-
-    public EllipticCurve getCurve() {
-        return curve;
-    }
-
-    public Point getPasswordElement() {
-        return passwordElement;
-    }
-
-    public void setPasswordElement(Point passwordElement) {
-        this.passwordElement = passwordElement;
-    }
-
-    public BigInteger getPrivateKeyScalar() {
-        return privateKeyScalar;
-    }
-
-    public void setPrivateKeyScalar(BigInteger privateKeyScalar) {
-        this.privateKeyScalar = privateKeyScalar;
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
@@ -109,7 +67,7 @@ public class PWDComputations extends KeyExchangeComputations {
 
         boolean found = false;
         int counter = 0;
-        int n = (curve.getModulus().bitLength() + 64) / 8;
+        int n = (curve.getModulus().bitLength() + 64) / Bits.IN_A_BYTE;
         byte[] context;
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             context = chooser.getClientRandom();
@@ -134,6 +92,12 @@ public class PWDComputations extends KeyExchangeComputations {
                 savedSeed = seed.clone();
                 found = true;
                 chooser.getContext().getBadSecureRandom().nextBytes(base);
+            }
+            if (counter > 1000) {
+                savedSeed = seed.clone();
+                createdPoint = tempPoint;
+                LOGGER.warn("Could not find a useful pwd point");
+                break;
             }
         } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
 
@@ -193,7 +157,13 @@ public class PWDComputations extends KeyExchangeComputations {
         } else {
             PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite());
-            return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
+            if (prf != null) {
+                return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
+            } else {
+                LOGGER.warn("Could not select prf for " + chooser.getSelectedProtocolVersion() + " and "
+                        + chooser.getSelectedCipherSuite());
+                return new byte[outlen];
+            }
         }
     }
 
@@ -214,5 +184,43 @@ public class PWDComputations extends KeyExchangeComputations {
 
         keyMaterial.element = curve.inverse(curve.mult(mask, passwordElement));
         return keyMaterial;
+    }
+
+    /**
+     * shared secret derived from the shared password between server and client
+     */
+    private Point passwordElement;
+
+    /**
+     * private secret used to calculate the premaster secret and part of the
+     * scalar that gets send to the peer
+     */
+    private BigInteger privateKeyScalar;
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+    }
+
+    public Point getPasswordElement() {
+        return passwordElement;
+    }
+
+    public void setPasswordElement(Point passwordElement) {
+        this.passwordElement = passwordElement;
+    }
+
+    public BigInteger getPrivateKeyScalar() {
+        return privateKeyScalar;
+    }
+
+    public void setPrivateKeyScalar(BigInteger privateKeyScalar) {
+        this.privateKeyScalar = privateKeyScalar;
+    }
+
+    public static class PWDKeyMaterial {
+
+        public BigInteger privateKeyScalar;
+        public BigInteger scalar;
+        public Point element;
     }
 }

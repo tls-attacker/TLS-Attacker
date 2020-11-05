@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -65,6 +66,8 @@ public enum NamedGroup {
     FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096),
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
+    EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     // GREASE constants
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
@@ -136,7 +139,7 @@ public enum NamedGroup {
             LOGGER.warn("Could not convert NamedGroup. Returning null");
             return null;
         }
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
     }
 
     public static NamedGroup getNamedGroup(byte[] value) {
@@ -234,7 +237,6 @@ public enum NamedGroup {
 
     public boolean isStandardCurve() {
         return this.isCurve() && this != ECDH_X25519 && this != ECDH_X448;
-
     }
 
     public boolean isCurve() {

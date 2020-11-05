@@ -1,49 +1,43 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+import de.rub.nds.tlsattacker.attacks.general.Vector;
+
 /**
  *
  *
  */
-public class Pkcs1Vector {
+public class Pkcs1Vector implements Vector {
 
-    private String description;
+    private String name;
 
     private byte[] plainValue;
 
     private byte[] encryptedValue;
 
+    private Pkcs1Vector() {
+    }
+
     /**
      *
-     * @param description
+     * @param name
      * @param value
      */
-    public Pkcs1Vector(String description, byte[] value) {
-        this.description = description;
+    public Pkcs1Vector(String name, byte[] value) {
+        this.name = name;
         this.plainValue = value;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     *
-     * @param description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -76,5 +70,10 @@ public class Pkcs1Vector {
      */
     public void setEncryptedValue(byte[] encryptedValue) {
         this.encryptedValue = encryptedValue;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

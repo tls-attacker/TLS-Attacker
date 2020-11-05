@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -45,11 +46,11 @@ public class AlertPreparatorTest {
 
     @Test
     public void testPrepareFromDefaultConfig() {
-        context.getConfig().setDefaultAlertDescription((byte) 2);
-        context.getConfig().setDefaultAlertLevel((byte) 2);
+        context.getConfig().setDefaultAlertDescription(AlertDescription.BAD_CERTIFICATE);
+        context.getConfig().setDefaultAlertLevel(AlertLevel.FATAL);
         preparator.prepare();
-        assertTrue(message.getLevel().getValue() == 2);
-        assertTrue(message.getDescription().getValue() == 2);
+        assertTrue(message.getDescription().getValue() == AlertDescription.BAD_CERTIFICATE.getValue());
+        assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
     }
 
     @Test

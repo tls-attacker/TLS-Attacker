@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -92,7 +93,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         } else if (namedGroup.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(namedGroup);
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
-            publicKeyBytes = PointFormatter.formatToByteArray(publicKey, pointFormat);
+            publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);

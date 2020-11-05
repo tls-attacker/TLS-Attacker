@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -40,9 +42,11 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param config
+     *            A Config used in the current context
      */
-    public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version) {
-        super(startposition, array, HandshakeMessageType.CERTIFICATE, version);
+    public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, HandshakeMessageType.CERTIFICATE, version, config);
     }
 
     @Override
@@ -139,7 +143,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             int pointer = 0;
             while (pointer < pair.getExtensionsLength().getValue()) {
                 ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
-                        pointer, msg.getHandshakeMessageType());
+                        pointer, msg.getHandshakeMessageType(), this.getConfig());
                 extensionMessages.add(parser.parse());
                 if (pointer == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing CertificateExtensions");

@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -74,9 +75,9 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     public String toString() {
         StringBuilder sb;
         if (isExecuted()) {
-            sb = new StringBuilder("Send Action:\n");
+            sb = new StringBuilder("Send Dynamic Client Key Exchange Action:\n");
         } else {
-            sb = new StringBuilder("Send Action: (not executed)\n");
+            sb = new StringBuilder("Send Dynamic Client Key Exchange Action: (not executed)\n");
         }
         sb.append("\tMessages:");
         if (messages != null) {

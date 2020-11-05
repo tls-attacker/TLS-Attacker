@@ -1,25 +1,30 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
@@ -31,7 +36,8 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public CertificateRequestParser getParser(byte[] message, int pointer) {
-        return new CertificateRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        return new CertificateRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+                tlsContext.getConfig());
     }
 
     @Override
@@ -46,9 +52,17 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public void adjustTLSContext(CertificateRequestMessage message) {
-        adjustClientCertificateTypes(message);
-        adjustDistinguishedNames(message);
-        adjustServerSupportedSignatureAndHashAlgorithms(message);
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            adjustCertifiateRequestContext(message);
+            adjustServerSupportedSignatureAndHashAlgorithms(message);
+        } else {
+            adjustClientCertificateTypes(message);
+            adjustDistinguishedNames(message);
+            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12
+                    || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+                adjustServerSupportedSignatureAndHashAlgorithms(message);
+            }
+        }
     }
 
     private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
@@ -105,5 +119,24 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             list.add(algo);
         }
         return list;
+    }
+
+    private void adjustSelectedSignatureAndHashAlgorithm() {
+        if (Collections.disjoint(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms(), tlsContext
+                .getChooser().getServerSupportedSignatureAndHashAlgorithms())) {
+            LOGGER.warn("Client and Server have no signature and hash algorithm in common");
+        } else {
+            Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
+                    Sets.newHashSet(tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()),
+                    Sets.newHashSet(tlsContext.getChooser().getServerSupportedSignatureAndHashAlgorithms()));
+            SignatureAndHashAlgorithm algo = (SignatureAndHashAlgorithm) intersection.toArray()[0];
+            tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
+            LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());
+
+        }
+    }
+
+    private void adjustCertifiateRequestContext(CertificateRequestMessage msg) {
+        tlsContext.setCertificateRequestContext(msg.getCertificateRequestContext().getValue());
     }
 }

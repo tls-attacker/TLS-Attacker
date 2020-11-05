@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -45,7 +46,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         msg.prepareComputations();
         prepareCurveType(msg);
         NamedGroup group = selectNamedGroup(msg);
-        msg.getComputations().setCurve(CurveFactory.getCurve(group));
+        EllipticCurve curve = CurveFactory.getCurve(group);
         msg.setNamedGroup(group.getValue());
         prepareSalt(msg);
         prepareSaltLength(msg);
@@ -59,7 +60,9 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
-        Point passwordElement = PWDComputations.computePasswordElement(chooser, msg.getComputations().getCurve());
+        NamedGroup group = selectNamedGroup(msg);
+        EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
@@ -149,7 +152,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
-        EllipticCurve curve = msg.getComputations().getCurve();
+        EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
         PWDComputations.PWDKeyMaterial keyMaterial = PWDComputations.generateKeyMaterial(curve, msg.getComputations()
                 .getPasswordElement(), chooser);
 
@@ -175,8 +178,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement = PointFormatter.formatToByteArray(element, chooser.getConfig()
-                .getDefaultSelectedPointFormat());
+        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
+                element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }

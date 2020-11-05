@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -53,15 +55,10 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             return tempPremasterSecret;
         }
         msg.getComputations().setPremasterSecretProtocolVersion(chooser.getHighestClientProtocolVersion().getValue());
-        if (msg.getComputations().getPremasterSecretProtocolVersion().getValue().length > HandshakeByteLength.PREMASTER_SECRET) {
-            return msg.getComputations().getPlainPaddedPremasterSecret().getValue();
-        } else {
-            tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET
-                    - msg.getComputations().getPremasterSecretProtocolVersion().getValue().length];
-            chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
-            return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
-                    tempPremasterSecret);
-        }
+        tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
+        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
+        return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
+                tempPremasterSecret);
     }
 
     protected RSAPublicKey generateFreshKey() {
@@ -103,12 +100,14 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey (encrypted premaster secret): "
+                + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength (encrypted premaster secret length): "
+                + msg.getPublicKeyLength().getValue());
     }
 
     public byte[] decryptPremasterSecret() {
@@ -118,7 +117,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];
         }
-        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser
+        // Make sure that the private key is not negative
+        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey.abs(), chooser
                 .getServerRsaModulus().abs());
         return decrypted.toByteArray();
     }
@@ -127,12 +127,20 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
+        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
+        // For RSA, the PublicKey field actually contains the encrypted
+        // premaster secret
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
             int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-            padding = new byte[randomByteLength];
-            chooser.getContext().getRandom().nextBytes(padding);
-            ArrayConverter.makeArrayNonZero(padding);
+            // If the key is really really short it might be impossible to add
+            // padding;
+            if (randomByteLength > 0) {
+                padding = new byte[randomByteLength];
+                chooser.getContext().getRandom().nextBytes(padding);
+                ArrayConverter.makeArrayNonZero(padding);
+            } else {
+                padding = new byte[0];
+            }
             preparePadding(msg);
             premasterSecret = generatePremasterSecret();
             preparePremasterSecret(msg);
@@ -141,14 +149,14 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             byte[] paddedPremasterSecret = msg.getComputations().getPlainPaddedPremasterSecret().getValue();
 
             if (paddedPremasterSecret.length == 0) {
-                LOGGER.warn("paddedPremasterSecret length is zero!");
+                LOGGER.warn("paddedPremasterSecret length is zero length!");
                 paddedPremasterSecret = new byte[] { 0 };
             }
             BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
-            BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
-                    chooser.getServerRsaModulus());
-            encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted,
-                    chooser.getServerRsaModulus().bitLength() / 8, true);
+            BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey().abs(), chooser
+                    .getServerRsaModulus().abs());
+            encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus().bitLength()
+                    / Bits.IN_A_BYTE, true);
             prepareSerializedPublicKey(msg);
             premasterSecret = manipulatePremasterSecret(premasterSecret);
             preparePremasterSecret(msg);

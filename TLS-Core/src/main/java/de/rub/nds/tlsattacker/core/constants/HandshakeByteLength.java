@@ -1,7 +1,8 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -245,6 +246,16 @@ public class HandshakeByteLength {
      * Length of the scalar in PWD
      */
     public static final int PWD_SCALAR_LENGTH = 1;
+
+    /**
+     * certificate status type length field
+     */
+    public static final int CERTIFICATE_STATUS_TYPE_LENGTH = 1;
+
+    /**
+     * certificate status response length field
+     */
+    public static final int CERTIFICATE_STATUS_RESPONSE_LENGTH = 3;
 
     private HandshakeByteLength() {
     }
