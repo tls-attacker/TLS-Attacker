@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>3.6.0</version>
+    <version>3.7.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -161,7 +161,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>X509Attacker</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
     <build>
