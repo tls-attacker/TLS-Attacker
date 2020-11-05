@@ -12,12 +12,12 @@
         </Console>
     </Appenders>
     <Loggers>
-		<Logger name="DirectLOgger" level="ALL">
-			<AppenderRef ref="Direct"/>
-		</Logger>
-        
-
-        
+	<Logger name="DirectLogger" level="ALL">
+		<AppenderRef ref="Direct"/>
+	</Logger>
+	<Logger name="com.openpojo.log.LoggerFactory" level="Off">
+		<AppenderRef ref="Direct"/>	
+	</Logger>
         <Root level="DEBUG">
             <AppenderRef ref="DEBUG"/>
         </Root>
