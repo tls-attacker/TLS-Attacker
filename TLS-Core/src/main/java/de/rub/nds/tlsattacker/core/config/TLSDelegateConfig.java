@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import java.io.File;
@@ -25,6 +26,8 @@ public abstract class TLSDelegateConfig {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
+
+    @ParametersDelegate
     private final GeneralDelegate generalDelegate;
 
     @Parameter(names = "-config", description = "This parameter allows you to specify a default TlsConfig")

@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ListDelegate extends Delegate {
 
     // Setting help=true allows us to surpass any parameters marked as required.
-    @Parameter(names = "-list", description = "Plot a list of available parameters", help = true, converter = ListDelegateConverter.class)
+    @Parameter(names = "-list", description = "Plot a list of available parameters", converter = ListDelegateConverter.class)
     private ListDelegateType listDelegateType = null;
 
     public ListDelegate() {

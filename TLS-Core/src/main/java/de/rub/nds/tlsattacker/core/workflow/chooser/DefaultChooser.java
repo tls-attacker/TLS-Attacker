@@ -422,7 +422,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhServerPrivateKey() {
+    public BigInteger getServerDhPrivateKey() {
         if (context.getServerDhPrivateKey() != null) {
             return context.getServerDhPrivateKey();
         } else {
@@ -566,7 +566,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhClientPrivateKey() {
+    public BigInteger getClientDhPrivateKey() {
         if (context.getClientDhPrivateKey() != null) {
             return context.getClientDhPrivateKey();
         } else {
@@ -575,7 +575,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhServerPublicKey() {
+    public BigInteger getServerDhPublicKey() {
         if (context.getServerDhPublicKey() != null) {
             return context.getServerDhPublicKey();
         } else {
@@ -584,7 +584,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhClientPublicKey() {
+    public BigInteger getClientDhPublicKey() {
         if (context.getClientDhPublicKey() != null) {
             return context.getClientDhPublicKey();
         } else {

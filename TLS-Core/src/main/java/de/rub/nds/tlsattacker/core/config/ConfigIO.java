@@ -16,7 +16,6 @@ import javax.xml.bind.JAXB;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactoryConfigurationException;
 import org.xml.sax.SAXException;
 
 public class ConfigIO {
@@ -35,8 +34,8 @@ public class ConfigIO {
         JAXB.marshal(config, tempStream);
         try {
             os.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-        } catch (IOException | TransformerException | XPathExpressionException | XPathFactoryConfigurationException
-                | ParserConfigurationException | SAXException ex) {
+        } catch (IOException | TransformerException | XPathExpressionException | ParserConfigurationException
+                | SAXException ex) {
             throw new RuntimeException("Could not format XML");
         }
     }

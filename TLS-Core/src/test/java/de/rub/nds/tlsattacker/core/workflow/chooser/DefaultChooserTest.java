@@ -580,9 +580,9 @@ public class DefaultChooserTest {
         context.setServerDhPrivateKey(null);
         config.setDefaultServerDhPrivateKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultServerDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getDhServerPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getServerDhPrivateKey());
         context.setServerDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhServerPrivateKey());
+        assertEquals(BigInteger.TEN, chooser.getServerDhPrivateKey());
     }
 
     /**
@@ -593,9 +593,9 @@ public class DefaultChooserTest {
         context.setClientDhPrivateKey(null);
         config.setDefaultClientDhPrivateKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultClientDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getDhClientPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getClientDhPrivateKey());
         context.setClientDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhClientPrivateKey());
+        assertEquals(BigInteger.TEN, chooser.getClientDhPrivateKey());
     }
 
     /**
@@ -606,9 +606,9 @@ public class DefaultChooserTest {
         context.setServerDhPublicKey(null);
         config.setDefaultServerDhPublicKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultServerDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getDhServerPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getServerDhPublicKey());
         context.setServerDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhServerPublicKey());
+        assertEquals(BigInteger.TEN, chooser.getServerDhPublicKey());
     }
 
     /**
@@ -619,9 +619,9 @@ public class DefaultChooserTest {
         context.setClientDhPublicKey(null);
         config.setDefaultClientDhPublicKey(BigInteger.ONE);
         assertEquals(BigInteger.ONE, config.getDefaultClientDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getDhClientPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getClientDhPublicKey());
         context.setClientDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhClientPublicKey());
+        assertEquals(BigInteger.TEN, chooser.getClientDhPublicKey());
     }
 
     /**
