@@ -49,7 +49,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
-    protected byte[] calculateDHPremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculateDhPremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
@@ -84,7 +84,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();
                 BigInteger privateKey = chooser.getClientDhPrivateKey();
-                premasterSecret = calculateDHPremasterSecret(modulus, privateKey, publicKey);
+                premasterSecret = calculateDhPremasterSecret(modulus, privateKey, publicKey);
             } else if (PublicKeyType.fromOid(algorithm) == PublicKeyType.ECDSA) {
                 if (clientMode) {
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
