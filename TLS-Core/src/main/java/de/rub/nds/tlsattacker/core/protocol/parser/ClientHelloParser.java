@@ -58,7 +58,8 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(), "Compression Length", getPointer()));
+                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
+                        "Extension Length", getPointer()));
                 parseExtensionBytes(msg);
                 popContext();
 
