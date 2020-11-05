@@ -58,7 +58,6 @@ public class ForensicAnalyzerTest {
                 "/raw-trace-55859-4433.xml"));
         ForensicAnalyzer forensicAnalyzer = new ForensicAnalyzer();
         WorkflowTrace realWorkflowTrace = forensicAnalyzer.getRealWorkflowTrace(executedWorkflow, rsaPrivateKey);
-        // System.out.println(WorkflowTraceSerializer.write(realWorkflowTrace));
         assertThat(realWorkflowTrace.getTlsActions()).hasSize(4);
         assertThat(realWorkflowTrace.getTlsActions()).are(hasNonEmptyMessages);
         assertThat(realWorkflowTrace.getTlsActions()).areNot(hasAnyUnknownMessages);
