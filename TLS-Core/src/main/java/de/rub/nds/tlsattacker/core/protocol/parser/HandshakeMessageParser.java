@@ -98,14 +98,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         T msg = createHandshakeMessage();
         parseType(msg);
         parseLength(msg);
-        if (!version.isDTLS()) {
-            pushContext(new MessageParserBoundaryVerificationContext(msg.getLength().getValue(),
-                    "Message Length", getPointer()));
-        }
+        pushContext(new MessageParserBoundaryVerificationContext(msg.getLength().getValue(), "Message Length",
+                getPointer()));
         parseHandshakeMessageContent(msg);
-        if (!version.isDTLS()) {
-            popContext();
-        }
+        popContext();
         return msg;
     }
 
