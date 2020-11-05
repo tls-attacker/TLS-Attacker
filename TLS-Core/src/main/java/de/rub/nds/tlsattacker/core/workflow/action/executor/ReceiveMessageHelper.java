@@ -61,8 +61,10 @@ public class ReceiveMessageHelper {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages Messages which should be received
-     * @param context The context on which Messages should be received
+     * @param expectedMessages
+     *            Messages which should be received
+     * @param context
+     *            The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
@@ -271,7 +273,7 @@ public class ReceiveMessageHelper {
                             List<ProtocolMessage> parsedMessages = handleCleanBytes(
                                     convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
                                     context, false, subGroup.areAllRecordsValid()
-                                    || context.getConfig().getParseInvalidRecordNormally());
+                                            || context.getConfig().getParseInvalidRecordNormally());
                             messages.addAll(parsedMessages);
                         }
                     } else {
@@ -279,7 +281,7 @@ public class ReceiveMessageHelper {
                         cleanProtocolMessageBytes = subGroup.getCleanBytes();
                         List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                                 subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
-                                || context.getConfig().getParseInvalidRecordNormally());
+                                        || context.getConfig().getParseInvalidRecordNormally());
                         messages.addAll(parsedMessages);
                     }
 
@@ -287,7 +289,7 @@ public class ReceiveMessageHelper {
                     cleanProtocolMessageBytes = subGroup.getCleanBytes();
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
-                            || context.getConfig().getParseInvalidRecordNormally());
+                                    || context.getConfig().getParseInvalidRecordNormally());
                     messages.addAll(parsedMessages);
                 }
             }
@@ -300,8 +302,10 @@ public class ReceiveMessageHelper {
      * epoch/sqn. The sorting ist epoch > sqn. Smaller epochs are sorted before
      * bigger epochs smaller sqns are sorted before higher sqns
      *
-     * @param abstractRecordList List that should be sorted
-     * @throws UnsortableRecordsExceptions If the list contains blobrecords
+     * @param abstractRecordList
+     *            List that should be sorted
+     * @throws UnsortableRecordsExceptions
+     *             If the list contains blobrecords
      */
     private void orderDtlsRecords(List<AbstractRecord> abstractRecordList) throws UnsortableRecordsExceptions {
         for (AbstractRecord abstractRecord : abstractRecordList) {
