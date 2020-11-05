@@ -9,7 +9,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.context;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
