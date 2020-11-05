@@ -143,7 +143,6 @@ public class CyclicParserSerializerTest {
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     LOGGER.error(ex);
                     fail("Could not execute " + testName + " - " + version.name());
                 }
@@ -298,7 +297,6 @@ public class CyclicParserSerializerTest {
     private Class<? extends ProtocolMessageSerializer> getSerializer(String testName) throws ClassNotFoundException {
         String serializerName = "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
         try {
-            System.out.println(serializerName);
             return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName);
         } catch (ClassNotFoundException E) {
             try {
