@@ -9,13 +9,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.context;
 
-import java.util.Objects;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public class MessageParserBoundaryVerificationContext implements ParserContext {
@@ -40,7 +37,7 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
     @Override
     public ParserContextResult beforeParse(final Parser p, final int requestedLength, final ParserContext previous) {
         int requestedBoundary = (p.getPointer() - pointerOffset) + requestedLength;
-        LOGGER.trace("verify requested boundary {} against boundary {} {}", requestedBoundary, boundaryQualifier,
+        LOGGER.trace("Verify requested boundary {} against boundary {} {}", requestedBoundary, boundaryQualifier,
                 boundary);
         if (requestedBoundary <= this.boundary) {
             return ParserContextResult.NULL_RESULT;
