@@ -79,7 +79,7 @@ public abstract class Parser<T> {
      * @return A subbyteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
-        LOGGER.trace("request to parse {} bytes with pointer at {}", length, getPointer());
+        LOGGER.trace("Request to parse {} bytes with pointer at {}", length, getPointer());
         if (length == 0) {
             return new byte[0];
         }
@@ -94,7 +94,7 @@ public abstract class Parser<T> {
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
         pointer = nextPointer;
-        LOGGER.trace("next pointer at {}", getPointer());
+        LOGGER.trace("Next pointer at {}", getPointer());
         return result;
     }
 
