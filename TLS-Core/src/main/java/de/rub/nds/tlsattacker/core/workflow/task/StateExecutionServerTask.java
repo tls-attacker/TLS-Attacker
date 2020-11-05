@@ -75,7 +75,7 @@ public class StateExecutionServerTask extends TlsTask {
             throw new RuntimeException("error accepting the connection", E);
         }
 
-        // Do this post state init only if you know what yout are doing.
+        // Do this post state init only if you know what you are doing.
         TlsContext serverCtx = state.getInboundTlsContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
