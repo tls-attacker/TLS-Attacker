@@ -62,7 +62,6 @@ public abstract class CopyContextFieldAction extends TlsAction {
         TlsContext dst = state.getTlsContext(dstConnectionAlias);
 
         copyField(src, dst);
-        setExecuted(true);
     }
 
     public String getSrcContextAlias() {
