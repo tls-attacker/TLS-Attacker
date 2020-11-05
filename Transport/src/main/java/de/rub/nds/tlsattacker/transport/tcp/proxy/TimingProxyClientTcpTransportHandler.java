@@ -9,21 +9,14 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
-import de.rub.nds.tlsattacker.transport.ProxyableTransportHandler;
-import de.rub.nds.tlsattacker.transport.TcpTransportHandler;
-import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.ProxyableTransportHandler;
+import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler implements

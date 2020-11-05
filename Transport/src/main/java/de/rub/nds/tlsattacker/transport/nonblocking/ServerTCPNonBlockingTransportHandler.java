@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -21,8 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
 

@@ -9,18 +9,14 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
-
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
@@ -39,10 +35,6 @@ public abstract class TransportHandler {
     private boolean initialized = false;
 
     private final ConnectionEndType type;
-
-    protected int srcPort;
-
-    protected int dstPort;
 
     /**
      * True {@link inStream} is expected to reach the End of Stream, meaning
@@ -157,14 +149,6 @@ public abstract class TransportHandler {
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
-    }
-
-    public int getSrcPort() {
-        return srcPort;
-    }
-
-    public int getDstPort() {
-        return dstPort;
     }
 
     public void setIsInStreamTerminating(boolean isInStreamTerminating) {

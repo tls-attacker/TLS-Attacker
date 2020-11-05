@@ -9,26 +9,16 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
-import de.rub.nds.tlsattacker.transport.Connection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
-
-public class ServerUdpTransportHandler extends TransportHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private final int port;
-
-    private DatagramSocket socket;
+public class ServerUdpTransportHandler extends UdpTransportHandler {
 
     public ServerUdpTransportHandler(Connection con) {
         super(con);
@@ -41,20 +31,14 @@ public class ServerUdpTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() throws IOException {
-        socket.close();
-        inStream.close();
-        outStream.close();
-    }
-
-    @Override
     public void initialize() throws IOException {
         socket = new DatagramSocket(port);
         socket.setSoTimeout((int) getTimeout());
         setStreams(new PushbackInputStream(new UdpInputStream(socket, true)), new UdpOutputStream(socket));
-        // this could be made an option
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+
+        // this could be made an option
         waitOnReceive();
     }
 
@@ -69,16 +53,6 @@ public class ServerUdpTransportHandler extends TransportHandler {
             } catch (InterruptedException _) {
             }
         }
-    }
-
-    @Override
-    public boolean isClosed() throws IOException {
-        return socket.isClosed();
-    }
-
-    @Override
-    public void closeClientConnection() throws IOException {
-        closeConnection();
     }
 
     public int getPort() {

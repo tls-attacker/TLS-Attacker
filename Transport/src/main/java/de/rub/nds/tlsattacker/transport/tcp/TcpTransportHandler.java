@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.transport;
+package de.rub.nds.tlsattacker.transport.tcp;
 
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 
 import java.io.IOException;
@@ -19,6 +21,10 @@ import java.net.SocketTimeoutException;
 
 public abstract class TcpTransportHandler extends TransportHandler {
     protected Socket socket;
+
+    protected int srcPort;
+
+    protected int dstPort;
 
     public TcpTransportHandler(Connection con) {
         super(con);
@@ -71,5 +77,13 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public SocketState getSocketState() {
         return getSocketState(false);
+    }
+
+    public int getSrcPort() {
+        return srcPort;
+    }
+
+    public int getDstPort() {
+        return dstPort;
     }
 }
