@@ -19,8 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <T>
- *            The ExtensionMessage that should be parsed
+ * @param <T> The ExtensionMessage that should be parsed
  */
 public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
 
@@ -37,8 +36,8 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
         parseExtensionType(msg);
         parseExtensionLength(msg);
         pushContext(new MessageParserBoundaryVerificationContext(
-                msg.getExtensionLength().getOriginalValue().intValue(), String.format("Extension Length [%s]",
-                        msg.getExtensionTypeConstant()), getPointer()));
+                msg.getExtensionLength().getValue(), String.format("Extension Length [%s]",
+                msg.getExtensionTypeConstant()), getPointer()));
         parseExtensionMessageContent(msg);
         popContext();
         setExtensionBytes(msg);
@@ -53,8 +52,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * Reads the next bytes as the length of the Extension and writes them in
      * the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseExtensionLength(ExtensionMessage msg) {
         msg.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
@@ -65,8 +63,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * Reads the next bytes as the type of the Extension and writes it in the
      * message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseExtensionType(ExtensionMessage msg) {
         msg.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
@@ -76,8 +73,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
     /**
      * Checks if the Extension has ExtensionData specified
      *
-     * @param message
-     *            The message to check
+     * @param message The message to check
      * @return True if extension did specify Data in its length field
      */
     protected boolean hasExtensionData(ExtensionMessage message) {
