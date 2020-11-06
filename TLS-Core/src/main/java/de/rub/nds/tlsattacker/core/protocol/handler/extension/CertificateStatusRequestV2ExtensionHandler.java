@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
@@ -23,8 +24,8 @@ public class CertificateStatusRequestV2ExtensionHandler extends
     }
 
     @Override
-    public CertificateStatusRequestV2ExtensionParser getParser(byte[] message, int pointer) {
-        return new CertificateStatusRequestV2ExtensionParser(pointer, message);
+    public CertificateStatusRequestV2ExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new CertificateStatusRequestV2ExtensionParser(pointer, message, config);
     }
 
     @Override

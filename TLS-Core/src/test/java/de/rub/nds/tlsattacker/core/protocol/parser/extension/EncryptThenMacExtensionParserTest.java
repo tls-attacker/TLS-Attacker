@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import static org.junit.Assert.assertArrayEquals;
@@ -26,7 +27,7 @@ public class EncryptThenMacExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new EncryptThenMacExtensionParser(startPosition, expectedBytes);
+        parser = new EncryptThenMacExtensionParser(startPosition, expectedBytes, Config.createConfig());
     }
 
     @Test

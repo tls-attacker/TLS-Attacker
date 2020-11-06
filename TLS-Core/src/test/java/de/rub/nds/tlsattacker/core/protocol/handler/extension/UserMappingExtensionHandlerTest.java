@@ -43,7 +43,7 @@ public class UserMappingExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof UserMappingExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof UserMappingExtensionParser);
     }
 
     @Test

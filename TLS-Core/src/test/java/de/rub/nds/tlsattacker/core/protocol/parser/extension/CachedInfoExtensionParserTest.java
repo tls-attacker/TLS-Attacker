@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -69,7 +70,7 @@ public class CachedInfoExtensionParserTest {
     public void testParse() {
         TlsContext context = new TlsContext();
 
-        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes);
+        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes, Config.createConfig());
         CachedInfoExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

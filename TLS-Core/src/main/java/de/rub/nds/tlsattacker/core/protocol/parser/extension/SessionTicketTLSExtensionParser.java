@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,8 +27,8 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      * @param array
      *            Array which holds the extensions
      */
-    public SessionTicketTLSExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public SessionTicketTLSExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     /**

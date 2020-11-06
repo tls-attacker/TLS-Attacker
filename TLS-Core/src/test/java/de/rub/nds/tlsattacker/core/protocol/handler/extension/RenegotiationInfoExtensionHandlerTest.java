@@ -45,7 +45,7 @@ public class RenegotiationInfoExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof RenegotiationInfoExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof RenegotiationInfoExtensionParser);
     }
 
     @Test

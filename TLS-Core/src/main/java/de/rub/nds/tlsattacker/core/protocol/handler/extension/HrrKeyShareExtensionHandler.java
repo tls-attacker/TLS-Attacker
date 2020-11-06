@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HRRKeyShareExtensionParser;
@@ -28,8 +29,8 @@ public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExt
     }
 
     @Override
-    public HRRKeyShareExtensionParser getParser(byte[] message, int pointer) {
-        return new HRRKeyShareExtensionParser(pointer, message);
+    public HRRKeyShareExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new HRRKeyShareExtensionParser(pointer, message, config);
     }
 
     @Override

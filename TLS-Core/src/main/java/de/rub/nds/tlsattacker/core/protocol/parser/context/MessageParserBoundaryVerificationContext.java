@@ -16,9 +16,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public class MessageParserBoundaryVerificationContext implements ParserContext {
 
-    public static boolean THROWING = false;
-
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private final boolean throwing;
 
     private final int boundary;
 
@@ -26,8 +26,10 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
 
     private final int pointerOffset;
 
-    public MessageParserBoundaryVerificationContext(int boundary, String boundaryQualifier, int pointerOffset) {
+    public MessageParserBoundaryVerificationContext(int boundary, String boundaryQualifier, int pointerOffset,
+            boolean throwing) {
         super();
+        this.throwing = throwing;
         this.boundary = boundary;
         this.boundaryQualifier = boundaryQualifier;
         this.pointerOffset = pointerOffset;
@@ -49,7 +51,7 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
                             boundaryQualifier, previous != null ? previous.toString() : "Message",
                             MessageParserBoundaryVerificationContext.this.boundary - (p.getPointer() - pointerOffset),
                             requestedLength, MessageParserBoundaryVerificationContext.this);
-                    if (THROWING) {
+                    if (throwing) {
                         throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this,
                                 previous);
                     } else {

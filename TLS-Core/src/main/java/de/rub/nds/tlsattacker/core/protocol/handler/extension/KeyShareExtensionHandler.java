@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -45,8 +46,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     @Override
-    public KeyShareExtensionParser getParser(byte[] message, int pointer) {
-        return new KeyShareExtensionParser(pointer, message, type);
+    public KeyShareExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new KeyShareExtensionParser(pointer, message, config);
     }
 
     @Override
