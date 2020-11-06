@@ -98,7 +98,7 @@
             <artifactId>jmockit</artifactId>
             <version>${jmockit.version}</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
