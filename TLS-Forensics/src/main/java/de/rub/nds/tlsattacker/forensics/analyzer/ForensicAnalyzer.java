@@ -112,13 +112,12 @@ public class ForensicAnalyzer {
             } else {
                 context.setTalkingConnectionEndType(connectionEndType.getPeer());
             }
-            if (context.getTalkingConnectionEndType()
-                    == ConnectionEndType.CLIENT) {
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                 context.setConnection(new InboundConnection());
             } else {
                 context.setConnection(new OutboundConnection());
             }
-            
+
             context.setReversePrepareAfterParse(sending);
             MessageActionResult parsedMessageResult = helper.handleReceivedBytes(joinedRecordBytes, context);
             if (sending) {
