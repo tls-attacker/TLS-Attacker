@@ -29,7 +29,7 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
 
     @Override
     public AlpnExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new AlpnExtensionParser(pointer, message, config );
+        return new AlpnExtensionParser(pointer, message, config);
     }
 
     @Override
