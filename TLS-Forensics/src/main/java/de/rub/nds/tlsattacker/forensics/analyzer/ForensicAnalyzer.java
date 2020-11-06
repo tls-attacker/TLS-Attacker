@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -111,12 +112,13 @@ public class ForensicAnalyzer {
             } else {
                 context.setTalkingConnectionEndType(connectionEndType.getPeer());
             }
-            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getTalkingConnectionEndType()
+                    == ConnectionEndType.CLIENT) {
                 context.setConnection(new InboundConnection());
             } else {
                 context.setConnection(new OutboundConnection());
             }
-
+            
             context.setReversePrepareAfterParse(sending);
             MessageActionResult parsedMessageResult = helper.handleReceivedBytes(joinedRecordBytes, context);
             if (sending) {
