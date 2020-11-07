@@ -11,8 +11,13 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
 
@@ -24,28 +29,17 @@ class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
 
 public enum ProtocolVersion {
 
-    SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),
-    SSL3(new byte[] { (byte) 0x03, (byte) 0x00 }),
-    TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
-    TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
-    TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
-    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
-    TLS13_DRAFT14(new byte[] { (byte) 0x7F, (byte) 0x0E }),
-    TLS13_DRAFT15(new byte[] { (byte) 0x7F, (byte) 0x0F }),
-    TLS13_DRAFT16(new byte[] { (byte) 0x7F, (byte) 0x10 }),
-    TLS13_DRAFT17(new byte[] { (byte) 0x7F, (byte) 0x11 }),
-    TLS13_DRAFT18(new byte[] { (byte) 0x7F, (byte) 0x12 }),
-    TLS13_DRAFT19(new byte[] { (byte) 0x7F, (byte) 0x13 }),
-    TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
-    TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
-    TLS13_DRAFT22(new byte[] { (byte) 0x7F, (byte) 0x16 }),
-    TLS13_DRAFT23(new byte[] { (byte) 0x7F, (byte) 0x17 }),
-    TLS13_DRAFT24(new byte[] { (byte) 0x7F, (byte) 0x18 }),
-    TLS13_DRAFT25(new byte[] { (byte) 0x7F, (byte) 0x19 }),
-    TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x1A }),
-    TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
-    TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
-    DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
+    SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }), SSL3(new byte[] { (byte) 0x03, (byte) 0x00 }), TLS10(new byte[] {
+        (byte) 0x03, (byte) 0x01 }), TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }), TLS12(new byte[] { (byte) 0x03,
+        (byte) 0x03 }), TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }), TLS13_DRAFT14(new byte[] { (byte) 0x7F,
+        (byte) 0x0E }), TLS13_DRAFT15(new byte[] { (byte) 0x7F, (byte) 0x0F }), TLS13_DRAFT16(new byte[] { (byte) 0x7F,
+        (byte) 0x10 }), TLS13_DRAFT17(new byte[] { (byte) 0x7F, (byte) 0x11 }), TLS13_DRAFT18(new byte[] { (byte) 0x7F,
+        (byte) 0x12 }), TLS13_DRAFT19(new byte[] { (byte) 0x7F, (byte) 0x13 }), TLS13_DRAFT20(new byte[] { (byte) 0x7F,
+        (byte) 0x14 }), TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }), TLS13_DRAFT22(new byte[] { (byte) 0x7F,
+        (byte) 0x16 }), TLS13_DRAFT23(new byte[] { (byte) 0x7F, (byte) 0x17 }), TLS13_DRAFT24(new byte[] { (byte) 0x7F,
+        (byte) 0x18 }), TLS13_DRAFT25(new byte[] { (byte) 0x7F, (byte) 0x19 }), TLS13_DRAFT26(new byte[] { (byte) 0x7F,
+        (byte) 0x1A }), TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }), TLS13_DRAFT28(new byte[] { (byte) 0x7F,
+        (byte) 0x1C }), DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
     private byte[] value;
@@ -140,7 +134,7 @@ public enum ProtocolVersion {
      * cases like TLSv1.2 or SSLv3
      *
      * @param protocolVersion
-     *            The ProtocolVersion as a String
+     * The ProtocolVersion as a String
      * @return The ProtocolVersion as an Enum
      */
     public static ProtocolVersion fromString(String protocolVersion) {
@@ -152,14 +146,14 @@ public enum ProtocolVersion {
             }
         }
         throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
-                + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
+            + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
 
     /**
      * Return the highest protocol version.
      *
      * @param list
-     *            The List of protocolVersions to search in
+     * The List of protocolVersions to search in
      * @return The highest ProtocolVersion
      */
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
@@ -169,8 +163,8 @@ public enum ProtocolVersion {
                 highestProtocolVersion = pv;
             }
             if (pv != null
-                    && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
-                            .getValue())) {
+                && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
+                    .getValue())) {
                 highestProtocolVersion = pv;
             }
         }
@@ -195,7 +189,7 @@ public enum ProtocolVersion {
 
     public boolean usesExplicitIv() {
         return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
-                || this == ProtocolVersion.DTLS12;
+            || this == ProtocolVersion.DTLS12;
     }
 
     public int compare(ProtocolVersion o1) {
