@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -40,9 +41,9 @@ public abstract class ECOracle {
      * secret was guessed correctly.
      *
      * @param ecPoint
-     *            The Point
+     * The Point
      * @param guessedSecret
-     *            The guessed Secret
+     * The guessed Secret
      * @return True if the secret is guessed correctly
      */
     public abstract boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret);
@@ -53,7 +54,7 @@ public abstract class ECOracle {
      * correct.
      *
      * @param guessedSecret
-     *            The guessed Secret
+     * The guessed Secret
      * @return True if the Solution is correct
      */
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);

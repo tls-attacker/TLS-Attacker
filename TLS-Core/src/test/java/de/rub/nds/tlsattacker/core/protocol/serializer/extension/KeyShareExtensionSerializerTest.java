@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -36,7 +37,7 @@ public class KeyShareExtensionSerializerTest {
     private byte[] keyShareList;
 
     public KeyShareExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-            int extensionLength, int keyShareListLength, byte[] keyShareList) {
+        int extensionLength, int keyShareListLength, byte[] keyShareList) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;

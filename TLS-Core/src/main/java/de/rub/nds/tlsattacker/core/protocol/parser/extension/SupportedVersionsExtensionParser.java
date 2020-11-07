@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,7 +48,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
      * writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSupportedVersionLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
@@ -59,7 +60,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSupportedVersion(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));

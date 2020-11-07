@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -62,7 +63,8 @@ public class ClientHelloTest {
 
     public ClientHelloTest() throws Exception {
         writer = new StringWriter();
-        context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
+        context =
+            JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
                 ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
                 ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
         m = context.createMarshaller();

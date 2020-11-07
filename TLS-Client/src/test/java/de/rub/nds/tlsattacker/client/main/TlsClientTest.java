@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.client.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -101,8 +102,8 @@ public class TlsClientTest {
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException ex) {
+            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+            | KeyManagementException ex) {
             LOGGER.warn(ex);
             fail();
         }
@@ -122,8 +123,8 @@ public class TlsClientTest {
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
-                | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
-                | SignatureException ex) {
+            | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
+            | SignatureException ex) {
             LOGGER.warn(ex);
             fail(); // Todo
         }
@@ -169,8 +170,8 @@ public class TlsClientTest {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
             final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());
-            final boolean cipherSuiteIsSupportedByProtocolVersion = cs.isSupportedInProtocol(config
-                    .getHighestProtocolVersion());
+            final boolean cipherSuiteIsSupportedByProtocolVersion =
+                cs.isSupportedInProtocol(config.getHighestProtocolVersion());
             if (serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion && requiredAlgorithms.isEmpty()) {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
@@ -178,9 +179,9 @@ public class TlsClientTest {
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
                 CONSOLE.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
-                        + result);
+                    + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
-                        result, is(true));
+                    result, is(true));
             }
         }
     }
@@ -189,8 +190,8 @@ public class TlsClientTest {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         State state = new State(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
@@ -221,19 +222,18 @@ public class TlsClientTest {
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT, new ClientHelloMessage(
-                config)));
+            config)));
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER, new ServerHelloMessage(
-                config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+            config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT,
-                new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
-                        config)));
+            new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER,
-                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

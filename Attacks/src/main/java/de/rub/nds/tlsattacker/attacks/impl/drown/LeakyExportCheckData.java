@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
@@ -32,7 +33,7 @@ public class LeakyExportCheckData implements Serializable {
     private int paddingLength;
 
     LeakyExportCheckData(TlsContext context, SSL2ClientMasterKeyMessage clientMessage,
-            SSL2ServerVerifyMessage serverMessage) {
+        SSL2ServerVerifyMessage serverMessage) {
         clearKey = context.getClearKey();
         // The Premaster Secret is equivalent to SECRET-KEY-DATA
         secretKeyPlain = context.getPreMasterSecret();

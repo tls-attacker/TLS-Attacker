@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 /**
@@ -22,7 +23,7 @@ public abstract class GuessProvider {
      * Constructor
      *
      * @param type
-     *            Type of the GuessProvider
+     * Type of the GuessProvider
      */
     public GuessProvider(GuessProviderType type) {
         this.type = type;

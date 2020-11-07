@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -56,7 +57,8 @@ public class FragmentCollector {
     public void addFragment(DtlsHandshakeMessageFragment fragment) {
         if (wouldAdd(fragment)) {
             if (isFragmentOverwritingContent(fragment)) {
-                LOGGER.warn("Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
+                LOGGER
+                    .warn("Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
                 fragmentStream = new FragmentStream(messageLength);
                 this.messageLength = fragment.getLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
@@ -74,7 +76,7 @@ public class FragmentCollector {
      * depends on config flags and if the fragment is fitting into the stream.
      *
      * @param fragment
-     *            the fragment that should be tested.
+     * the fragment that should be tested.
      * @return True if it would be added, false otherwise
      */
     public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
@@ -101,9 +103,9 @@ public class FragmentCollector {
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
         if (fragment.getType().getValue() == type && fragment.getMessageSeq().getValue() == this.messageSeq
-                && fragment.getLength().getValue() == this.messageLength) {
+            && fragment.getLength().getValue() == this.messageLength) {
             return fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
-                    .getValue());
+                .getValue());
         } else {
             return false;
         }
@@ -114,12 +116,12 @@ public class FragmentCollector {
      * previously received messages
      *
      * @param fragment
-     *            Fragment that should betested
+     * Fragment that should betested
      * @return True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
         return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
-                .getValue());
+            .getValue());
     }
 
     /**

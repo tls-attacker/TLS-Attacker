@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.io.Serializable;
@@ -43,7 +44,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this + f.
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     * An element of the field, which this is an element of.
      */
     public abstract FieldElement add(FieldElement f);
 
@@ -51,7 +52,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this - f. <br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     * An element of the field, which this is an element of.
      */
     public FieldElement subtract(FieldElement f) {
         f = f.addInv();
@@ -62,7 +63,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this * f.<br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     * An element of the field, which this is an element of.
      */
     public abstract FieldElement mult(FieldElement f);
 
@@ -70,7 +71,7 @@ public abstract class FieldElement implements Serializable {
      * Returns this * f^-1.<br />
      *
      * @param f
-     *            An element of the field, which this is an element of.
+     * An element of the field, which this is an element of.
      */
     public FieldElement divide(FieldElement f) {
         f = f.multInv();

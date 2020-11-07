@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -30,7 +31,7 @@ public class ForgivingX448Curve {
      * padded to the correct size if necessary
      *
      * @param privateKey
-     *            The private key to use
+     * The private key to use
      * @return publickey The computed public key
      */
     public static byte[] computePublicKey(BigInteger privateKey) {
@@ -42,14 +43,14 @@ public class ForgivingX448Curve {
      * padded to the correct size if necessary
      *
      * @param privateKey
-     *            The private key to use
+     * The private key to use
      * @return publickey The computed public key
      */
     public static byte[] computePublicKey(byte[] privateKey) {
         X448.precompute();
         if (privateKey.length > ELEMENT_SIZE) {
             LOGGER.debug("privatekey has is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+                + " bytes.");
             privateKey = Arrays.copyOfRange(privateKey, 0, ELEMENT_SIZE);
         } else if (privateKey.length < ELEMENT_SIZE) {
             LOGGER.debug("privatekey has is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
@@ -64,9 +65,9 @@ public class ForgivingX448Curve {
      * Computes a shared point/secret from a private key and a publickey
      *
      * @param privateKey
-     *            Our side's private key
+     * Our side's private key
      * @param publicKey
-     *            The other sides public key
+     * The other sides public key
      * @return A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
@@ -77,15 +78,15 @@ public class ForgivingX448Curve {
      * Computes a shared point/secret from a private key and a publickey
      *
      * @param privateKey
-     *            Our side's private key
+     * Our side's private key
      * @param publicKey
-     *            The other sides public key
+     * The other sides public key
      * @return A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(byte[] privateKey, byte[] publicKey) {
         if (privateKey.length > ELEMENT_SIZE) {
             LOGGER.debug("privatekey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+                + " bytes.");
             privateKey = Arrays.copyOfRange(privateKey, 0, ELEMENT_SIZE);
         } else if (privateKey.length < ELEMENT_SIZE) {
             LOGGER.debug("privatekey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
@@ -93,7 +94,7 @@ public class ForgivingX448Curve {
         }
         if (publicKey.length > ELEMENT_SIZE) {
             LOGGER.debug("publicKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+                + " bytes.");
             publicKey = Arrays.copyOfRange(publicKey, 0, ELEMENT_SIZE);
         } else if (publicKey.length < ELEMENT_SIZE) {
             LOGGER.debug("publicKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");

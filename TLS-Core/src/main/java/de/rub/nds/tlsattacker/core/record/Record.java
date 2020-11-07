@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -86,20 +87,20 @@ public class Record extends AbstractRecord {
         this.length = length;
     }
 
-    public void setContentType(ModifiableByte contentType) {
-        this.contentType = contentType;
-    }
-
-    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-        this.protocolVersion = protocolVersion;
-    }
-
     public void setLength(int length) {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
+    public void setContentType(ModifiableByte contentType) {
+        this.contentType = contentType;
+    }
+
     public void setContentType(byte contentType) {
         this.contentType = ModifiableVariableFactory.safelySetValue(this.contentType, contentType);
+    }
+
+    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
+        this.protocolVersion = protocolVersion;
     }
 
     public void setProtocolVersion(byte[] array) {
@@ -132,7 +133,7 @@ public class Record extends AbstractRecord {
 
     @Override
     public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
-            ProtocolMessageType type) {
+        ProtocolMessageType type) {
         return new RecordPreparator(chooser, this, encryptor, type, compressor);
     }
 
@@ -170,7 +171,7 @@ public class Record extends AbstractRecord {
     @Override
     public String toString() {
         return "Record{" + "contentType=" + contentType + ", protocolVersion=" + protocolVersion + ", length=" + length
-                + '}';
+            + '}';
     }
 
     @Override

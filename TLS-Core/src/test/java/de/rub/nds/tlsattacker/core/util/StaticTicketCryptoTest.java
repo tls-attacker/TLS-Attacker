@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -99,8 +100,8 @@ public class StaticTicketCryptoTest {
         LOGGER.info("Generate HMAC SHA256");
         byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
         byte[] key = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
-        byte[] expResult = ArrayConverter
-                .hexStringToByteArray("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
+        byte[] expResult =
+            ArrayConverter.hexStringToByteArray("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
         byte[] result = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
         assertArrayEquals(expResult, result);
     }
@@ -115,8 +116,8 @@ public class StaticTicketCryptoTest {
     @Test
     public void testVerifyHMAC_SHA256() throws CryptoException {
         LOGGER.info("Verify HMAC SHA256");
-        byte[] mac = ArrayConverter
-                .hexStringToByteArray("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
+        byte[] mac =
+            ArrayConverter.hexStringToByteArray("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
         byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
         byte[] key = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         boolean expResult = true;

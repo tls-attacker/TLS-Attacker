@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -32,22 +33,21 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the ServerKeyExchangeParser is
-     *            supposed to start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to
+     * start parsing
      * @param array
-     *            The byte[] which the ServerKeyExchangeParser is supposed to
-     *            parse
+     * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         this(pointer, array, version, null, config);
     }
 
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-            KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
         this.version = version;
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -85,7 +85,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * Reads the next bytes as the CurveType and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCurveType(ECDHEServerKeyExchangeMessage msg) {
         msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
@@ -96,7 +96,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * Reads the next bytes as the Curve and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseNamedGroup(ECDHEServerKeyExchangeMessage msg) {
         msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
@@ -108,7 +108,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
@@ -120,7 +120,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
@@ -150,12 +150,12 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureAndHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug("SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
@@ -163,7 +163,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureLength(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
@@ -174,7 +174,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * Reads the next bytes as the Signature and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignature(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));

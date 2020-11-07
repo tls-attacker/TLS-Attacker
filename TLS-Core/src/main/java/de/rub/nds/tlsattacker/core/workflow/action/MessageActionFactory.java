@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -19,12 +20,12 @@ import java.util.List;
 public class MessageActionFactory {
 
     public static MessageAction createAction(AliasedConnection connection, ConnectionEndType sendingConnectionEndType,
-            ProtocolMessage... protocolMessages) {
+        ProtocolMessage... protocolMessages) {
         return createAction(connection, sendingConnectionEndType, new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage> protocolMessages) {
+        List<ProtocolMessage> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
@@ -36,7 +37,7 @@ public class MessageActionFactory {
     }
 
     public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
-            String message, String encoding) {
+        String message, String encoding) {
         AsciiAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAsciiAction(message, encoding);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,10 +25,10 @@ public class ExtendedRandomExtensionPreparatorTest {
 
     private final byte[] extendedRandomShort = new byte[0];
     private final byte[] extendedRandom = ArrayConverter
-            .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+        .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
     private final byte[] extendedRandomLong = ArrayConverter
-            .hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                    + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        .hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     private TlsContext context;
     private ExtendedRandomExtensionMessage message;
     private ExtendedRandomExtensionPreparator preparator;
@@ -36,8 +37,9 @@ public class ExtendedRandomExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ExtendedRandomExtensionMessage();
-        preparator = new ExtendedRandomExtensionPreparator(context.getChooser(), message,
-                new ExtendedRandomExtensionSerializer(message));
+        preparator =
+            new ExtendedRandomExtensionPreparator(context.getChooser(), message, new ExtendedRandomExtensionSerializer(
+                message));
     }
 
     @Test
@@ -83,7 +85,7 @@ public class ExtendedRandomExtensionPreparatorTest {
 
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
         assertEquals(message.getExtendedRandomLength().getValue().intValue(), context.getConfig()
-                .getDefaultClientExtendedRandom().length);
+            .getDefaultClientExtendedRandom().length);
         assertArrayEquals(context.getConfig().getDefaultClientExtendedRandom(), message.getExtendedRandom().getValue());
 
     }
@@ -96,7 +98,7 @@ public class ExtendedRandomExtensionPreparatorTest {
 
         assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
         assertEquals(message.getExtendedRandomLength().getValue().intValue(), context.getConfig()
-                .getDefaultClientExtendedRandom().length);
+            .getDefaultClientExtendedRandom().length);
     }
 
     @Test

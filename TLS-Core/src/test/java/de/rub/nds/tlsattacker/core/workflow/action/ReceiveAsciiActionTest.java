@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -47,7 +48,7 @@ public class ReceiveAsciiActionTest {
     @Test
     public void testExecute() throws Exception {
         ((FakeTransportHandler) tlsContext.getTransportHandler())
-                .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
+            .setFetchableByte(new byte[] { 0x15, 0x03, 0x02, 0x01 });
 
         action.execute(state);
         assertTrue(action.isExecuted());

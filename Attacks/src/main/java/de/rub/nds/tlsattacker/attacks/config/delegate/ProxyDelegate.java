@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -17,10 +18,12 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
 public class ProxyDelegate extends Delegate {
 
-    @Parameter(names = "-proxyData", description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")
+    @Parameter(names = "-proxyData",
+        description = "Specify the host and port for data used in the proxy. Syntax: localhost:4444")
     private String proxyData = "localhost:4444";
 
-    @Parameter(names = "-proxyControl", description = "Specify the host and port for control messafes used in the proxy. Syntax: localhost:5555")
+    @Parameter(names = "-proxyControl",
+        description = "Specify the host and port for control messafes used in the proxy. Syntax: localhost:5555")
     private String proxyControl = "localhost:5555";
 
     @Override

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -17,9 +18,7 @@ import java.util.Random;
 
 public enum CompressionMethod {
 
-    NULL((byte) 0x00),
-    DEFLATE((byte) 0x01),
-    LZS((byte) 0x40);
+    NULL((byte) 0x00), DEFLATE((byte) 0x01), LZS((byte) 0x40);
 
     private byte value;
 

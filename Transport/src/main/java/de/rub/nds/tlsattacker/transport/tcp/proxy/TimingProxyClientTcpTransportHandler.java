@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.ProxyableTransportHandler;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.Connection;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 public class TimingProxyClientTcpTransportHandler extends TransportHandler implements ProxyableTransportHandler,
-        TimeableTransportHandler {
+    TimeableTransportHandler {
 
     protected Socket dataSocket;
     protected Socket controlSocket;
@@ -82,12 +83,12 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     @Override
     public void closeConnection() throws IOException {
         if (dataSocket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         dataSocket.close();
 
         if (controlSocket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         controlSocket.close();
     }
@@ -114,7 +115,7 @@ public class TimingProxyClientTcpTransportHandler extends TransportHandler imple
     @Override
     public boolean isClosed() throws IOException {
         return dataSocket.isClosed() || dataSocket.isInputShutdown() || controlSocket.isClosed()
-                || controlSocket.isInputShutdown();
+            || controlSocket.isInputShutdown();
     }
 
     @Override

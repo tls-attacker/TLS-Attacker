@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -46,7 +47,7 @@ public class SessionTicketTLSExtensionSerializerTest {
      * @param startParsing
      */
     public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+        byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;

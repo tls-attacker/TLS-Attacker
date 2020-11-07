@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 /**
@@ -14,8 +15,7 @@ package de.rub.nds.tlsattacker.transport;
  */
 public enum ConnectionEndType {
 
-    CLIENT,
-    SERVER;
+    CLIENT, SERVER;
 
     public ConnectionEndType getPeer() {
         if (this == CLIENT) {

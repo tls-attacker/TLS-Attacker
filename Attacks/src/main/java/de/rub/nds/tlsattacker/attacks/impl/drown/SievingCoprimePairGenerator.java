@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import java.math.BigInteger;
@@ -17,14 +18,15 @@ import java.math.BigInteger;
  */
 class SievingCoprimePairGenerator extends CoprimePairGenerator {
 
-    private BigInteger uCandidate, tCandidate;
+    private BigInteger tcandidate;
+    private BigInteger ucandidate;
     private long maxQueryCount;
 
     public SievingCoprimePairGenerator(long maxQueryCount) {
         super();
 
-        this.uCandidate = BigInteger.valueOf(1);
-        this.tCandidate = BigInteger.valueOf(2);
+        this.ucandidate = BigInteger.valueOf(1);
+        this.tcandidate = BigInteger.valueOf(2);
         this.maxQueryCount = maxQueryCount;
     }
 
@@ -32,13 +34,13 @@ class SievingCoprimePairGenerator extends CoprimePairGenerator {
     public BigInteger[] next() {
         ensureRange();
 
-        while (uCandidate.gcd(tCandidate).compareTo(BigInteger.valueOf(1)) != 0) {
-            uCandidate = uCandidate.add(BigInteger.ONE);
+        while (ucandidate.gcd(tcandidate).compareTo(BigInteger.valueOf(1)) != 0) {
+            ucandidate = ucandidate.add(BigInteger.ONE);
             ensureRange();
         }
 
-        BigInteger[] pair = { uCandidate, tCandidate };
-        uCandidate = uCandidate.add(BigInteger.ONE);
+        BigInteger[] pair = { ucandidate, tcandidate };
+        ucandidate = ucandidate.add(BigInteger.ONE);
         numberOfQueries++;
 
         return pair;
@@ -49,16 +51,16 @@ class SievingCoprimePairGenerator extends CoprimePairGenerator {
      * et al. 2012, by adjusting the values of u and t.
      */
     private void ensureRange() {
-        float quotient = uCandidate.floatValue() / tCandidate.floatValue();
+        float quotient = ucandidate.floatValue() / tcandidate.floatValue();
 
         if (quotient >= (3.0F / 2.0F)) {
-            uCandidate = BigInteger.valueOf(1);
-            tCandidate = tCandidate.add(BigInteger.ONE);
-            quotient = uCandidate.floatValue() / tCandidate.floatValue();
+            ucandidate = BigInteger.valueOf(1);
+            tcandidate = tcandidate.add(BigInteger.ONE);
+            quotient = ucandidate.floatValue() / tcandidate.floatValue();
         }
         while (quotient <= (2.0F / 3.0F)) {
-            uCandidate = uCandidate.add(BigInteger.ONE);
-            quotient = uCandidate.floatValue() / tCandidate.floatValue();
+            ucandidate = ucandidate.add(BigInteger.ONE);
+            quotient = ucandidate.floatValue() / tcandidate.floatValue();
         }
     }
 

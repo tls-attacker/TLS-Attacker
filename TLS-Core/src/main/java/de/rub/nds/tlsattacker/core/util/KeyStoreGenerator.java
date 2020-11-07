@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -68,7 +69,7 @@ public class KeyStoreGenerator {
     }
 
     public static KeyPair createGost01KeyPair(String curve, BadRandom random) throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curve);
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410");
         keyPairGenerator.initialize(spec, random);
@@ -76,7 +77,7 @@ public class KeyStoreGenerator {
     }
 
     public static KeyPair createGost12KeyPair(String curve, BadRandom random) throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curve);
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
         keyPairGenerator.initialize(spec, random);
@@ -84,8 +85,8 @@ public class KeyStoreGenerator {
     }
 
     public static KeyStore createKeyStore(KeyPair keyPair, BadRandom random) throws CertificateException, IOException,
-            InvalidKeyException, KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException,
-            SignatureException, OperatorCreationException {
+        InvalidKeyException, KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException,
+        OperatorCreationException {
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();
 
@@ -95,11 +96,12 @@ public class KeyStoreGenerator {
         BigInteger serial = BigInteger.valueOf(random.nextInt());
         Date before = new Date(System.currentTimeMillis() - 5000);
         Date after = new Date(System.currentTimeMillis() + 600000);
-        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, before, after,
-                subjectName, publicKey);
+        X509v3CertificateBuilder builder =
+            new JcaX509v3CertificateBuilder(issuerName, serial, before, after, subjectName, publicKey);
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 
-        KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
+        KeyUsage usage =
+            new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
                 | KeyUsage.dataEncipherment);
         builder.addExtension(Extension.keyUsage, false, usage);
 
@@ -122,7 +124,7 @@ public class KeyStoreGenerator {
     }
 
     private static X509Certificate signCertificate(String algorithm, X509v3CertificateBuilder builder,
-            PrivateKey privateKey) throws OperatorCreationException, CertificateException {
+        PrivateKey privateKey) throws OperatorCreationException, CertificateException {
         ContentSigner signer = new JcaContentSignerBuilder(algorithm).build(privateKey);
         return new JcaX509CertificateConverter().getCertificate(builder.build(signer));
     }
@@ -138,8 +140,8 @@ public class KeyStoreGenerator {
             case "ECGOST3410":
                 return "GOST3411WITHECGOST3410";
             case "ECGOST3410-2012":
-                BigInteger x = ((BCECGOST3410_2012PublicKey) keyPair.getPublic()).getQ().getAffineXCoord()
-                        .toBigInteger();
+                BigInteger x =
+                    ((BCECGOST3410_2012PublicKey) keyPair.getPublic()).getQ().getAffineXCoord().toBigInteger();
                 if (x.bitLength() > 256) {
                     return "GOST3411-2012-512WITHGOST3410-2012-512";
                 } else {
@@ -147,7 +149,7 @@ public class KeyStoreGenerator {
                 }
             default:
                 throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
-                        + " not supported");
+                    + " not supported");
         }
     }
 

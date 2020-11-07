@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import org.apache.logging.log4j.LogManager;
@@ -236,9 +237,9 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * byte is no other 0x00
      *
      * @param keySize
-     *            the length of the key included in the PKCS1 message
+     * the length of the key included in the PKCS1 message
      * @param msg
-     *            message
+     * message
      * @return
      */
     private boolean hasCorrectKeySize(final int keySize, final byte[] msg) {

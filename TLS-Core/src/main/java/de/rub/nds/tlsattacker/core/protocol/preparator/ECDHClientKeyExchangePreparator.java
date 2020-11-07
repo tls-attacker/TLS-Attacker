@@ -7,16 +7,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
-        ClientKeyExchangePreparator<T> {
+    ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -49,8 +50,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
 
-        int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
+        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLength);
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
@@ -61,14 +62,14 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -84,11 +85,13 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             if (clientMode) {
-                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
+                premasterSecret =
+                    rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
                         chooser.getServerEcPublicKey());
             } else {
-                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(), msg
-                        .getPublicKey().getValue());
+                premasterSecret =
+                    rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(), msg.getPublicKey()
+                        .getValue());
             }
         } else {
 
@@ -98,7 +101,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             } else {
                 publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
             }
-            premasterSecret = computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
+            premasterSecret =
+                computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
         }
         preparePremasterSecret(msg);
     }
@@ -119,8 +123,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
             msg.getComputations().setPublicKeyX(publicKey.getX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getY().getData());
-            publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations()
-                    .getPublicKeyY().getValue());
+            publicKey =
+                curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations().getPublicKeyY()
+                    .getValue());
             publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);

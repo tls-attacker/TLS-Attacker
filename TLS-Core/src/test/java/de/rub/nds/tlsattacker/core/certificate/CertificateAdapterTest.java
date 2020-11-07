@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -57,9 +58,11 @@ public class CertificateAdapterTest {
         Date endDate = new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000);
 
         // Initialize certificate generating objects
-        X509v1CertificateBuilder certificateBuilder = new JcaX509v1CertificateBuilder(new X500Principal("CN=Test"),
-                BigInteger.ONE, startDate, endDate, new X500Principal("CN=Test"), publicKey);
-        ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA").setProvider(
+        X509v1CertificateBuilder certificateBuilder =
+            new JcaX509v1CertificateBuilder(new X500Principal("CN=Test"), BigInteger.ONE, startDate, endDate,
+                new X500Principal("CN=Test"), publicKey);
+        ContentSigner contentSigner =
+            new JcaContentSignerBuilder("SHA1withRSA").setProvider(
                 new org.bouncycastle.jce.provider.BouncyCastleProvider()).build(privK);
 
         // Create certificate

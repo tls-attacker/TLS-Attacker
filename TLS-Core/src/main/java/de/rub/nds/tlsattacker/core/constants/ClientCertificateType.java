@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -17,22 +18,12 @@ import java.util.Map;
  */
 public enum ClientCertificateType {
 
-    RSA_SIGN((byte) 1),
-    DSS_SIGN((byte) 2),
-    RSA_FIXED_DH((byte) 3),
-    DSS_FIXED_DH((byte) 4),
-    RSA_EPHEMERAL_DH_RESERVED((byte) 5),
-    DSS_EPHEMERAL_DH_RESERVED((byte) 6),
-    FORTEZZA_DMS_RESERVED((byte) 20),
-    GOSTR34101994((byte) 21),
+    RSA_SIGN((byte) 1), DSS_SIGN((byte) 2), RSA_FIXED_DH((byte) 3), DSS_FIXED_DH((byte) 4), RSA_EPHEMERAL_DH_RESERVED(
+        (byte) 5), DSS_EPHEMERAL_DH_RESERVED((byte) 6), FORTEZZA_DMS_RESERVED((byte) 20), GOSTR34101994((byte) 21),
     GOSTR34102001((byte) 22),
     ECDSA_SIGN((byte) 64), // TODO Implement these
-    RSA_FIXED_ECDH((byte) 65),
-    ECDSA_FIXED_ECDH((byte) 66),
-    GOST_SIGN256((byte) 66),
-    GOST_SIGN512((byte) 67),
-    GOSTR34102012_256((byte) 238),
-    GOSTR34102012_512((byte) 239);
+    RSA_FIXED_ECDH((byte) 65), ECDSA_FIXED_ECDH((byte) 66), GOST_SIGN256((byte) 66), GOST_SIGN512((byte) 67),
+    GOSTR34102012_256((byte) 238), GOSTR34102012_512((byte) 239);
 
     /**
      * length of the ClientCertificateType in the TLS byte arrays

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -14,7 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @param <T>
- *            The ProtocolMessage that should be prepared
+ * The ProtocolMessage that should be prepared
  */
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 

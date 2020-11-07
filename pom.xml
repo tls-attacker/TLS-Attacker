@@ -260,6 +260,10 @@
                     <groupId>net.revelc.code</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>0.5.2</version>
+                    <configuration>
+                        <lineEnding>CRLF</lineEnding>
+                        <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    </configuration>
                 </plugin>
                 <!-- Use a Licence Header -->
                 <plugin>
@@ -420,7 +424,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.1</version>
                 <configuration>
-                    <configLocation>${main.basedir}/checkstyle.xml</configLocation>
+                    <configLocation>${main.basedir}/google_checks.xml</configLocation>
                 </configuration>
             </plugin>
             <plugin>

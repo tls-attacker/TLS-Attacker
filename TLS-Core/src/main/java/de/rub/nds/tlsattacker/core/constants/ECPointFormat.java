@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.io.ByteArrayInputStream;
@@ -21,9 +22,7 @@ import java.util.Random;
 
 public enum ECPointFormat {
 
-    UNCOMPRESSED((byte) 0),
-    ANSIX962_COMPRESSED_PRIME((byte) 1),
-    ANSIX962_COMPRESSED_CHAR2((byte) 2);
+    UNCOMPRESSED((byte) 0), ANSIX962_COMPRESSED_PRIME((byte) 1), ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
     private byte value;
 
@@ -79,7 +78,7 @@ public enum ECPointFormat {
     }
 
     public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) throws IOException,
-            ClassNotFoundException {
+        ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }

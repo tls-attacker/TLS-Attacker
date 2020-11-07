@@ -7,14 +7,12 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum FiniteFieldGroups {
-    FFDHE2048(new byte[] { 01, 00 }),
-    FFDHE3072(new byte[] { 01, 01 }),
-    FFDHE4096(new byte[] { 01, 02 }),
-    FFDHE6144(new byte[] { 01, 03 }),
-    FFDHE8192(new byte[] { 01, 04 });
+    FFDHE2048(new byte[] { 01, 00 }), FFDHE3072(new byte[] { 01, 01 }), FFDHE4096(new byte[] { 01, 02 }), FFDHE6144(
+        new byte[] { 01, 03 }), FFDHE8192(new byte[] { 01, 04 });
 
     private final byte[] value;
 

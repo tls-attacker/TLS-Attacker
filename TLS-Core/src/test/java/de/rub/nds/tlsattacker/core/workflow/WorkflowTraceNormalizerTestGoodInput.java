@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -56,7 +57,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        File testVectorDir = new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
+        File testVectorDir =
+            new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
 
         Collection<Object[]> testVectors = new ArrayList<>();
         for (File tv : testVectorDir.listFiles()) {
@@ -144,7 +146,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
         }
 
         try {
-            trace = WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
+            trace =
+                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);

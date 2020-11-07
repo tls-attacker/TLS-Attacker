@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -87,10 +88,10 @@ public abstract class RecordCipher {
      * the bytes SQN || HDR || R.
      *
      * @param record
-     *            The Record for which the data should be collected
+     * The Record for which the data should be collected
      * @param protocolVersion
-     *            According to which ProtocolVersion the
-     *            AdditionalAuthenticationData is collected
+     * According to which ProtocolVersion the AdditionalAuthenticationData is
+     * collected
      * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
@@ -104,7 +105,7 @@ public abstract class RecordCipher {
             } else {
                 if (protocolVersion.isDTLS()) {
                     stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(),
-                            RecordByteLength.DTLS_EPOCH));
+                        RecordByteLength.DTLS_EPOCH));
                     stream.write(ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
                 } else {
                     stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
@@ -120,7 +121,7 @@ public abstract class RecordCipher {
                 stream.write(version);
                 int length;
                 if (record.getComputations().getAuthenticatedNonMetaData() == null
-                        || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue() == null) {
+                    || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue() == null) {
                     // This case is required for TLS 1.2 aead encryption
                     length = record.getComputations().getPlainRecordBytes().getValue().length;
                 } else {
@@ -130,7 +131,7 @@ public abstract class RecordCipher {
                 stream.write(ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
                 return stream.toByteArray();
             }
-        } catch (IOException E) {
+        } catch (IOException e) {
             throw new WorkflowExecutionException("Could not write data to ByteArrayOutputStream");
         }
     }

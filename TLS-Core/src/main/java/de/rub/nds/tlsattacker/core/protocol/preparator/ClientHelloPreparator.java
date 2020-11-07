@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -56,8 +57,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
             }
         }
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
-                || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig()
-                        .isAddExtensionsInSSL())) {
+            || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }
@@ -102,7 +102,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(compression.getArrayValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
             }
         }
         return stream.toByteArray();
@@ -115,7 +115,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(suite.getByteValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
             }
         }
         return stream.toByteArray();

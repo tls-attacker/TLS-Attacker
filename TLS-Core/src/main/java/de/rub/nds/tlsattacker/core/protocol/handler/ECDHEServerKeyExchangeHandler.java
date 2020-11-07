@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -36,8 +37,8 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     @Override
     public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
-                tlsContext.getConfig());
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
     }
 
     @Override
@@ -70,8 +71,8 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
             // TODO This is only a temporary solution. Montgomory Curves need to
             // be integrated into the new EC framework
             tlsContext.setServerEcPublicKey(new Point(new FieldElementF2m(new BigInteger(message.getPublicKey()
-                    .getValue()), curve.getModulus()), new FieldElementF2m(new BigInteger(message.getPublicKey()
-                    .getValue()), curve.getModulus())));
+                .getValue()), curve.getModulus()), new FieldElementF2m(
+                new BigInteger(message.getPublicKey().getValue()), curve.getModulus())));
 
         } else if (group != null) {
             LOGGER.debug("Adjusting EC Point");

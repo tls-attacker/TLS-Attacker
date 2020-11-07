@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -16,8 +17,7 @@ import java.util.Map;
  * Available exchange modes for pre-shared keys (TLS 1.3)
  */
 public enum PskKeyExchangeMode {
-    PSK_KE((byte) 0),
-    PSK_DHE_KE((byte) 1);
+    PSK_KE((byte) 0), PSK_DHE_KE((byte) 1);
 
     private byte value;
 

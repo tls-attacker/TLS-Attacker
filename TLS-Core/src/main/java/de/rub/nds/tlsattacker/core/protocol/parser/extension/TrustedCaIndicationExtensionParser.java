@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -31,8 +32,8 @@ public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedC
         int position = 0;
 
         while (position < msg.getTrustedAuthoritiesLength().getValue()) {
-            TrustedAuthorityParser parser = new TrustedAuthorityParser(position, msg.getTrustedAuthoritiesBytes()
-                    .getValue());
+            TrustedAuthorityParser parser =
+                new TrustedAuthorityParser(position, msg.getTrustedAuthoritiesBytes().getValue());
             trustedAuthoritiesList.add(parser.parse());
             if (position == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing TrustedAuthorities");

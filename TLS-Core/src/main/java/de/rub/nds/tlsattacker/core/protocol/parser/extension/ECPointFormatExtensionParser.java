@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,7 +41,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
      * writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parsePointFormatsLength(ECPointFormatExtensionMessage msg) {
         msg.setPointFormatsLength(parseIntField(ExtensionByteLength.EC_POINT_FORMATS));
@@ -52,7 +53,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
      * in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parsePointFormat(ECPointFormatExtensionMessage msg) {
         msg.setPointFormats(parseByteArrayField(msg.getPointFormatsLength().getValue()));

@@ -7,10 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import java.util.LinkedList;
-import java.util.List;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.tlsattacker.attacks.actions.EarlyCcsAction;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
@@ -35,7 +35,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +60,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
          *
          */
         OPENSSL_1_0_1
-    };
+    }
 
     /**
      *
@@ -90,8 +91,9 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
                 return false;
             case UNKNOWN:
                 return null;
+            default:
+                return null;
         }
-        return null;
     }
 
     /**
@@ -133,8 +135,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
 
         State state = new State(tlsConfig, workflowTrace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.ALERT, workflowTrace)) {
             CONSOLE.info("Not vulnerable (definitely), Alert message found");

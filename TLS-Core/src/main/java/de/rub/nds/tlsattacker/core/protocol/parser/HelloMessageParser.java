@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * An abstract Parser class for Hello Messages
  *
  * @param <T>
- *            Type of the HelloMessage to parse
+ * Type of the HelloMessage to parse
  */
 public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
@@ -33,19 +34,19 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HelloMessageParser is supposed
-     *            to start parsing
+     * Position in the array where the HelloMessageParser is supposed to start
+     * parsing
      * @param array
-     *            The byte[] which the HelloMessageParser is supposed to parse
+     * The byte[] which the HelloMessageParser is supposed to parse
      * @param type
-     *            Expected Type value for the Message
+     * Expected Type value for the Message
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
-            Config config) {
+        Config config) {
         super(pointer, array, type, version, config);
     }
 
@@ -57,7 +58,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Reads the next bytes as a ProtocolVersion and writes them in the message
      *
      * @param message
-     *            Message to write in
+     * Message to write in
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
@@ -68,7 +69,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Reads the next bytes as a the Random and writes them in the message
      *
      * @param message
-     *            Message to write in
+     * Message to write in
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
@@ -82,7 +83,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * message
      *
      * @param message
-     *            Message to write in
+     * Message to write in
      */
     protected void parseSessionIDLength(HelloMessage message) {
         message.setSessionIdLength(parseIntField(HandshakeByteLength.SESSION_ID_LENGTH));
@@ -93,7 +94,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Reads the next bytes as the SessionID and writes them in the message
      *
      * @param message
-     *            Message to write in
+     * Message to write in
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,9 +35,9 @@ public class PointFormatter {
                     stream.write(0x04);
                     try {
                         stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
-                                elementLength));
+                            elementLength));
                         stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(),
-                                elementLength));
+                            elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -45,14 +46,14 @@ public class PointFormatter {
                 case ANSIX962_COMPRESSED_PRIME:
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     if (curve.createAPointOnCurve(point.getX().getData()).getY().getData()
-                            .equals(point.getY().getData())) {
+                        .equals(point.getY().getData())) {
                         stream.write(0x03);
                     } else {
                         stream.write(0x02);
                     }
                     try {
                         stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
-                                elementLength));
+                            elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -63,8 +64,8 @@ public class PointFormatter {
             }
         } else {
             try {
-                byte[] coordinate = ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(),
-                        elementLength);
+                byte[] coordinate =
+                    ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLength);
                 stream.write(coordinate);
             } catch (IOException ex) {
                 throw new PreparationException("Could not serialize ec point", ex);
@@ -131,7 +132,7 @@ public class PointFormatter {
                 case 3:
                     if (compressedPoint.length != elementLength + 1) {
                         LOGGER.warn("Could not parse point. Point needs to be " + (elementLength + 1)
-                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+                            + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
 
                         return curve.getBasePoint();
                     }
@@ -150,7 +151,7 @@ public class PointFormatter {
                 case 4:
                     if (compressedPoint.length != elementLength * 2 + 1) {
                         LOGGER.warn("Could not parse point. Point needs to be " + (elementLength * 2 + 1)
-                                + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
+                            + " bytes long, but was " + compressedPoint.length + "bytes long. Returning Basepoint");
                         return curve.getBasePoint();
                     }
 
@@ -171,7 +172,7 @@ public class PointFormatter {
         } else {
             if (compressedPoint.length != elementLength) {
                 LOGGER.warn("Could not parse point. Point needs to be " + elementLength + " bytes long, but was "
-                        + compressedPoint.length + "bytes long. Returning Basepoint");
+                    + compressedPoint.length + "bytes long. Returning Basepoint");
                 return curve.getBasePoint();
             }
             byte[] xCoordinate = new byte[elementLength];

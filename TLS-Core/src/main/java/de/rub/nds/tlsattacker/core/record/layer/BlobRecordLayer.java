@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -86,13 +87,13 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
-        CleanRecordByteSeperator seperator = new CleanRecordByteSeperator(records, context.getConfig()
-                .getDefaultMaxRecordData(), 0, data);
+        CleanRecordByteSeperator seperator =
+            new CleanRecordByteSeperator(records, context.getConfig().getDefaultMaxRecordData(), 0, data);
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
-            AbstractRecordPreparator preparator = record.getRecordPreparator(context.getChooser(), encryptor,
-                    compressor, contentType);
+            AbstractRecordPreparator preparator =
+                record.getRecordPreparator(context.getChooser(), encryptor, compressor, contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {

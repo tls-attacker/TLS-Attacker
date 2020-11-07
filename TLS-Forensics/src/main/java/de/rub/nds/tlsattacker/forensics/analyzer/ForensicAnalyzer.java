@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.forensics.analyzer;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -53,7 +54,7 @@ public class ForensicAnalyzer {
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow, BigInteger rsaPrivateKey)
-            throws IOException {
+        throws IOException {
         Security.addProvider(new BouncyCastleProvider());
         if (!isSupported(executedWorkflow)) {
             return null;
@@ -133,10 +134,11 @@ public class ForensicAnalyzer {
                     for (AbstractRecord record : records) {
                         try {
                             if (record.getCompleteRecordBytes() != null
-                                    && record.getCompleteRecordBytes().getValue() != null) {
+                                && record.getCompleteRecordBytes().getValue() != null) {
                                 stream.write(record.getCompleteRecordBytes().getValue());
                             } else {
-                                LOGGER.warn("Something went terribly wrong. The record does not contain complete record bytes");
+                                LOGGER
+                                    .warn("Something went terribly wrong. The record does not contain complete record bytes");
                             }
                         } catch (IOException ex) {
                             LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);

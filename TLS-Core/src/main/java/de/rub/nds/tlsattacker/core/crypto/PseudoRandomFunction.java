@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -66,20 +67,20 @@ public class PseudoRandomFunction {
      * Computes PRF output of the provided size using the given mac algorithm
      *
      * @param prfAlgorithm
-     *            PRFAlogirhtm
+     * PRFAlogirhtm
      * @param secret
-     *            The Secret
+     * The Secret
      * @param label
-     *            The Label
+     * The Label
      * @param seed
-     *            The Seed
+     * The Seed
      * @param size
-     *            The size
+     * The size
      * @return the Prf output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
-            throws CryptoException {
+        throws CryptoException {
         if (prfAlgorithm == null) {
             LOGGER.warn("Trying to compute PRF without specified PRF algorithm. Using TLS 1.0/TLS 1.1 as default.");
             prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
@@ -96,7 +97,7 @@ public class PseudoRandomFunction {
                 return TlsUtils.PRF_legacy(secret, label, seed, size);
             default:
                 throw new UnsupportedOperationException("PRF computation for different"
-                        + " protocol versions is not supported yet");
+                    + " protocol versions is not supported yet");
         }
     }
 
@@ -104,19 +105,19 @@ public class PseudoRandomFunction {
      * PRF computation for TLS 1.2
      *
      * @param prfAlgorithm
-     *            PRFAlogirhtm
+     * PRFAlogirhtm
      * @param secret
-     *            The Secret
+     * The Secret
      * @param label
-     *            The Label
+     * The Label
      * @param seed
-     *            The Seed
+     * The Seed
      * @param size
-     *            The size
+     * The size
      * @return the Prf output
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
-            throws CryptoException {
+        throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;
@@ -133,7 +134,7 @@ public class PseudoRandomFunction {
                         field.setAccessible(true);
                         field.set(keySpec, new byte[0]);
                     } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException
-                            | SecurityException ex) {
+                        | SecurityException ex) {
                         throw new CryptoException("Could not access KeySpec with empty Key", ex);
                     }
                 } catch (java.lang.IllegalArgumentException ex) {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +27,9 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      * Constructor for the CertificateRequestSerializer
      *
      * @param message
-     *            Message that should be serialized
+     * Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
     public CertificateRequestSerializer(CertificateRequestMessage message, ProtocolVersion version) {
         super(message, version);
@@ -75,7 +76,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
         LOGGER.debug("ClientCertificateTypes: "
-                + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     /**
@@ -84,7 +85,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      */
     private void writeSignatureHandshakeAlgorithmsLength(CertificateRequestMessage msg) {
         appendInt(msg.getSignatureHashAlgorithmsLength().getValue(),
-                HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
+            HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
         LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
@@ -95,7 +96,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
         LOGGER.debug("SignatureHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     /**
@@ -123,12 +124,12 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     private void writeCertificateRquestContext(CertificateRequestMessage msg) {
         appendBytes(msg.getCertificateRequestContext().getValue());
         LOGGER.debug("CertificateRquestContext: "
-                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 
     private void writeCertificateRquestContextLength(CertificateRequestMessage msg) {
         appendInt(msg.getCertificateRequestContextLength().getValue(),
-                HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
+            HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
         LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 

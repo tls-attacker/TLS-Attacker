@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -24,7 +25,7 @@ public class MaxFragmentLengthExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {});// TODO collect a real
-                                                // maxfragmentlength extension
+        // maxfragmentlength extension
     }
 
     private final byte[] extension;
@@ -35,7 +36,7 @@ public class MaxFragmentLengthExtensionParserTest {
     private final byte[] maxFragmentLength;
 
     public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-            ExtensionType type, int extensionLength, byte[] maxFragmentLength) {
+        ExtensionType type, int extensionLength, byte[] maxFragmentLength) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;

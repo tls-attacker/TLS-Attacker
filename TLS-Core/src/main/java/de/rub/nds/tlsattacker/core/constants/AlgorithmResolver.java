@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashSet;
@@ -30,10 +31,9 @@ public class AlgorithmResolver {
      * the PRF).
      *
      * @param protocolVersion
-     *            The ProtocolVersion for which the PRFAlgorithm should be
-     *            returned
+     * The ProtocolVersion for which the PRFAlgorithm should be returned
      * @param cipherSuite
-     *            The Ciphersuite for which the PRFAlgorithm should be returned
+     * The Ciphersuite for which the PRFAlgorithm should be returned
      * @return The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -46,7 +46,7 @@ public class AlgorithmResolver {
         } else if (cipherSuite.usesGOSTR34112012()) {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
         } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-                || protocolVersion == ProtocolVersion.DTLS10) {
+            || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
@@ -67,11 +67,9 @@ public class AlgorithmResolver {
      * string identifies the digest).
      *
      * @param protocolVersion
-     *            The ProtocolVersion for which the DigestAlgorithm should be
-     *            returned
+     * The ProtocolVersion for which the DigestAlgorithm should be returned
      * @param cipherSuite
-     *            The Ciphersuite for which the DigestAlgorithm should be
-     *            returned
+     * The Ciphersuite for which the DigestAlgorithm should be returned
      * @return The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -84,7 +82,7 @@ public class AlgorithmResolver {
         } else if (cipherSuite.usesGOSTR34112012()) {
             result = DigestAlgorithm.GOSTR34112012_256;
         } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-                || protocolVersion == ProtocolVersion.DTLS10) {
+            || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
@@ -160,12 +158,12 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.VKO_GOST01;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                    + " does not specify a KeyExchangeAlgorithm");
+                + " does not specify a KeyExchangeAlgorithm");
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
-                + " is not supported yet.");
+            + " is not supported yet.");
     }
 
     /**
@@ -215,8 +213,9 @@ public class AlgorithmResolver {
                 return CertificateKeyType.ECNRA;
             case FORTEZZA_KEA:
                 return CertificateKeyType.FORTEZZA;
+            default:
+                throw new UnsupportedOperationException("Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
         }
-        throw new UnsupportedOperationException("Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
     }
 
     /**
@@ -228,7 +227,7 @@ public class AlgorithmResolver {
      * a server with a cipher suite.
      *
      * @param cipherSuite
-     *            The selected CipherSuite
+     * The selected CipherSuite
      * @return The Set of publicKeyAlgorithms
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
@@ -308,17 +307,16 @@ public class AlgorithmResolver {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                    + " does not specify a Cipher");
+                + " does not specify a Cipher");
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
 
     /**
      * @param cipherSuite
-     *            The Ciphersuite for which the BulkCipherAlgorithm should be
-     *            returned
+     * The Ciphersuite for which the BulkCipherAlgorithm should be returned
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
@@ -327,7 +325,7 @@ public class AlgorithmResolver {
 
     /**
      * @param cipherSuite
-     *            The Ciphersuite for which the CipherType should be selected
+     * The Ciphersuite for which the CipherType should be selected
      * @return The CipherType of the Ciphersuite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
@@ -335,16 +333,15 @@ public class AlgorithmResolver {
         if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB() || cipherSuite.usesStrictExplicitIv()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA")
-                || cs.contains("RC2")) {
+            || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
             return CipherType.BLOCK;
         } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                    + " does not specify a CipherType");
+                + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
@@ -384,16 +381,16 @@ public class AlgorithmResolver {
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                    + " does not specify a MAC-Algorithm");
+                + " does not specify a MAC-Algorithm");
         }
         if (result != null) {
             LOGGER.debug("Using the following Mac Algorithm: {}", result);
             return result;
         } else {
             throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
-                    + " is not supported yet");
+                + " is not supported yet");
         }
     }
 
@@ -410,7 +407,7 @@ public class AlgorithmResolver {
             return result;
         } else {
             LOGGER.warn("The HKDF algorithm for cipher suite " + cipherSuite
-                    + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+                + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
             return HKDFAlgorithm.TLS_HKDF_SHA256;
         }
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -45,10 +46,10 @@ public class Point implements Serializable {
      * of the EllipticCurve class unnecessary.
      */
     @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
+        @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
     private final FieldElement x;
     @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
+        @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
     private final FieldElement y;
     private final boolean infinity;
 
@@ -67,10 +68,10 @@ public class Point implements Serializable {
      * constructor.
      *
      * @param x
-     *            A FieldElement representing the x-coordinate of the point.
+     * A FieldElement representing the x-coordinate of the point.
      * @param y
-     *            A FieldElement representing the y-coordinate of the point. x
-     *            and y must be elements of the same field.
+     * A FieldElement representing the y-coordinate of the point. x and y must
+     * be elements of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
         this.x = x;

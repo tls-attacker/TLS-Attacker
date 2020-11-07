@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,8 +31,8 @@ public class RecordParser extends AbstractRecordParser<Record> {
         LOGGER.debug("Parsing Record");
         Record record = new Record();
         parseContentType(record);
-        ProtocolMessageType protocolMessageType = ProtocolMessageType
-                .getContentType(record.getContentType().getValue());
+        ProtocolMessageType protocolMessageType =
+            ProtocolMessageType.getContentType(record.getContentType().getValue());
         if (protocolMessageType == null) {
             protocolMessageType = ProtocolMessageType.UNKNOWN;
         }
@@ -75,6 +76,6 @@ public class RecordParser extends AbstractRecordParser<Record> {
     private void parseProtocolMessageBytes(Record record) {
         record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
         LOGGER.debug("ProtocolMessageBytes: "
-                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+            + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

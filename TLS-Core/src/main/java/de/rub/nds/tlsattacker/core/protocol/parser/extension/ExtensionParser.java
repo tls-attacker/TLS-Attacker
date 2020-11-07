@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- *            The ExtensionMessage that should be parsed
+ * The ExtensionMessage that should be parsed
  */
 public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
 
@@ -48,7 +49,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseExtensionLength(ExtensionMessage msg) {
         msg.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
@@ -60,7 +61,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseExtensionType(ExtensionMessage msg) {
         msg.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
@@ -71,7 +72,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * Checks if the Extension has ExtensionData specified
      *
      * @param message
-     *            The message to check
+     * The message to check
      * @return True if extension did specify Data in its length field
      */
     protected boolean hasExtensionData(ExtensionMessage message) {

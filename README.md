@@ -38,7 +38,7 @@ If you have the correct Java version you can run the maven command from the TLS-
 $ cd TLS-Attacker
 $ mvn clean install
 ```
-Alternatively, if you are in hurry, you can skip the tests by using:
+Alternatively, if you are in a hurry, you can skip the tests by using:
 ```bash
 $ mvn clean install -DskipTests=true
 ```
@@ -118,7 +118,7 @@ You can use a different cipher suite, TLS version, or connect to a different por
 $ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
 ```
 
-The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
+The Attack's module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
 $ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```

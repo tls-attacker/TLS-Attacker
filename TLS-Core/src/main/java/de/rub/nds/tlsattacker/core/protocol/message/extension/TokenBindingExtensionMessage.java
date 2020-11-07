@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -39,8 +40,8 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     }
 
     public void setTokenbindingVersion(byte[] tokenbindingVersion) {
-        this.tokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion,
-                tokenbindingVersion);
+        this.tokenbindingVersion =
+            ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion, tokenbindingVersion);
     }
 
     public ModifiableByteArray getTokenbindingKeyParameters() {
@@ -52,8 +53,8 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     }
 
     public void setTokenbindingKeyParameters(byte[] tokenbindingParameters) {
-        this.tokenbindingKeyParameters = ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters,
-                tokenbindingParameters);
+        this.tokenbindingKeyParameters =
+            ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters, tokenbindingParameters);
     }
 
     public ModifiableInteger getParameterListLength() {
@@ -65,8 +66,8 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     }
 
     public void setParameterListLength(int parameterListLength) {
-        this.parameterListLength = ModifiableVariableFactory.safelySetValue(this.parameterListLength,
-                parameterListLength);
+        this.parameterListLength =
+            ModifiableVariableFactory.safelySetValue(this.parameterListLength, parameterListLength);
     }
 
 }

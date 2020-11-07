@@ -7,13 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.cca;
 
 public enum CcaCertificateKeyType {
-    RSA("rsa"),
-    DH("dh"),
-    DSA("dsa"),
-    ECDSA("ecdsa");
+    RSA("rsa"), DH("dh"), DSA("dsa"), ECDSA("ecdsa");
 
     private String javaName;
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -23,24 +24,24 @@ public class ECCUtilsBCWrapper {
      * curves and point formats. It uses the BC functionality.
      *
      * @param namedGroups
-     *            The Array of namedGroups
+     * The Array of namedGroups
      * @param pointFormats
-     *            The Array of ECPointFormats
+     * The Array of ECPointFormats
      * @param input
-     *            The Inputstream to read from
+     * The Inputstream to read from
      * @return ECDomainParameters
      * @throws IOException
-     *             If something goes wrong while reading from the Stream
+     * If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(NamedGroup[] namedGroups, ECPointFormat[] pointFormats,
-            InputStream input) throws IOException {
+        InputStream input) throws IOException {
         int[] nc = convertNamedCurves(namedGroups);
         short[] pf = convertPointFormats(pointFormats);
         return TlsECCUtils.readECParameters(nc, pf, input);
     }
 
     public static ECDomainParameters readECParameters(NamedGroup namedGroup, ECPointFormat pointFormat,
-            InputStream input) throws IOException {
+        InputStream input) throws IOException {
         int[] nc = convertNamedCurves(new NamedGroup[] { namedGroup });
         short[] pf = convertPointFormats(new ECPointFormat[] { pointFormat });
         return TlsECCUtils.readECParameters(nc, pf, input);
@@ -51,10 +52,10 @@ public class ECCUtilsBCWrapper {
      * point formats are allowed
      *
      * @param input
-     *            The Inputstream to read from
+     * The Inputstream to read from
      * @return ECDomainParameters
      * @throws IOException
-     *             If something goes wrong while reading from the Stream
+     * If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(InputStream input) throws IOException {
         NamedGroup[] namedCurves = NamedGroup.values();
@@ -66,7 +67,7 @@ public class ECCUtilsBCWrapper {
      * Converts named curves into BC style notation
      *
      * @param namedGroups
-     *            The NamedCurves to convert
+     * The NamedCurves to convert
      * @return int[] of the NamedCurves in BC Style
      */
     private static int[] convertNamedCurves(NamedGroup[] namedGroups) {
@@ -84,7 +85,7 @@ public class ECCUtilsBCWrapper {
      * Converts point formats into BC style notation
      *
      * @param pointFormats
-     *            The pointFormats to convert
+     * The pointFormats to convert
      * @return The converted PointFormats
      */
     private static short[] convertPointFormats(ECPointFormat[] pointFormats) {

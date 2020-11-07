@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -28,8 +29,8 @@ public class CertificateStatusParser extends HandshakeMessageParser<CertificateS
     @Override
     protected void parseHandshakeMessageContent(CertificateStatusMessage msg) {
         LOGGER.debug("Parsing CertificateStatusMessage");
-        CertificateStatusGenericParser parser = new CertificateStatusGenericParser(0, parseByteArrayField(msg
-                .getLength().getValue()));
+        CertificateStatusGenericParser parser =
+            new CertificateStatusGenericParser(0, parseByteArrayField(msg.getLength().getValue()));
         CertificateStatusObject certificateStatus = parser.parse();
 
         msg.setCertificateStatusType(certificateStatus.getType());

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.connectivity;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -98,7 +99,7 @@ public class ConnectivityChecker {
             } else {
                 for (ProtocolMessage message : receiveTillAction.getReceivedMessages()) {
                     if (message instanceof ServerHelloMessage || message instanceof ServerHelloDoneMessage
-                            || message instanceof SSL2ServerHelloMessage) {
+                        || message instanceof SSL2ServerHelloMessage) {
                         return true;
                     }
                 }

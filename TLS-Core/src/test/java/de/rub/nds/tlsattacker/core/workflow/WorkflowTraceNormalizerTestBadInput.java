@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -138,7 +139,8 @@ public class WorkflowTraceNormalizerTestBadInput {
         }
 
         try {
-            trace = WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
+            trace =
+                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -21,7 +22,7 @@ public class CipherSuiteFilter {
      * ephemeral property. This method is useful for establishing new workflows.
      * 
      * @param cipherSuites
-     *            The CipherSuites that should be filtered
+     * The CipherSuites that should be filtered
      */
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));

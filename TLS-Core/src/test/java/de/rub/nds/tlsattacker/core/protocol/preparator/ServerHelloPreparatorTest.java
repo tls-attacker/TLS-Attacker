@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -69,9 +70,10 @@ public class ServerHelloPreparatorTest {
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());
         LOGGER.info(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
-        assertArrayEquals(ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
+        assertArrayEquals(
+            ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
                 ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C")),
-                message.getRandom().getValue());
+            message.getRandom().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("000102030405"), message.getSessionId().getValue());
         assertTrue(6 == message.getSessionIdLength().getValue());
         assertTrue(message.getExtensionBytes().getValue().length == 0);

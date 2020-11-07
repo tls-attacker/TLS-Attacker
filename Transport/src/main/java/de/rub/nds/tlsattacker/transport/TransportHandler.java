@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.ByteArrayOutputStream;
@@ -69,8 +70,8 @@ public abstract class TransportHandler {
 
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        long minTimeMillies = System.currentTimeMillis() + timeout;
-        while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
+        long minTimeMillis = System.currentTimeMillis() + timeout;
+        while ((System.currentTimeMillis() < minTimeMillis) && (stream.toByteArray().length == 0)) {
             if (inStream.available() != 0) {
                 while (inStream.available() != 0) {
                     int read = inStream.read();
@@ -79,7 +80,7 @@ public abstract class TransportHandler {
             } else {
                 if (isInStreamTerminating) {
                     try {
-                        // dont ask - the java api does not allow this
+                        // don't ask - the java api does not allow this
                         // otherwise...
                         Thread.sleep(1);
                         int read = inStream.read();
@@ -89,10 +90,10 @@ public abstract class TransportHandler {
                         }
                         inStream.unread(read);
 
-                    } catch (SocketException E) {
+                    } catch (SocketException e) {
                         // TCP RST received
                         return stream.toByteArray();
-                    } catch (Exception E) {
+                    } catch (Exception _) {
                     }
                 }
             }
@@ -102,7 +103,7 @@ public abstract class TransportHandler {
 
     public void sendData(byte[] data) throws IOException {
         if (!initialized) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         outStream.write(data);
         outStream.flush();

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -58,7 +59,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         m = null;
         // b computation
         int tmp = publicKey.getModulus().bitLength();
-        tmp = (MathHelper.intceildiv(tmp, 8) - 2) * 8;
+        tmp = (MathHelper.intCeilDiv(tmp, 8) - 2) * 8;
         bigB = BigInteger.ONE.shiftLeft(tmp);
     }
 
@@ -77,7 +78,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+            m =
+                new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
                     (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
             stepOne();
@@ -122,7 +124,8 @@ public class Bleichenbacher extends Pkcs1Attack {
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+        m =
+            new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
                 (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
         LOGGER.debug(" Found s0 : " + si);
@@ -158,7 +161,7 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         LOGGER.debug("Step 2a: Starting the search");
         // si = ceil(n/(3B))
-        BigInteger tmp[] = n.divideAndRemainder(BigInteger.valueOf(3).multiply(bigB));
+        BigInteger[] tmp = n.divideAndRemainder(BigInteger.valueOf(3).multiply(bigB));
         if (BigInteger.ZERO.compareTo(tmp[1]) != 0) {
             si = tmp[0].add(BigInteger.ONE);
         } else {
@@ -298,7 +301,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     private BigInteger step3ComputeUpperBound(final BigInteger s, final BigInteger modulus,
-            final BigInteger upperIntervalBound) {
+        final BigInteger upperIntervalBound) {
         BigInteger upperBound = upperIntervalBound.multiply(s);
         upperBound = upperBound.subtract(BigInteger.valueOf(2).multiply(bigB));
         // ceil
@@ -313,7 +316,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     private BigInteger step3ComputeLowerBound(final BigInteger s, final BigInteger modulus,
-            final BigInteger lowerIntervalBound) {
+        final BigInteger lowerIntervalBound) {
         BigInteger lowerBound = lowerIntervalBound.multiply(s);
         lowerBound = lowerBound.subtract(BigInteger.valueOf(3).multiply(bigB));
         lowerBound = lowerBound.add(BigInteger.ONE);
@@ -330,7 +333,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @return
      */
     protected BigInteger step2cComputeLowerBound(final BigInteger r, final BigInteger modulus,
-            final BigInteger upperIntervalBound) {
+        final BigInteger upperIntervalBound) {
         BigInteger lowerBound = BigInteger.valueOf(2).multiply(bigB);
         lowerBound = lowerBound.add(r.multiply(modulus));
         lowerBound = lowerBound.divide(upperIntervalBound);
@@ -346,7 +349,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @return
      */
     protected BigInteger step2cComputeUpperBound(final BigInteger r, final BigInteger modulus,
-            final BigInteger lowerIntervalBound) {
+        final BigInteger lowerIntervalBound) {
         BigInteger upperBound = BigInteger.valueOf(3).multiply(bigB);
         upperBound = upperBound.add(r.multiply(modulus));
         upperBound = upperBound.divide(lowerIntervalBound);

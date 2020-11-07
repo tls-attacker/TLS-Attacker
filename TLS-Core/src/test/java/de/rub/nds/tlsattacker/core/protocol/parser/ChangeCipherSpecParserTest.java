@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -25,9 +26,9 @@ public class ChangeCipherSpecParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS12 },
-                { new byte[] { 0x05 }, (byte) 5, ProtocolVersion.TLS12 },
-                { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS10 },
-                { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS11 } });
+            { new byte[] { 0x05 }, (byte) 5, ProtocolVersion.TLS12 },
+            { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS10 },
+            { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS11 } });
     }
 
     private final byte[] message;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -42,7 +43,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
         context.setTokenBindingVersion(TokenBindingVersion
-                .getExtensionType(message.getTokenbindingVersion().getValue()));
+            .getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));

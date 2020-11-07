@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,14 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
-
-    @Override
-    public int compare(ProtocolVersion o1, ProtocolVersion o2) {
-        return o1.compare(o2);
-    }
-}
 
 public enum ProtocolVersion {
 

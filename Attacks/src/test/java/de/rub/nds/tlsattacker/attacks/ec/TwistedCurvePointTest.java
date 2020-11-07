@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -69,18 +70,18 @@ public class TwistedCurvePointTest {
 
     private boolean isOrderCorrect(TwistedCurvePoint invP) {
         if (invP.getIntendedNamedGroup() == NamedGroup.ECDH_X25519
-                || invP.getIntendedNamedGroup() == NamedGroup.ECDH_X448) {
+            || invP.getIntendedNamedGroup() == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup());
             Point montgPoint = rfcCurve.getPoint(invP.getPublicPointBaseX(), invP.getPublicPointBaseY());
             Point weierPoint = rfcCurve.toWeierstrass(montgPoint);
             BigInteger transformedX = weierPoint.getX().getData().multiply(invP.getD()).mod(rfcCurve.getModulus());
 
-            EllipticCurveOverFp intendedCurve = ((RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup()))
-                    .getWeierstrassEquivalent();
-            BigInteger modA = intendedCurve.getA().getData().multiply(invP.getD().pow(2))
-                    .mod(intendedCurve.getModulus());
-            BigInteger modB = intendedCurve.getB().getData().multiply(invP.getD().pow(3))
-                    .mod(intendedCurve.getModulus());
+            EllipticCurveOverFp intendedCurve =
+                ((RFC7748Curve) CurveFactory.getCurve(invP.getIntendedNamedGroup())).getWeierstrassEquivalent();
+            BigInteger modA =
+                intendedCurve.getA().getData().multiply(invP.getD().pow(2)).mod(intendedCurve.getModulus());
+            BigInteger modB =
+                intendedCurve.getB().getData().multiply(invP.getD().pow(3)).mod(intendedCurve.getModulus());
             EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
             Point point = Point.createPoint(transformedX, invP.getPublicPointBaseY(), invP.getIntendedNamedGroup());
 
@@ -91,12 +92,12 @@ public class TwistedCurvePointTest {
                 }
             }
         } else {
-            EllipticCurveOverFp intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(invP
-                    .getIntendedNamedGroup());
-            BigInteger modA = intendedCurve.getA().getData().multiply(invP.getD().pow(2))
-                    .mod(intendedCurve.getModulus());
-            BigInteger modB = intendedCurve.getB().getData().multiply(invP.getD().pow(3))
-                    .mod(intendedCurve.getModulus());
+            EllipticCurveOverFp intendedCurve =
+                (EllipticCurveOverFp) CurveFactory.getCurve(invP.getIntendedNamedGroup());
+            BigInteger modA =
+                intendedCurve.getA().getData().multiply(invP.getD().pow(2)).mod(intendedCurve.getModulus());
+            BigInteger modB =
+                intendedCurve.getB().getData().multiply(invP.getD().pow(3)).mod(intendedCurve.getModulus());
             EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
 
             BigInteger modX = invP.getPublicPointBaseX().multiply(invP.getD()).mod(twistedCurve.getModulus());

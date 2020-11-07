@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -113,7 +114,7 @@ public class ServerVerifyChecker {
         byte[] iv = context.getSSL2Iv();
 
         return decryptRC2(clientReadKey, message.getEncryptedPart().getValue(), iv, message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     static byte[] decryptRC2(byte[] clientReadKey, byte[] encrypted, byte[] iv, int paddingLength) {
@@ -139,7 +140,7 @@ public class ServerVerifyChecker {
         cbcDes.init(false, cbcDesParams);
 
         return processEncryptedBlocks(cbcDes, message.getEncryptedPart().getValue(), message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     private static byte[] decryptCbcDesEde3(SSL2ServerVerifyMessage message, TlsContext context) {
@@ -155,7 +156,7 @@ public class ServerVerifyChecker {
         cbcDesEde.init(false, params);
 
         return processEncryptedBlocks(cbcDesEde, message.getEncryptedPart().getValue(), message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     /**
@@ -163,11 +164,11 @@ public class ServerVerifyChecker {
      * MD5.
      *
      * @param tlsContext
-     *            The TLS context to get information for key derivation from.
+     * The TLS context to get information for key derivation from.
      * @param index
-     *            Additional characters to mix into key derivation. This will
-     *            usually either be an empty String, or one of "0" and "1" for
-     *            KEY-MATERIAL-0 resp. KEY-MATERIAL-1.
+     * Additional characters to mix into key derivation. This will usually
+     * either be an empty String, or one of "0" and "1" for KEY-MATERIAL-0 resp.
+     * KEY-MATERIAL-1.
      */
     private static byte[] makeKeyMaterial(TlsContext tlsContext, String index) {
         SSL2CipherSuite cipherSuite = tlsContext.getChooser().getSSL2CipherSuite();

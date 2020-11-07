@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.cca;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,16 +16,15 @@ import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class CcaCertificateGenerator {
 
@@ -35,14 +35,15 @@ public class CcaCertificateGenerator {
      * @return
      */
     public static CertificateMessage generateCertificate(CcaCertificateManager ccaCertificateManager,
-            CcaCertificateType ccaCertificateType) {
+        CcaCertificateType ccaCertificateType) {
         CertificateMessage certificateMessage = new CertificateMessage();
         if (ccaCertificateType != null) {
             switch (ccaCertificateType) {
                 case CLIENT_INPUT:
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
-                    CertificatePair certificatePair = new CertificatePair(ccaCertificateManager
-                            .getCertificateChain(ccaCertificateType).getEncodedCertificates().get(0));
+                    CertificatePair certificatePair =
+                        new CertificatePair(ccaCertificateManager.getCertificateChain(ccaCertificateType)
+                            .getEncodedCertificates().get(0));
                     certificatePairsList.add(certificatePair);
                     certificateMessage.setCertificatesList(certificatePairsList);
                     break;
@@ -123,9 +124,9 @@ public class CcaCertificateGenerator {
     }
 
     private static CertificateMessage generateCertificateMessage(CcaCertificateManager ccaCertificateManager,
-            CcaCertificateType ccaCertificateType) {
+        CcaCertificateType ccaCertificateType) {
 
-        Logger LOGGER = LogManager.getLogger();
+        Logger logger = LogManager.getLogger();
 
         CertificateMessage certificateMessage = new CertificateMessage();
         List<CertificatePair> certificatePairList = new LinkedList<>();
@@ -150,15 +151,17 @@ public class CcaCertificateGenerator {
 
         if (certificate != null) {
             try {
-                certificateKeyPair = new CertificateKeyPair(certificate,
+                certificateKeyPair =
+                    new CertificateKeyPair(certificate,
                         (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
                         (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
             } catch (IOException ioe) {
-                LOGGER.error("IOE while creating CertificateKeyPair");
+                logger.error("IOE while creating CertificateKeyPair");
                 return null;
             }
         } else {
-            certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate,
+            certificateKeyPair =
+                new CertificateKeyPair(encodedLeafCertificate,
                     (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
                     (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
 
@@ -170,12 +173,12 @@ public class CcaCertificateGenerator {
 
     private static Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
-                    .intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
-                            HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter.intToBytes(lengthBytes,
-                    HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
+            ByteArrayInputStream stream =
+                new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter.intToBytes(lengthBytes
+                    + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
+                    .intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
-        } catch (Exception E) {
+        } catch (Exception e) {
             return null;
         }
     }

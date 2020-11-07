@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -53,7 +54,7 @@ public class SignatureCalculatorTest {
 
     @Test
     public void RSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException {
+        SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -71,7 +72,7 @@ public class SignatureCalculatorTest {
 
     @Test
     public void RSASSSL3ignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException {
+        SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_NONE;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -90,7 +91,7 @@ public class SignatureCalculatorTest {
 
     @Test
     public void DSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException {
+        SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.DSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -110,7 +111,7 @@ public class SignatureCalculatorTest {
 
     @Test
     public void ECDSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException {
+        SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
         keyPairGenerator.initialize(256, context.getBadSecureRandom());
@@ -129,7 +130,7 @@ public class SignatureCalculatorTest {
 
     @Test
     public void ECDSASSL3SignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException {
+        SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
         keyPairGenerator.initialize(256, context.getBadSecureRandom());
@@ -148,11 +149,11 @@ public class SignatureCalculatorTest {
 
     @Test
     public void Gost01SignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException, InvalidAlgorithmParameterException {
+        SignatureException, InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410");
         keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("GostR3410-2001-CryptoPro-XchB"),
-                context.getBadSecureRandom());
+            context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         BCECGOST3410PrivateKey privateKey = (BCECGOST3410PrivateKey) keyPair.getPrivate();
         context.setServerEcPrivateKey(privateKey.getS());
@@ -166,11 +167,11 @@ public class SignatureCalculatorTest {
 
     @Test
     public void Gost12SignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-            SignatureException, InvalidAlgorithmParameterException {
+        SignatureException, InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
         keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("Tc26-Gost-3410-12-512-paramSetA"),
-                context.getBadSecureRandom());
+            context.getBadSecureRandom());
         context.getConfig().setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_512_paramSetA);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         BCECGOST3410_2012PrivateKey privateKey = (BCECGOST3410_2012PrivateKey) keyPair.getPrivate();

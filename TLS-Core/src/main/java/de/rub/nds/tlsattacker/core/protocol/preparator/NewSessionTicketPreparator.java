@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -66,18 +67,20 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] plainstateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
         try {
-            encryptedState = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes,
-                    newticket.getIV().getValue());
-        } catch (CryptoException E) {
+            encryptedState =
+                StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes, newticket.getIV()
+                    .getValue());
+        } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             encryptedState = new byte[0];
         }
         newticket.setEncryptedState(encryptedState);
 
         byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
+        byte[] macinput =
+            ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
                 ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
                 encryptedState);
         byte[] hmac;
@@ -113,7 +116,7 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
      * static function in the StatePlaintext class for better testing/debugging
      *
      * @return A struct with Stateinformation defined in
-     *         https://tools.ietf.org/html/rfc5077#section-4
+     * https://tools.ietf.org/html/rfc5077#section-4
      */
     private StatePlaintext generateStatePlaintext() {
         StatePlaintext plainstate = new StatePlaintext();

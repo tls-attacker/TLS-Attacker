@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * Abstract Parser class which can be used to read a byte array.
  *
  * @param <T>
- *            Type of the Object that should be parsed
+ * Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
 
@@ -44,10 +45,9 @@ public abstract class Parser<T> {
      * Constructor for the Parser
      *
      * @param startposition
-     *            Position in the array from which the Parser should start
-     *            working
+     * Position in the array from which the Parser should start working
      * @param array
-     *            Array that should be parsed
+     * Array that should be parsed
      */
     public Parser(int startposition, byte[] array) {
         this.startPoint = startposition;
@@ -55,7 +55,7 @@ public abstract class Parser<T> {
         this.array = array;
         if (startposition > array.length) {
             throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
-                    + array.length);
+                + array.length);
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class Parser<T> {
      * the pointer accordingly.
      *
      * @param length
-     *            Number of bytes to be parsed
+     * Number of bytes to be parsed
      * @return A subbyteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
@@ -78,7 +78,7 @@ public abstract class Parser<T> {
         int nextPointer = pointer + length;
         if (!enoughBytesLeft(length)) {
             throw new ParserException("Parsing over the end of the array. Current Pointer:" + pointer
-                    + " ToParse Length:" + length + " ArrayLength:" + array.length);
+                + " ToParse Length:" + length + " ArrayLength:" + array.length);
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
         pointer = nextPointer;
@@ -91,7 +91,7 @@ public abstract class Parser<T> {
      * pointer accordingly.
      *
      * @param length
-     *            Number of bytes to be parsed
+     * Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
      */
     protected int parseIntField(int length) {
@@ -107,7 +107,7 @@ public abstract class Parser<T> {
      * parsed. Moves the pointer accordingly.
      *
      * @param length
-     *            Number of bytes to be parsed
+     * Number of bytes to be parsed
      * @return A BigInteger representation of the subbyteArray
      */
     protected BigInteger parseBigIntField(int length) {
@@ -123,7 +123,7 @@ public abstract class Parser<T> {
      * the pointer accordingly.
      *
      * @param length
-     *            Number of bytes to be parsed
+     * Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
      */
     protected byte parseByteField(int length) {
@@ -173,7 +173,7 @@ public abstract class Parser<T> {
      * Set the current position of the pointer in the array
      *
      * @param pointer
-     *            The new position of the pointer in the array
+     * The new position of the pointer in the array
      */
     public void setPointer(int pointer) {
         this.pointer = pointer;
@@ -201,7 +201,7 @@ public abstract class Parser<T> {
      * Checks if there are atleast count bytes left to read
      *
      * @param count
-     *            Number of bytes to check for
+     * Number of bytes to check for
      * @return True if there are atleast count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {

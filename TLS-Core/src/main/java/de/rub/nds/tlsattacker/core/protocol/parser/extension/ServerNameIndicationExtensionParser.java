@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -37,8 +38,8 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
             int position = 0;
             pairList = new LinkedList<>();
             while (position < msg.getServerNameListLength().getValue()) {
-                ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes()
-                        .getValue());
+                ServerNamePairParser parser =
+                    new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
                 pairList.add(parser.parse());
                 if (position == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
@@ -61,7 +62,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
      * writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST));
@@ -73,11 +74,12 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
      * writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(parseByteArrayField(msg.getServerNameListLength().getValue()));
-        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     /**
@@ -85,7 +87,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameList(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameList(pairList);

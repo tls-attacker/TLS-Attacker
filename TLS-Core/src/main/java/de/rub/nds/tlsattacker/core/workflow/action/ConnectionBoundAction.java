@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -67,12 +68,12 @@ public abstract class ConnectionBoundAction extends TlsAction {
     @Override
     public boolean containsAllAliases(Collection<String> aliases) {
         return getAllAliases().containsAll(aliases);
-    };
+    }
 
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
-    };
+    }
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {

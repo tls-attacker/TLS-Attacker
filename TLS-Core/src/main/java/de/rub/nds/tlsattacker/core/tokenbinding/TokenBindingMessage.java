@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -82,8 +83,8 @@ public class TokenBindingMessage extends ProtocolMessage {
     }
 
     public void setTokenbindingsLength(int tokenbindingsLength) {
-        this.tokenbindingsLength = ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength,
-                tokenbindingsLength);
+        this.tokenbindingsLength =
+            ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength, tokenbindingsLength);
     }
 
     public ModifiableInteger getModulusLength() {
@@ -119,8 +120,8 @@ public class TokenBindingMessage extends ProtocolMessage {
     }
 
     public void setPublicExponentLength(int publicExponentLength) {
-        this.publicExponentLength = ModifiableVariableFactory.safelySetValue(this.publicExponentLength,
-                publicExponentLength);
+        this.publicExponentLength =
+            ModifiableVariableFactory.safelySetValue(this.publicExponentLength, publicExponentLength);
     }
 
     public ModifiableByteArray getPublicExponent() {

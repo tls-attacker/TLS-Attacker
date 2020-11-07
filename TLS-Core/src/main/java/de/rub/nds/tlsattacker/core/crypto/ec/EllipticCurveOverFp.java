@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -28,12 +29,11 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br />
      *
      * @param a
-     *            The coefficient a in the equation of the curve.
+     * The coefficient a in the equation of the curve.
      * @param b
-     *            The coefficient b in the equation of the curve.
+     * The coefficient b in the equation of the curve.
      * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
+     * The prime order of the field over which the curve shall be defined.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p) {
         super(p);
@@ -46,18 +46,17 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * With base point (x,y) and base point order q. p must be prime.
      *
      * @param a
-     *            The coefficient a in the equation of the curve.
+     * The coefficient a in the equation of the curve.
      * @param b
-     *            The coefficient b in the equation of the curve.
+     * The coefficient b in the equation of the curve.
      * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
+     * The prime order of the field over which the curve shall be defined.
      * @param x
-     *            The x-coordinate of the base point.
+     * The x-coordinate of the base point.
      * @param y
-     *            The y-coordinate of the base point.
+     * The y-coordinate of the base point.
      * @param q
-     *            The order of the base point.
+     * The order of the base point.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
         super(p, x, y, q);
@@ -115,7 +114,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     @Override
     protected Point additionFormular(Point p, Point q) {
         if (!(p.getX() instanceof FieldElementFp && p.getY() instanceof FieldElementFp
-                && q.getX() instanceof FieldElementFp && q.getY() instanceof FieldElementFp)) {
+            && q.getX() instanceof FieldElementFp && q.getY() instanceof FieldElementFp)) {
             LOGGER.warn("Trying to add non Fp points with Fp curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }

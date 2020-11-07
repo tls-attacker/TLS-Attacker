@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -21,12 +22,12 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_REQUEST);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
+        isIncludeInDigestDefault = false;
     }
 
     public HelloRequestMessage() {
         super(HandshakeMessageType.HELLO_REQUEST);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
+        isIncludeInDigestDefault = false;
     }
 
     @Override

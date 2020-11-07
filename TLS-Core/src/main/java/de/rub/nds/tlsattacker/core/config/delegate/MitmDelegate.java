@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -29,11 +30,11 @@ public class MitmDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = "-accept", description = "A MiTM client can connect to this connection end."
-            + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
+        + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
     protected String inboundConnectionStr;
 
     @Parameter(names = "-connect", description = "Add a server to which the MiTM will connect to."
-            + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
+        + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
     protected String outboundConnectionStr;
 
     public MitmDelegate() {
@@ -64,14 +65,14 @@ public class MitmDelegate extends Delegate {
             setInboundConnection(config);
         } else {
             LOGGER.debug("Parameter -accept not specified. Using inbound connection from "
-                    + "-workflow_input or config defaults.");
+                + "-workflow_input or config defaults.");
         }
 
         if (outboundConnectionStr != null) {
             setOutboundConnection(config);
         } else {
             LOGGER.debug("Parameter -connect not specified. Using outbound connection from "
-                    + "-workflow_input or config defaults.");
+                + "-workflow_input or config defaults.");
         }
 
     }
@@ -94,7 +95,7 @@ public class MitmDelegate extends Delegate {
                 break;
             default:
                 throw new ConfigurationException("Could not parse provided accepting connection" + " end: "
-                        + inboundConnectionStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
+                    + inboundConnectionStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
         }
         config.setDefaultServerConnection(inboundConnection);
     }
@@ -119,7 +120,7 @@ public class MitmDelegate extends Delegate {
                 break;
             default:
                 throw new ConfigurationException("Could not parse provided server address: " + outboundConnectionStr
-                        + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
+                    + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
         }
         config.setDefaultClientConnection(outboundConnection);
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -27,7 +28,7 @@ public class CompressionMethodConverter implements IStringConverter<CompressionM
             return CompressionMethod.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a compression method. "
-                    + "Available values are: " + Arrays.toString(CompressionMethod.values()));
+                + "Available values are: " + Arrays.toString(CompressionMethod.values()));
         }
     }
 }

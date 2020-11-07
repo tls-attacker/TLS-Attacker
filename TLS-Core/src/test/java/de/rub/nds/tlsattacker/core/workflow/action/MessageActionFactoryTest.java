@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -47,17 +48,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action = MessageActionFactory.createAction(clientConnection, ConnectionEndType.CLIENT,
-                new AlertMessage(config));
+        MessageAction action =
+            MessageActionFactory.createAction(clientConnection, ConnectionEndType.CLIENT, new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory
-                .createAction(clientConnection, ConnectionEndType.SERVER, new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(clientConnection, ConnectionEndType.SERVER, new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(serverConnection, ConnectionEndType.CLIENT, new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(serverConnection, ConnectionEndType.CLIENT, new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(serverConnection, ConnectionEndType.SERVER, new AlertMessage(config));
+        action =
+            MessageActionFactory.createAction(serverConnection, ConnectionEndType.SERVER, new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }

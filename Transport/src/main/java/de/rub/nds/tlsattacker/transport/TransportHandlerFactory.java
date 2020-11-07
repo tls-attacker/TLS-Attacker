@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
@@ -66,14 +67,14 @@ public class TransportHandlerFactory {
                     return new TimingProxyClientTcpTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                            "TCP_PROXY_TIMING for server sockets is currently not supported");
+                        "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new ClientTcpNoDelayTransportHandler(timeout, con.getIp(), con.getPort());
                 } else {
                     throw new UnsupportedOperationException(
-                            "This transport handler type is only supported in client mode");
+                        "This transport handler type is only supported in client mode");
                 }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");

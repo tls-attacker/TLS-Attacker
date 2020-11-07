@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -14,8 +15,7 @@ import java.util.Map;
 
 public enum HeartbeatMessageType {
 
-    HEARTBEAT_REQUEST((byte) 1),
-    HEARTBEAT_RESPONSE((byte) 2);
+    HEARTBEAT_REQUEST((byte) 1), HEARTBEAT_RESPONSE((byte) 2);
 
     private byte value;
 

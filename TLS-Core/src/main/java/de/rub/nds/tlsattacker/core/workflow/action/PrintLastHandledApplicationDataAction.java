@@ -7,12 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -83,7 +85,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      * Example: US-ASCII Available charsets can be found in StandardCharsets
      *
      * @param stringEncoding
-     *            The enconding that should be used
+     * The enconding that should be used
      *
      */
     public void setStringEncoding(String stringEncoding) {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import static org.junit.Assert.*;
@@ -38,22 +39,22 @@ public class AlgorithmResolverTest {
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
         }
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
+            CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
+            CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
+            CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12,
-                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
+            CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == PRFAlgorithm.TLS_PRF_SHA256);
+            CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
+            CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411);
+            CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256);
+            CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256);
     }
 
     public void testGetPRFUnsupportedProtocolVersionSSL2() {
@@ -89,29 +90,29 @@ public class AlgorithmResolverTest {
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS10, suite) == DigestAlgorithm.LEGACY);
         }
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
+            CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
+            CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
-                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == DigestAlgorithm.SHA256);
+            CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
-                CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
+            CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
+            CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR34112012_256);
+            CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR34112012_256);
     }
 
     /**
@@ -151,9 +152,9 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_DES_CBC_SHA) == KeyExchangeAlgorithm.ECMQV_ECNRA);
         assertTrue(AlgorithmResolver
-                .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
+            .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
         assertTrue(AlgorithmResolver
-                .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
+            .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256) == null);
     }
 
@@ -319,12 +320,14 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetMacAlgorithm() {
+        assertEquals(
+            AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT),
+            MacAlgorithm.IMIT_GOST28147);
+        assertEquals(
+            AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411),
+            MacAlgorithm.HMAC_GOSTR3411);
         assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT), MacAlgorithm.IMIT_GOST28147);
-        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411);
-        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
+            CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
     }
 
     // Test get Mac algorithm for all ciphersuites

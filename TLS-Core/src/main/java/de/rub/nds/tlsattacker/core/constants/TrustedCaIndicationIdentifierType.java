@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -16,10 +17,7 @@ import java.util.Map;
  * RFC6066
  */
 public enum TrustedCaIndicationIdentifierType {
-    PRE_AGREED((byte) 0),
-    KEY_SHA1_HASH((byte) 1),
-    X509_NAME((byte) 2),
-    CERT_SHA1_HASH((byte) 3);
+    PRE_AGREED((byte) 0), KEY_SHA1_HASH((byte) 1), X509_NAME((byte) 2), CERT_SHA1_HASH((byte) 3);
 
     private final byte value;
     private static final Map<Byte, TrustedCaIndicationIdentifierType> MAP;

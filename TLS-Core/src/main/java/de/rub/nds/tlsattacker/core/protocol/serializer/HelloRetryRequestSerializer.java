@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,6 +47,7 @@ public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<Hell
 
     protected void writeSelectedCiphersuite() {
         appendBytes(msg.getSelectedCipherSuite().getValue());
-        LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER
+            .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 }

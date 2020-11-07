@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -157,8 +158,8 @@ public class ICEAttacker {
         BigInteger[] congsArray = ArrayConverter.convertListToArray(congs);
         BigInteger[] moduliArray = ArrayConverter.convertListToArray(moduli);
         int lastElementPointer = usedOracleEquations.length - 1;
-        BigInteger result = bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray,
-                lastElementPointer);
+        BigInteger result =
+            bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray, lastElementPointer);
 
         if (result != null) {
             LOGGER.info("Result found: {}", result);
@@ -174,21 +175,21 @@ public class ICEAttacker {
      * compute the server private key with CRT.
      *
      * @param usedOracleEquations
-     *            The used oracle equations
+     * The used oracle equations
      * @param congs
-     *            The congruences
+     * The congruences
      * @param modulis
-     *            The modulis
+     * The modulis
      * @param pointer
-     *            the pointer
+     * the pointer
      * @return
      */
     public BigInteger bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
-            BigInteger[] modulis, int pointer) {
+        BigInteger[] modulis, int pointer) {
 
         int[] eq = Arrays.copyOf(usedOracleEquations, usedOracleEquations.length);
-        int maxValue = (pointer == usedOracleEquations.length - 1) ? (congs.length)
-                : (usedOracleEquations[pointer + 1]);
+        int maxValue =
+            (pointer == usedOracleEquations.length - 1) ? (congs.length) : (usedOracleEquations[pointer + 1]);
         int minValue = usedOracleEquations[pointer];
         for (int i = minValue; i < maxValue; i++) {
             eq[pointer] = i;
@@ -211,11 +212,11 @@ public class ICEAttacker {
      * Computes CRT from a given combination of congs and modulis
      *
      * @param usedOracleEquations
-     *            The used oracle equations
+     * The used oracle equations
      * @param congs
-     *            The congruences
+     * The congruences
      * @param modulis
-     *            The modulis
+     * The modulis
      * @return CRTF
      */
     private BigInteger computeCRTFromCombination(int[] usedOracleEquations, BigInteger[] congs, BigInteger[] modulis) {
@@ -240,7 +241,7 @@ public class ICEAttacker {
      * Uses the oracle to get a congruence for a specific point
      *
      * @param point
-     *            A Point
+     * A Point
      * @return The Congruence
      */
     private BigInteger getCongruence(ICEPoint point) {

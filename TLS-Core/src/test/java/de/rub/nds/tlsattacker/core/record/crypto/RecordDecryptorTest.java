@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -66,40 +67,42 @@ public class RecordDecryptorTest {
     @Test
     public void testDecryptTLS12Camellia() throws NoSuchAlgorithmException, CryptoException {
         context.setRandom(new TestRandomData(ArrayConverter
-                .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E34ED3256F1B380C692B962DF892180C5A")));
+            .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E34ED3256F1B380C692B962DF892180C5A")));
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
-        context.setMasterSecret(ArrayConverter
+        context
+            .setMasterSecret(ArrayConverter
                 .hexStringToByteArray("EC28993D8B3F3D81D626C3B419C34547373C5EA49C4A727790C59892AACFF4FEF0945725996013C65581110889D019DE"));
         context.setClientRandom(ArrayConverter
-                .hexStringToByteArray("DA5BA97EAC47D864C1041B542885F0CD20F05F7F3E0929FBE38D2A72497D5A53"));
+            .hexStringToByteArray("DA5BA97EAC47D864C1041B542885F0CD20F05F7F3E0929FBE38D2A72497D5A53"));
         context.setServerRandom(ArrayConverter
-                .hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
+            .hexStringToByteArray("2488DFEE45765EEF369F30AFE356B9463624C6D617503AAB6B592B8CBDB55AB2"));
         context.setConnection(new InboundConnection());
 
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-        record.setProtocolMessageBytes(ArrayConverter
+        record
+            .setProtocolMessageBytes(ArrayConverter
                 .hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3AB1B66A1C376C1F354607CFDA1739D9B60D30776152207B1988604FBCF75E6BC370ADE1EE684CAE9B0801AAE50CC2EFA"));
 
         recordCipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("16B406CF7A489CA985883AEDA28D34E3"), record
-                .getComputations().getCbcInitialisationVector().getValue());
+            .getComputations().getCbcInitialisationVector().getValue());
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("00000000000000001603030010"), record.getComputations()
-                .getAuthenticatedMetaData().getValue());
+            .getAuthenticatedMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E693123"), record
-                .getComputations().getAuthenticatedNonMetaData().getValue());
+            .getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("11EBB8BC910709D40FA3612679F0CE5DB12575FD"), record
-                .getComputations().getMac().getValue());
+            .getComputations().getMac().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0B0B0B0B0B0B0B0B0B0B0B0B"), record.getComputations()
-                .getPadding().getValue());
+            .getPadding().getValue());
         assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD0B0B0B0B0B0B0B0B0B0B0B0B"),
-                record.getComputations().getPlainRecordBytes().getValue());
+            ArrayConverter
+                .hexStringToByteArray("27BE1FB155ACFBF9E78D0C259E69312311EBB8BC910709D40FA3612679F0CE5DB12575FD0B0B0B0B0B0B0B0B0B0B0B0B"),
+            record.getComputations().getPlainRecordBytes().getValue());
     }
 
     @Test

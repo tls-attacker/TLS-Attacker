@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -40,7 +41,7 @@ public class CertificateTypeExtensionHandler extends ExtensionHandler<Certificat
     @Override
     public void adjustTLSExtensionContext(CertificateTypeExtensionMessage message) {
         context.setCertificateTypeDesiredTypes(CertificateType.getCertificateTypesAsList(message.getCertificateTypes()
-                .getValue()));
+            .getValue()));
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +24,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
     private final SessionTicketTLSExtensionMessage message;
 
     public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
-            SessionTicketTLSExtensionSerializer serializer) {
+        SessionTicketTLSExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -36,7 +37,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
     public void prepareExtensionContent() {
         message.setTicket(chooser.getConfig().getTlsSessionTicket());
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
-                + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
+            + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
     }
 
 }

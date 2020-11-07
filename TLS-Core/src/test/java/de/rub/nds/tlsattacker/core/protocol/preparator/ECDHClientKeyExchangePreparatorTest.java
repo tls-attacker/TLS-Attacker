@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,7 +32,7 @@ public class ECDHClientKeyExchangePreparatorTest {
 
     private final static String RANDOM = "CAFEBABECAFE";
     private final static byte[] PREMASTER_SECRET = ArrayConverter
-            .hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
+        .hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
     private TlsContext context;
     private ECDHClientKeyExchangeMessage message;
     private ECDHClientKeyExchangePreparator preparator;
@@ -58,7 +59,7 @@ public class ECDHClientKeyExchangePreparatorTest {
      */
     @Test
     public void testPrepare() throws NoSuchAlgorithmException, NoSuchProviderException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
         // prepare context
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
@@ -68,8 +69,8 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         context.setSelectedGroup(NamedGroup.SECP192R1);
         context.setServerEcPublicKey(Point.createPoint(new BigInteger(
-                "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
-                "4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
+            "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
+            "4390496211885670837594012513791855863576256216444143941964"), NamedGroup.SECP192R1));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
 
         preparator.prepare();
@@ -80,9 +81,9 @@ public class ECDHClientKeyExchangePreparatorTest {
         assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientServerRandom()
-                        .getValue());
+            ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
+                ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientServerRandom()
+                .getValue());
     }
 
     @Test

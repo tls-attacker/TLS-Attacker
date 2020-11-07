@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -86,15 +87,15 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
     }
 
     private void removeCiphers(TlsContext ctx, ClientHelloMessage ch) {
-        String msg_name = ch.toCompactString();
+        String msgName = ch.toCompactString();
 
         if (ch.getCipherSuites() == null) {
-            LOGGER.debug("No cipher suites found in " + msg_name + ". Nothing to do.");
+            LOGGER.debug("No cipher suites found in " + msgName + ". Nothing to do.");
             return;
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original cipher suites in " + msg_name + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Original cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
         }
 
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
@@ -120,7 +121,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ch.setCipherSuiteLength(newSuitesLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified cipher suites in " + msg_name + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Modified cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
         }
 
     }
@@ -151,7 +152,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
      * Summarize the extension data for pretty printing.
      *
      * @return a summary of the extension information contained in the CH
-     *         message
+     * message
      */
     public String summarizeCiphers(ClientHelloMessage ch) {
         StringBuilder sb = new StringBuilder();

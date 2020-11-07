@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,14 +28,14 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
      * SHOULDN'T be any data.
      *
      * @param msg
-     *            The Message that should be parsed
+     * The Message that should be parsed
      */
     @Override
     public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {
         byte[] auxData = parseByteArrayField(msg.getExtensionLength().getValue());
         if (auxData.length > 0) {
             LOGGER.warn("There shouldn't be any data in the body of" + " the extended master secret extension."
-                    + "Data send by server: " + ArrayConverter.bytesToHexString(auxData));
+                + "Data send by server: " + ArrayConverter.bytesToHexString(auxData));
         }
     }
 

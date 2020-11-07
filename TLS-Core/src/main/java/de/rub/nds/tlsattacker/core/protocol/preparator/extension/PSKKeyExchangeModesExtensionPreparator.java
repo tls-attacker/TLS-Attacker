@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
@@ -25,7 +26,7 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
     private final PSKKeyExchangeModesExtensionMessage msg;
 
     public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message,
-            ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
+        ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

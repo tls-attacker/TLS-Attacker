@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -18,9 +19,7 @@ import java.util.Map;
  * RFC6091 and RFC7250
  */
 public enum CertificateType {
-    X509((byte) 0),
-    OPEN_PGP((byte) 1),
-    RAW_PUBLIC_KEY((byte) 2);
+    X509((byte) 0), OPEN_PGP((byte) 1), RAW_PUBLIC_KEY((byte) 2);
 
     private final byte value;
     private static final Map<Byte, CertificateType> MAP;

@@ -7,14 +7,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
-
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -25,8 +19,9 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,7 +64,7 @@ public class KeyShareCalculator {
     public static Point createPublicKey(NamedGroup group, BigInteger privateKey) {
         if (!group.isStandardCurve()) {
             throw new IllegalArgumentException(
-                    "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
+                "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
         EllipticCurve curve = CurveFactory.getCurve(group);
         Point point = curve.mult(privateKey, curve.getBasePoint());
@@ -79,7 +74,7 @@ public class KeyShareCalculator {
     public static byte[] createMontgomeryKeyShare(NamedGroup group, BigInteger privateKey) {
         if (!group.isCurve() || group.isStandardCurve()) {
             throw new IllegalArgumentException(
-                    "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
+                "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }
         if (group == NamedGroup.ECDH_X25519 || group == NamedGroup.ECDH_X448) {
             EllipticCurve curve = CurveFactory.getCurve(group);

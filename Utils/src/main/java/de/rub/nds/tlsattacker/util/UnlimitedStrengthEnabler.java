@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.util;
 
 import java.lang.reflect.Field;
@@ -37,9 +38,9 @@ public class UnlimitedStrengthEnabler {
                 isRestricted.setAccessible(false);
             }
         } catch (IllegalAccessException | ClassNotFoundException | IllegalArgumentException | NoSuchAlgorithmException
-                | NoSuchFieldException | SecurityException ex) {
+            | NoSuchFieldException | SecurityException ex) {
             System.out.println("It is not possible to use unrestricted policy with this JDK, "
-                    + "consider reconfiguration: " + ex.getLocalizedMessage());
+                + "consider reconfiguration: " + ex.getLocalizedMessage());
         }
     }
 

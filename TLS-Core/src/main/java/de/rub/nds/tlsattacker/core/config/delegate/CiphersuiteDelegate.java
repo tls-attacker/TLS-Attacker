@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -21,7 +22,7 @@ import java.util.List;
 public class CiphersuiteDelegate extends Delegate {
 
     @Parameter(names = "-cipher", description = "TLS Ciphersuites to use, divided by a comma, e.g. "
-            + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
+        + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
     private List<CipherSuite> cipherSuites = null;
 
     public CiphersuiteDelegate() {

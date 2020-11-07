@@ -7,13 +7,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -23,6 +18,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
@@ -69,7 +68,8 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListBytes(ClientEsniInner msg) {
         msg.setServerNameListBytes(serverNamePairListStream.toByteArray());
-        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
@@ -80,8 +80,8 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
     private void preparePadding(ClientEsniInner msg) {
         byte[] padding;
         int paddedLength = chooser.getEsniPaddedLength();
-        int paddingLength = paddedLength - msg.getServerNameListBytes().getValue().length
-                - ExtensionByteLength.SERVER_NAME_LIST;
+        int paddingLength =
+            paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
         if (paddingLength > 0) {
             padding = new byte[paddingLength];
         } else {

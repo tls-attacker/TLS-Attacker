@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
@@ -51,8 +52,8 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
-                factory);
+        executorService =
+            new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory);
         this.reexecutions = reexecutions;
         this.size = size;
         if (reexecutions < 0) {

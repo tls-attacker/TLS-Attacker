@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,7 +30,7 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     private ByteArrayOutputStream stream;
 
     public ServerNameIndicationExtensionPreparator(Chooser chooser, ServerNameIndicationExtensionMessage message,
-            ServerNameIndicationExtensionSerializer serializer) {
+        ServerNameIndicationExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -54,7 +55,8 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
 
     private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(stream.toByteArray());
-        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {

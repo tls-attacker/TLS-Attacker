@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -53,6 +54,7 @@ public class ClientKeyExchangeHandlerTest {
      * MD5(pre_master_secret + SHA('CCC' + pre_master_secret +
      * ClientHello.random + ServerHello.random)); ..... It is hard to read how
      * the Constants have to be implemented. We will use the ASCII values.
+     * 
      * @throws NoSuchAlgorithmException
      */
     @Test
@@ -73,12 +75,15 @@ public class ClientKeyExchangeHandlerTest {
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
         final MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
-        final byte[] shaDigest1 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("41"),
-                preMasterSecret, clientRdm, serverRdm));
-        final byte[] shaDigest2 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("4242"),
-                preMasterSecret, clientRdm, serverRdm));
-        final byte[] shaDigest3 = sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("434343"),
-                preMasterSecret, clientRdm, serverRdm));
+        final byte[] shaDigest1 =
+            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("41"), preMasterSecret,
+                clientRdm, serverRdm));
+        final byte[] shaDigest2 =
+            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("4242"), preMasterSecret,
+                clientRdm, serverRdm));
+        final byte[] shaDigest3 =
+            sha.digest(ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("434343"), preMasterSecret,
+                clientRdm, serverRdm));
         final byte[] md5Digest1 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest1));
         final byte[] md5Digest2 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest2));
         final byte[] md5Digest3 = md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest3));

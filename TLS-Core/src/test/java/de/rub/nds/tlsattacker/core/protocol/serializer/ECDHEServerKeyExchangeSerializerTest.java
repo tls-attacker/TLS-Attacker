@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -41,8 +42,8 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private final ProtocolVersion version;
 
     public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
-            byte[] namedGroup, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
-            byte[] signature, ProtocolVersion version) {
+        byte[] namedGroup, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
+        byte[] signature, ProtocolVersion version) {
         this.expectedPart = message;
         this.type = type;
         this.length = length;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,10 +21,10 @@ import org.bouncycastle.util.Arrays;
  */
 public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected RFC7748Curve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX,
-            BigInteger basePointY, BigInteger basePointOrder) {
+        BigInteger basePointY, BigInteger basePointOrder) {
         super(a, b, modulus, basePointX, basePointY, basePointOrder);
     }
 
@@ -60,7 +61,8 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
     }
 
     public byte[] computeSharedSecret(BigInteger privateKey, Point publicKey) {
-        byte[] pkBytes = ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
+        byte[] pkBytes =
+            ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
                 ArrayConverter.bigIntegerToByteArray(getModulus()).length);
         return computeSharedSecret(privateKey, pkBytes);
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -16,7 +17,9 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 public class MaxFragmentLengthDelegate extends Delegate {
 
     // TODO Add validator, and extend unit test
-    @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
+    @Parameter(
+        names = "-max_fragment_length",
+        description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     private Integer maxFragmentLength = null;
 
     public MaxFragmentLengthDelegate() {

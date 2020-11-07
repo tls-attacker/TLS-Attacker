@@ -7,7 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1Encoder;
@@ -27,18 +31,14 @@ import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-import org.apache.commons.lang3.NotImplementedException;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
+import org.apache.commons.lang3.NotImplementedException;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class OCSPResponseParser {
 
@@ -79,7 +79,7 @@ public class OCSPResponseParser {
         // Abort if not an OCSP basic response.
         if (!responseTypeIdentifier.equals(BASIC.getOID())) {
             throw new NotImplementedException("This response type is not supported. Identifier: "
-                    + responseTypeIdentifier);
+                + responseTypeIdentifier);
         }
 
         // Parse OCSP basic response object. See RFC 6960 for reference of
@@ -90,12 +90,12 @@ public class OCSPResponseParser {
     }
 
     private static void parseBasicResponse(Asn1Sequence basicResponseSequence, OCSPResponse responseMessage)
-            throws IOException {
+        throws IOException {
         // Unpack OCSP basic response, which is wrapped in an encapsulating
         // octet string
-        Asn1EncapsulatingOctetString basicOscpResponseEncapsulated = (Asn1EncapsulatingOctetString) basicResponseSequence
-                .getChildren().get(1);
-        Asn1Sequence basicOcspResponse = (Asn1Sequence) basicOscpResponseEncapsulated.getChildren().get(0);
+        Asn1EncapsulatingOctetString basicOSCPResponseEncapsulated =
+            (Asn1EncapsulatingOctetString) basicResponseSequence.getChildren().get(1);
+        Asn1Sequence basicOcspResponse = (Asn1Sequence) basicOSCPResponseEncapsulated.getChildren().get(0);
 
         // Unpack tbsResponse
         Asn1Sequence tbsResponseData = (Asn1Sequence) basicOcspResponse.getChildren().get(0);
@@ -131,10 +131,9 @@ public class OCSPResponseParser {
                         // it's the responderName.
                         if (certificateStatusSequence == null) {
                             responderName = ((Asn1Sequence) childObject).getChildren();
-                        }
-                        // But if we passed the sequence, it's
-                        // responseExtensions
-                        else {
+                        } else {
+                            // But if we passed the sequence, it's
+                            // responseExtensions
                             parseBasicResponseExtensions((Asn1Sequence) childObject, responseMessage);
                         }
                         break;
@@ -162,7 +161,7 @@ public class OCSPResponseParser {
                 if (singleCertificateStatusSequence instanceof Asn1Sequence) {
                     // Create a new Certificate Status object for each entry
                     certificateStatusList.add(CertificateStatusParser
-                            .parseCertificateStatus((Asn1Sequence) singleCertificateStatusSequence));
+                        .parseCertificateStatus((Asn1Sequence) singleCertificateStatusSequence));
                 }
             }
         }
@@ -185,11 +184,11 @@ public class OCSPResponseParser {
     }
 
     private static void parseBasicResponseSignature(Asn1Sequence basicOcspResponse, OCSPResponse responseMessage)
-            throws IOException {
+        throws IOException {
         // Unpack signature algorithm
         Asn1Sequence signatureAlgorithmSequence = (Asn1Sequence) basicOcspResponse.getChildren().get(1);
-        String signatureAlgorithmIdentifier = ((Asn1ObjectIdentifier) signatureAlgorithmSequence.getChildren().get(0))
-                .getValue();
+        String signatureAlgorithmIdentifier =
+            ((Asn1ObjectIdentifier) signatureAlgorithmSequence.getChildren().get(0)).getValue();
 
         // Parse signature
         byte[] signature = null;
@@ -231,11 +230,12 @@ public class OCSPResponseParser {
             // Mimic TLS certificate message format with two length values in
             // front of the certificate data
             byte[] certificateSequenceEncoded = asn1Encoder.encode();
-            byte[] certificateSequenceEncodedWithLength = ArrayConverter.concatenate(ArrayConverter.intToBytes(
-                    certificateSequenceEncoded.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                    certificateSequenceEncoded);
-            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
-                    .intToBytes(certificateSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+            byte[] certificateSequenceEncodedWithLength =
+                ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateSequenceEncoded.length,
+                    HandshakeByteLength.CERTIFICATES_LENGTH), certificateSequenceEncoded);
+            ByteArrayInputStream stream =
+                new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter.intToBytes(
+                    certificateSequenceEncodedWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
                     certificateSequenceEncodedWithLength));
 
             // And feed the TLS mimicked certificate message into BouncyCastle
@@ -258,10 +258,10 @@ public class OCSPResponseParser {
         // Nonce extension
         BigInteger nonce = null;
         if (extensionIdentifier.getValue().equals(NONCE.getOID())) {
-            Asn1EncapsulatingOctetString encapsulatedNonce = (Asn1EncapsulatingOctetString) innerExtensionSequence
-                    .getChildren().get(1);
-            Asn1PrimitiveOctetString nonceOctetString = (Asn1PrimitiveOctetString) encapsulatedNonce.getChildren().get(
-                    0);
+            Asn1EncapsulatingOctetString encapsulatedNonce =
+                (Asn1EncapsulatingOctetString) innerExtensionSequence.getChildren().get(1);
+            Asn1PrimitiveOctetString nonceOctetString =
+                (Asn1PrimitiveOctetString) encapsulatedNonce.getChildren().get(0);
             nonce = new BigInteger(1, nonceOctetString.getValue());
         }
 

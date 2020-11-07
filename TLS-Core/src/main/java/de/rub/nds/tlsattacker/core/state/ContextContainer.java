@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
@@ -56,7 +57,7 @@ public class ContextContainer {
      *
      * @return the only known TLS context
      * @throws ConfigurationException
-     *             if there is more than one TLS context in the container
+     * if there is more than one TLS context in the container
      *
      */
     public TlsContext getTlsContext() {
@@ -75,7 +76,7 @@ public class ContextContainer {
      * @param alias
      * @return the context with the given connection end alias
      * @throws ConfigurationException
-     *             if there is no TLS context with the given alias
+     * if there is no TLS context with the given alias
      *
      */
     public TlsContext getTlsContext(String alias) {
@@ -163,9 +164,9 @@ public class ContextContainer {
      * the old TlsContext equal.
      *
      * @param newTlsContext
-     *            the new TlsContext, not null
+     * the new TlsContext, not null
      * @throws ConfigurationException
-     *             if the connections of new and old TlsContext differ
+     * if the connections of new and old TlsContext differ
      */
     public void replaceTlsContext(TlsContext newTlsContext) {
         String alias = newTlsContext.getConnection().getAlias();
@@ -175,7 +176,7 @@ public class ContextContainer {
         TlsContext replaceMe = tlsContexts.get(alias);
         if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
             throw new ContextHandlingException("Cannot replace TlsContext because the new TlsContext"
-                    + " defines another connection.");
+                + " defines another connection.");
         }
         removeTlsContext(alias);
         addTlsContext(newTlsContext);

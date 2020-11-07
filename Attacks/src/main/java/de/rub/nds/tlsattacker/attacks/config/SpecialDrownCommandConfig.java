@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -18,24 +19,24 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     private enum OracleType {
-        EXTRA_CLEAR,
-        LEAKY_EXPORT
+        EXTRA_CLEAR, LEAKY_EXPORT
     }
 
     public static final String COMMAND = "specialDrown";
 
     @Parameter(names = "-oracleType", description = "The oracle to use, i.e. the "
-            + "variant of Special DROWN to be executed", required = true)
+        + "variant of Special DROWN to be executed", required = true)
     private OracleType oracleType = OracleType.EXTRA_CLEAR;
     @Parameter(names = "-checkDataFile", description = "Path of the state file for "
-            + "'leaky export' oracle vulnerability check")
+        + "'leaky export' oracle vulnerability check")
     private String checkDataFilePath;
     @Parameter(names = "-genCheckData", description = "Generate state file for 'leaky export' vulnerability check")
     private boolean genCheckData;
     @Parameter(names = "-analyzeCheckData", description = "Analyze given state file for "
-            + "'leaky export' oracle vulnerability check, this might take a long time")
+        + "'leaky export' oracle vulnerability check, this might take a long time")
     private boolean analyzeCheckData;
-    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack", required = true)
+    @Parameter(names = "-ssl2Cipher", description = "Name of the SSLv2 cipher suite to be used in the attack",
+        required = true)
     private SSL2CipherSuite cipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
     public SpecialDrownCommandConfig(GeneralDelegate delegate) {

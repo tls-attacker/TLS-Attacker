@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -47,13 +48,13 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
+        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> receivedRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
+        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
     private ReceiveMessageHelper receiveMessageHelper;
     private SendMessageHelper sendMessageHelper;
@@ -71,7 +72,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
      */
     protected ForwardRecordsAction(String receiveFromAlias, String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
+        ReceiveMessageHelper receiveMessageHelper) {
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
         this.receiveMessageHelper = receiveMessageHelper;
@@ -113,8 +114,8 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
         try {
             sendMessageHelper.sendRecords(receivedRecords, forwardToCtx);
             setExecuted(true);
-        } catch (IOException E) {
-            LOGGER.debug(E);
+        } catch (IOException e) {
+            LOGGER.debug(e);
             executedAsPlanned = false;
             setExecuted(false);
         }
@@ -201,11 +202,11 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty receive alias (if using XML: add <from/>)");
+                + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
             throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                    + " with empty forward alis (if using XML: add <to/>)");
+                + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 

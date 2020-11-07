@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -18,9 +19,7 @@ import java.util.Map;
  */
 public enum EllipticCurveType {
 
-    EXPLICIT_PRIME((byte) 1),
-    EXPLICIT_CHAR2((byte) 2),
-    NAMED_CURVE((byte) 3);
+    EXPLICIT_PRIME((byte) 1), EXPLICIT_CHAR2((byte) 2), NAMED_CURVE((byte) 3);
 
     /** length of the EllipticCurveType in the TLS byte arrays */
     public static final int LENGTH = 1;

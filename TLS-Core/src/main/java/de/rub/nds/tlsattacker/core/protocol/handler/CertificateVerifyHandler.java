@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -38,7 +39,7 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     @Override
     public CertificateVerifyParser getParser(byte[] message, int pointer) {
         return new CertificateVerifyParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

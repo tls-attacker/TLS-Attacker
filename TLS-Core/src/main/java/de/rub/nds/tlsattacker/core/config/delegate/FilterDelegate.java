@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -21,7 +22,8 @@ public class FilterDelegate extends Delegate {
     // for List<Enum>.
     // Known issue: https://github.com/cbeust/jcommander/issues/402
     @Parameter(names = "-output_filter", description = "Apply given filters to the workflow trace "
-            + "before writing to ouput file. Supply as comma separated list. Try also: -list filters.", converter = FilterConverter.class)
+        + "before writing to ouput file. Supply as comma separated list. Try also: -list filters.",
+        converter = FilterConverter.class)
     private List<FilterType> filters = null;
 
     public FilterDelegate() {

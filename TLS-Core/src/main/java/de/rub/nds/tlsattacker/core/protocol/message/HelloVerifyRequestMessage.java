@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -35,12 +36,12 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
+        isIncludeInDigestDefault = false;
     }
 
     public HelloVerifyRequestMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
+        isIncludeInDigestDefault = false;
     }
 
     public ModifiableByteArray getProtocolVersion() {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
@@ -34,14 +35,14 @@ public class LongRecordPaddingGenerator extends PaddingVectorGenerator {
         int blockSize = AlgorithmResolver.getCipher(suite).getBlocksize();
         int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         vectorList.add(new TrippleVector("ValidPlainData", "ValidPlainData", new ByteArrayExplicitValueModification(
-                new byte[16384]), new ByteArrayExplicitValueModification(new byte[AlgorithmResolver.getMacAlgorithm(
+            new byte[16384]), new ByteArrayExplicitValueModification(new byte[AlgorithmResolver.getMacAlgorithm(
+            version, suite).getSize()]), new ByteArrayExplicitValueModification(
+            createPaddingBytes(calculateValidPaddingSize(blockSize, macSize)))));
+        vectorList
+            .add(new TrippleVector("InvalidPlainData", "InvalidPlainData", new ByteArrayExplicitValueModification(
+                new byte[16385]), new ByteArrayExplicitValueModification(new byte[AlgorithmResolver.getMacAlgorithm(
                 version, suite).getSize()]), new ByteArrayExplicitValueModification(
-                createPaddingBytes(calculateValidPaddingSize(blockSize, macSize)))));
-        vectorList.add(new TrippleVector("InvalidPlainData", "InvalidPlainData",
-                new ByteArrayExplicitValueModification(new byte[16385]), new ByteArrayExplicitValueModification(
-                        new byte[AlgorithmResolver.getMacAlgorithm(version, suite).getSize()]),
-                new ByteArrayExplicitValueModification(createPaddingBytes(calculateInvalidPaddingSize(blockSize,
-                        macSize)))));
+                createPaddingBytes(calculateInvalidPaddingSize(blockSize, macSize)))));
         return vectorList;
     }
 

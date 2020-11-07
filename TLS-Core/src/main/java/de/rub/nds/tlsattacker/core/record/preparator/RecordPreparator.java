@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,7 +35,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private final RecordCompressor compressor;
 
     public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type,
-            RecordCompressor compressor) {
+        RecordCompressor compressor) {
         super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
@@ -54,7 +55,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareSequenceNumber(record);
         compressor.compress(record);
         if (chooser.getSelectedProtocolVersion().isTLS13()
-                && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
             // The CCS message in TLS 1.3 is an exception that does not get
             // encrypted
             record.prepareComputations();
@@ -75,7 +76,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
     private void prepareProtocolVersion(Record record) {
         if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

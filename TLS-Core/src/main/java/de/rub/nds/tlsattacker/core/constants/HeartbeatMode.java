@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -15,8 +16,7 @@ import java.util.Random;
 
 public enum HeartbeatMode {
 
-    PEER_ALLOWED_TO_SEND((byte) 1),
-    PEER_NOT_ALLOWED_TO_SEND((byte) 2);
+    PEER_ALLOWED_TO_SEND((byte) 1), PEER_NOT_ALLOWED_TO_SEND((byte) 2);
 
     private byte value;
 

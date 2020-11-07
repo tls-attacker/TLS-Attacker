@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -45,7 +46,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShareGroup(KeyShareEntry pair) {
         pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
@@ -57,7 +58,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShareLength(KeyShareEntry pair) {
         pair.setPublicKeyLength(parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH));
@@ -69,7 +70,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      * the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShare(KeyShareEntry pair) {
         pair.setPublicKey(parseByteArrayField(pair.getPublicKeyLength().getValue()));

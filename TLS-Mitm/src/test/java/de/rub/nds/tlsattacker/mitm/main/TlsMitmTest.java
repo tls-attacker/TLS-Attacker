@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -103,7 +104,8 @@ public class TlsMitmTest {
             mitmThread.start();
 
             LOGGER.info("Starting test client");
-            BasicTlsClient clientThread = new BasicTlsClient("localhost", MITM_PORT, ProtocolVersion.TLS12, cipherSuite);
+            BasicTlsClient clientThread =
+                new BasicTlsClient("localhost", MITM_PORT, ProtocolVersion.TLS12, cipherSuite);
             clientThread.setRetryConnect(true);
             clientThread.start();
             mitmThread.join();
@@ -121,8 +123,8 @@ public class TlsMitmTest {
             LOGGER.info("Done.");
 
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException | InterruptedException | OperatorCreationException ex) {
+            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+            | KeyManagementException | InterruptedException | OperatorCreationException ex) {
             LOGGER.warn(ex);
             fail();
         }

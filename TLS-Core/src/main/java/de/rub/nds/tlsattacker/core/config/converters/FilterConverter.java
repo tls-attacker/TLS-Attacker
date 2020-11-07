@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -28,7 +29,7 @@ public class FilterConverter implements IStringConverter<FilterType> {
             return FilterType.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a CipherSuite. "
-                    + "Available values are: " + Arrays.toString(CipherSuite.values()));
+                + "Available values are: " + Arrays.toString(CipherSuite.values()));
         }
     }
 }

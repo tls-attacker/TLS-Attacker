@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -54,7 +55,8 @@ public class WorkflowTraceSerializer {
 
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
+            context =
+                JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
                     SendAction.class, ReceiveAction.class);
         }
@@ -65,16 +67,15 @@ public class WorkflowTraceSerializer {
      * Writes a WorkflowTrace to a File
      *
      * @param file
-     *            File to which the WorkflowTrace should be written
+     * File to which the WorkflowTrace should be written
      * @param trace
-     *            WorkflowTrace that should be written
+     * WorkflowTrace that should be written
      * @throws FileNotFoundException
-     *             Is thrown if the File cannot be found
+     * Is thrown if the File cannot be found
      * @throws JAXBException
-     *             Is thrown if the Object cannot be serialized
+     * Is thrown if the Object cannot be serialized
      * @throws IOException
-     *             Is thrown if the Process doesn't have the rights to write to
-     *             the File
+     * Is thrown if the Process doesn't have the rights to write to the File
      */
     public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
         FileOutputStream fos = new FileOutputStream(file);
@@ -85,14 +86,13 @@ public class WorkflowTraceSerializer {
      * Writes a serialized WorkflowTrace to string.
      *
      * @param trace
-     *            WorkflowTrace that should be written
+     * WorkflowTrace that should be written
      * @return String containing XML/serialized representation of the
-     *         WorkflowTrace
+     * WorkflowTrace
      * @throws JAXBException
-     *             Is thrown if the Object cannot be serialized
+     * Is thrown if the Object cannot be serialized
      * @throws IOException
-     *             Is thrown if the Process doesn't have the rights to write to
-     *             the File
+     * Is thrown if the Process doesn't have the rights to write to the File
      */
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -102,13 +102,13 @@ public class WorkflowTraceSerializer {
 
     /**
      * @param outputStream
-     *            The OutputStream to which the Trace should be written to
+     * The OutputStream to which the Trace should be written to
      * @param workflowTrace
-     *            The WorkflowTrace that should be written
+     * The WorkflowTrace that should be written
      * @throws JAXBException
-     *             JAXBException if the JAXB reports a problem
+     * JAXBException if the JAXB reports a problem
      * @throws IOException
-     *             If something goes wrong while writing to the stream
+     * If something goes wrong while writing to the stream
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
         context = getJAXBContext();
@@ -127,14 +127,14 @@ public class WorkflowTraceSerializer {
 
     /**
      * @param inputStream
-     *            The InputStream from which the Parameter should be read
+     * The InputStream from which the Parameter should be read
      * @return The deserialized WorkflowTrace
      * @throws JAXBException
-     *             JAXBException if the JAXB reports a problem
+     * JAXBException if the JAXB reports a problem
      * @throws IOException
-     *             If something goes wrong while writing to the stream
+     * If something goes wrong while writing to the stream
      * @throws XMLStreamException
-     *             If there is a Problem with the XML Stream
+     * If there is a Problem with the XML Stream
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();

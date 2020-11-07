@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -42,7 +43,7 @@ public class DefaultFilter extends Filter {
      * Apply filter to trace.
      * 
      * @param trace
-     *            The workflow trace that should be filtered.
+     * The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
@@ -60,7 +61,7 @@ public class DefaultFilter extends Filter {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
                 throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                        + "empty localConnectionEndType. Don't know how to handle this!");
+                    + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
                 lastProcessedCon = traceCon.getCopy();
                 switch (traceCon.getLocalConnectionEndType()) {
@@ -72,8 +73,8 @@ public class DefaultFilter extends Filter {
                         break;
                     default:
                         throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
-                                + "how to handle this!");
+                            + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
+                            + "how to handle this!");
                 }
 
             }
@@ -96,9 +97,9 @@ public class DefaultFilter extends Filter {
      * Currently restores only workflow trace connections set by the user.
      * 
      * @param trace
-     *            the trace to which the postFilter should be applied
+     * the trace to which the postFilter should be applied
      * @param reference
-     *            the reference trace holding the original user defined values
+     * the reference trace holding the original user defined values
      * 
      */
     @Override

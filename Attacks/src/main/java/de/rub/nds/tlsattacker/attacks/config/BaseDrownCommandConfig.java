@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -29,7 +30,7 @@ public abstract class BaseDrownCommandConfig extends AttackConfig {
     private StarttlsDelegate starttlsDelegate;
 
     @Parameter(names = "-premasterSecretsFile", description = "File containing captured "
-            + "Premaster secrets to be decrypted in hex format, one per line")
+        + "Premaster secrets to be decrypted in hex format, one per line")
     private String premasterSecretsFilePath;
 
     public BaseDrownCommandConfig(GeneralDelegate delegate) {

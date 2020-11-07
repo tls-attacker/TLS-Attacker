@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -73,10 +74,12 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                 RunningModeType.CLIENT);
 
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+        ECDHClientKeyExchangeMessage message =
+            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         message.prepareComputations();
 
@@ -102,8 +105,8 @@ public class RealDirectMessageECOracle extends ECOracle {
         }
 
         State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         boolean valid = true;
         try {
@@ -125,8 +128,8 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         Point p = curve.mult(guessedSecret, checkPoint);
-        byte[] pms = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getX()
-                .getData());
+        byte[] pms =
+            BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getX().getData());
         return Arrays.equals(checkPMS, pms);
     }
 
@@ -137,14 +140,15 @@ public class RealDirectMessageECOracle extends ECOracle {
     private void executeValidWorkflowAndExtractCheckValues() {
         State state = new State(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         WorkflowTrace trace = state.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
 
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+        ECDHClientKeyExchangeMessage message =
+            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates

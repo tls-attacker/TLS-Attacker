@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -41,8 +42,9 @@ public class FragmentManager {
         FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), fragment.getEpoch().getValue());
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            collector = new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq()
-                    .getValue(), fragment.getLength().getValue());
+            collector =
+                new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq().getValue(),
+                    fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {
@@ -91,7 +93,7 @@ public class FragmentManager {
                 } else {
                     if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
                         LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
-                                + key.getEpoch());
+                            + key.getEpoch());
                     } else {
                         handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
                         fragmentCollector.setInterpreted(true);

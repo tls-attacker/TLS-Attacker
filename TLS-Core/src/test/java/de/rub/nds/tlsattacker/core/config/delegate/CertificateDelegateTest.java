@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -138,8 +139,7 @@ public class CertificateDelegateTest {
      */
     @Test
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
-            InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException,
-            OperatorCreationException {
+        InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException, OperatorCreationException {
         KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = folder.newFile("key.store");
         store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());

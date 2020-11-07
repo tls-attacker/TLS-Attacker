@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
@@ -55,7 +56,7 @@ public class PskSet implements Serializable {
     }
 
     public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd,
-            CipherSuite cipherSuite) {
+        CipherSuite cipherSuite) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
         this.preSharedKey = preSharedKey;
         this.ticketAge = ticketAge;
@@ -72,7 +73,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param preSharedKeyIdentity
-     *            the preSharedKeyIdentity to set
+     * the preSharedKeyIdentity to set
      */
     public void setPreSharedKeyIdentity(byte[] preSharedKeyIdentity) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
@@ -87,7 +88,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param preSharedKey
-     *            the preSharedKey to set
+     * the preSharedKey to set
      */
     public void setPreSharedKey(byte[] preSharedKey) {
         this.preSharedKey = preSharedKey;
@@ -102,7 +103,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param ticketAge
-     *            the ticketAge to set
+     * the ticketAge to set
      */
     public void setTicketAge(String ticketAge) {
         this.ticketAge = ticketAge;
@@ -117,7 +118,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param ticketAgeAdd
-     *            the ticketAgeAdd to set
+     * the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(byte[] ticketAgeAdd) {
         this.ticketAgeAdd = ticketAgeAdd;
@@ -132,7 +133,7 @@ public class PskSet implements Serializable {
 
     /**
      * @param cipherSuite
-     *            the cipherSuite to set
+     * the cipherSuite to set
      */
     public void setCipherSuite(CipherSuite cipherSuite) {
         this.cipherSuite = cipherSuite;

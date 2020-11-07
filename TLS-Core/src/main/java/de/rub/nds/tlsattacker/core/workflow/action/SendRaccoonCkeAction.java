@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -85,10 +86,10 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": "
-                    + sending);
+                + sending);
         } else {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)")
-                    + ": (" + connectionAlias + "): " + sending);
+                + ": (" + connectionAlias + "): " + sending);
         }
 
         try {
@@ -96,9 +97,9 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException E) {
+        } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             setExecuted(false);
         }
     }
@@ -107,17 +108,18 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
         Chooser chooser = state.getTlsContext().getChooser();
-        byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
+        byte[] clientPublicKey =
+            getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
                 chooser.getDhServerPublicKey(), initialSecret, withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
     }
 
     private byte[] getClientPublicKey(BigInteger g, BigInteger m, BigInteger serverPublicKey,
-            BigInteger initialClientDhSecret, boolean withNullByte) {
+        BigInteger initialClientDhSecret, boolean withNullByte) {
         int length = ArrayConverter.bigIntegerToByteArray(m).length;
-        byte[] pms = ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m),
-                length);
+        byte[] pms =
+            ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m), length);
 
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);

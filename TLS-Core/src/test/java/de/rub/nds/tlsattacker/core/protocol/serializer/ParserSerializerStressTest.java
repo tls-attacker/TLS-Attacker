@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -172,10 +173,10 @@ public class ParserSerializerStressTest {
                 return new DHEServerKeyExchangeSerializer((DHEServerKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 9:
                 return new ECDHClientKeyExchangeSerializer((ECDHClientKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 10:
                 return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 11:
                 return new FinishedSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
             case 12:

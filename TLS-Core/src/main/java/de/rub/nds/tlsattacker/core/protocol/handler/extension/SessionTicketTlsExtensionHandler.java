@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +27,7 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
      * Constructor
      *
      * @param context
-     *            The TlsContext which the Handler should adjust
+     * The TlsContext which the Handler should adjust
      */
     public SessionTicketTlsExtensionHandler(TlsContext context) {
         super(context);
@@ -51,10 +52,11 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
     public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. "
-                    + "Length was " + message.getExtensionLength().getValue());
+                + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
-        LOGGER.debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
+        LOGGER
+            .debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
     }
 
 }

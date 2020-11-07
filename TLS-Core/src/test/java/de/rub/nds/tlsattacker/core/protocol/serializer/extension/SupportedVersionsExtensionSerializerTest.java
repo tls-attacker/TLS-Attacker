@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -33,7 +34,7 @@ public class SupportedVersionsExtensionSerializerTest {
     private final byte[] versionList;
 
     public SupportedVersionsExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension,
-            ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
+        ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;

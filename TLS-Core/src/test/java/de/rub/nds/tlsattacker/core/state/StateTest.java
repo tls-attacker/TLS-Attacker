@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -125,7 +126,7 @@ public class StateTest {
 
         exception.expect(ConfigurationException.class);
         exception.expectMessage("This workflow can only be configured for modes CLIENT and "
-                + "SERVER, but actual mode was MITM");
+            + "SERVER, but actual mode was MITM");
         State state = new State(config);
     }
 
@@ -185,7 +186,7 @@ public class StateTest {
 
         exception.expect(ContextHandlingException.class);
         exception
-                .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
+            .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
         state.replaceTlsContext(newCtx);
     }
 }

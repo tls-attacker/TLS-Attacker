@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,7 @@ public class StaticTicketCrypto {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
-            throws CryptoException {
+        throws CryptoException {
         byte[] result = new byte[0];
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
@@ -44,14 +45,14 @@ public class StaticTicketCrypto {
             cipher.init(Cipher.ENCRYPT_MODE, secretkey, ivspec);
             result = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-                | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
+            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
             throw new CryptoException("Error while StatePlaintext Encryption. See Debug-Log for more Information.", ex);
         }
         return result;
     }
 
     public static byte[] decrypt(CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
-            throws CryptoException {
+        throws CryptoException {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
@@ -62,7 +63,7 @@ public class StaticTicketCrypto {
             result = cipher.doFinal(ciphertext);
             result = removePadding(result);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-                | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
+            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
             LOGGER.warn("Encountered exception while encrypting the StatePlaintext with " + cipherAlgorithm.name());
             LOGGER.debug(ex);
             throw new CryptoException("Error while StatePlaintext Decryption. See Debug-Log for more Information.");
@@ -79,7 +80,7 @@ public class StaticTicketCrypto {
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
             LOGGER.warn("Encountered exception while generating the HMAC " + macAlgorithm.name()
-                    + " of an encryptedState.");
+                + " of an encryptedState.");
             LOGGER.debug(ex);
             throw new CryptoException("Error while HMAC generation. See Debug-Log for more Information.");
         }
@@ -87,7 +88,7 @@ public class StaticTicketCrypto {
     }
 
     public static boolean verifyHMAC(MacAlgorithm macalgo, byte[] mac, byte[] plaintext, byte[] key)
-            throws CryptoException {
+        throws CryptoException {
         byte[] newmac = generateHMAC(macalgo, plaintext, key);
         boolean result = Arrays.equals(mac, newmac);
         return result;

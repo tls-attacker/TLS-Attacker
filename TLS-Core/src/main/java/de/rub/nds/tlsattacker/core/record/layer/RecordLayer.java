@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -26,7 +27,7 @@ public abstract class RecordLayer {
      * Parser Exception is thrown
      *
      * @param rawBytes
-     *            Bytes to parse
+     * Bytes to parse
      * @return List of parsed records
      */
     public abstract List<AbstractRecord> parseRecords(byte[] rawBytes) throws ParserException;
@@ -36,7 +37,7 @@ public abstract class RecordLayer {
      * occur are handled.
      *
      * @param rawBytes
-     *            Bytes to parse
+     * Bytes to parse
      * @return List of parsed records
      */
     public abstract List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -82,8 +83,8 @@ public class CertificateRequestPreparatorTest {
         assertTrue(3 == message.getCertificateRequestContextLength().getValue());
         assertNotNull(message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class));
         assertArrayEquals(new byte[] { 2, 0, 6, 3 },
-                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).getSignatureAndHashAlgorithms()
-                        .getValue());
+            message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).getSignatureAndHashAlgorithms()
+                .getValue());
     }
 
     @Test

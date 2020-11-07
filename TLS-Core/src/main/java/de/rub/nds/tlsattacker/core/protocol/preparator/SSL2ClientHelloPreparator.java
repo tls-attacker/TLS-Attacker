@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,11 +17,10 @@ import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
 
@@ -48,7 +48,8 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         prepareSessionIDLength(message);
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
-        int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
+        int length =
+            SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
                 + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
@@ -81,7 +82,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
                 }
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare SSL2ClientHello. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare SSL2ClientHello. Failed to write Ciphersuites into message", ex);
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());

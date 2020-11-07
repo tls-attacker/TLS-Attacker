@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -38,8 +39,8 @@ public class ServerAuthzExtensionMessage extends ExtensionMessage {
     }
 
     public void setAuthzFormatListLength(int authzFormatListLength) {
-        this.authzFormatListLength = ModifiableVariableFactory.safelySetValue(this.authzFormatListLength,
-                authzFormatListLength);
+        this.authzFormatListLength =
+            ModifiableVariableFactory.safelySetValue(this.authzFormatListLength, authzFormatListLength);
     }
 
     public ModifiableByteArray getAuthzFormatList() {

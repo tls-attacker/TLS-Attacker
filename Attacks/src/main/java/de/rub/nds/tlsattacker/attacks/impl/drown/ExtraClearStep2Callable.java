@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,7 @@ class ExtraClearStep2Callable implements Callable<BigInteger> {
     private BigInteger shiftedOldPlaintext;
 
     public ExtraClearStep2Callable(ExtraClearDrownOracle oracle, byte[] shiftedOldCiphertext, int l_m, BigInteger e,
-            BigInteger N, BigInteger initialSCandidate, BigInteger sCandidateStep, BigInteger shiftedOldPlaintext) {
+        BigInteger N, BigInteger initialSCandidate, BigInteger sCandidateStep, BigInteger shiftedOldPlaintext) {
         this.oracle = oracle;
         this.shiftedOldCiphertext = shiftedOldCiphertext;
         this.l_m = l_m;
@@ -59,13 +60,14 @@ class ExtraClearStep2Callable implements Callable<BigInteger> {
                 }
 
                 sCandidate = sCandidate.add(sCandidateStep);
-                plaintextCandidate = ArrayConverter.bigIntegerToByteArray(
-                        shiftedOldPlaintext.multiply(sCandidate).mod(N), l_m, false);
+                plaintextCandidate =
+                    ArrayConverter.bigIntegerToByteArray(shiftedOldPlaintext.multiply(sCandidate).mod(N), l_m, false);
             } while ((plaintextCandidate.length > l_m) || (plaintextCandidate[0] != 0x00)
-                    || (plaintextCandidate[1] != 0x02));
+                || (plaintextCandidate[1] != 0x02));
 
             // Online part: Check if s is really suitable using the oracle
-            byte[] cipertextCandidate = ArrayConverter.bigIntegerToByteArray(
+            byte[] cipertextCandidate =
+                ArrayConverter.bigIntegerToByteArray(
                     sCandidate.modPow(e, N).multiply(new BigInteger(shiftedOldCiphertext)).mod(N), l_m, true);
             if (oracle.checkPKCSConformity(cipertextCandidate)) {
                 return sCandidate;

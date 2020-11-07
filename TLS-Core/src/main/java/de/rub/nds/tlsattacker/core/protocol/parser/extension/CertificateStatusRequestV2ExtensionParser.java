@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CertificateStatusRequestV2ExtensionParser extends
-        ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
+    ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
     public CertificateStatusRequestV2ExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

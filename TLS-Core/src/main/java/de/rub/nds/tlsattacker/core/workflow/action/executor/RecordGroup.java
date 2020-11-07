@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -125,7 +126,7 @@ public class RecordGroup {
             isFitting = true;
         } else {
             if (Objects.equals(record.getContentMessageType(), getProtocolMessageType())
-                    && record.getClass().equals(records.get(0).getClass())) {
+                && record.getClass().equals(records.get(0).getClass())) {
                 if (getDtlsEpoch() != null) {
                     if (Objects.equals(getRecordEpoch(record), getDtlsEpoch())) {
                         isFitting = true;
@@ -155,9 +156,9 @@ public class RecordGroup {
         if (record instanceof Record) {
             RecordCryptoComputations computations = ((Record) record).getComputations();
             if (computations != null
-                    && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
-                            || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
-                            computations.getAuthenticationTagValid(), Boolean.FALSE))) {
+                && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
+                    || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
+                    computations.getAuthenticationTagValid(), Boolean.FALSE))) {
                 return true;
             }
         }

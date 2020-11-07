@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
 import java.io.ByteArrayOutputStream;
@@ -89,7 +90,8 @@ public class ExecutionRecorder {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%-5level %c{-4} - %msg%n").build();
-        Appender appender = ConsoleAppender.newBuilder().setFollow(true).setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+        Appender appender =
+            ConsoleAppender.newBuilder().setFollow(true).setTarget(ConsoleAppender.Target.SYSTEM_OUT)
                 .withName("ExecutionRecorder").withLayout(layout).build();
         appender.start();
         config.addAppender(appender);

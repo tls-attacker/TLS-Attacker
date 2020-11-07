@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -42,7 +43,7 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
 
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
-            throws CryptoException {
+        throws CryptoException {
         return someBytes;
     }
 
@@ -72,7 +73,7 @@ public class NullCipher implements EncryptionCipher, DecryptionCipher {
 
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
-            throws CryptoException {
+        throws CryptoException {
         return someBytes;
     }
 }

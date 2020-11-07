@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
@@ -27,8 +28,8 @@ import org.junit.Test;
 public class TrustedCaIndicationExtensionHandlerTest {
 
     private final List<TrustedAuthority> trustedAuthorities = Arrays.asList(new TrustedAuthority((byte) 0,
-            new byte[] {}, 0, new byte[] {}), new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02,
-            0x03, 0x04, 0x05 }));
+        new byte[] {}, 0, new byte[] {}), new TrustedAuthority((byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02,
+        0x03, 0x04, 0x05 }));
     private TrustedCaIndicationExtensionHandler handler;
     private TlsContext context;
 
@@ -75,10 +76,10 @@ public class TrustedCaIndicationExtensionHandlerTest {
 
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
             assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
-                    .getDistinguishedNameLength().getValue());
+                .getDistinguishedNameLength().getValue());
             assertArrayEquals(expectedObject.getSha1Hash().getValue(), actualObject.getSha1Hash().getValue());
             assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
-                    .getValue());
+                .getValue());
         }
     }
 

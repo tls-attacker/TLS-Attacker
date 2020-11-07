@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -31,7 +32,7 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
 
     /**
      * protocol message bytes transported in the record as seen on the transport
-     * layer if encrypption is active this is encrypted if not its plaintext
+     * layer if encryption is active this is encrypted if not its plaintext
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray protocolMessageBytes;
@@ -68,8 +69,8 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     }
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes,
-                cleanProtocolMessageBytes);
+        this.cleanProtocolMessageBytes =
+            ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -105,12 +106,12 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     }
 
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
-        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(this.completeRecordBytes,
-                completeRecordBytes);
+        this.completeRecordBytes =
+            ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
     public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-            RecordCompressor compressor, ProtocolMessageType type);
+        RecordCompressor compressor, ProtocolMessageType type);
 
     public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
 

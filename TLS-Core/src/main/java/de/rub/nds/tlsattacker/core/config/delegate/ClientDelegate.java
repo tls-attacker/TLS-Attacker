@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -23,7 +24,7 @@ import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
-    private final static int DEFAULT_HTTPS_PORT = 443;
+    private static final int DEFAULT_HTTPS_PORT = 443;
 
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;

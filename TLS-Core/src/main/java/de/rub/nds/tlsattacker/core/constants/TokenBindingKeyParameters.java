@@ -7,15 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum TokenBindingKeyParameters {
-    RSA2048_PKCS1_5((byte) 0),
-    RSA2048_PSS((byte) 1),
-    ECDSAP256((byte) 2);
+    RSA2048_PKCS1_5((byte) 0), RSA2048_PSS((byte) 1), ECDSAP256((byte) 2);
 
     private final byte keyParameterValue;
     private static final Map<Byte, TokenBindingKeyParameters> MAP;

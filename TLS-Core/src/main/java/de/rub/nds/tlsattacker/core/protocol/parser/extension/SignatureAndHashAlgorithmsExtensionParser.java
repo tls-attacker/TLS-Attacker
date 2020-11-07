@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignatureAndHashAlgorithmsExtensionParser extends
-        ExtensionParser<SignatureAndHashAlgorithmsExtensionMessage> {
+    ExtensionParser<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,7 +41,7 @@ public class SignatureAndHashAlgorithmsExtensionParser extends
      * Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
         msg.setSignatureAndHashAlgorithmsLength(parseIntField(ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS));
@@ -52,11 +53,11 @@ public class SignatureAndHashAlgorithmsExtensionParser extends
      * Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
         msg.setSignatureAndHashAlgorithms(parseByteArrayField(msg.getSignatureAndHashAlgorithmsLength().getValue()));
         LOGGER.debug("SignatureAndHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 }

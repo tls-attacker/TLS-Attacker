@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.io.Serializable;
@@ -23,17 +24,16 @@ import org.apache.logging.log4j.Logger;
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Instantiates an element of a galois field F{2^m}.
      *
      * @param data
-     *            The binary polynomial representing the element.<br />
-     *            The degree must be smaller than the reduction polynomial's
-     *            degree.
+     * The binary polynomial representing the element.<br />
+     * The degree must be smaller than the reduction polynomial's degree.
      * @param modulus
-     *            The binary reduction polynomial defining the field.
+     * The binary reduction polynomial defining the field.
      */
     public FieldElementF2m(BigInteger data, BigInteger modulus) {
         super(data, modulus);
@@ -126,9 +126,9 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * q * p + r = f.
      *
      * @param f
-     *            A BigInteger representing a binary polynomial.
+     * A BigInteger representing a binary polynomial.
      * @param p
-     *            A BigInteger representing a binary polynomial.
+     * A BigInteger representing a binary polynomial.
      *
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
@@ -152,7 +152,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * Returns f mod this.getModulus().
      *
      * @param f
-     *            A BigInteger representing a binary polynomial.
+     * A BigInteger representing a binary polynomial.
      */
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];

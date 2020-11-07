@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -23,7 +24,7 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
     private final EllipticCurveOverFp weierstrassEquivalent;
 
     public SimulatedMontgomeryCurve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX,
-            BigInteger basePointY, BigInteger basePointOrder) {
+        BigInteger basePointY, BigInteger basePointOrder) {
         super(a, b, modulus, basePointX, basePointY, basePointOrder);
         weierstrassEquivalent = computeWeierstrassEquivalent();
     }
@@ -38,28 +39,29 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
 
     @Override
     public boolean isOnCurve(Point p) {
-        Point wP = toWeierstrass(p);
-        return getWeierstrassEquivalent().isOnCurve(wP);
+        Point weierstrassP = toWeierstrass(p);
+        return getWeierstrassEquivalent().isOnCurve(weierstrassP);
     }
 
     @Override
     protected Point inverseAffine(Point p) {
-        Point wP = toWeierstrass(p);
-        Point wRes = getWeierstrassEquivalent().inverseAffine(wP);
-        return toMontgomery(wRes);
+        Point weierstrassP = toWeierstrass(p);
+        Point weierstrassRes = getWeierstrassEquivalent().inverseAffine(weierstrassP);
+        return toMontgomery(weierstrassRes);
     }
 
     @Override
     protected Point additionFormular(Point p, Point q) {
-        Point wP = toWeierstrass(p);
-        Point wQ = toWeierstrass(q);
-        Point wRes = getWeierstrassEquivalent().additionFormular(wP, wQ);
-        return toMontgomery(wRes);
+        Point weierstrassP = toWeierstrass(p);
+        Point weierstrassQ = toWeierstrass(q);
+        Point weierstrassRes = getWeierstrassEquivalent().additionFormular(weierstrassP, weierstrassQ);
+        return toMontgomery(weierstrassRes);
     }
 
     @Override
     public Point createAPointOnCurve(BigInteger x) {
-        BigInteger val = x.pow(3).add(x.pow(2).multiply(getA().getData())).add(x)
+        BigInteger val =
+            x.pow(3).add(x.pow(2).multiply(getA().getData())).add(x)
                 .multiply(getB().getData().modInverse(getModulus())).mod(getModulus());
         BigInteger y = modSqrt(val, getModulus());
         if (y == null) {
@@ -76,66 +78,68 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
     }
 
     private EllipticCurveOverFp computeWeierstrassEquivalent() {
-        BigInteger weierstrassA = new BigInteger("3").subtract(this.getA().getData()
-                .modPow(new BigInteger("2"), this.getModulus()));
-        weierstrassA = weierstrassA.multiply(
+        BigInteger weierstrassA =
+            new BigInteger("3").subtract(this.getA().getData().modPow(new BigInteger("2"), this.getModulus()));
+        weierstrassA =
+            weierstrassA.multiply(
                 new BigInteger("3").multiply(this.getB().getData().modPow(new BigInteger("2"), this.getModulus()))
-                        .modInverse(this.getModulus())).mod(this.getModulus());
+                    .modInverse(this.getModulus())).mod(this.getModulus());
 
-        BigInteger weierstrassB = new BigInteger("2").multiply(
-                this.getA().getData().modPow(new BigInteger("3"), this.getModulus())).subtract(
-                new BigInteger("9").multiply(this.getA().getData()));
-        weierstrassB = weierstrassB.multiply(
+        BigInteger weierstrassB =
+            new BigInteger("2").multiply(this.getA().getData().modPow(new BigInteger("3"), this.getModulus()))
+                .subtract(new BigInteger("9").multiply(this.getA().getData()));
+        weierstrassB =
+            weierstrassB.multiply(
                 new BigInteger("27").multiply(this.getB().getData().modPow(new BigInteger("3"), this.getModulus()))
-                        .modInverse(this.getModulus())).mod(this.getModulus());
+                    .modInverse(this.getModulus())).mod(this.getModulus());
 
-        Point wGen = toWeierstrass(this.getBasePoint());
-        return new EllipticCurveOverFp(weierstrassA, weierstrassB, this.getModulus(), wGen.getX().getData(), wGen
-                .getY().getData(), this.getBasePointOrder());
+        Point weierstrassGen = toWeierstrass(this.getBasePoint());
+        return new EllipticCurveOverFp(weierstrassA, weierstrassB, this.getModulus(), weierstrassGen.getX().getData(),
+            weierstrassGen.getY().getData(), this.getBasePointOrder());
     }
 
-    public Point toWeierstrass(Point mPoint) {
-        if (mPoint.isAtInfinity()) {
-            return mPoint;
+    public Point toWeierstrass(Point mpoint) {
+        if (mpoint.isAtInfinity()) {
+            return mpoint;
         } else {
-            BigInteger mX = mPoint.getX().getData();
-            BigInteger mY = mPoint.getY().getData();
+            BigInteger mx = mpoint.getX().getData();
+            BigInteger my = mpoint.getY().getData();
 
-            BigInteger wX = mX
-                    .multiply(this.getB().getData().modInverse(this.getModulus()))
-                    .add(this
-                            .getA()
+            BigInteger weierstrassX =
+                mx.multiply(this.getB().getData().modInverse(this.getModulus()))
+                    .add(
+                        this.getA()
                             .getData()
                             .multiply(new BigInteger("3").multiply(this.getB().getData()).modInverse(this.getModulus())))
                     .mod(this.getModulus());
-            BigInteger wY = mY.multiply(this.getB().getData().modInverse(this.getModulus())).mod(this.getModulus());
+            BigInteger weierstrassY =
+                my.multiply(this.getB().getData().modInverse(this.getModulus())).mod(this.getModulus());
 
-            FieldElementFp fX = new FieldElementFp(wX, this.getModulus());
-            FieldElementFp fY = new FieldElementFp(wY, this.getModulus());
-            return new Point(fX, fY);
+            FieldElementFp fieldX = new FieldElementFp(weierstrassX, this.getModulus());
+            FieldElementFp fieldY = new FieldElementFp(weierstrassY, this.getModulus());
+            return new Point(fieldX, fieldY);
         }
     }
 
-    public Point toMontgomery(Point wPoint) {
-        if (wPoint.isAtInfinity()) {
-            return wPoint;
+    public Point toMontgomery(Point weierstrassPoint) {
+        if (weierstrassPoint.isAtInfinity()) {
+            return weierstrassPoint;
         } else {
-            BigInteger wX = wPoint.getX().getData();
-            BigInteger wY = wPoint.getY().getData();
+            BigInteger weierstrassX = weierstrassPoint.getX().getData();
+            BigInteger weierstrassY = weierstrassPoint.getY().getData();
 
-            BigInteger mX = wX
+            BigInteger mx =
+                weierstrassX
                     .subtract(
-                            this.getA()
-                                    .getData()
-                                    .multiply(
-                                            new BigInteger("3").multiply(this.getB().getData()).modInverse(
-                                                    this.getModulus()))).multiply(this.getB().getData())
-                    .mod(this.getModulus());
-            BigInteger mY = wY.multiply(this.getB().getData());
+                        this.getA()
+                            .getData()
+                            .multiply(new BigInteger("3").multiply(this.getB().getData()).modInverse(this.getModulus())))
+                    .multiply(this.getB().getData()).mod(this.getModulus());
+            BigInteger my = weierstrassY.multiply(this.getB().getData());
 
-            FieldElementFp fX = new FieldElementFp(mX, this.getModulus());
-            FieldElementFp fY = new FieldElementFp(mY, this.getModulus());
-            return new Point(fX, fY);
+            FieldElementFp fieldX = new FieldElementFp(mx, this.getModulus());
+            FieldElementFp fieldY = new FieldElementFp(my, this.getModulus());
+            return new Point(fieldX, fieldY);
         }
     }
 

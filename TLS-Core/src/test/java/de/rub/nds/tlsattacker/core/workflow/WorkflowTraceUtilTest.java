@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -113,9 +114,9 @@ public class WorkflowTraceUtilTest {
         rcvServerHello.setMessages(new ServerHelloMessage());
         rcvFinishedMessage.setMessages(new FinishedMessage());
         rcvMultipleProtocolMessages.setMessages(new HeartbeatMessage(), new HeartbeatMessage(),
-                msgHeartbeatMessageWithLength);
+            msgHeartbeatMessageWithLength);
         rcvMultipleHandshakeMessages.setMessages(new ServerHelloMessage(), new HeartbeatMessage(),
-                msgServerHelloMessageWithCipherSuite);
+            msgServerHelloMessageWithCipherSuite);
         rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
 
         sHeartbeat = new SendAction();
@@ -144,22 +145,22 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(rcvMultipleProtocolMessages);
 
         assertNotSame(rcvMultipleProtocolMessages.getMessages().get(0),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertNotSame(rcvMultipleProtocolMessages.getMessages().get(1),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertSame(rcvMultipleProtocolMessages.getMessages().get(2),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
 
         assertNull(WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
 
         trace.addTlsAction(rcvMultipleHandshakeMessages);
 
         assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(0),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(1),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertSame(rcvMultipleHandshakeMessages.getMessages().get(2),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
     }
 
     @Test
@@ -253,15 +254,15 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(sHeartbeatExtension);
 
         assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
         assertNull(WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
 
         trace.addTlsAction(sEncryptThenMacExtension);
 
         assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
         assertSame(msgServerHelloWithEncryptThenMacExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
     }
 
     private void pwf(String pre, WorkflowTrace trace) {

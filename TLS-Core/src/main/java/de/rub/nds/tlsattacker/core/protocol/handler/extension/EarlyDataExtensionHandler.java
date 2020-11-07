@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -50,9 +51,9 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
             context.setMaxEarlyDataSize(message.getMaxEarlyDataSize().getValue());
         } else if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             context.addNegotiatedExtension(ExtensionType.EARLY_DATA); // client
-                                                                      // indicated
-                                                                      // early
-                                                                      // data
+            // indicated
+            // early
+            // data
         }
     }
 

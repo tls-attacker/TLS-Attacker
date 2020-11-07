@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -36,7 +37,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * Returns a random field representing a modifiable variable from this class
      *
      * @param random
-     *            The RandomNumber generator that should be used
+     * The RandomNumber generator that should be used
      * @return A random ModifiableVariableField
      */
     public Field getRandomModifiableVariableField(Random random) {
@@ -61,7 +62,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * Returns a random modifiable variable holder
      *
      * @param random
-     *            The RandomNumberGenerator that should be used
+     * The RandomNumberGenerator that should be used
      * @return A Random ModifiableVariableHolder
      */
     public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {

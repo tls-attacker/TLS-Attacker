@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,7 +36,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
     private final PWDProtectExtensionMessage msg;
 
     public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message,
-            PWDProtectExtensionSerializer serializer) {
+        PWDProtectExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -66,12 +67,13 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
             throw new CryptoException("Missing HKDF algorithm for curves larger than 384 bits");
         }
 
-        BigInteger clientPublicKey = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), generator).getX()
-                .getData();
-        BigInteger sharedSecret = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getX()
-                .getData();
+        BigInteger clientPublicKey =
+            curve.mult(config.getDefaultServerPWDProtectRandomSecret(), generator).getX().getData();
+        BigInteger sharedSecret =
+            curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getX().getData();
 
-        byte[] key = HKDFunction.expand(hkdfAlgorithm,
+        byte[] key =
+            HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                 new byte[0], curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
@@ -81,7 +83,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         SivMode AES_SIV = new SivMode();
         byte[] protectedUsername = AES_SIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes());
         msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey, curve
-                .getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
+            .getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
         LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMessage> extends
-        ClientKeyExchangeSerializer<T> {
+    ClientKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,9 +26,9 @@ public class EmptyClientKeyExchangeSerializer<T extends EmptyClientKeyExchangeMe
      * Constructor for the EmptyClientKeyExchangeSerializer
      *
      * @param message
-     *            Message that should be serialized
+     * Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
     public EmptyClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);

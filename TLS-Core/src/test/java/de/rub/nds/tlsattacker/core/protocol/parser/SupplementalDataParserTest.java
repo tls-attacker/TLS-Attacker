@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,21 +28,16 @@ public class SupplementalDataParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        { ArrayConverter.hexStringToByteArray("1700001100000e4002000a0008010005aaaaaaaaaa"),
-                                HandshakeMessageType.SUPPLEMENTAL_DATA, 17, 14,
-                                ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"),
-                                ProtocolVersion.TLS11 },
-                        {
-                                ArrayConverter
-                                        .hexStringToByteArray("1700001F00001c4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
-                                HandshakeMessageType.SUPPLEMENTAL_DATA,
-                                31,
-                                28,
-                                ArrayConverter
-                                        .hexStringToByteArray("4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
-                                ProtocolVersion.TLS11 } });
+        return Arrays.asList(new Object[][] {
+            { ArrayConverter.hexStringToByteArray("1700001100000e4002000a0008010005aaaaaaaaaa"),
+                HandshakeMessageType.SUPPLEMENTAL_DATA, 17, 14,
+                ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"), ProtocolVersion.TLS11 },
+            {
+                ArrayConverter
+                    .hexStringToByteArray("1700001F00001c4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
+                HandshakeMessageType.SUPPLEMENTAL_DATA, 31, 28,
+                ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
+                ProtocolVersion.TLS11 } });
     }
 
     private byte[] message;
@@ -54,7 +50,7 @@ public class SupplementalDataParserTest {
     private final Config config = Config.createConfig();
 
     public SupplementalDataParserTest(byte[] message, HandshakeMessageType type, int length,
-            int supplementalDataLength, byte[] supplementalDataBytes, ProtocolVersion version) {
+        int supplementalDataLength, byte[] supplementalDataBytes, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;

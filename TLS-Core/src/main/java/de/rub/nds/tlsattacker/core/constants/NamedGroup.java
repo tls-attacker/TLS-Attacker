@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -31,60 +32,44 @@ import org.apache.logging.log4j.Logger;
 
 public enum NamedGroup {
 
-    SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1", 163),
-    SECT163R1(new byte[] { (byte) 0, (byte) 2 }, "sect163r1", 163),
-    SECT163R2(new byte[] { (byte) 0, (byte) 3 }, "sect163r2", 163),
-    SECT193R1(new byte[] { (byte) 0, (byte) 4 }, "sect193r1", 193),
-    SECT193R2(new byte[] { (byte) 0, (byte) 5 }, "sect193r2", 193),
-    SECT233K1(new byte[] { (byte) 0, (byte) 6 }, "sect233k1", 233),
-    SECT233R1(new byte[] { (byte) 0, (byte) 7 }, "sect233r1", 233),
-    SECT239K1(new byte[] { (byte) 0, (byte) 8 }, "sect239k1", 239),
-    SECT283K1(new byte[] { (byte) 0, (byte) 9 }, "sect283k1", 283),
-    SECT283R1(new byte[] { (byte) 0, (byte) 10 }, "sect283r1", 283),
-    SECT409K1(new byte[] { (byte) 0, (byte) 11 }, "sect409k1", 409),
-    SECT409R1(new byte[] { (byte) 0, (byte) 12 }, "sect409r1", 409),
-    SECT571K1(new byte[] { (byte) 0, (byte) 13 }, "sect571k1", 571),
-    SECT571R1(new byte[] { (byte) 0, (byte) 14 }, "sect571r1", 571),
-    SECP160K1(new byte[] { (byte) 0, (byte) 15 }, "secp160k1", 160),
-    SECP160R1(new byte[] { (byte) 0, (byte) 16 }, "secp160r1", 160),
-    SECP160R2(new byte[] { (byte) 0, (byte) 17 }, "secp160r2", 150),
-    SECP192K1(new byte[] { (byte) 0, (byte) 18 }, "secp192k1", 192),
-    SECP192R1(new byte[] { (byte) 0, (byte) 19 }, "secp192r1", 192),
-    SECP224K1(new byte[] { (byte) 0, (byte) 20 }, "secp224k1", 224),
-    SECP224R1(new byte[] { (byte) 0, (byte) 21 }, "secp224r1", 224),
-    SECP256K1(new byte[] { (byte) 0, (byte) 22 }, "secp256k1", 256),
-    SECP256R1(new byte[] { (byte) 0, (byte) 23 }, "secp256r1", 256),
-    SECP384R1(new byte[] { (byte) 0, (byte) 24 }, "secp384r1", 384),
-    SECP521R1(new byte[] { (byte) 0, (byte) 25 }, "secp521r1", 521),
-    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256),
-    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1", 384),
-    BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1", 512),
-    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256),
-    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448", 448),
-    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048),
-    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072),
+    SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1", 163), SECT163R1(new byte[] { (byte) 0, (byte) 2 },
+        "sect163r1", 163), SECT163R2(new byte[] { (byte) 0, (byte) 3 }, "sect163r2", 163), SECT193R1(new byte[] {
+        (byte) 0, (byte) 4 }, "sect193r1", 193), SECT193R2(new byte[] { (byte) 0, (byte) 5 }, "sect193r2", 193),
+    SECT233K1(new byte[] { (byte) 0, (byte) 6 }, "sect233k1", 233), SECT233R1(new byte[] { (byte) 0, (byte) 7 },
+        "sect233r1", 233), SECT239K1(new byte[] { (byte) 0, (byte) 8 }, "sect239k1", 239), SECT283K1(new byte[] {
+        (byte) 0, (byte) 9 }, "sect283k1", 283), SECT283R1(new byte[] { (byte) 0, (byte) 10 }, "sect283r1", 283),
+    SECT409K1(new byte[] { (byte) 0, (byte) 11 }, "sect409k1", 409), SECT409R1(new byte[] { (byte) 0, (byte) 12 },
+        "sect409r1", 409), SECT571K1(new byte[] { (byte) 0, (byte) 13 }, "sect571k1", 571), SECT571R1(new byte[] {
+        (byte) 0, (byte) 14 }, "sect571r1", 571), SECP160K1(new byte[] { (byte) 0, (byte) 15 }, "secp160k1", 160),
+    SECP160R1(new byte[] { (byte) 0, (byte) 16 }, "secp160r1", 160), SECP160R2(new byte[] { (byte) 0, (byte) 17 },
+        "secp160r2", 150), SECP192K1(new byte[] { (byte) 0, (byte) 18 }, "secp192k1", 192), SECP192R1(new byte[] {
+        (byte) 0, (byte) 19 }, "secp192r1", 192), SECP224K1(new byte[] { (byte) 0, (byte) 20 }, "secp224k1", 224),
+    SECP224R1(new byte[] { (byte) 0, (byte) 21 }, "secp224r1", 224), SECP256K1(new byte[] { (byte) 0, (byte) 22 },
+        "secp256k1", 256), SECP256R1(new byte[] { (byte) 0, (byte) 23 }, "secp256r1", 256), SECP384R1(new byte[] {
+        (byte) 0, (byte) 24 }, "secp384r1", 384), SECP521R1(new byte[] { (byte) 0, (byte) 25 }, "secp521r1", 521),
+    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1", 256), BRAINPOOLP384R1(new byte[] { (byte) 0,
+        (byte) 27 }, "brainpoolp384r1", 384), BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1",
+        512), ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519", 256), ECDH_X448(new byte[] { (byte) 0,
+        (byte) 30 }, "ecdh_X448", 448), FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048", 2048), FFDHE3072(
+        new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072", 3072),
     FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096", 4096),
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
-    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
-    // GREASE constants
-    GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
-    GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
-    GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }, "GREASE", null),
-    GREASE_03(new byte[] { (byte) 0x3A, (byte) 0x3A }, "GREASE", null),
-    GREASE_04(new byte[] { (byte) 0x4A, (byte) 0x4A }, "GREASE", null),
-    GREASE_05(new byte[] { (byte) 0x5A, (byte) 0x5A }, "GREASE", null),
-    GREASE_06(new byte[] { (byte) 0x6A, (byte) 0x6A }, "GREASE", null),
-    GREASE_07(new byte[] { (byte) 0x7A, (byte) 0x7A }, "GREASE", null),
-    GREASE_08(new byte[] { (byte) 0x8A, (byte) 0x8A }, "GREASE", null),
-    GREASE_09(new byte[] { (byte) 0x9A, (byte) 0x9A }, "GREASE", null),
-    GREASE_10(new byte[] { (byte) 0xAA, (byte) 0xAA }, "GREASE", null),
-    GREASE_11(new byte[] { (byte) 0xBA, (byte) 0xBA }, "GREASE", null),
-    GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }, "GREASE", null),
-    GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE", null),
-    GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }, "GREASE", null),
-    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null);
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0), // GREASE
+                                                                          // constants
+    GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null), GREASE_01(
+        new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null), GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A },
+        "GREASE", null), GREASE_03(new byte[] { (byte) 0x3A, (byte) 0x3A }, "GREASE", null), GREASE_04(new byte[] {
+        (byte) 0x4A, (byte) 0x4A }, "GREASE", null),
+    GREASE_05(new byte[] { (byte) 0x5A, (byte) 0x5A }, "GREASE", null), GREASE_06(
+        new byte[] { (byte) 0x6A, (byte) 0x6A }, "GREASE", null), GREASE_07(new byte[] { (byte) 0x7A, (byte) 0x7A },
+        "GREASE", null), GREASE_08(new byte[] { (byte) 0x8A, (byte) 0x8A }, "GREASE", null), GREASE_09(new byte[] {
+        (byte) 0x9A, (byte) 0x9A }, "GREASE", null),
+    GREASE_10(new byte[] { (byte) 0xAA, (byte) 0xAA }, "GREASE", null), GREASE_11(
+        new byte[] { (byte) 0xBA, (byte) 0xBA }, "GREASE", null), GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA },
+        "GREASE", null), GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }, "GREASE", null), GREASE_14(new byte[] {
+        (byte) 0xEA, (byte) 0xEA }, "GREASE", null), GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }, "GREASE", null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -99,7 +84,7 @@ public enum NamedGroup {
     private static final Map<Integer, NamedGroup> MAP;
 
     private static final Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
-            FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
+        FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName, Integer coordinateSizeInBit) {
         this.value = value;
@@ -153,13 +138,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (publicKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && publicKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                        && publicKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -173,13 +158,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (privateKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && privateKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                        && privateKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -226,7 +211,7 @@ public enum NamedGroup {
 
         if (sourceBytes.length % NamedGroup.LENGTH != 0) {
             throw new IllegalArgumentException("Failed to convert byte array. "
-                    + "Source array size is not a multiple of destination type size.");
+                + "Source array size is not a multiple of destination type size.");
         }
 
         ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);

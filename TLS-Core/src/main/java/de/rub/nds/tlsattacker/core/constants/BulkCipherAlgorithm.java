@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum BulkCipherAlgorithm {
@@ -14,24 +15,11 @@ public enum BulkCipherAlgorithm {
     /**
      * DESede references 3DES
      */
-    NULL,
-    IDEA,
-    DESede,
-    DES40,
-    DES,
-    RC4,
-    RC2,
-    FORTEZZA,
-    CAMELLIA,
-    SEED,
-    ARIA,
-    CHACHA20_POLY1305,
-    GOST28147,
-    AES;
+    NULL, IDEA, DESede, DES40, DES, RC4, RC2, FORTEZZA, CAMELLIA, SEED, ARIA, CHACHA20_POLY1305, GOST28147, AES;
 
     /**
      * @param cipherSuite
-     *            The CipherSuite to choose the BulkCipherAlgorithm from
+     * The CipherSuite to choose the BulkCipherAlgorithm from
      * @return The BulkCipherAlgorithm of the Ciphersuite
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
@@ -98,7 +86,7 @@ public enum BulkCipherAlgorithm {
             return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name()
-                + " is not supported yet.");
+            + " is not supported yet.");
     }
 
     public String getJavaName() {

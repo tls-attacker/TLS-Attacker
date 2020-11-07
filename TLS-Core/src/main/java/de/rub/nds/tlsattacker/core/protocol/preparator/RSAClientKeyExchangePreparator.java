@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage> extends
-        ClientKeyExchangePreparator<T> {
+    ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -58,7 +59,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         return ArrayConverter.concatenate(msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
-                tempPremasterSecret);
+            tempPremasterSecret);
     }
 
     protected RSAPublicKey generateFreshKey() {
@@ -80,34 +81,34 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void preparePlainPaddedPremasterSecret(T msg) {
         msg.getComputations().setPlainPaddedPremasterSecret(
-                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
-                        .getComputations().getPremasterSecret().getValue()));
+            ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg.getComputations()
+                .getPremasterSecret().getValue()));
         LOGGER.debug("PlainPaddedPremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientServerRandom);
         LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(encrypted);
         LOGGER.debug("SerializedPublicKey (encrypted premaster secret): "
-                + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("SerializedPublicKeyLength (encrypted premaster secret length): "
-                + msg.getPublicKeyLength().getValue());
+            + msg.getPublicKeyLength().getValue());
     }
 
     protected byte[] decryptPremasterSecret() {
@@ -118,8 +119,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             return new byte[0];
         }
         // Make sure that the private key is not negative
-        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey.abs(), chooser
-                .getServerRsaModulus().abs());
+        BigInteger decrypted =
+            bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey.abs(), chooser.getServerRsaModulus().abs());
         return decrypted.toByteArray();
     }
 
@@ -153,9 +154,11 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 paddedPremasterSecret = new byte[] { 0 };
             }
             BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
-            BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey().abs(), chooser
-                    .getServerRsaModulus().abs());
-            encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus().bitLength()
+            BigInteger biEncrypted =
+                biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey().abs(), chooser.getServerRsaModulus()
+                    .abs());
+            encrypted =
+                ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getServerRsaModulus().bitLength()
                     / Bits.IN_A_BYTE, true);
             prepareSerializedPublicKey(msg);
             premasterSecret = manipulatePremasterSecret(premasterSecret);
@@ -167,8 +170,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             byte[] paddedPremasterSecret = decryptPremasterSecret();
             LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
             if (randomByteLength < paddedPremasterSecret.length && randomByteLength > 0) {
-                premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength,
-                        paddedPremasterSecret.length);
+                premasterSecret =
+                    Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
                 premasterSecret = manipulatePremasterSecret(premasterSecret);
                 preparePremasterSecret(msg);
                 if (premasterSecret.length > 2) {

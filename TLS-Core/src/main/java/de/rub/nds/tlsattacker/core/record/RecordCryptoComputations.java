@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -164,8 +165,8 @@ public class RecordCryptoComputations {
     }
 
     public void setCbcInitialisationVector(byte[] initialisationVector) {
-        this.cbcInitialisationVector = ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector,
-                initialisationVector);
+        this.cbcInitialisationVector =
+            ModifiableVariableFactory.safelySetValue(this.cbcInitialisationVector, initialisationVector);
     }
 
     public ModifiableByteArray getAuthenticatedMetaData() {
@@ -177,8 +178,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
-        this.authenticatedMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData,
-                authenticatedMetaData);
+        this.authenticatedMetaData =
+            ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData, authenticatedMetaData);
     }
 
     public ModifiableByteArray getAuthenticatedNonMetaData() {
@@ -190,8 +191,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAuthenticatedNonMetaData(byte[] authenticatedNonMetaData) {
-        this.authenticatedNonMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData,
-                authenticatedNonMetaData);
+        this.authenticatedNonMetaData =
+            ModifiableVariableFactory.safelySetValue(this.authenticatedNonMetaData, authenticatedNonMetaData);
     }
 
     public ModifiableInteger getAdditionalPaddingLength() {
@@ -203,8 +204,8 @@ public class RecordCryptoComputations {
     }
 
     public void setAdditionalPaddingLength(Integer paddingLength) {
-        this.additionalPaddingLength = ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength,
-                paddingLength);
+        this.additionalPaddingLength =
+            ModifiableVariableFactory.safelySetValue(this.additionalPaddingLength, paddingLength);
     }
 
     public Boolean getPaddingValid() {

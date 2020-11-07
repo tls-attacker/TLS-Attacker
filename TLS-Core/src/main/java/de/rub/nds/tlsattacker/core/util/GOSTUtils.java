@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -88,8 +89,9 @@ public class GOSTUtils {
             case Tc26_Gost_3410_12_512_paramSetC:
                 LOGGER.debug("Generating GOST12 public key for " + curve.name());
                 return (BCECGOST3410_2012PublicKey) convertPointToPublicKey(curve, point, "ECGOST3410-2012");
+            default:
+                throw new UnsupportedOperationException("Gost Curve " + curve + " is not supported");
         }
-        throw new UnsupportedOperationException("Gost Curve " + curve + " is not supported");
     }
 
     private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {

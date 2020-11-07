@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -51,9 +52,9 @@ public class PskClientKeyExchangePreparatorTest {
         assertArrayEquals(PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientServerRandom()
-                        .getValue());
+            ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
+                ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientServerRandom()
+                .getValue());
 
     }
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,10 +26,10 @@ public class HeartbeatExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"),
-                ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
-                                                                   // same for
-                                                                   // TLS10 and
-                                                                   // TLS11
+            ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
+        // same for
+        // TLS10 and
+        // TLS11
     }
 
     private final byte[] extension;

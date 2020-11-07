@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- *            The AbstractRecord that should be prepared
+ * The AbstractRecord that should be prepared
  */
 public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends Preparator<T> {
 

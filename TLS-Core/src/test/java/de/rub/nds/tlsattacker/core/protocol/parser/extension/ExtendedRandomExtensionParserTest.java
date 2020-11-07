@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,9 +28,8 @@ public class ExtendedRandomExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3, ArrayConverter.hexStringToByteArray("AB"),
-                        ArrayConverter.hexStringToByteArray("002800030001AB"), 0 } });
+        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_RANDOM, 3,
+            ArrayConverter.hexStringToByteArray("AB"), ArrayConverter.hexStringToByteArray("002800030001AB"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -50,7 +50,7 @@ public class ExtendedRandomExtensionParserTest {
      * @param startParsing
      */
     public ExtendedRandomExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extendedRandom,
-            byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;

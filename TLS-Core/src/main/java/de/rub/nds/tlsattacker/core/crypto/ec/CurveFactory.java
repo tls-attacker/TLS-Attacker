@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -18,7 +19,7 @@ public class CurveFactory {
      * Returns a named elliptic curve.
      *
      * @param name
-     *            The name of the curve, that should be returned.
+     * The name of the curve, that should be returned.
      * @return EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
@@ -85,7 +86,7 @@ public class CurveFactory {
                 return new EllipticCurveX448();
             default:
                 throw new UnsupportedOperationException("The provided group '" + name
-                        + "' is not supported by this method.");
+                    + "' is not supported by this method.");
 
         }
     }
@@ -94,7 +95,7 @@ public class CurveFactory {
      * Returns a named gost curve.
      *
      * @param curve
-     *            The name of the curve, that should be returned.
+     * The name of the curve, that should be returned.
      * @return
      */
     public static EllipticCurve getCurve(GOSTCurve curve) {

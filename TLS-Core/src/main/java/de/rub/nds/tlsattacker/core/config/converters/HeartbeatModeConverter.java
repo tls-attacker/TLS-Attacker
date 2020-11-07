@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -27,7 +28,7 @@ public class HeartbeatModeConverter implements IStringConverter<HeartbeatMode> {
             return HeartbeatMode.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a HeartbeatMode. "
-                    + "Available values are: " + Arrays.toString(HeartbeatMode.values()));
+                + "Available values are: " + Arrays.toString(HeartbeatMode.values()));
         }
     }
 }

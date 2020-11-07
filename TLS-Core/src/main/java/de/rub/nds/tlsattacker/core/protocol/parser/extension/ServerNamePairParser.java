@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -42,7 +43,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameType(ServerNamePair pair) {
         pair.setServerNameType(parseByteField(ExtensionByteLength.SERVER_NAME_TYPE));
@@ -54,7 +55,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameLength(ServerNamePair pair) {
         pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME));
@@ -66,7 +67,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      * in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerName(ServerNamePair pair) {
         pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));

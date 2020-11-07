@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -22,7 +23,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  */
 public class TransportHandlerDelegate extends Delegate {
 
-    @Parameter(names = "-transport_handler_type", description = "Transport Handler type", converter = TransportHandlerTypeConverter.class)
+    @Parameter(names = "-transport_handler_type", description = "Transport Handler type",
+        converter = TransportHandlerTypeConverter.class)
     private TransportHandlerType transportHandlerType = null;
 
     public TransportHandlerDelegate() {

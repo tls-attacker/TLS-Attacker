@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,7 +56,7 @@ public class RemBufferedChCiphersActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
+        InvalidAlgorithmParameterException {
 
         expected = new ArrayList();
         expected.add(CipherSuite.TLS_AES_128_CCM_SHA256);

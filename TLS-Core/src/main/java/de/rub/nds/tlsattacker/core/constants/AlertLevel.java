@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -17,9 +18,7 @@ import java.util.Map;
  */
 public enum AlertLevel {
 
-    UNDEFINED((byte) 0),
-    WARNING((byte) 1),
-    FATAL((byte) 2);
+    UNDEFINED((byte) 0), WARNING((byte) 1), FATAL((byte) 2);
 
     private byte value;
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -45,7 +46,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     private void writeProtocolVersion(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: "
-                + ProtocolVersion.getProtocolVersion(statePlaintext.getProtocolVersion().getValue()).name());
+            + ProtocolVersion.getProtocolVersion(statePlaintext.getProtocolVersion().getValue()).name());
     }
 
     private void writeCipherSuite(StatePlaintext statePlaintext) {
@@ -56,13 +57,13 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     private void writeCompressionMethod(StatePlaintext statePlaintext) {
         appendByte(statePlaintext.getCompressionMethod().getValue());
         LOGGER.debug("CompressionMethod: "
-                + CompressionMethod.getCompressionMethod(statePlaintext.getCompressionMethod().getValue()).name());
+            + CompressionMethod.getCompressionMethod(statePlaintext.getCompressionMethod().getValue()).name());
     }
 
     private void writeMasterSecret(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getMasterSecret().getValue());
         LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(statePlaintext.getMasterSecret().getValue(), true, true));
+            + ArrayConverter.bytesToHexString(statePlaintext.getMasterSecret().getValue(), true, true));
     }
 
     private void writeClientAuthentication(StatePlaintext statePlaintext) {
@@ -70,42 +71,40 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
         if (clientAuthenticationType == ClientAuthenticationType.ANONYMOUS.getValue()) {
             appendByte(clientAuthenticationType);
             LOGGER.debug("ClientAuthenticationType: "
-                    + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
+                + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
         } else if (clientAuthenticationType == ClientAuthenticationType.CERTIFICATE_BASED.getValue()) {
             appendByte(clientAuthenticationType);
             appendBytes(statePlaintext.getClientAuthenticationDataLength().getByteArray(
-                    HandshakeByteLength.CERTIFICATES_LENGTH));
+                HandshakeByteLength.CERTIFICATES_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug("ClientAuthenticationType: "
-                    + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
+                + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
             LOGGER.debug("ClientAuthenticationDataLength: "
-                    + statePlaintext.getClientAuthenticationDataLength().getValue());
+                + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug("ClientAuthenticationData: "
-                    + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true,
-                            true));
+                + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true, true));
         } else if (clientAuthenticationType == ClientAuthenticationType.PSK.getValue()) {
             appendByte(clientAuthenticationType);
             appendBytes(statePlaintext.getClientAuthenticationDataLength().getByteArray(
-                    HandshakeByteLength.PSK_IDENTITY_LENGTH));
+                HandshakeByteLength.PSK_IDENTITY_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug("ClientAuthenticationType: "
-                    + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
+                + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
             LOGGER.debug("ClientAuthenticationDataLength: "
-                    + statePlaintext.getClientAuthenticationDataLength().getValue());
+                + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug("ClientAuthenticationData: "
-                    + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true,
-                            true));
+                + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true, true));
         } else {
             appendByte(clientAuthenticationType);
             LOGGER.warn("Can't serialize ClientAuthticationData because the choosen ClientAuthType is unknown: "
-                    + clientAuthenticationType);
+                + clientAuthenticationType);
         }
     }
 
     private void writeTimestamp(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME));
         LOGGER.debug("Timestamp: "
-                + ArrayConverter.bytesToHexString(statePlaintext.getTimestamp().getByteArray(
-                        HandshakeByteLength.UNIX_TIME)));
+            + ArrayConverter
+                .bytesToHexString(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME)));
     }
 }

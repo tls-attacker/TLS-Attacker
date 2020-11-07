@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ import org.bouncycastle.util.Pack;
 
 /*
  * LICENSE
- * Copyright (c) 2000 - 2018 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+ * <p>Copyright (c) 2000 - 2018 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -139,8 +140,8 @@ public class GOST28147WrapEngine implements Wrapper {
             cipher.processBlock(input, inOff + 8, wrappedKey, 8);
             cipher.processBlock(input, inOff + 16, wrappedKey, 16);
             cipher.processBlock(input, inOff + 24, wrappedKey, 24);
-        } catch (Exception E) {
-            LOGGER.warn("Could not wrap key. Continuing with partially wrapped key", E);
+        } catch (Exception e) {
+            LOGGER.warn("Could not wrap key. Continuing with partially wrapped key", e);
         }
         mac.doFinal(wrappedKey, inLen);
 

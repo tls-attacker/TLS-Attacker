@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
@@ -22,7 +23,6 @@ import de.rub.nds.asn1.model.Asn1PrimitiveGeneralizedTime;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-
 import java.math.BigInteger;
 import java.util.List;
 
@@ -94,11 +94,9 @@ public class CertificateStatusParser {
         // Good status
         if (certStatusObject instanceof Asn1Null || certStatusObject instanceof Asn1EndOfContent) {
             certificateStatusValue = 0; // good, not revoked
-        }
-
-        // Time of next update (offset 0), revoked (offset 1) or unknown
-        // (offset 2) status
-        else if (certStatusObject instanceof Asn1Explicit) {
+        } else if (certStatusObject instanceof Asn1Explicit) {
+            // Time of next update (offset 0), revoked (offset 1) or unknown
+            // (offset 2) status
             Asn1Explicit certStatusExplicitObject = (Asn1Explicit) certStatusObject;
             switch (certStatusExplicitObject.getOffset()) {
                 case 1:
@@ -120,8 +118,8 @@ public class CertificateStatusParser {
         }
 
         // After the status comes the mandatory timeOfLastUpdate
-        Asn1PrimitiveGeneralizedTime timeOfLastUpdateObject = (Asn1PrimitiveGeneralizedTime) certStatusSeq
-                .getChildren().get(2);
+        Asn1PrimitiveGeneralizedTime timeOfLastUpdateObject =
+            (Asn1PrimitiveGeneralizedTime) certStatusSeq.getChildren().get(2);
         timeOfLastUpdate = timeOfLastUpdateObject.getValue();
 
         // And at last, optional tags for lastUpdate and extensions
@@ -132,10 +130,13 @@ public class CertificateStatusParser {
 
                 switch (nextExplicitObject.getOffset()) {
                     case 0:
-                        timeOfNextUpdate = ((Asn1PrimitiveGeneralizedTime) nextExplicitObject.getChildren().get(0))
-                                .getValue();
+                        timeOfNextUpdate =
+                            ((Asn1PrimitiveGeneralizedTime) nextExplicitObject.getChildren().get(0)).getValue();
                         break;
                     case 1:
+                        // TODO: Add support for singleExtensions here.
+                        break;
+                    default:
                         // TODO: Add support for singleExtensions here.
                         break;
                 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -46,9 +47,9 @@ public class ClientHelloSerializerTest {
     private final byte[] cookie;
 
     public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-            byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
-            int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
-            Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
+        byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
+        int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
+        Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.expectedPart = message;
         this.type = type;
         this.length = length;

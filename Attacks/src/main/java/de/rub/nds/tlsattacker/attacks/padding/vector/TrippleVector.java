@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -28,7 +29,7 @@ public class TrippleVector extends PaddingVector {
     private final VariableModification paddingModification;
 
     public TrippleVector(String name, String identifier, VariableModification cleanModification,
-            VariableModification macModification, VariableModification paddingModification) {
+        VariableModification macModification, VariableModification paddingModification) {
         super(name, identifier);
         this.cleanModification = cleanModification;
         this.macModification = macModification;
@@ -99,7 +100,7 @@ public class TrippleVector extends PaddingVector {
     @Override
     public String toString() {
         return "" + name + "{" + "cleanModification=" + cleanModification + ", macModification=" + macModification
-                + ", paddingModification=" + paddingModification + '}';
+            + ", paddingModification=" + paddingModification + '}';
     }
 
     @Override
@@ -109,13 +110,14 @@ public class TrippleVector extends PaddingVector {
 
         r.setCleanProtocolMessageBytes(new byte[appDataLength]);
         r.getComputations().setMac(new byte[macLength]);
-        int paddingLength = AlgorithmResolver.getCipher(testedSuite).getBlocksize()
+        int paddingLength =
+            AlgorithmResolver.getCipher(testedSuite).getBlocksize()
                 - ((r.getCleanProtocolMessageBytes().getValue().length + r.getComputations().getMac().getValue().length) % AlgorithmResolver
-                        .getCipher(testedSuite).getBlocksize());
+                    .getCipher(testedSuite).getBlocksize());
 
         r.getComputations().setPadding(new byte[paddingLength]);
         return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
-                .getValue(), r.getComputations().getPadding().getValue()).length;
+            .getValue(), r.getComputations().getPadding().getValue()).length;
 
     }
 

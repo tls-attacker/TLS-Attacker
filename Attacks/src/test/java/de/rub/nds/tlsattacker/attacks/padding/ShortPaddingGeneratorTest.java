@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -59,7 +60,7 @@ public class ShortPaddingGeneratorTest {
                 for (PaddingVector vector : vectors) {
                     int length = vector.getRecordLength(suite, ProtocolVersion.TLS12, 4);
                     assertEquals("We only create vectors of the same length to omit false positives",
-                            ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH, length);
+                        ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH, length);
                 }
             }
         }
@@ -70,16 +71,18 @@ public class ShortPaddingGeneratorTest {
      */
     @Test
     public void testCreateBasicMacVectors() {
-        List<PaddingVector> vectors = generator.createBasicMacVectors(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                ProtocolVersion.TLS12);
+        List<PaddingVector> vectors =
+            generator.createBasicMacVectors(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
         assertEquals(3, vectors.size());
-        int macSize = AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA).getSize();
+        int macSize =
+            AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA)
+                .getSize();
         VariableModification modification = ((TrippleVector) vectors.get(0)).getCleanModification();
         ModifiableByteArray array = new ModifiableByteArray();
         array.setModification(modification);
-        byte[] expectedPlain = new byte[ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH
-                - ShortPaddingGenerator.DEFAULT_PADDING_LENGTH - macSize];
+        byte[] expectedPlain =
+            new byte[ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH - ShortPaddingGenerator.DEFAULT_PADDING_LENGTH
+                - macSize];
         assertArrayEquals(expectedPlain, array.getValue());
     }
 
@@ -89,11 +92,13 @@ public class ShortPaddingGeneratorTest {
      */
     @Test
     public void testCreateMissingMacByteVectors() {
-        List<PaddingVector> vectors = generator.createMissingMacByteVectors(
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
+        List<PaddingVector> vectors =
+            generator
+                .createMissingMacByteVectors(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
         assertEquals(2, vectors.size());
-        int macSize = AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA).getSize();
+        int macSize =
+            AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA)
+                .getSize();
         VariableModification modification = ((TrippleVector) vectors.get(0)).getCleanModification();
         ModifiableByteArray array = new ModifiableByteArray();
         array.setModification(modification);
@@ -102,8 +107,8 @@ public class ShortPaddingGeneratorTest {
         modification = ((TrippleVector) vectors.get(0)).getPaddingModification();
         array = new ModifiableByteArray();
         array.setModification(modification);
-        byte[] expectedPadding = generator
-                .createPaddingBytes(ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH - macSize);
+        byte[] expectedPadding =
+            generator.createPaddingBytes(ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH - macSize);
         assertArrayEquals("Validation of used padding", expectedPadding, array.getValue());
 
         byte[] macToModify = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
@@ -127,22 +132,24 @@ public class ShortPaddingGeneratorTest {
      */
     @Test
     public void testCreateOnlyPaddingVectors() {
-        List<PaddingVector> vectors = generator.createOnlyPaddingVectors(
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
+        List<PaddingVector> vectors =
+            generator.createOnlyPaddingVectors(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
         assertEquals(2, vectors.size());
 
         Record r = vectors.get(0).createRecord();
         r.getComputations().setPlainRecordBytes(new byte[20]);
-        byte[] expectedPadding = new byte[] { 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79,
+        byte[] expectedPadding =
+            new byte[] { 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79,
                 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79,
                 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79,
-                79, 79, 79, 79, 79, 79, 79, 79, 79, 79 };
+                79, 79, 79, 79, 79 };
         assertArrayEquals("Validation of the first explicit padding", expectedPadding, r.getComputations()
-                .getPlainRecordBytes().getValue());
+            .getPlainRecordBytes().getValue());
 
         r = vectors.get(1).createRecord();
         r.getComputations().setPlainRecordBytes(new byte[20]);
-        expectedPadding = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+        expectedPadding =
+            new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
@@ -152,9 +159,9 @@ public class ShortPaddingGeneratorTest {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, };
+                (byte) 255, };
         assertArrayEquals("Validation of the second explicit padding", expectedPadding, r.getComputations()
-                .getPlainRecordBytes().getValue());
+            .getPlainRecordBytes().getValue());
     }
 
     /**
@@ -163,65 +170,73 @@ public class ShortPaddingGeneratorTest {
      */
     @Test
     public void testCreateClassicModifiedPadding() {
-        List<PaddingVector> vectors = generator.createClassicModifiedPadding(
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, ProtocolVersion.TLS12);
+        List<PaddingVector> vectors =
+            generator.createClassicModifiedPadding(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+                ProtocolVersion.TLS12);
         assertEquals(18, vectors.size());
 
         byte[] plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(0));
-        byte[] expected = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
-                (byte) 0xBB, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+        byte[] expected =
+            new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, (byte) 0xBB,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
         assertArrayEquals("Validation of the first invalid padding", expected, plainRecordBytes);
 
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(1));
-        expected = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B,
+        expected =
+            new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x33, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x33, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(2));
-        expected = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B,
+        expected =
+            new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3A };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3A };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(3));
-        expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B,
+        expected =
+            new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         // TODO Add intermidiate tests
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(6));
-        expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
-                (byte) 0xBB, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+        expected =
+            new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, (byte) 0xBB,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(7));
-        expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B,
+        expected =
+            new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x33, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x33, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(8));
-        expected = new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B,
+        expected =
+            new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B,
-                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3A };
+                0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3A };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
     }
 
@@ -231,7 +246,7 @@ public class ShortPaddingGeneratorTest {
         r.getComputations().setMac(new byte[20]);
         r.getComputations().setPadding(new byte[20]);
         return ArrayConverter.concatenate(r.getCleanProtocolMessageBytes().getValue(), r.getComputations().getMac()
-                .getValue(), r.getComputations().getPadding().getValue());
+            .getValue(), r.getComputations().getPadding().getValue());
     }
 
     /**

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -275,7 +276,7 @@ public class DefaultChooserTest {
         serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA384);
         config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms);
         assertEquals(serverSupportedSignatureAndHashAlgorithms,
-                config.getDefaultServerSupportedSignatureAndHashAlgorithms());
+            config.getDefaultServerSupportedSignatureAndHashAlgorithms());
         assertEquals(serverSupportedSignatureAndHashAlgorithms, chooser.getServerSupportedSignatureAndHashAlgorithms());
         context.setServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms2);
         assertEquals(serverSupportedSignatureAndHashAlgorithms2, chooser.getServerSupportedSignatureAndHashAlgorithms());
@@ -671,12 +672,12 @@ public class DefaultChooserTest {
         context.setClientEcPublicKey(null);
         config.setDefaultClientEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
         assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-                config.getDefaultClientEcPublicKey());
+            config.getDefaultClientEcPublicKey());
         assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-                chooser.getClientEcPublicKey());
+            chooser.getClientEcPublicKey());
         context.setClientEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
         assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
-                chooser.getClientEcPublicKey());
+            chooser.getClientEcPublicKey());
     }
 
     /**
@@ -687,12 +688,12 @@ public class DefaultChooserTest {
         context.setServerEcPublicKey(null);
         config.setDefaultServerEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
         assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-                config.getDefaultServerEcPublicKey());
+            config.getDefaultServerEcPublicKey());
         assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-                chooser.getServerEcPublicKey());
+            chooser.getServerEcPublicKey());
         context.setServerEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
         assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
-                chooser.getServerEcPublicKey());
+            chooser.getServerEcPublicKey());
     }
 
     /**

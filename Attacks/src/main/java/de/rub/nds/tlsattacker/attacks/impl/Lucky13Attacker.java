@@ -7,35 +7,42 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.transport.tcp.proxy.TimingProxyClientTcpTransportHandler;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,7 +87,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         tlsConfig.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP_PROXY_TIMING);
         tlsConfig.setWorkflowExecutorShouldClose(true);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
                 RunningModeType.CLIENT);
 
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
@@ -97,16 +105,16 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         trace.addTlsAction(action);
 
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        TimingProxyClientTcpTransportHandler transportHandler = (TimingProxyClientTcpTransportHandler) state
-                .getTlsContext().getTransportHandler();
+        TimingProxyClientTcpTransportHandler transportHandler =
+            (TimingProxyClientTcpTransportHandler) state.getTlsContext().getTransportHandler();
         lastResult = transportHandler.getLastMeasurement();
         try {
             transportHandler.closeConnection();
@@ -116,7 +124,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
-
+            LOGGER.warn(e.getMessage());
         }
     }
 
@@ -198,13 +206,14 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             if (config.getMonaFile() != null) {
                 for (int i = 0; i < paddings.length - 1; i++) {
                     for (int j = i + 1; j < paddings.length; j++) {
-                        String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-"
-                                + suite.name() + ".csv";
+                        String fileName =
+                            config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-" + suite.name() + ".csv";
                         String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
-                                + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"
-                                + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                        String command =
+                            "java -jar " + config.getMonaJar() + " --inputFile=" + fileName + " --name=lucky13-"
+                                + suite.name().replace('_', '-') + "-" + paddings[i] + "-" + paddings[j]
+                                + " --lowerBound=0.3 --upperBound=0.5";
                         LOGGER.info("Run mona timing lib with: " + command);
                         commands.append(command);
                         commands.append(System.getProperty("line.separator"));

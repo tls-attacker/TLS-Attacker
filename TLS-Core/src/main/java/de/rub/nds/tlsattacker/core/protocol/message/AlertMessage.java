@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -150,7 +151,7 @@ public class AlertMessage extends ProtocolMessage {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
+            && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
 
     }
 

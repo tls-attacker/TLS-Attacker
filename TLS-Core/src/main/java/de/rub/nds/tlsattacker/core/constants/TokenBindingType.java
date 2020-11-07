@@ -7,14 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum TokenBindingType {
-    PROVIDED_TOKEN_BINDING((byte) 0),
-    REFERRED_TOKEN_BINDING((byte) 1);
+    PROVIDED_TOKEN_BINDING((byte) 0), REFERRED_TOKEN_BINDING((byte) 1);
 
     private final byte tokenBindingTypeValue;
     private static final Map<Byte, TokenBindingType> MAP;

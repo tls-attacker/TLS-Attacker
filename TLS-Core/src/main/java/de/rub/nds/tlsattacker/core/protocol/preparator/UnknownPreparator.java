@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -39,7 +40,7 @@ public class UnknownPreparator extends ProtocolMessagePreparator<UnknownMessage>
             msg.setCompleteResultingMessage(new byte[0]);
         }
         LOGGER.debug("CompleteResultinMessage: "
-                + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 
 }

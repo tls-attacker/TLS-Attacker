@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
@@ -92,7 +93,7 @@ public class WorkflowTraceSerializerTest {
         LOGGER.debug(new String(os.toByteArray()));
 
         Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
-                os.toByteArray());
+            os.toByteArray());
     }
 
     @Test

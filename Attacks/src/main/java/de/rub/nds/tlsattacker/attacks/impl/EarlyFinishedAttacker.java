@@ -7,10 +7,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.attacks.impl;
 
-import java.util.LinkedList;
-import java.util.List;
+package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.constants.EarlyFinishedVulnerabilityType;
@@ -31,12 +29,14 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeA
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.ConsoleLogger;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
-    private final Logger LOGGER = LogManager.getLogger();
+    private final Logger logger = LogManager.getLogger();
 
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
@@ -58,8 +58,9 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
                 return false;
             case UNKNOWN:
                 return null;
+            default:
+                return null;
         }
-        return null;
     }
 
     public EarlyFinishedVulnerabilityType performCheck() {
@@ -79,8 +80,8 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
         State state = new State(tlsConfig, workflowTrace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
 
         if (!workflowTrace.allActionsExecuted()) {

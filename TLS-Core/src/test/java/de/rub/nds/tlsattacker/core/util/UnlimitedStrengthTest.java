@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -43,7 +44,7 @@ public class UnlimitedStrengthTest {
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
         } catch (InvalidKeyException ex) {
             LOGGER.warn("AES256 is probably not supported, you have to install Java Cryptography "
-                    + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
+                + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
             LOGGER.debug(ex);
             fail();
         }

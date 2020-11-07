@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -77,11 +78,11 @@ public class Pkcs1Attack {
 
     /**
      * @param m
-     *            original message to be changed
+     * original message to be changed
      * @param si
-     *            factor
+     * factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in
-     *         a byte array
+     * a byte array
      */
     protected byte[] prepareMsg(BigInteger m, BigInteger si) {
         byte[] msg;
@@ -92,9 +93,9 @@ public class Pkcs1Attack {
 
     /**
      * @param m
-     *            original message to be changed
+     * original message to be changed
      * @param si
-     *            factor
+     * factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type
      */
     protected BigInteger multiply(BigInteger m, BigInteger si) {

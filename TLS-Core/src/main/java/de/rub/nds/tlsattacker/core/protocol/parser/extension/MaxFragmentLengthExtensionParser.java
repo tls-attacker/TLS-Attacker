@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -39,7 +40,7 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
      * them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseMaxFragmentLength(MaxFragmentLengthExtensionMessage msg) {
         msg.setMaxFragmentLength(parseByteArrayField(ExtensionByteLength.MAX_FRAGMENT));

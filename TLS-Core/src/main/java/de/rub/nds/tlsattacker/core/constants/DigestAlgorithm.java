@@ -7,16 +7,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum DigestAlgorithm {
 
-    SSL_DIGEST(""),
-    LEGACY(""),
-    SHA256("SHA-256"),
-    SHA384("SHA-384"),
-    GOSTR3411("GOST3411"),
-    GOSTR34112012_256("GOST3411-2012-256");
+    SSL_DIGEST(""), LEGACY(""), SHA256("SHA-256"), SHA384("SHA-384"), GOSTR3411("GOST3411"), GOSTR34112012_256(
+        "GOST3411-2012-256");
 
     private DigestAlgorithm(String digestAlgorithm) {
         this.javaName = digestAlgorithm;

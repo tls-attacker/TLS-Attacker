@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -52,7 +53,8 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
     private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
 
-    @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
+    @Parameter(names = "-guessProviderInputFile",
+        description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
     private String guessProviderInputFile = null;
 
     @Parameter(names = "-clientIdentity", description = "Set a Client Identity")
@@ -140,7 +142,7 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
         if (this.guessProviderInputFile == null) {
             if (guessProviderType == GuessProviderType.WORDLIST) {
                 return (PskBruteForcerAttackClientCommandConfig.class.getClassLoader()
-                        .getResourceAsStream("psk_common_passwords.txt"));
+                    .getResourceAsStream("psk_common_passwords.txt"));
             } else {
                 return System.in;
             }

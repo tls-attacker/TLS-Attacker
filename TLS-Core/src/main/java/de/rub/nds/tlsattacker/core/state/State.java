@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -160,7 +161,7 @@ public class State {
      * existingTlsContext.connection equals newTlsContext.connection.
      *
      * @param newTlsContext
-     *            The new TlsContext to replace the old with
+     * The new TlsContext to replace the old with
      */
     public void replaceTlsContext(TlsContext newTlsContext) {
         contextContainer.replaceTlsContext(newTlsContext);
@@ -195,7 +196,7 @@ public class State {
      *
      *
      * @param alias
-     *            The Alias for which the TLSContext should be returned
+     * The Alias for which the TLSContext should be returned
      *
      * @return the context with the given connection end alias
      */
@@ -250,7 +251,7 @@ public class State {
      * modify the input trace.
      *
      * @param trace
-     *            The workflow trace that should be filtered
+     * The workflow trace that should be filtered
      * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
@@ -263,12 +264,12 @@ public class State {
      * Apply filters to trace in place.
      *
      * @param trace
-     *            The workflow trace that should be filtered
+     * The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
         if ((filters == null) || (filters.isEmpty())) {
-            LOGGER.debug("No filters to apply, ouput filter list is empty");
+            LOGGER.debug("No filters to apply, output filter list is empty");
             return;
         }
         // Filters contains null if set loaded from -config with entry
@@ -314,14 +315,14 @@ public class State {
         }
     }
 
-    private void assertWorkflowTraceNotNull(String operation_name) {
+    private void assertWorkflowTraceNotNull(String operationName) {
         if (workflowTrace != null) {
             return;
         }
 
         StringBuilder err = new StringBuilder("No workflow trace loaded.");
-        if (operation_name != null && !operation_name.isEmpty()) {
-            err.append(" Operation ").append(operation_name).append(" not permitted");
+        if (operationName != null && !operationName.isEmpty()) {
+            err.append(" Operation ").append(operationName).append(" not permitted");
         }
         throw new ConfigurationException(err.toString());
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -79,7 +80,7 @@ public class SendDynamicClientKeyExchangeActionTest {
         assertTrue(action.getSendMessages() instanceof ArrayList && action.getSendMessages().isEmpty());
         action.execute(state);
         assertTrue(action.getSendMessages() instanceof ArrayList && action.getSendMessages().size() == 1
-                && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
+            && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class SendDynamicClientKeyExchangeActionTest {
         assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
         action.execute(state);
         assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().size() == 1
-                && action.getSendRecords().get(0) instanceof AbstractRecord);
+            && action.getSendRecords().get(0) instanceof AbstractRecord);
     }
 
     @Test
