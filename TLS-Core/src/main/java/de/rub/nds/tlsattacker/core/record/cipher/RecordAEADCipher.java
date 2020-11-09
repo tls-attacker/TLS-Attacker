@@ -243,7 +243,7 @@ public class RecordAEADCipher extends RecordCipher {
                 byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
                 record.getComputations().setPadding(padding);
                 record.setCleanProtocolMessageBytes(cleanBytes);
-                record.getComputations().setPadding(cleanBytes);
+                record.getComputations().setPadding(padding);
                 record.setContentType(contentType[0]);
                 record.setContentMessageType(ProtocolMessageType.getContentType(contentType[0]));
             } else {
