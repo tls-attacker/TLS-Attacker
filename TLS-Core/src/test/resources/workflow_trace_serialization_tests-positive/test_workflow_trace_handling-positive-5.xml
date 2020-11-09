@@ -5,15 +5,15 @@ Test custom connection in workflow trace
 </config>
 
 # And this input trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <timeout>44</timeout>
     </OutboundConnection>
-</ta:workflowTrace>
+</workflowTrace>
 
 # We expect this normalized trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <port>443</port>
@@ -21,12 +21,12 @@ Test custom connection in workflow trace
         <timeout>44</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
-</ta:workflowTrace>
+</workflowTrace>
 
 # And this after default filter application:
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <timeout>44</timeout>
     </OutboundConnection>
-</ta:workflowTrace>
+</workflowTrace>

@@ -26,29 +26,27 @@ import org.apache.commons.lang3.StringUtils;
 
 public class WorkflowTraceSchemaGenerator {
 
-    private static final String OUTPUT_DIR = "target/schemas";
-
-    private final static String ROOT_NS = "http://nds.rub.de/tlsattacker";
+    private final static String ROOT_NS = "";
 
     private final static String NO_NS = "__NO__NS";
 
     public static void main(String[] args) {
         try {
-            new File(OUTPUT_DIR).mkdirs();
-            generateSchema();
+            new File(args[0]).mkdirs();
+            generateSchema(args[0]);
         } catch (IOException | JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    private static void generateSchema() throws IOException, JAXBException {
+    private static void generateSchema(String path) throws IOException, JAXBException {
         AccumulatingSchemaOutputResolver sor = new AccumulatingSchemaOutputResolver();
         WorkflowTraceSerializer.getJAXBContext().generateSchema(sor);
         for (Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
             String systemId = sor.getSystemIds().get(e.getKey());
             FileWriter w = null;
             try {
-                File f = new File(OUTPUT_DIR, systemId);
+                File f = new File(path, systemId);
                 w = new FileWriter(f);
                 System.out.println(String.format("Writing %s to %s", e.getKey(), f.getAbsolutePath()));
                 w.write(e.getValue().toString());
@@ -61,6 +59,7 @@ public class WorkflowTraceSchemaGenerator {
     }
 
     public static class AccumulatingSchemaOutputResolver extends SchemaOutputResolver {
+
         private final Map<String, StringWriter> schemaWriters = new HashMap<>();
         private final Map<String, String> systemIds = new HashMap<>();
 
@@ -75,12 +74,7 @@ public class WorkflowTraceSchemaGenerator {
         }
 
         private static String mapSystemIds(String ns, String suggestedFileName) {
-            if (ROOT_NS.equals(ns)) {
-                return "WorkflowTrace.xsd";
-            } else if (NO_NS.equals(ns)) {
-                return "WorkflowTrace-nons.xsd";
-            }
-            return suggestedFileName;
+            return "WorkflowTrace.xsd";
         }
 
         public Map<String, StringWriter> getSchemaWriters() {

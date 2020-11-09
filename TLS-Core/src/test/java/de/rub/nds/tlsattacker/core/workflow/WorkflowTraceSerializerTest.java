@@ -128,7 +128,7 @@ public class WorkflowTraceSerializerTest {
             // OS-independent functionality for printing new lines
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            pw.println("<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+            pw.println("<workflowTrace>");
             pw.println("    <Send>");
             pw.println("        <messages>");
             pw.println("            <ClientHello>");
@@ -141,7 +141,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("            </ClientHello>");
             pw.println("        </messages>");
             pw.println("    </Send>");
-            pw.println("</ta:workflowTrace>");
+            pw.println("</workflowTrace>");
             pw.close();
             String expected = sw.toString();
 
@@ -173,7 +173,7 @@ public class WorkflowTraceSerializerTest {
 
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            pw.println("<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+            pw.println("<workflowTrace>");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>theAlias</alias>");
             pw.println("        <port>1111</port>");
@@ -191,7 +191,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("            </ClientHello>");
             pw.println("        </messages>");
             pw.println("    </Send>");
-            pw.println("</ta:workflowTrace>");
+            pw.println("</workflowTrace>");
             pw.close();
             String expected = sw.toString();
 
@@ -225,7 +225,7 @@ public class WorkflowTraceSerializerTest {
 
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
-            pw.println("<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+            pw.println("<workflowTrace>");
             pw.println("    <OutboundConnection>");
             pw.println("        <alias>alias1</alias>");
             pw.println("        <port>1111</port>");
@@ -253,7 +253,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("            </ClientHello>");
             pw.println("        </messages>");
             pw.println("    </Send>");
-            pw.println("</ta:workflowTrace>");
+            pw.println("</workflowTrace>");
             pw.close();
             String expected = sw.toString();
 

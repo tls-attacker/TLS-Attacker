@@ -7,7 +7,7 @@ true for default and custom connections.
 </config>
 
 # And this input trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <timeout>44</timeout>
@@ -17,10 +17,10 @@ true for default and custom connections.
             <ClientHello/>
         </messages>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>
 
 # We expect this normalized trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <port>443</port>
@@ -35,10 +35,10 @@ true for default and custom connections.
         </messages>
         <records/>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>
 
 # And this after default filter application:
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
         <timeout>44</timeout>
@@ -48,4 +48,4 @@ true for default and custom connections.
             <ClientHello/>
         </messages>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>

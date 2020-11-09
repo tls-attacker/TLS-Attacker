@@ -18,16 +18,16 @@
 </config>
 
 # And this input trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <Send>
         <messages>
             <ClientHello/>
         </messages>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>
 
 # We expect this normalized trace
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <OutboundConnection>
         <alias>client</alias>
         <port>443</port>
@@ -42,13 +42,13 @@
         </messages>
         <records/>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>
 
 # And this after default filter application:
-<ta:workflowTrace xmlns:ta="http://nds.rub.de/tlsattacker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<workflowTrace>
     <Send>
         <messages>
             <ClientHello/>
         </messages>
     </Send>
-</ta:workflowTrace>
+</workflowTrace>

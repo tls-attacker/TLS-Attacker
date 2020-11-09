@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -37,8 +38,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactoryConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -52,7 +55,8 @@ public class WorkflowTraceSerializer {
      */
     private static JAXBContext context;
 
-    /* package */static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
+    /* package */
+    static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
@@ -137,17 +141,25 @@ public class WorkflowTraceSerializer {
      *             If there is a Problem with the XML Stream
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
-        context = getJAXBContext();
-        Unmarshaller m = context.createUnmarshaller();
+        try {
+            context = getJAXBContext();
+            Unmarshaller m = context.createUnmarshaller();
 
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-
-        WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
-        inputStream.close();
-        return wt;
+            XMLInputFactory xif = XMLInputFactory.newFactory();
+            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema workflowTraceSchema = sf.newSchema(new StreamSource(WorkflowTraceSerializer.class
+                    .getResourceAsStream("/WorkflowTrace.xsd")));
+            workflowTraceSchema.newValidator();
+            m.setSchema(workflowTraceSchema);
+            WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
+            inputStream.close();
+            return wt;
+        } catch (SAXException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static List<WorkflowTrace> readFolder(File f) {
