@@ -9,12 +9,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 
 public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessage> {
-    public GreaseExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public GreaseExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

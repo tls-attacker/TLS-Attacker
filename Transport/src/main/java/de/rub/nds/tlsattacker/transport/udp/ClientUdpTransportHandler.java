@@ -11,20 +11,17 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-public class ClientUdpTransportHandler extends TransportHandler {
+public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     private final String hostname;
-    private final int port;
-
-    private DatagramSocket socket;
 
     public ClientUdpTransportHandler(Connection connection) {
         super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT, false);
@@ -36,13 +33,6 @@ public class ClientUdpTransportHandler extends TransportHandler {
         super(firstTimeout, timeout, ConnectionEndType.CLIENT, false);
         this.hostname = hostname;
         this.port = port;
-    }
-
-    @Override
-    public void closeConnection() throws IOException {
-        socket.close();
-        inStream.close();
-        outStream.close();
     }
 
     @Override
@@ -60,15 +50,5 @@ public class ClientUdpTransportHandler extends TransportHandler {
             return socket.getLocalPort();
         }
         throw new IOException("Cannot retrieve local Port. Socket not connected");
-    }
-
-    @Override
-    public boolean isClosed() throws IOException {
-        return socket.isClosed();
-    }
-
-    @Override
-    public void closeClientConnection() throws IOException {
-        closeConnection();
     }
 }

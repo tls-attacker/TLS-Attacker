@@ -242,6 +242,8 @@
       <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
       <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
       <xs:element name="timeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -767,6 +769,7 @@
                   <xs:element name="SupportedGroups" type="ellipticCurvesExtensionMessage"/>
                   <xs:element name="EllipticCurves" type="ellipticCurvesExtensionMessage"/>
                   <xs:element name="ExtendedMasterSecretExtension" type="extendedMasterSecretExtensionMessage"/>
+                  <xs:element name="GreaseExtension" type="greaseExtensionMessage"/>
                   <xs:element name="HeartbeatExtension" type="heartbeatExtensionMessage"/>
                   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
                   <xs:element name="PaddingExtension" type="paddingExtensionMessage"/>
@@ -1040,6 +1043,18 @@
     <xs:complexContent>
       <xs:extension base="extensionMessage">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="greaseExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="data" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="randomData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="type" type="extensionType" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2131,7 +2146,7 @@
     <xs:complexContent>
       <xs:extension base="protocolMessage">
         <xs:sequence>
-          <xs:element name="ccsProtocolType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="ccsProtocolType" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2861,8 +2876,21 @@
 
   <xs:complexType name="state">
     <xs:sequence>
+      <xs:element name="endTimestamp" type="xs:long"/>
+      <xs:element name="executionException" type="throwable" minOccurs="0"/>
       <xs:element name="runningMode" type="runningModeType" minOccurs="0"/>
+      <xs:element name="startTimestamp" type="xs:long"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="throwable">
+    <xs:sequence>
+      <xs:element name="stackTrace" type="stackTraceElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stackTraceElement" final="extension restriction">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="esniKeyDnsRequestAction">
@@ -3378,7 +3406,9 @@
   <xs:complexType name="sendAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="optional" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3485,6 +3515,7 @@
       <xs:enumeration value="UDP_TIMING"/>
       <xs:enumeration value="TCP_PROXY_TIMING"/>
       <xs:enumeration value="TCP_NO_DELAY"/>
+      <xs:enumeration value="TCP_FRAGMENTATION"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -3559,6 +3590,72 @@
       <xs:enumeration value="GREASE_13"/>
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="extensionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SERVER_NAME_INDICATION"/>
+      <xs:enumeration value="MAX_FRAGMENT_LENGTH"/>
+      <xs:enumeration value="CLIENT_CERTIFICATE_URL"/>
+      <xs:enumeration value="TRUSTED_CA_KEYS"/>
+      <xs:enumeration value="TRUNCATED_HMAC"/>
+      <xs:enumeration value="STATUS_REQUEST"/>
+      <xs:enumeration value="USER_MAPPING"/>
+      <xs:enumeration value="CLIENT_AUTHZ"/>
+      <xs:enumeration value="SERVER_AUTHZ"/>
+      <xs:enumeration value="CERT_TYPE"/>
+      <xs:enumeration value="ELLIPTIC_CURVES"/>
+      <xs:enumeration value="EC_POINT_FORMATS"/>
+      <xs:enumeration value="SRP"/>
+      <xs:enumeration value="SIGNATURE_AND_HASH_ALGORITHMS"/>
+      <xs:enumeration value="USE_SRTP"/>
+      <xs:enumeration value="HEARTBEAT"/>
+      <xs:enumeration value="ALPN"/>
+      <xs:enumeration value="STATUS_REQUEST_V2"/>
+      <xs:enumeration value="SIGNED_CERTIFICATE_TIMESTAMP"/>
+      <xs:enumeration value="CLIENT_CERTIFICATE_TYPE"/>
+      <xs:enumeration value="SERVER_CERTIFICATE_TYPE"/>
+      <xs:enumeration value="PADDING"/>
+      <xs:enumeration value="ENCRYPT_THEN_MAC"/>
+      <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
+      <xs:enumeration value="TOKEN_BINDING"/>
+      <xs:enumeration value="CACHED_INFO"/>
+      <xs:enumeration value="PWD_PROTECT"/>
+      <xs:enumeration value="PWD_CLEAR"/>
+      <xs:enumeration value="PASSWORD_SALT"/>
+      <xs:enumeration value="SESSION_TICKET"/>
+      <xs:enumeration value="EXTENDED_RANDOM"/>
+      <xs:enumeration value="KEY_SHARE_OLD"/>
+      <xs:enumeration value="PRE_SHARED_KEY"/>
+      <xs:enumeration value="EARLY_DATA"/>
+      <xs:enumeration value="SUPPORTED_VERSIONS"/>
+      <xs:enumeration value="COOKIE"/>
+      <xs:enumeration value="PSK_KEY_EXCHANGE_MODES"/>
+      <xs:enumeration value="CERTIFICATE_AUTHORITIES"/>
+      <xs:enumeration value="OID_FILTERS"/>
+      <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
+      <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
+      <xs:enumeration value="KEY_SHARE"/>
+      <xs:enumeration value="RENEGOTIATION_INFO"/>
+      <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
+      <xs:enumeration value="GREASE_00"/>
+      <xs:enumeration value="GREASE_01"/>
+      <xs:enumeration value="GREASE_02"/>
+      <xs:enumeration value="GREASE_03"/>
+      <xs:enumeration value="GREASE_04"/>
+      <xs:enumeration value="GREASE_05"/>
+      <xs:enumeration value="GREASE_06"/>
+      <xs:enumeration value="GREASE_07"/>
+      <xs:enumeration value="GREASE_08"/>
+      <xs:enumeration value="GREASE_09"/>
+      <xs:enumeration value="GREASE_10"/>
+      <xs:enumeration value="GREASE_11"/>
+      <xs:enumeration value="GREASE_12"/>
+      <xs:enumeration value="GREASE_13"/>
+      <xs:enumeration value="GREASE_14"/>
+      <xs:enumeration value="GREASE_15"/>
+      <xs:enumeration value="UNKNOWN"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4020,63 +4117,6 @@
       <xs:enumeration value="TLS13_DRAFT28"/>
       <xs:enumeration value="DTLS10"/>
       <xs:enumeration value="DTLS12"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="runningModeType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="CLIENT"/>
-      <xs:enumeration value="SERVER"/>
-      <xs:enumeration value="MITM"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="extensionType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="SERVER_NAME_INDICATION"/>
-      <xs:enumeration value="MAX_FRAGMENT_LENGTH"/>
-      <xs:enumeration value="CLIENT_CERTIFICATE_URL"/>
-      <xs:enumeration value="TRUSTED_CA_KEYS"/>
-      <xs:enumeration value="TRUNCATED_HMAC"/>
-      <xs:enumeration value="STATUS_REQUEST"/>
-      <xs:enumeration value="USER_MAPPING"/>
-      <xs:enumeration value="CLIENT_AUTHZ"/>
-      <xs:enumeration value="SERVER_AUTHZ"/>
-      <xs:enumeration value="CERT_TYPE"/>
-      <xs:enumeration value="ELLIPTIC_CURVES"/>
-      <xs:enumeration value="EC_POINT_FORMATS"/>
-      <xs:enumeration value="SRP"/>
-      <xs:enumeration value="SIGNATURE_AND_HASH_ALGORITHMS"/>
-      <xs:enumeration value="USE_SRTP"/>
-      <xs:enumeration value="HEARTBEAT"/>
-      <xs:enumeration value="ALPN"/>
-      <xs:enumeration value="STATUS_REQUEST_V2"/>
-      <xs:enumeration value="SIGNED_CERTIFICATE_TIMESTAMP"/>
-      <xs:enumeration value="CLIENT_CERTIFICATE_TYPE"/>
-      <xs:enumeration value="SERVER_CERTIFICATE_TYPE"/>
-      <xs:enumeration value="PADDING"/>
-      <xs:enumeration value="ENCRYPT_THEN_MAC"/>
-      <xs:enumeration value="EXTENDED_MASTER_SECRET"/>
-      <xs:enumeration value="TOKEN_BINDING"/>
-      <xs:enumeration value="CACHED_INFO"/>
-      <xs:enumeration value="PWD_PROTECT"/>
-      <xs:enumeration value="PWD_CLEAR"/>
-      <xs:enumeration value="PASSWORD_SALT"/>
-      <xs:enumeration value="SESSION_TICKET"/>
-      <xs:enumeration value="EXTENDED_RANDOM"/>
-      <xs:enumeration value="KEY_SHARE_OLD"/>
-      <xs:enumeration value="PRE_SHARED_KEY"/>
-      <xs:enumeration value="EARLY_DATA"/>
-      <xs:enumeration value="SUPPORTED_VERSIONS"/>
-      <xs:enumeration value="COOKIE"/>
-      <xs:enumeration value="PSK_KEY_EXCHANGE_MODES"/>
-      <xs:enumeration value="CERTIFICATE_AUTHORITIES"/>
-      <xs:enumeration value="OID_FILTERS"/>
-      <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
-      <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
-      <xs:enumeration value="KEY_SHARE"/>
-      <xs:enumeration value="RENEGOTIATION_INFO"/>
-      <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
       <xs:enumeration value="GREASE_00"/>
       <xs:enumeration value="GREASE_01"/>
       <xs:enumeration value="GREASE_02"/>
@@ -4093,7 +4133,14 @@
       <xs:enumeration value="GREASE_13"/>
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
-      <xs:enumeration value="UNKNOWN"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="runningModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLIENT"/>
+      <xs:enumeration value="SERVER"/>
+      <xs:enumeration value="MITM"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
