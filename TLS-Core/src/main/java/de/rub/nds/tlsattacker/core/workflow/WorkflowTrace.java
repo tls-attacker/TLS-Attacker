@@ -93,6 +93,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
+            @XmlElement(type = ChangeContextValueAction.class, name = "ChangeContextValue"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
             @XmlElement(type = ChangeDefaultPreMasterSecretAction.class, name = "ChangeDefaultPreMasterSecret"),
