@@ -25,6 +25,7 @@ public class CopyBuffersAction extends CopyContextFieldAction {
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setRecordBuffer(src.getRecordBuffer());
         dst.setMessageBuffer(src.getMessageBuffer());
+        setExecuted(true);
     }
 
     @Override

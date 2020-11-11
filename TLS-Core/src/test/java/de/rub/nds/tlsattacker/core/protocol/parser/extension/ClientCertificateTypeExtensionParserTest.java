@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
@@ -61,7 +62,7 @@ public class ClientCertificateTypeExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ClientCertificateTypeExtensionParser(startParsing, expectedBytes);
+        parser = new ClientCertificateTypeExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

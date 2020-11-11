@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
@@ -43,8 +44,8 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     }
 
     @Override
-    public MaxFragmentLengthExtensionParser getParser(byte[] message, int pointer) {
-        return new MaxFragmentLengthExtensionParser(pointer, message);
+    public MaxFragmentLengthExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new MaxFragmentLengthExtensionParser(pointer, message, config);
     }
 
     @Override

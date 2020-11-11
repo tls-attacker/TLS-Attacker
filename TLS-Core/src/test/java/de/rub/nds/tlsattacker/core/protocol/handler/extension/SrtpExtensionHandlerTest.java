@@ -55,7 +55,7 @@ public class SrtpExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof SrtpExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SrtpExtensionParser);
     }
 
     @Test

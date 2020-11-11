@@ -50,7 +50,7 @@ public class ClientAuthzExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof ClientAuthzExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientAuthzExtensionParser);
     }
 
     @Test

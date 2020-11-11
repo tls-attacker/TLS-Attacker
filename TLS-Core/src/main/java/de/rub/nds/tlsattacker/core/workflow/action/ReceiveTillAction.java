@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -269,5 +270,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
     }
 }

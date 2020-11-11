@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
@@ -22,8 +23,8 @@ public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThen
     }
 
     @Override
-    public EncryptThenMacExtensionParser getParser(byte[] message, int pointer) {
-        return new EncryptThenMacExtensionParser(pointer, message);
+    public EncryptThenMacExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new EncryptThenMacExtensionParser(pointer, message, config);
     }
 
     @Override

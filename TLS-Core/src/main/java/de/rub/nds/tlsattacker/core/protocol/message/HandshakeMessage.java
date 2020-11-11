@@ -113,8 +113,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     private ModifiableInteger messageSequence;
 
-    private ModifiableInteger epoch = null;
-
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
