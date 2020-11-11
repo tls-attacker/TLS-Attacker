@@ -438,7 +438,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:boolean" minOccurs="0"/>
     </xs:sequence>
@@ -716,7 +716,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
     </xs:sequence>
@@ -843,7 +843,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
     </xs:sequence>
@@ -919,7 +919,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
@@ -1506,7 +1506,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
     </xs:sequence>
@@ -1741,7 +1741,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
     </xs:sequence>
@@ -2084,7 +2084,7 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:long" minOccurs="0"/>
     </xs:sequence>
