@@ -82,6 +82,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
             @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
+            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> messages = new ArrayList<>();
 

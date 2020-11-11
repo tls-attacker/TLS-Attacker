@@ -12,6 +12,9 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -58,9 +61,7 @@ public class WorkflowTraceSerializer {
     /* package */
     static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
-                    SendAction.class, ReceiveAction.class);
+            context = JAXBContext.newInstance(WorkflowTrace.class);
         }
         return context;
     }
@@ -122,6 +123,8 @@ public class WorkflowTraceSerializer {
             m.marshal(workflowTrace, tempStream);
             try {
                 outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
+
+                System.out.println(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())));
             } catch (TransformerException | XPathExpressionException | ParserConfigurationException | SAXException ex) {
                 throw new RuntimeException("Could not format XML");
             }

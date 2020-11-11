@@ -159,274 +159,6 @@
 
   <xs:element name="workflowTrace" type="workflowTrace"/>
 
-  <xs:complexType name="extensionMessage" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="extensionType" type="modifiableByteArray" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableVariableHolder" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableByteArray">
-    <xs:sequence>
-      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayDeleteModification">
-    <xs:sequence>
-      <xs:element name="count" type="xs:int"/>
-      <xs:element name="startPosition" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modificationFilter" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="accessModificationFilter">
-    <xs:complexContent>
-      <xs:extension base="modificationFilter">
-        <xs:sequence>
-          <xs:element name="accessNumbers" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerAddModification">
-    <xs:sequence>
-      <xs:element name="summand" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerInteractiveModification">
-    <xs:sequence>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerSubtractModification">
-    <xs:sequence>
-      <xs:element name="subtrahend" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="booleanExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:boolean"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="booleanToggleModification">
-    <xs:sequence>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerXorModification">
-    <xs:sequence>
-      <xs:element name="xor" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerShiftLeftModification">
-    <xs:sequence>
-      <xs:element name="shift" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="bigIntegerShiftRightModification">
-    <xs:sequence>
-      <xs:element name="shift" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerAddModification">
-    <xs:sequence>
-      <xs:element name="summand" type="xs:int" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:int" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerSubtractModification">
-    <xs:sequence>
-      <xs:element name="subtrahend" type="xs:int" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerXorModification">
-    <xs:sequence>
-      <xs:element name="xor" type="xs:int" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerShiftLeftModification">
-    <xs:sequence>
-      <xs:element name="shift" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="integerShiftRightModification">
-    <xs:sequence>
-      <xs:element name="shift" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayInsertModification">
-    <xs:sequence>
-      <xs:element name="bytesToInsert" type="xs:string" minOccurs="0"/>
-      <xs:element name="startPosition" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayXorModification">
-    <xs:sequence>
-      <xs:element name="xor" type="xs:string" minOccurs="0"/>
-      <xs:element name="startPosition" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayDuplicateModification">
-    <xs:sequence>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayShuffleModification">
-    <xs:sequence>
-      <xs:element name="shuffle" type="xs:string" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteArrayPayloadModification">
-    <xs:sequence>
-      <xs:element name="prependPayload" type="xs:string" minOccurs="0"/>
-      <xs:element name="payload" type="xs:string" minOccurs="0"/>
-      <xs:element name="appendPayload" type="xs:string" minOccurs="0"/>
-      <xs:element name="insert" type="xs:boolean"/>
-      <xs:element name="insertPosition" type="xs:int"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteAddModification">
-    <xs:sequence>
-      <xs:element name="summand" type="xs:byte" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:byte" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteSubtractModification">
-    <xs:sequence>
-      <xs:element name="subtrahend" type="xs:byte" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="byteXorModification">
-    <xs:sequence>
-      <xs:element name="xor" type="xs:byte" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="stringExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableInteger">
-    <xs:sequence>
-      <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
-  </xs:complexType>
-
   <xs:complexType name="workflowTrace">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -632,6 +364,7 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
+                  <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
                   <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
@@ -665,12 +398,328 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="modifiableVariableHolder" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
   <xs:complexType name="modifiableBoolean">
     <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:boolean" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
     </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerXorModification">
+    <xs:sequence>
+      <xs:element name="xor" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="accessModificationFilter">
+    <xs:complexContent>
+      <xs:extension base="modificationFilter">
+        <xs:sequence>
+          <xs:element name="accessCounter" type="xs:int"/>
+          <xs:element name="accessNumbers" type="xs:int" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modificationFilter" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerSubtractModification">
+    <xs:sequence>
+      <xs:element name="subtrahend" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerShiftRightModification">
+    <xs:sequence>
+      <xs:element name="shift" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerShiftLeftModification">
+    <xs:sequence>
+      <xs:element name="shift" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerAddModification">
+    <xs:sequence>
+      <xs:element name="summand" type="xs:integer" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerInteractiveModification">
+    <xs:sequence>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="booleanToggleModification">
+    <xs:sequence>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="booleanExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:boolean"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayXorModification">
+    <xs:sequence>
+      <xs:element name="xor" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="startPosition" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayShuffleModification">
+    <xs:sequence>
+      <xs:element name="shuffle" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayPayloadModification">
+    <xs:sequence>
+      <xs:element name="prependPayload" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="payload" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="appendPayload" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="insert" type="xs:boolean"/>
+      <xs:element name="insertPosition" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayInsertModification">
+    <xs:sequence>
+      <xs:element name="bytesToInsert" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="startPosition" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayDuplicateModification">
+    <xs:sequence>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteArrayDeleteModification">
+    <xs:sequence>
+      <xs:element name="count" type="xs:int"/>
+      <xs:element name="startPosition" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerXorModification">
+    <xs:sequence>
+      <xs:element name="xor" type="xs:int" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerSubtractModification">
+    <xs:sequence>
+      <xs:element name="subtrahend" type="xs:int" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerShiftRightModification">
+    <xs:sequence>
+      <xs:element name="shift" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerShiftLeftModification">
+    <xs:sequence>
+      <xs:element name="shift" type="xs:int"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:int" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="integerAddModification">
+    <xs:sequence>
+      <xs:element name="summand" type="xs:int" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="longXorModification">
+    <xs:sequence>
+      <xs:element name="xor" type="xs:long" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="longSubtractModification">
+    <xs:sequence>
+      <xs:element name="subtrahend" type="xs:long" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="longExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:long" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="longAddModification">
+    <xs:sequence>
+      <xs:element name="summand" type="xs:long" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteXorModification">
+    <xs:sequence>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+      <xs:element name="xor" type="xs:byte" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteSubtractModification">
+    <xs:sequence>
+      <xs:element name="subtrahend" type="xs:byte" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteAddModification">
+    <xs:sequence>
+      <xs:element name="summand" type="xs:byte" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="byteExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:byte" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stringExplicitValueModification">
+    <xs:sequence>
+      <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableByteArray">
+    <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="certificateMessage">
@@ -758,6 +807,48 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="modifiableInteger">
+    <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="certificatePair">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
@@ -773,6 +864,18 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="extensionMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="extensionType" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="certificateEntry">
     <xs:sequence>
       <xs:element name="certificate" type="xs:string" minOccurs="0"/>
@@ -782,11 +885,44 @@
 
   <xs:complexType name="modifiableByte">
     <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="encryptedServerNameIndicationExtensionMessage">
@@ -1336,11 +1472,44 @@
 
   <xs:complexType name="modifiableString">
     <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
     </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="pwdProtectExtensionMessage">
@@ -1538,11 +1707,44 @@
 
   <xs:complexType name="modifiableBigInteger">
     <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:integer" minOccurs="0"/>
     </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="dheServerKeyExchangeMessage">
@@ -1848,42 +2050,43 @@
 
   <xs:complexType name="modifiableLong">
     <xs:sequence>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" default="false"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:long" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="assertEquals" type="xs:long" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute name="autoformat" type="xs:boolean"/>
-  </xs:complexType>
-
-  <xs:complexType name="longAddModification">
-    <xs:sequence>
-      <xs:element name="summand" type="xs:long" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="longExplicitValueModification">
-    <xs:sequence>
-      <xs:element name="explicitValue" type="xs:long" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="longSubtractModification">
-    <xs:sequence>
-      <xs:element name="subtrahend" type="xs:long" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="longXorModification">
-    <xs:sequence>
-      <xs:element name="xor" type="xs:long" minOccurs="0"/>
-      <xs:element name="modificationFilter" type="modificationFilter" minOccurs="0"/>
-      <xs:any processContents="lax" namespace="##other"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3013,6 +3216,9 @@
                   <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
                   <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
                   <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
+                  <xs:element name="GostClientKeyExchangeMessage" type="gostClientKeyExchangeMessage"/>
+                  <xs:element name="EmptyClientKeyExchangeMessage" type="emptyClientKeyExchangeMessage"/>
+                  <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
                   <xs:element name="HelloRetryRequest" type="helloRetryRequestMessage"/>
                 </xs:choice>
               </xs:sequence>
