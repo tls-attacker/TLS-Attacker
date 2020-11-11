@@ -58,7 +58,6 @@ public class WorkflowTraceSerializer {
      */
     private static JAXBContext context;
 
-    /* package */
     static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(WorkflowTrace.class);
