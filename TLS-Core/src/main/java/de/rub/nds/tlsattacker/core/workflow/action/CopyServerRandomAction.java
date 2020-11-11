@@ -33,7 +33,7 @@ public class CopyServerRandomAction extends CopyContextFieldAction {
         dst.setServerRandom(src.getServerRandom());
         LOGGER.debug("Copying server random from " + src + " to " + dst);
         LOGGER.debug("Copied server random is: " + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
-
+        setExecuted(true);
     }
 
     @Override

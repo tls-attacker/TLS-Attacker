@@ -49,6 +49,7 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
 
         copyRecords.execute(state);
         copyMessages.execute(state);
+        setExecuted(true);
     }
 
 }

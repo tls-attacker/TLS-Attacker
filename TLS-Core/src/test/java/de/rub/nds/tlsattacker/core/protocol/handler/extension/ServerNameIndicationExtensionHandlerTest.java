@@ -72,7 +72,7 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0) instanceof ServerNameIndicationExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof ServerNameIndicationExtensionParser);
     }
 
     /**

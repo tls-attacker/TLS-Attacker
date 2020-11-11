@@ -35,6 +35,7 @@ public class CopyPreMasterSecretAction extends CopyContextFieldAction {
         LOGGER.debug("Copying PreMasterSecret from " + src + " to " + dst);
         LOGGER.debug("Copied PreMasterSecret is: "
                 + ArrayConverter.bytesToHexString(dst.getPreMasterSecret(), true, true));
+        setExecuted(true);
     }
 
     @Override

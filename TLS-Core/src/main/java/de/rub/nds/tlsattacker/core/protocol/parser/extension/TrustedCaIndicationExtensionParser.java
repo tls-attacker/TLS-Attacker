@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
@@ -18,8 +19,8 @@ import java.util.List;
 
 public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedCaIndicationExtensionMessage> {
 
-    public TrustedCaIndicationExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public TrustedCaIndicationExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

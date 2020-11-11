@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class ExtendedMasterSecretExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
+        parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

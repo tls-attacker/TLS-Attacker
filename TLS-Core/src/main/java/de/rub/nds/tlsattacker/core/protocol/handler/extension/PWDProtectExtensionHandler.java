@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -40,8 +41,8 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
     }
 
     @Override
-    public PWDProtectExtensionParser getParser(byte[] message, int pointer) {
-        return new PWDProtectExtensionParser(pointer, message);
+    public PWDProtectExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PWDProtectExtensionParser(pointer, message, config);
     }
 
     @Override
