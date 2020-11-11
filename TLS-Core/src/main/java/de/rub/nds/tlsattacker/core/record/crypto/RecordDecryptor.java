@@ -66,7 +66,7 @@ public class RecordDecryptor extends Decryptor {
         try {
             recordCipher.decrypt(record);
         } catch (CryptoException | ParserException ex) {
-            LOGGER.warn("Could not decrypt Record. Using NulLCipher instead", ex);
+            LOGGER.warn("Could not decrypt Record. Using NullCipher instead", ex);
             try {
                 nullCipher.decrypt(record);
             } catch (CryptoException ex1) {

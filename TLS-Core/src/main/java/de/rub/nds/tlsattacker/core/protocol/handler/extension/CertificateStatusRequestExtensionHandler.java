@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.config.Config;
 import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -31,8 +32,8 @@ public class CertificateStatusRequestExtensionHandler extends
     }
 
     @Override
-    public CertificateStatusRequestExtensionParser getParser(byte[] message, int pointer) {
-        return new CertificateStatusRequestExtensionParser(pointer, message);
+    public CertificateStatusRequestExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new CertificateStatusRequestExtensionParser(pointer, message, config);
     }
 
     @Override

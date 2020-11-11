@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PasswordSaltExtensionPreparator;
@@ -26,8 +27,8 @@ public class PasswordSaltExtensionHandler extends ExtensionHandler<PasswordSaltE
     }
 
     @Override
-    public PasswordSaltExtensionParser getParser(byte[] message, int pointer) {
-        return new PasswordSaltExtensionParser(pointer, message);
+    public PasswordSaltExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PasswordSaltExtensionParser(pointer, message, config);
     }
 
     @Override

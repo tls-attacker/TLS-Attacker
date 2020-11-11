@@ -259,4 +259,8 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         return hash;
     }
 
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }

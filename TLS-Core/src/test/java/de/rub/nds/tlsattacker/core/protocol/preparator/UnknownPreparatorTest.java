@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
@@ -19,13 +20,13 @@ public class UnknownPreparatorTest {
 
     private TlsContext context;
     private UnknownMessage message;
-    private UnknownPreparator preparator;
+    private UnknownMessagePreparator preparator;
 
     @Before
     public void setUp() {
         this.context = new TlsContext();
-        this.message = new UnknownMessage();
-        this.preparator = new UnknownPreparator(context.getChooser(), message);
+        this.message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
+        this.preparator = new UnknownMessagePreparator(context.getChooser(), message);
     }
 
     /**

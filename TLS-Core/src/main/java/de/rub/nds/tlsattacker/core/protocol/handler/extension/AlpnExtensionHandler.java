@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
@@ -27,8 +28,8 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
     }
 
     @Override
-    public AlpnExtensionParser getParser(byte[] message, int pointer) {
-        return new AlpnExtensionParser(pointer, message);
+    public AlpnExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new AlpnExtensionParser(pointer, message, config);
     }
 
     @Override

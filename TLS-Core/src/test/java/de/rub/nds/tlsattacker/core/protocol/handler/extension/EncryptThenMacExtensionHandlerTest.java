@@ -38,7 +38,7 @@ public class EncryptThenMacExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof EncryptThenMacExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof EncryptThenMacExtensionParser);
     }
 
     @Test
