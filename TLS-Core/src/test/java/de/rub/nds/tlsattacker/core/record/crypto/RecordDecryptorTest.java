@@ -337,44 +337,6 @@ public class RecordDecryptorTest {
     }
 
     @Test
-    public void testDecryptTLS12StreamEncryptThenMac() {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
-        context.setMasterSecret(ArrayConverter.hexStringToByteArray(""));
-        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-        // TODO This test does nothing?!
-        /*
-         * Does not seem to be a valid configuration, see RFC 7366: "Note from
-         * the GenericBlockCipher annotation that this only applies to standard
-         * block ciphers that have distinct encrypt and MAC operations. It does
-         * not apply to GenericStreamCiphers or to GenericAEADCiphers that
-         * already include integrity protection with the cipher. If a server
-         * receives an encrypt-then-MAC request extension from a client and then
-         * selects a stream or Authenticated Encryption with Associated Data
-         * (AEAD) ciphersuite, it MUST NOT send an encrypt-then-MAC response
-         * extension back to the client." https://tools.ietf.org/html/rfc7366
-         */
-    }
-
-    @Test
-    public void testDecryptTLS12AEADEncryptThenMac() {
-        // TODO This test does nothing?!
-        /*
-         * Does not seem to be a valid configuration, see RFC 7366: "Note from
-         * the GenericBlockCipher annotation that this only applies to standard
-         * block ciphers that have distinct encrypt and MAC operations. It does
-         * not apply to GenericStreamCiphers or to GenericAEADCiphers that
-         * already include integrity protection with the cipher. If a server
-         * receives an encrypt-then-MAC request extension from a client and then
-         * selects a stream or Authenticated Encryption with Associated Data
-         * (AEAD) ciphersuite, it MUST NOT send an encrypt-then-MAC response
-         * extension back to the client." https://tools.ietf.org/html/rfc7366
-         */
-    }
-
-    @Test
     public void testDecryptTLS13AEADStream() throws CryptoException, NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
