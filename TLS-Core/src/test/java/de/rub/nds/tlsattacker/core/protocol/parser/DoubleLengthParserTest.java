@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 
 public class DoubleLengthParserTest {
 
@@ -40,9 +39,6 @@ public class DoubleLengthParserTest {
             Assert.assertEquals(
                     "Attempt to parse over boundary Message Length while in context Message, boundary only has 63 bytes left, but parse request was for 602 bytes in MessageParserBoundaryContext [boundary=100, boundaryQualifier=Message Length, pointerOffset=4]",
                     e.getMessage());
-        } finally {
-            config.setThrowExceptionOnParserContextViolation(false);
         }
     }
-
 }
