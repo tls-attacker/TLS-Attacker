@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +46,7 @@ public class SendAsciiAction extends AsciiAction {
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);
-            setExecuted(false);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 

@@ -130,6 +130,7 @@ public class WorkflowTraceSerializerTest {
             PrintWriter pw = new PrintWriter(sw);
             pw.println("<workflowTrace>");
             pw.println("    <Send>");
+            pw.println("        <actionOptions/>");
             pw.println("        <messages>");
             pw.println("            <ClientHello>");
             pw.println("                <extensions>");
@@ -180,6 +181,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("        <hostname>host1111</hostname>");
             pw.println("    </OutboundConnection>");
             pw.println("    <Send>");
+            pw.println("        <actionOptions/>");
             pw.println("        <messages>");
             pw.println("            <ClientHello>");
             pw.println("                <extensions>");
@@ -241,6 +243,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("        <port>1313</port>");
             pw.println("    </InboundConnection>");
             pw.println("    <Send>");
+            pw.println("        <actionOptions/>");
             pw.println("        <connectionAlias>alias3</connectionAlias>");
             pw.println("        <messages>");
             pw.println("            <ClientHello>");

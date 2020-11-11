@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -67,7 +68,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
         } catch (IOException E) {
             tlsContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
-            setExecuted(false);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 

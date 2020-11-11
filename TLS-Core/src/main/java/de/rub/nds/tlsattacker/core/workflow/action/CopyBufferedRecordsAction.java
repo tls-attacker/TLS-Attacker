@@ -24,6 +24,7 @@ public class CopyBufferedRecordsAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setRecordBuffer(src.getRecordBuffer());
+        setExecuted(true);
     }
 
     @Override

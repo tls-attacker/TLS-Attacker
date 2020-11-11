@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -63,8 +64,10 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
                 AbstractRecord recordCopy = (AbstractRecord) inStream.readObject();
 
                 recordBuffer.add(recordCopy);
+                setExecuted(true);
             }
         } catch (IOException | ClassNotFoundException ex) {
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
             LOGGER.error("Error while creating deep copy of recordBuffer");
             throw new WorkflowExecutionException(ex.toString());
         }
