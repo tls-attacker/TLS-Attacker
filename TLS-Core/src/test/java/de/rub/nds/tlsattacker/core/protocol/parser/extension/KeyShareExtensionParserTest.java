@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import java.util.Arrays;
@@ -64,7 +65,7 @@ public class KeyShareExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        KeyShareExtensionParser parser = new KeyShareExtensionParser(start, extension, ExtensionType.KEY_SHARE);
+        KeyShareExtensionParser parser = new KeyShareExtensionParser(start, extension, Config.createConfig());
         KeyShareExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

@@ -28,6 +28,11 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
+    public enum MessageActionDirection {
+        SENDING,
+        RECEIVING
+    }
+
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
@@ -77,6 +82,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
             @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
+            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
@@ -230,5 +236,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             records = new ArrayList<>();
         }
     }
+
+    public abstract MessageActionDirection getMessageDirection();
 
 }

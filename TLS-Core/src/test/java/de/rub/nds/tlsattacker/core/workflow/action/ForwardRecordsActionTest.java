@@ -43,6 +43,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ForwardRecordsActionTest {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private State state;
@@ -128,8 +129,6 @@ public class ForwardRecordsActionTest {
             pw.println("    <ForwardRecords>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
-            pw.println("        <receiveMessageHelper/>");
-            pw.println("        <sendMessageHelper/>");
             pw.println("    </ForwardRecords>");
             pw.println("</workflowTrace>");
             pw.close();
@@ -140,7 +139,6 @@ public class ForwardRecordsActionTest {
             filter.postFilter(trace, state.getOriginalWorkflowTrace());
             String actual = WorkflowTraceSerializer.write(trace);
             LOGGER.info(actual);
-
             Assert.assertThat(actual, equalTo(expected));
 
         } catch (JAXBException | IOException ex) {

@@ -9,10 +9,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -20,13 +21,13 @@ import org.junit.Test;
 
 public class UnknownHandlerTest {
 
-    private UnknownHandler handler;
+    private UnknownMessageHandler handler;
     private TlsContext context;
 
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new UnknownHandler(context);
+        handler = new UnknownMessageHandler(context, ProtocolMessageType.UNKNOWN);
     }
 
     /**
@@ -34,7 +35,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0 }, 0) instanceof UnknownParser);
+        assertTrue(handler.getParser(new byte[] { 0 }, 0) instanceof UnknownMessageParser);
     }
 
     /**
@@ -42,7 +43,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new UnknownMessage()) instanceof UnknownPreparator);
+        assertTrue(handler.getPreparator(new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN)) instanceof UnknownMessagePreparator);
     }
 
     /**
@@ -50,7 +51,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new UnknownMessage()) instanceof UnknownSerializer);
+        assertTrue(handler.getSerializer(new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN)) instanceof UnknownMessageSerializer);
     }
 
     /**
@@ -58,7 +59,7 @@ public class UnknownHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        UnknownMessage message = new UnknownMessage();
+        UnknownMessage message = new UnknownMessage(context.getConfig(), ProtocolMessageType.UNKNOWN);
         handler.adjustTLSContext(message);
     }
 

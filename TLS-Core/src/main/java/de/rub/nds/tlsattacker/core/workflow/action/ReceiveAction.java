@@ -76,6 +76,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
             @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
+            @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GostClientKeyExchangeMessage"),
+            @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchangeMessage"),
+            @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
@@ -347,5 +350,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             options.addAll(Arrays.asList(receiveOptions));
             return options;
         }
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
     }
 }

@@ -10,9 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
-import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class ExtendedRandomExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new ExtendedRandomExtensionParser(startParsing, exptectedBytes);
+        parser = new ExtendedRandomExtensionParser(startParsing, exptectedBytes, Config.createConfig());
     }
 
     @Test

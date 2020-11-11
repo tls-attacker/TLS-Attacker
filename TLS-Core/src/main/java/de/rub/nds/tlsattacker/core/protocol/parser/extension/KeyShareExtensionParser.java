@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -26,11 +26,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private List<KeyShareEntry> entryList;
 
-    private final ExtensionType type;
-
-    public KeyShareExtensionParser(int startposition, byte[] array, ExtensionType type) {
-        super(startposition, array);
-        this.type = type;
+    public KeyShareExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

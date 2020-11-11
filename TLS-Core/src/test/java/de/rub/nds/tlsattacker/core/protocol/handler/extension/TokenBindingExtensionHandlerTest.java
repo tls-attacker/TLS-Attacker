@@ -56,7 +56,7 @@ public class TokenBindingExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(extensionBytes, 0) instanceof TokenBindingExtensionParser);
+        assertTrue(handler.getParser(extensionBytes, 0, context.getConfig()) instanceof TokenBindingExtensionParser);
     }
 
     @Test

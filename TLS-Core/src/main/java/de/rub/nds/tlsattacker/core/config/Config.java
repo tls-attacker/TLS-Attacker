@@ -144,6 +144,8 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
+    private boolean throwExceptionOnParserContextViolation = false;
+
     private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;
 
     private NamedGroup preferedCertificateSignatureGroup = NamedGroup.SECP256R1;
@@ -1307,6 +1309,14 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+    }
+
+    public boolean isThrowExceptionOnParserContextViolation() {
+        return throwExceptionOnParserContextViolation;
+    }
+
+    public void setThrowExceptionOnParserContextViolation(boolean throwExceptionOnParserContextViolation) {
+        this.throwExceptionOnParserContextViolation = throwExceptionOnParserContextViolation;
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
