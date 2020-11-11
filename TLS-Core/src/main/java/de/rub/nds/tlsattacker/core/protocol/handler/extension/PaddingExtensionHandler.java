@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
@@ -27,8 +28,8 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
     }
 
     @Override
-    public PaddingExtensionParser getParser(byte[] message, int pointer) {
-        return new PaddingExtensionParser(pointer, message);
+    public PaddingExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PaddingExtensionParser(pointer, message, config);
     }
 
     @Override

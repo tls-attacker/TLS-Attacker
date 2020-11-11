@@ -38,7 +38,7 @@ public class ClientCertificateUrlExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof ClientCertificateUrlExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateUrlExtensionParser);
     }
 
     @Test

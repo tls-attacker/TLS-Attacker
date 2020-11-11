@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownSerializer extends ProtocolMessageSerializer<UnknownMessage> {
+public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +29,7 @@ public class UnknownSerializer extends ProtocolMessageSerializer<UnknownMessage>
      * @param version
      *            Version of the Protocol
      */
-    public UnknownSerializer(UnknownMessage message, ProtocolVersion version) {
+    public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }

@@ -44,7 +44,7 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3, 4 }, 0) instanceof UnknownExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3, 4 }, 0, context.getConfig()) instanceof UnknownExtensionParser);
     }
 
     /**

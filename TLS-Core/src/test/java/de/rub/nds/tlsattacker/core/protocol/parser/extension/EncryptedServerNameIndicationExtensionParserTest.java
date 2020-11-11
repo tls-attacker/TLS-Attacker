@@ -81,7 +81,7 @@ public class EncryptedServerNameIndicationExtensionParserTest {
         context.getConfig().setEsniServerKeyPairs(serverKeyShareEntries);
 
         EncryptedServerNameIndicationExtensionParser parser = new EncryptedServerNameIndicationExtensionParser(0,
-                msgBytes);
+                msgBytes, context.getConfig());
         EncryptedServerNameIndicationExtensionMessage msg = parser.parse();
         EncryptedServerNameIndicationExtensionPreparator preparator = new EncryptedServerNameIndicationExtensionPreparator(
                 chooser, msg, null);

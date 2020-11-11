@@ -55,7 +55,7 @@ public class SessionTicketTlsExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof SessionTicketTLSExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SessionTicketTLSExtensionParser);
     }
 
     /**

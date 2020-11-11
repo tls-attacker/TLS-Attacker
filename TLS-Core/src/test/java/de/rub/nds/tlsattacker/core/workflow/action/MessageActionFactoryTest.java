@@ -47,17 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action = MessageActionFactory.createAction(clientConnection, ConnectionEndType.CLIENT,
+        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory
-                .createAction(clientConnection, ConnectionEndType.SERVER, new AlertMessage(config));
+        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
+                new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(serverConnection, ConnectionEndType.CLIENT, new AlertMessage(config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
+                new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(serverConnection, ConnectionEndType.SERVER, new AlertMessage(config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
+                new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }
@@ -70,13 +70,14 @@ public class MessageActionFactoryTest {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
         messages.add(new AlertMessage(config));
-        MessageAction action = MessageActionFactory.createAction(clientConnection, ConnectionEndType.CLIENT, messages);
+        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
+                messages);
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(clientConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(serverConnection, ConnectionEndType.CLIENT, messages);
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(serverConnection, ConnectionEndType.SERVER, messages);
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 2);
     }

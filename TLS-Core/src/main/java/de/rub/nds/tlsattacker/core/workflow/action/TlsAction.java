@@ -13,12 +13,17 @@ import de.rub.nds.tlsattacker.core.connection.Aliasable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +43,10 @@ public abstract class TlsAction implements Serializable, Aliasable {
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;
+
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = ActionOption.class, name = "ActionOption") })
+    private Set<ActionOption> actionOptions = new HashSet<>();
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
@@ -161,6 +170,14 @@ public abstract class TlsAction implements Serializable, Aliasable {
             sb.append(" [").append(aliasesToString()).append("]");
         }
         return sb.toString();
+    }
+
+    public final Set<ActionOption> getActionOptions() {
+        return actionOptions;
+    }
+
+    public final void setActionOptions(Set<ActionOption> actionOptions) {
+        this.actionOptions = actionOptions;
     }
 
 }

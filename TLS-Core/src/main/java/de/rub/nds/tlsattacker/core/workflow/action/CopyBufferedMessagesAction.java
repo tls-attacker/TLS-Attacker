@@ -23,6 +23,7 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setMessageBuffer(src.getMessageBuffer());
+        setExecuted(true);
     }
 
     @Override

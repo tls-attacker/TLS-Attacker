@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);
-            setExecuted(false);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -100,4 +102,8 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
         return records;
     }
 
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -429,7 +430,7 @@ public class WorkflowTrace implements Serializable {
 
     public boolean executedAsPlanned() {
         for (TlsAction action : tlsActions) {
-            if (!action.executedAsPlanned()) {
+            if (!action.executedAsPlanned() && !action.getActionOptions().contains(ActionOption.MAY_FAIL)) {
                 LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
                 return false;
             } else {

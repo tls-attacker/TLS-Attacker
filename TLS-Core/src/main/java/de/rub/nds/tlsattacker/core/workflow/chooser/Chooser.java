@@ -143,13 +143,13 @@ public abstract class Chooser {
 
     public abstract BigInteger getClientDhGenerator();
 
-    public abstract BigInteger getDhServerPrivateKey();
+    public abstract BigInteger getServerDhPrivateKey();
 
-    public abstract BigInteger getDhClientPrivateKey();
+    public abstract BigInteger getClientDhPrivateKey();
 
-    public abstract BigInteger getDhServerPublicKey();
+    public abstract BigInteger getServerDhPublicKey();
 
-    public abstract BigInteger getDhClientPublicKey();
+    public abstract BigInteger getClientDhPublicKey();
 
     public abstract GOSTCurve getSelectedGostCurve();
 

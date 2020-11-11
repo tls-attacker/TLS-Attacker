@@ -67,10 +67,10 @@ public class KeyGenerator {
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getClientDhModulus(),
+            return new CustomDHPrivateKey(chooser.getClientDhPrivateKey(), chooser.getClientDhModulus(),
                     chooser.getClientDhGenerator());
         } else {
-            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getServerDhModulus(),
+            return new CustomDHPrivateKey(chooser.getServerDhPrivateKey(), chooser.getServerDhModulus(),
                     chooser.getServerDhGenerator());
         }
     }

@@ -1,5 +1,6 @@
 <config>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
+    <throwExceptionOnParserContextViolation>false</throwExceptionOnParserContextViolation>
     <preferedCertificateSignatureType>RSA</preferedCertificateSignatureType>
     <preferedCertificateSignatureGroup>SECP256R1</preferedCertificateSignatureGroup>
     <autoSelectCertificate>true</autoSelectCertificate>

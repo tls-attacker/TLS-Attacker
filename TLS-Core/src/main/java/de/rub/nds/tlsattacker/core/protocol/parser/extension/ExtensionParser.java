@@ -10,9 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,8 +27,11 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtensionParser(int startposition, byte[] array) {
+    private final Config config;
+
+    public ExtensionParser(int startposition, byte[] array, Config config) {
         super(startposition, array);
+        this.config = config;
     }
 
     @Override
@@ -34,7 +40,11 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
         T msg = createExtensionMessage();
         parseExtensionType(msg);
         parseExtensionLength(msg);
+        pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionLength().getValue(), String.format(
+                "Extension Length [%s]", msg.getExtensionTypeConstant()), getPointer(),
+                config.isThrowExceptionOnParserContextViolation()));
         parseExtensionMessageContent(msg);
+        popContext();
         setExtensionBytes(msg);
         return msg;
     }

@@ -579,8 +579,7 @@ public class TlsContext {
     private Chooser chooser;
 
     /**
-     * Contains the TLS extensions proposed by the client. private boolean
-     * earlyCleanShutdown;
+     * Contains the TLS extensions proposed by the client.
      */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 

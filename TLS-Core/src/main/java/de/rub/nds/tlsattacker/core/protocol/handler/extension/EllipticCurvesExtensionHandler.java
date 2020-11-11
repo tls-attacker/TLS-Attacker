@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -64,8 +65,8 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     }
 
     @Override
-    public EllipticCurvesExtensionParser getParser(byte[] message, int pointer) {
-        return new EllipticCurvesExtensionParser(pointer, message);
+    public EllipticCurvesExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new EllipticCurvesExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -100,11 +102,11 @@ public class SendAction extends MessageAction implements SendingAction {
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
-            if (!optional) {
+            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
                 tlsContext.setReceivedTransportHandlerException(true);
                 LOGGER.debug(E);
             }
-            setExecuted(optional);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -204,6 +206,11 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 
     @Override
