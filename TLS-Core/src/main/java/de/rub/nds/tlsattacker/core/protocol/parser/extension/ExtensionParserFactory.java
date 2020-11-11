@@ -170,7 +170,7 @@ public class ExtensionParserFactory {
             case GREASE_13:
             case GREASE_14:
             case GREASE_15:
-                parser = new GreaseExtensionParser(pointer, extensionBytes);
+                parser = new GreaseExtensionParser(pointer, extensionBytes, config);
                 break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes, config);

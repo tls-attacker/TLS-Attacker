@@ -270,6 +270,9 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
+    }
+
+    @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.RECEIVING;
     }

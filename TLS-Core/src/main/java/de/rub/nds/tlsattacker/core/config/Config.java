@@ -3722,6 +3722,7 @@ public class Config implements Serializable {
     public void setRetryFailedClientTcpSocketInitialization(Boolean retryFailedClientTcpSocketInitialization) {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
+
     public List<ActionOption> getMessageFactoryActionOptions() {
         return messageFactoryActionOptions;
     }
