@@ -11,9 +11,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.core.config.Config;
 import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;

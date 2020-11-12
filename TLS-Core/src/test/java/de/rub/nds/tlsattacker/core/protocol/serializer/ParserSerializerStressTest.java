@@ -147,7 +147,7 @@ public class ParserSerializerStressTest {
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
                 return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
-                        ProtocolMessageType.UNKNOWN, config);
+                    ProtocolMessageType.UNKNOWN, config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

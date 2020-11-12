@@ -26,7 +26,7 @@ public class ServerNamePairSerializerTest {
     }
 
     /**
-     * Test of serializeBytes method, of class ServerNamePairSerializier.
+     * Test of serializeBytes method, of class ServerNamePairSerializer.
      */
     @Test
     public void testSerializeBytes() {

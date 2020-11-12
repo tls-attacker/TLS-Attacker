@@ -88,7 +88,7 @@ public abstract class Chooser {
 
     public abstract List<CompressionMethod> getClientSupportedCompressions();
 
-    public abstract List<CipherSuite> getClientSupportedCiphersuites();
+    public abstract List<CipherSuite> getClientSupportedCipherSuites();
 
     public abstract List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms();
 
@@ -296,7 +296,7 @@ public abstract class Chooser {
 
     public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
 
-    public abstract List<CipherSuite> getEsniServerCiphersuites();
+    public abstract List<CipherSuite> getEsniServerCipherSuites();
 
     public abstract Integer getEsniPaddedLength();
 

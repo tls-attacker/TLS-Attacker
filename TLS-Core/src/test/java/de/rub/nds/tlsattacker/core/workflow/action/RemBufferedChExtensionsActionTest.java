@@ -187,7 +187,7 @@ public class RemBufferedChExtensionsActionTest {
 
     @Test
     @Category(SlowTests.class)
-    public void marshalingAndUnmarshaclingEmptyObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(RemBufferedChExtensionsAction.class);
     }
 

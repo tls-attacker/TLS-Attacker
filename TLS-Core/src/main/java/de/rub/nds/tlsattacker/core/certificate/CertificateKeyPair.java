@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -388,7 +389,7 @@ public class CertificateKeyPair implements Serializable {
             privateKey.adjustInContext(context, connectionEnd);
         }
         if (!context.getChooser().getSelectedCipherSuite().isTLS13()
-                && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
+            && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
             context.setSelectedGroup(publicKeyGroup);
         } else {
             context.setEcCertificateCurve(publicKeyGroup);

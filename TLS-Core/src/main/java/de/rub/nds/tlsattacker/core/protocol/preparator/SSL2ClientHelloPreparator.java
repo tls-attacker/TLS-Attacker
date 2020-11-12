@@ -39,7 +39,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         preparePaddingLength(message);
         prepareType(message);
         prepareProtocolVersion(message);
-        // By Default we just set a fixed value with ssl2 ciphersuites
+        // By Default we just set a fixed value with ssl2 cipher suites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
         chooser.getContext().getRandom().nextBytes(challenge);
@@ -82,7 +82,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
                 }
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare SSL2ClientHello. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message", ex);
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());

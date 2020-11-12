@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -51,9 +52,9 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = new LinkedList<>();
-        ServerKeyExchangeMessage msg = new WorkflowConfigurationFactory(state.getConfig())
-                .createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser()
-                        .getSelectedCipherSuite()));
+        ServerKeyExchangeMessage msg =
+            new WorkflowConfigurationFactory(state.getConfig()).createServerKeyExchangeMessage(AlgorithmResolver
+                .getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
         if (msg != null) {
             messages.add(msg);
         }
@@ -69,9 +70,9 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException E) {
+        } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }

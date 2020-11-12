@@ -81,7 +81,7 @@ public class StreamTransportHandlerTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testCloseClientconnection() throws IOException {
+    public void testCloseClientConnection() throws IOException {
         handler.initialize();
         handler.closeClientConnection();
     }

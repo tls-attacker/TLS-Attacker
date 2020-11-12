@@ -102,7 +102,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(compression.getArrayValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
             }
         }
         return stream.toByteArray();
@@ -115,7 +115,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(suite.getByteValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
             }
         }
         return stream.toByteArray();
@@ -145,7 +145,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareCipherSuites(ClientHelloMessage msg) {
-        msg.setCipherSuites(convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCiphersuites()));
+        msg.setCipherSuites(convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCipherSuites()));
         LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 

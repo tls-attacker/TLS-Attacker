@@ -48,7 +48,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * @param msg
      * Message to write in
      */
-    protected void parseSelectedCiphersuite(ServerHelloMessage msg) {
+    protected void parseSelectedCipherSuite(ServerHelloMessage msg) {
         msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
     }
 
@@ -74,7 +74,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);
-        parseSelectedCiphersuite(msg);
+        parseSelectedCipherSuite(msg);
         parseSelectedCompressionMethod(msg);
 
         LOGGER.trace("Checking for ExtensionLength Field");

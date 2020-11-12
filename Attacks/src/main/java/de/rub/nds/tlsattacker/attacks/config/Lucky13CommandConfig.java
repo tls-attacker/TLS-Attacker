@@ -14,7 +14,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.ProxyDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -50,7 +50,7 @@ public class Lucky13CommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -65,7 +65,7 @@ public class Lucky13CommandConfig extends AttackConfig {
     public Lucky13CommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         proxyDelegate = new ProxyDelegate();
@@ -139,8 +139,8 @@ public class Lucky13CommandConfig extends AttackConfig {
              */
             List<CipherSuite> suiteList = new LinkedList<>();
             suiteList.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            config.setDefaultServerSupportedCiphersuites(suiteList);
-            config.setDefaultClientSupportedCiphersuites(suiteList);
+            config.setDefaultServerSupportedCipherSuites(suiteList);
+            config.setDefaultClientSupportedCipherSuites(suiteList);
             config.setDefaultSelectedCipherSuite(suiteList.get(0));
         }
         return config;

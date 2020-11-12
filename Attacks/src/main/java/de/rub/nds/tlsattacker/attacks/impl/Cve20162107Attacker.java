@@ -77,7 +77,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setDefaultSelectedCipherSuite(suite);
-        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        tlsConfig.setDefaultClientSupportedCipherSuites(suite);
         KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
         if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
             tlsConfig.setAddECPointFormatExtension(true);
@@ -124,7 +124,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.debug(ex.getLocalizedMessage());
         }
         // The Server has to answer to our ClientHello with a ServerHello
-        // Message, else he does not support the offered Ciphersuite and
+        // Message, else he does not support the offered cipher suite and
         // protocol version
         if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             LOGGER.info("Did not receive ServerHello. Skipping...");
@@ -180,14 +180,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolVersion> versions = config.getVersions();
         Config tlsConfig = getTlsConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
-        if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
+        if (tlsConfig.getDefaultClientSupportedCipherSuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
                 if (cs.isCBC()) {
                     ciphers.add(cs);
                 }
             }
         } else {
-            ciphers = tlsConfig.getDefaultClientSupportedCiphersuites();
+            ciphers = tlsConfig.getDefaultClientSupportedCipherSuites();
         }
 
         for (ProtocolVersion version : versions) {
@@ -195,7 +195,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 try {
                     vulnerable |= executeAttackRound(version, suite);
                 } catch (Throwable t) {
-                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                    LOGGER.warn("Problem while testing " + version.name() + " with cipher suite " + suite.name());
                     LOGGER.debug(t);
                 }
             }

@@ -62,7 +62,7 @@ public class RecordAEADCipherTest {
             .hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"));
         keySet.setClientWriteMacSecret(new byte[0]);
         keySet.setClientWriteIv(ArrayConverter.hexStringToByteArray("11223344556677889900AABB"));
-        // IV is not from keyblock
+        // IV is not from key block
         keySet.setServerWriteIv(new byte[12]); // ServerSide is not used
         keySet.setServerWriteKey(new byte[16]); // ServerSide is not used
         keySet.setServerWriteMacSecret(new byte[0]); // ServerSide is not used
@@ -79,7 +79,7 @@ public class RecordAEADCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getCbcInitialisationVector());
         assertNull(record.getComputations().getMacKey());
         assertNull(record.getComputations().getMac());
@@ -147,7 +147,7 @@ public class RecordAEADCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getCbcInitialisationVector());
         assertNull(record.getComputations().getMacKey());
         assertNull(record.getComputations().getMac());
@@ -198,7 +198,7 @@ public class RecordAEADCipherTest {
             .hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"));
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setServerWriteIv(ArrayConverter.hexStringToByteArray("11223344556677889900AABB"));
-        // IV is not from keyblock
+        // IV is not from key block
         keySet.setClientWriteIv(new byte[12]); // ClientSide is not used
         keySet.setClientWriteKey(new byte[16]); // ClientSide is not used
         keySet.setClientWriteMacSecret(new byte[0]); // ClientSide is not used
@@ -215,7 +215,7 @@ public class RecordAEADCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getCbcInitialisationVector());
         assertNull(record.getComputations().getMacKey());
         assertNull(record.getComputations().getMac());
@@ -283,7 +283,7 @@ public class RecordAEADCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getCbcInitialisationVector());
         assertNull(record.getComputations().getMacKey());
         assertNull(record.getComputations().getMac());

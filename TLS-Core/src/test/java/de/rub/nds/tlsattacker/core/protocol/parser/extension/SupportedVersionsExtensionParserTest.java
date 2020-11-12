@@ -59,8 +59,8 @@ public class SupportedVersionsExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        SupportedVersionsExtensionParser parser = new SupportedVersionsExtensionParser(start, extension,
-                Config.createConfig());
+        SupportedVersionsExtensionParser parser =
+            new SupportedVersionsExtensionParser(start, extension, Config.createConfig());
         SupportedVersionsExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

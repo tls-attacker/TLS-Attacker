@@ -88,7 +88,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
         pair.setServerNameConfig(hostnameConfig.getBytes(StandardCharsets.UTF_8));
         msg.getClientEsniInner().getServerNameList().add(pair);
 
-        context.getConfig().getClientSupportedEsniCiphersuites().add(cipherSuite);
+        context.getConfig().getClientSupportedEsniCipherSuites().add(cipherSuite);
         context.getConfig().getClientSupportedEsniNamedGroups().add(namedGroup);
         msg.getKeyShareEntry().setPrivateKey(privateKey);
 

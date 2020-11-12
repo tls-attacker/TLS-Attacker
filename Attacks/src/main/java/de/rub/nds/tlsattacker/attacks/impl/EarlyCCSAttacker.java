@@ -105,7 +105,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
-        WorkflowTrace workflowTrace = factory.createTlsEntryWorkflowtrace(tlsConfig.getDefaultClientConnection());
+        WorkflowTrace workflowTrace = factory.createTlsEntryWorkflowTrace(tlsConfig.getDefaultClientConnection());
 
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
 

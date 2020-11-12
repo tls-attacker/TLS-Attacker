@@ -32,7 +32,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test that addFragment is successful. (Does not throw an excpetion
+     * Test that addFragment is successful. (Does not throw an exception
      */
     @Test
     public void testAddTrue() {
@@ -72,7 +72,7 @@ public class FragmentCollectorTest {
      * Test isMessageComplete when all fragments are inserted disorderly.
      */
     @Test
-    public void testIsMessageCompleteDisordelyTrue() {
+    public void testIsMessageCompleteDisorderlyTrue() {
         collector.addFragment(fragment(0, 0, 2, 0));
         collector.addFragment(fragment(0, 8, 2, 0));
         collector.addFragment(fragment(0, 5, 3, 0));
@@ -85,7 +85,7 @@ public class FragmentCollectorTest {
      * overlap.
      */
     @Test
-    public void testIsMessageCompleteTrueDisordelyOverlap() {
+    public void testIsMessageCompleteTrueDisorderlyOverlap() {
         collector.addFragment(fragment(0, 5, 3, 0));
         collector.addFragment(fragment(0, 7, 3, 0));
         collector.addFragment(fragment(0, 0, 3, 0));
@@ -98,7 +98,7 @@ public class FragmentCollectorTest {
      * overlap a few bytes are missing.
      */
     @Test
-    public void testIsMessageCompleteFalseDisordelyOverlap() {
+    public void testIsMessageCompleteFalseDisorderlyOverlap() {
         collector.addFragment(fragment(0, 6, 3, 0));
         collector.addFragment(fragment(0, 0, 7, 0));
         assertFalse(collector.isMessageComplete());
@@ -137,7 +137,7 @@ public class FragmentCollectorTest {
      * Test buildCombinedFragment in the usual case.
      */
     @Test
-    public void testbuildCombinedFragment() {
+    public void testBuildCombinedFragment() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
         collector.addFragment(fragmentOfMsg(0, 3, 5, original, 0));
@@ -151,7 +151,7 @@ public class FragmentCollectorTest {
      * with overlaps.
      */
     @Test
-    public void testbuildCombinedFragmentDisorderlyOverlap() {
+    public void testBuildCombinedFragmentDisorderlyOverlap() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 5, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
@@ -164,7 +164,7 @@ public class FragmentCollectorTest {
      * Test buildCombinedFragment when not all bytes have been received.
      */
     @Test
-    public void testbuildCombinedFragmentIncomplete() {
+    public void testBuildCombinedFragmentIncomplete() {
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 6, 4, original, 0));
@@ -178,7 +178,7 @@ public class FragmentCollectorTest {
      * fitting set to false.
      */
     @Test
-    public void testbuildCombinedFragmentAddUnfitting() {
+    public void testBuildCombinedFragmentAddUnfitting() {
         Config config = Config.createConfig();
         config.setAcceptOnlyFittingDtlsFragments(false);
         collector = new FragmentCollector(config, (byte) 0, 6, 10);

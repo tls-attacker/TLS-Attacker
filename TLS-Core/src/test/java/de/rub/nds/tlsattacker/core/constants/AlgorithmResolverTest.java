@@ -175,7 +175,7 @@ public class AlgorithmResolverTest {
 
     @Test
     public void testAllCipherSuitesGetKeyExchange() {
-        // Checks that we can retrieve all ciphersuites key exchange algorithms
+        // Checks that we can retrieve all cipher suites key exchange algorithms
         // and
         // that none throws an unsupported operation exception
         // Only UnsupportedOperationException are allowed here
@@ -330,7 +330,7 @@ public class AlgorithmResolverTest {
             CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
     }
 
-    // Test get Mac algorithm for all ciphersuites
+    // Test get Mac algorithm for all cipher suites
     @Test
     public void getAllMacAlgorithms() {
         for (CipherSuite suite : CipherSuite.values()) {

@@ -81,9 +81,9 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCiphersuites().size() == 2);
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
+        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertNull(context.getDtlsCookie());
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
@@ -104,9 +104,9 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCiphersuites().size() == 2);
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
+        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertArrayEquals(context.getDtlsCookie(), new byte[] { 2, 2, 3 });
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }

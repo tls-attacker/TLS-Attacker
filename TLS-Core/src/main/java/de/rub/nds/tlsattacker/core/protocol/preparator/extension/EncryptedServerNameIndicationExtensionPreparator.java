@@ -252,24 +252,24 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
-        List<CipherSuite> clientSupportedCiphersuites = chooser.getConfig().getClientSupportedEsniCiphersuites();
-        List<CipherSuite> serverSupportedCiphersuites = ((DefaultChooser) chooser).getEsniServerCiphersuites();
-        List<CipherSuite> implementedCiphersuites = CipherSuite.getEsniImplemented();
-        CipherSuite selectedCiphersuite = implementedCiphersuites.get(0);
+        List<CipherSuite> clientSupportedCipherSuites = chooser.getConfig().getClientSupportedEsniCipherSuites();
+        List<CipherSuite> serverSupportedCipherSuites = ((DefaultChooser) chooser).getEsniServerCipherSuites();
+        List<CipherSuite> implementedCipherSuites = CipherSuite.getEsniImplemented();
+        CipherSuite selectedCipherSuite = implementedCipherSuites.get(0);
         boolean isFoundSharedCipher = false;
-        for (CipherSuite c : clientSupportedCiphersuites) {
-            if (implementedCiphersuites.contains(c)) {
-                selectedCiphersuite = c;
-                if (serverSupportedCiphersuites.contains(c)) {
+        for (CipherSuite c : clientSupportedCipherSuites) {
+            if (implementedCipherSuites.contains(c)) {
+                selectedCipherSuite = c;
+                if (serverSupportedCipherSuites.contains(c)) {
                     isFoundSharedCipher = true;
                     break;
                 }
             }
         }
         if (!isFoundSharedCipher) {
-            LOGGER.warn("Found no shared cipher. Using " + selectedCiphersuite);
+            LOGGER.warn("Found no shared cipher. Using " + selectedCipherSuite);
         }
-        msg.setCipherSuite(selectedCiphersuite.getByteValue());
+        msg.setCipherSuite(selectedCipherSuite.getByteValue());
         LOGGER.debug("CipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuite().getValue()));
     }
 

@@ -87,8 +87,8 @@ public class ActionTestUtils {
             }
             StringBuilder sb = new StringBuilder("");
             sb.append(
-                    "<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
-                    .append(System.lineSeparator());
+                "<ta:workflowTrace xmlns:ta=\"http://nds.rub.de/tlsattacker\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">")
+                .append(System.lineSeparator());
             sb.append("    <").append(xmlName).append("/>").append(System.lineSeparator());
             sb.append("</ta:workflowTrace>").append(System.lineSeparator());
             String expected = sb.toString();

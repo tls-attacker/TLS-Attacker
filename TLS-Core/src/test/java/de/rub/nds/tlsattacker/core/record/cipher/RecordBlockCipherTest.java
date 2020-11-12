@@ -110,7 +110,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -149,7 +149,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls10Client() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls10() test in reverse
+        // This is effectively the testEncryptTls10() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -174,7 +174,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -244,7 +244,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -283,7 +283,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls11Client() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls11() test in reverse
+        // This is effectively the testEncryptTls11() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
@@ -308,7 +308,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -378,7 +378,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -450,7 +450,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls12Client() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls12() test in reverse
+        // This is effectively the testEncryptTls12() test in reverse
         context.setConnection(new InboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -475,7 +475,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -553,7 +553,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -592,7 +592,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls10Server() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls10() test in reverse
+        // This is effectively the testEncryptTls10() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -618,7 +618,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -689,7 +689,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -728,7 +728,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls11Server() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls11() test in reverse
+        // This is effectively the testEncryptTls11() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -754,7 +754,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -825,7 +825,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -864,7 +864,7 @@ public class RecordBlockCipherTest {
 
     @Test
     public void testDecryptTls12Server() throws NoSuchAlgorithmException, CryptoException {
-        // This is effectivly the testEncryptTls12() test in reverse
+        // This is effectively the testEncryptTls12() test in reverse
         context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
@@ -890,7 +890,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -961,7 +961,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1030,7 +1030,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1100,7 +1100,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1169,7 +1169,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1238,7 +1238,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1307,7 +1307,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1375,7 +1375,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1444,7 +1444,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1514,7 +1514,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1583,7 +1583,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1652,7 +1652,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.encrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());
@@ -1721,7 +1721,7 @@ public class RecordBlockCipherTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         cipher.decrypt(record);
 
-        // These fields are not used within blockciphers
+        // These fields are not used within block ciphers
         assertNull(record.getComputations().getExplicitNonce());
         assertNull(record.getComputations().getAeadSalt());
         assertNull(record.getComputations().getGcmNonce());

@@ -13,18 +13,18 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ExtensionSerialiszerFactoryTest {
+public class ExtensionSerializerFactoryTest {
 
     @Before
     public void setUp() {
     }
 
     /**
-     * Test of getExtensionSerialiszer method, of class
-     * ExtensionSerialiszerFactory.
+     * Test of getExtensionSerializer method, of class
+     * ExtensionSerializerFactory.
      */
     @Test
-    public void testGetExtensionSerialiszer() {
+    public void testGetExtensionSerializer() {
     }
 
 }

@@ -34,13 +34,13 @@ public class StateTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void emptyInitUsesWorklfowTraceTypeFromConfig() {
+    public void emptyInitUsesWorkflowTraceTypeFromConfig() {
         State s = new State();
         assertNotNull(s.getConfig());
         assertNotNull(s.getWorkflowTrace());
         assertNotNull(s.getTlsContext());
-        // TOOD: assertThat(workflowTrace.getType(),
-        // isEqual(config.getWorklfowTraceType());
+        // TODO: assertThat(workflowTrace.getType(),
+        // isEqual(config.getWorkflowTraceType());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class StateTest {
         assertNotNull(s.getWorkflowTrace());
         assertNotNull(s.getTlsContext());
         assertEquals(config.getDefaultApplicationMessageData(), expected);
-        // TOOD: assertThat(workflowTrace.getType(),
+        // TODO: assertThat(workflowTrace.getType(),
         // isEqual(WorkflowTraceType.SHORT_HELLO));
     }
 
@@ -178,7 +178,7 @@ public class StateTest {
     }
 
     @Test
-    public void replacingTlsContextWihtBadConnectionFails() {
+    public void replacingTlsContextWithBadConnectionFails() {
         State state = new State();
         TlsContext origCtx = state.getTlsContext();
         TlsContext newCtx = new TlsContext();

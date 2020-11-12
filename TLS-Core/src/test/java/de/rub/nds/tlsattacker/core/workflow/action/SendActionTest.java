@@ -73,7 +73,7 @@ public class SendActionTest {
     @Test
     public void testExecute() {
         action.execute(state);
-        action.executedAsPlanned(); // TODO check faketransporthandler
+        action.executedAsPlanned(); // TODO check fake transport handler
         assertTrue(action.isExecuted());
     }
 

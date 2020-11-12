@@ -33,7 +33,7 @@ public class AlgorithmResolver {
      * @param protocolVersion
      * The ProtocolVersion for which the PRFAlgorithm should be returned
      * @param cipherSuite
-     * The Ciphersuite for which the PRFAlgorithm should be returned
+     * The Cipher suite for which the PRFAlgorithm should be returned
      * @return The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -69,7 +69,7 @@ public class AlgorithmResolver {
      * @param protocolVersion
      * The ProtocolVersion for which the DigestAlgorithm should be returned
      * @param cipherSuite
-     * The Ciphersuite for which the DigestAlgorithm should be returned
+     * The Cipher suite for which the DigestAlgorithm should be returned
      * @return The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
@@ -316,7 +316,7 @@ public class AlgorithmResolver {
 
     /**
      * @param cipherSuite
-     * The Ciphersuite for which the BulkCipherAlgorithm should be returned
+     * The Cipher suite for which the BulkCipherAlgorithm should be returned
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
@@ -325,8 +325,8 @@ public class AlgorithmResolver {
 
     /**
      * @param cipherSuite
-     * The Ciphersuite for which the CipherType should be selected
-     * @return The CipherType of the Ciphersuite
+     * The Cipher suite for which the CipherType should be selected
+     * @return The CipherType of the Cipher suite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();

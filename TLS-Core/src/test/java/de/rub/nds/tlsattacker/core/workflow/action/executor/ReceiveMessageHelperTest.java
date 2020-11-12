@@ -100,7 +100,7 @@ public class ReceiveMessageHelperTest {
         checkMessage(result.getMessageList().get(0), DTLS.MSG_SERVER_HELLO_ASSEMBLED);
         // If the messages are received disorderly in two distinct receive
         // events it should be
-        // processed disorderly in the finished (worhty of a discussion)
+        // processed disorderly in the finished (worthy of a discussion)
         Assert.assertArrayEquals(ArrayConverter.concatenate(DTLS.MSG_SERVER_HELLO_DONE_SINGLE_FRAGMENT,
             DTLS.MSG_SERVER_HELLO_SINGLE_FRAGMENT), context.getDigest().getRawBytes());
     }

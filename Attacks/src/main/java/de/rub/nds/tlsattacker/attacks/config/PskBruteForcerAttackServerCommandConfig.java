@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -42,7 +42,7 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -70,7 +70,7 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     public PskBruteForcerAttackServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         addDelegate(clientDelegate);
@@ -93,7 +93,7 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
                     cipherSuiteList.add(cipherSuite);
                 }
             }
-            config.setDefaultClientSupportedCiphersuites(cipherSuiteList);
+            config.setDefaultClientSupportedCipherSuites(cipherSuiteList);
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);

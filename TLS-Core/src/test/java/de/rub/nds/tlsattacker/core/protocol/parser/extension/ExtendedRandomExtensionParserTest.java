@@ -35,7 +35,7 @@ public class ExtendedRandomExtensionParserTest {
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extendedRandom;
-    private final byte[] exptectedBytes;
+    private final byte[] expectedBytes;
     private final int startParsing;
     private ExtendedRandomExtensionParser parser;
     private ExtendedRandomExtensionMessage message;
@@ -54,13 +54,13 @@ public class ExtendedRandomExtensionParserTest {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;
-        this.exptectedBytes = expectedBytes;
+        this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
     }
 
     @Before
     public void setUp() {
-        parser = new ExtendedRandomExtensionParser(startParsing, exptectedBytes, Config.createConfig());
+        parser = new ExtendedRandomExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

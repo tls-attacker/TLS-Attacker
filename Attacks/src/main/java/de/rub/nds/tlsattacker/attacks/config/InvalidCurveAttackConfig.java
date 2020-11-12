@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
 import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
@@ -94,7 +93,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -134,7 +133,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         starttlsDelegate = new StarttlsDelegate();
@@ -370,7 +369,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddRenegotiationInfoExtension(true);
-        config.setDefaultClientSupportedCiphersuites(cipherSuites);
+        config.setDefaultClientSupportedCipherSuites(cipherSuites);
         List<NamedGroup> namedCurves = new LinkedList<>();
         namedCurves.add(namedGroup);
         config.setDefaultClientNamedGroups(namedCurves);

@@ -67,7 +67,7 @@ public class RemBufferedChCiphersActionTest {
         expectedLength = 8;
 
         Config config = Config.createConfig();
-        config.setDefaultClientSupportedCiphersuites(expected);
+        config.setDefaultClientSupportedCipherSuites(expected);
 
         action = new RemBufferedChCiphersAction();
         trace = new WorkflowTrace();
@@ -157,7 +157,7 @@ public class RemBufferedChCiphersActionTest {
 
     @Test
     @Category(SlowTests.class)
-    public void marshalingAndUnmarshaclingEmptyObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(RemBufferedChCiphersAction.class);
     }
 

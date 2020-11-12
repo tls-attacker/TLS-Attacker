@@ -51,8 +51,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     @Override
     public void executeAttack() {
-        CONSOLE.info("Connecting to the Server to find a PSK ciphersuite he supports...");
-        CipherSuite suite = getSupportedPskCiphersuite();
+        CONSOLE.info("Connecting to the Server to find a PSK cipher suite he supports...");
+        CipherSuite suite = getSupportedPskCipherSuite();
         if (suite == null) {
             CONSOLE.info("Stopping attack");
         }
@@ -98,7 +98,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info("Connecting to the Server...");
-        boolean supportsPsk = getSupportedPskCiphersuite() != null;
+        boolean supportsPsk = getSupportedPskCipherSuite() != null;
         if (supportsPsk) {
             CONSOLE.info("Maybe vulnerable - server supports PSK");
             return null;
@@ -108,7 +108,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         }
     }
 
-    private CipherSuite getSupportedPskCiphersuite() {
+    private CipherSuite getSupportedPskCipherSuite() {
         Config tlsConfig = getTlsConfig();
 
         String clientIdentity = config.getPskIdentity();
@@ -126,7 +126,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             CONSOLE
                 .info("Did not receive a ServerHello. The Server does not seem to support any of the tested PSK cipher suites.");
             LOGGER.debug("We tested for the following cipher suites:");
-            for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCiphersuites()) {
+            for (CipherSuite suite : tlsConfig.getDefaultClientSupportedCipherSuites()) {
                 LOGGER.debug(suite.name());
             }
             return null;
@@ -135,7 +135,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     private boolean executeProtocolFlowToServer(CipherSuite suite, byte[] pskGuess) {
         Config tlsConfig = getTlsConfig();
-        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        tlsConfig.setDefaultClientSupportedCipherSuites(suite);
         tlsConfig.setDefaultSelectedCipherSuite(suite);
         tlsConfig.setDefaultPSKKey(pskGuess);
         WorkflowTrace trace =

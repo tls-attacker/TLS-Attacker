@@ -164,12 +164,12 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     protected Boolean isVulnerable() {
         Boolean vulnerable = false;
         StringBuilder commands = new StringBuilder();
-        List<CipherSuite> suites = tlsConfig.getDefaultClientSupportedCiphersuites();
+        List<CipherSuite> suites = tlsConfig.getDefaultClientSupportedCipherSuites();
         for (CipherSuite suite : suites) {
             results.clear();
-            LOGGER.info("Testing ciphersuite {}", suite);
-            tlsConfig.setDefaultClientSupportedCiphersuites(suite);
-            tlsConfig.setDefaultServerSupportedCiphersuites(suite);
+            LOGGER.info("Testing cipher suite {}", suite);
+            tlsConfig.setDefaultClientSupportedCipherSuites(suite);
+            tlsConfig.setDefaultServerSupportedCipherSuites(suite);
             tlsConfig.setDefaultSelectedCipherSuite(suite);
             String[] paddingStrings = config.getPaddings().split(",");
             int[] paddings = new int[paddingStrings.length];

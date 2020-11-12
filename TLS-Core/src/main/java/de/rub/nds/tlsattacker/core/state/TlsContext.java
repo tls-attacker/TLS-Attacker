@@ -253,7 +253,7 @@ public class TlsContext {
 
     private ProtocolVersion highestClientProtocolVersion;
 
-    private List<CipherSuite> clientSupportedCiphersuites;
+    private List<CipherSuite> clientSupportedCipherSuites;
 
     private List<CompressionMethod> clientSupportedCompressions;
 
@@ -643,7 +643,7 @@ public class TlsContext {
 
     private List<KeyShareStoreEntry> esniServerKeyShareEntries;
 
-    private List<CipherSuite> esniServerCiphersuites = new LinkedList();
+    private List<CipherSuite> esniServerCipherSuites = new LinkedList();
 
     private Integer esniPaddedLength;
 
@@ -1314,16 +1314,16 @@ public class TlsContext {
         return globalDtlsFragmentManager;
     }
 
-    public List<CipherSuite> getClientSupportedCiphersuites() {
-        return clientSupportedCiphersuites;
+    public List<CipherSuite> getClientSupportedCipherSuites() {
+        return clientSupportedCipherSuites;
     }
 
-    public void setClientSupportedCiphersuites(List<CipherSuite> clientSupportedCiphersuites) {
-        this.clientSupportedCiphersuites = clientSupportedCiphersuites;
+    public void setClientSupportedCipherSuites(List<CipherSuite> clientSupportedCipherSuites) {
+        this.clientSupportedCipherSuites = clientSupportedCipherSuites;
     }
 
-    public void setClientSupportedCiphersuites(CipherSuite... clientSupportedCiphersuites) {
-        this.clientSupportedCiphersuites = new ArrayList(Arrays.asList(clientSupportedCiphersuites));
+    public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
+        this.clientSupportedCipherSuites = new ArrayList(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -2424,12 +2424,12 @@ public class TlsContext {
         this.esniServerKeyShareEntries = esniServerKeyShareEntries;
     }
 
-    public List<CipherSuite> getEsniServerCiphersuites() {
-        return esniServerCiphersuites;
+    public List<CipherSuite> getEsniServerCipherSuites() {
+        return esniServerCipherSuites;
     }
 
-    public void setEsniServerCiphersuites(List<CipherSuite> esniServerCiphersuites) {
-        this.esniServerCiphersuites = esniServerCiphersuites;
+    public void setEsniServerCipherSuites(List<CipherSuite> esniServerCipherSuites) {
+        this.esniServerCipherSuites = esniServerCipherSuites;
     }
 
     public Integer getEsniPaddedLength() {

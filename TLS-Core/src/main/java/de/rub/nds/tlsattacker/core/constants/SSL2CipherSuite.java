@@ -49,7 +49,7 @@ public enum SSL2CipherSuite implements Serializable {
         }
     }
 
-    public static List<SSL2CipherSuite> getCiphersuites(byte[] values) {
+    public static List<SSL2CipherSuite> getCipherSuites(byte[] values) {
         List<SSL2CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         while (pointer < values.length) {

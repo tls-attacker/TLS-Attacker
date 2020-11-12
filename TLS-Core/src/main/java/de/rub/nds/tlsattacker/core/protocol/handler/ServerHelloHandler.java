@@ -80,7 +80,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedProtocolVersion(message);
         adjustSelectedCompression(message);
         adjustSelectedSessionID(message);
-        adjustSelectedCiphersuite(message);
+        adjustSelectedCipherSuite(message);
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
         if (!message.isTls13HelloRetryRequest()) {
@@ -101,7 +101,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
-    private void adjustSelectedCiphersuite(ServerHelloMessage message) {
+    private void adjustSelectedCipherSuite(ServerHelloMessage message) {
         CipherSuite suite = null;
         if (message.getSelectedCipherSuite() != null) {
             suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());

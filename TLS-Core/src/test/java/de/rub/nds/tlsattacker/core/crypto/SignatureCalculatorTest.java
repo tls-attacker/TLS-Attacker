@@ -71,7 +71,7 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void RSASSSL3ignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+    public void RSASSSL3signatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
         SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_NONE;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");

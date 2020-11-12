@@ -47,7 +47,7 @@ public class WorkflowTraceNormalizerTestBadInput {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String TEST_VECTOR_DIR = "/worklfow_trace_serialization_tests-negative";
+    private static final String TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-negative";
 
     /**
      * Run each test with a file from TEST_VECTOR_DIR as parameter.

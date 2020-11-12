@@ -77,7 +77,7 @@ public class SignatureCalculator {
                 .contains("DSS")) {
                 algoName = "SHA1withDSA";
             } else {
-                throw new UnsupportedOperationException("Ciphersuite not supported - Check Debug Log");
+                throw new UnsupportedOperationException("Cipher suite not supported - Check Debug Log");
             }
         } else {
             algoName = algorithm.getJavaName();

@@ -31,7 +31,7 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
     protected void parseHandshakeMessageContent(HelloRetryRequestMessage msg) {
         LOGGER.debug("Parsing HelloRetryRequestMessage");
         parseProtocolVersion(msg);
-        parseSelectedCiphersuite(msg);
+        parseSelectedCipherSuite(msg);
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
@@ -50,7 +50,7 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
         LOGGER.debug("ProtocolVersion:" + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
     }
 
-    protected void parseSelectedCiphersuite(HelloRetryRequestMessage message) {
+    protected void parseSelectedCipherSuite(HelloRetryRequestMessage message) {
         message.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug("CipherSuite:" + ArrayConverter.bytesToHexString(message.getSelectedCipherSuite().getValue()));
     }

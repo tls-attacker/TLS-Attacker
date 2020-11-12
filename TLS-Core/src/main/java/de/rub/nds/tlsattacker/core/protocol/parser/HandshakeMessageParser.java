@@ -99,7 +99,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         parseType(msg);
         parseLength(msg);
         pushContext(new MessageParserBoundaryVerificationContext(msg.getLength().getValue(), "Message Length",
-                getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
+            getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
         parseHandshakeMessageContent(msg);
         popContext();
         return msg;

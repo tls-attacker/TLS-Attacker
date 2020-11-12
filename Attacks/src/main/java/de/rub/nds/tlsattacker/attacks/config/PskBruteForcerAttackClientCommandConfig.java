@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
 import java.io.File;
@@ -39,7 +39,7 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
     private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
     @Parameter(names = "-guessProviderInputFile",
@@ -54,7 +54,7 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         super(delegate);
         serverDelegate = new ServerDelegate();
         attackDelegate = new AttackDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         addDelegate(serverDelegate);
         addDelegate(attackDelegate);
         addDelegate(ciphersuiteDelegate);

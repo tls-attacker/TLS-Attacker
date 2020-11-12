@@ -51,7 +51,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
@@ -79,7 +79,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
@@ -110,7 +110,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
@@ -141,7 +141,7 @@ public class ClientHelloPreparatorTest {
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
+        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
         context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.setClientSessionId(new byte[] { 0, 1, 2, 3 });

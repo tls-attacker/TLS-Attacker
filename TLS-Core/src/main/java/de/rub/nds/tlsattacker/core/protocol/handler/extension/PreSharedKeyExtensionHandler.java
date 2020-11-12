@@ -66,7 +66,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                     context.setEarlyDataPSKIdentity(context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
                     context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
                 } else {
-                    LOGGER.warn("Could not adjust EarlyData Identity and Ciphersuite");
+                    LOGGER.warn("Could not adjust EarlyData Identity and Cipher suite");
                 }
             }
         }

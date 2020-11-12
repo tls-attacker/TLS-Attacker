@@ -276,7 +276,7 @@ public class WorkflowTraceUtilTest {
 
     @Test
     public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds() throws JAXBException, IOException {
-        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_defaullt_alias.xml");
+        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_default_alias.xml");
 
         try {
             trace = WorkflowTraceSerializer.read(stream);

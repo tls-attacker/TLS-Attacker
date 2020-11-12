@@ -211,7 +211,7 @@ public class ShortPaddingGeneratorTest {
                 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B, 0x3B };
         assertArrayEquals("Validation of the second invalid padding", expected, plainRecordBytes);
 
-        // TODO Add intermidiate tests
+        // TODO Add intermediate tests
         plainRecordBytes = getPlainRecordBytesFromVector(vectors.get(6));
         expected =
             new byte[] { 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, (byte) 0xBB,

@@ -320,7 +320,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12StreamEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTLS12StreamEncryptThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
@@ -334,7 +334,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12AEADEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
+    public void testEncryptTLS12AEADEncryptThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -42,7 +43,7 @@ public class ChangeContextValueActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException, CryptoException {
+        InvalidAlgorithmParameterException, CryptoException {
         Config config = Config.createConfig();
         action = new ChangeContextValueAction<ProtocolVersion>("selectedProtocolVersion", ProtocolVersion.SSL2);
         trace = new WorkflowTrace();
@@ -52,7 +53,7 @@ public class ChangeContextValueActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(
-                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+            new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
     }
 
     @After
@@ -61,15 +62,15 @@ public class ChangeContextValueActionTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testException1() {
-        ChangeContextValueAction<ProtocolVersion> b = (ChangeContextValueAction<ProtocolVersion>) trace.getTlsActions()
-                .get(0);
+        ChangeContextValueAction<ProtocolVersion> b =
+            (ChangeContextValueAction<ProtocolVersion>) trace.getTlsActions().get(0);
         b.getNewValueList();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testException2() {
         trace.addTlsAction(new ChangeContextValueAction<CipherSuite>("", CipherSuite.GREASE_00,
-                CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
+            CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
         ChangeContextValueAction<CipherSuite> b = (ChangeContextValueAction<CipherSuite>) trace.getTlsActions().get(1);
         b.getNewValue();
     }
@@ -148,12 +149,12 @@ public class ChangeContextValueActionTest {
         ls.add(CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA);
         ls.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
 
-        ChangeContextValueAction<byte[]> action2 = new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[] {
-                0x01, 0x02, 0x03 });
-        ChangeContextValueAction<CipherSuite> action3 = new ChangeContextValueAction<CipherSuite>(
-                "clientSupportedCiphersuites", ls);
-        ChangeContextValueAction<PRFAlgorithm> action4 = new ChangeContextValueAction<PRFAlgorithm>("prfAlgorithm",
-                PRFAlgorithm.TLS_PRF_SHA256);
+        ChangeContextValueAction<byte[]> action2 =
+            new ChangeContextValueAction<byte[]>("handshakeSecret", new byte[] { 0x01, 0x02, 0x03 });
+        ChangeContextValueAction<CipherSuite> action3 =
+            new ChangeContextValueAction<CipherSuite>("clientSupportedCipherSuites", ls);
+        ChangeContextValueAction<PRFAlgorithm> action4 =
+            new ChangeContextValueAction<PRFAlgorithm>("prfAlgorithm", PRFAlgorithm.TLS_PRF_SHA256);
 
         trace.addTlsActions(action2);
         trace.addTlsActions(action3);

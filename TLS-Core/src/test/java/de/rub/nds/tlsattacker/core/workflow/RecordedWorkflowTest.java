@@ -90,13 +90,13 @@ public class RecordedWorkflowTest {
      * @throws java.security.SignatureException
      */
     // TODO
-    public void testFullWorkflowDeterminsitcWorkflow() throws IOException, NoSuchAlgorithmException, KeyStoreException,
-        CertificateException, UnrecoverableKeyException, KeyManagementException, KeyManagementException,
-        InvalidKeyException, NoSuchProviderException, SignatureException, OperatorCreationException,
-        KeyManagementException {
+    public void testFullWorkflowDeterministicWorkflow() throws IOException, NoSuchAlgorithmException,
+        KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException,
+        KeyManagementException, InvalidKeyException, NoSuchProviderException, SignatureException,
+        OperatorCreationException, KeyManagementException {
         Config c = Config.createConfig();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        c.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setWorkflowExecutorShouldOpen(false);
         WorkflowTrace trace =
             new WorkflowConfigurationFactory(c).createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);

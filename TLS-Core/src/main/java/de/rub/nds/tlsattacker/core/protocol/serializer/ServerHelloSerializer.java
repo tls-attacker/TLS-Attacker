@@ -42,9 +42,9 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
     }
 
     /**
-     * Writes the SelectedCiphersuite of the message into the final byte[]
+     * Writes the SelectedCipher suite of the message into the final byte[]
      */
-    protected void writeSelectedCiphersuite() {
+    protected void writeSelectedCipherSuite() {
         appendBytes(msg.getSelectedCipherSuite().getValue());
         LOGGER
             .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
@@ -65,7 +65,7 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
         writeRandom();
         writeSessionIDLength();
         writeSessionID();
-        writeSelectedCiphersuite();
+        writeSelectedCipherSuite();
         writeSelectedCompressionMethod();
         if (hasExtensionLengthField()) {
             writeExtensionLength();

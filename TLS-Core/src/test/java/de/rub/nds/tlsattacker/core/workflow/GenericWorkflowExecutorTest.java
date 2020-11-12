@@ -140,7 +140,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 //        this.initializeContext();
 //        GenericWorkflowExecutorImpl we = new GenericWorkflowExecutorImpl(null, context);
 //        we.removeNextProtocolMessages(context.getWorkflowTrace().getAllMessages(), 2);
-//        assertTrue("Only two messsages left in protocol messages", protocolMessages.size() == 2);
+//        assertTrue("Only two messages left in protocol messages", protocolMessages.size() == 2);
 //        assertTrue(context.getWorkflowTrace().getAllMessages().get(0).getClass() == ClientHelloMessage.class);
 //        assertTrue(context.getWorkflowTrace().getAllMessages().get(1).getClass() == ServerHelloMessage.class);
 //    }

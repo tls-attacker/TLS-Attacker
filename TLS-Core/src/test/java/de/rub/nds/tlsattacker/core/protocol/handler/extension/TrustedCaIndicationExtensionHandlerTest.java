@@ -51,7 +51,7 @@ public class TrustedCaIndicationExtensionHandlerTest {
 
         handler.adjustTLSContext(msg);
 
-        assertTrustedAuthoritiyList(trustedAuthorities, context.getTrustedCaIndicationExtensionCas());
+        assertTrustedAuthorityList(trustedAuthorities, context.getTrustedCaIndicationExtensionCas());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TrustedCaIndicationExtensionHandlerTest {
         assertTrue(handler.getSerializer(new TrustedCaIndicationExtensionMessage()) instanceof TrustedCaIndicationExtensionSerializer);
     }
 
-    public void assertTrustedAuthoritiyList(List<TrustedAuthority> expected, List<TrustedAuthority> actual) {
+    public void assertTrustedAuthorityList(List<TrustedAuthority> expected, List<TrustedAuthority> actual) {
         for (int i = 0; i < expected.size(); i++) {
             TrustedAuthority expectedObject = expected.get(i);
             TrustedAuthority actualObject = actual.get(i);

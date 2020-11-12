@@ -20,7 +20,7 @@ public enum BulkCipherAlgorithm {
     /**
      * @param cipherSuite
      * The CipherSuite to choose the BulkCipherAlgorithm from
-     * @return The BulkCipherAlgorithm of the Ciphersuite
+     * @return The BulkCipherAlgorithm of the cipher suite
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();

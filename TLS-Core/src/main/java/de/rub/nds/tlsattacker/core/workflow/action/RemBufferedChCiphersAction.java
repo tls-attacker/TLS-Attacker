@@ -99,7 +99,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         }
 
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
-        List<CipherSuite> ciphers = CipherSuite.getCiphersuites(ciphersBytes);
+        List<CipherSuite> ciphers = CipherSuite.getCipherSuites(ciphersBytes);
         int origCiphersLength = ciphersBytes.length;
         ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
         CipherSuite type;
@@ -160,7 +160,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         sb.append("\ncipher suite bytes:");
         sb.append(ArrayConverter.bytesToHexString(ch.getCipherSuites().getValue()));
         sb.append("\nreadable cipher suite list:\n");
-        for (CipherSuite cs : CipherSuite.getCiphersuites(ch.getCipherSuites().getValue())) {
+        for (CipherSuite cs : CipherSuite.getCipherSuites(ch.getCipherSuites().getValue())) {
             sb.append(cs.name()).append("\n");
         }
         return sb.toString();

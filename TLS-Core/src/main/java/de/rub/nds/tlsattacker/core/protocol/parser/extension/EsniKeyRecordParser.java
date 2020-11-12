@@ -89,7 +89,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
         int cipherSuitesLen = this.parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
         byte[] cipherSuitesBytes = this.parseByteArrayField(cipherSuitesLen);
-        List<CipherSuite> cipherSuites = CipherSuite.getCiphersuites(cipherSuitesBytes);
+        List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(cipherSuitesBytes);
         record.setCipherSuiteList(cipherSuites);
     }
 

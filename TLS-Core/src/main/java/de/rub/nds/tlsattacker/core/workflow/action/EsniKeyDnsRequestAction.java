@@ -89,7 +89,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());
         tlsContext.setEsniServerKeyShareEntries(esniKeyRecord.getKeys());
-        tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuites());
+        tlsContext.setEsniServerCipherSuites(esniKeyRecord.getCipherSuites());
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());

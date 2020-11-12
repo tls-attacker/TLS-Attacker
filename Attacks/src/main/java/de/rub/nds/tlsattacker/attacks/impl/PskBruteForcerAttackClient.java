@@ -135,7 +135,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         CONSOLE.info("Started TLS-Server - waiting for a client to connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
-            CipherSuite suite = choosePskCipherSuite(state.getTlsContext().getClientSupportedCiphersuites());
+            CipherSuite suite = choosePskCipherSuite(state.getTlsContext().getClientSupportedCipherSuites());
             tlsConfig.setDefaultSelectedCipherSuite(suite);
         } else {
             try {
@@ -183,7 +183,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         State state = executeClientHelloWorkflow(tlsConfig);
         TlsContext tlsContext = state.getTlsContext();
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_HELLO, state.getWorkflowTrace())) {
-            for (CipherSuite cipherSuite : tlsContext.getClientSupportedCiphersuites()) {
+            for (CipherSuite cipherSuite : tlsContext.getClientSupportedCipherSuites()) {
                 if (cipherSuite.isPsk()) {
                     CONSOLE.info("The Client uses Psk. If he uses a weak Password he is vulnerable.");
                     return null;
@@ -220,7 +220,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private State executeClientHelloWorkflow(Config tlsConfig) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(tlsConfig.getDefaultClientConnection());
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(tlsConfig.getDefaultClientConnection());
         trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor =

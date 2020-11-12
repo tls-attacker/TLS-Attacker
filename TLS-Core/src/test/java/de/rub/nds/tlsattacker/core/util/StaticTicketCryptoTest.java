@@ -35,21 +35,21 @@ public class StaticTicketCryptoTest {
     @Test
     public void testEncryptAES_128_CBC() {
         /*-
-        PKCS7 is not used in the RFC testvectors
-        TODO: Find some useable testvectors
+        PKCS7 is not used in the RFC test vectors
+        TODO: Find some usable test vectors
         -*/
     }
 
     /**
      * Test of decryptAES_128_CBC method, of class StaticTicketCrypto. Assuming
-     * that the key, iv and data has the correct length. Testvector from
+     * that the key, iv and data has the correct length. Test vector from
      * https://tools.ietf.org/html/rfc3602#section-4
      */
     @Test
     public void testDecryptAES_128_CBC() {
         /*-
-        PKCS7 is not used in the RFC testvectors
-        TODO: Find some useable testvectors
+        PKCS7 is not used in the RFC test vectors
+        TODO: Find some usable test vectors
         -*/
     }
 
@@ -69,32 +69,33 @@ public class StaticTicketCryptoTest {
         RandomHelper.getRandom().nextBytes(key128);
         RandomHelper.getRandom().nextBytes(iv128);
 
-        byte[] resultenc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
-        byte[] resultdec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultenc, key128, iv128);
-        assertFalse(resultdec.length == 0);
-        assertArrayEquals(plaintext, resultdec);
+        byte[] resultEnc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
+        byte[] resultDec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultEnc, key128, iv128);
+        assertFalse(resultDec.length == 0);
+        assertArrayEquals(plaintext, resultDec);
 
         LOGGER.info("Check result for wrong data input.");
-        resultenc = new byte[160];
-        RandomHelper.getRandom().nextBytes(resultenc);
-        resultdec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultenc, key128, iv128);
-        assertFalse(Arrays.equals(plaintext, resultdec));
+        resultEnc = new byte[160];
+        RandomHelper.getRandom().nextBytes(resultEnc);
+        resultDec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultEnc, key128, iv128);
+        assertFalse(Arrays.equals(plaintext, resultDec));
 
         LOGGER.info("EncDec AES128 CBC with used 16byte key128 and random 120 byte message.");
         key128 = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579");
-        resultenc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
-        resultdec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultenc, key128, iv128);
-        assertFalse(resultdec.length == 0);
-        assertArrayEquals(plaintext, resultdec);
+        resultEnc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
+        resultDec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultEnc, key128, iv128);
+        assertFalse(resultDec.length == 0);
+        assertArrayEquals(plaintext, resultDec);
     }
 
     /**
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
-     * that the key has the correct length. Testvector from
+     * that the key has the correct length. Test vector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testGenerateHMAC_SHA256() throws CryptoException {
         LOGGER.info("Generate HMAC SHA256");
@@ -108,11 +109,12 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
-     * that the key has the correct length. Testvector from
+     * that the key has the correct length. Test vector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testVerifyHMAC_SHA256() throws CryptoException {
         LOGGER.info("Verify HMAC SHA256");
@@ -137,19 +139,19 @@ public class StaticTicketCryptoTest {
         byte[] key = new byte[20];
         RandomHelper.getRandom().nextBytes(plaintext);
         RandomHelper.getRandom().nextBytes(key);
-        byte[] resultmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
-        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
+        byte[] resultMAC = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
+        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultMAC, plaintext, key);
         assertTrue(result);
 
         LOGGER.info("Check result for wrong data input.");
-        RandomHelper.getRandom().nextBytes(resultmac);
-        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
+        RandomHelper.getRandom().nextBytes(resultMAC);
+        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultMAC, plaintext, key);
         assertFalse(result);
 
         LOGGER.info("GenVrfy HMAC SHA256 with used 32byte key and random 120 byte message.");
         key = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579");
-        resultmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
-        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
+        resultMAC = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
+        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultMAC, plaintext, key);
         assertTrue(result);
     }
 }

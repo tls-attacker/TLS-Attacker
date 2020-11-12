@@ -26,7 +26,7 @@ public class MaxFragmentLengthExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {});// TODO collect a real
-        // maxfragmentlength extension
+        // maxFragmentLength extension
     }
 
     private final byte[] extension;
@@ -52,8 +52,8 @@ public class MaxFragmentLengthExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        MaxFragmentLengthExtensionParser parser = new MaxFragmentLengthExtensionParser(start, extension,
-                Config.createConfig());
+        MaxFragmentLengthExtensionParser parser =
+            new MaxFragmentLengthExtensionParser(start, extension, Config.createConfig());
         MaxFragmentLengthExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

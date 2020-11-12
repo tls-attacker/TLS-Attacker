@@ -80,10 +80,10 @@ public class GeneralDrownAttacker extends BaseDrownAttacker {
             (SSL2ServerHelloMessage) WorkflowTraceUtil.getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_HELLO,
                 trace);
         List<SSL2CipherSuite> serverCipherSuites =
-            SSL2CipherSuite.getCiphersuites(serverHello.getCipherSuites().getValue());
+            SSL2CipherSuite.getCipherSuites(serverHello.getCipherSuites().getValue());
         for (SSL2CipherSuite cipherSuite : serverCipherSuites) {
             if (cipherSuite.isWeak()) {
-                LOGGER.debug("Declaring host as vulnerable based on weak ciphersuite in ServerHello.");
+                LOGGER.debug("Declaring host as vulnerable based on weak cipher suite in ServerHello.");
                 return DrownVulnerabilityType.GENERAL;
             }
         }

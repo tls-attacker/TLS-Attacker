@@ -67,7 +67,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of reset method, of class SendAsciiAcion.
+     * Test of reset method, of class SendAsciiAction.
      */
     @Test
     public void testReset() {
@@ -76,7 +76,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of executedAsPlanned method, of class SendAsciiAcion.
+     * Test of executedAsPlanned method, of class SendAsciiAction.
      */
     @Test
     public void testExecutedAsPlanned() {
@@ -86,7 +86,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of getAsciiString method, of class SendAsciiAcion.
+     * Test of getAsciiString method, of class SendAsciiAction.
      */
     @Test
     public void testGetAsciiString() {

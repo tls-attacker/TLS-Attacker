@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -19,10 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 /**
  * This handler processes the SupportedVersions extensions, as defined in
@@ -55,7 +55,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     public void adjustTLSExtensionContext(SupportedVersionsExtensionMessage message) {
         byte[] versionBytes = message.getSupportedVersions().getValue();
         if (versionBytes.length % HandshakeByteLength.VERSION != 0) {
-            throw new AdjustmentException("Could not create resonable ProtocolVersions from VersionBytes");
+            throw new AdjustmentException("Could not create reasonable ProtocolVersions from VersionBytes");
         }
         List<ProtocolVersion> versionList = ProtocolVersion.getProtocolVersions(versionBytes);
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {

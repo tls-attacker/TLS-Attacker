@@ -256,11 +256,11 @@ public class DefaultChooserTest {
         clientSupportedCiphersuites.add(CipherSuite.SSL_FORTEZZA_KEA_WITH_NULL_SHA);
         clientSupportedCiphersuites.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA256);
         clientSupportedCiphersuites.add(CipherSuite.TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384);
-        config.setDefaultClientSupportedCiphersuites(clientSupportedCiphersuites);
-        assertEquals(clientSupportedCiphersuites, config.getDefaultClientSupportedCiphersuites());
-        assertEquals(clientSupportedCiphersuites, chooser.getClientSupportedCiphersuites());
-        context.setClientSupportedCiphersuites(clientSupportedCiphersuites2);
-        assertEquals(clientSupportedCiphersuites2, chooser.getClientSupportedCiphersuites());
+        config.setDefaultClientSupportedCipherSuites(clientSupportedCiphersuites);
+        assertEquals(clientSupportedCiphersuites, config.getDefaultClientSupportedCipherSuites());
+        assertEquals(clientSupportedCiphersuites, chooser.getClientSupportedCipherSuites());
+        context.setClientSupportedCipherSuites(clientSupportedCiphersuites2);
+        assertEquals(clientSupportedCiphersuites2, chooser.getClientSupportedCipherSuites());
     }
 
     /**

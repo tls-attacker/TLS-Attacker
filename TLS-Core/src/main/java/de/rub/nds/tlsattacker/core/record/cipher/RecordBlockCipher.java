@@ -67,7 +67,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 decryptCipher.setIv(keySet.getReadIv(localConEndType));
             }
         } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), e);
+            throw new UnsupportedOperationException("Unsupported Cipher suite:" + cipherSuite.name(), e);
         }
     }
 

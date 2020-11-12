@@ -55,7 +55,7 @@ public class TlsConfigIOTest {
         InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml");
         Config config = Config.createConfig(stream);
         assertNotNull(config);
-        assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
+        assertTrue(config.getDefaultClientSupportedCipherSuites().size() == 1);
     }
 
     @Test

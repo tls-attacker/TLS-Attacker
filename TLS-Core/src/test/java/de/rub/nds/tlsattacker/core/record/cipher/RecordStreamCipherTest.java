@@ -42,7 +42,7 @@ public class RecordStreamCipherTest {
     }
 
     // TODO check why cipher.contains("WITH_NULL") in
-    // AlgorithmResolver.getCipherType(suite) is always assocaited with STREAM
+    // AlgorithmResolver.getCipherType(suite) is always associated with STREAM
     @Test
     public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break

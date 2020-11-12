@@ -56,7 +56,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     @Override
     public void adjustTLSContext(HelloRetryRequestMessage message) {
         adjustProtocolVersion(message);
-        adjustSelectedCiphersuite(message);
+        adjustSelectedCipherSuite(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
@@ -82,7 +82,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         }
     }
 
-    private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
+    private void adjustSelectedCipherSuite(HelloRetryRequestMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         tlsContext.setSelectedCipherSuite(suite);
         if (suite != null) {

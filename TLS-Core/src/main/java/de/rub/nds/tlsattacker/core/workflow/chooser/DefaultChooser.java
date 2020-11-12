@@ -178,11 +178,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (context.getClientSupportedCiphersuites() != null) {
-            return context.getClientSupportedCiphersuites();
+    public List<CipherSuite> getClientSupportedCipherSuites() {
+        if (context.getClientSupportedCipherSuites() != null) {
+            return context.getClientSupportedCipherSuites();
         } else {
-            return config.getDefaultClientSupportedCiphersuites();
+            return config.getDefaultClientSupportedCipherSuites();
         }
     }
 
@@ -1081,12 +1081,12 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<CipherSuite> getEsniServerCiphersuites() {
+    public List<CipherSuite> getEsniServerCipherSuites() {
 
-        if (context.getEsniServerCiphersuites() != null) {
-            return context.getEsniServerCiphersuites();
+        if (context.getEsniServerCipherSuites() != null) {
+            return context.getEsniServerCipherSuites();
         } else {
-            return config.getDefaultEsniServerCiphersuites();
+            return config.getDefaultEsniServerCipherSuites();
         }
     }
 

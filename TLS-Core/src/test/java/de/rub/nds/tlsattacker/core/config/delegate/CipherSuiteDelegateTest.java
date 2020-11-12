@@ -21,15 +21,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CiphersuiteDelegateTest {
+public class CipherSuiteDelegateTest {
 
-    private CiphersuiteDelegate delegate;
+    private CipherSuiteDelegate delegate;
     private JCommander jcommander;
     private String args[];
 
     @Before
     public void setUp() {
-        delegate = new CiphersuiteDelegate();
+        delegate = new CipherSuiteDelegate();
         jcommander = new JCommander(delegate);
     }
 
@@ -84,12 +84,12 @@ public class CiphersuiteDelegateTest {
             delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
         Config config = Config.createConfig();
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        config.setDefaultClientSupportedCiphersuites(new CipherSuite[0]);
+        config.setDefaultClientSupportedCipherSuites(new CipherSuite[0]);
         delegate.applyDelegate(config);
         assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config
-            .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
+            .getDefaultClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly", config
-            .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
+            .getDefaultClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
         assertEquals(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, config.getDefaultSelectedCipherSuite());
 
     }

@@ -92,11 +92,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
-        tlsContext.setClientSupportedCiphersuites(suiteList);
+        tlsContext.setClientSupportedCipherSuites(suiteList);
         if (suiteList != null) {
-            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + suiteList.toString());
         } else {
-            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + null);
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + null);
         }
     }
 
