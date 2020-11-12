@@ -7,11 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -21,8 +20,8 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RenegotiationInfoExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public RenegotiationInfoExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
@@ -30,11 +29,11 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
         if (msg.getRenegotiationInfoLength().getValue() > 255) {
             LOGGER.warn("The renegotiation info length shouldn't exceed 1 byte as defined in RFC 5246. "
-                + "Length was " + msg.getExtensionLength().getValue());
+                    + "Length was " + msg.getExtensionLength().getValue());
         }
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug("The RenegotiationInfoExtensionParser parsed the value "
-            + bytesToHexString(msg.getRenegotiationInfo()));
+                + bytesToHexString(msg.getRenegotiationInfo()));
     }
 
     @Override

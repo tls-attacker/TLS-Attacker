@@ -46,7 +46,7 @@ public class SrpExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof SRPExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SRPExtensionParser);
     }
 
     @Test

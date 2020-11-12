@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
@@ -34,8 +35,8 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
     }
 
     @Override
-    public SessionTicketTLSExtensionParser getParser(byte[] message, int pointer) {
-        return new SessionTicketTLSExtensionParser(pointer, message);
+    public SessionTicketTLSExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SessionTicketTLSExtensionParser(pointer, message, config);
     }
 
     @Override

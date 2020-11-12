@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
@@ -23,8 +24,8 @@ public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHma
     }
 
     @Override
-    public TruncatedHmacExtensionParser getParser(byte[] message, int pointer) {
-        return new TruncatedHmacExtensionParser(pointer, message);
+    public TruncatedHmacExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new TruncatedHmacExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -16,13 +16,13 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownPreparator extends ProtocolMessagePreparator<UnknownMessage> {
+public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final UnknownMessage msg;
 
-    public UnknownPreparator(Chooser chooser, UnknownMessage message) {
+    public UnknownMessagePreparator(Chooser chooser, UnknownMessage message) {
         super(chooser, message);
         this.msg = message;
     }

@@ -10,13 +10,14 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 
 public class CertificateTypeExtensionParser extends ExtensionParser<CertificateTypeExtensionMessage> {
 
-    public CertificateTypeExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public CertificateTypeExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

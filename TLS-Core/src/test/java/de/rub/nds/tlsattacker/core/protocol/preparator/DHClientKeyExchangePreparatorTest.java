@@ -88,7 +88,7 @@ public class DHClientKeyExchangePreparatorTest {
     @Test
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
-        message.setPublicKey(context.getChooser().getDhClientPublicKey().toByteArray());
+        message.setPublicKey(context.getChooser().getClientDhPublicKey().toByteArray());
         preparator.prepareAfterParse(false);
     }
 

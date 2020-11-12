@@ -7,15 +7,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
-
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  * This classes handles the parsing of the Extended Random Extensions as defined
@@ -25,8 +25,8 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedRandomExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ExtendedRandomExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

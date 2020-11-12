@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -17,6 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -79,10 +80,12 @@ public class SendAction extends MessageAction implements SendingAction {
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(false);
+        } catch (IOException E) {
+            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(E);
+            }
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -182,6 +185,11 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 
     @Override

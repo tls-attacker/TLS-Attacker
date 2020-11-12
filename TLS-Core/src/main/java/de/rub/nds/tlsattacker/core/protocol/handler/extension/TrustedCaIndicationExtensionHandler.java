@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
@@ -23,8 +24,8 @@ public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<Truste
     }
 
     @Override
-    public TrustedCaIndicationExtensionParser getParser(byte[] message, int pointer) {
-        return new TrustedCaIndicationExtensionParser(pointer, message);
+    public TrustedCaIndicationExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new TrustedCaIndicationExtensionParser(pointer, message, config);
     }
 
     @Override

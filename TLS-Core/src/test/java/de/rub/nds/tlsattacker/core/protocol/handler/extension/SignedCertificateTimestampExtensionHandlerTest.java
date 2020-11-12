@@ -61,7 +61,7 @@ public class SignedCertificateTimestampExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(firstExpectedBytes, 0) instanceof SignedCertificateTimestampExtensionParser);
+        assertTrue(handler.getParser(firstExpectedBytes, 0, context.getConfig()) instanceof SignedCertificateTimestampExtensionParser);
     }
 
     @Test

@@ -35,6 +35,7 @@ public class CopyClientRandomAction extends CopyContextFieldAction {
         dst.setClientRandom(src.getClientRandom());
         LOGGER.debug("Copying client random from " + src + " to " + dst);
         LOGGER.debug("Copied client random is: " + ArrayConverter.bytesToHexString(dst.getClientRandom(), true, true));
+        setExecuted(true);
     }
 
     @Override

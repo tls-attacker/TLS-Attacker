@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.forensics.analyzer;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -30,12 +30,15 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -50,18 +53,30 @@ public class ForensicAnalyzer {
 
     private ConnectionEndType connectionEndType;
 
+    private final Config config;
+
     public ForensicAnalyzer() {
+        this(Config.createConfig());
+    }
+
+    public ForensicAnalyzer(Config config) {
+        this.config = config;
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow, BigInteger rsaPrivateKey)
-        throws IOException {
+            throws IOException {
+        return getRealWorkflowTraceWithContext(executedWorkflow, rsaPrivateKey).getKey();
+    }
+
+    public Pair<WorkflowTrace, TlsContext> getRealWorkflowTraceWithContext(WorkflowTrace executedWorkflow,
+            BigInteger rsaPrivateKey) throws IOException {
         Security.addProvider(new BouncyCastleProvider());
         if (!isSupported(executedWorkflow)) {
             return null;
         }
         WorkflowTrace reconstructed = new WorkflowTrace();
         int tracePosition = 0; // The action we are currently looking at.
-        State state = new State(); // initialise an empty state
+        State state = new State(config); // initialise an empty state
         TlsContext context = state.getTlsContext();
         if (rsaPrivateKey != null) {
             context.getConfig().setDefaultClientRSAPrivateKey(rsaPrivateKey);
@@ -69,7 +84,7 @@ public class ForensicAnalyzer {
         }
         context.setRecordLayer(new TlsRecordLayer(context));
         adjustPrivateKeys(state, executedWorkflow);
-        // Try to determine if the trace was a client or server trace
+        // Try to determin if the trace was a client or server trace
         connectionEndType = ConnectionEndType.CLIENT;
         if (executedWorkflow.getTlsActions().size() > 0) {
             if (!(executedWorkflow.getTlsActions().get(0) instanceof SendingAction)) {
@@ -117,7 +132,7 @@ public class ForensicAnalyzer {
             }
         }
 
-        return reconstructed;
+        return Pair.of(reconstructed, context);
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
@@ -134,11 +149,10 @@ public class ForensicAnalyzer {
                     for (AbstractRecord record : records) {
                         try {
                             if (record.getCompleteRecordBytes() != null
-                                && record.getCompleteRecordBytes().getValue() != null) {
+                                    && record.getCompleteRecordBytes().getValue() != null) {
                                 stream.write(record.getCompleteRecordBytes().getValue());
                             } else {
-                                LOGGER
-                                    .warn("Something went terribly wrong. The record does not contain complete record bytes");
+                                LOGGER.warn("Something went terribly wrong. The record does not contain complete record bytes");
                             }
                         } catch (IOException ex) {
                             LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);

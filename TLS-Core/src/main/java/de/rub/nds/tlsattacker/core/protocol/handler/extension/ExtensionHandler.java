@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -34,7 +35,7 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
         this.context = context;
     }
 
-    public abstract ExtensionParser getParser(byte[] message, int pointer);
+    public abstract ExtensionParser getParser(byte[] message, int pointer, Config config);
 
     public abstract ExtensionPreparator getPreparator(MessageT message);
 

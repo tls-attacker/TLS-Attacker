@@ -51,7 +51,7 @@ public class ServerAuthzExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof ServerAuthzExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ServerAuthzExtensionParser);
     }
 
     @Test

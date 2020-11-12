@@ -41,7 +41,7 @@ public class PasswordSaltExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof PasswordSaltExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PasswordSaltExtensionParser);
     }
 
     @Test

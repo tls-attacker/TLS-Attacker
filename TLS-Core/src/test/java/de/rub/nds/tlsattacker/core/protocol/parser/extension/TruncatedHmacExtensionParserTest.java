@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import static org.junit.Assert.assertArrayEquals;
@@ -27,7 +28,7 @@ public class TruncatedHmacExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TruncatedHmacExtensionParser(0, expectedBytes);
+        parser = new TruncatedHmacExtensionParser(0, expectedBytes, Config.createConfig());
     }
 
     @Test

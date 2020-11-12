@@ -10,12 +10,13 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public TruncatedHmacExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

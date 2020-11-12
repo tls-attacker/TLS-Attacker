@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
@@ -28,8 +29,8 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
     }
 
     @Override
-    public UserMappingExtensionParser getParser(byte[] message, int pointer) {
-        return new UserMappingExtensionParser(pointer, message);
+    public UserMappingExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new UserMappingExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,7 +63,11 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
+                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
+                        "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
                 parseExtensionBytes(msg);
+                popContext();
+
             }
         }
     }

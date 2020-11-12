@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -55,7 +56,7 @@ public class TokenBindingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TokenBindingExtensionParser(0, extensionBytes);
+        parser = new TokenBindingExtensionParser(0, extensionBytes, Config.createConfig());
     }
 
     @Test

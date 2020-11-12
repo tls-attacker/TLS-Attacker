@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -16,6 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            setExecuted(false);
+        } catch (IOException E) {
+            LOGGER.debug(E);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -101,4 +102,8 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
         return records;
     }
 
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }

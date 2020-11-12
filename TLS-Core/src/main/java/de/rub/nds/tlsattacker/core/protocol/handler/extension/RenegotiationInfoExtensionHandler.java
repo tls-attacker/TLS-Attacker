@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
@@ -29,8 +30,8 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     }
 
     @Override
-    public RenegotiationInfoExtensionParser getParser(byte[] message, int pointer) {
-        return new RenegotiationInfoExtensionParser(pointer, message);
+    public RenegotiationInfoExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new RenegotiationInfoExtensionParser(pointer, message, config);
     }
 
     @Override

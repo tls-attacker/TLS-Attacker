@@ -32,4 +32,6 @@ public interface DecryptionCipher {
     public byte[] getIv();
 
     public void setIv(byte[] iv);
+
+    EncryptionCipher getEncryptionCipher();
 }

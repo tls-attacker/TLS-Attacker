@@ -81,7 +81,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0) instanceof KeyShareExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof KeyShareExtensionParser);
     }
 
     /**

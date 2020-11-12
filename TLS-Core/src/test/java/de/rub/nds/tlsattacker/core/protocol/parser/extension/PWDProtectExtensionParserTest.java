@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import java.util.Arrays;
@@ -57,7 +58,7 @@ public class PWDProtectExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        PWDProtectExtensionParser parser = new PWDProtectExtensionParser(start, expectedBytes);
+        PWDProtectExtensionParser parser = new PWDProtectExtensionParser(start, expectedBytes, Config.createConfig());
         PWDProtectExtensionMessage msg = parser.parse();
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (long) msg.getExtensionLength().getValue());

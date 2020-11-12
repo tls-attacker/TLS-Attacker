@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
@@ -27,8 +28,8 @@ public class PWDClearExtensionHandler extends ExtensionHandler<PWDClearExtension
     }
 
     @Override
-    public PWDClearExtensionParser getParser(byte[] message, int pointer) {
-        return new PWDClearExtensionParser(pointer, message);
+    public PWDClearExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PWDClearExtensionParser(pointer, message, config);
     }
 
     @Override

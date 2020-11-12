@@ -56,7 +56,7 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 123 }, 0) instanceof ECPointFormatExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
     }
 
     /**

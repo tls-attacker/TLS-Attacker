@@ -52,7 +52,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0) instanceof SignatureAndHashAlgorithmsExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SignatureAndHashAlgorithmsExtensionParser);
     }
 
     /**

@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -19,6 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.IOException;
@@ -50,9 +51,9 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             throw new WorkflowExecutionException("Action already executed!");
         }
         messages = new LinkedList<>();
-        ServerKeyExchangeMessage msg =
-            new WorkflowConfigurationFactory(state.getConfig()).createServerKeyExchangeMessage(AlgorithmResolver
-                .getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
+        ServerKeyExchangeMessage msg = new WorkflowConfigurationFactory(state.getConfig())
+                .createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser()
+                        .getSelectedCipherSuite()));
         if (msg != null) {
             messages.add(msg);
         }
@@ -68,10 +69,10 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException e) {
+        } catch (IOException E) {
             tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(false);
+            LOGGER.debug(E);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -171,6 +172,11 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     @Override
     public List<AbstractRecord> getSendRecords() {
         return records;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 
     @Override

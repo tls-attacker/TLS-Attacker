@@ -57,7 +57,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0) instanceof MaxFragmentLengthExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0, context.getConfig()) instanceof MaxFragmentLengthExtensionParser);
     }
 
     /**

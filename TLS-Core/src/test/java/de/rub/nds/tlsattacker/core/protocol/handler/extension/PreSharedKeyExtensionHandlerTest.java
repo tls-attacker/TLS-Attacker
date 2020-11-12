@@ -96,7 +96,7 @@ public class PreSharedKeyExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof PreSharedKeyExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PreSharedKeyExtensionParser);
     }
 
     @Test

@@ -59,6 +59,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -290,5 +291,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     @Override
     public void filter(TlsAction defaultCon) {
         super.filter(defaultCon);
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
     }
 }

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 import java.util.LinkedList;
@@ -97,7 +98,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         T msg = createHandshakeMessage();
         parseType(msg);
         parseLength(msg);
+        pushContext(new MessageParserBoundaryVerificationContext(msg.getLength().getValue(), "Message Length",
+                getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
         parseHandshakeMessageContent(msg);
+        popContext();
         return msg;
     }
 

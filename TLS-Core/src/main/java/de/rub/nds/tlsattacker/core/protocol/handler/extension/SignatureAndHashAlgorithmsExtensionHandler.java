@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -56,8 +57,8 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionParser getParser(byte[] message, int pointer) {
-        return new SignatureAndHashAlgorithmsExtensionParser(pointer, message);
+    public SignatureAndHashAlgorithmsExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SignatureAndHashAlgorithmsExtensionParser(pointer, message, config);
     }
 
     @Override

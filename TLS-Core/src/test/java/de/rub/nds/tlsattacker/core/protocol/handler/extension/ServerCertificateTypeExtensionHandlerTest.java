@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ServerCertificateTypeExtensionHandlerTest {
+
     private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509,
         CertificateType.RAW_PUBLIC_KEY);
     private ServerCertificateTypeExtensionHandler handler;
@@ -48,7 +49,7 @@ public class ServerCertificateTypeExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof ServerCertificateTypeExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ServerCertificateTypeExtensionParser);
     }
 
     @Test

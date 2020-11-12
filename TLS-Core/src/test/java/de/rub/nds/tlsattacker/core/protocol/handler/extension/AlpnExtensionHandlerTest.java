@@ -47,7 +47,7 @@ public class AlpnExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof AlpnExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof AlpnExtensionParser);
     }
 
     @Test

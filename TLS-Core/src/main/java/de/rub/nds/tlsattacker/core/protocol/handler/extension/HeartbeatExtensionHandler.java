@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
@@ -44,8 +45,8 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     }
 
     @Override
-    public HeartbeatExtensionParser getParser(byte[] message, int pointer) {
-        return new HeartbeatExtensionParser(pointer, message);
+    public HeartbeatExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new HeartbeatExtensionParser(pointer, message, config);
     }
 
     @Override

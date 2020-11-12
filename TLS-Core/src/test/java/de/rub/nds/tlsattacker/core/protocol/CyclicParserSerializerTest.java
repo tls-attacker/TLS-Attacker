@@ -149,18 +149,9 @@ public class CyclicParserSerializerTest {
                     Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
                     CONSOLE.info("......." + testName + " - " + version.name() + " works as expected!");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOGGER.error(ex);
                     fail("Could not execute " + testName + " - " + version.name());
                 }
-                /*
-                 * try { parser =
-                 * someParserClass.getConstructor().newInstance(); } catch
-                 * (NoSuchMethodException | SecurityException |
-                 * InstantiationException | IllegalAccessException |
-                 * IllegalArgumentException | InvocationTargetException ex) {
-                 * CONSOLE.info("Could not create instance for:" +
-                 * someParserClass.getName()); }
-                 */
             }
         }
     }

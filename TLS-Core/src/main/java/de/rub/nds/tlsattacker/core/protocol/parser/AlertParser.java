@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,6 +42,9 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
     @Override
     protected AlertMessage parseMessageContent() {
         LOGGER.debug("Parsing AlertMessage");
+        if (getBytesLeft() > 2) {
+            throw new ParserException("Too many bytes left in message, probably encrypted Alert: " + getBytesLeft());
+        }
         AlertMessage msg = new AlertMessage();
         parseLevel(msg);
         parseDescription(msg);

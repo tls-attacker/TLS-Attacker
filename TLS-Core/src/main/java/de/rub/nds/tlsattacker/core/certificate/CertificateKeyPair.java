@@ -387,7 +387,12 @@ public class CertificateKeyPair implements Serializable {
         if (privateKey != null) {
             privateKey.adjustInContext(context, connectionEnd);
         }
-        context.setEcCertificateCurve(publicKeyGroup);
+        if (!context.getChooser().getSelectedCipherSuite().isTLS13()
+                && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
+            context.setSelectedGroup(publicKeyGroup);
+        } else {
+            context.setEcCertificateCurve(publicKeyGroup);
+        }
         context.setEcCertificateSignatureCurve(signatureGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             SignatureAndHashAlgorithm sigHashAlgo =

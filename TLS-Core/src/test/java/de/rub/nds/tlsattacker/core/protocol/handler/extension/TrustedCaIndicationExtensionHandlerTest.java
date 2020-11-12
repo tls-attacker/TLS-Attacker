@@ -56,7 +56,7 @@ public class TrustedCaIndicationExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof TrustedCaIndicationExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof TrustedCaIndicationExtensionParser);
     }
 
     @Test

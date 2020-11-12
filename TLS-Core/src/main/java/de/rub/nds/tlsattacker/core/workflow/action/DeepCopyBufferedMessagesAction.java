@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -63,8 +64,10 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
                 ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
 
                 messageBuffer.add(messageCopy);
+                setExecuted(true);
             }
         } catch (IOException | ClassNotFoundException ex) {
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
             LOGGER.error("Error while creating deep copy of messageBuffer");
             throw new WorkflowExecutionException(ex.toString());
         }

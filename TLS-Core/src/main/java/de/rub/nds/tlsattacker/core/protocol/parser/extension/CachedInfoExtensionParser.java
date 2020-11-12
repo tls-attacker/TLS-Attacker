@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -22,8 +23,8 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public CachedInfoExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

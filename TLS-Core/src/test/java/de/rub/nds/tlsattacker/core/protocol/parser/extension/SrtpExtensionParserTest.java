@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class SrtpExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SrtpExtensionParser(startParsing, expectedBytes);
+        parser = new SrtpExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

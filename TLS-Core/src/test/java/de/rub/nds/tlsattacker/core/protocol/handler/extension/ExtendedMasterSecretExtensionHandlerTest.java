@@ -51,7 +51,7 @@ public class ExtendedMasterSecretExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] {}, 0) instanceof ExtendedMasterSecretExtensionParser);
+        assertTrue(handler.getParser(new byte[] {}, 0, context.getConfig()) instanceof ExtendedMasterSecretExtensionParser);
     }
 
     @Test

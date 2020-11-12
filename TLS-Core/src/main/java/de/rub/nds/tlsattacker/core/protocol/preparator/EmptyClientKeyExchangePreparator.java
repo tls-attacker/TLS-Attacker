@@ -7,24 +7,22 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PublicKeyType;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
+import java.math.BigInteger;
+
 public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage> extends
-    ClientKeyExchangePreparator<T> {
+        ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -48,10 +46,10 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
-    protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculateDhPremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
@@ -63,7 +61,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected byte[] computeECPremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
@@ -78,24 +76,24 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         prepareClientServerRandom(msg);
 
         if (chooser.getContext().getClientCertificate() != null
-            && !chooser.getContext().getClientCertificate().isEmpty()) {
+                && !chooser.getContext().getClientCertificate().isEmpty()) {
 
-            String algorithm =
-                chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo()
-                    .getAlgorithm().getAlgorithm().toString();
+            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0)
+                    .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
-                premasterSecret =
-                    calculatePremasterSecret(chooser.getClientDhModulus(), chooser.getDhClientPrivateKey(),
-                        chooser.getDhClientPublicKey());
+                BigInteger modulus = chooser.getClientDhModulus();
+                BigInteger publicKey = chooser.getServerDhPublicKey();
+                BigInteger privateKey = chooser.getClientDhPrivateKey();
+                premasterSecret = calculateDhPremasterSecret(modulus, privateKey, publicKey);
             } else if (PublicKeyType.fromOid(algorithm) == PublicKeyType.ECDSA) {
                 if (clientMode) {
-
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
                     EllipticCurve curve = CurveFactory.getCurve(usedGroup);
                     Point publicKey = chooser.getServerEcPublicKey();
-                    premasterSecret = computeECPremasterSecret(curve, publicKey, chooser.getClientEcPrivateKey());
+                    BigInteger privateKey = chooser.getClientEcPrivateKey();
+                    premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);
                 } else {
                     LOGGER.debug("Not Implemented.");
                 }

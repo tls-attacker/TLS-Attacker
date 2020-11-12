@@ -56,7 +56,7 @@ public class HeartbeatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, }, 0) instanceof HeartbeatExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, }, 0, context.getConfig()) instanceof HeartbeatExtensionParser);
     }
 
     /**

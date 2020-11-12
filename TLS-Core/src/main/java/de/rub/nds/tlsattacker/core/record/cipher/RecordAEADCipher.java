@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -251,7 +250,6 @@ public class RecordAEADCipher extends RecordCipher {
                 byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
                 record.getComputations().setPadding(padding);
                 record.setCleanProtocolMessageBytes(cleanBytes);
-                record.getComputations().setPadding(cleanBytes);
                 record.setContentType(contentType[0]);
                 record.setContentMessageType(ProtocolMessageType.getContentType(contentType[0]));
             } else {

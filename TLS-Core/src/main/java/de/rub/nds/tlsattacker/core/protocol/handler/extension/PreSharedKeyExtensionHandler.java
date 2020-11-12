@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
@@ -40,8 +41,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
-        return new PreSharedKeyExtensionParser(pointer, message);
+    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PreSharedKeyExtensionParser(pointer, message, config);
     }
 
     @Override

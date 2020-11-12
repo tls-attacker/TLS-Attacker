@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class HRRKeyShareExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        HRRKeyShareExtensionParser parser = new HRRKeyShareExtensionParser(start, extension);
+        HRRKeyShareExtensionParser parser = new HRRKeyShareExtensionParser(start, extension, Config.createConfig());
         HRRKeyShareExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

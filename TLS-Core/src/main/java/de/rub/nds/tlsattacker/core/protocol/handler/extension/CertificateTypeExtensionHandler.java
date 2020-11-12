@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
@@ -24,8 +25,8 @@ public class CertificateTypeExtensionHandler extends ExtensionHandler<Certificat
     }
 
     @Override
-    public CertificateTypeExtensionParser getParser(byte[] message, int pointer) {
-        return new CertificateTypeExtensionParser(pointer, message);
+    public CertificateTypeExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new CertificateTypeExtensionParser(pointer, message, config);
     }
 
     @Override

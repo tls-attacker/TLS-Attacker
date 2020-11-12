@@ -7,10 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.util.Arrays;
@@ -25,14 +25,18 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            0,
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, 32, 30,
-            ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203") } });
+        return Arrays
+                .asList(new Object[][] { {
+                        ArrayConverter
+                                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
+                        0,
+                        ArrayConverter
+                                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
+                        ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS,
+                        32,
+                        30,
+                        ArrayConverter
+                                .hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203") } });
     }
 
     private byte[] extension;
@@ -44,7 +48,7 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     private byte[] algoList;
 
     public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
+            ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -60,8 +64,8 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        SignatureAndHashAlgorithmsExtensionParser parser =
-            new SignatureAndHashAlgorithmsExtensionParser(start, extension);
+        SignatureAndHashAlgorithmsExtensionParser parser = new SignatureAndHashAlgorithmsExtensionParser(start,
+                extension, Config.createConfig());
         SignatureAndHashAlgorithmsExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

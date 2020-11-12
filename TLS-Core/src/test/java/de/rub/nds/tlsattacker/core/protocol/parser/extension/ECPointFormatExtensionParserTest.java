@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ public class ECPointFormatExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        ECPointFormatExtensionParser parser = new ECPointFormatExtensionParser(start, extension);
+        ECPointFormatExtensionParser parser = new ECPointFormatExtensionParser(start, extension, Config.createConfig());
         ECPointFormatExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

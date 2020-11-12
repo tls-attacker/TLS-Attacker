@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
@@ -24,8 +25,8 @@ public class EncryptedServerNameIndicationExtensionParser extends
     private static final Logger LOGGER = LogManager.getLogger();
     private final byte[] array;
 
-    public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
         this.array = array;
     }
 

@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
@@ -44,8 +45,8 @@ public class SignedCertificateTimestampExtensionHandler extends
      * @return A SignedCertificateTimestampExtensionParser
      */
     @Override
-    public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer) {
-        return new SignedCertificateTimestampExtensionParser(pointer, message);
+    public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SignedCertificateTimestampExtensionParser(pointer, message, config);
     }
 
     /**

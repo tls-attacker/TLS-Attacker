@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import java.util.Arrays;
@@ -57,7 +58,8 @@ public class EllipticCurvesExtensionParserTest {
      */
     @Test
     public void testParseExtensionMessageContent() {
-        EllipticCurvesExtensionParser parser = new EllipticCurvesExtensionParser(start, extension);
+        EllipticCurvesExtensionParser parser = new EllipticCurvesExtensionParser(start, extension,
+                Config.createConfig());
         EllipticCurvesExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

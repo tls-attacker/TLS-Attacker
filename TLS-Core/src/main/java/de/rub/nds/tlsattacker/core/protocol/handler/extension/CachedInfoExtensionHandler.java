@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
@@ -23,8 +24,8 @@ public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExten
     }
 
     @Override
-    public CachedInfoExtensionParser getParser(byte[] message, int pointer) {
-        return new CachedInfoExtensionParser(pointer, message);
+    public CachedInfoExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new CachedInfoExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -31,8 +32,8 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
-        return new PSKKeyExchangeModesExtensionParser(pointer, message);
+    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PSKKeyExchangeModesExtensionParser(pointer, message, config);
     }
 
     @Override
