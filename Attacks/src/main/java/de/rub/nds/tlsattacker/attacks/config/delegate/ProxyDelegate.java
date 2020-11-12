@@ -23,7 +23,7 @@ public class ProxyDelegate extends Delegate {
     private String proxyData = "localhost:4444";
 
     @Parameter(names = "-proxyControl",
-        description = "Specify the host and port for control messafes used in the proxy. Syntax: localhost:5555")
+        description = "Specify the host and port for control messages used in the proxy. Syntax: localhost:5555")
     private String proxyControl = "localhost:5555";
 
     @Override

@@ -122,7 +122,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
-        LOGGER.debug("SignatureAndHaslAlgorithm: "
+        LOGGER.debug("SignatureAndHashAlgorithm: "
             + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 

@@ -38,7 +38,7 @@ public class TrustedCaIndicationExtensionPreparatorTest {
             new TrustedCaIndicationExtensionPreparator(context.getChooser(), msg,
                 new TrustedCaIndicationExtensionSerializer(msg));
 
-        context.getConfig().setTrustedCaIndicationExtensionAuthorties(trustedAuthorities);
+        context.getConfig().setTrustedCaIndicationExtensionAuthorities(trustedAuthorities);
 
         preparator.prepare();
 

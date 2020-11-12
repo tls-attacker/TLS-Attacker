@@ -29,7 +29,7 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
 
     @Override
     public void prepareExtensionContent() {
-        msg.setTrustedAuthorities(chooser.getConfig().getTrustedCaIndicationExtensionAuthorties());
+        msg.setTrustedAuthorities(chooser.getConfig().getTrustedCaIndicationExtensionAuthorities());
         int taLength = 0;
         for (TrustedAuthority ta : msg.getTrustedAuthorities()) {
             TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(chooser, ta);

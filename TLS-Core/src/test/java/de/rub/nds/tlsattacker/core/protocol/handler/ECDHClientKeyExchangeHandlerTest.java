@@ -73,6 +73,7 @@ public class ECDHClientKeyExchangeHandlerTest {
     /**
      * Test of adjustTLSContext method, of class ECDHClientKeyExchangeHandler.
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testAdjustTLSContext() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

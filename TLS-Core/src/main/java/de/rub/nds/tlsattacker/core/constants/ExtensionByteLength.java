@@ -41,7 +41,7 @@ public class ExtensionByteLength {
      */
     public static final int MAX_FRAGMENT = 1;
     /**
-     * ServernameType length in the ServerNameIndicationExtension
+     * ServerNameType length in the ServerNameIndicationExtension
      */
     public static final int SERVER_NAME_TYPE = 1;
     /**
@@ -57,19 +57,19 @@ public class ExtensionByteLength {
      */
     public static final int EXTENDED_RANDOM_LENGTH = 2;
     /**
-     * KeyShareGroup length in the KeySahreExtension
+     * KeyShareGroup length in the KeyShareExtension
      */
     public static final int KEY_SHARE_GROUP = 2;
     /**
-     * KeyShare length in the KeySahreExtension
+     * KeyShare length in the KeyShareExtension
      */
     public static final int KEY_SHARE_LENGTH = 2;
     /**
-     * KeyShareListLength in the KeySahreExtension
+     * KeyShareListLength in the KeyShareExtension
      */
     public static final int KEY_SHARE_LIST_LENGTH = 2;
     /**
-     * KeyExchangeModes length in the PSKKeyExchgangeModesExtension
+     * KeyExchangeModes length in the PSKKeyExchangeModesExtension
      */
     public static final int PSK_KEY_EXCHANGE_MODES_LENGTH = 1;
     /**
@@ -156,12 +156,12 @@ public class ExtensionByteLength {
     public static final int SRP_IDENTIFIER_LENGTH = 1;
 
     /**
-     * Length of the SRTP extension master key identifier lengthfield
+     * Length of the SRTP extension master key identifier length field
      */
     public static final int SRTP_MASTER_KEY_IDENTIFIER_LENGTH = 1;
 
     /**
-     * Length of the SRTP extension protection profiles lengthfield length
+     * Length of the SRTP extension protection profiles length field length
      */
     public static final int SRTP_PROTECTION_PROFILES_LENGTH = 2;
 
@@ -211,7 +211,7 @@ public class ExtensionByteLength {
     public static final int TRUSTED_AUTHORITY_HASH = 20;
 
     /**
-     * Length of the trusted ca indication distinguished name lengthfield
+     * Length of the trusted ca indication distinguished name length field
      */
     public static final int TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH = 2;
 
@@ -286,10 +286,10 @@ public class ExtensionByteLength {
      * PaddedLength in the ClientEsniInner of the
      * EncryptedServerNameIndicationExtension
      */
-    public static final int PADDED_LEMGTH = 2;
+    public static final int PADDED_LENGTH = 2;
 
     /**
-     * recordDdigestLength in EncryptedServerNameIndicationExtension
+     * recordDigestLength in EncryptedServerNameIndicationExtension
      */
     public static final int RECORD_DIGEST_LENGTH = 2;
 

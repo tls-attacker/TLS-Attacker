@@ -46,7 +46,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                     LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
                 }
                 ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initiliazed");
+                LOGGER.debug("Connection for " + ctx + " initialized");
             }
         }
 
@@ -96,7 +96,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
+        if (state.getConfig().isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
 

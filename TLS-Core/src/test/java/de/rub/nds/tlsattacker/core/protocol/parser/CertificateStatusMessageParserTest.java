@@ -24,6 +24,7 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 @RunWith(Parameterized.class)
 public class CertificateStatusMessageParserTest {
 

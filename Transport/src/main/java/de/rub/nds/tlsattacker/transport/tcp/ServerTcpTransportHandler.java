@@ -96,7 +96,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
             }
             return false;
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 

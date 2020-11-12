@@ -124,8 +124,8 @@ public class KeyShareCalculator {
                 EllipticCurve curve = CurveFactory.getCurve(group);
                 Point publicPoint = PointFormatter.formatFromByteArray(group, publicKey);
                 Point sharedPoint = curve.mult(privateKey, publicPoint);
-                int elementLenght = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
-                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLenght);
+                int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLength);
             default:
                 throw new UnsupportedOperationException("KeyShare type " + group + " is unsupported");
         }

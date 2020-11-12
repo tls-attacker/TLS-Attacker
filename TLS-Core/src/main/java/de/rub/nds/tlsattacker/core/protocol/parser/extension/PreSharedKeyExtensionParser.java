@@ -36,7 +36,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
         // Client -> Server
         if (super.getBytesLeft() > 2) {
-            parsePreSharedKeyIdentitiyListLength(msg);
+            parsePreSharedKeyIdentityListLength(msg);
             parsePreSharedKeyIdentityListBytes(msg);
             parsePreSharedKeyBinderListLength(msg);
             parsePreSharedKeyBinderListBytes(msg);
@@ -51,7 +51,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         return new PreSharedKeyExtensionMessage();
     }
 
-    private void parsePreSharedKeyIdentitiyListLength(PreSharedKeyExtensionMessage msg) {
+    private void parsePreSharedKeyIdentityListLength(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH));
         LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
     }

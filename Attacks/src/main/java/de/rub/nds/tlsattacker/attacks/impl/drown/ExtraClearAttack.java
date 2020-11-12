@@ -217,7 +217,7 @@ class ExtraClearAttack {
      *
      * @param c1
      * (Encrypted) TLS Premaster secret converted to SSLv2 ENCRYPTED-KEY-DATA
-     * @return The cleartext for c1, or null if an error occured
+     * @return The cleartext for c1, or null if an error occurred
      */
     private byte[] step2(byte[] c1) {
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
@@ -294,7 +294,7 @@ class ExtraClearAttack {
             }
 
             if (s == null) {
-                LOGGER.error("Could not find multiplicator during iterative recovery");
+                LOGGER.error("Could not find factor during iterative recovery");
                 return null;
             }
 

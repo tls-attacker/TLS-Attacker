@@ -183,16 +183,16 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustEarlyTrafficSecret() throws CryptoException {
-        HKDFAlgorithm hkdfAlgortihm =
+        HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getEarlyDataCipherSuite());
         DigestAlgorithm digestAlgo =
             AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getChooser()
                 .getEarlyDataCipherSuite());
 
-        byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
+        byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
         tlsContext.setEarlySecret(earlySecret);
         byte[] earlyTrafficSecret =
-            HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext.getChooser().getEarlySecret(),
+            HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getChooser().getEarlySecret(),
                 HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
         tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));

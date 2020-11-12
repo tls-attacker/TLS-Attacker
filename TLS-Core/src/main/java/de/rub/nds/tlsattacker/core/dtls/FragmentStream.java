@@ -52,12 +52,12 @@ public class FragmentStream {
      * Checks if the fragment stream is complete up to the specified index
      *
      * @param tillIndex
-     * Bytes till the maximium index
+     * Bytes till the maximum index
      * @return true if all keys are in the map, otherwise false
      */
     public boolean isComplete(int tillIndex) {
         if (tillIndex < 0) {
-            throw new IllegalArgumentException("Cannot check stream for completnes with negative index: " + tillIndex);
+            throw new IllegalArgumentException("Cannot check stream for completeness with negative index: " + tillIndex);
         }
         for (int i = 0; i < tillIndex; i++) {
             if (!fragmentByteMap.containsKey(i)) {
@@ -93,7 +93,7 @@ public class FragmentStream {
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than indended message size(intendet size: " + intendedSize
+                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
                     + " but found byte for: " + i + "). Ignoring");
             }
         }
@@ -121,7 +121,7 @@ public class FragmentStream {
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than indended message size(intendet size: " + intendedSize
+                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
                     + " but found byte for: " + i + "). Ignoring");
             }
         }

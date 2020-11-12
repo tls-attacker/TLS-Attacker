@@ -118,7 +118,7 @@ public class BasicTlsServer extends Thread {
         // ((SSLServerSocket)
         // serverSocket).setEnabledCipherSuites(cipherSuites);
         // }
-        LOGGER.debug("Presetup successful");
+        LOGGER.debug("Pre-setup successful");
         initialized = true;
     }
 

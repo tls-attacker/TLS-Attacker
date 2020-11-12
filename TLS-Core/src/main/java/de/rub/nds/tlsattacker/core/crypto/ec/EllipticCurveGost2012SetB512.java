@@ -14,6 +14,7 @@ import java.math.BigInteger;
 
 public class EllipticCurveGost2012SetB512 extends EllipticCurveOverF2m {
 
+    @SuppressWarnings("SpellCheckingInspection")
     public EllipticCurveGost2012SetB512() {
         super(
             new BigInteger(

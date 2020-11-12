@@ -82,25 +82,25 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     private void adjustApplicationTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm =
+        HKDFAlgorithm hkdfAlgorithm =
             AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo =
             AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
                 .getChooser().getSelectedCipherSuite());
         try {
-            int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] saltMasterSecret =
-                HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext.getChooser()
+                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getChooser()
                     .getHandshakeSecret(), HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
-            byte[] masterSecret = HKDFunction.extract(hkdfAlgortihm, saltMasterSecret, new byte[macLength]);
+            byte[] masterSecret = HKDFunction.extract(hkdfAlgorithm, saltMasterSecret, new byte[macLength]);
             byte[] clientApplicationTrafficSecret =
-                HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), masterSecret,
+                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), masterSecret,
                     HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug("Set clientApplicationTrafficSecret in Context to "
                 + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
             byte[] serverApplicationTrafficSecret =
-                HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), masterSecret,
+                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), masterSecret,
                     HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug("Set serverApplicationTrafficSecret in Context to "

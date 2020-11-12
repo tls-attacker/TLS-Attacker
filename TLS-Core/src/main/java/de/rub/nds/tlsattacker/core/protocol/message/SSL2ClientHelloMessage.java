@@ -165,7 +165,7 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
         } else {
             sb.append("null");
         }
-        sb.append("\n  Challange: ");
+        sb.append("\n  Challenge: ");
         if (getChallenge() != null && getChallenge().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
         } else {

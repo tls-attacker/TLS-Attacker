@@ -60,7 +60,7 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
     /**
      * Checks if the given message is accepted as valid ENCRYPTED-KEY-DATA of a
      * Client Master Key message in an SSLv2 handshake. This is based on the
-     * "extra clear" oracle vulnerablility in OpenSSL (CVE-2016-0703).
+     * "extra clear" oracle vulnerability in OpenSSL (CVE-2016-0703).
      *
      * @param msg
      * Potential RSA ciphertext to be checked

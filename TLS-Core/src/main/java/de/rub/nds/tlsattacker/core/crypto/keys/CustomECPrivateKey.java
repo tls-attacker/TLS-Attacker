@@ -36,23 +36,23 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final BigInteger privatekey;
+    private final BigInteger privateKey;
 
     private final NamedGroup group;
 
     private CustomECPrivateKey() {
-        privatekey = null;
+        privateKey = null;
         group = null;
     }
 
-    public CustomECPrivateKey(BigInteger privatekey, NamedGroup group) {
-        this.privatekey = privatekey;
+    public CustomECPrivateKey(BigInteger privateKey, NamedGroup group) {
+        this.privateKey = privateKey;
         this.group = group;
     }
 
     @Override
     public BigInteger getS() {
-        return privatekey;
+        return privateKey;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     public byte[] getEncoded() {
         try {
             ECParameterSpec ecParameters = this.getParams();
-            ECPrivateKeySpec privKey = new ECPrivateKeySpec(privatekey, ecParameters);
+            ECPrivateKeySpec privKey = new ECPrivateKeySpec(privateKey, ecParameters);
             PrivateKey privateKey = KeyFactory.getInstance("EC").generatePrivate(privKey);
             return privateKey.getEncoded();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
@@ -97,11 +97,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientEcPrivateKey(privatekey);
+                    context.setClientEcPrivateKey(privateKey);
                     context.setEcCertificateCurve(group);
                     break;
                 case SERVER:
-                    context.setServerEcPrivateKey(privatekey);
+                    context.setServerEcPrivateKey(privateKey);
                     context.setEcCertificateCurve(group);
                     break;
                 default:
@@ -117,11 +117,11 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    config.setDefaultClientEcPrivateKey(privatekey);
+                    config.setDefaultClientEcPrivateKey(privateKey);
                     config.setDefaultEcCertificateCurve(group);
                     break;
                 case SERVER:
-                    config.setDefaultServerEcPrivateKey(privatekey);
+                    config.setDefaultServerEcPrivateKey(privateKey);
                     config.setDefaultEcCertificateCurve(group);
                     break;
                 default:
@@ -133,7 +133,7 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.privatekey);
+        hash = 53 * hash + Objects.hashCode(this.privateKey);
         hash = 53 * hash + Objects.hashCode(this.group);
         return hash;
     }
@@ -150,7 +150,7 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             return false;
         }
         final CustomECPrivateKey other = (CustomECPrivateKey) obj;
-        if (!Objects.equals(this.privatekey, other.privatekey)) {
+        if (!Objects.equals(this.privateKey, other.privateKey)) {
             return false;
         }
         return this.group == other.group;

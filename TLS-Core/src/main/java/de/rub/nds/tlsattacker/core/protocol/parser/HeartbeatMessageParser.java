@@ -49,7 +49,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     }
 
     /**
-     * Reads the next bytes as the HearbeatMessageType and writes them in the
+     * Reads the next bytes as the HeartbeatMessageType and writes them in the
      * message
      *
      * @param msg

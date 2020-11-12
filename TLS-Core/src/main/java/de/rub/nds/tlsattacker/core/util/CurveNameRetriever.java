@@ -17,7 +17,7 @@ import org.bouncycastle.math.ec.ECCurve;
 
 public class CurveNameRetriever {
 
-    public static NamedGroup getNamedCuveFromECCurve(ECCurve unknownCurve) {
+    public static NamedGroup getNamedCurveFromECCurve(ECCurve unknownCurve) {
         for (NamedGroup group : NamedGroup.values()) {
             ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(group.name());
             if (parameterSpec.getCurve().equals(unknownCurve)) {

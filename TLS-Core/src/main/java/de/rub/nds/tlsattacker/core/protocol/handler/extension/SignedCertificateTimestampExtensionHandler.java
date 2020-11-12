@@ -79,7 +79,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * actual Chooser
      *
      * @param message
-     * A SingedCertificateImestampExtensionMessage
+     * A SingedCertificateTimestampExtensionMessage
      */
     @Override
     public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {

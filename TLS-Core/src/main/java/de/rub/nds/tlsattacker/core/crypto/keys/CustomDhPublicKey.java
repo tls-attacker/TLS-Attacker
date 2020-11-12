@@ -166,7 +166,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     }
 
     @Override
-    public int keysize() {
+    public int keySize() {
         return modulus.bitLength();
     }
 }

@@ -59,7 +59,7 @@ public class PointFormatter {
                     }
                     return stream.toByteArray();
                 default:
-                    throw new UnsupportedOperationException("Unnsupported PointFormat: " + format);
+                    throw new UnsupportedOperationException("Unsupported PointFormat: " + format);
 
             }
         } else {
@@ -76,10 +76,10 @@ public class PointFormatter {
 
     public static byte[] toRawFormat(Point point) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        int elementLenght = ArrayConverter.bigIntegerToByteArray(point.getX().getModulus()).length;
+        int elementLength = ArrayConverter.bigIntegerToByteArray(point.getX().getModulus()).length;
         try {
-            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLenght));
-            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(), elementLenght));
+            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getX().getData(), elementLength));
+            stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getY().getData(), elementLength));
         } catch (IOException ex) {
             throw new PreparationException("Could not serialize ec point", ex);
         }
@@ -88,7 +88,7 @@ public class PointFormatter {
 
     /**
      * Tries to read the first N byte[] as a point of the curve of the form x|y.
-     * If the byte[] does enought bytes the base point of the named group is
+     * If the byte[] has enough bytes the base point of the named group is
      * returned
      *
      * @param group
@@ -97,14 +97,14 @@ public class PointFormatter {
      */
     public static Point fromRawFormat(NamedGroup group, byte[] pointBytes) {
         EllipticCurve curve = CurveFactory.getCurve(group);
-        int elementLenght = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
-        if (pointBytes.length < elementLenght * 2) {
+        int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
+        if (pointBytes.length < elementLength * 2) {
             LOGGER.warn("Cannot decode byte[] to point of " + group + ". Returning Basepoint");
             return curve.getBasePoint();
         }
         ByteArrayInputStream inputStream = new ByteArrayInputStream(pointBytes);
-        byte[] xCord = new byte[elementLenght];
-        byte[] yCord = new byte[elementLenght];
+        byte[] xCord = new byte[elementLength];
+        byte[] yCord = new byte[elementLength];
         try {
             inputStream.read(xCord);
             inputStream.read(yCord);
@@ -166,7 +166,7 @@ public class PointFormatter {
                     return curve.getPoint(new BigInteger(1, xCoordinate), new BigInteger(1, yCoordinate));
 
                 default:
-                    throw new UnsupportedOperationException("Unnsupported PointFormat: " + pointFormat);
+                    throw new UnsupportedOperationException("Unsupported PointFormat: " + pointFormat);
 
             }
         } else {

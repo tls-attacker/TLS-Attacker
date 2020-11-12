@@ -28,7 +28,7 @@ public class FlushSessionCacheAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        LOGGER.info("Resseting Connection Cache");
+        LOGGER.info("Reset Connection Cache");
         state.getTlsContext().getSessionList().clear();
         state.getTlsContext().setClientSessionId(new byte[0]);
         state.getTlsContext().setServerSessionId(new byte[0]);

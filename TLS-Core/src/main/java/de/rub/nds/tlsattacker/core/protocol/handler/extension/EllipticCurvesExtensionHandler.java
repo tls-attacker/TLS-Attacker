@@ -45,14 +45,14 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     public void adjustTLSExtensionContext(EllipticCurvesExtensionMessage message) {
         byte[] groupBytes = message.getSupportedGroups().getValue();
         if (groupBytes.length % NamedGroup.LENGTH != 0) {
-            throw new AdjustmentException("Could not create resonable NamedGroups from groupBytes");
+            throw new AdjustmentException("Could not create reasonable NamedGroups from groupBytes");
         }
         List<NamedGroup> groupList = new LinkedList<>();
         for (int i = 0; i < groupBytes.length; i += NamedGroup.LENGTH) {
             byte[] group = Arrays.copyOfRange(groupBytes, i, i + NamedGroup.LENGTH);
             NamedGroup namedGroup = NamedGroup.getNamedGroup(group);
             if (namedGroup == null) {
-                LOGGER.warn("Unknown EllipticCruve:" + ArrayConverter.bytesToHexString(group));
+                LOGGER.warn("Unknown EllipticCurve:" + ArrayConverter.bytesToHexString(group));
             } else {
                 groupList.add(namedGroup);
             }

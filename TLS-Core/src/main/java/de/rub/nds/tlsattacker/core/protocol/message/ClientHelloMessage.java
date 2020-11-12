@@ -136,7 +136,7 @@ public class ClientHelloMessage extends HelloMessage {
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }
-            if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
+            if (tlsConfig.isAddSignatureAndHashAlgorithmsExtension()) {
                 addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
             }
             if (tlsConfig.isAddSupportedVersionsExtension()) {

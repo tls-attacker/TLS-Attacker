@@ -18,6 +18,7 @@ import java.math.BigInteger;
 /**
  *
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class InvalidCurvePoint {
 
     private BigInteger publicPointBaseX;

@@ -17,13 +17,13 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerNamePairSerializier extends Serializer<ServerNamePair> {
+public class ServerNamePairSerializer extends Serializer<ServerNamePair> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ServerNamePair pair;
 
-    public ServerNamePairSerializier(ServerNamePair pair) {
+    public ServerNamePairSerializer(ServerNamePair pair) {
         this.pair = pair;
     }
 

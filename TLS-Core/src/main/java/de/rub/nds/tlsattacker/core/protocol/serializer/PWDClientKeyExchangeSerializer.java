@@ -47,7 +47,7 @@ public class PWDClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
 
     private void writeElementLength(PWDClientKeyExchangeMessage msg) {
         appendInt(msg.getElementLength().getValue(), HandshakeByteLength.PWD_ELEMENT_LENGTH);
-        LOGGER.debug("ElementLegnth: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
     }
 
     private void writeElement(PWDClientKeyExchangeMessage msg) {

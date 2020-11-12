@@ -1,7 +1,7 @@
 <config>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
-    <preferedCertificateSignatureType>RSA</preferedCertificateSignatureType>
-    <preferedCertificateSignatureGroup>SECP256R1</preferedCertificateSignatureGroup>
+    <preferredCertificateSignatureType>RSA</preferredCertificateSignatureType>
+    <preferredCertificateSignatureGroup>SECP256R1</preferredCertificateSignatureGroup>
     <autoSelectCertificate>true</autoSelectCertificate>
     <defaultExplicitCertificateKeyPair>
         <certPublicKeyType>RSA</certPublicKeyType>
@@ -979,7 +979,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
-    <resetWorkflowtracesBeforeSaving>false</resetWorkflowtracesBeforeSaving>
+    <resetWorkflowTracesBeforeSaving>false</resetWorkflowTracesBeforeSaving>
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>

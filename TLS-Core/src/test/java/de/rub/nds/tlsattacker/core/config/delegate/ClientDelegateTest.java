@@ -206,8 +206,8 @@ public class ClientDelegateTest {
 
     }
 
-    private void checkHostIsAsExpected(String fullhost, String host, int port) {
-        delegate.setHost(fullhost);
+    private void checkHostIsAsExpected(String fullHost, String host, int port) {
+        delegate.setHost(fullHost);
         Config config = Config.createConfig();
         delegate.applyDelegate(config);
         OutboundConnection defaultClientConnection = config.getDefaultClientConnection();

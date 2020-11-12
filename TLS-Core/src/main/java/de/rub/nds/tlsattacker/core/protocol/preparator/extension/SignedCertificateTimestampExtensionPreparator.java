@@ -35,7 +35,7 @@ public class SignedCertificateTimestampExtensionPreparator extends
     @Override
     public void prepareExtensionContent() {
         message.setSignedTimestamp(chooser.getConfig().getDefaultSignedCertificateTimestamp());
-        LOGGER.debug("Prepared the SignedCertificateTimestapExtension with timestamp length "
+        LOGGER.debug("Prepared the SignedCertificateTimestampExtension with timestamp length "
             + message.getSignedTimestamp().getValue().length);
     }
 

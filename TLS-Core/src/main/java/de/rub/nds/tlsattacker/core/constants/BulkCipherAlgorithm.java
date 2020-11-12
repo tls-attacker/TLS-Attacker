@@ -31,7 +31,7 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("RC4")) {
             return RC4;
         } else if (cipher.contains("RC2")) {
-            return RC2; // Tode add export rc2
+            return RC2; // Todo add export rc2
         } else if (cipher.contains("WITH_NULL")) {
             return NULL;
         } else if (cipher.contains("IDEA")) {

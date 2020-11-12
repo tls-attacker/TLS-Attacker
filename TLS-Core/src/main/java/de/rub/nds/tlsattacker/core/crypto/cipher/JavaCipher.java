@@ -106,7 +106,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
             | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not enrypt data", ex);
+            throw new CryptoException("Could not encrypt data", ex);
         }
     }
 

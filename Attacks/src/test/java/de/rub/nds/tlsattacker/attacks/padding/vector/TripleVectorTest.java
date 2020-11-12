@@ -15,11 +15,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TrippleVectorTest {
+public class TripleVectorTest {
 
     private Record r;
 
-    public TrippleVectorTest() {
+    public TripleVectorTest() {
     }
 
     @Before

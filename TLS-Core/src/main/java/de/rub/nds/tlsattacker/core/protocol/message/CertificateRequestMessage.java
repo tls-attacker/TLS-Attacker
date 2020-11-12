@@ -214,7 +214,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
                 }
             } catch (Exception e) {
                 LOGGER.debug(e);
-                LOGGER.debug("Signature and HashAlgorithms contain unparsable Algorithms:"
+                LOGGER.debug("Signature and HashAlgorithms contain unparseable Algorithms:"
                     + ArrayConverter.bytesToHexString(signatureHashAlgorithms));
             }
         } else {

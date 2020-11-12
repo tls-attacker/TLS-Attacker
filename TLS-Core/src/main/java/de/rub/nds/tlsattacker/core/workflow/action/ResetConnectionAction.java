@@ -43,11 +43,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
-        LOGGER.info("Resseting Cipher");
+        LOGGER.info("Resetting Cipher");
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
-        LOGGER.info("Resetting SecureRenegotaiton");
+        LOGGER.info("Resetting SecureRenegotiation");
         tlsContext.setLastClientVerifyData(new byte[0]);
         tlsContext.setLastServerVerifyData(new byte[0]);
         LOGGER.info("Resetting MessageDigest");

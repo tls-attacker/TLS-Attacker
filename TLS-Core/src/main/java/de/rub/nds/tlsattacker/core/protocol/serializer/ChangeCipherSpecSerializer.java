@@ -42,7 +42,7 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
     }
 
     /**
-     * Writes the CcsPrtotocolType of the ChangeCipherSpecMessage into the final
+     * Writes the CcsProtocolType of the ChangeCipherSpecMessage into the final
      * byte[]
      */
     private void writeCcsProtocolType(ChangeCipherSpecMessage msg) {

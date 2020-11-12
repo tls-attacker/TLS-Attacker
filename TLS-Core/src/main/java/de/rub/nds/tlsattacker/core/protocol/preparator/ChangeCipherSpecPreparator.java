@@ -35,7 +35,7 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
 
     private void prepareCcsProtocolType(ChangeCipherSpecMessage msg) {
         msg.setCcsProtocolType(CCS_PROTOCOL_TYPE);
-        LOGGER.debug("CCSProtocollType: " + msg.getCcsProtocolType().getValue());
+        LOGGER.debug("CCSProtocolType: " + msg.getCcsProtocolType().getValue());
     }
 
 }

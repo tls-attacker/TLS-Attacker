@@ -85,6 +85,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
+@SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
@@ -145,9 +146,9 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
-    private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;
+    private CertificateKeyType preferredCertificateSignatureType = CertificateKeyType.RSA;
 
-    private NamedGroup preferedCertificateSignatureGroup = NamedGroup.SECP256R1;
+    private NamedGroup preferredCertificateSignatureGroup = NamedGroup.SECP256R1;
 
     private Boolean autoSelectCertificate = true;
 
@@ -184,7 +185,7 @@ public class Config implements Serializable {
     private Boolean reorderReceivedDtlsRecords = true;
 
     /**
-     * Default value for ProtocolVerionFields
+     * Default value for ProtocolVersionFields
      */
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
@@ -288,7 +289,7 @@ public class Config implements Serializable {
 
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
-     * It's an emty timestamp, since the server sends it.
+     * It's an empty timestamp, since the server sends it.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSignedCertificateTimestamp = new byte[0];
@@ -382,7 +383,7 @@ public class Config implements Serializable {
     /**
      * Default trusted ca indication extension trusted CAs.
      */
-    private List<TrustedAuthority> trustedCaIndicationExtensionAuthorties;
+    private List<TrustedAuthority> trustedCaIndicationExtensionAuthorities;
 
     /**
      * Default state for the client certificate type extension message (state
@@ -820,7 +821,7 @@ public class Config implements Serializable {
 
     /**
      * If there is not enough space in the defined records, new records are
-     * dynamically added if not set, protocolmessage bytes that wont fit are
+     * dynamically added if not set, protocol message bytes that wont fit are
      * discarded
      */
     private Boolean createRecordsDynamically = true;
@@ -840,7 +841,7 @@ public class Config implements Serializable {
      * values from the workflow trace and will only keep the relevant
      * information
      */
-    private Boolean resetWorkflowtracesBeforeSaving = false;
+    private Boolean resetWorkflowTracesBeforeSaving = false;
 
     /**
      * TLS-Attacker will not try to receive additional messages after the
@@ -1298,7 +1299,7 @@ public class Config implements Serializable {
         serverCertificateTypeDesiredTypes.add(CertificateType.X509);
         serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
         cachedObjectList = new LinkedList<>();
-        trustedCaIndicationExtensionAuthorties = new LinkedList<>();
+        trustedCaIndicationExtensionAuthorities = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
@@ -2137,12 +2138,12 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
-    public Boolean isResetWorkflowtracesBeforeSaving() {
-        return resetWorkflowtracesBeforeSaving;
+    public Boolean isResetWorkflowTracesBeforeSaving() {
+        return resetWorkflowTracesBeforeSaving;
     }
 
-    public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
-        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
+    public void setResetWorkflowTracesBeforeSaving(Boolean resetWorkflowTracesBeforeSaving) {
+        this.resetWorkflowTracesBeforeSaving = resetWorkflowTracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -2488,8 +2489,8 @@ public class Config implements Serializable {
         return addMaxFragmentLengthExtension;
     }
 
-    public void setAddMaxFragmentLengthExtension(boolean addMaxFragmentLengthExtenstion) {
-        this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtenstion;
+    public void setAddMaxFragmentLengthExtension(boolean addMaxFragmentLengthExtension) {
+        this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtension;
     }
 
     public Boolean isAddServerNameIndicationExtension() {
@@ -2500,7 +2501,7 @@ public class Config implements Serializable {
         this.addServerNameIndicationExtension = addServerNameIndicationExtension;
     }
 
-    public Boolean isAddSignatureAndHashAlgrorithmsExtension() {
+    public Boolean isAddSignatureAndHashAlgorithmsExtension() {
         return addSignatureAndHashAlgorithmsExtension;
     }
 
@@ -2793,13 +2794,13 @@ public class Config implements Serializable {
         this.serverAuthzExtensionDataFormat = serverAuthzExtensionDataFormat;
     }
 
-    public List<TrustedAuthority> getTrustedCaIndicationExtensionAuthorties() {
-        return trustedCaIndicationExtensionAuthorties;
+    public List<TrustedAuthority> getTrustedCaIndicationExtensionAuthorities() {
+        return trustedCaIndicationExtensionAuthorities;
     }
 
-    public void
-        setTrustedCaIndicationExtensionAuthorties(List<TrustedAuthority> trustedCaIndicationExtensionAuthorties) {
-        this.trustedCaIndicationExtensionAuthorties = trustedCaIndicationExtensionAuthorties;
+    public void setTrustedCaIndicationExtensionAuthorities(
+        List<TrustedAuthority> trustedCaIndicationExtensionAuthorities) {
+        this.trustedCaIndicationExtensionAuthorities = trustedCaIndicationExtensionAuthorities;
     }
 
     public Boolean isClientCertificateTypeExtensionMessageState() {
@@ -3318,20 +3319,20 @@ public class Config implements Serializable {
         this.autoSelectCertificate = autoSelectCertificate;
     }
 
-    public NamedGroup getPreferedCertificateSignatureGroup() {
-        return preferedCertificateSignatureGroup;
+    public NamedGroup getPreferredCertificateSignatureGroup() {
+        return preferredCertificateSignatureGroup;
     }
 
-    public void setPreferedCertificateSignatureGroup(NamedGroup preferedCertificateSignatureGroup) {
-        this.preferedCertificateSignatureGroup = preferedCertificateSignatureGroup;
+    public void setPreferredCertificateSignatureGroup(NamedGroup preferredCertificateSignatureGroup) {
+        this.preferredCertificateSignatureGroup = preferredCertificateSignatureGroup;
     }
 
-    public CertificateKeyType getPreferedCertificateSignatureType() {
-        return preferedCertificateSignatureType;
+    public CertificateKeyType getPreferredCertificateSignatureType() {
+        return preferredCertificateSignatureType;
     }
 
-    public void setPreferedCertificateSignatureType(CertificateKeyType preferedCertificateSignatureType) {
-        this.preferedCertificateSignatureType = preferedCertificateSignatureType;
+    public void setPreferredCertificateSignatureType(CertificateKeyType preferredCertificateSignatureType) {
+        this.preferredCertificateSignatureType = preferredCertificateSignatureType;
     }
 
     public CertificateKeyPair getDefaultExplicitCertificateKeyPair() {
@@ -3598,8 +3599,8 @@ public class Config implements Serializable {
         return defaultEsniRecordChecksum;
     }
 
-    public void setDefaultEsniRecordChecksum(byte[] defualtEsniRecordChecksum) {
-        this.defaultEsniRecordChecksum = defualtEsniRecordChecksum;
+    public void setDefaultEsniRecordChecksum(byte[] defaultEsniRecordChecksum) {
+        this.defaultEsniRecordChecksum = defaultEsniRecordChecksum;
     }
 
     public List<KeyShareStoreEntry> getDefaultEsniServerKeyShareEntries() {

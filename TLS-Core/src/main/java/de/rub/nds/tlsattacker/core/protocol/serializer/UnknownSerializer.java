@@ -38,7 +38,7 @@ public class UnknownSerializer extends ProtocolMessageSerializer<UnknownMessage>
     @Override
     public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing UnknownMessage");
-        writeCompleteResultinMessage(msg);
+        writeCompleteResultingMessage(msg);
         return getAlreadySerialized();
     }
 
@@ -46,7 +46,7 @@ public class UnknownSerializer extends ProtocolMessageSerializer<UnknownMessage>
      * Writes the CompleteResultingMessage of the UnknownMessage into the final
      * byte[]
      */
-    private void writeCompleteResultinMessage(UnknownMessage msg) {
+    private void writeCompleteResultingMessage(UnknownMessage msg) {
         appendBytes(msg.getCompleteResultingMessage().getValue());
         LOGGER.debug("CompleteResultingMessage: "
             + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));

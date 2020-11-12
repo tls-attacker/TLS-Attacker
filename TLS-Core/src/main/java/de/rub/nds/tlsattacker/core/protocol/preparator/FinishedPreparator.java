@@ -56,17 +56,17 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
     private byte[] computeVerifyData() throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             try {
-                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
-                Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
+                HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
                 if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                     finishedKey =
-                        HKDFunction.expandLabel(hkdfAlgortihm, chooser.getServerHandshakeTrafficSecret(),
+                        HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
                     finishedKey =
-                        HKDFunction.expandLabel(hkdfAlgortihm, chooser.getClientHandshakeTrafficSecret(),
+                        HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
@@ -98,7 +98,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
 
             String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                // TODO put this in seperate config option
+                // TODO put this in separate config option
                 label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {
                 label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;

@@ -18,6 +18,7 @@ import java.math.BigInteger;
 /**
  *
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class TwistedCurvePoint {
     private BigInteger publicPointBaseX;
 

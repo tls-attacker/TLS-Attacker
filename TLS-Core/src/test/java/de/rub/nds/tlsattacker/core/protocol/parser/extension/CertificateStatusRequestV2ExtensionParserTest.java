@@ -62,7 +62,7 @@ public class CertificateStatusRequestV2ExtensionParserTest {
         hexStringToByteArray("010203040506")), new RequestItemV2(1, 21, 0xb, 6, hexStringToByteArray("010203040506")));
     private final List<ResponderId> respList = Arrays.asList(new ResponderId(3, new byte[] { 0x01, 0x02, 0x03 }),
         new ResponderId(4, new byte[] { 0x04, 0x05, 0x06, 0x07 }));
-    private final byte[] respoderIdListBytes = hexStringToByteArray("0003010203000404050607");
+    private final byte[] responderIdListBytes = hexStringToByteArray("0003010203000404050607");
     private final byte[] statusRequestBytes =
         hexStringToByteArray("010015000B00030102030004040506070006010203040506010015000B00030102030004040506070006010203040506");
     private final byte[] parseBytes =
@@ -74,9 +74,9 @@ public class CertificateStatusRequestV2ExtensionParserTest {
     @Test
     public void testParser() {
         list.get(0).setResponderIdList(respList);
-        list.get(0).setResponderIdListBytes(respoderIdListBytes);
+        list.get(0).setResponderIdListBytes(responderIdListBytes);
         list.get(1).setResponderIdList(respList);
-        list.get(1).setResponderIdListBytes(respoderIdListBytes);
+        list.get(1).setResponderIdListBytes(responderIdListBytes);
         CertificateStatusRequestV2ExtensionParser parser =
             new CertificateStatusRequestV2ExtensionParser(startPosition, parseBytes);
         CertificateStatusRequestV2ExtensionMessage msg = parser.parse();

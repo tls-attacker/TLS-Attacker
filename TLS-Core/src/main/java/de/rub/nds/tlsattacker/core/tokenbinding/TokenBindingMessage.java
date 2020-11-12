@@ -240,8 +240,8 @@ public class TokenBindingMessage extends ProtocolMessage {
         this.extensionBytes = extensionBytes;
     }
 
-    public void setExtensionBytes(byte[] extensionbytes) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionbytes);
+    public void setExtensionBytes(byte[] extensionBytes) {
+        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
     }
 
     @Override

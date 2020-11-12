@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class DHClientKeyExchangePreparatorTest {
 
     private final static String DH_G =

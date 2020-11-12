@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
 public class ActionTestUtils {
 
     /**
-     * Verify that the given TlsACtion can be marshaled to minimal output.
+     * Verify that the given TlsAction can be marshaled to minimal output.
      * <p>
      * Same as this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger),
      * but sets the logger automatically.
@@ -48,7 +48,7 @@ public class ActionTestUtils {
     }
 
     /**
-     * Verify that the given TlsACtion can be marshaled to minimal output.
+     * Verify that the given TlsAction can be marshaled to minimal output.
      * <p>
      * Test has two purposes
      * <ol>

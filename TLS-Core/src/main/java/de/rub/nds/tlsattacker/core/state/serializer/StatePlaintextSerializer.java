@@ -96,7 +96,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                 + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true, true));
         } else {
             appendByte(clientAuthenticationType);
-            LOGGER.warn("Can't serialize ClientAuthticationData because the choosen ClientAuthType is unknown: "
+            LOGGER.warn("Can't serialize ClientAuthenticationData because the chosen ClientAuthType is unknown: "
                 + clientAuthenticationType);
         }
     }

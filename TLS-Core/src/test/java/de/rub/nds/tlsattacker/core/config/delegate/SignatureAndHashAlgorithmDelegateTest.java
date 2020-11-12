@@ -81,9 +81,9 @@ public class SignatureAndHashAlgorithmDelegateTest {
         delegate.setSignatureAndHashAlgorithms(null);
         jcommander.parse(args);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
-        assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
+        assertFalse(config.isAddSignatureAndHashAlgorithmsExtension());
         delegate.applyDelegate(config);
-        assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());
+        assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
             SignatureAndHashAlgorithm.RSA_SHA512));
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(

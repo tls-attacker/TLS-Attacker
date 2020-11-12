@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveGost2012SetA512 extends EllipticCurveOverF2m {
 
     public EllipticCurveGost2012SetA512() {

@@ -38,7 +38,7 @@ public class TestECOracle extends ECOracle {
     }
 
     @Override
-    public boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret) {
+    public boolean checkSecretCorrectness(Point ecPoint, BigInteger guessedSecret) {
         numberOfQueries++;
         if (numberOfQueries % 100 == 0) {
             LOGGER.debug("Number of queries so far: {}", numberOfQueries);

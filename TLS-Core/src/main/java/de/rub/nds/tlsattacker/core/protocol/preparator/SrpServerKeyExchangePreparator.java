@@ -101,11 +101,11 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         byte[] hashInput1 = ArrayConverter.concatenate(identity, ArrayConverter.hexStringToByteArray("3A"), password);
         LOGGER.debug("HashInput for hashInput1: " + ArrayConverter.bytesToHexString(hashInput1));
         byte[] hashOutput1 = shaSum(hashInput1);
-        LOGGER.debug("Hashvalue for hashInput1: " + ArrayConverter.bytesToHexString(hashOutput1));
+        LOGGER.debug("HashValue for hashInput1: " + ArrayConverter.bytesToHexString(hashOutput1));
         byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
         LOGGER.debug("HashInput for hashInput2: " + ArrayConverter.bytesToHexString(hashInput2));
         byte[] hashOutput2 = shaSum(hashInput2);
-        LOGGER.debug("Hashvalue for hashInput2: " + ArrayConverter.bytesToHexString(hashOutput2));
+        LOGGER.debug("HashValue for hashInput2: " + ArrayConverter.bytesToHexString(hashOutput2));
         return new BigInteger(1, hashOutput2);
     }
 
@@ -129,10 +129,10 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         return dig.digest();
     }
 
-    private byte[] calculatePadding(BigInteger modulus, BigInteger topad) {
+    private byte[] calculatePadding(BigInteger modulus, BigInteger toPad) {
         byte[] padding;
         int modulusByteLength = ArrayConverter.bigIntegerToByteArray(modulus).length;
-        byte[] paddingArray = ArrayConverter.bigIntegerToByteArray(topad);
+        byte[] paddingArray = ArrayConverter.bigIntegerToByteArray(toPad);
         if (modulusByteLength == paddingArray.length) {
             return paddingArray;
         }
@@ -248,7 +248,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private void prepareSignature(SrpServerKeyExchangeMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
     private void prepareSignatureLength(SrpServerKeyExchangeMessage msg) {

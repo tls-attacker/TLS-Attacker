@@ -13,17 +13,17 @@ package de.rub.nds.tlsattacker.core.exceptions;
 /**
  * Configuration exception
  */
-public class FatalAertMessageException extends RuntimeException {
+public class FatalAlertMessageException extends RuntimeException {
 
-    public FatalAertMessageException() {
+    public FatalAlertMessageException() {
         super();
     }
 
-    public FatalAertMessageException(String message) {
+    public FatalAlertMessageException(String message) {
         super(message);
     }
 
-    public FatalAertMessageException(String message, Throwable cause) {
+    public FatalAlertMessageException(String message, Throwable cause) {
         super(message, cause);
     }
 }

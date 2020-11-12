@@ -211,7 +211,8 @@
                         <includes>
                             <include>**/*.java</include>
                         </includes>
-                        <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
+                        <!-- Integration tests and slow tests are excluded by default when running mvn package. Fast
+                        tests and not annotated tests are executed -->
                         <excludedGroups>${slowTests}</excludedGroups>
                         <argLine>
                             -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
@@ -455,7 +456,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
-        <!-- We redefine the signature generation process, whic is enabled by default,
+        <!-- We redefine the signature generation process, which is enabled by default,
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
         <jmockit.version>1.49</jmockit.version>

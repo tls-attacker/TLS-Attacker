@@ -24,6 +24,7 @@ public class BigIntegerConverterTest {
         converter = new BigIntegerConverter();
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testConvert() {
         String testString = "0";

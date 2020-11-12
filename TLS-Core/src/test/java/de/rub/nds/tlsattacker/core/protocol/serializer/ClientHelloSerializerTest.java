@@ -33,7 +33,7 @@ public class ClientHelloSerializerTest {
     private final HandshakeMessageType type;
     private final int length;
     private final byte[] protocolVersion;
-    private final byte[] unixtime;
+    private final byte[] unixTime;
     private final byte[] random;
     private final int sessionIdLength;
     private final byte[] sessionID;
@@ -47,7 +47,7 @@ public class ClientHelloSerializerTest {
     private final byte[] cookie;
 
     public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-        byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
+        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
         int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
         Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.expectedPart = message;
@@ -55,7 +55,7 @@ public class ClientHelloSerializerTest {
         this.length = length;
         this.version = version;
         this.protocolVersion = protocolVersion;
-        this.unixtime = unixtime;
+        this.unixTime = unixTime;
         this.random = random;
         this.sessionIdLength = sessionIdLength;
         this.sessionID = sessionID;
@@ -95,7 +95,7 @@ public class ClientHelloSerializerTest {
         clientMessage.setSessionId(sessionID);
         clientMessage.setSessionIdLength(sessionIdLength);
         clientMessage.setCompleteResultingMessage(expectedPart);
-        clientMessage.setUnixTime(unixtime);
+        clientMessage.setUnixTime(unixTime);
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
         ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);

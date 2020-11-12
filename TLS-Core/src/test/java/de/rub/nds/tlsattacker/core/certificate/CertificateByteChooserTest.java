@@ -59,7 +59,7 @@ public class CertificateByteChooserTest {
             LOGGER.debug("-------------------------");
             LOGGER.debug("Pk type:" + pair.getCertPublicKeyType());
             LOGGER.debug("Cert signature type: " + pair.getCertSignatureType());
-            LOGGER.debug("PublickeyGroup: " + pair.getPublicKeyGroup());
+            LOGGER.debug("PublicKeyGroup: " + pair.getPublicKeyGroup());
         }
     }
 

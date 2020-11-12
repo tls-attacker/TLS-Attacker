@@ -110,7 +110,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
-        LOGGER.debug("SignatureAndHaslAlgorithm: "
+        LOGGER.debug("SignatureAndHashAlgorithm: "
             + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 

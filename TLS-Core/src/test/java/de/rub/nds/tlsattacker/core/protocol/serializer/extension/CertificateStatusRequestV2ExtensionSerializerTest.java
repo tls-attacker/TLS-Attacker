@@ -33,12 +33,12 @@ public class CertificateStatusRequestV2ExtensionSerializerTest {
     private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });
     private final List<ResponderId> responderIdList = Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03,
         0x04, 0x05 }));
-    private final byte[] respoderIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
+    private final byte[] responderIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
 
     @Test
     public void testSerializer() {
         item.setResponderIdList(responderIdList);
-        item.setResponderIdListBytes(respoderIdListBytes);
+        item.setResponderIdListBytes(responderIdListBytes);
         RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
         preparator.prepare();
 

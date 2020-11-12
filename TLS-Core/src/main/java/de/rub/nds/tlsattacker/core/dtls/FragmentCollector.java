@@ -116,7 +116,7 @@ public class FragmentCollector {
      * previously received messages
      *
      * @param fragment
-     * Fragment that should betested
+     * Fragment that should be tested
      * @return True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {

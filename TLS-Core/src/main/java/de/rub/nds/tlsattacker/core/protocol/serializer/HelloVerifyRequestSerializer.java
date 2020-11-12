@@ -37,7 +37,7 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        LOGGER.debug("Serializing HelloVerifiyRequestMessage");
+        LOGGER.debug("Serializing HelloVerifyRequestMessage");
         writeProtocolVersion(msg);
         writeCookieLength(msg);
         writeCookie(msg);

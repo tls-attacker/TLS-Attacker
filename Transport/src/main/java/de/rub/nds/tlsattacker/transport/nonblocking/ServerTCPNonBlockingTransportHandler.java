@@ -79,7 +79,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
                 LOGGER.debug("TransportHandler not yet connected");
             }
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 
@@ -109,7 +109,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             }
             return false;
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 

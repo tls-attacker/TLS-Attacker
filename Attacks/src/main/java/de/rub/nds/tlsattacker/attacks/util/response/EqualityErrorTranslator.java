@@ -31,7 +31,7 @@ public class EqualityErrorTranslator {
                 builder.append("The server responds with different protocol messages.");
                 break;
             case MESSAGE_COUNT:
-                builder.append("The server responds with a differnt number of protocol messages.");
+                builder.append("The server responds with a different number of protocol messages.");
                 break;
             case NONE:
                 builder
@@ -54,7 +54,7 @@ public class EqualityErrorTranslator {
                 builder.append("The server seems to respond with records which have different protocol versions.");
                 break;
             case SOCKET_STATE:
-                builder.append("The server seems to ocassionally move the TCP socket in different states.");
+                builder.append("The server seems to occasionally move the TCP socket in different states.");
                 break;
             case MESSAGE_CONTENT:
                 builder.append("The server responded with different message contents");

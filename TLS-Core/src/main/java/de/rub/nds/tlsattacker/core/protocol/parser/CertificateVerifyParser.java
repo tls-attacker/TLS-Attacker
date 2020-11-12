@@ -88,7 +88,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      */
     private void parseSignature(CertificateVerifyMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
 }

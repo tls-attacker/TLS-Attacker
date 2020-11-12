@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class EncryptedServerNameIndicationExtensionSerializerTest {
 
     private Chooser chooser;

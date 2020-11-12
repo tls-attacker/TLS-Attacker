@@ -25,6 +25,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class ECDHClientKeyExchangeParserTest {
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays

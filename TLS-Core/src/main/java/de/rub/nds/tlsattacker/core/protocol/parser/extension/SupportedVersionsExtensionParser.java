@@ -32,7 +32,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
             // This looks like a ServerProtocolVersionExtension
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
         } else {
-            // This looks like a ClientProtocoLVersionExtension
+            // This looks like a ClientProtocolVersionExtension
             parseSupportedVersionLength(msg);
             parseSupportedVersion(msg);
         }

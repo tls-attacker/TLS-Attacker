@@ -33,12 +33,12 @@ public class RecordCryptoComputations {
     private ModifiableByteArray mac;
 
     /**
-     * The implicit part of the nonce for aead taken from the keyblock
+     * The implicit part of the nonce for aead taken from the keyBlock
      */
     private ModifiableByteArray aeadSalt;
 
     /**
-     * The eplicit nonce for aead which is transmitted in plain in each message
+     * The explicit nonce for aead which is transmitted in plain in each message
      */
     private ModifiableByteArray explicitNonce;
 
@@ -69,7 +69,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray authenticatedNonMetaData;
 
     /**
-     * The pure ciphertext part of the record. The output from the negotaited
+     * The pure ciphertext part of the record. The output from the negotiated
      * cipher
      */
     private ModifiableByteArray ciphertext;
@@ -80,7 +80,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray cbcInitialisationVector;
 
     /**
-     * The data over which the hmacs/tags are computed which are not explicitly
+     * The data over which the HMACs/tags are computed which are not explicitly
      * transmitted.
      */
     private ModifiableByteArray authenticatedMetaData;

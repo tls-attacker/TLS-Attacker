@@ -56,7 +56,7 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      */
     private void parseVerifyData(FinishedMessage msg) {
         msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
-        LOGGER.debug("VerifiyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

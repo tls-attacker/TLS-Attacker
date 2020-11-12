@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Testing EllipticCurve, CurveFactory, ElllipticCurveOverFp and
+ * Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and
  * EllipticCurveOverF2m
  */
 public class EllipticCurveTest {
@@ -160,7 +160,7 @@ public class EllipticCurveTest {
     private void testDecompression(EllipticCurve curve, Point basePoint) {
         Point decompressed = curve.createAPointOnCurve(basePoint.getX().getData());
 
-        // two points share the same x-coordinate - apply inverse if neccessary
+        // two points share the same x-coordinate - apply inverse if necessary
         if (!decompressed.getY().getData().equals(basePoint.getY().getData())) {
             decompressed = curve.inverse(decompressed);
         }

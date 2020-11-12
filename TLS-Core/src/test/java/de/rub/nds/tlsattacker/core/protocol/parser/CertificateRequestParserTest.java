@@ -46,7 +46,7 @@ public class CertificateRequestParserTest {
              * HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
              * RSA_DSS_ECDSA_TYPES, 0,null, 0, null,ProtocolVersion.SSL3 }
              */});
-        // Testdata is correct, however Certificate request and other
+        // TestData is correct, however Certificate request and other
         // Client-Authentication related messages are not yet supported for
         // TLS-Version < 1.2
     }
@@ -59,13 +59,13 @@ public class CertificateRequestParserTest {
     private int sigHashAlgsLength;
     private byte[] sigHashAlgs;
     private int distinguishedNamesLength;
-    private byte[] disitinguishedNames;
+    private byte[] distinguishedNames;
     private ProtocolVersion version;
     private final Config config = Config.createConfig();
 
     public CertificateRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
         int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs,
-        int distinguishedNamesLength, byte[] disitinguishedNames, ProtocolVersion version) {
+        int distinguishedNamesLength, byte[] distinguishedNames, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;
@@ -74,7 +74,7 @@ public class CertificateRequestParserTest {
         this.sigHashAlgsLength = sigHashAlgsLength;
         this.sigHashAlgs = sigHashAlgs;
         this.distinguishedNamesLength = distinguishedNamesLength;
-        this.disitinguishedNames = disitinguishedNames;
+        this.distinguishedNames = distinguishedNames;
         this.version = version;
     }
 
@@ -96,7 +96,7 @@ public class CertificateRequestParserTest {
         if (distinguishedNamesLength == 0) {
             assertNull(msg.getDistinguishedNames());
         } else {
-            assertArrayEquals(disitinguishedNames, msg.getDistinguishedNames().getValue());
+            assertArrayEquals(distinguishedNames, msg.getDistinguishedNames().getValue());
         }
     }
 

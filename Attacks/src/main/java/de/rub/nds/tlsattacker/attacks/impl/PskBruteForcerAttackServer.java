@@ -79,13 +79,13 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             }
             result = executeProtocolFlowToServer(suite, guessedPsk);
             if (result) {
-                long stopStime = System.currentTimeMillis();
+                long stopTime = System.currentTimeMillis();
                 CONSOLE.info("Found the psk in "
                     + String.format(
                         "%d min, %d sec",
-                        TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime),
-                        TimeUnit.MILLISECONDS.toSeconds(stopStime - startTime)
-                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopStime - startTime))));
+                        TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
+                        TimeUnit.MILLISECONDS.toSeconds(stopTime - startTime)
+                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime))));
                 CONSOLE.info("Guessed " + counter + " times");
             }
         }

@@ -75,7 +75,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private void writeTicket(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getKeyName().getValue());
-        LOGGER.debug("Keyname: " + ArrayConverter.bytesToHexString(msg.getTicket().getKeyName().getValue()));
+        LOGGER.debug("Key name: " + ArrayConverter.bytesToHexString(msg.getTicket().getKeyName().getValue()));
         appendBytes(msg.getTicket().getIV().getValue());
         LOGGER.debug("IV: " + ArrayConverter.bytesToHexString(msg.getTicket().getIV().getValue()));
         appendBytes(msg.getTicket().getEncryptedState().getValue());

@@ -48,9 +48,9 @@ public class ChangeCipherSpecParserTest {
     @Test
     public void testParse() {
         ChangeCipherSpecParser parser = new ChangeCipherSpecParser(0, message, version, config);
-        ChangeCipherSpecMessage ccsMessagee = parser.parse();
-        assertArrayEquals(message, ccsMessagee.getCompleteResultingMessage().getValue());
-        assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue());
+        ChangeCipherSpecMessage ccsMessage = parser.parse();
+        assertArrayEquals(message, ccsMessage.getCompleteResultingMessage().getValue());
+        assertTrue(ccsType == ccsMessage.getCcsProtocolType().getValue());
     }
 
 }

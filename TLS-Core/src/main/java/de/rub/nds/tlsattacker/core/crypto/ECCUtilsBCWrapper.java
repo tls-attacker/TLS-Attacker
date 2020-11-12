@@ -20,7 +20,7 @@ import org.bouncycastle.crypto.tls.TlsECCUtils;
 public class ECCUtilsBCWrapper {
 
     /**
-     * Reads ECC domain parameters from an inputstream, based on given named
+     * Reads ECC domain parameters from an input stream, based on given named
      * curves and point formats. It uses the BC functionality.
      *
      * @param namedGroups
@@ -28,7 +28,7 @@ public class ECCUtilsBCWrapper {
      * @param pointFormats
      * The Array of ECPointFormats
      * @param input
-     * The Inputstream to read from
+     * The input stream to read from
      * @return ECDomainParameters
      * @throws IOException
      * If something goes wrong while reading from the Stream
@@ -52,15 +52,15 @@ public class ECCUtilsBCWrapper {
      * point formats are allowed
      *
      * @param input
-     * The Inputstream to read from
+     * The input stream to read from
      * @return ECDomainParameters
      * @throws IOException
      * If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(InputStream input) throws IOException {
         NamedGroup[] namedCurves = NamedGroup.values();
-        ECPointFormat[] poinFormats = ECPointFormat.values();
-        return readECParameters(namedCurves, poinFormats, input);
+        ECPointFormat[] pointFormats = ECPointFormat.values();
+        return readECParameters(namedCurves, pointFormats, input);
     }
 
     /**

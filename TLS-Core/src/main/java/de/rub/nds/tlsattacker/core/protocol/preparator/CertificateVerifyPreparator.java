@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CertificateVerifiyConstants;
+import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
@@ -58,7 +58,7 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
                     ArrayConverter.concatenate(
                         ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
                             + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                        CertificateVerifiyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
+                        CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
                         new byte[] { (byte) 0x00 },
                         chooser.getContext().getDigest()
                             .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
@@ -67,7 +67,7 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
                     ArrayConverter.concatenate(
                         ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
                             + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                        CertificateVerifiyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
+                        CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
                         new byte[] { (byte) 0x00 },
                         chooser.getContext().getDigest()
                             .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));

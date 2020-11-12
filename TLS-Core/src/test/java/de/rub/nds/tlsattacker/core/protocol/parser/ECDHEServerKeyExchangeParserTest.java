@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+@SuppressWarnings("SpellCheckingInspection")
 @RunWith(Parameterized.class)
 public class ECDHEServerKeyExchangeParserTest {
 
@@ -110,7 +111,7 @@ public class ECDHEServerKeyExchangeParserTest {
      * Test of parse method, of class ECDHEServerKeyExchangeParser.
      */
     @Test
-    public void testParse() {// TODO make protocolversion a parameter and test
+    public void testParse() {// TODO make protocol version a parameter and test
         // for other versions too
         ECDHEServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> parser =
             new ECDHEServerKeyExchangeParser(0, message, version, config);

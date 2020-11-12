@@ -15,7 +15,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.ListDelegateType;
 
 /**
- * Converts a list delegate type string to a ListDeleagteType value.
+ * Converts a list delegate type string to a ListDelegateType value.
  */
 public class ListDelegateConverter implements IStringConverter<ListDelegateType> {
 

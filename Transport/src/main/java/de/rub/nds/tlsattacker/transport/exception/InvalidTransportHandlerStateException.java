@@ -19,16 +19,16 @@ public class InvalidTransportHandlerStateException extends Exception {
         super(string);
     }
 
-    public InvalidTransportHandlerStateException(String string, Throwable thrwbl) {
-        super(string, thrwbl);
+    public InvalidTransportHandlerStateException(String string, Throwable throwable) {
+        super(string, throwable);
     }
 
-    public InvalidTransportHandlerStateException(Throwable thrwbl) {
-        super(thrwbl);
+    public InvalidTransportHandlerStateException(Throwable throwable) {
+        super(throwable);
     }
 
-    public InvalidTransportHandlerStateException(String string, Throwable thrwbl, boolean bln, boolean bln1) {
-        super(string, thrwbl, bln, bln1);
+    public InvalidTransportHandlerStateException(String string, Throwable throwable, boolean bln, boolean bln1) {
+        super(string, throwable, bln, bln1);
     }
 
 }

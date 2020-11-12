@@ -22,7 +22,7 @@ public class FilterDelegate extends Delegate {
     // for List<Enum>.
     // Known issue: https://github.com/cbeust/jcommander/issues/402
     @Parameter(names = "-output_filter", description = "Apply given filters to the workflow trace "
-        + "before writing to ouput file. Supply as comma separated list. Try also: -list filters.",
+        + "before writing to output file. Supply as comma separated list. Try also: -list filters.",
         converter = FilterConverter.class)
     private List<FilterType> filters = null;
 

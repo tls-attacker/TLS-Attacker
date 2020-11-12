@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ChaCha20Poly1305CipherTest {
 
     @BeforeClass

@@ -22,13 +22,13 @@ import java.util.Objects;
 /**
  *
  */
-public class TrippleVector extends PaddingVector {
+public class TripleVector extends PaddingVector {
 
     private final VariableModification cleanModification;
     private final VariableModification macModification;
     private final VariableModification paddingModification;
 
-    public TrippleVector(String name, String identifier, VariableModification cleanModification,
+    public TripleVector(String name, String identifier, VariableModification cleanModification,
         VariableModification macModification, VariableModification paddingModification) {
         super(name, identifier);
         this.cleanModification = cleanModification;
@@ -84,7 +84,7 @@ public class TrippleVector extends PaddingVector {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TrippleVector other = (TrippleVector) obj;
+        final TripleVector other = (TripleVector) obj;
         if (!Objects.equals(this.cleanModification, other.cleanModification)) {
             return false;
         }

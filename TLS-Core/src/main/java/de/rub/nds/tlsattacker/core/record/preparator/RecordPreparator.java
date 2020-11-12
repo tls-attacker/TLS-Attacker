@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The cleanrecordbytes should be set when the record preparator received the
+ * The cleanRecordBytes should be set when the record preparator received the
  * record
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
@@ -70,7 +70,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private void prepareContentType(Record record) {
 
         record.setContentType(type.getValue());
-        prepareConentMessageType(type);
+        prepareContentMessageType(type);
         LOGGER.debug("ContentType: " + type.getValue());
     }
 

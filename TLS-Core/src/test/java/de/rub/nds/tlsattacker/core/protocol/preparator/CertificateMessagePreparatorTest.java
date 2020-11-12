@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class CertificateMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger();

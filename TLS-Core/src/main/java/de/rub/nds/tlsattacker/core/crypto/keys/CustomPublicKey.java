@@ -24,5 +24,5 @@ public abstract class CustomPublicKey implements Serializable {
 
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 
-    public abstract int keysize();
+    public abstract int keySize();
 }

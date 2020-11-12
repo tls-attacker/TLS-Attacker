@@ -65,7 +65,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CihperSuiteLength of the ClientHelloMessage into the final
+     * Writes the CipherSuiteLength of the ClientHelloMessage into the final
      * byte[]
      */
     private void writeCipherSuiteLength(ClientHelloMessage msg) {
@@ -74,7 +74,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CihperSuites of the ClientHelloMessage into the final byte[]
+     * Writes the CipherSuites of the ClientHelloMessage into the final byte[]
      */
     private void writeCipherSuites(ClientHelloMessage msg) {
         appendBytes(msg.getCipherSuites().getValue());

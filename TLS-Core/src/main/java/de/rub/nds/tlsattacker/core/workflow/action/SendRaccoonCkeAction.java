@@ -48,10 +48,10 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         super();
     }
 
-    public SendRaccoonCkeAction(boolean withNullByte, BigInteger intialSecret) {
+    public SendRaccoonCkeAction(boolean withNullByte, BigInteger initialSecret) {
         super();
         this.withNullByte = withNullByte;
-        this.initialSecret = intialSecret;
+        this.initialSecret = initialSecret;
     }
 
     public SendRaccoonCkeAction(String connectionAlias) {

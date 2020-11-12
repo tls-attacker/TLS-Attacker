@@ -50,9 +50,9 @@ public class ApplicationMessageParserTest {
     @Test
     public void testParse() {
         ApplicationMessageParser parser = new ApplicationMessageParser(start, message, ProtocolVersion.TLS12, config);
-        ApplicationMessage applcationMessage = parser.parse();
-        assertArrayEquals(applcationMessage.getCompleteResultingMessage().getValue(), expectedPart);
-        assertArrayEquals(applcationMessage.getData().getValue(), data);
+        ApplicationMessage applicationMessage = parser.parse();
+        assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), expectedPart);
+        assertArrayEquals(applicationMessage.getData().getValue(), data);
     }
 
 }

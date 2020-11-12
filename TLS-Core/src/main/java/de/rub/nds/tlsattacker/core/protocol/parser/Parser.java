@@ -54,7 +54,7 @@ public abstract class Parser<T> {
         this.pointer = startposition;
         this.array = array;
         if (startposition > array.length) {
-            throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
+            throw new ParserException("Cannot create parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
                 + array.length);
         }
     }
@@ -66,7 +66,7 @@ public abstract class Parser<T> {
      *
      * @param length
      * Number of bytes to be parsed
-     * @return A subbyteArray of according size from the Array
+     * @return A subByteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
         if (length == 0) {
@@ -92,7 +92,7 @@ public abstract class Parser<T> {
      *
      * @param length
      * Number of bytes to be parsed
-     * @return An integer representation of the subbyteArray
+     * @return An integer representation of the subByteArray
      */
     protected int parseIntField(int length) {
         if (length == 0) {
@@ -108,7 +108,7 @@ public abstract class Parser<T> {
      *
      * @param length
      * Number of bytes to be parsed
-     * @return A BigInteger representation of the subbyteArray
+     * @return A BigInteger representation of the subByteArray
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
@@ -124,7 +124,7 @@ public abstract class Parser<T> {
      *
      * @param length
      * Number of bytes to be parsed
-     * @return An integer representation of the subbyteArray
+     * @return An integer representation of the subByteArray
      */
     protected byte parseByteField(int length) {
         if (length == 0) {
@@ -198,11 +198,11 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Checks if there are atleast count bytes left to read
+     * Checks if there are at least count bytes left to read
      *
      * @param count
      * Number of bytes to check for
-     * @return True if there are atleast count bytes left to read
+     * @return True if there are at least count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;

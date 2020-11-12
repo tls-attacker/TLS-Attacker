@@ -30,7 +30,7 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing SigantureAndHashAlgorithmsExtensionMessage");
+        LOGGER.debug("Serializing SignatureAndHashAlgorithmsExtensionMessage");
         writeSignatureAndHashAlgorithmsLength(msg);
         writeSignatureAndHashAlgorithms(msg);
         return getAlreadySerialized();

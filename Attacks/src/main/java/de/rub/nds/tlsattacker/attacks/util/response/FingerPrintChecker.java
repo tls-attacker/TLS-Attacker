@@ -47,7 +47,7 @@ public class FingerPrintChecker {
                         .equals(fingerprint2.getRecordList().get(i).getClass())) {
                         return EqualityError.RECORD_CLASS;
                     }
-                    // This also finds fragmentations issues
+                    // This also finds fragmentation issues
                     if (fingerprint1.getRecordList().get(i).getCompleteRecordBytes().getValue().length != fingerprint2
                         .getRecordList().get(i).getCompleteRecordBytes().getValue().length) {
                         return EqualityError.RECORD_CONTENT;

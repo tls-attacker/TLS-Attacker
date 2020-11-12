@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ECDHClientKeyExchangePreparatorTest {
 
     private final static String RANDOM = "CAFEBABECAFE";

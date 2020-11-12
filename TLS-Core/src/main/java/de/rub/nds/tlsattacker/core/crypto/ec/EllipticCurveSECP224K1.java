@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveSECP224K1 extends EllipticCurveOverFp {
     public EllipticCurveSECP224K1() {
         super(BigInteger.ZERO, new BigInteger("5"), new BigInteger(

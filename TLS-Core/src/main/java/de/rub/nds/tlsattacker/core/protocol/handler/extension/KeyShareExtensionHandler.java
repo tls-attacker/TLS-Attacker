@@ -40,7 +40,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     public KeyShareExtensionHandler(TlsContext context, ExtensionType type) {
         super(context);
         if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new RuntimeException("Trying to initalize KeyShareExtensionHandler with an illegal ExtensionType");
+            throw new RuntimeException("Trying to initialize KeyShareExtensionHandler with an illegal ExtensionType");
         }
         this.type = type;
     }

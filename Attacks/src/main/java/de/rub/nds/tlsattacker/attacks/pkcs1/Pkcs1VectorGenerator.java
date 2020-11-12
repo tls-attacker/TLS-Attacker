@@ -41,7 +41,7 @@ public class Pkcs1VectorGenerator {
      * Generates different encrypted PKCS1 vectors
      *
      * @param publicKey
-     * The publickey
+     * The public key
      * @param type
      * the type
      * @param protocolVersion
@@ -244,7 +244,7 @@ public class Pkcs1VectorGenerator {
 
     /**
      * @param rsaKeyLength
-     * rsakeylength
+     * rsa key length
      * @param symmetricKey
      * symmetric key
      * @return Pkcs1Vectors

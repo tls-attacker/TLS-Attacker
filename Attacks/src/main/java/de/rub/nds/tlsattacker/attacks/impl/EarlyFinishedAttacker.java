@@ -53,7 +53,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         switch (earlyFinVulnerabilityType) {
             case VULNERABLE:
                 return true;
-            case NOT_VULNERABLE_PROBABBlY:
+            case NOT_VULNERABLE_PROBABLY:
             case NOT_VULNERABLE:
                 return false;
             case UNKNOWN:
@@ -96,7 +96,7 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
             return EarlyFinishedVulnerabilityType.VULNERABLE;
         } else {
             ConsoleLogger.CONSOLE.info("Not vulnerable (probably), No Finished message found, yet also no alert");
-            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE_PROBABBlY;
+            return EarlyFinishedVulnerabilityType.NOT_VULNERABLE_PROBABLY;
         }
     }
 }

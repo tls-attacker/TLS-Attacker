@@ -34,7 +34,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
         if (getVersion().isTLS13()) {
             parseLifetime(msg);
             parseAgeAdd(msg);
-            parseNonceLenght(msg);
+            parseNonceLength(msg);
             parseNonce(msg);
             parseIdentityLength(msg);
             parseIdentity(msg);
@@ -66,7 +66,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
         LOGGER.debug("TicketAgeAdd:" + ArrayConverter.bytesToHexString(msg.getTicket().getTicketAgeAdd().getValue()));
     }
 
-    private void parseNonceLenght(NewSessionTicketMessage msg) {
+    private void parseNonceLength(NewSessionTicketMessage msg) {
         msg.getTicket().setTicketNonceLength(parseIntField(HandshakeByteLength.TICKET_NONCE_LENGTH));
         LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
     }

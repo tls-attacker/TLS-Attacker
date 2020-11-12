@@ -98,7 +98,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
      */
     private void parseCipherSuites(SSL2ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        LOGGER.debug("ChipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     /**

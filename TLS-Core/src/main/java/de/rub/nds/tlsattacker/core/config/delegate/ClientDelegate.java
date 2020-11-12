@@ -29,7 +29,7 @@ public class ClientDelegate extends Delegate {
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
-    @Parameter(names = "-server_name", description = "Servername for the SNI extension.")
+    @Parameter(names = "-server_name", description = "Server name for the SNI extension.")
     private String sniHostname = null;
 
     public ClientDelegate() {

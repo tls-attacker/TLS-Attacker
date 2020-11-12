@@ -157,7 +157,7 @@ public class CertificateDelegateTest {
         Config config = Config.createConfig();
         config.setDefaultExplicitCertificateKeyPair(null);
         delegate.applyDelegate(config);
-        assertNotNull("Ceritifcate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
+        assertNotNull("Certificate could not be loaded", config.getDefaultExplicitCertificateKeyPair());
     }
 
     @Test

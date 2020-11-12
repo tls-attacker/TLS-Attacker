@@ -31,7 +31,7 @@ public abstract class GuessProvider {
 
     /**
      * Returns the next guess for the attack. Guesses should not repeat, but it
-     * is not completly prohibited by this API. Returns null if no more guesses
+     * is not completely prohibited by this API. Returns null if no more guesses
      * are available.
      *
      * @return The next byte[] to be used in the brute force attack.
@@ -39,7 +39,7 @@ public abstract class GuessProvider {
     public abstract byte[] getGuess();
 
     /**
-     * Retunrs the type of this GuessProvider
+     * Returns the type of this GuessProvider
      *
      * @return Type of this GuessProvider
      */

@@ -212,7 +212,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     }
 
     @Override
-    public int keysize() {
+    public int keySize() {
         if (group == null || group.getCoordinateSizeInBit() == null) {
             return 0;
         }

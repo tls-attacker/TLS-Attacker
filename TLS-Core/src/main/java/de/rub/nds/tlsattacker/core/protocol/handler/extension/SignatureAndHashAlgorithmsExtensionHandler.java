@@ -40,7 +40,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
         if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
             throw new AdjustmentException(
-                "Cannot adjust ClientSupportedSignature and Hash algorithms to a resonable Value");
+                "Cannot adjust ClientSupportedSignature and Hash algorithms to a reasonable Value");
         }
         for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
             byte[] algoBytes =

@@ -105,7 +105,7 @@ public class Manger extends Pkcs1Attack {
 
         result = new Interval(mmin, mmax);
 
-        int previntervalsize = 0;
+        int prevIntervalSize = 0;
         while (!interrupted) {
             BigInteger ftmp = MathHelper.intFloorDiv(bigB.shiftLeft(1), mmax.subtract(mmin));
             BigInteger i = MathHelper.intFloorDiv(ftmp.multiply(mmin), publicKey.getModulus());
@@ -120,11 +120,11 @@ public class Manger extends Pkcs1Attack {
             if (mmax.equals(mmin)) {
                 break;
             }
-            // intervalsize = int(math.ceil(math.log(mmax-mmin)))
-            // if not intervalsize == previntervalsize:
-            // if intervalsize % 10 == 0:
-            // print ">> Manger running. Interval size:",intervalsize,"bit."
-            // previntervalsize=intervalsize
+            // intervalSize = int(math.ceil(math.log(mmax-mmin)))
+            // if not intervalSize == prevIntervalSize:
+            // if intervalSize % 10 == 0:
+            // print ">> Manger running. Interval size:",intervalSize,"bit."
+            // prevIntervalSize=intervalSize
         }
 
         if (!interrupted) {

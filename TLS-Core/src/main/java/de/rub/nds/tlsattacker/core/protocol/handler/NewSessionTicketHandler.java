@@ -100,18 +100,18 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     private byte[] derivePsk(NewSessionTicketMessage message) {
         try {
             LOGGER.debug("Deriving PSK from current session");
-            HKDFAlgorithm hkdfAlgortihm =
+            HKDFAlgorithm hkdfAlgorithm =
                 AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
             DigestAlgorithm digestAlgo =
                 AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
                     .getChooser().getSelectedCipherSuite());
-            int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret =
-                HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
+                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
                     HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             byte[] psk =
-                HKDFunction.expandLabel(hkdfAlgortihm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
+                HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
                     .getTicket().getTicketNonce().getValue(), macLength);
             LOGGER.debug("Derived PSK: " + ArrayConverter.bytesToHexString(psk));
             return psk;

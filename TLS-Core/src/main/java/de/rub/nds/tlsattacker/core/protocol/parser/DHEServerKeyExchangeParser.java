@@ -60,9 +60,9 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     @Override
     protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing DHEServerKeyExchangeMessage");
-        parsepLength(msg);
+        parsePLength(msg);
         parseP(msg);
-        parsegLength(msg);
+        parseGLength(msg);
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
@@ -78,9 +78,9 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     protected void parseDheParams(T msg) {
-        parsepLength(msg);
+        parsePLength(msg);
         parseP(msg);
-        parsegLength(msg);
+        parseGLength(msg);
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
@@ -97,7 +97,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * @param msg
      * Message to write in
      */
-    private void parsepLength(DHEServerKeyExchangeMessage msg) {
+    private void parsePLength(DHEServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.DH_MODULUS_LENGTH));
         LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
     }
@@ -119,7 +119,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * @param msg
      * Message to write in
      */
-    private void parsegLength(DHEServerKeyExchangeMessage msg) {
+    private void parseGLength(DHEServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.DH_GENERATOR_LENGTH));
         LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
     }

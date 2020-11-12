@@ -85,7 +85,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      * Example: US-ASCII Available charsets can be found in StandardCharsets
      *
      * @param stringEncoding
-     * The enconding that should be used
+     * The encoding that should be used
      *
      */
     public void setStringEncoding(String stringEncoding) {

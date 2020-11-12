@@ -46,7 +46,7 @@ public abstract class ECOracle {
      * The guessed Secret
      * @return True if the secret is guessed correctly
      */
-    public abstract boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret);
+    public abstract boolean checkSecretCorrectness(Point ecPoint, BigInteger guessedSecret);
 
     /**
      * Sends the oracle a request with a guessed secret key resulting from the

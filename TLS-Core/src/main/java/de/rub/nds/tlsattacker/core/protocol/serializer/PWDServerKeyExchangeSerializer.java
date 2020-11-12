@@ -71,7 +71,7 @@ public class PWDServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     private void writeElementLength(PWDServerKeyExchangeMessage msg) {
         appendInt(msg.getElementLength().getValue(), HandshakeByteLength.PWD_ELEMENT_LENGTH);
-        LOGGER.debug("ElementLegnth: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
     }
 
     private void writeElement(PWDServerKeyExchangeMessage msg) {

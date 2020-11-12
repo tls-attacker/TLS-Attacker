@@ -69,7 +69,7 @@ public class ForensicAnalyzer {
         }
         context.setRecordLayer(new TlsRecordLayer(context));
         adjustPrivateKeys(state, executedWorkflow);
-        // Try to determin if the trace was a client or server trace
+        // Try to determine if the trace was a client or server trace
         connectionEndType = ConnectionEndType.CLIENT;
         if (executedWorkflow.getTlsActions().size() > 0) {
             if (!(executedWorkflow.getTlsActions().get(0) instanceof SendingAction)) {

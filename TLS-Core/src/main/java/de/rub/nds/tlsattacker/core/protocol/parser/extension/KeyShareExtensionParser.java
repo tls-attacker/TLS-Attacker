@@ -67,7 +67,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keySahreListLength of the Extension and
+     * Reads the next bytes as the keyShareListLength of the Extension and
      * writes them in the message
      *
      * @param msg

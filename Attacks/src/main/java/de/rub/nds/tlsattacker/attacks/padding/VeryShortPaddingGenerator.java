@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayXorModification;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
 import de.rub.nds.tlsattacker.attacks.padding.vector.PlainPaddingVector;
-import de.rub.nds.tlsattacker.attacks.padding.vector.TrippleVector;
+import de.rub.nds.tlsattacker.attacks.padding.vector.TripleVector;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -87,7 +87,7 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         // valid mac
         byte[] padding = createPaddingBytes(paddingValue);
         padding[0] ^= 0x80; // flip first padding byte highest bit
-        vectorList.add(new TrippleVector("InvPadValMac-[0]-" + applicationLength + "-" + paddingValue, "InvPadValMac",
+        vectorList.add(new TripleVector("InvPadValMac-[0]-" + applicationLength + "-" + paddingValue, "InvPadValMac",
             new ByteArrayExplicitValueModification(new byte[applicationLength]), null,
             new ByteArrayExplicitValueModification(padding)));
         return vectorList;
@@ -97,7 +97,7 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
         List<PaddingVector> vectorList = new LinkedList<>();
         // invalid mac
         byte[] padding = createPaddingBytes(paddingValue);
-        vectorList.add(new TrippleVector("ValPadInvMac-[0]-" + applicationLength + "-" + paddingValue, "valPadInvMac",
+        vectorList.add(new TripleVector("ValPadInvMac-[0]-" + applicationLength + "-" + paddingValue, "valPadInvMac",
             new ByteArrayExplicitValueModification(new byte[applicationLength]), new ByteArrayXorModification(
                 new byte[] { 0x01 }, 0), new ByteArrayExplicitValueModification(padding)));
         return vectorList;

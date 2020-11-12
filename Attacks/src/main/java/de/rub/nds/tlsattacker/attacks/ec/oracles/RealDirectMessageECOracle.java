@@ -72,7 +72,7 @@ public class RealDirectMessageECOracle extends ECOracle {
     }
 
     @Override
-    public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
+    public boolean checkSecretCorrectness(Point ecPoint, BigInteger secret) {
 
         WorkflowTrace trace =
             new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
@@ -96,8 +96,8 @@ public class RealDirectMessageECOracle extends ECOracle {
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, secret);
-        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, secret);
+        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {

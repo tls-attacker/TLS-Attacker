@@ -33,8 +33,8 @@ public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends
         this.type = type;
     }
 
-    protected void prepareConentMessageType(ProtocolMessageType tpye) {
-        getObject().setContentMessageType(type);
-        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(tpye.getArrayValue()));
+    protected void prepareContentMessageType(ProtocolMessageType type) {
+        getObject().setContentMessageType(this.type);
+        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));
     }
 }

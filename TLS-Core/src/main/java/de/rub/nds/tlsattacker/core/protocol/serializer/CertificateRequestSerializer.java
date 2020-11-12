@@ -40,8 +40,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateRequestMessage");
         if (version.isTLS13()) {
-            writeCertificateRquestContextLength(msg);
-            writeCertificateRquestContext(msg);
+            writeCertificateRequestContextLength(msg);
+            writeCertificateRequestContext(msg);
             writeExtensionLength();
             writeExtensionBytes();
         } else {
@@ -100,8 +100,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the DiestinguishedNamesLength of the CertificateRequestMessage
-     * into the final byte[]
+     * Writes the DistinguishedNamesLength of the CertificateRequestMessage into
+     * the final byte[]
      */
     private void writeDistinguishedNamesLength(CertificateRequestMessage msg) {
         appendInt(msg.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
@@ -121,16 +121,16 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
         LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
     }
 
-    private void writeCertificateRquestContext(CertificateRequestMessage msg) {
+    private void writeCertificateRequestContext(CertificateRequestMessage msg) {
         appendBytes(msg.getCertificateRequestContext().getValue());
-        LOGGER.debug("CertificateRquestContext: "
+        LOGGER.debug("CertificateRequestContext: "
             + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 
-    private void writeCertificateRquestContextLength(CertificateRequestMessage msg) {
+    private void writeCertificateRequestContextLength(CertificateRequestMessage msg) {
         appendInt(msg.getCertificateRequestContextLength().getValue(),
             HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
-        LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
+        LOGGER.debug("CertificateRequestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 
 }

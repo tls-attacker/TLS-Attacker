@@ -114,7 +114,7 @@ public class RecordStreamCipher extends RecordCipher {
     @Override
     public void decrypt(Record record) throws CryptoException {
         if (record.getComputations() == null) {
-            LOGGER.warn("Record computations are not preapred.");
+            LOGGER.warn("Record computations are not prepared.");
             record.prepareComputations();
         }
         LOGGER.debug("Decrypting Record");
@@ -145,7 +145,7 @@ public class RecordStreamCipher extends RecordCipher {
 
     @Override
     public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Derypting BlobRecord");
+        LOGGER.debug("Decrypting BlobRecord");
         br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
     }
 

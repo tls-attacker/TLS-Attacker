@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Resolves crypto algorithms and their properties from a given cipehr suite
+ * Resolves crypto algorithms and their properties from a given cipher suite
  * (and TLS version).
  */
 public class AlgorithmResolver {

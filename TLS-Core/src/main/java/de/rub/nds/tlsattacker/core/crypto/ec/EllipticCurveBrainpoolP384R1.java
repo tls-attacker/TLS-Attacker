@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.math.BigInteger;
 
 public class EllipticCurveBrainpoolP384R1 extends EllipticCurveOverFp {
+    @SuppressWarnings("SpellCheckingInspection")
     public EllipticCurveBrainpoolP384R1() {
         super(
             new BigInteger(

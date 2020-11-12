@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+@SuppressWarnings("SpellCheckingInspection")
 @RunWith(Parameterized.class)
 public class CertificatePairParserTest {
 
@@ -41,21 +42,21 @@ public class CertificatePairParserTest {
     private int extensionsLength;
     private byte[] certificate;
     private byte[] extension;
-    private byte[] certpair;
+    private byte[] certPair;
 
-    public CertificatePairParserTest(byte[] certpair, int certificateLength, byte[] certificate, int extensionsLength,
+    public CertificatePairParserTest(byte[] certPair, int certificateLength, byte[] certificate, int extensionsLength,
         byte[] extension) {
         this.certificateLength = certificateLength;
         this.extensionsLength = extensionsLength;
         this.certificate = certificate;
         this.extension = extension;
-        this.certpair = certpair;
+        this.certPair = certPair;
     }
 
     // Test of parse method, of class CertificatePairParser
     @Test
     public void testParse() {
-        CertificatePairParser parser = new CertificatePairParser(0, certpair);
+        CertificatePairParser parser = new CertificatePairParser(0, certPair);
         CertificatePair pair = parser.parse();
         assertTrue(certificateLength == pair.getCertificateLength().getValue());
         assertTrue(extensionsLength == pair.getExtensionsLength().getValue());

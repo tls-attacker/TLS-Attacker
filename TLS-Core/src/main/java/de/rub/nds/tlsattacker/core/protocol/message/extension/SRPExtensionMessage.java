@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  */
 public class SRPExtensionMessage extends ExtensionMessage {
 
-    // UTF-8 encoed and according to RFC 4013 with the SASLprep profile
+    // UTF-8 encoded and according to RFC 4013 with the SASLprep profile
     @ModifiableVariableProperty
     private ModifiableByteArray srpIdentifier;
 

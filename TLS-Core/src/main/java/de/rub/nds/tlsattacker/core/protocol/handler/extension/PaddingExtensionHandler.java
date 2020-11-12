@@ -43,7 +43,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
     }
 
     /**
-     * Adjusts the TLS context based on the lenght of the padding extension.
+     * Adjusts the TLS context based on the length of the padding extension.
      *
      * @param message
      * The message for which the context should be adjusted

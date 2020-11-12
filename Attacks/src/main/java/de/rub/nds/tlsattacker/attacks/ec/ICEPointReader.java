@@ -59,7 +59,7 @@ public class ICEPointReader {
                     points.add(new ICEPoint(x, y, curve, order));
                 }
             }
-            Collections.sort(points, new ICEPointCopmparator());
+            Collections.sort(points, new ICEPointComparator());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Using the following curves and points");
                 for (ICEPoint p : points) {

@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class CertificateMessageHandlerTest {
 
     private CertificateMessageHandler handler;
@@ -94,7 +95,7 @@ public class CertificateMessageHandlerTest {
     }
 
     @Test
-    public void testAdjustTLSContextWithUnparsableCertificate() {
+    public void testAdjustTLSContextWithUnparseableCertificate() {
         for (ProtocolVersion version : new ProtocolVersion[] { ProtocolVersion.SSL3, ProtocolVersion.TLS10,
             ProtocolVersion.TLS11, ProtocolVersion.TLS12 }) {
             context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);

@@ -166,7 +166,7 @@ public class RecordGroup {
     }
 
     /**
-     * If the parsed record group contains invalid records we need to seperate
+     * If the parsed record group contains invalid records we need to separate
      * them into smaller groups and only parse them one by one to make sure we
      * can respect invalidAsUnknown flags
      *

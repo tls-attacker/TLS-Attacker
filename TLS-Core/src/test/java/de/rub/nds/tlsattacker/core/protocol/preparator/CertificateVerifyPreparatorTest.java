@@ -113,6 +113,7 @@ public class CertificateVerifyPreparatorTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     // @Test
+    @SuppressWarnings("SpellCheckingInspection")
     public void testPrepareRSA() throws NoSuchAlgorithmException {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(SignatureAndHashAlgorithm.ECDSA_NONE);
@@ -122,7 +123,7 @@ public class CertificateVerifyPreparatorTest {
         context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 1, 1, }, message.getSignatureHashAlgorithm().getValue());
-        // TODO I dont check if the signature is correctly calcualted or
+        // TODO I don't check if the signature is correctly calculated or
         // calculated over the correct values
         assertArrayEquals(
             ArrayConverter

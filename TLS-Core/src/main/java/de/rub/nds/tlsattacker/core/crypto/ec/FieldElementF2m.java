@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br />
- * Please notice that every element in the field (and the redcution polynomial
+ * Please notice that every element in the field (and the reduction polynomial
  * that defines the field) is represented by a binary polynomial.<br />
  * These polynomials are represented by BigInteger bit-strings, where the i-th
  * bit represents the i-th coefficient.

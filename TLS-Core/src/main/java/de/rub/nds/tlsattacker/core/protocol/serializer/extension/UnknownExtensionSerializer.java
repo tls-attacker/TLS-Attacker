@@ -28,7 +28,7 @@ public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExten
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing UnknoenExtensionMessage");
+        LOGGER.debug("Serializing UnknownExtensionMessage");
         if (hasExtensionData(msg)) {
             writeExtensionData(msg);
         }

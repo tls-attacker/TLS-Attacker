@@ -66,10 +66,10 @@ class ExtraClearStep2Callable implements Callable<BigInteger> {
                 || (plaintextCandidate[1] != 0x02));
 
             // Online part: Check if s is really suitable using the oracle
-            byte[] cipertextCandidate =
+            byte[] ciphertextCandidate =
                 ArrayConverter.bigIntegerToByteArray(
                     sCandidate.modPow(e, N).multiply(new BigInteger(shiftedOldCiphertext)).mod(N), l_m, true);
-            if (oracle.checkPKCSConformity(cipertextCandidate)) {
+            if (oracle.checkPKCSConformity(ciphertextCandidate)) {
                 return sCandidate;
             }
         }

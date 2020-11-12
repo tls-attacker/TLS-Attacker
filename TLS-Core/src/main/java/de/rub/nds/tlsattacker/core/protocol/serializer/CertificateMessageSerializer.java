@@ -44,7 +44,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
             writeRequestContext(msg);
         }
         writeCertificatesListLength(msg);
-        wirteCertificatesListBytes(msg);
+        writeCertificatesListBytes(msg);
         return getAlreadySerialized();
     }
 
@@ -77,7 +77,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     /**
      * Writes the Certificate of the CertificateMessage into the final byte[]
      */
-    private void wirteCertificatesListBytes(CertificateMessage msg) {
+    private void writeCertificatesListBytes(CertificateMessage msg) {
         appendBytes(msg.getCertificatesListBytes().getValue());
         LOGGER.debug("certificatesListBytes: "
             + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));

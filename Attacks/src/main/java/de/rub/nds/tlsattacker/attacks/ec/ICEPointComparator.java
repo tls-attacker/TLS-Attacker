@@ -16,7 +16,7 @@ import java.util.Comparator;
  *
  *
  */
-public class ICEPointCopmparator implements Comparator<ICEPoint> {
+public class ICEPointComparator implements Comparator<ICEPoint> {
 
     /**
      *

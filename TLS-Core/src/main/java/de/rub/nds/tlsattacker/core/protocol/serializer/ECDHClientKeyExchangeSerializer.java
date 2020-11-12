@@ -52,7 +52,7 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the ECDHCLientKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the ECDHClientKeyExchangeMessage
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
@@ -61,7 +61,7 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
     }
 
     /**
-     * Writes the SerializedPublicKey of the ECDHCLientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the ECDHClientKeyExchangeMessage into
      * the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {

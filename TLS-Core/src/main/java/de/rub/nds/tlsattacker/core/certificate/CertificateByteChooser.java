@@ -162,7 +162,7 @@ public class CertificateByteChooser {
         NamedGroup namedGroup = chooser.getSelectedNamedGroup();
 
         CertificateKeyType preferredSignatureCertSignatureType =
-            chooser.getConfig().getPreferedCertificateSignatureType();
+            chooser.getConfig().getPreferredCertificateSignatureType();
 
         CertificateKeyType neededPublicKeyType;
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
@@ -242,7 +242,7 @@ public class CertificateByteChooser {
                 SignatureAndHashAlgorithm sigHashAlgo = SignatureAndHashAlgorithm.forCertificateKeyPair(pair, chooser);
                 if (neededPublicKeyType == CertificateKeyType.RSA
                     && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
-                    && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 && pair.getPublicKey().keysize() < 2048) {
+                    && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 && pair.getPublicKey().keySize() < 2048) {
                     continue;
                 }
                 return pair;

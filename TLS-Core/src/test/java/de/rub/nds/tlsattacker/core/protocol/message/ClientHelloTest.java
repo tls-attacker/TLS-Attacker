@@ -87,6 +87,7 @@ public class ClientHelloTest {
      *
      * @throws JAXBException
      */
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void simpleSerialization() throws JAXBException {
         ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());

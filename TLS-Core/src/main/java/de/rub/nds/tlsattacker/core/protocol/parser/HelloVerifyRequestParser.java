@@ -42,7 +42,7 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private void parseProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        LOGGER.debug("ProtcolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void parseCookieLength(HelloVerifyRequestMessage msg) {

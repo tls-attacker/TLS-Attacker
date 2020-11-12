@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+@SuppressWarnings("SpellCheckingInspection")
 @RunWith(Parameterized.class)
 public class ClientHelloParserTest {
 
@@ -101,7 +102,7 @@ public class ClientHelloParserTest {
     private final HandshakeMessageType type;
     private final int length;
     private final byte[] protocolVersion;
-    private final byte[] unixtime;
+    private final byte[] unixTime;
     private final byte[] random;
     private final int sessionIdLength;
     private final byte[] sessionID;
@@ -117,7 +118,7 @@ public class ClientHelloParserTest {
     private final Config config = Config.createConfig();
 
     public ClientHelloParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-        byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
+        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
         int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
         Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.message = message;
@@ -125,7 +126,7 @@ public class ClientHelloParserTest {
         this.length = length;
         this.version = version;
         this.protocolVersion = protocolVersion;
-        this.unixtime = unixtime;
+        this.unixTime = unixTime;
         this.random = random;
         this.sessionIdLength = sessionIdLength;
         this.sessionID = sessionID;
@@ -154,7 +155,7 @@ public class ClientHelloParserTest {
         assertArrayEquals(compressions, msg.getCompressions().getValue());
         assertArrayEquals(sessionID, msg.getSessionId().getValue());
         assertArrayEquals(random, msg.getRandom().getValue());
-        assertArrayEquals(unixtime, msg.getUnixTime().getValue());
+        assertArrayEquals(unixTime, msg.getUnixTime().getValue());
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());
         if (cookie != null) {
             assertArrayEquals(cookie, msg.getCookie().getValue());

@@ -339,9 +339,9 @@ public class CyclicParserSerializerTest {
         return null;
     }
 
-    private Constructor getConstructor(Class someClass, int numberOfArguemnts) {
+    private Constructor getConstructor(Class someClass, int numberOfArguments) {
         for (Constructor c : someClass.getConstructors()) {
-            if (c.getParameterCount() == numberOfArguemnts) {
+            if (c.getParameterCount() == numberOfArguments) {
                 return c;
             }
         }

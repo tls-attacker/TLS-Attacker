@@ -141,7 +141,7 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     }
 
     @Override
-    public int keysize() {
+    public int keySize() {
         return modulus.bitLength();
     }
 }

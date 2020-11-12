@@ -43,7 +43,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);
         }
-        writeSerializedPublickey(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
@@ -51,7 +51,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);
         }
-        writeSerializedPublickey(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
@@ -75,7 +75,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
      * the final byte[]. For RSA, the PublicKey field actually contains the
      * encrypted premaster secret.
      */
-    private void writeSerializedPublickey(T msg) {
+    private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }

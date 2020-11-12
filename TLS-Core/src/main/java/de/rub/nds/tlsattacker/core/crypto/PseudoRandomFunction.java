@@ -67,7 +67,7 @@ public class PseudoRandomFunction {
      * Computes PRF output of the provided size using the given mac algorithm
      *
      * @param prfAlgorithm
-     * PRFAlogirhtm
+     * PRFAlgorithm
      * @param secret
      * The Secret
      * @param label
@@ -105,7 +105,7 @@ public class PseudoRandomFunction {
      * PRF computation for TLS 1.2
      *
      * @param prfAlgorithm
-     * PRFAlogirhtm
+     * PRFAlgorithm
      * @param secret
      * The Secret
      * @param label

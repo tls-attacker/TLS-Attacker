@@ -158,7 +158,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void prepareSignature(T msg) {
         msg.setSignature(signature);
-        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
     protected void prepareSignatureLength(T msg) {

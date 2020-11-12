@@ -44,7 +44,7 @@ public class TransportHandlerFactory {
                 }
             case NON_BLOCKING_TCP:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
+                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-TransportHandler is not supported");
                 } else {
                     return new ServerTCPNonBlockingTransportHandler(timeout, con.getPort());
                 }

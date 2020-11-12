@@ -37,7 +37,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
     }
 
     /**
-     * Writes the SequenzNumber of the HandshakeMessage into the final byte[]
+     * Writes the sequenceNumber of the HandshakeMessage into the final byte[]
      */
     private void writeMessageSequence() {
         appendInt(fragment.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);

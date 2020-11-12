@@ -61,7 +61,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
                     // fix
                     // design
-                    // flawv
+                    // flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler =

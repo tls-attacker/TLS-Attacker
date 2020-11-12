@@ -51,7 +51,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
     }
 
     /**
-     * Reads the next bytes as the serverNamelength of the Extension and writes
+     * Reads the next bytes as the serverNameLength of the Extension and writes
      * them in the message
      *
      * @param msg

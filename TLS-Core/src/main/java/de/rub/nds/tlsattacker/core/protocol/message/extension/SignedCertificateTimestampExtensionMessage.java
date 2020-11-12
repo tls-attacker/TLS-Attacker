@@ -39,7 +39,7 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
 
     /**
      * @param singedTimestamp
-     * - Timestamp as MidifiableByteArray
+     * - Timestamp as ModifiableByteArray
      */
     public void setSignedTimestamp(ModifiableByteArray singedTimestamp) {
         this.singedTimestamp = singedTimestamp;

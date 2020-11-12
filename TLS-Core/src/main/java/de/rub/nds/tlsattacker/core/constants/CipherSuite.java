@@ -254,7 +254,7 @@ public enum CipherSuite {
     TLS_ECCPWD_WITH_AES_256_CCM_SHA384(0xC0B3),
     // *************************************************************************
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
-    // These Ciphersuite are from a Draft and also dont have a mac algorithm
+    // These Ciphersuite are from a Draft and also don't have a mac algorithm
     // defined
     UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
     UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xcc13),

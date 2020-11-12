@@ -87,9 +87,9 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
-        CleanRecordByteSeperator seperator =
+        CleanRecordByteSeperator separator =
             new CleanRecordByteSeperator(records, context.getConfig().getDefaultMaxRecordData(), 0, data);
-        records = seperator.parse();
+        records = separator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
             AbstractRecordPreparator preparator =

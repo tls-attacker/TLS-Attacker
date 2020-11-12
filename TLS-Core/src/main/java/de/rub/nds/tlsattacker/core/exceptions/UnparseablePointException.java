@@ -19,15 +19,15 @@ public class UnparseablePointException extends RuntimeException {
         super(string);
     }
 
-    public UnparseablePointException(String string, Throwable thrwbl) {
-        super(string, thrwbl);
+    public UnparseablePointException(String string, Throwable throwable) {
+        super(string, throwable);
     }
 
-    public UnparseablePointException(Throwable thrwbl) {
-        super(thrwbl);
+    public UnparseablePointException(Throwable throwable) {
+        super(throwable);
     }
 
-    public UnparseablePointException(String string, Throwable thrwbl, boolean bln, boolean bln1) {
-        super(string, thrwbl, bln, bln1);
+    public UnparseablePointException(String string, Throwable throwable, boolean bln, boolean bln1) {
+        super(string, throwable, bln, bln1);
     }
 }

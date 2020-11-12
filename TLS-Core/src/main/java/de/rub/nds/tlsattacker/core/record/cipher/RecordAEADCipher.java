@@ -224,7 +224,7 @@ public class RecordAEADCipher extends RecordCipher {
 
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
-        // TODO it would be better if we had a seperate CM implementation to do
+        // TODO it would be better if we had a separate CM implementation to do
         // the decryption
 
         try {
@@ -266,7 +266,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Derypting BlobRecord");
+        LOGGER.debug("Decrypting BlobRecord");
         br.setCleanProtocolMessageBytes(decryptCipher.decrypt(br.getProtocolMessageBytes().getValue()));
 
     }

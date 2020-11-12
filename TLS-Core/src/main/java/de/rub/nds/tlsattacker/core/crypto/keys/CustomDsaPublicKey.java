@@ -185,7 +185,7 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     }
 
     @Override
-    public int keysize() {
+    public int keySize() {
         return p.bitLength();
     }
 }

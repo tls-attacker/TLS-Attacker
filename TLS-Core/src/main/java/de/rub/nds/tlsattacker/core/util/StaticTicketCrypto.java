@@ -39,10 +39,10 @@ public class StaticTicketCrypto {
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkcipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
-            SecretKeySpec secretkey = new SecretKeySpec(key, bulkcipher.getJavaName());
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
-            cipher.init(Cipher.ENCRYPT_MODE, secretkey, ivspec);
+            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
             result = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
             | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
@@ -56,10 +56,10 @@ public class StaticTicketCrypto {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkcipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
-            SecretKeySpec secretkey = new SecretKeySpec(key, bulkcipher.getJavaName());
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
-            cipher.init(Cipher.DECRYPT_MODE, secretkey, ivspec);
+            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
             result = cipher.doFinal(ciphertext);
             result = removePadding(result);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
@@ -87,26 +87,26 @@ public class StaticTicketCrypto {
         return result;
     }
 
-    public static boolean verifyHMAC(MacAlgorithm macalgo, byte[] mac, byte[] plaintext, byte[] key)
+    public static boolean verifyHMAC(MacAlgorithm macAlgo, byte[] mac, byte[] plaintext, byte[] key)
         throws CryptoException {
-        byte[] newmac = generateHMAC(macalgo, plaintext, key);
-        boolean result = Arrays.equals(mac, newmac);
+        byte[] newMAC = generateHMAC(macAlgo, plaintext, key);
+        boolean result = Arrays.equals(mac, newMAC);
         return result;
     }
 
-    private static byte[] addPadding(byte[] plaintextraw, int keysize) {
-        byte padlen = (byte) (0xFF & (keysize - (plaintextraw.length % keysize)));
-        byte[] padding = new byte[padlen];
-        for (int i = 0; i < padlen; i++) {
-            padding[i] = padlen;
+    private static byte[] addPadding(byte[] plainTextRaw, int keySize) {
+        byte padLen = (byte) (0xFF & (keySize - (plainTextRaw.length % keySize)));
+        byte[] padding = new byte[padLen];
+        for (int i = 0; i < padLen; i++) {
+            padding[i] = padLen;
         }
-        byte[] padded = ArrayConverter.concatenate(plaintextraw, padding);
+        byte[] padded = ArrayConverter.concatenate(plainTextRaw, padding);
         return padded;
     }
 
     private static byte[] removePadding(byte[] result) {
-        int padlen = result[result.length - 1];
-        return Arrays.copyOf(result, result.length - padlen);
+        int padLen = result[result.length - 1];
+        return Arrays.copyOf(result, result.length - padLen);
     }
 
     private StaticTicketCrypto() {

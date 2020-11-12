@@ -29,10 +29,10 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Constructor for the ServerHelloMessageParser
      *
      * @param pointer
-     * Position in the array where the ServerHellorParser is supposed to start
+     * Position in the array where the ServerHelloParser is supposed to start
      * parsing
      * @param array
-     * The byte[] which the ServerHellorParser is supposed to parse
+     * The byte[] which the ServerHelloParser is supposed to parse
      * @param version
      * The Version for which this message should be parsed
      * @param config
@@ -59,7 +59,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * @param msg
      * Message to write in
      */
-    protected void parseSelectedComressionMethod(ServerHelloMessage msg) {
+    protected void parseSelectedCompressionMethod(ServerHelloMessage msg) {
         msg.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
     }
 
@@ -75,7 +75,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         parseSessionIDLength(msg);
         parseSessionID(msg);
         parseSelectedCiphersuite(msg);
-        parseSelectedComressionMethod(msg);
+        parseSelectedCompressionMethod(msg);
 
         LOGGER.trace("Checking for ExtensionLength Field");
         if (hasExtensionLengthField(msg)) {

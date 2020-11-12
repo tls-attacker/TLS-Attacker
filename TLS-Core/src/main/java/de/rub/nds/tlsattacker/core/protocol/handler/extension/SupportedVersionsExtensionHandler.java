@@ -54,7 +54,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     public void adjustTLSExtensionContext(SupportedVersionsExtensionMessage message) {
         byte[] versionBytes = message.getSupportedVersions().getValue();
         if (versionBytes.length % HandshakeByteLength.VERSION != 0) {
-            throw new AdjustmentException("Could not create resonable ProtocolVersions from VersionBytes");
+            throw new AdjustmentException("Could not create reasonable ProtocolVersions from VersionBytes");
         }
         List<ProtocolVersion> versionList = ProtocolVersion.getProtocolVersions(versionBytes);
         if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {

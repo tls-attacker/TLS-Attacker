@@ -46,4 +46,3 @@ test.sh
 .settings/
 .classpath
 .idea
-*.iml

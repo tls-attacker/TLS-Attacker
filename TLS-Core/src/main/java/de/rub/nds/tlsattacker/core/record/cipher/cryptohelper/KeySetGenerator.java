@@ -83,17 +83,17 @@ public class KeySetGenerator {
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         KeySet keySet = new KeySet(keySetType);
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
+        HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
+        keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgorithm, clientSecret, HKDFunction.KEY, new byte[] {},
             cipherAlg.getKeySize()));
         LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteKey()));
-        keySet.setServerWriteKey(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.KEY, new byte[] {},
+        keySet.setServerWriteKey(HKDFunction.expandLabel(hkdfAlgorithm, serverSecret, HKDFunction.KEY, new byte[] {},
             cipherAlg.getKeySize()));
         LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
-        keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
+        keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgorithm, clientSecret, HKDFunction.IV, new byte[] {},
             AEAD_IV_LENGTH));
         LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
-        keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
+        keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgorithm, serverSecret, HKDFunction.IV, new byte[] {},
             AEAD_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
         keySet.setServerWriteMacSecret(new byte[0]);

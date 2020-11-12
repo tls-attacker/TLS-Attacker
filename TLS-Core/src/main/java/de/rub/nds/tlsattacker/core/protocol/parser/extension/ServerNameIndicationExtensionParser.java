@@ -58,7 +58,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListlength of the Extension and
+     * Reads the next bytes as the serverNameListLength of the Extension and
      * writes them in the message
      *
      * @param msg

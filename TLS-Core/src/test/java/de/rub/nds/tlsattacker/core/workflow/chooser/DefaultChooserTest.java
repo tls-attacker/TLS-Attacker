@@ -40,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class DefaultChooserTest {
 
     private Chooser chooser;

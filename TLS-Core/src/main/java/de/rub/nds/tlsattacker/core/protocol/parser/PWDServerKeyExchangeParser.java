@@ -80,7 +80,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(parseIntField(HandshakeByteLength.PWD_ELEMENT_LENGTH));
-        LOGGER.debug("ElementLegnth: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
     }
 
     private void parseElement(PWDServerKeyExchangeMessage msg) {

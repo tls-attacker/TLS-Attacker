@@ -38,7 +38,7 @@ public class UnknownParser extends ProtocolMessageParser<UnknownMessage> {
     }
 
     /**
-     * Since we dont know what this is, we cannot make assumptions about length
+     * Since we don't know what this is, we cannot make assumptions about length
      * fields or the such, so we assume that all data we received in the array
      * is part of this unknown message
      */

@@ -250,7 +250,7 @@ public class ICEAttacker {
         for (int i = 1; i < point.getOrder(); i++) {
             secretModOrder = secretModOrder.add(BigInteger.ONE);
             Point guess = curve.mult(secretModOrder, point);
-            if (oracle.checkSecretCorrectnes(point, guess.getX().getData())) {
+            if (oracle.checkSecretCorrectness(point, guess.getX().getData())) {
                 return secretModOrder;
             }
         }

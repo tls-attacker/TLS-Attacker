@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         for (ServerNamePair pair : msg.getServerNameList()) {
             ServerNamePairPreparator preparator = new ServerNamePairPreparator(chooser, pair);
             preparator.prepare();
-            ServerNamePairSerializier serializer = new ServerNamePairSerializier(pair);
+            ServerNamePairSerializer serializer = new ServerNamePairSerializer(pair);
             try {
                 serverNamePairListStream.write(serializer.serialize());
             } catch (IOException e) {

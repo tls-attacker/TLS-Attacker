@@ -39,7 +39,7 @@ public class UnknownPreparator extends ProtocolMessagePreparator<UnknownMessage>
         } else {
             msg.setCompleteResultingMessage(new byte[0]);
         }
-        LOGGER.debug("CompleteResultinMessage: "
+        LOGGER.debug("CompleteResultingMessage: "
             + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 
