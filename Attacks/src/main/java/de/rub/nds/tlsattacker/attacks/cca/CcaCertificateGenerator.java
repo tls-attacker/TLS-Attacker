@@ -28,6 +28,8 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 public class CcaCertificateGenerator {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /**
      *
      * @param ccaCertificateManager
@@ -126,8 +128,6 @@ public class CcaCertificateGenerator {
     private static CertificateMessage generateCertificateMessage(CcaCertificateManager ccaCertificateManager,
         CcaCertificateType ccaCertificateType) {
 
-        Logger logger = LogManager.getLogger();
-
         CertificateMessage certificateMessage = new CertificateMessage();
         List<CertificatePair> certificatePairList = new LinkedList<>();
         CertificatePair certificatePair;
@@ -156,7 +156,7 @@ public class CcaCertificateGenerator {
                         (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
                         (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
             } catch (IOException ioe) {
-                logger.error("IOE while creating CertificateKeyPair");
+                LOGGER.error("IOE while creating CertificateKeyPair");
                 return null;
             }
         } else {
