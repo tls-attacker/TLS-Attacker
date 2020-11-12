@@ -306,11 +306,11 @@ public class CcaCertificateManager {
                     pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
                     publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
 
-                    ECPoint x3 = ((ECPublicKey) publicKey).getW();
-                    BigInteger pkey = ((ECPrivateKey) privateKey).getS();
+                    ECPoint publicPoint = ((ECPublicKey) publicKey).getW();
+                    BigInteger ecPrivateKey = ((ECPrivateKey) privateKey).getS();
                     NamedGroup ngroup = NamedGroup.getNamedGroup((ECPrivateKey) privateKey);
-                    customPrivateKey = new CustomECPrivateKey(pkey, ngroup);
-                    customPublicKey = new CustomEcPublicKey(x3.getAffineX(), x3.getAffineY(), ngroup);
+                    customPrivateKey = new CustomECPrivateKey(ecPrivateKey, ngroup);
+                    customPublicKey = new CustomEcPublicKey(publicPoint.getAffineX(), publicPoint.getAffineY(), ngroup);
                     break;
                 default:
                     LOGGER.error("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");
