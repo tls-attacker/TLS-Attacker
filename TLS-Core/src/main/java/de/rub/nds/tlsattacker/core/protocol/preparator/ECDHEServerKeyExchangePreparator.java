@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX25519Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.ForgivingX448Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -85,13 +86,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         // Compute publicKey
+        EllipticCurve curve = CurveFactory.getCurve(namedGroup);
         byte[] publicKeyBytes = null;
-        if (namedGroup == NamedGroup.ECDH_X25519) {
-            publicKeyBytes = ForgivingX25519Curve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
-        } else if (namedGroup == NamedGroup.ECDH_X448) {
-            publicKeyBytes = ForgivingX448Curve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
+        if (namedGroup == NamedGroup.ECDH_X25519 || namedGroup == NamedGroup.ECDH_X448) {
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+            publicKeyBytes = rfcCurve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
         } else if (namedGroup.isCurve()) {
-            EllipticCurve curve = CurveFactory.getCurve(namedGroup);
             Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
             publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
         }

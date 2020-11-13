@@ -61,23 +61,8 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
-        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
-            LOGGER.debug("Adjusting Montgomery EC PublicKey");
-            // TODO This is only a temporary solution. Montgomory Curves need to
-            // be integrated into the new EC framework
-            RFC7748Curve curve = (RFC7748Curve) CurveFactory.getCurve(usedGroup);
-            BigInteger xCoordinate;
-            if (serializedPoint.length != 0) {
-                xCoordinate = new BigInteger(serializedPoint);
-            } else {
-                LOGGER.warn("Encoding 0 length byte-array");
-                xCoordinate = BigInteger.ZERO;
-            }
-            tlsContext.setClientEcPublicKey(curve.createAPointOnCurve(new BigInteger(serializedPoint)));
-        } else {
-            LOGGER.debug("Adjusting EC Point");
-            Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
-            tlsContext.setClientEcPublicKey(publicKey);
-        }
+        LOGGER.debug("Adjusting EC Point");
+        Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
+        tlsContext.setClientEcPublicKey(publicKey);
     }
 }

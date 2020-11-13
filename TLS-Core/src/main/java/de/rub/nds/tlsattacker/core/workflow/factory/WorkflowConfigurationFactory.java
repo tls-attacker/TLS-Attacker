@@ -599,7 +599,8 @@ public class WorkflowConfigurationFactory {
             clientMessages.add(new EndOfEarlyDataMessage());
         }
         clientMessages.add(new FinishedMessage(config));
-        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT, clientMessages));
+        trace.addTlsAction(MessageActionFactory.createAction(config, connection, ConnectionEndType.CLIENT,
+                clientMessages));
         return trace;
     }
 
