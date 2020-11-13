@@ -116,6 +116,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicHandshakeWorkflow();
             case DYNAMIC_HELLO:
                 return createDynamicHelloWorkflow();
+            case DYNAMIC_HTTPS:
+                return createHttpsDynamicWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -454,6 +456,18 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHttpsWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(connection);
+        MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new HttpsRequestMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, new HttpsResponseMessage(
+                config));
+        trace.addTlsAction(action);
+        return trace;
+    }
+
+    private WorkflowTrace createHttpsDynamicWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new HttpsRequestMessage(config));
         trace.addTlsAction(action);
@@ -886,6 +900,7 @@ public class WorkflowConfigurationFactory {
                 messages.add(new CertificateVerifyMessage(config));
                 messages.add(new FinishedMessage(config));
                 trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+                // TODO client msgs
 
             } else {
                 trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));

@@ -22,6 +22,7 @@ public enum WorkflowTraceType {
     CLIENT_RENEGOTIATION,
     SERVER_RENEGOTIATION,
     HTTPS,
+    DYNAMIC_HTTPS,
     SSL2_HELLO,
     SIMPLE_MITM_PROXY,
     ZERO_RTT,
