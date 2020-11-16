@@ -41,11 +41,9 @@ public class KeyGenerator {
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getConfig()
-                    .getDefaultEcCertificateCurve());
+            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getEcCertificateCurve());
         } else {
-            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getConfig()
-                    .getDefaultEcCertificateCurve());
+            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getEcCertificateCurve());
         }
     }
 

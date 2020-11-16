@@ -79,7 +79,7 @@ public class SignatureCalculator {
             algoName = algorithm.getJavaName();
         }
         try {
-            LOGGER.trace("Creating Signature with " + algoName + " over " + ArrayConverter.bytesToHexString(toBeSigned)
+            LOGGER.debug("Creating Signature with " + algoName + " over " + ArrayConverter.bytesToHexString(toBeSigned)
                     + " with the PrivateKey:" + key.toString());
             Signature instance = Signature.getInstance(algoName);
             algorithm.setupSignature(instance);

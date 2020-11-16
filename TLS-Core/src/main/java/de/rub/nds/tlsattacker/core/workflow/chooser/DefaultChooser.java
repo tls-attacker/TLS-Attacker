@@ -630,7 +630,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public NamedGroup getEcCertificateCurve() {
-        if (context.getSelectedGroup() != null) {
+        if (context.getEcCertificateCurve() != null) {
             return context.getEcCertificateCurve();
         } else {
             return config.getDefaultEcCertificateCurve();
