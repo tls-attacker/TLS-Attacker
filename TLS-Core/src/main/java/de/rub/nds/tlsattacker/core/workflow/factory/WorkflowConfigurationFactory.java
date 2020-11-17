@@ -330,6 +330,13 @@ public class WorkflowConfigurationFactory {
 
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config)));
+
+        if (config.getHighestProtocolVersion().isDTLS()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            ReceiveAction action = (ReceiveAction) trace.getLastAction();
+            action.setCheckOnlyExpected(true);
+        }
+
         return trace;
     }
 
@@ -922,10 +929,8 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createDynamicHelloWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        if (config.getStarttlsType() != StarttlsType.NONE) {
-            addStartTlsActions(connection, config.getStarttlsType(), trace);
-        }
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {

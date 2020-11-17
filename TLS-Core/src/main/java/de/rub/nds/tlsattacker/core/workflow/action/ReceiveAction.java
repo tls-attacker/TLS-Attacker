@@ -230,6 +230,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return true;
     }
 
+    public void setCheckOnlyExpected(Boolean checkOnlyExpected) {
+        this.checkOnlyExpected = checkOnlyExpected;
+    }
+
+    public Boolean isCheckOnlyExpected() {
+        return checkOnlyExpected;
+    }
+
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
     }
