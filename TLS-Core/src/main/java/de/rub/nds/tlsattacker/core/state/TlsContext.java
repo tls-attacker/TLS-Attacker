@@ -498,6 +498,8 @@ public class TlsContext {
 
     private int dtlsWriteHandshakeMessageSequence = 0;
 
+    private List<Integer> dtlsReceivedHandshakeMessageSequences;
+
     /**
      * a fragment manager assembles DTLS fragments into corresponding messages.
      */
@@ -703,6 +705,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        dtlsReceivedHandshakeMessageSequences = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
         globalDtlsCssManager = new CssManager(config);
         keylogfile = new Keylogfile(this);
@@ -1313,6 +1316,14 @@ public class TlsContext {
 
     public void setDtlsReceiveEpoch(int sendEpoch) {
         this.dtlsReadEpoch = sendEpoch;
+    }
+
+    public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
+        dtlsReceivedHandshakeMessageSequences.add(sequence);
+    }
+
+    public List<Integer> getDtlsReceivedHandshakeMessageSequences() {
+        return dtlsReceivedHandshakeMessageSequences;
     }
 
     public FragmentManager getDtlsFragmentManager() {
