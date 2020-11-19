@@ -45,8 +45,7 @@ public class HRRKeyShareExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * HRRKeyShareExtensionSerializer.
+     * Test of serializeExtensionContent method, of class HRRKeyShareExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

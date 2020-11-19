@@ -38,8 +38,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Find the files for this test at
- * src/test/resources/workflow_trace_serialization_tests-negative
+ * Find the files for this test at src/test/resources/workflow_trace_serialization_tests-negative
  */
 @Category(SlowTests.class)
 @RunWith(Parameterized.class)
@@ -94,12 +93,10 @@ public class WorkflowTraceNormalizerTestBadInput {
     }
 
     /**
-     * Test that attempts to normalize bad workflow traces throws proper
-     * exceptions.
+     * Test that attempts to normalize bad workflow traces throws proper exceptions.
      *
-     * TODO: This could be more fine grained. I.e. split the test into multiple
-     * sub tests that test a particular category of bad inputs. This would
-     * enable testing the more detailed exception messages.
+     * TODO: This could be more fine grained. I.e. split the test into multiple sub tests that test a particular
+     * category of bad inputs. This would enable testing the more detailed exception messages.
      */
     @Test
     public void normalizingBadInputsFails() {
@@ -113,8 +110,7 @@ public class WorkflowTraceNormalizerTestBadInput {
     }
 
     /**
-     * Loads a test vector from file. Have a look at the test vectors to see the
-     * required format.
+     * Loads a test vector from file. Have a look at the test vectors to see the required format.
      *
      * @param testVectorPath
      */

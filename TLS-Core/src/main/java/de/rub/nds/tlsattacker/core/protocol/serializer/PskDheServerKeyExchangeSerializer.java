@@ -51,8 +51,7 @@ public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSeria
     }
 
     /**
-     * Writes the SerializedPublicKey of the PskDheServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the PskDheServerKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentityHint(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());

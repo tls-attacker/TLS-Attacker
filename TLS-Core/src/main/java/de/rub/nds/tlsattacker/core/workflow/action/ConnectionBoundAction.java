@@ -21,9 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * TLS Action bound to a single connection/TLS context. This should be the
- * default abstract base class for most actions. Provides automatic fallback to
- * default context alias.
+ * TLS Action bound to a single connection/TLS context. This should be the default abstract base class for most actions.
+ * Provides automatic fallback to default context alias.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends TlsAction {

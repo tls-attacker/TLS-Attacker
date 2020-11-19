@@ -32,8 +32,7 @@ public class HttpsResponseParserTest {
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsResponseParser with an
-     * invalid response.
+     * Test of parseMessageContent method, of class HttpsResponseParser with an invalid response.
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
@@ -44,8 +43,7 @@ public class HttpsResponseParserTest {
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsResponseParser with a
-     * valid response.
+     * Test of parseMessageContent method, of class HttpsResponseParser with a valid response.
      */
     @Test
     public void testParseMessageContentSuccess() {

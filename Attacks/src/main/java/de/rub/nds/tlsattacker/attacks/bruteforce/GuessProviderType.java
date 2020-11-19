@@ -20,8 +20,7 @@ public enum GuessProviderType {
      */
     INCREMENTING,
     /**
-     * A WordListGuessProvider uses an InputSource to try all words from the
-     * InputSource
+     * A WordListGuessProvider uses an InputSource to try all words from the InputSource
      */
     WORDLIST
 }

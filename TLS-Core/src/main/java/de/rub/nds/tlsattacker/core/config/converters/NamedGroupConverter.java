@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Arrays;
 
 /**
- * Converts a string named group to a NamedGroup type (for command line
- * purposes).
+ * Converts a string named group to a NamedGroup type (for command line purposes).
  */
 public class NamedGroupConverter implements IStringConverter<NamedGroup> {
 

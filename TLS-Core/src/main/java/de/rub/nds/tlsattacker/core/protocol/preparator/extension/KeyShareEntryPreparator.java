@@ -64,12 +64,13 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         entry.setPrivateKey(keyMaterial.privateKeyScalar);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(ArrayConverter.concatenate(
-            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getX().getData(), curveSize, true),
-            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getY().getData(), curveSize, true),
+            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldX().getData(), curveSize, true),
+            ArrayConverter.bigIntegerToByteArray(keyMaterial.element.getFieldY().getData(), curveSize, true),
             ArrayConverter.intToBytes(serializedScalar.length, 1), serializedScalar));
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
         LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData())));
+            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
+                .getData())));
     }
 
     private void prepareKeyShare() {

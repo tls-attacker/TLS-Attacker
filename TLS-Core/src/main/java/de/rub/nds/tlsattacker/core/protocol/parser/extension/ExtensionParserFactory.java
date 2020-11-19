@@ -69,12 +69,10 @@ public class ExtensionParserFactory {
             case KEY_SHARE_OLD:
                 if ((config == null) || !config.isParseKeyShareOld()) {
                     parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
-                    break;
+                } else {
+                    parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, config);
                 }
-                /**
-                 * No break here. Invoke getKeyShareParser in case KEY_SHARE_OLD
-                 * by falling through to the next case (i.e. KEY_SHARE)
-                 */
+                break;
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, config);
                 break;
@@ -157,6 +155,9 @@ public class ExtensionParserFactory {
                 parser = new PWDClearExtensionParser(pointer, extensionBytes, config);
                 break;
             case UNKNOWN:
+                parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+                break;
+            default:
                 parser = new UnknownExtensionParser(pointer, extensionBytes, config);
                 break;
         }

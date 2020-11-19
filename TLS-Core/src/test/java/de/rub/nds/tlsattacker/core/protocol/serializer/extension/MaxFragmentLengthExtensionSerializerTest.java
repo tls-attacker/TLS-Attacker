@@ -20,8 +20,7 @@ public class MaxFragmentLengthExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * MaxFragmentLengthExtensionSerializer.
+     * Test of serializeExtensionContent method, of class MaxFragmentLengthExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

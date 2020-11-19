@@ -37,8 +37,8 @@ public class KeySetGeneratorTest {
     }
 
     /**
-     * Test that for each implemented CipherSuite/ProtocolVersion a KeySet can
-     * be generated without throwing an exception
+     * Test that for each implemented CipherSuite/ProtocolVersion a KeySet can be generated without throwing an
+     * exception
      */
     @Test
     // @Category(IntegrationTests.class)

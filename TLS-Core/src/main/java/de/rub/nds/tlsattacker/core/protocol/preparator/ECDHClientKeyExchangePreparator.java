@@ -50,8 +50,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
 
-        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLength);
+        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
@@ -121,8 +121,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             publicKeyBytes = rfcCurve.computePublicKey(privateKey);
         } else {
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
-            msg.getComputations().setPublicKeyX(publicKey.getX().getData());
-            msg.getComputations().setPublicKeyY(publicKey.getY().getData());
+            msg.getComputations().setPublicKeyX(publicKey.getFieldX().getData());
+            msg.getComputations().setPublicKeyY(publicKey.getFieldY().getData());
             publicKey =
                 curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations().getPublicKeyY()
                     .getValue());

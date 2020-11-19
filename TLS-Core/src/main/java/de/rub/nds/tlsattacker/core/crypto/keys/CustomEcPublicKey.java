@@ -109,7 +109,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public ECPoint getW() {
-        return new ECPoint(point.getX().getData(), point.getY().getData());
+        return new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());
     }
 
     @Override

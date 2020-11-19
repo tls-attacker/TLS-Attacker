@@ -13,8 +13,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
- * This is a binary extension, which means that no extension data is used. This
- * extension is defined in RFC6066
+ * This is a binary extension, which means that no extension data is used. This extension is defined in RFC6066
  */
 public class TruncatedHmacExtensionMessage extends ExtensionMessage {
 

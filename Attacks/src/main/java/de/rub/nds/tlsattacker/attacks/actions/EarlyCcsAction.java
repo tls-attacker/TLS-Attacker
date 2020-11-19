@@ -27,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange
- * message and adjusts the cryptographic material accordingly.
+ * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange message and adjusts the cryptographic
+ * material accordingly.
  *
  */
 public class EarlyCcsAction extends TlsAction {
@@ -40,8 +40,7 @@ public class EarlyCcsAction extends TlsAction {
     private boolean executedAsPlanned = false;
 
     /**
-     * Constructor for the Action. If the target is Openssl 1.0.0 the boolean
-     * value should be set to true
+     * Constructor for the Action. If the target is Openssl 1.0.0 the boolean value should be set to true
      *
      * @param targetsOpenssl100
      * If the target is an openssl 1.0.0 server
@@ -51,9 +50,8 @@ public class EarlyCcsAction extends TlsAction {
     }
 
     /**
-     * Sends a ClientKeyExchange message depending on the currently selected
-     * cipher suite. Depending on the target version cryptographic material is
-     * adjusted.
+     * Sends a ClientKeyExchange message depending on the currently selected cipher suite. Depending on the target
+     * version cryptographic material is adjusted.
      *
      * @param state
      * the State in which the action should be executed in

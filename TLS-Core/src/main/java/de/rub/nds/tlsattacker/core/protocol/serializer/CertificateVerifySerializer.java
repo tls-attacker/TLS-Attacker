@@ -48,8 +48,7 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     }
 
     /**
-     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into
-     * the final byte[]
+     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[]
      */
     private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
@@ -58,8 +57,7 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     }
 
     /**
-     * Writes the SignatureLength of the CertificateVerifyMessage into the final
-     * byte[]
+     * Writes the SignatureLength of the CertificateVerifyMessage into the final byte[]
      */
     private void writeSignatureLength(CertificateVerifyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -67,8 +65,7 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     }
 
     /**
-     * Writes the Signature of the CertificateVerifyMessage into the final
-     * byte[]
+     * Writes the Signature of the CertificateVerifyMessage into the final byte[]
      */
     private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());

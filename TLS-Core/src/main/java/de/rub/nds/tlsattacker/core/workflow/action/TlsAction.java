@@ -30,9 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic
- * building block for WorkflowTraces. A WorkflowTrace is a list of TLSActions.
- * Executing a WorkflowTrace means iterating through this list and calling
+ * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for WorkflowTraces. A
+ * WorkflowTrace is a list of TLSActions. Executing a WorkflowTrace means iterating through this list and calling
  * execute() on each TlsAction.
  *
  */

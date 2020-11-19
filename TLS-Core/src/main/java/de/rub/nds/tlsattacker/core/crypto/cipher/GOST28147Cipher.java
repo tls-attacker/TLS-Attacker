@@ -20,8 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 
 /**
- * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing
- * as defined in RFC 4357.
+ * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing as defined in RFC 4357.
  */
 public class GOST28147Cipher extends BaseCipher {
 
@@ -87,8 +86,8 @@ public class GOST28147Cipher extends BaseCipher {
         int z = wrappedIv.getInt();
 
         y += 0x01010101; // C2
-        int zTemp = z + 0x01010104; // C1
-        z = zTemp >= 0 && z < 0 ? zTemp + 1 : zTemp;
+        int tmpZ = z + 0x01010104; // C1
+        z = tmpZ >= 0 && z < 0 ? tmpZ + 1 : tmpZ;
 
         wrappedIv.putInt(0, y);
         wrappedIv.putInt(4, z);

@@ -35,8 +35,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
     }
 
     /**
-     * Test of getSignatureAndHashAlgorithms method, of class
-     * SignatureAndHashAlgorithmDelegate.
+     * Test of getSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate.
      */
     @Test
     public void testGetSignatureAndHashAlgorithms() {
@@ -58,8 +57,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
     }
 
     /**
-     * Test of setSignatureAndHashAlgorithms method, of class
-     * SignatureAndHashAlgorithmDelegate.
+     * Test of setSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate.
      */
     @Test
     public void testSetSignatureAndHashAlgorithms() {

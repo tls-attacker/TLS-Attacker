@@ -30,8 +30,7 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
     }
 
     /**
-     * Prepares the padding extension padding bytes based on the length set in
-     * the context.
+     * Prepares the padding extension padding bytes based on the length set in the context.
      */
     @Override
     public void prepareExtensionContent() {

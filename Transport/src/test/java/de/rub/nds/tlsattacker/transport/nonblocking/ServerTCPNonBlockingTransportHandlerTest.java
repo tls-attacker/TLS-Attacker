@@ -43,8 +43,7 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     }
 
     /**
-     * Test of closeConnection method, of class
-     * ServerTCPNonBlockingTransportHandler.
+     * Test of closeConnection method, of class ServerTCPNonBlockingTransportHandler.
      *
      * @throws java.io.IOException
      */

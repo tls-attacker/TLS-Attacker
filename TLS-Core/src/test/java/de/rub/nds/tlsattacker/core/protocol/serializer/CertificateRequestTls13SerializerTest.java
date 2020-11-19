@@ -53,8 +53,7 @@ public class CertificateRequestTls13SerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * CertificateRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateRequestSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

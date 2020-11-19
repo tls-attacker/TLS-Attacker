@@ -144,8 +144,8 @@ public class ResponseFingerprint {
                     resultString.append("B(" + ((Record) record).getLength().getValue() + "),");
                 }
             }
-            resultString.deleteCharAt(resultString.length() - 1); // remove last
-                                                                  // commas
+            // remove last commas
+            resultString.deleteCharAt(resultString.length() - 1);
             resultString.append("]");
         }
         resultString.append(" ");
@@ -169,6 +169,8 @@ public class ResponseFingerprint {
                 case UP:
                     resultString.append("U");
                     break;
+                default: // should never occur as all ENUM types are handled
+                    throw new UnsupportedOperationException("Unknown Socket State");
             }
         }
         return resultString.toString();

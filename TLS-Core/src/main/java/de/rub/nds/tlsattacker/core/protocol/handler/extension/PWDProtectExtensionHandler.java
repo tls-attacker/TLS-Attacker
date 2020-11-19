@@ -102,8 +102,8 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
             byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
             byte[] encryptedUsername =
                 Arrays.copyOfRange(protectedUsername, curve.getFieldSize() / Bits.IN_A_BYTE, protectedUsername.length);
-            SivMode AES_SIV = new SivMode();
-            String username = new String(AES_SIV.decrypt(ctrKey, macKey, encryptedUsername));
+            SivMode aesSIV = new SivMode();
+            String username = new String(aesSIV.decrypt(ctrKey, macKey, encryptedUsername));
             context.setClientPWDUsername(username);
             LOGGER.debug("Username: " + context.getClientPWDUsername());
         } catch (IllegalBlockSizeException | UnauthenticCiphertextException | CryptoException e) {

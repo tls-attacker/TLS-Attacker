@@ -70,8 +70,7 @@ public class ClientHelloSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * ClientHelloSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ClientHelloSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

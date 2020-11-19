@@ -52,9 +52,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean required;
     /**
-     * Defines if the message should be sent during the workflow. Using this
-     * flag it is possible to omit a message is sent during the handshake while
-     * it is executed to initialize specific variables.
+     * Defines if the message should be sent during the workflow. Using this flag it is possible to omit a message is
+     * sent during the handshake while it is executed to initialize specific variables.
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean goingToBeSent;

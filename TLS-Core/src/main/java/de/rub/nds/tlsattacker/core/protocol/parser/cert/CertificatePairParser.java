@@ -37,8 +37,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the certificateLength of the CertificatePair and
-     * writes them in the message
+     * Reads the next bytes as the certificateLength of the CertificatePair and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -49,8 +48,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the certificate of the CertificatePair and writes
-     * them in the message
+     * Reads the next bytes as the certificate of the CertificatePair and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -61,8 +59,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the extensionsLength of the CertificatePair and
-     * writes them in the message
+     * Reads the next bytes as the extensionsLength of the CertificatePair and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -73,8 +70,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the extensions of the CertificatePair and writes
-     * them in the message
+     * Reads the next bytes as the extensions of the CertificatePair and writes them in the message
      *
      * @param msg
      * Message to write in

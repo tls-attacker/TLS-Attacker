@@ -38,8 +38,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
     }
 
     /**
-     * Reads the next bytes as the PointFormatsLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the PointFormatsLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -50,8 +49,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
     }
 
     /**
-     * Reads the next bytes as the PointFormat of the Extension and writes them
-     * in the message
+     * Reads the next bytes as the PointFormat of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

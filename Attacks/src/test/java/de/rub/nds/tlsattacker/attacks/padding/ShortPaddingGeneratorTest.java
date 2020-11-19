@@ -87,8 +87,7 @@ public class ShortPaddingGeneratorTest {
     }
 
     /**
-     * Test of createMissingMacByteVectors method, of class
-     * ShortPaddingGenerator.
+     * Test of createMissingMacByteVectors method, of class ShortPaddingGenerator.
      */
     @Test
     public void testCreateMissingMacByteVectors() {
@@ -165,8 +164,7 @@ public class ShortPaddingGeneratorTest {
     }
 
     /**
-     * Test of createClassicModifiedPadding method, of class
-     * ShortPaddingGenerator.
+     * Test of createClassicModifiedPadding method, of class ShortPaddingGenerator.
      */
     @Test
     public void testCreateClassicModifiedPadding() {
@@ -250,8 +248,7 @@ public class ShortPaddingGeneratorTest {
     }
 
     /**
-     * Test of createFlippedModifications method, of class
-     * ShortPaddingGenerator.
+     * Test of createFlippedModifications method, of class ShortPaddingGenerator.
      */
     @Test
     public void testCreateFlippedModifications() {

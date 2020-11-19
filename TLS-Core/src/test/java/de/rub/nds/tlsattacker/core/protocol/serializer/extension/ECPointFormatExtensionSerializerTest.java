@@ -20,8 +20,7 @@ public class ECPointFormatExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * ECPointFormatExtensionSerializer.
+     * Test of serializeExtensionContent method, of class ECPointFormatExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

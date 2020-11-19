@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 /**
- * A Delegate which can be used by Attacks if they implement also an
- * exploitation functionality
+ * A Delegate which can be used by Attacks if they implement also an exploitation functionality
  */
 public class AttackDelegate extends Delegate {
 

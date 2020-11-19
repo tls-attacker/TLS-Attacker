@@ -19,8 +19,7 @@ import java.math.BigInteger;
 public class FieldElementFp extends FieldElement implements Serializable {
 
     /**
-     * Instantiates the element data in the field F_modulus. With modulus being
-     * a prime number.
+     * Instantiates the element data in the field F_modulus. With modulus being a prime number.
      */
     public FieldElementFp(BigInteger data, BigInteger modulus) {
         super(data.mod(modulus), modulus);

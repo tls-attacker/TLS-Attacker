@@ -134,8 +134,7 @@ public class Lucky13CommandConfig extends AttackConfig {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             /*
-             * No explicit cipher suites are set. Use the default cipher suites
-             * for this attack
+             * No explicit cipher suites are set. Use the default cipher suites for this attack
              */
             List<CipherSuite> suiteList = new LinkedList<>();
             suiteList.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

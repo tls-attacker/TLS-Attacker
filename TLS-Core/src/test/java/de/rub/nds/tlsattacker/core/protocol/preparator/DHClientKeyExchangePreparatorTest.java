@@ -51,8 +51,7 @@ public class DHClientKeyExchangePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * DHClientKeyExchangePreparator.
+     * Test of prepareHandshakeMessageContents method, of class DHClientKeyExchangePreparator.
      */
     @Test
     public void testPrepare() {

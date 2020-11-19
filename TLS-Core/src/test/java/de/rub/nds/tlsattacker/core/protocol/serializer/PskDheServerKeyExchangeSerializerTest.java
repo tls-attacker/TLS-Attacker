@@ -48,8 +48,7 @@ public class PskDheServerKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * PskDheServerKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class PskDheServerKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

@@ -180,8 +180,7 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     /**
-     * Makes sure that the plaintext we are passing to the encrypt function is a
-     * multiple of the blocksize
+     * Makes sure that the plaintext we are passing to the encrypt function is a multiple of the blocksize
      *
      * @param plaintext
      * @return

@@ -17,10 +17,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br />
- * Please notice that every element in the field (and the reduction polynomial
- * that defines the field) is represented by a binary polynomial.<br />
- * These polynomials are represented by BigInteger bit-strings, where the i-th
- * bit represents the i-th coefficient.
+ * Please notice that every element in the field (and the reduction polynomial that defines the field) is represented by
+ * a binary polynomial.<br />
+ * These polynomials are represented by BigInteger bit-strings, where the i-th bit represents the i-th coefficient.
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
 
@@ -55,11 +54,11 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         // Binary polynomial school book multiplication.
 
         BigInteger thisData = this.getData();
-        BigInteger fData = f.getData();
+        BigInteger fieldData = f.getData();
         BigInteger tmp = new BigInteger("0");
 
-        for (int i = 0; i < fData.bitLength(); i++) {
-            if (fData.testBit(i)) {
+        for (int i = 0; i < fieldData.bitLength(); i++) {
+            if (fieldData.testBit(i)) {
                 tmp = tmp.xor(thisData.shiftLeft(i));
             }
         }
@@ -71,9 +70,8 @@ public class FieldElementF2m extends FieldElement implements Serializable {
     @Override
     public FieldElement addInv() {
         /*
-         * The characteristic of F_{2^m} is 2. Therefore every element is it's
-         * own additive inverse. Like this.subtract(), this method is probably
-         * never needed.
+         * The characteristic of F_{2^m} is 2. Therefore every element is it's own additive inverse. Like
+         * this.subtract(), this method is probably never needed.
          */
         return this;
     }
@@ -102,10 +100,10 @@ public class FieldElementF2m extends FieldElement implements Serializable {
             BigInteger q = division[0];
 
             // t = t2 - (t1 * q)
-            FieldElementF2m t1Polynomial = new FieldElementF2m(t1, this.getModulus());
-            FieldElementF2m qPolynomial = new FieldElementF2m(q, this.getModulus());
+            FieldElementF2m pointT1Polynomial = new FieldElementF2m(t1, this.getModulus());
+            FieldElementF2m pointQPolynomial = new FieldElementF2m(q, this.getModulus());
 
-            BigInteger t = t1Polynomial.mult(qPolynomial).getData();
+            BigInteger t = pointT1Polynomial.mult(pointQPolynomial).getData();
             t = this.reduce(t);
             t = t2.xor(t);
 

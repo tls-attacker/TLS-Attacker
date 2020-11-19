@@ -38,8 +38,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Executes the Heartbeat attack against a server and logs an error in case the
- * server responds with a valid heartbeat message.
+ * Executes the Heartbeat attack against a server and logs an error in case the server responds with a valid heartbeat
+ * message.
  */
 public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 

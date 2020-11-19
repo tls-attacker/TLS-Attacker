@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import java.util.Arrays;
 
 /**
- * Converts an EC point format string to an ECPointFormat (for command line
- * purposes).
+ * Converts an EC point format string to an ECPointFormat (for command line purposes).
  */
 public class PointFormatConverter implements IStringConverter<ECPointFormat> {
 

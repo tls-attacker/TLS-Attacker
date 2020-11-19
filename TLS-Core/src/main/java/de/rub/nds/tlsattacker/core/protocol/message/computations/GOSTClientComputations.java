@@ -50,8 +50,10 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setClientPublicKey(Point point) {
-        this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX().getData());
-        this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY().getData());
+        this.clientPublicKeyX =
+            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());
+        this.clientPublicKeyY =
+            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getFieldY().getData());
     }
 
     public ModifiableBigInteger getClientPublicKeyX() {

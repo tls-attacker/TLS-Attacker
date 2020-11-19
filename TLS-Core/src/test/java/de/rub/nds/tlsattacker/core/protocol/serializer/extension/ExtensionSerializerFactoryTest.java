@@ -20,8 +20,7 @@ public class ExtensionSerializerFactoryTest {
     }
 
     /**
-     * Test of getExtensionSerializer method, of class
-     * ExtensionSerializerFactory.
+     * Test of getExtensionSerializer method, of class ExtensionSerializerFactory.
      */
     @Test
     public void testGetExtensionSerializer() {

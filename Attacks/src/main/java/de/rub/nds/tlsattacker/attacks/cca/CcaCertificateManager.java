@@ -204,10 +204,9 @@ public class CcaCertificateManager {
      * Name of the root certificates key.
      * @param rootCaSubject
      * ASN.1 Subject of the root certificate encoded as a hex string.
-     * @return The xmlString in which the placeholder for the issuer (which is
-     * the root CA) has been replaced with the hex string encoding the root CAs
-     * subject. Additionally, the key placeholder has been replaced with the
-     * filename of the keyfile of the root CA certificate.
+     * @return The xmlString in which the placeholder for the issuer (which is the root CA) has been replaced with the
+     * hex string encoding the root CAs subject. Additionally, the key placeholder has been replaced with the filename
+     * of the keyfile of the root CA certificate.
      */
     private String replacePlaceholders(String xmlString, String rootCertificateKeyName, String rootCaSubject) {
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
@@ -218,9 +217,8 @@ public class CcaCertificateManager {
     }
 
     /**
-     * This is a wrapper function to write a generated certificate chain to
-     * disk. This is needed since X.509-Attacker still uses a two dimensional
-     * byte array for encoded certificates rather than a LinkedList.
+     * This is a wrapper function to write a generated certificate chain to disk. This is needed since X.509-Attacker
+     * still uses a two dimensional byte array for encoded certificates rather than a LinkedList.
      *
      * @param outputDirectory
      * @param certificates
@@ -240,8 +238,8 @@ public class CcaCertificateManager {
     }
 
     /**
-     * Based on the provided parameters this function adds the correct Custom
-     * Private/Public Keys to the certificate chain.
+     * Based on the provided parameters this function adds the correct Custom Private/Public Keys to the certificate
+     * chain.
      *
      * @param ccaCertificateChain
      * @param keyName

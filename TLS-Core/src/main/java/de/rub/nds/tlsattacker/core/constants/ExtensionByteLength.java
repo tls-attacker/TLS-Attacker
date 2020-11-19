@@ -28,8 +28,7 @@ public class ExtensionByteLength {
     public static final int EC_POINT_FORMATS = 1;
 
     /**
-     * Supported Elliptic Curves length field of the elliptic curve extension
-     * message
+     * Supported Elliptic Curves length field of the elliptic curve extension message
      */
     public static final int SUPPORTED_GROUPS = 2;
     /**
@@ -101,13 +100,11 @@ public class ExtensionByteLength {
      */
     public static final int MAX_EARLY_DATA_SIZE_LENGTH = 4;
     /**
-     * Length of the Signature and HashAlgorithm Length field of the
-     * SignatureAndHashAlgorithms Extension
+     * Length of the Signature and HashAlgorithm Length field of the SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
     /**
-     * Supported Protocol Versions length field of the
-     * SupportedVersionsExtension message
+     * Supported Protocol Versions length field of the SupportedVersionsExtension message
      */
     public static final int SUPPORTED_PROTOCOL_VERSIONS_LENGTH = 1;
 
@@ -252,8 +249,7 @@ public class ExtensionByteLength {
     /**
      * PASSWORD_SALT length field of the password_salt extension message
      *
-     * Note that the field has a different length than the salt field in the
-     * ServerKeyExchange for some reason
+     * Note that the field has a different length than the salt field in the ServerKeyExchange for some reason
      */
     public static final int PASSWORD_SALT = 2;
 
@@ -283,8 +279,7 @@ public class ExtensionByteLength {
     public static final int NONCE = 16;
 
     /**
-     * PaddedLength in the ClientEsniInner of the
-     * EncryptedServerNameIndicationExtension
+     * PaddedLength in the ClientEsniInner of the EncryptedServerNameIndicationExtension
      */
     public static final int PADDED_LENGTH = 2;
 

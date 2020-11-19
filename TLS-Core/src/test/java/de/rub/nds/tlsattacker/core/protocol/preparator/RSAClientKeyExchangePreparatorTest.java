@@ -46,8 +46,7 @@ public class RSAClientKeyExchangePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * RSAClientKeyExchangePreparator.
+     * Test of prepareHandshakeMessageContents method, of class RSAClientKeyExchangePreparator.
      */
     @Test
     public void testPrepare() {

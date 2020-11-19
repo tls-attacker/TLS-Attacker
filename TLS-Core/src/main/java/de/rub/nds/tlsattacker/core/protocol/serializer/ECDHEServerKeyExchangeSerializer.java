@@ -61,8 +61,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeCurveType(T msg) {
         appendByte(msg.getGroupType().getValue());
@@ -70,8 +69,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeNamedGroup(T msg) {
         appendBytes(msg.getNamedGroup().getValue());
@@ -79,8 +77,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
@@ -88,8 +85,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -105,8 +101,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
@@ -115,8 +110,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -124,8 +118,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     }
 
     /**
-     * Writes the Signature of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the Signature of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());

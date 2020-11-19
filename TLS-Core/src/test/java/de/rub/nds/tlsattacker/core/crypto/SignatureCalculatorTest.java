@@ -85,7 +85,7 @@ public class SignatureCalculatorTest {
         byte[] signature = SignatureCalculator.generateSignature(algorithm, context.getChooser(), data);
         Signature instance = Signature.getInstance("NONEwithRSA");
         instance.initVerify(keyPair.getPublic());
-        instance.update(ArrayConverter.concatenate(MD5Utils.MD5(data), SHA1Utils.sha1(data)));
+        instance.update(ArrayConverter.concatenate(MD5Utils.md5(data), SHA1Utils.sha1(data)));
         assertTrue(instance.verify(signature));
     }
 

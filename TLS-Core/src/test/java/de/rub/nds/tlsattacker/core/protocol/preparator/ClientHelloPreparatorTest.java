@@ -39,8 +39,7 @@ public class ClientHelloPreparatorTest {
 
     // TODO Test with extensions
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ClientHelloPreparator.
+     * Test of prepareHandshakeMessageContents method, of class ClientHelloPreparator.
      */
     @Test
     public void testPrepareNoCookie() {

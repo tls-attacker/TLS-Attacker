@@ -45,8 +45,7 @@ public class CertificateMessagePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * CertificateMessagePreparator.
+     * Test of prepareHandshakeMessageContents method, of class CertificateMessagePreparator.
      *
      * @throws java.io.IOException
      */

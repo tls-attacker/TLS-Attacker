@@ -34,9 +34,8 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray requestExtension;
 
     /**
-     * As a TLS 1.3 CertificateEntry extension, this extension uses the format
-     * of a CertificateStatus message. If this is the case, let's have the same
-     * fields as such a message.
+     * As a TLS 1.3 CertificateEntry extension, this extension uses the format of a CertificateStatus message. If this
+     * is the case, let's have the same fields as such a message.
      */
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

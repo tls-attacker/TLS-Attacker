@@ -59,8 +59,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -71,8 +70,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListBytes of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListBytes of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -84,8 +82,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameList of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the serverNameList of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

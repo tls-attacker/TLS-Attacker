@@ -29,8 +29,7 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the ServerKeyExchangeParser is supposed to
-     * start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
      * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
@@ -61,8 +60,7 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityHint and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentityHint and writes them in the message
      *
      * @param msg
      * Message to write in

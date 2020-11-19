@@ -35,8 +35,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of getTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of getTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testGetTransportHandlerType() {
@@ -57,8 +56,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of setTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of setTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testSetTransportHandlerType() {

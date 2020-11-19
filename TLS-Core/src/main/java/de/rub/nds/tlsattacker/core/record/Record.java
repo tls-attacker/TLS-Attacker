@@ -44,8 +44,7 @@ public class Record extends AbstractRecord {
     private ModifiableByteArray protocolVersion;
 
     /**
-     * total length of the protocol message (handshake, alert..) included in the
-     * record layer
+     * total length of the protocol message (handshake, alert..) included in the record layer
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
@@ -54,10 +53,9 @@ public class Record extends AbstractRecord {
     private ModifiableInteger epoch;
 
     /**
-     * This is the implicit sequence number in TLS and also the explicit
-     * sequence number in DTLS This could also have been a separate field within
-     * the computations struct but i chose to only keep one of them as the whole
-     * situation is already complicated enough
+     * This is the implicit sequence number in TLS and also the explicit sequence number in DTLS This could also have
+     * been a separate field within the computations struct but i chose to only keep one of them as the whole situation
+     * is already complicated enough
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;

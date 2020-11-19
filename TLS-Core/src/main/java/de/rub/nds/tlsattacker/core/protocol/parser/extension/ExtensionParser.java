@@ -54,8 +54,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
     protected abstract T createExtensionMessage();
 
     /**
-     * Reads the next bytes as the length of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the length of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -66,8 +65,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
     }
 
     /**
-     * Reads the next bytes as the type of the Extension and writes it in the
-     * message
+     * Reads the next bytes as the type of the Extension and writes it in the message
      *
      * @param msg
      * Message to write in

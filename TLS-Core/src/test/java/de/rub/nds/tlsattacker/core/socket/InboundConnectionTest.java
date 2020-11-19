@@ -83,8 +83,7 @@ public class InboundConnectionTest {
     }
 
     /**
-     * Verify that the ServerConnectionEnd includes manually set values in
-     * serialization output.
+     * Verify that the ServerConnectionEnd includes manually set values in serialization output.
      *
      * @throws Exception
      */

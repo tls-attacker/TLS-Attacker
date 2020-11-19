@@ -53,9 +53,8 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
-     * Checks if the left and right WorkflowTrace contain the same amount and
-     * combination of MessageActions and their respective Messages. The Messages
-     * are matched by their Class.
+     * Checks if the left and right WorkflowTrace contain the same amount and combination of MessageActions and their
+     * respective Messages. The Messages are matched by their Class.
      */
     private static boolean workflowTracesEqual(WorkflowTrace left, WorkflowTrace right) {
         if (left.getMessageActions().size() != right.getMessageActions().size()
@@ -114,8 +113,7 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
-     * Test of createWorkflowTrace method, of class
-     * WorkflowConfigurationFactory.
+     * Test of createWorkflowTrace method, of class WorkflowConfigurationFactory.
      */
     @Test
     @Ignore
@@ -162,8 +160,7 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
-     * Test of createHelloWorkflow method, of class
-     * WorkflowConfigurationFactory.
+     * Test of createHelloWorkflow method, of class WorkflowConfigurationFactory.
      */
     @Test
     public void testCreateHelloWorkflow() {
@@ -238,8 +235,7 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
-     * Test of createHandshakeWorkflow method, of class
-     * WorkflowConfigurationFactory.
+     * Test of createHandshakeWorkflow method, of class WorkflowConfigurationFactory.
      */
     @Test()
     public void testCreateHandshakeWorkflow() {

@@ -51,8 +51,7 @@ public class ECDHClientKeyExchangePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ECDHClientKeyExchangePreparator.
+     * Test of prepareHandshakeMessageContents method, of class ECDHClientKeyExchangePreparator.
      *
      * @throws java.security.NoSuchAlgorithmException
      * @throws java.security.NoSuchProviderException

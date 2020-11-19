@@ -40,8 +40,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Find the files for this test at
- * src/test/resources/workflow_trace_serialization_tests-positive
+ * Find the files for this test at src/test/resources/workflow_trace_serialization_tests-positive
  */
 @Category(SlowTests.class)
 @RunWith(Parameterized.class)
@@ -116,8 +115,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
     }
 
     /**
-     * Loads a test vector from file. Have a look at the test vectors to see the
-     * required format.
+     * Loads a test vector from file. Have a look at the test vectors to see the required format.
      *
      * @param testVectorPath
      */

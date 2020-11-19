@@ -51,8 +51,7 @@ public class ECPointFormatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * ECPointFormatExtensionParser.
+     * Test of parseExtensionMessageContent method, of class ECPointFormatExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

@@ -26,8 +26,7 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ClientKeyExchangeParser is supposed to
-     * start parsing
+     * Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
      * The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
@@ -53,8 +52,7 @@ public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskD
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityLength and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentityLength and writes them in the message
      *
      * @param msg
      * Message to write in

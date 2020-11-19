@@ -14,8 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import java.util.Arrays;
 
 /**
- * Runnable for benchmarking the brute-force performance of ServerVerifyChecker
- * in a multi-threaded setup.
+ * Runnable for benchmarking the brute-force performance of ServerVerifyChecker in a multi-threaded setup.
  */
 class LeakyExportBenchmarkRunnable implements Runnable {
 

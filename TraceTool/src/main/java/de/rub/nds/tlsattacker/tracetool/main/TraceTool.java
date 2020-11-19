@@ -34,8 +34,8 @@ import org.apache.logging.log4j.Logger;
  * <ul>
  * <li>Generate trace templates for common workflows (in XML)</li>
  * <li>Apply filters to workflow trace inputs</li>
- * <li>Verify if a workflow trace is normalized, i.e. well defined for
- * standalone execution without the need of an additional Configuration</li>
+ * <li>Verify if a workflow trace is normalized, i.e. well defined for standalone execution without the need of an
+ * additional Configuration</li>
  * </ul>
  */
 public class TraceTool {

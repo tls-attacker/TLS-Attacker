@@ -52,8 +52,7 @@ public class RSAClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * RSAClientKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class RSAClientKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

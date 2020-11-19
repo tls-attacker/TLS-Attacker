@@ -36,8 +36,7 @@ public class HelloVerifyRequestPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * HelloVerifyRequestPreparator.
+     * Test of prepareHandshakeMessageContents method, of class HelloVerifyRequestPreparator.
      */
     @Test
     public void testPrepare() {

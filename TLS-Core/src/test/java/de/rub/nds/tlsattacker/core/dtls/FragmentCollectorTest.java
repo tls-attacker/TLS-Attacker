@@ -81,8 +81,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isMessageComplete when all fragments are inserted disorderly with
-     * overlap.
+     * Test isMessageComplete when all fragments are inserted disorderly with overlap.
      */
     @Test
     public void testIsMessageCompleteTrueDisorderlyOverlap() {
@@ -94,8 +93,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isMessageComplete when all fragments are inserted disorderly with
-     * overlap a few bytes are missing.
+     * Test isMessageComplete when all fragments are inserted disorderly with overlap a few bytes are missing.
      */
     @Test
     public void testIsMessageCompleteFalseDisorderlyOverlap() {
@@ -122,8 +120,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test isFitting for fragment which has the same type as a previously added
-     * fragment.
+     * Test isFitting for fragment which has the same type as a previously added fragment.
      */
     @Test
     public void testIsFittingTrue() {
@@ -147,8 +144,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test buildCombinedFragment when fragments have been inserted disorderly
-     * with overlaps.
+     * Test buildCombinedFragment when fragments have been inserted disorderly with overlaps.
      */
     @Test
     public void testBuildCombinedFragmentDisorderlyOverlap() {
@@ -174,8 +170,7 @@ public class FragmentCollectorTest {
     }
 
     /**
-     * Test buildCombinedFragment after adding an unfitting fragment, with only
-     * fitting set to false.
+     * Test buildCombinedFragment after adding an unfitting fragment, with only fitting set to false.
      */
     @Test
     public void testBuildCombinedFragmentAddUnfitting() {

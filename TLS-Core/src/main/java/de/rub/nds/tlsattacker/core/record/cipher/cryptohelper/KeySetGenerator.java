@@ -156,20 +156,20 @@ public class KeySetGenerator {
         keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
     }
 
-    private static byte[] MD5firstNBytes(int numOfBytes, byte[]... byteArrays) {
-        byte[] md5 = MD5Utils.MD5(byteArrays);
+    private static byte[] md5firstNBytes(int numOfBytes, byte[]... byteArrays) {
+        byte[] md5 = MD5Utils.md5(byteArrays);
         return Arrays.copyOfRange(md5, 0, numOfBytes);
     }
 
     private static void deriveSSL3ExportKeys(CipherSuite cipherSuite, KeySet keySet, byte[] clientRandom,
         byte[] serverRandom) {
         int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
-        keySet.setClientWriteKey(MD5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
-        keySet.setServerWriteKey(MD5firstNBytes(keySize, keySet.getServerWriteKey(), serverRandom, clientRandom));
+        keySet.setClientWriteKey(md5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
+        keySet.setServerWriteKey(md5firstNBytes(keySize, keySet.getServerWriteKey(), serverRandom, clientRandom));
 
         int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
-        keySet.setClientWriteIv(MD5firstNBytes(blockSize, clientRandom, serverRandom));
-        keySet.setServerWriteIv(MD5firstNBytes(blockSize, serverRandom, clientRandom));
+        keySet.setClientWriteIv(md5firstNBytes(blockSize, clientRandom, serverRandom));
+        keySet.setServerWriteIv(md5firstNBytes(blockSize, serverRandom, clientRandom));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)

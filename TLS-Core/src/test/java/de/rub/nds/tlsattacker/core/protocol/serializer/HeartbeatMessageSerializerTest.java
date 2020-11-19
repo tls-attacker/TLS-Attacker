@@ -47,8 +47,7 @@ public class HeartbeatMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * HeartbeatMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class HeartbeatMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

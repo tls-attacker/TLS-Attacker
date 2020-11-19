@@ -73,8 +73,7 @@ public class CertificateAdapterTest {
     private final CertificateAdapter certificateAdapter = new CertificateAdapter();
 
     /**
-     * Tests if marshal() creates the correct HexString corresponding to a given
-     * certificate.
+     * Tests if marshal() creates the correct HexString corresponding to a given certificate.
      *
      * @throws IOException
      * @throws Exception
@@ -89,8 +88,7 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if unmarshal() correctly throws an exception on an invalid input
-     * string.
+     * Tests if unmarshal() correctly throws an exception on an invalid input string.
      *
      * @throws Exception
      */
@@ -100,8 +98,7 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if marshal() correctly throws an exception on an invalid input
-     * certificate.
+     * Tests if marshal() correctly throws an exception on an invalid input certificate.
      *
      * @throws Exception
      */
@@ -111,8 +108,8 @@ public class CertificateAdapterTest {
     }
 
     /**
-     * Tests if unmarshal() is the reverse function of marshal(), i.e. for a
-     * certificate c checks if marshal(c) = marshal(unmarshal(marshal(c)))
+     * Tests if unmarshal() is the reverse function of marshal(), i.e. for a certificate c checks if marshal(c) =
+     * marshal(unmarshal(marshal(c)))
      *
      * @throws java.lang.Exception
      */

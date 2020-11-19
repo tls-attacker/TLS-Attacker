@@ -63,8 +63,7 @@ public class GenericReceiveAsciiActionTest {
     }
 
     /**
-     * Test of WorkflowExecutionException of execute method, of class
-     * GenericReceiveAsciiAction.
+     * Test of WorkflowExecutionException of execute method, of class GenericReceiveAsciiAction.
      */
     @Test(expected = WorkflowExecutionException.class)
     public void testExecuteWorkflowExecutionException() {

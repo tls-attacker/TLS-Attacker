@@ -23,8 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The cleanRecordBytes should be set when the record preparator received the
- * record
+ * The cleanRecordBytes should be set when the record preparator received the record
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
 

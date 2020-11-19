@@ -38,8 +38,7 @@ public class SignatureAndHashAlgorithmsExtensionParser extends
     }
 
     /**
-     * Reads the next bytes as the signatureAndHandshakeAlgorithmsLength of the
-     * Extension and writes them in the message
+     * Reads the next bytes as the signatureAndHandshakeAlgorithmsLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -50,8 +49,7 @@ public class SignatureAndHashAlgorithmsExtensionParser extends
     }
 
     /**
-     * Reads the next bytes as the signatureAndHandshakeAlgorithms of the
-     * Extension and writes them in the message
+     * Reads the next bytes as the signatureAndHandshakeAlgorithms of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

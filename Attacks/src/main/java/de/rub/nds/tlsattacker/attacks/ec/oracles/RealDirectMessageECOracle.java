@@ -85,12 +85,12 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX().getData()));
+        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getFieldX().getData()));
         message.getComputations().setPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY().getData()));
+        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getFieldY().getData()));
         message.getComputations().setPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
@@ -129,13 +129,12 @@ public class RealDirectMessageECOracle extends ECOracle {
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         Point p = curve.mult(guessedSecret, checkPoint);
         byte[] pms =
-            BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getX().getData());
+            BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getFieldX().getData());
         return Arrays.equals(checkPMS, pms);
     }
 
     /**
-     * Executes a valid workflow with valid points etc. and saves the values for
-     * further validation purposes.
+     * Executes a valid workflow with valid points etc. and saves the values for further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
         State state = new State(config);

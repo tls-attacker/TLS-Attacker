@@ -18,8 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The Serializer is responsible to write an Object T into a byte[] form. This
- * is comparable to byte[] serialization.
+ * The Serializer is responsible to write an Object T into a byte[] form. This is comparable to byte[] serialization.
  *
  * @param <T>
  * Type of the Object to write
@@ -41,17 +40,16 @@ public abstract class Serializer<T> {
     }
 
     /**
-     * This method is responsible to write the appropriate bytes to the output
-     * Stream This should be done by calling the different append methods.
+     * This method is responsible to write the appropriate bytes to the output Stream This should be done by calling the
+     * different append methods.
      *
      * @return The already serialized Bytes
      */
     protected abstract byte[] serializeBytes();
 
     /**
-     * Adds a byte[] representation of an int to the final byte[]. If the
-     * Integer is greater than the specified length only the lower length bytes
-     * are serialized.
+     * Adds a byte[] representation of an int to the final byte[]. If the Integer is greater than the specified length
+     * only the lower length bytes are serialized.
      *
      * @param i
      * The Integer that should be appended
@@ -69,9 +67,8 @@ public abstract class Serializer<T> {
     }
 
     /**
-     * Adds a byte[] representation of a BigInteger to the final byte[] minus
-     * the sign byte. If the BigInteger is greater than the specified length
-     * only the lower length bytes are serialized.
+     * Adds a byte[] representation of a BigInteger to the final byte[] minus the sign byte. If the BigInteger is
+     * greater than the specified length only the lower length bytes are serialized.
      *
      * @param i
      * The BigInteger that should be appended

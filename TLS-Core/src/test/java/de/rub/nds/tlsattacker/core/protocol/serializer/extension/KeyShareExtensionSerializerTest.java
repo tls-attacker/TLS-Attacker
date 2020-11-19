@@ -48,8 +48,7 @@ public class KeyShareExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * KeyShareExtensionSerializerTest.
+     * Test of serializeExtensionContent method, of class KeyShareExtensionSerializerTest.
      */
     @Test
     public void testSerializeExtensionContent() {

@@ -20,8 +20,7 @@ public class ServerNameIndicationExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * ServerNameIndicationExtensionSerializer.
+     * Test of serializeExtensionContent method, of class ServerNameIndicationExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

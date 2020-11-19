@@ -18,8 +18,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**
- * Note: This delegate should always be executed after the ProtocolVersion
- * delegate
+ * Note: This delegate should always be executed after the ProtocolVersion delegate
  */
 public class TransportHandlerDelegate extends Delegate {
 

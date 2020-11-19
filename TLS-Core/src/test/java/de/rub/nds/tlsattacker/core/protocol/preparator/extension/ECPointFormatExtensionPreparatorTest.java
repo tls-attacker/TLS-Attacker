@@ -20,8 +20,7 @@ public class ECPointFormatExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * ECPointFormatExtensionPreparator.
+     * Test of prepareExtensionContent method, of class ECPointFormatExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

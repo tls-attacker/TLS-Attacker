@@ -44,8 +44,7 @@ public class HeartbeatMessagePreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * HeartbeatMessagePreparator.
+     * Test of prepareProtocolMessageContents method, of class HeartbeatMessagePreparator.
      */
     @Test
     public void testPrepare() {

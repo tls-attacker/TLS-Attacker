@@ -81,8 +81,7 @@ public class Pkcs1Attack {
      * original message to be changed
      * @param si
      * factor
-     * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in
-     * a byte array
+     * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in a byte array
      */
     protected byte[] prepareMsg(BigInteger m, BigInteger si) {
         byte[] msg;

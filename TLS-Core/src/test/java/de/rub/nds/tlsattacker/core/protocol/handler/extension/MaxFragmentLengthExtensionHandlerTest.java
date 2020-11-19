@@ -33,8 +33,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * MaxFragmentLengthExtensionHandler.
+     * Test of adjustTLSContext method, of class MaxFragmentLengthExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {

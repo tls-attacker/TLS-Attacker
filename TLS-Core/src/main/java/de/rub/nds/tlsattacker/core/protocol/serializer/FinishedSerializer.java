@@ -43,8 +43,7 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
     }
 
     /**
-     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());

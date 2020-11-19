@@ -11,9 +11,8 @@
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 /**
- * A GuessProvider is responsible for the creation of byte[] sequences for brute
- * force attacks. The guess provider should minimize the number of guesses
- * according to heuristics.
+ * A GuessProvider is responsible for the creation of byte[] sequences for brute force attacks. The guess provider
+ * should minimize the number of guesses according to heuristics.
  */
 public abstract class GuessProvider {
 
@@ -30,9 +29,8 @@ public abstract class GuessProvider {
     }
 
     /**
-     * Returns the next guess for the attack. Guesses should not repeat, but it
-     * is not completely prohibited by this API. Returns null if no more guesses
-     * are available.
+     * Returns the next guess for the attack. Guesses should not repeat, but it is not completely prohibited by this
+     * API. Returns null if no more guesses are available.
      *
      * @return The next byte[] to be used in the brute force attack.
      */

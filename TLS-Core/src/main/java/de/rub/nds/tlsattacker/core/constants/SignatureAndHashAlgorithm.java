@@ -28,8 +28,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Construction of a hash and signature algorithm. Very confusing, consists of
- * two bytes, the first is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
+ * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first is hash algorithm:
+ * {HashAlgorithm, SignatureAlgorithm}
  */
 public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000),
@@ -323,6 +323,10 @@ public enum SignatureAndHashAlgorithm {
                         }
                     }
                     break;
+                default:
+                    // we skip the default case to find an algorithm in the next
+                    // iteration
+                    ;
             }
             if (found) {
                 break;

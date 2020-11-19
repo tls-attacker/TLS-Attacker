@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import java.util.concurrent.Callable;
 
 /**
- * Callable to brute-force the 5 random bytes when checking whether a server is
- * vulnerable to the "leaky export" oracle DROWN attack.
+ * Callable to brute-force the 5 random bytes when checking whether a server is vulnerable to the "leaky export" oracle
+ * DROWN attack.
  */
 class LeakyExportCheckCallable implements Callable<Boolean> {
 

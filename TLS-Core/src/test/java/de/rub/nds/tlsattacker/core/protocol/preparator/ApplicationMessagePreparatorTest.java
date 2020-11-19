@@ -30,8 +30,7 @@ public class ApplicationMessagePreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * ApplicationMessagePreparator.
+     * Test of prepareProtocolMessageContents method, of class ApplicationMessagePreparator.
      */
     @Test
     public void testPrepare() {

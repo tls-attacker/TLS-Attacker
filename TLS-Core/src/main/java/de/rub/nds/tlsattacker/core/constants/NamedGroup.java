@@ -68,8 +68,8 @@ public enum NamedGroup {
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
-    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0), // GREASE
-                                                                          // constants
+    // GREASE constants
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
     GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }, "GREASE", null),
@@ -154,9 +154,9 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (publicKey.getParams().getGenerator().getAffineX()
-                        .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
                         && publicKey.getParams().getGenerator().getAffineY()
-                            .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
                 } catch (UnsupportedOperationException e) {
@@ -174,9 +174,9 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (privateKey.getParams().getGenerator().getAffineX()
-                        .equals(tlsAttackerCurve.getBasePoint().getX().getData())
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
                         && privateKey.getParams().getGenerator().getAffineY()
-                            .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
                 } catch (UnsupportedOperationException e) {

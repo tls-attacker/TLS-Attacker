@@ -31,8 +31,7 @@ public class CertificateRequestPreparatorTest {
     private TlsContext context;
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * CertificateRequestPreparator.
+     * Test of prepareHandshakeMessageContents method, of class CertificateRequestPreparator.
      */
     @Test
     public void testPrepare() {
@@ -59,8 +58,7 @@ public class CertificateRequestPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * CertificateRequestPreparator.
+     * Test of prepareHandshakeMessageContents method, of class CertificateRequestPreparator.
      */
     @Test
     public void testPrepareTls13() {

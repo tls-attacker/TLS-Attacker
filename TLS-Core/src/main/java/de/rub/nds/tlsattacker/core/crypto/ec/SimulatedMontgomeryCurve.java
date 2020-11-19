@@ -61,8 +61,8 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
     @Override
     public Point createAPointOnCurve(BigInteger x) {
         BigInteger val =
-            x.pow(3).add(x.pow(2).multiply(getA().getData())).add(x)
-                .multiply(getB().getData().modInverse(getModulus())).mod(getModulus());
+            x.pow(3).add(x.pow(2).multiply(getFieldA().getData())).add(x)
+                .multiply(getFieldB().getData().modInverse(getModulus())).mod(getModulus());
         BigInteger y = modSqrt(val, getModulus());
         if (y == null) {
             LOGGER.warn("Could not create a point on Curve. Creating with y == 0");
@@ -79,41 +79,43 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
 
     private EllipticCurveOverFp computeWeierstrassEquivalent() {
         BigInteger weierstrassA =
-            new BigInteger("3").subtract(this.getA().getData().modPow(new BigInteger("2"), this.getModulus()));
+            new BigInteger("3").subtract(this.getFieldA().getData().modPow(new BigInteger("2"), this.getModulus()));
         weierstrassA =
             weierstrassA.multiply(
-                new BigInteger("3").multiply(this.getB().getData().modPow(new BigInteger("2"), this.getModulus()))
+                new BigInteger("3").multiply(this.getFieldB().getData().modPow(new BigInteger("2"), this.getModulus()))
                     .modInverse(this.getModulus())).mod(this.getModulus());
 
         BigInteger weierstrassB =
-            new BigInteger("2").multiply(this.getA().getData().modPow(new BigInteger("3"), this.getModulus()))
-                .subtract(new BigInteger("9").multiply(this.getA().getData()));
+            new BigInteger("2").multiply(this.getFieldA().getData().modPow(new BigInteger("3"), this.getModulus()))
+                .subtract(new BigInteger("9").multiply(this.getFieldA().getData()));
         weierstrassB =
             weierstrassB.multiply(
-                new BigInteger("27").multiply(this.getB().getData().modPow(new BigInteger("3"), this.getModulus()))
-                    .modInverse(this.getModulus())).mod(this.getModulus());
+                new BigInteger("27")
+                    .multiply(this.getFieldB().getData().modPow(new BigInteger("3"), this.getModulus())).modInverse(
+                        this.getModulus())).mod(this.getModulus());
 
         Point weierstrassGen = toWeierstrass(this.getBasePoint());
-        return new EllipticCurveOverFp(weierstrassA, weierstrassB, this.getModulus(), weierstrassGen.getX().getData(),
-            weierstrassGen.getY().getData(), this.getBasePointOrder());
+        return new EllipticCurveOverFp(weierstrassA, weierstrassB, this.getModulus(), weierstrassGen.getFieldX()
+            .getData(), weierstrassGen.getFieldY().getData(), this.getBasePointOrder());
     }
 
     public Point toWeierstrass(Point mpoint) {
         if (mpoint.isAtInfinity()) {
             return mpoint;
         } else {
-            BigInteger mx = mpoint.getX().getData();
-            BigInteger my = mpoint.getY().getData();
+            BigInteger mx = mpoint.getFieldX().getData();
+            BigInteger my = mpoint.getFieldY().getData();
 
             BigInteger weierstrassX =
-                mx.multiply(this.getB().getData().modInverse(this.getModulus()))
+                mx.multiply(this.getFieldB().getData().modInverse(this.getModulus()))
                     .add(
-                        this.getA()
+                        this.getFieldA()
                             .getData()
-                            .multiply(new BigInteger("3").multiply(this.getB().getData()).modInverse(this.getModulus())))
+                            .multiply(
+                                new BigInteger("3").multiply(this.getFieldB().getData()).modInverse(this.getModulus())))
                     .mod(this.getModulus());
             BigInteger weierstrassY =
-                my.multiply(this.getB().getData().modInverse(this.getModulus())).mod(this.getModulus());
+                my.multiply(this.getFieldB().getData().modInverse(this.getModulus())).mod(this.getModulus());
 
             FieldElementFp fieldX = new FieldElementFp(weierstrassX, this.getModulus());
             FieldElementFp fieldY = new FieldElementFp(weierstrassY, this.getModulus());
@@ -125,17 +127,18 @@ public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {
         if (weierstrassPoint.isAtInfinity()) {
             return weierstrassPoint;
         } else {
-            BigInteger weierstrassX = weierstrassPoint.getX().getData();
-            BigInteger weierstrassY = weierstrassPoint.getY().getData();
+            BigInteger weierstrassX = weierstrassPoint.getFieldX().getData();
+            BigInteger weierstrassY = weierstrassPoint.getFieldY().getData();
 
             BigInteger mx =
                 weierstrassX
                     .subtract(
-                        this.getA()
+                        this.getFieldA()
                             .getData()
-                            .multiply(new BigInteger("3").multiply(this.getB().getData()).modInverse(this.getModulus())))
-                    .multiply(this.getB().getData()).mod(this.getModulus());
-            BigInteger my = weierstrassY.multiply(this.getB().getData());
+                            .multiply(
+                                new BigInteger("3").multiply(this.getFieldB().getData()).modInverse(this.getModulus())))
+                    .multiply(this.getFieldB().getData()).mod(this.getModulus());
+            BigInteger my = weierstrassY.multiply(this.getFieldB().getData());
 
             FieldElementFp fieldX = new FieldElementFp(mx, this.getModulus());
             FieldElementFp fieldY = new FieldElementFp(my, this.getModulus());

@@ -65,6 +65,9 @@ public class ListDelegate extends Delegate {
                 break;
             case workflow_trace_types:
                 list = StringUtils.join(EnumSet.allOf(WorkflowTraceType.class), '\n');
+                break;
+            default:
+                throw new ConfigurationException("Nothing to plot");
         }
         return list;
     }

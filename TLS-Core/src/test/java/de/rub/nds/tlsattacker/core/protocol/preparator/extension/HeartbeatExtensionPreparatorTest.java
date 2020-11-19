@@ -20,8 +20,7 @@ public class HeartbeatExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * HeartbeatExtensionPreparator.
+     * Test of prepareExtensionContent method, of class HeartbeatExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

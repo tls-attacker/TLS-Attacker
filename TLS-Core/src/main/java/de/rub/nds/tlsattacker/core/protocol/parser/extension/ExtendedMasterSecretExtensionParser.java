@@ -25,8 +25,7 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
     }
 
     /**
-     * Parses the content of the extended master secret extension message. There
-     * SHOULDN'T be any data.
+     * Parses the content of the extended master secret extension message. There SHOULDN'T be any data.
      *
      * @param msg
      * The Message that should be parsed

@@ -119,8 +119,8 @@ public class InvalidCurvePoint {
     }
 
     /**
-     * Provides an Invalid Curve point with an order that is greater than the
-     * order of the point returned by smallOrder(group)
+     * Provides an Invalid Curve point with an order that is greater than the order of the point returned by
+     * smallOrder(group)
      * 
      * @param group
      * @return InvalidCurvePoint
@@ -204,9 +204,8 @@ public class InvalidCurvePoint {
     }
 
     /**
-     * Provides an Invalid Curve point with an order that is far greater than
-     * the order of the point returned by smallOrder(group) and
-     * alternativeOrder(group).
+     * Provides an Invalid Curve point with an order that is far greater than the order of the point returned by
+     * smallOrder(group) and alternativeOrder(group).
      * 
      * @param group
      * @return InvalidCurvePoint

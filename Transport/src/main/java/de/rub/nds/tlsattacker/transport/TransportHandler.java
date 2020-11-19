@@ -33,8 +33,7 @@ public abstract class TransportHandler {
     private final ConnectionEndType type;
 
     /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning
-     * read will return -1.
+     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
      */
     private boolean isInStreamTerminating = true;
 
@@ -68,6 +67,7 @@ public abstract class TransportHandler {
         return stream.toByteArray();
     }
 
+    @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillis = System.currentTimeMillis() + timeout;

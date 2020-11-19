@@ -31,8 +31,7 @@ public class TimingProxyClientTcpTransportHandlerTest {
     }
 
     /**
-     * Test of closeConnection method, of class
-     * TimingProxyClientTcpTransportHandler.
+     * Test of closeConnection method, of class TimingProxyClientTcpTransportHandler.
      *
      * @throws java.io.IOException
      */

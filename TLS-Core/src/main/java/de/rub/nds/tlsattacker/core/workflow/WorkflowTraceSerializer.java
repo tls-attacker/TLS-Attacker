@@ -79,8 +79,7 @@ public class WorkflowTraceSerializer {
      *
      * @param trace
      * WorkflowTrace that should be written
-     * @return String containing XML/serialized representation of the
-     * WorkflowTrace
+     * @return String containing XML/serialized representation of the WorkflowTrace
      * @throws JAXBException
      * Is thrown if the Object cannot be serialized
      * @throws IOException

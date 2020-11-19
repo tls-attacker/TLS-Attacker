@@ -28,8 +28,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to
-     * start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
@@ -70,8 +69,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the ClientCertificateCount and writes them in the
-     * message
+     * Reads the next bytes as the ClientCertificateCount and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -82,8 +80,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the ClientCertificateTypes and writes them in the
-     * message
+     * Reads the next bytes as the ClientCertificateTypes and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -94,8 +91,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the SignatureHashAlgorithmsLength and writes them
-     * in the message
+     * Reads the next bytes as the SignatureHashAlgorithmsLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -106,8 +102,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the SignatureHashAlgorithms and writes them in
-     * the message
+     * Reads the next bytes as the SignatureHashAlgorithms and writes them in the message
      *
      * @param message
      * Message to write in
@@ -119,8 +114,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the DistinguishedNamesLength and writes them in
-     * the message
+     * Reads the next bytes as the DistinguishedNamesLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -142,8 +136,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the DistinguishedNames and writes them in the
-     * message
+     * Reads the next bytes as the DistinguishedNames and writes them in the message
      *
      * @param msg
      * Message to write in

@@ -36,8 +36,7 @@ public class ApplicationMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * ApplicationMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class ApplicationMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

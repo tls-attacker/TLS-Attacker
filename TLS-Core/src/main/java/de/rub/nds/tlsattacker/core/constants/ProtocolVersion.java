@@ -134,8 +134,7 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Maps a string protocol version value to an enum. It handles specific
-     * cases like TLSv1.2 or SSLv3
+     * Maps a string protocol version value to an enum. It handles specific cases like TLSv1.2 or SSLv3
      *
      * @param protocolVersion
      * The ProtocolVersion as a String

@@ -33,8 +33,7 @@ public class VeryShortPaddingGenerator extends PaddingVectorGenerator {
      */
     static final int DEFAULT_CIPHERTEXT_LENGTH = 80;
     /**
-     * Default padding length for the construction of modified encrypted
-     * plaintexts
+     * Default padding length for the construction of modified encrypted plaintexts
      */
     static final int DEFAULT_PADDING_LENGTH = 4;
 

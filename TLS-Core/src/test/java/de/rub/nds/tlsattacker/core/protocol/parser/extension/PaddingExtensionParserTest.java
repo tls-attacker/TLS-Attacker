@@ -29,8 +29,7 @@ public class PaddingExtensionParserTest {
     /**
      * Parameterized set up of the test vector.
      *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     * expectedBytes)
+     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {

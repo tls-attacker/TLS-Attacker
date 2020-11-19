@@ -55,8 +55,7 @@ public class ReceiveAsciiActionTest {
     }
 
     /**
-     * Test of WorkflowExecutionException of execute method, of class
-     * ReceiveAsciiAction.
+     * Test of WorkflowExecutionException of execute method, of class ReceiveAsciiAction.
      */
     @Test(expected = WorkflowExecutionException.class)
     public void testExecuteWorkflowExecutionException() {

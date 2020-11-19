@@ -22,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Apply buffered message to the given context.
  *
- * Call adjustContext() for each message in the context. Does not remove the
- * messages from buffer after execution.
+ * Call adjustContext() for each message in the context. Does not remove the messages from buffer after execution.
  */
 public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
 

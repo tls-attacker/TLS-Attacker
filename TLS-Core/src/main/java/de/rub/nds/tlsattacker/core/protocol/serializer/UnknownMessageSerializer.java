@@ -43,8 +43,7 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
     }
 
     /**
-     * Writes the CompleteResultingMessage of the UnknownMessage into the final
-     * byte[]
+     * Writes the CompleteResultingMessage of the UnknownMessage into the final byte[]
      */
     private void writeCompleteResultingMessage(UnknownMessage msg) {
         appendBytes(msg.getCompleteResultingMessage().getValue());

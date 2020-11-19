@@ -25,13 +25,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A RecordGroup comprises records which should be decrypted/processed together.
- * They share the following characteristics: 1. they are of the same type (blob
- * or real records); 2. they use the same cipher state (for DTLS, this means
- * they have the same epoch); 3. their content is of the same type.
+ * A RecordGroup comprises records which should be decrypted/processed together. They share the following
+ * characteristics: 1. they are of the same type (blob or real records); 2. they use the same cipher state (for DTLS,
+ * this means they have the same epoch); 3. their content is of the same type.
  *
- * The class also provides functionality for grouping records into RecordGroups,
- * decrypting and parsing them.
+ * The class also provides functionality for grouping records into RecordGroups, decrypting and parsing them.
  */
 public class RecordGroup {
 
@@ -166,9 +164,8 @@ public class RecordGroup {
     }
 
     /**
-     * If the parsed record group contains invalid records we need to separate
-     * them into smaller groups and only parse them one by one to make sure we
-     * can respect invalidAsUnknown flags
+     * If the parsed record group contains invalid records we need to separate them into smaller groups and only parse
+     * them one by one to make sure we can respect invalidAsUnknown flags
      *
      * @return
      */

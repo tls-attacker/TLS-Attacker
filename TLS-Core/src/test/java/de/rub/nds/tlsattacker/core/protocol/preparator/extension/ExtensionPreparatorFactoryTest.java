@@ -20,8 +20,7 @@ public class ExtensionPreparatorFactoryTest {
     }
 
     /**
-     * Test of getExtensionPreparator method, of class
-     * ExtensionPreparatorFactory.
+     * Test of getExtensionPreparator method, of class ExtensionPreparatorFactory.
      */
     @Test
     public void testGetExtensionPreparator() {

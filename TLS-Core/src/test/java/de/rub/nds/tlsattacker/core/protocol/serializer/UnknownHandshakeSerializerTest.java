@@ -47,8 +47,7 @@ public class UnknownHandshakeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * UnknownHandshakeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class UnknownHandshakeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

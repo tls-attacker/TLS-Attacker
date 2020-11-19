@@ -183,8 +183,7 @@ public class HandlerFactory {
     }
 
     /**
-     * Returns the correct extension Handler for a specified ExtensionType in a
-     * HandshakeMessage
+     * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
      * @param context
      * Current TlsContext

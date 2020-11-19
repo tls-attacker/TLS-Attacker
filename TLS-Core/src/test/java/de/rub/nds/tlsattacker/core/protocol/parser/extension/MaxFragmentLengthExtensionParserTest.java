@@ -47,8 +47,7 @@ public class MaxFragmentLengthExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * MaxFragmentLengthExtensionParser.
+     * Test of parseExtensionMessageContent method, of class MaxFragmentLengthExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

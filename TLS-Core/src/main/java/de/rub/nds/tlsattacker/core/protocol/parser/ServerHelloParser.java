@@ -29,8 +29,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Constructor for the ServerHelloMessageParser
      *
      * @param pointer
-     * Position in the array where the ServerHelloParser is supposed to start
-     * parsing
+     * Position in the array where the ServerHelloParser is supposed to start parsing
      * @param array
      * The byte[] which the ServerHelloParser is supposed to parse
      * @param version
@@ -53,8 +52,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as a CompressionMethod and writes them in the
-     * message
+     * Reads the next bytes as a CompressionMethod and writes them in the message
      *
      * @param msg
      * Message to write in

@@ -53,8 +53,7 @@ public class EllipticCurvesExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * EllipticCurvesExtensionParser.
+     * Test of parseExtensionMessageContent method, of class EllipticCurvesExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

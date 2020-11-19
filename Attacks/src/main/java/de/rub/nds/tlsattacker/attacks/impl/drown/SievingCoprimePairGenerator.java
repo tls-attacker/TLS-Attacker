@@ -13,8 +13,7 @@ package de.rub.nds.tlsattacker.attacks.impl.drown;
 import java.math.BigInteger;
 
 /**
- * Coprime pair generator which generates a lot of fractions and sieves out
- * those that qualify as "Trimmers".
+ * Coprime pair generator which generates a lot of fractions and sieves out those that qualify as "Trimmers".
  */
 class SievingCoprimePairGenerator extends CoprimePairGenerator {
 
@@ -47,8 +46,8 @@ class SievingCoprimePairGenerator extends CoprimePairGenerator {
     }
 
     /**
-     * Makes sure that the pair's fraction is within the range given by Bardou
-     * et al. 2012, by adjusting the values of u and t.
+     * Makes sure that the pair's fraction is within the range given by Bardou et al. 2012, by adjusting the values of u
+     * and t.
      */
     private void ensureRange() {
         float quotient = ucandidate.floatValue() / tcandidate.floatValue();

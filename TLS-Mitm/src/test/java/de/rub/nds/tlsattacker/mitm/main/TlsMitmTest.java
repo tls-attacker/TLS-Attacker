@@ -70,8 +70,8 @@ public class TlsMitmTest {
     }
 
     /**
-     * TODO This test currently just executes the workflow. For validation,
-     * write the trace to xml and compare it with a reference trace.
+     * TODO This test currently just executes the workflow. For validation, write the trace to xml and compare it with a
+     * reference trace.
      */
     @Test
     @Category(IntegrationTests.class)

@@ -37,8 +37,7 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
     }
 
     /**
-     * Reads the next bytes as the maxFragmentLength of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the maxFragmentLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

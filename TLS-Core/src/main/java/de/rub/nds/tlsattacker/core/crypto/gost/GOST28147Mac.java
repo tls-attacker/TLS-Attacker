@@ -164,23 +164,23 @@ public class GOST28147Mac implements Mac, Memoable {
         }
         processedBytes += 8;
 
-        int N1;
-        int N2;
-        int tmp; // tmp -> for saving N1
-        N1 = bytesToInt(in, 0);
-        N2 = bytesToInt(in, 4);
+        int n1;
+        int n2;
+        int tmp; // tmp -> for saving n1
+        n1 = bytesToInt(in, 0);
+        n2 = bytesToInt(in, 4);
 
         // 1-16 steps
         for (int k = 0; k < 2; k++) {
             for (int j = 0; j < 8; j++) {
-                tmp = N1;
-                N1 = N2 ^ gost28147_mainStep(N1, workingKey[j]); // CM2
-                N2 = tmp;
+                tmp = n1;
+                n1 = n2 ^ gost28147_mainStep(n1, workingKey[j]); // CM2
+                n2 = tmp;
             }
         }
 
-        intToBytes(N1, out, 0);
-        intToBytes(N2, out, 4);
+        intToBytes(n1, out, 0);
+        intToBytes(n2, out, 4);
     }
 
     // array of bytes to type int
@@ -197,7 +197,7 @@ public class GOST28147Mac implements Mac, Memoable {
         out[outOff] = (byte) num;
     }
 
-    private byte[] CM5func(byte[] buf, int bufOff, byte[] mac) {
+    private byte[] cm5Func(byte[] buf, int bufOff, byte[] mac) {
         byte[] sum = new byte[buf.length - bufOff];
 
         System.arraycopy(buf, bufOff, sum, 0, mac.length);
@@ -217,10 +217,10 @@ public class GOST28147Mac implements Mac, Memoable {
             if (firstStep) {
                 firstStep = false;
                 if (macIV != null) {
-                    sumbuf = CM5func(buf, 0, macIV);
+                    sumbuf = cm5Func(buf, 0, macIV);
                 }
             } else {
-                sumbuf = CM5func(buf, 0, mac);
+                sumbuf = cm5Func(buf, 0, mac);
             }
 
             gost28147MacFunc(sumbuf, mac);
@@ -246,10 +246,10 @@ public class GOST28147Mac implements Mac, Memoable {
             if (firstStep) {
                 firstStep = false;
                 if (macIV != null) {
-                    sumbuf = CM5func(buf, 0, macIV);
+                    sumbuf = cm5Func(buf, 0, macIV);
                 }
             } else {
-                sumbuf = CM5func(buf, 0, mac);
+                sumbuf = cm5Func(buf, 0, mac);
             }
 
             gost28147MacFunc(sumbuf, mac);
@@ -259,7 +259,7 @@ public class GOST28147Mac implements Mac, Memoable {
             inOff += gapLen;
 
             while (len > blockSize) {
-                sumbuf = CM5func(in, inOff, mac);
+                sumbuf = cm5Func(in, inOff, mac);
                 gost28147MacFunc(sumbuf, mac);
 
                 len -= blockSize;
@@ -285,7 +285,7 @@ public class GOST28147Mac implements Mac, Memoable {
         if (firstStep) {
             firstStep = false;
         } else {
-            sumbuf = CM5func(buf, 0, mac);
+            sumbuf = cm5Func(buf, 0, mac);
         }
 
         gost28147MacFunc(sumbuf, mac);

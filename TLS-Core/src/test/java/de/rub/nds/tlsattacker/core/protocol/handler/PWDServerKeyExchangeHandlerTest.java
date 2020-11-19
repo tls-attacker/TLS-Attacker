@@ -75,8 +75,8 @@ public class PWDServerKeyExchangeHandlerTest {
 
         assertArrayEquals(
             ArrayConverter.bigIntegerToByteArray(PointFormatter
-                .formatFromByteArray(NamedGroup.BRAINPOOLP256R1, element).getX().getData()),
-            ArrayConverter.bigIntegerToByteArray(context.getServerPWDElement().getX().getData()));
+                .formatFromByteArray(NamedGroup.BRAINPOOLP256R1, element).getFieldX().getData()),
+            ArrayConverter.bigIntegerToByteArray(context.getServerPWDElement().getFieldX().getData()));
         assertArrayEquals(salt, context.getServerPWDSalt());
         assertArrayEquals(scalar.toByteArray(), context.getServerPWDScalar().toByteArray());
         assertEquals(NamedGroup.BRAINPOOLP256R1, context.getSelectedGroup());

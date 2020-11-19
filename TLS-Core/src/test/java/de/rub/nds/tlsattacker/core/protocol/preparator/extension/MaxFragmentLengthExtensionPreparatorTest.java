@@ -20,8 +20,7 @@ public class MaxFragmentLengthExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * MaxFragmentLengthExtensionPreparator.
+     * Test of prepareExtensionContent method, of class MaxFragmentLengthExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

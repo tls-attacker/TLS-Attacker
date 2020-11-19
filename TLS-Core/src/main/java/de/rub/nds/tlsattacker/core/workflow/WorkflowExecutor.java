@@ -34,11 +34,10 @@ public abstract class WorkflowExecutor {
     protected final Config config;
 
     /**
-     * Prepare a workflow trace for execution according to the given state and
-     * executor type. Try various ways to initialize a workflow trace and add it
-     * to the state. For workflow creation, use the first method which does not
-     * return null, in the following order: state.getWorkflowTrace(),
-     * state.config.getWorkflowInput(), config.getWorkflowTraceType().
+     * Prepare a workflow trace for execution according to the given state and executor type. Try various ways to
+     * initialize a workflow trace and add it to the state. For workflow creation, use the first method which does not
+     * return null, in the following order: state.getWorkflowTrace(), state.config.getWorkflowInput(),
+     * config.getWorkflowTraceType().
      * 
      * @param type
      * of the workflow executor (currently only DEFAULT)

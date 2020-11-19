@@ -23,8 +23,7 @@ public class ExtendedMasterSecretExtensionSerializer extends ExtensionSerializer
     }
 
     /**
-     * Serializes the extended master secret extension. There is no data to
-     * serialize; it is a "just present" extension.
+     * Serializes the extended master secret extension. There is no data to serialize; it is a "just present" extension.
      *
      * @return Serialized bytes of the extended master secret extension
      */

@@ -18,9 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manger algorithm according to
- * https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code
- * written by Tibor Jager
+ * Manger algorithm according to https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code written by
+ * Tibor Jager
  *
  * @version 0.1
  */

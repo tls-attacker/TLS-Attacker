@@ -255,8 +255,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated,
-     * we add the additional bytes to the Client Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
+     * Client Random
      */
     @Override
     public byte[] getClientRandom() {
@@ -286,8 +286,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated,
-     * we add the additional bytes to the Server Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
+     * Server Random
      */
     @Override
     public byte[] getServerRandom() {

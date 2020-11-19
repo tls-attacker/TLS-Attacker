@@ -136,14 +136,12 @@ public class WorkflowTraceNormalizer {
     }
 
     /**
-     * Assert that a workflow trace is "well defined". A well defined workflow
-     * trace contains one or more Connections and zero or more TlsActions which
-     * refer to defined Connections only (i.e. the alias must match a known
-     * connection alias).
+     * Assert that a workflow trace is "well defined". A well defined workflow trace contains one or more Connections
+     * and zero or more TlsActions which refer to defined Connections only (i.e. the alias must match a known connection
+     * alias).
      *
-     * TODO: There could be a AliasedConnection.assertProperlyPrepared() method
-     * that we can call here. This would be a "self test" of the Connection
-     * object to check that all values are set and in expected range.
+     * TODO: There could be a AliasedConnection.assertProperlyPrepared() method that we can call here. This would be a
+     * "self test" of the Connection object to check that all values are set and in expected range.
      *
      * @param trace
      * The WorkflowTrace to check

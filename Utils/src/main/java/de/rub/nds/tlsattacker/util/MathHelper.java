@@ -71,7 +71,7 @@ public class MathHelper {
     }
 
     public static BigInteger gcd(BigInteger u, BigInteger v) {
-        return extendedEuclid(u, v).a;
+        return extendedEuclid(u, v).bigA;
     }
 
     public static BigInteger inverseMod(BigInteger a, BigInteger p) {
@@ -79,7 +79,7 @@ public class MathHelper {
             throw new RuntimeException("does not exist");
         }
 
-        BigInteger b = extendedEuclid(a, p).b;
+        BigInteger b = extendedEuclid(a, p).bigB;
         while (b.compareTo(BigInteger.ZERO) < 0) {
             b = b.add(p);
         }
@@ -95,23 +95,23 @@ public class MathHelper {
      * A BigInteger[] of moduli
      * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
-    public static BigInteger CRT(BigInteger[] congs, BigInteger[] moduli) {
+    public static BigInteger crt(BigInteger[] congs, BigInteger[] moduli) {
 
         BigInteger prodModuli = BigInteger.ONE;
         for (BigInteger mod : moduli) {
             prodModuli = prodModuli.multiply(mod);
         }
 
-        BigInteger[] M = new BigInteger[moduli.length];
+        BigInteger[] modulus = new BigInteger[moduli.length];
         for (int i = 0; i < moduli.length; i++) {
-            M[i] = prodModuli.divide(moduli[i]);
+            modulus[i] = prodModuli.divide(moduli[i]);
         }
 
         BigInteger retVal = BigInteger.ZERO;
         for (int i = 0; i < moduli.length; i++) {
             // get s value from EEA
-            BigInteger tmp = extendedEuclid(moduli[i], M[i]).c;
-            retVal = retVal.add(congs[i].multiply(tmp).multiply(M[i]).mod(prodModuli));
+            BigInteger tmp = extendedEuclid(moduli[i], modulus[i]).bigC;
+            retVal = retVal.add(congs[i].multiply(tmp).multiply(modulus[i]).mod(prodModuli));
         }
         return retVal.mod(prodModuli);
     }
@@ -125,17 +125,15 @@ public class MathHelper {
      * A BigInteger[] of moduli
      * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
-    public static BigInteger CRT(List<BigInteger> congs, List<BigInteger> moduli) {
+    public static BigInteger crt(List<BigInteger> congs, List<BigInteger> moduli) {
         BigInteger[] cs = ArrayConverter.convertListToArray(congs);
         BigInteger[] ms = ArrayConverter.convertListToArray(moduli);
-        return CRT(cs, ms);
+        return crt(cs, ms);
     }
 
     /**
-     * Computes BigInteger sqrt root of a number (floor value). From:
-     * http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root-
-     * of-a-java-biginteger
+     * Computes BigInteger sqrt root of a number (floor value). From: http://stackoverflow
+     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
      * 
      * @param x
      * The x Value
@@ -163,10 +161,8 @@ public class MathHelper {
     } // end bigIntSqRootFloor
 
     /**
-     * Computes BigInteger sqrt root of a number (ceil value). From:
-     * http://stackoverflow
-     * .com/questions/4407839/how-can-i-find-the-square-root-
-     * of-a-java-biginteger
+     * Computes BigInteger sqrt root of a number (ceil value). From: http://stackoverflow
+     * .com/questions/4407839/how-can-i-find-the-square-root- of-a-java-biginteger
      * 
      * @param x
      * The x Value
@@ -203,26 +199,26 @@ public class MathHelper {
 
     public static class BigIntegerTriple {
 
-        private final BigInteger a;
-        private final BigInteger b;
-        private final BigInteger c;
+        private final BigInteger bigA;
+        private final BigInteger bigB;
+        private final BigInteger bigC;
 
         public BigIntegerTriple(BigInteger a, BigInteger b, BigInteger c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
+            this.bigA = a;
+            this.bigB = b;
+            this.bigC = c;
         }
 
-        public BigInteger getA() {
-            return a;
+        public BigInteger getBigA() {
+            return bigA;
         }
 
-        public BigInteger getB() {
-            return b;
+        public BigInteger getBigB() {
+            return bigB;
         }
 
-        public BigInteger getC() {
-            return c;
+        public BigInteger getBigC() {
+            return bigC;
         }
     }
 }

@@ -33,8 +33,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of adjustTLSContext method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -47,8 +46,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of getParser method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getParser method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetParser() {
@@ -56,8 +54,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of getPreparator method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getPreparator method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
@@ -65,8 +62,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     /**
-     * Test of getSerializer method, of class
-     * SignatureAndHashAlgorithmsExtensionHandler.
+     * Test of getSerializer method, of class SignatureAndHashAlgorithmsExtensionHandler.
      */
     @Test
     public void testGetSerializer() {

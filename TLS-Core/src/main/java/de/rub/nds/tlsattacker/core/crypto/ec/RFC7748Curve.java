@@ -39,7 +39,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         BigInteger decodedKey = decodeScalar(privateKey);
         Point publicPoint = mult(decodedKey, getBasePoint());
 
-        return encodeCoordinate(publicPoint.getX().getData());
+        return encodeCoordinate(publicPoint.getFieldX().getData());
     }
 
     public byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
@@ -53,22 +53,22 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
             publicPoint = getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
         Point sharedPoint = mult(decodedKey, publicPoint);
-        if (sharedPoint.getX() == null) {
+        if (sharedPoint.getFieldX() == null) {
             LOGGER.warn("Cannot encode point in infinity. Using X coordinate of base point as shared secret");
-            return encodeCoordinate(getBasePoint().getX().getData());
+            return encodeCoordinate(getBasePoint().getFieldX().getData());
         }
-        return encodeCoordinate(sharedPoint.getX().getData());
+        return encodeCoordinate(sharedPoint.getFieldX().getData());
     }
 
     public byte[] computeSharedSecret(BigInteger privateKey, Point publicKey) {
         byte[] pkBytes =
-            ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
+            ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getFieldX().getData(),
                 ArrayConverter.bigIntegerToByteArray(getModulus()).length);
         return computeSharedSecret(privateKey, pkBytes);
     }
 
     public byte[] computeSharedSecretDecodedPoint(BigInteger privateKey, Point publicKey) {
-        byte[] reEncoded = encodeCoordinate(publicKey.getX().getData());
+        byte[] reEncoded = encodeCoordinate(publicKey.getFieldX().getData());
         return computeSharedSecret(privateKey, reEncoded);
     }
 

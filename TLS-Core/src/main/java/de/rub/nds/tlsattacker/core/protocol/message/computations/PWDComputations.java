@@ -114,7 +114,7 @@ public class PWDComputations extends KeyExchangeComputations {
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
         int lsbSeed = savedSeed[0] & 1;
-        int lsbY = createdPoint.getY().getData().getLowestSetBit() == 0 ? 1 : 0;
+        int lsbY = createdPoint.getFieldY().getData().getLowestSetBit() == 0 ? 1 : 0;
         if (lsbSeed == lsbY) {
             createdPoint = curve.inverse(createdPoint);
         }
@@ -136,11 +136,9 @@ public class PWDComputations extends KeyExchangeComputations {
     /**
      * Calculates the prf output for the dragonfly password element
      *
-     * Note that in the RFC, the order of secret and seed is actually switched
-     * (the seed is used as the secret in the prf and the context as the
-     * seed/message). It is unclear if the author intentionally switched the
-     * order of the arguments compared to the TLS RFC or if this is actually
-     * intentional.
+     * Note that in the RFC, the order of secret and seed is actually switched (the seed is used as the secret in the
+     * prf and the context as the seed/message). It is unclear if the author intentionally switched the order of the
+     * arguments compared to the TLS RFC or if this is actually intentional.
      *
      * @param chooser
      * @param seed
@@ -205,8 +203,7 @@ public class PWDComputations extends KeyExchangeComputations {
     private Point passwordElement;
 
     /**
-     * private secret used to calculate the premaster secret and part of the
-     * scalar that gets send to the peer
+     * private secret used to calculate the premaster secret and part of the scalar that gets send to the peer
      */
     private BigInteger privateKeyScalar;
 

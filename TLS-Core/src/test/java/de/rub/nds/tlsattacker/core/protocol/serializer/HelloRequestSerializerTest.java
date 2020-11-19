@@ -45,8 +45,7 @@ public class HelloRequestSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * HelloRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class HelloRequestSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

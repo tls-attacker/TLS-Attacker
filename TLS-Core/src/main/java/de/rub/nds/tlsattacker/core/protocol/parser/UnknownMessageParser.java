@@ -29,8 +29,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to
-     * start parsing
+     * Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
@@ -53,9 +52,8 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
     }
 
     /**
-     * Since we don't know what this is, we cannot make assumptions about length
-     * fields or the such, so we assume that all data we received in the array
-     * is part of this unknown message
+     * Since we don't know what this is, we cannot make assumptions about length fields or the such, so we assume that
+     * all data we received in the array is part of this unknown message
      */
     private void parseCompleteMessage(UnknownMessage msg) {
         msg.setCompleteResultingMessage(parseByteArrayField(getBytesLeft()));

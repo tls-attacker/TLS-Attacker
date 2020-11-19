@@ -54,8 +54,7 @@ public class SupportedVersionsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * SupportedVersionsExtensionParser.
+     * Test of parseExtensionMessageContent method, of class SupportedVersionsExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

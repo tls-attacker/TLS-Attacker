@@ -68,8 +68,7 @@ public class FragmentStream {
     }
 
     /**
-     * Returns the fragment streams contents and fills any holes in it with the
-     * specified filling byte
+     * Returns the fragment streams contents and fills any holes in it with the specified filling byte
      *
      * @param fillingByte
      * the byte with which we fill holes in the fragment

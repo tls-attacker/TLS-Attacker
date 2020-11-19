@@ -26,8 +26,7 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to
-     * start parsing
+     * Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version

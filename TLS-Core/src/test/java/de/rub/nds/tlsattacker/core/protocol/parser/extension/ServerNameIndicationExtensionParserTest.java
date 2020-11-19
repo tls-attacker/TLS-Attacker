@@ -74,8 +74,7 @@ public class ServerNameIndicationExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * ServerNameIndicationExtensionParser.
+     * Test of parseExtensionMessageContent method, of class ServerNameIndicationExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

@@ -219,9 +219,8 @@ public class TlsContext {
     private byte[] clientSessionId;
 
     /**
-     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and
-     * TLS, this is explicitly transmitted in the handshake and cannot be
-     * derived from other data.
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and TLS, this is explicitly transmitted in
+     * the handshake and cannot be derived from other data.
      */
     private byte[] ssl2Iv;
 
@@ -236,8 +235,7 @@ public class TlsContext {
     private Certificate clientCertificate;
 
     /**
-     * Collects messages for computation of the Finished and CertificateVerify
-     * hashes
+     * Collects messages for computation of the Finished and CertificateVerify hashes
      */
     private MessageDigestCollector digest;
 
@@ -554,8 +552,8 @@ public class TlsContext {
     private Point serverPWDElement;
 
     /**
-     * Last application message data received/send by this context. This is
-     * especially useful for forwarding application messages via ForwardAction.
+     * Last application message data received/send by this context. This is especially useful for forwarding application
+     * messages via ForwardAction.
      */
     private byte[] lastHandledApplicationMessageData;
 
@@ -585,33 +583,28 @@ public class TlsContext {
     private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /**
-     * The "secure_renegotiation" flag of the Renegotiation Indication Extension
-     * as defined in RFC5746. Indicates whether secure renegotiation is in use
-     * for the connection. Note that this flag reflects a connection "state" and
-     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO).
-     * The latter merely says that the extension was send by client or server.
+     * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in RFC5746. Indicates
+     * whether secure renegotiation is in use for the connection. Note that this flag reflects a connection "state" and
+     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO). The latter merely says that the
+     * extension was send by client or server.
      */
     private boolean secureRenegotiation = false;
 
     /**
-     * Whether to use the extended master secret or not. This flag is set if the
-     * EMS extension was send by both peers. Note that this flag reflects a
-     * connection "state" and differs from
-     * isProposedTlsExtensions*(ExtensionType. EXTENDED_MASTER_SECRET). The
-     * latter merely says that the extension was sent by client or server.
+     * Whether to use the extended master secret or not. This flag is set if the EMS extension was send by both peers.
+     * Note that this flag reflects a connection "state" and differs from isProposedTlsExtensions*(ExtensionType.
+     * EXTENDED_MASTER_SECRET). The latter merely says that the extension was sent by client or server.
      */
     private boolean useExtendedMasterSecret;
 
     private Boolean earlyCleanShutdown = false;
     /**
-     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is
-     * set.
+     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is set.
      */
     private String httpsCookieName = null;
 
     /**
-     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie
-     * is set.
+     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie is set.
      */
     private String httpsCookieValue = null;
 
@@ -659,9 +652,8 @@ public class TlsContext {
     }
 
     /**
-     * This constructor assumes that the config holds exactly one connection
-     * end. This is usually used when working with the default connection end in
-     * single context scenarios.
+     * This constructor assumes that the config holds exactly one connection end. This is usually used when working with
+     * the default connection end in single context scenarios.
      *
      * @param config
      * The Config for which the TlsContext should be created
@@ -1951,8 +1943,8 @@ public class TlsContext {
     }
 
     /**
-     * Initialize the context's transport handler. Start listening or connect to
-     * a server, depending on our connection end type.
+     * Initialize the context's transport handler. Start listening or connect to a server, depending on our connection
+     * end type.
      */
     public void initTransportHandler() {
 

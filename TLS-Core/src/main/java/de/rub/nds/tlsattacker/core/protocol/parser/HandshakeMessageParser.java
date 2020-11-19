@@ -48,8 +48,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to
-     * start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param expectedType
@@ -67,8 +66,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     }
 
     /**
-     * Reads the next bytes as a HandshakeMessageType and writes them in the
-     * message
+     * Reads the next bytes as a HandshakeMessageType and writes them in the message
      *
      * @param message
      * Message to write in
@@ -110,8 +108,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     protected abstract T createHandshakeMessage();
 
     /**
-     * Reads the next bytes as the ExtensionLength and writes them in the
-     * message
+     * Reads the next bytes as the ExtensionLength and writes them in the message
      *
      * @param message
      * Message to write in
@@ -122,8 +119,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     }
 
     /**
-     * Reads the next bytes as the ExtensionBytes and writes them in the message
-     * and adds parsed Extensions to the message
+     * Reads the next bytes as the ExtensionBytes and writes them in the message and adds parsed Extensions to the
+     * message
      *
      * @param message
      * Message to write in
@@ -157,8 +154,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     }
 
     /**
-     * Checks if the message has an ExtensionLength field, by checking if the
-     * value specified in the length field is big enough to allow it.
+     * Checks if the message has an ExtensionLength field, by checking if the value specified in the length field is big
+     * enough to allow it.
      *
      * @param message
      * Message to check
@@ -170,8 +167,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     }
 
     /**
-     * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if
-     * there are Extensions present.
+     * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if there are Extensions present.
      *
      * @param message
      * Message to check

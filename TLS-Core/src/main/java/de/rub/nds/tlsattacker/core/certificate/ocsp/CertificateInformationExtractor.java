@@ -121,9 +121,8 @@ public class CertificateInformationExtractor {
         List<Asn1Encodable> asn1Encodables = asn1Parser.parse(ParseOcspTypesContext.NAME);
 
         /*
-         * Navigate through the mess to the OCSP URL. First, just unroll the two
-         * outer ASN.1 sequences to get to most of the information stored in a
-         * X.509 certificate.
+         * Navigate through the mess to the OCSP URL. First, just unroll the two outer ASN.1 sequences to get to most of
+         * the information stored in a X.509 certificate.
          */
         Asn1Sequence innerObjects = (Asn1Sequence) ((Asn1Sequence) asn1Encodables.get(0)).getChildren().get(0);
 
@@ -163,9 +162,8 @@ public class CertificateInformationExtractor {
             throw new NoSuchFieldException("No 'Authority Info Access' entry found in certificate.");
         }
         /*
-         * get(0) is the Object Identifier we checked, get(1) the Octet String
-         * with the content the Octet String has a sequence as child, and one of
-         * them has the desired OCSP information. Almost there!
+         * get(0) is the Object Identifier we checked, get(1) the Octet String with the content the Octet String has a
+         * sequence as child, and one of them has the desired OCSP information. Almost there!
          */
         Asn1EncapsulatingOctetString authorityInfoAccessContent =
             (Asn1EncapsulatingOctetString) authorityInfoAccess.getChildren().get(1);
@@ -325,14 +323,11 @@ public class CertificateInformationExtractor {
 
     public Certificate retrieveIssuerCertificate() throws IOException, ParserException, NoSuchFieldException {
         /*
-         * Certificate chain recreation sucks. We only support .crt /
-         * DER-encoded certificates for extraction, as this seems to be the most
-         * common one out there and is somewhat easy to parse with BouncyCastle.
-         * This only works somewhat reliably with an intermediate CA as issuer.
-         * Any root CA will likely fail, as an URL to the issuer certificate is
-         * often not given in the intermediate's certificate (since they're
-         * often stored locally). So take care, the following code will likely
-         * fail often.
+         * Certificate chain recreation sucks. We only support .crt / DER-encoded certificates for extraction, as this
+         * seems to be the most common one out there and is somewhat easy to parse with BouncyCastle. This only works
+         * somewhat reliably with an intermediate CA as issuer. Any root CA will likely fail, as an URL to the issuer
+         * certificate is often not given in the intermediate's certificate (since they're often stored locally). So
+         * take care, the following code will likely fail often.
          */
 
         // Get URL for the issuer certificate from main certificate

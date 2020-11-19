@@ -39,8 +39,7 @@ public class ServerNameIndicationExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * ServerNameIndicationExtensionPreparator.
+     * Test of prepareExtensionContent method, of class ServerNameIndicationExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContentWithOnePair() {

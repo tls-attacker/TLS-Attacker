@@ -47,8 +47,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
     }
 
     /**
-     * Returns a list of all the modifiable variable holders in the object,
-     * including this instance
+     * Returns a list of all the modifiable variable holders in the object, including this instance
      *
      * @return All ModifiableVariableHolders
      */

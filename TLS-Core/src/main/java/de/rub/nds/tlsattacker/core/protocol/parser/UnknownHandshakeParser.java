@@ -26,8 +26,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to
-     * start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version

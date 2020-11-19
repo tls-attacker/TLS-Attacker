@@ -80,7 +80,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData())));
+            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
+                .getData())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -179,7 +180,7 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         Point sharedSecret =
             curve.mult(privateKeyScalar, curve.add(curve.mult(peerScalar, passwordElement), peerElement));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData());
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
     }
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {

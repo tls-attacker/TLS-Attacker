@@ -21,8 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class PaddingExtensionMessage extends ExtensionMessage {
 
     /**
-     * Contains the padding bytes of the padding extension. The bytes shall be
-     * empty.
+     * Contains the padding bytes of the padding extension. The bytes shall be empty.
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray paddingBytes;

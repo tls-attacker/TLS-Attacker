@@ -24,6 +24,7 @@ import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.math.BigInteger;
+import java.security.cert.CertificateParsingException;
 import java.util.List;
 
 public class CertificateStatusParser {
@@ -46,12 +47,10 @@ public class CertificateStatusParser {
         Asn1Sequence requestInformation = (Asn1Sequence) certStatusSeq.getChildren().get(0);
 
         /*
-         * At first, get information about the processed request. This MAY
-         * differ from the original request sometimes, as some responders don't
-         * need all values to match to give a response for a given certificate.
-         * DigiCert's OCSP responder, for example, also accepts an invalid
-         * issuerKeyHash in a request if the other values match up and returns
-         * the correct one in the response.
+         * At first, get information about the processed request. This MAY differ from the original request sometimes,
+         * as some responders don't need all values to match to give a response for a given certificate. DigiCert's OCSP
+         * responder, for example, also accepts an invalid issuerKeyHash in a request if the other values match up and
+         * returns the correct one in the response.
          */
 
         Asn1Sequence hashAlgorithmSequence = (Asn1Sequence) requestInformation.getChildren().get(0);
@@ -83,10 +82,8 @@ public class CertificateStatusParser {
         }
 
         /*
-         * And here comes the revocation status. ASN.1 Tool has no support for
-         * parsing Implicit types yet and therefore returns either Null or
-         * EndOfContent for a 'good' status, so we treat them both as good
-         * status.
+         * And here comes the revocation status. ASN.1 Tool has no support for parsing Implicit types yet and therefore
+         * returns either Null or EndOfContent for a 'good' status, so we treat them both as good status.
          */
 
         Asn1Encodable certStatusObject = certStatusSeq.getChildren().get(1);
@@ -112,6 +109,9 @@ public class CertificateStatusParser {
                     }
                     break;
                 case 2:
+                    certificateStatusValue = 2; // unknown
+                    break;
+                default:
                     certificateStatusValue = 2; // unknown
                     break;
             }

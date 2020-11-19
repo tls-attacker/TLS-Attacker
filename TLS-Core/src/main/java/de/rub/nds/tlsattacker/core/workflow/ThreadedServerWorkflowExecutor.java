@@ -25,8 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Execute a workflow trace for each new connection/socket that connects to the
- * server.
+ * Execute a workflow trace for each new connection/socket that connects to the server.
  *
  * Highly experimental. Just a starting point.
  */

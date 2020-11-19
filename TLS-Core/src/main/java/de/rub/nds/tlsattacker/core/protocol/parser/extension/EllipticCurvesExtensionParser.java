@@ -38,8 +38,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
     }
 
     /**
-     * Reads the next bytes as the SupportedCurvesLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the SupportedCurvesLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -50,8 +49,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
     }
 
     /**
-     * Reads the next bytes as the SupportedCurves of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the SupportedCurves of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

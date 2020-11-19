@@ -20,8 +20,7 @@ public class EllipticCurvesExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * EllipticCurvesExtensionSerializer.
+     * Test of serializeExtensionContent method, of class EllipticCurvesExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

@@ -18,8 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Collector used for storing and assembling DTLS fragments. It provides support
- * for disorderly fragment insertion and fragment overlap.
+ * Collector used for storing and assembling DTLS fragments. It provides support for disorderly fragment insertion and
+ * fragment overlap.
  */
 public class FragmentCollector {
 
@@ -46,12 +46,10 @@ public class FragmentCollector {
     }
 
     /**
-     * Adds a fragment into the fragmentStream. If the would not be added an
-     * IllegalDtlsFragmentException is thrown. This can for example be the case
-     * if the fragment is not fitting into the data stream. If a fragment would
-     * be added but is rewriting previous messages in the stream, these messages
-     * are marked as not interpreted. and the parameters of the
-     * fragmentCollector are rewritten.
+     * Adds a fragment into the fragmentStream. If the would not be added an IllegalDtlsFragmentException is thrown.
+     * This can for example be the case if the fragment is not fitting into the data stream. If a fragment would be
+     * added but is rewriting previous messages in the stream, these messages are marked as not interpreted. and the
+     * parameters of the fragmentCollector are rewritten.
      *
      */
     public void addFragment(DtlsHandshakeMessageFragment fragment) {
@@ -72,8 +70,8 @@ public class FragmentCollector {
     }
 
     /**
-     * Tests if a Fragment would be added into the fragmentStream. The test
-     * depends on config flags and if the fragment is fitting into the stream.
+     * Tests if a Fragment would be added into the fragmentStream. The test depends on config flags and if the fragment
+     * is fitting into the stream.
      *
      * @param fragment
      * the fragment that should be tested.
@@ -94,9 +92,8 @@ public class FragmentCollector {
     }
 
     /**
-     * Returns true for fragments which "fit" the collector, that is they share
-     * the type, length and message sequence with the first fragment added to
-     * the collector.
+     * Returns true for fragments which "fit" the collector, that is they share the type, length and message sequence
+     * with the first fragment added to the collector.
      *
      * @param fragment
      * @return true if fragment fits the collector, false if it doesn't
@@ -112,8 +109,7 @@ public class FragmentCollector {
     }
 
     /**
-     * Tests if the fragment if added to the fragmentStream would rewrite
-     * previously received messages
+     * Tests if the fragment if added to the fragmentStream would rewrite previously received messages
      *
      * @param fragment
      * Fragment that should be tested
@@ -125,9 +121,8 @@ public class FragmentCollector {
     }
 
     /**
-     * Assembles collected fragments into a combined fragment. Note that missing
-     * bytes are replaced by 0. Throws an exception if the collector
-     * {@link #isEmpty()}.
+     * Assembles collected fragments into a combined fragment. Note that missing bytes are replaced by 0. Throws an
+     * exception if the collector {@link #isEmpty()}.
      */
     public DtlsHandshakeMessageFragment buildCombinedFragment() {
         if (!isMessageComplete()) {
@@ -148,25 +143,22 @@ public class FragmentCollector {
     }
 
     /*
-     * Combines the content in collected fragments, filling the gaps with 0s.
-     * Note: the implementation relies on the sorted nature of {@link
-     * fragmentData}.
+     * Combines the content in collected fragments, filling the gaps with 0s. Note: the implementation relies on the
+     * sorted nature of {@link fragmentData}.
      */
     private byte[] getCombinedContent() {
         return fragmentStream.getCompleteTruncatedStream();
     }
 
     /**
-     * Returns true if enough messages have been received to assemble the
-     * message. Otherwise returns false.
+     * Returns true if enough messages have been received to assemble the message. Otherwise returns false.
      */
     public boolean isMessageComplete() {
         return fragmentStream.isComplete(messageLength);
     }
 
     /**
-     * Returns true if the message from this fragment stream has already been
-     * handled by the calling layer
+     * Returns true if the message from this fragment stream has already been handled by the calling layer
      *
      * @return
      */

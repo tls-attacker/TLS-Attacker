@@ -34,8 +34,7 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
     }
 
     /**
-     * Parses the content of the given byte array to a
-     * SessionTicketTLSExtensionMessage
+     * Parses the content of the given byte array to a SessionTicketTLSExtensionMessage
      *
      * @param msg
      * Message, which will hold the parsed extension

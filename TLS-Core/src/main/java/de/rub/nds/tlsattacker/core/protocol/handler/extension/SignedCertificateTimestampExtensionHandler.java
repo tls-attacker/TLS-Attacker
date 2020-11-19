@@ -76,8 +76,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     }
 
     /**
-     * Parses the content of a SignedCertificateTimestampExtensionMessage to the
-     * actual Chooser
+     * Parses the content of a SignedCertificateTimestampExtensionMessage to the actual Chooser
      *
      * @param message
      * A SingedCertificateTimestampExtensionMessage

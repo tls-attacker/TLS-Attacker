@@ -36,8 +36,7 @@ public class DHEServerKeyExchangePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * DHEServerKeyExchangePreparator.
+     * Test of prepareHandshakeMessageContents method, of class DHEServerKeyExchangePreparator.
      */
     @Test
     public void testPrepare() {

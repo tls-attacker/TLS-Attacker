@@ -71,8 +71,7 @@ public class SessionTicketTLSExtensionParserTest {
     }
 
     /**
-     * Tests the parseExtensionMessageContent method of the
-     * SessionTicketTLSExtensionParser.
+     * Tests the parseExtensionMessageContent method of the SessionTicketTLSExtensionParser.
      */
 
     @Test

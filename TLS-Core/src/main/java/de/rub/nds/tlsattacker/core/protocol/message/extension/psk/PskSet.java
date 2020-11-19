@@ -38,14 +38,12 @@ public class PskSet implements Serializable {
     private byte[] preSharedKey;
 
     /**
-     * TicketAge value to be used to generate the obfuscated ticket age for the
-     * given PSKs
+     * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
      */
     private String ticketAge;
 
     /**
-     * TicketAgeAdd value to be used to obfuscate the ticket age for the given
-     * PSKs
+     * TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] ticketAgeAdd;

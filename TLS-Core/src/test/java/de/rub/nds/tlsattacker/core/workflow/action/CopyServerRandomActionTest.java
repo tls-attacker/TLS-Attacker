@@ -63,8 +63,7 @@ public class CopyServerRandomActionTest {
     }
 
     /**
-     * Test of getSrc/DstContextAlias methods, of class
-     * ChangeServerRandomAction.
+     * Test of getSrc/DstContextAlias methods, of class ChangeServerRandomAction.
      */
     @Test
     public void testGetAlias() {

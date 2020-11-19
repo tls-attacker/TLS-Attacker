@@ -111,11 +111,9 @@ public class OCSPResponseParser {
         // Syntax in RFC 6960.
 
         /*
-         * Asn1Explicit Offset 0: Version Asn1Explicit Offset 1: Either
-         * responderName, or at the end of the responseData: responseExtensions
-         * Asn1Explicit Offset 2: responderHash Asn1PrimitiveGeneralizedTime:
-         * producedAt Asn1Sequence: responses, which contain statuses for each
-         * requested certificate
+         * Asn1Explicit Offset 0: Version Asn1Explicit Offset 1: Either responderName, or at the end of the
+         * responseData: responseExtensions Asn1Explicit Offset 2: responderHash Asn1PrimitiveGeneralizedTime:
+         * producedAt Asn1Sequence: responses, which contain statuses for each requested certificate
          */
 
         for (Asn1Encodable responseDataObject : tbsResponseData.getChildren()) {
@@ -137,7 +135,7 @@ public class OCSPResponseParser {
                             parseBasicResponseExtensions((Asn1Sequence) childObject, responseMessage);
                         }
                         break;
-                    case 2:
+                    default:
                         // Workaround for yet another ASN.1 Tool mismatch
                         if (childObject instanceof Asn1PrimitiveOctetString) {
                             responderKey = ((Asn1PrimitiveOctetString) childObject).getValue();

@@ -28,8 +28,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HelloMessageParser is supposed to start
-     * parsing
+     * Position in the array where the HelloMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HelloMessageParser is supposed to parse
      * @param version
@@ -77,8 +76,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuiteLength and writes them in the
-     * message
+     * Reads the next bytes as the CypherSuiteLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -100,8 +98,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CompressionLength and writes them in the
-     * message
+     * Reads the next bytes as the CompressionLength and writes them in the message
      *
      * @param msg
      * Message to write in

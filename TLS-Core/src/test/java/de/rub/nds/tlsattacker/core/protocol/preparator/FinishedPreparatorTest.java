@@ -48,8 +48,7 @@ public class FinishedPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * FinishedPreparator.
+     * Test of prepareHandshakeMessageContents method, of class FinishedPreparator.
      */
     @Test
     public void testPrepare() {
@@ -128,8 +127,7 @@ public class FinishedPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method for TLS 1.3, of class
-     * FinishedPreparator.
+     * Test of prepareHandshakeMessageContents method for TLS 1.3, of class FinishedPreparator.
      */
     @Test
     public void testPrepareTLS13() {

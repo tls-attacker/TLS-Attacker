@@ -30,8 +30,7 @@ public class UnknownMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * UnknownSerializer.
+     * Test of serializeProtocolMessageContent method, of class UnknownSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

@@ -24,8 +24,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.util.Arrays;
 
 /**
- * SSLUtils is a class with static methods that are supposed to calculate
- * SSL-specific data.
+ * SSLUtils is a class with static methods that are supposed to calculate SSL-specific data.
  */
 public class SSLUtils {
 
@@ -38,15 +37,14 @@ public class SSLUtils {
     public static final byte[] SHA_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
-     * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC',
-     * as stated in RFC-6101. See also
+     * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in RFC-6101. See also
      * {@link org.bouncycastle.crypto.tls.TlsUtils} Version 1.58
      */
     public static final byte[][] SSL3_CONST = genSSL3Const();
 
     /**
-     * This method is borrowed from package-protected method
-     * {@link org.bouncycastle.crypto.tls.TlsUtils#genSSL3Const()} Version 1.58
+     * This method is borrowed from package-protected method {@link org.bouncycastle.crypto.tls.TlsUtils#genSSL3Const()}
+     * Version 1.58
      *
      * @return the generated SSL3 consts
      */
@@ -63,8 +61,7 @@ public class SSLUtils {
 
     /**
      * This method is borrowed from package-protected method
-     * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateMasterSecret_SSL(byte[], byte[])}
-     * Version 1.58
+     * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateMasterSecret_SSL(byte[], byte[])} Version 1.58
      *
      * @param preMasterSecret
      * the premastersecret
@@ -101,8 +98,7 @@ public class SSLUtils {
 
     /**
      * This method is borrowed from package-protected method
-     * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int)}
-     * Version 1.58
+     * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int)} Version 1.58
      *
      * @param masterSecret
      * The master secret
@@ -147,9 +143,8 @@ public class SSLUtils {
     /**
      * @param chooser
      * The Chooser to use
-     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
-     * RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54), server(0x53525652)
-     * } Sender;
+     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished: enum {
+     * client(0x434C4E54), server(0x53525652) } Sender;
      */
     public static byte[] getSenderConstant(Chooser chooser) {
         return getSenderConstant(chooser.getConnectionEndType());
@@ -158,9 +153,8 @@ public class SSLUtils {
     /**
      * @param connectionEndType
      * The ConnectionEndType
-     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
-     * RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54), server(0x53525652)
-     * } Sender;
+     * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See RFC-6101: 5.6.9. Finished: enum {
+     * client(0x434C4E54), server(0x53525652) } Sender;
      */
     public static byte[] getSenderConstant(ConnectionEndType connectionEndType) {
         if (null == connectionEndType) {
@@ -204,8 +198,7 @@ public class SSLUtils {
     }
 
     /**
-     * From RFC-6101: pad_2: The character 0x5c repeated 48 times for MD5 or 40
-     * times for SHA.
+     * From RFC-6101: pad_2: The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
      *
      * @param macAlgorithm
      * The mac algorithm to use
@@ -246,13 +239,12 @@ public class SSLUtils {
      *
      * The MAC is generated as:
      *
-     * hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num +
-     * SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
+     * hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type +
+     * SSLCompressed.length + SSLCompressed.fragment));
      *
      * @param input
-     * is the input for the chosen hashAlgorithm, which is (seq_num +
-     * SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment) from
-     * the fully defined hashFunction in the description.
+     * is the input for the chosen hashAlgorithm, which is (seq_num + SSLCompressed.type + SSLCompressed.length +
+     * SSLCompressed.fragment) from the fully defined hashFunction in the description.
      * @param macWriteSecret
      * is MAC_write_secret from the defined hashFunction.
      * @param macAlgorithm
@@ -276,12 +268,10 @@ public class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.8. Certificate Verify This message is used to provide
-     * explicit verification of a client certificate. ... struct { Signature
-     * signature; } CertificateVerify; CertificateVerify.signature.md5_hash
-     * MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
-     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 +
-     * SHA(handshake_messages + master_secret + pad_1));
+     * From RFC-6101: 5.6.8. Certificate Verify This message is used to provide explicit verification of a client
+     * certificate. ... struct { Signature signature; } CertificateVerify; CertificateVerify.signature.md5_hash
+     * MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret + pad_1)); Certificate.signature.sha_hash
+     * SHA(master_secret + pad_2 + SHA(handshake_messages + master_secret + pad_1));
      *
      * @param handshakeMessages
      * handshake_messages
@@ -294,13 +284,10 @@ public class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.9. Finished A finished message is always sent
-     * immediately after a change cipher spec ... enum { client(0x434C4E54),
-     * server(0x53525652) } Sender; struct { opaque md5_hash[16]; opaque
-     * sha_hash[20]; } Finished; md5_hash: MD5(master_secret + pad2 +
-     * MD5(handshake_messages + Sender + master_secret + pad1)); sha_hash:
-     * SHA(master_secret + pad2 + SHA(handshake_messages + Sender +
-     * master_secret + pad1));
+     * From RFC-6101: 5.6.9. Finished A finished message is always sent immediately after a change cipher spec ... enum
+     * { client(0x434C4E54), server(0x53525652) } Sender; struct { opaque md5_hash[16]; opaque sha_hash[20]; } Finished;
+     * md5_hash: MD5(master_secret + pad2 + MD5(handshake_messages + Sender + master_secret + pad1)); sha_hash:
+     * SHA(master_secret + pad2 + SHA(handshake_messages + Sender + master_secret + pad1));
      *
      * @param handshakeMessages
      * handshake_messages
@@ -317,8 +304,8 @@ public class SSLUtils {
     }
 
     /**
-     * Calculates the concatenation of a nested MD5 and a nested SHA-1 checksum
-     * like specified in RFC-6101 for CertificateVerify- and Finished-Messages.
+     * Calculates the concatenation of a nested MD5 and a nested SHA-1 checksum like specified in RFC-6101 for
+     * CertificateVerify- and Finished-Messages.
      *
      * @param input
      * The input
@@ -353,13 +340,11 @@ public class SSLUtils {
      *
      * 5.6.9.
      *
-     * Finished A finished message is always sent immediately after a change
-     * cipher spec message to verify that the key exchange and authentication
-     * processes were successful. The finished message is the first protected
-     * with the just-negotiated algorithms, keys, and secrets. No acknowledgment
-     * of the finished message is required; parties may begin sending encrypted
-     * data immediately after sending the finished message. Recipients of
-     * finished messages must verify that the contents are correct.
+     * Finished A finished message is always sent immediately after a change cipher spec message to verify that the key
+     * exchange and authentication processes were successful. The finished message is the first protected with the
+     * just-negotiated algorithms, keys, and secrets. No acknowledgment of the finished message is required; parties may
+     * begin sending encrypted data immediately after sending the finished message. Recipients of finished messages must
+     * verify that the contents are correct.
      *
      * enum { client(0x434C4E54), server(0x53525652) } Sender;
      */

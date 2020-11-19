@@ -48,7 +48,7 @@ public class TestECOracle extends ECOracle {
         if (result.isAtInfinity()) {
             return false;
         } else {
-            return (result.getX().getData().compareTo(guessedSecret) == 0);
+            return (result.getFieldX().getData().compareTo(guessedSecret) == 0);
         }
     }
 

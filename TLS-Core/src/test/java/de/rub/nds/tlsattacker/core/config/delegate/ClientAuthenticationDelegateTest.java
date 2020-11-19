@@ -30,8 +30,7 @@ public class ClientAuthenticationDelegateTest {
     }
 
     /**
-     * Test of isClientAuthentication method, of class
-     * ClientAuthenticationDelegate.
+     * Test of isClientAuthentication method, of class ClientAuthenticationDelegate.
      */
     @Test
     public void testIsClientAuthentication() {
@@ -43,8 +42,7 @@ public class ClientAuthenticationDelegateTest {
     }
 
     /**
-     * Test of setClientAuthentication method, of class
-     * ClientAuthenticationDelegate.
+     * Test of setClientAuthentication method, of class ClientAuthenticationDelegate.
      */
     @Test
     public void testSetClientAuthentication() {

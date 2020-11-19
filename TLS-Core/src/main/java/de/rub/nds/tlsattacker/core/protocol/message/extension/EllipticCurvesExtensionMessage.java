@@ -17,8 +17,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
- * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as
- * "supported_groups" extension
+ * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
  */
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 

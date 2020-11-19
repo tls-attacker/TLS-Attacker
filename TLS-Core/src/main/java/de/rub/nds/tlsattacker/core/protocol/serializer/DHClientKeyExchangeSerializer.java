@@ -51,8 +51,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
@@ -60,8 +59,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     }
 
     /**
-     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());

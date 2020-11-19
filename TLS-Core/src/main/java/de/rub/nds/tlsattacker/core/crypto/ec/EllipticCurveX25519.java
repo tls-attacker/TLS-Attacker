@@ -50,11 +50,11 @@ public class EllipticCurveX25519 extends RFC7748Curve {
     }
 
     public byte[] encodeCoordinate(BigInteger coordinate) {
-        byte[] xEnc =
+        byte[] encX =
             ArrayConverter.bigIntegerToNullPaddedByteArray(coordinate,
                 ArrayConverter.bigIntegerToByteArray(getModulus()).length);
-        ArrayUtils.reverse(xEnc);
-        return xEnc;
+        ArrayUtils.reverse(encX);
+        return encX;
     }
 
 }

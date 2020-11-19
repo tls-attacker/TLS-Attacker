@@ -45,8 +45,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersionLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the supportedVersionLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -57,8 +56,7 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     }
 
     /**
-     * Reads the next bytes as the supportedVersion of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the supportedVersion of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

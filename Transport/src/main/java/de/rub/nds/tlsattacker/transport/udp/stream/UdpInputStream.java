@@ -38,9 +38,8 @@ public class UdpInputStream extends InputStream {
     private int index = 0;
 
     /**
-     * If set to true, on datagram receipt it connects the socket to the
-     * datagram's source address. This is useful if the source address is not
-     * pre-set, such as in {@link ServerUdpTransportHandler}'s case.
+     * If set to true, on datagram receipt it connects the socket to the datagram's source address. This is useful if
+     * the source address is not pre-set, such as in {@link ServerUdpTransportHandler}'s case.
      */
     private boolean connectOnReceive;
 
@@ -57,10 +56,10 @@ public class UdpInputStream extends InputStream {
     }
 
     /**
-     * Blocks until data is received from a UDP peer. Will never return -1, as
-     * UDP has no mechanism of notifying that all data has been sent. To avoid
-     * blocking indefinitely, should be called only once data is available.
+     * Blocks until data is received from a UDP peer. Will never return -1, as UDP has no mechanism of notifying that
+     * all data has been sent. To avoid blocking indefinitely, should be called only once data is available.
      */
+    @SuppressWarnings("CheckStyle")
     @Override
     public int read() throws IOException {
         // we wait until data is available

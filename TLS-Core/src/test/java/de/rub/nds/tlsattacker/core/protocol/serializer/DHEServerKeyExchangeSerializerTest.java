@@ -62,8 +62,7 @@ public class DHEServerKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * DHEServerKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class DHEServerKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

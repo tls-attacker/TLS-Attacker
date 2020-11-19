@@ -50,8 +50,7 @@ public class HRRKeyShareExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * HRRKeyShareExtensionParser.
+     * Test of parseExtensionMessageContent method, of class HRRKeyShareExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

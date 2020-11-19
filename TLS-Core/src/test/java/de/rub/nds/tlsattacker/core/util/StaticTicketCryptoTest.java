@@ -29,8 +29,8 @@ public class StaticTicketCryptoTest {
     }
 
     /**
-     * Test of encryptAES_128_CBC method, of class StaticTicketCrypto. Assuming
-     * that the key, iv and data has the correct length.
+     * Test of encryptAES_128_CBC method, of class StaticTicketCrypto. Assuming that the key, iv and data has the
+     * correct length.
      */
     @Test
     public void testEncryptAES_128_CBC() {
@@ -41,9 +41,8 @@ public class StaticTicketCryptoTest {
     }
 
     /**
-     * Test of decryptAES_128_CBC method, of class StaticTicketCrypto. Assuming
-     * that the key, iv and data has the correct length. Test vector from
-     * https://tools.ietf.org/html/rfc3602#section-4
+     * Test of decryptAES_128_CBC method, of class StaticTicketCrypto. Assuming that the key, iv and data has the
+     * correct length. Test vector from https://tools.ietf.org/html/rfc3602#section-4
      */
     @Test
     public void testDecryptAES_128_CBC() {
@@ -89,9 +88,8 @@ public class StaticTicketCryptoTest {
     }
 
     /**
-     * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
-     * that the key has the correct length. Test vector from
-     * https://tools.ietf.org/html/rfc4231#section-4.2
+     * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length.
+     * Test vector from https://tools.ietf.org/html/rfc4231#section-4.2
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
@@ -108,9 +106,8 @@ public class StaticTicketCryptoTest {
     }
 
     /**
-     * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
-     * that the key has the correct length. Test vector from
-     * https://tools.ietf.org/html/rfc4231#section-4.2
+     * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming that the key has the correct length. Test
+     * vector from https://tools.ietf.org/html/rfc4231#section-4.2
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */

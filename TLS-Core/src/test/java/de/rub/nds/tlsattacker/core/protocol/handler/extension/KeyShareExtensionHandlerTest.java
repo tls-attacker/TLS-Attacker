@@ -47,8 +47,7 @@ public class KeyShareExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
-     * Group: ECDH_X25519
+     * Test of adjustTLSContext method, of class KeyShareExtensionHandler. Group: ECDH_X25519
      */
     @Test
     public void testAdjustTLSContext() {

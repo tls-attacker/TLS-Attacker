@@ -37,8 +37,7 @@ public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExten
     }
 
     /**
-     * Reads the next bytes as the selectedGroup of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the selectedGroup of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

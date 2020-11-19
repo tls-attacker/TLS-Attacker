@@ -55,8 +55,7 @@ public class SessionTicketTLSExtensionSerializerTest {
     }
 
     /**
-     * Tests the serializeExtensionContent method of the
-     * SessionTicketTLSExtensionSerializer class
+     * Tests the serializeExtensionContent method of the SessionTicketTLSExtensionSerializer class
      */
     @Test
     public void testSerializeExtensionContent() {

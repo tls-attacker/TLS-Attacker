@@ -17,8 +17,7 @@ import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.util.Arrays;
 
 /**
- * An Implementation of X25519 which does not care if the private key does not
- * have the correct format
+ * An Implementation of X25519 which does not care if the private key does not have the correct format
  */
 public class ForgivingX25519Curve {
 
@@ -27,8 +26,7 @@ public class ForgivingX25519Curve {
     public static final int ELEMENT_SIZE = 32;
 
     /**
-     * Generates a publicKey for a given private key. The key is truncated or
-     * padded to the correct size if necessary
+     * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
      * @param privateKey
      * The private key to use
@@ -39,8 +37,7 @@ public class ForgivingX25519Curve {
     }
 
     /**
-     * Generates a publicKey for a given private key. The key is truncated or
-     * padded to the correct size if necessary
+     * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
      * @param privateKey
      * The private key to use

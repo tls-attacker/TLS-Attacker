@@ -25,8 +25,7 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to
-     * start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
@@ -37,8 +36,7 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
     }
 
     /**
-     * Reads the next bytes as the HandshakeMessageContent and writes them in
-     * the message
+     * Reads the next bytes as the HandshakeMessageContent and writes them in the message
      *
      * @param msg
      * Message to write in

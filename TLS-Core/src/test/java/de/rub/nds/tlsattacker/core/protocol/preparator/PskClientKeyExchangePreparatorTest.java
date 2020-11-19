@@ -36,8 +36,7 @@ public class PskClientKeyExchangePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * PskClientKeyExchangePreparator.
+     * Test of prepareHandshakeMessageContents method, of class PskClientKeyExchangePreparator.
      */
     @Test
     public void testPrepare() {

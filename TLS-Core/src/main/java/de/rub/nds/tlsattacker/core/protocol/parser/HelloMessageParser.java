@@ -34,8 +34,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HelloMessageParser is supposed to start
-     * parsing
+     * Position in the array where the HelloMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HelloMessageParser is supposed to parse
      * @param type
@@ -79,8 +78,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     }
 
     /**
-     * Reads the next bytes as the SessionID length and writes them in the
-     * message
+     * Reads the next bytes as the SessionID length and writes them in the message
      *
      * @param message
      * Message to write in

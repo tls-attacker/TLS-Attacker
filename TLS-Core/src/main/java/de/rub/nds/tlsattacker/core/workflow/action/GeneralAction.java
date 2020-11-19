@@ -20,8 +20,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * An action that can be used for testing or to provide defaults for the filter/
- * normalize methods.
+ * An action that can be used for testing or to provide defaults for the filter/ normalize methods.
  */
 public class GeneralAction extends TlsAction {
 

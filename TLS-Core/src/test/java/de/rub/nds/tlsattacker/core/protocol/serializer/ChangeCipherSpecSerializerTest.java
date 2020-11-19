@@ -39,8 +39,7 @@ public class ChangeCipherSpecSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * ChangeCipherSpecSerializer.
+     * Test of serializeProtocolMessageContent method, of class ChangeCipherSpecSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

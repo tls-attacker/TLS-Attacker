@@ -25,8 +25,7 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the ServerKeyExchangeParser is supposed to
-     * start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
      * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param expectedType

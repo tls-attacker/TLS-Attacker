@@ -64,8 +64,7 @@ public class PskEcDhClientKeyExchangeHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * PskEcDhClientKeyExchangeHandler.
+     * Test of adjustTLSContext method, of class PskEcDhClientKeyExchangeHandler.
      */
     @Test
     public void testAdjustTLSContext() {

@@ -56,14 +56,12 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage
-     * into the final byte[]. For RSA, PublicKeyLength actually is the length of
-     * the encrypted premaster secret.
+     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage into the final byte[]. For RSA,
+     * PublicKeyLength actually is the length of the encrypted premaster secret.
      *
-     * RFC 5246 states that "the RSA-encrypted PreMasterSecret in a
-     * ClientKeyExchange is preceded by two length bytes. These bytes are
-     * redundant in the case of RSA because the EncryptedPreMasterSecret is the
-     * only data in the ClientKeyExchange".
+     * RFC 5246 states that "the RSA-encrypted PreMasterSecret in a ClientKeyExchange is preceded by two length bytes.
+     * These bytes are redundant in the case of RSA because the EncryptedPreMasterSecret is the only data in the
+     * ClientKeyExchange".
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
@@ -71,9 +69,8 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
     }
 
     /**
-     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into
-     * the final byte[]. For RSA, the PublicKey field actually contains the
-     * encrypted premaster secret.
+     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into the final byte[]. For RSA, the PublicKey
+     * field actually contains the encrypted premaster secret.
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());

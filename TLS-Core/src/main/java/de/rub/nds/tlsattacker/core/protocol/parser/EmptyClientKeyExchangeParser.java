@@ -24,8 +24,7 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ClientKeyExchangeParser is supposed to
-     * start parsing
+     * Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
      * The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version

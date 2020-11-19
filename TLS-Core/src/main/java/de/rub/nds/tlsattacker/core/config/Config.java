@@ -167,18 +167,15 @@ public class Config implements Serializable {
     private List<FilterType> outputFilters;
 
     /**
-     * Whether filters return a copy of the input workflow trace or overwrite it
-     * in place. While copying would be preferred in general, overwriting might
-     * be desired in some scenarios for better performance.
+     * Whether filters return a copy of the input workflow trace or overwrite it in place. While copying would be
+     * preferred in general, overwriting might be desired in some scenarios for better performance.
      */
     private Boolean applyFiltersInPlace = true;
 
     /**
-     * Whether to keep explicit user settings in the workflow trace when
-     * applying filters or not. Filters might override explicit user definitions
-     * in the filtered workflow trace. For example, the DefaultFilter removes
-     * explicitly overwritten default connections. If this flag is true, the
-     * user defined connections would be restored afterwards.
+     * Whether to keep explicit user settings in the workflow trace when applying filters or not. Filters might override
+     * explicit user definitions in the filtered workflow trace. For example, the DefaultFilter removes explicitly
+     * overwritten default connections. If this flag is true, the user defined connections would be restored afterwards.
      */
     private Boolean filtersKeepUserSettings = true;
 
@@ -270,29 +267,29 @@ public class Config implements Serializable {
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
 
     /**
-     * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
-     * ticket since we initiate a new connection.
+     * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session ticket since we initiate a new
+     * connection.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] tlsSessionTicket = new byte[0];
 
     /**
-     * Renegotiation info for the RenegotiationInfo extension for the Client.
-     * It's an empty info since we initiate a new connection.
+     * Renegotiation info for the RenegotiationInfo extension for the Client. It's an empty info since we initiate a new
+     * connection.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientRenegotiationInfo = new byte[0];
 
     /**
-     * Renegotiation info for the RenegotiationInfo extension for the Client.
-     * It's an empty info since we initiate a new connection.
+     * Renegotiation info for the RenegotiationInfo extension for the Client. It's an empty info since we initiate a new
+     * connection.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerRenegotiationInfo = new byte[0];
 
     /**
-     * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
-     * It's an empty timestamp, since the server sends it.
+     * SignedCertificateTimestamp for the SignedCertificateTimestampExtension. It's an empty timestamp, since the server
+     * sends it.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSignedCertificateTimestamp = new byte[0];
@@ -337,8 +334,7 @@ public class Config implements Serializable {
     private byte[] secureRemotePasswordExtensionIdentifier = "UserName".getBytes(Charset.forName("UTF-8"));
 
     /**
-     * Default SRTP extension protection profiles The list contains every
-     * protection profile as in RFC 5764
+     * Default SRTP extension protection profiles The list contains every protection profile as in RFC 5764
      */
     private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
 
@@ -389,8 +385,7 @@ public class Config implements Serializable {
     private List<TrustedAuthority> trustedCaIndicationExtensionAuthorities;
 
     /**
-     * Default state for the client certificate type extension message (state
-     * "client").
+     * Default state for the client certificate type extension message (state "client").
      */
     private Boolean clientCertificateTypeExtensionMessageState = true;
 
@@ -430,8 +425,7 @@ public class Config implements Serializable {
     private WorkflowTraceType workflowTraceType = null;
 
     /**
-     * If the Default generated workflowtrace should contain Application data
-     * send by servers
+     * If the Default generated workflowtrace should contain Application data send by servers
      */
     private Boolean serverSendsApplicationData = false;
 
@@ -486,8 +480,7 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
-     * If we generate ClientHello with the EncryptedServerNameIndication
-     * extension
+     * If we generate ClientHello with the EncryptedServerNameIndication extension
      */
     private Boolean addEncryptedServerNameIndicationExtension = false;
 
@@ -641,8 +634,7 @@ public class Config implements Serializable {
     private Boolean addCertificateStatusRequestV2Extension = false;
 
     /**
-     * If set to true, timestamps will be updated upon execution of a
-     * workflowTrace
+     * If set to true, timestamps will be updated upon execution of a workflowTrace
      */
     private Boolean updateTimestamps = true;
 
@@ -702,8 +694,7 @@ public class Config implements Serializable {
     private Boolean enforceSettings = false;
 
     /**
-     * Stop as soon as all expected messages are received and don't wait for
-     * more
+     * Stop as soon as all expected messages are received and don't wait for more
      */
     private Boolean earlyStop = false;
 
@@ -712,8 +703,7 @@ public class Config implements Serializable {
     private Boolean stopTraceAfterUnexpected = false;
 
     /**
-     * ActionOptions that are automatically applied to Actions of the
-     * MessageFactory
+     * ActionOptions that are automatically applied to Actions of the MessageFactory
      */
     private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
@@ -817,8 +807,8 @@ public class Config implements Serializable {
     private Integer dtlsDefaultCookieLength = 20;
 
     /**
-     * Configures the maximum fragment length. This should not be confused with
-     * MTU (which includes the IP, UDP, record and DTLS headers).
+     * Configures the maximum fragment length. This should not be confused with MTU (which includes the IP, UDP, record
+     * and DTLS headers).
      */
     private Integer dtlsMaximumFragmentLength = 1400;
 
@@ -830,14 +820,12 @@ public class Config implements Serializable {
     private Boolean flushOnMessageTypeChange = true;
 
     /**
-     * If there is not enough space in the defined records, new records are
-     * dynamically added if not set, protocol message bytes that wont fit are
-     * discarded
+     * If there is not enough space in the defined records, new records are dynamically added if not set, protocol
+     * message bytes that wont fit are discarded
      */
     private Boolean createRecordsDynamically = true;
     /**
-     * When "Null" records are defined to be send, every message will be sent in
-     * at least one individual record
+     * When "Null" records are defined to be send, every message will be sent in at least one individual record
      */
     private Boolean createIndividualRecords = true;
 
@@ -847,15 +835,14 @@ public class Config implements Serializable {
     private RecordLayerType recordLayerType = RecordLayerType.RECORD;
 
     /**
-     * If this value is set the default workflowExecutor will remove all runtime
-     * values from the workflow trace and will only keep the relevant
-     * information
+     * If this value is set the default workflowExecutor will remove all runtime values from the workflow trace and will
+     * only keep the relevant information
      */
     private Boolean resetWorkflowTracesBeforeSaving = false;
 
     /**
-     * TLS-Attacker will not try to receive additional messages after the
-     * configured number of messages has been received
+     * TLS-Attacker will not try to receive additional messages after the configured number of messages has been
+     * received
      */
     private Boolean quickReceive = true;
 
@@ -1080,9 +1067,8 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
-     * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
-     * Extension defined in RFC5077, followed by additional TLS 1.3 draft 21
-     * NewSessionTicket parameters.
+     * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the Extension defined in RFC5077, followed by
+     * additional TLS 1.3 draft 21 NewSessionTicket parameters.
      */
     private Long sessionTicketLifetimeHint = 0L;
 
@@ -1113,8 +1099,7 @@ public class Config implements Serializable {
     private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
 
     /**
-     * If we should add ccs message to automatically generated handshakes (tls
-     * 1.3 only)
+     * If we should add ccs message to automatically generated handshakes (tls 1.3 only)
      */
     private Boolean tls13BackwardsCompatibilityMode = true;
 
@@ -1172,16 +1157,15 @@ public class Config implements Serializable {
         .hexStringToByteArray("963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
 
     /**
-     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as
-     * unencrypted messages if this option is set.
+     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as unencrypted messages if this option is
+     * set.
      */
     private Boolean parseInvalidRecordsUnencrypted = false;
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     /**
-     * Private Key of the Client for the EncryptedServerNameIndication
-     * extension.
+     * Private Key of the Client for the EncryptedServerNameIndication extension.
      */
     private BigInteger defaultEsniClientPrivateKey =
         new BigInteger(

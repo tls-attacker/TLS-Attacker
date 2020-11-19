@@ -19,8 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This classes handles the parsing of the Extended Random Extensions as defined
- * as in https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
+ * This classes handles the parsing of the Extended Random Extensions as defined as in
+ * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
 public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRandomExtensionMessage> {
 

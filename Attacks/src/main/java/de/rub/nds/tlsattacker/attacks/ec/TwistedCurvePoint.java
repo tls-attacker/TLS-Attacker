@@ -23,9 +23,8 @@ public class TwistedCurvePoint {
     private BigInteger publicPointBaseX;
 
     /**
-     * An appropriate coordinate used to fill bytes when no compression is used
-     * The attack does not require an Y-coordinate as we are targeting X-only
-     * ladders To save computations, this coordinate is the y-coordinate of the
+     * An appropriate coordinate used to fill bytes when no compression is used The attack does not require an
+     * Y-coordinate as we are targeting X-only ladders To save computations, this coordinate is the y-coordinate of the
      * point obtained from the transformed twisted curve
      */
     private BigInteger publicPointBaseY;
@@ -33,7 +32,7 @@ public class TwistedCurvePoint {
     /**
      * The value we are using to get a twisted curve d*y^2 = x^3 + ax + b
      */
-    private BigInteger d;
+    private BigInteger pointD;
 
     /**
      * The group the server actually meant to use
@@ -47,7 +46,7 @@ public class TwistedCurvePoint {
         this.publicPointBaseY = publicPointBaseY;
         this.order = order;
         this.intendedNamedGroup = intendedNamedGroup;
-        this.d = d;
+        this.pointD = d;
     }
 
     /**
@@ -164,8 +163,8 @@ public class TwistedCurvePoint {
     }
 
     /**
-     * Provides a Twisted Curve point with an order that is greater than the
-     * order of the point returned by smallOrder(group).
+     * Provides a Twisted Curve point with an order that is greater than the order of the point returned by
+     * smallOrder(group).
      * 
      * @param group
      * @return TwistedCurvePoint
@@ -262,9 +261,8 @@ public class TwistedCurvePoint {
     }
 
     /**
-     * Provides a Twisted Curve point with an order that is far greater than the
-     * order of the point returned by smallOrder(group) and
-     * alternativeOrder(group).
+     * Provides a Twisted Curve point with an order that is far greater than the order of the point returned by
+     * smallOrder(group) and alternativeOrder(group).
      * 
      * @param group
      * @return TwistedCurvePoint
@@ -371,16 +369,16 @@ public class TwistedCurvePoint {
     /**
      * @return the d
      */
-    public BigInteger getD() {
-        return d;
+    public BigInteger getPointD() {
+        return pointD;
     }
 
     /**
      * @param d
      * the d to set
      */
-    public void setD(BigInteger d) {
-        this.d = d;
+    public void setPointD(BigInteger d) {
+        this.pointD = d;
     }
 
     /**

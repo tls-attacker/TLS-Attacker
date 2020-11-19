@@ -20,8 +20,7 @@ public class UnknownExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * UnknownExtensionSerializer.
+     * Test of serializeExtensionContent method, of class UnknownExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

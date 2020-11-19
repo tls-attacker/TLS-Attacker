@@ -20,8 +20,7 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 /**
  * Normalize and apply default filter to workflow trace.
  * <p>
- * Emulate the normalize and filter procedure a trace goes through during normal
- * program execution.
+ * Emulate the normalize and filter procedure a trace goes through during normal program execution.
  */
 public class DefaultNormalizeFilter {
 

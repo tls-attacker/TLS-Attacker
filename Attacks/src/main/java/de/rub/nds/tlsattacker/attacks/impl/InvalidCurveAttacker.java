@@ -78,18 +78,16 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private List<Point> receivedEcPublicKeys;
 
     /**
-     * All keys we received from a server in handshakes that lead to a
-     * ServerFinished - we can use these to mitigate the impact of false
-     * positives in scans.
+     * All keys we received from a server in handshakes that lead to a ServerFinished - we can use these to mitigate the
+     * impact of false positives in scans.
      */
     private List<Point> finishedKeys;
 
     private final ParallelExecutor executor;
 
     /**
-     * Indicates if there is a higher chance that the keys we extracted might
-     * have been sent by a TLS accelerator and a TLS server behind it at the
-     * same time. (See evaluateExecutedTask)
+     * Indicates if there is a higher chance that the keys we extracted might have been sent by a TLS accelerator and a
+     * TLS server behind it at the same time. (See evaluateExecutedTask)
      */
     private boolean dirtyKeysWarning;
 
@@ -150,7 +148,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
                 Point montgPoint = rfcCurve.getPoint(config.getPublicPointBaseX(), config.getPublicPointBaseY());
                 Point weierPoint = rfcCurve.toWeierstrass(montgPoint);
-                transformedX = weierPoint.getX().getData().multiply(config.getCurveTwistD()).mod(curve.getModulus());
+                transformedX =
+                    weierPoint.getFieldX().getData().multiply(config.getCurveTwistD()).mod(curve.getModulus());
             } else {
                 transformedX = config.getPublicPointBaseX().multiply(config.getCurveTwistD()).mod(curve.getModulus());
             }
@@ -188,10 +187,10 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 secret = rfcCurve.decodeScalar(secret);
             }
             Point sharedPoint = curve.mult(secret, point);
-            if (sharedPoint.getX() == null) {
+            if (sharedPoint.getFieldX() == null) {
                 premasterSecret = BigInteger.ZERO;
             } else {
-                premasterSecret = sharedPoint.getX().getData();
+                premasterSecret = sharedPoint.getFieldX().getData();
                 if (config.isCurveTwistAttack()) {
                     // transform back from simulated x-only ladder
                     premasterSecret =
@@ -201,9 +200,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                         || config.getNamedGroup() == NamedGroup.ECDH_X448) {
                         // transform to Montgomery domain
                         RFC7748Curve rfcCurve = (RFC7748Curve) CurveFactory.getCurve(config.getNamedGroup());
-                        Point weierPoint = rfcCurve.getPoint(premasterSecret, sharedPoint.getY().getData());
+                        Point weierPoint = rfcCurve.getPoint(premasterSecret, sharedPoint.getFieldY().getData());
                         Point montPoint = rfcCurve.toMontgomery(weierPoint);
-                        premasterSecret = montPoint.getX().getData();
+                        premasterSecret = montPoint.getFieldX().getData();
                     }
                 }
                 if (config.getNamedGroup() == NamedGroup.ECDH_X25519 || config.getNamedGroup() == NamedGroup.ECDH_X448) {
@@ -226,7 +225,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 config.getPublicPointBaseY(), curve.getModulus()));
         byte[] serialized;
         if (curve instanceof RFC7748Curve) {
-            serialized = ((RFC7748Curve) curve).encodeCoordinate(basepoint.getX().getData());
+            serialized = ((RFC7748Curve) curve).encodeCoordinate(basepoint.getFieldX().getData());
         } else {
             serialized =
                 PointFormatter.formatToByteArray(config.getNamedGroup(), basepoint, config.getPointCompressionFormat());
@@ -270,18 +269,14 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             trace.removeTlsAction(trace.getTlsActions().size() - 1);
             trace.addTlsAction(new GenericReceiveAction());
 
-            ClientHelloMessage cHello =
+            ClientHelloMessage clientHello =
                 (ClientHelloMessage) WorkflowTraceUtil.getFirstSendMessage(HandshakeMessageType.CLIENT_HELLO, trace);
             KeyShareExtensionMessage ksExt;
-            for (ExtensionMessage ext : cHello.getExtensions()) {
+            for (ExtensionMessage ext : clientHello.getExtensions()) {
                 if (ext instanceof KeyShareExtensionMessage) {
                     ksExt = (KeyShareExtensionMessage) ext;
-                    ksExt.getKeyShareList().get(0).setPublicKey(serializedPublicKey); // we
-                                                                                      // use
-                                                                                      // exactly
-                                                                                      // one
-                                                                                      // key
-                                                                                      // share
+                    // we use exactly one key share
+                    ksExt.getKeyShareList().get(0).setPublicKey(serializedPublicKey);
                 }
             }
 
@@ -329,9 +324,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             individualConfig.setAddPreSharedKeyExtension(Boolean.FALSE);
 
             // set explicit PreMasterSecret later on using an action
-            ChangeDefaultPreMasterSecretAction cPMS = new ChangeDefaultPreMasterSecretAction();
-            cPMS.setNewValue(explicitPMS);
-            trace.addTlsAction(cPMS);
+            ChangeDefaultPreMasterSecretAction clientPMS = new ChangeDefaultPreMasterSecretAction();
+            clientPMS.setNewValue(explicitPMS);
+            trace.addTlsAction(clientPMS);
 
             for (TlsAction action : secondHandshake.getTlsActions()) {
                 trace.addTlsAction(action);
@@ -372,9 +367,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             intendedCurve = (EllipticCurveOverFp) CurveFactory.getCurve(config.getNamedGroup());
         }
         BigInteger modA =
-            intendedCurve.getA().getData().multiply(config.getCurveTwistD().pow(2)).mod(intendedCurve.getModulus());
+            intendedCurve.getFieldA().getData().multiply(config.getCurveTwistD().pow(2))
+                .mod(intendedCurve.getModulus());
         BigInteger modB =
-            intendedCurve.getB().getData().multiply(config.getCurveTwistD().pow(3)).mod(intendedCurve.getModulus());
+            intendedCurve.getFieldB().getData().multiply(config.getCurveTwistD().pow(3))
+                .mod(intendedCurve.getModulus());
         EllipticCurveOverFp twistedCurve = new EllipticCurveOverFp(modA, modB, intendedCurve.getModulus());
         config.setTwistedCurve(twistedCurve);
         return twistedCurve;
@@ -417,14 +414,11 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
         if (config.isAttackInRenegotiation() && tookKeyFromSuccessfulTrace && tookKeyFromUnsuccessfulTrace) {
             /*
-             * keys from an unsuccessful trace might have been extracted from
-             * the first handshake of a renegotiation workflow trace - it could*
-             * be more probable that this is not the same TLS server as the
-             * server, which answered the 2nd handshake while we can't ensure
-             * that were talking to the same TLS server all the time anyway, it
-             * is more important to keep an eye on this case since we're running
-             * attacks in renegotiation because we assume that we can bypass a
-             * TLS accelerator like this
+             * keys from an unsuccessful trace might have been extracted from the first handshake of a renegotiation
+             * workflow trace - it could* be more probable that this is not the same TLS server as the server, which
+             * answered the 2nd handshake while we can't ensure that were talking to the same TLS server all the time
+             * anyway, it is more important to keep an eye on this case since we're running attacks in renegotiation
+             * because we assume that we can bypass a TLS accelerator like this
              */
             dirtyKeysWarning = true;
         }

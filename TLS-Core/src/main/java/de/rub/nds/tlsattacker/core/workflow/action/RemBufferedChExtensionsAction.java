@@ -31,18 +31,15 @@ import org.apache.logging.log4j.Logger;
 /**
  * Remove extensions from extension list of a buffered ClientHello message.
  * <p>
- * This allows changing a ClientHello message in transit, i.e. in MiTM workflows
- * that want to remove proposed extensions.
+ * This allows changing a ClientHello message in transit, i.e. in MiTM workflows that want to remove proposed
+ * extensions.
  *
  * <p>
- * This action assumes that the first message in the message buffer is a
- * ClientHello.
+ * This action assumes that the first message in the message buffer is a ClientHello.
  *
  * <p>
- * Note: This action is currently needed because fresh (ClientHello) messages
- * cannot be fully prepared from context, but partially rely on config values.
- * Thus preventing us to modify values in context and re-creating a CH for
- * forwarding.
+ * Note: This action is currently needed because fresh (ClientHello) messages cannot be fully prepared from context, but
+ * partially rely on config values. Thus preventing us to modify values in context and re-creating a CH for forwarding.
  *
  */
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
@@ -156,8 +153,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
     /**
      * Summarize the extension data for pretty printing.
      *
-     * @return a summary of the extension information contained in the CH
-     * message
+     * @return a summary of the extension information contained in the CH message
      */
     public String summarizeExtensions(ClientHelloMessage ch) {
         StringBuilder sb = new StringBuilder();

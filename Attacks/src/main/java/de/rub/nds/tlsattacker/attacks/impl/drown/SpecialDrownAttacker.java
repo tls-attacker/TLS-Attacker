@@ -100,9 +100,8 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
     }
 
     /**
-     * Connects to a target host and writes a file to disk which will allow
-     * checkForLeakyExport() to check whether the server is affected by the
-     * "leaky export" oracle bug (CVE-2016-0704).
+     * Connects to a target host and writes a file to disk which will allow checkForLeakyExport() to check whether the
+     * server is affected by the "leaky export" oracle bug (CVE-2016-0704).
      *
      * @param dataFilePath
      * Name of the data dump file for checkForLeakyExport().
@@ -163,18 +162,15 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
     }
 
     /**
-     * Checks whether the server is affected by the "leaky export" oracle bug
-     * (CVE-2016-0704) based on data from genLeakyExportCheckData(). The bug
-     * allows to distinguish between an invalid ENCRYPTED-KEY-DATA ciphertext
-     * and a valid ciphertext decrypting to a message of the wrong length. This
-     * method performs brute-force computations and may take some time to run.
-     * It does not connect ot any remote hosts and can run completely offline.
+     * Checks whether the server is affected by the "leaky export" oracle bug (CVE-2016-0704) based on data from
+     * genLeakyExportCheckData(). The bug allows to distinguish between an invalid ENCRYPTED-KEY-DATA ciphertext and a
+     * valid ciphertext decrypting to a message of the wrong length. This method performs brute-force computations and
+     * may take some time to run. It does not connect ot any remote hosts and can run completely offline.
      *
      * @param dataFilePath
      * Name of the data dump file from genLeakyExportCheckData().
      *
-     * @return Indication whether the server is vulnerable to the "leaky export"
-     * oracle attack
+     * @return Indication whether the server is vulnerable to the "leaky export" oracle attack
      */
     private DrownVulnerabilityType checkForLeakyExport(String dataFilePath) {
         LeakyExportCheckData checkData;
@@ -257,11 +253,10 @@ public class SpecialDrownAttacker extends BaseDrownAttacker {
     }
 
     /**
-     * Provides an estimate for how long it would take to do brute-force for
-     * Special DROWN with the "leaky export" oracle on the current hardware. MD5
-     * hashing and symmetric encryption are performed, as required for
-     * "leaky export". This was originally implemented to get a feeling for the
-     * numbers during development, but might also be useful in other situations.
+     * Provides an estimate for how long it would take to do brute-force for Special DROWN with the "leaky export"
+     * oracle on the current hardware. MD5 hashing and symmetric encryption are performed, as required for
+     * "leaky export". This was originally implemented to get a feeling for the numbers during development, but might
+     * also be useful in other situations.
      */
     private void leakyExportBenchmark() {
         long startTime = System.currentTimeMillis();

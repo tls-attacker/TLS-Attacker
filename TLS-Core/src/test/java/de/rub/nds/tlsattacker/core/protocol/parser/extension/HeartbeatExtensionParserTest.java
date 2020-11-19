@@ -50,8 +50,7 @@ public class HeartbeatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * HeartbeatExtensionParser.
+     * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

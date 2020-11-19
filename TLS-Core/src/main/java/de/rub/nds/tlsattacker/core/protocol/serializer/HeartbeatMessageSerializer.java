@@ -47,8 +47,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
     }
 
     /**
-     * Writes the HeartbeatMessageType of the HeartbeatMessage into the final
-     * byte[]
+     * Writes the HeartbeatMessageType of the HeartbeatMessage into the final byte[]
      */
     private void writeHeartbeatMessageType(HeartbeatMessage msg) {
         appendByte(msg.getHeartbeatMessageType().getValue());

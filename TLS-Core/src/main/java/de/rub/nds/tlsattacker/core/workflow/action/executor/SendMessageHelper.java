@@ -175,8 +175,7 @@ public class SendMessageHelper {
     }
 
     /**
-     * Sends all messageBytes in the MessageByteCollector with the specified
-     * TransportHandler
+     * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
      * @param handler
      * TransportHandler to send the Data with

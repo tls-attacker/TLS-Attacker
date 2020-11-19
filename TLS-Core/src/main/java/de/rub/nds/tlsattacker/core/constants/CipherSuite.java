@@ -512,8 +512,7 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true in case the cipher suite enforces ephemeral keys. This is
-     * the case for ECDHE and DHE cipher suites.
+     * Returns true in case the cipher suite enforces ephemeral keys. This is the case for ECDHE and DHE cipher suites.
      *
      * @return True if the cipher suite is Ephemeral
      */
@@ -635,9 +634,8 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true if the cipher suite is supported by the specified protocol
-     * version. TODO: this is still very imprecise and must be improved with new
-     * ciphers.
+     * Returns true if the cipher suite is supported by the specified protocol version. TODO: this is still very
+     * imprecise and must be improved with new ciphers.
      *
      * @param version
      * The ProtocolVersion to check

@@ -23,8 +23,7 @@ public abstract class RecordLayer {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Tries to parse rawBytes into AbstractRecords. If this is not possible a
-     * Parser Exception is thrown
+     * Tries to parse rawBytes into AbstractRecords. If this is not possible a Parser Exception is thrown
      *
      * @param rawBytes
      * Bytes to parse
@@ -33,8 +32,7 @@ public abstract class RecordLayer {
     public abstract List<AbstractRecord> parseRecords(byte[] rawBytes) throws ParserException;
 
     /**
-     * Tries to parse rawBytes into AbstractRecords. Exceptions which might
-     * occur are handled.
+     * Tries to parse rawBytes into AbstractRecords. Exceptions which might occur are handled.
      *
      * @param rawBytes
      * Bytes to parse

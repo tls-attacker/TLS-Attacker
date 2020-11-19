@@ -42,8 +42,7 @@ public class HttpsResponseSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * HttpsResponseSerializer.
+     * Test of serializeProtocolMessageContent method, of class HttpsResponseSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

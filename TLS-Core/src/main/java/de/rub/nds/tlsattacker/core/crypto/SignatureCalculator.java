@@ -69,7 +69,7 @@ public class SignatureCalculator {
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
             if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name().contains("RSA")) {
                 algoName = "NONEwithRSA";
-                toBeSigned = ArrayConverter.concatenate(MD5Utils.MD5(toBeSigned), SHA1Utils.sha1(toBeSigned));
+                toBeSigned = ArrayConverter.concatenate(MD5Utils.md5(toBeSigned), SHA1Utils.sha1(toBeSigned));
             } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
                 .contains("ECDSA")) {
                 algoName = "SHA1withECDSA";

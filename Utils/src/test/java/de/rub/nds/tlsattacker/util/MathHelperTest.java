@@ -75,7 +75,7 @@ public class MathHelperTest {
     public void testCRT() {
         BigInteger[] congs = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
         BigInteger[] moduli = { new BigInteger("2"), new BigInteger("3"), new BigInteger("2") };
-        assertEquals(4, MathHelper.CRT(congs, moduli).intValue());
+        assertEquals(4, MathHelper.crt(congs, moduli).intValue());
 
         // computes:
         // x == 2 mod 3
@@ -83,7 +83,7 @@ public class MathHelperTest {
         // x == 1 mod 5
         BigInteger[] congs2 = { new BigInteger("2"), new BigInteger("3"), new BigInteger("1") };
         BigInteger[] moduli2 = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
-        assertEquals(11, MathHelper.CRT(congs2, moduli2).intValue());
+        assertEquals(11, MathHelper.crt(congs2, moduli2).intValue());
     }
 
 }

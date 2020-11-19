@@ -30,8 +30,7 @@ public class UnknownHandshakePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * UnknownHandshakePreparator.
+     * Test of prepareHandshakeMessageContents method, of class UnknownHandshakePreparator.
      */
     @Test
     public void testPrepare() {

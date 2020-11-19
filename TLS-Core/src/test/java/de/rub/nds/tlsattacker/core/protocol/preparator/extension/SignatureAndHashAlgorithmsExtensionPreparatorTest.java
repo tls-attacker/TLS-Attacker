@@ -20,8 +20,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * SignatureAndHashAlgorithmsExtensionPreparator.
+     * Test of prepareExtensionContent method, of class SignatureAndHashAlgorithmsExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

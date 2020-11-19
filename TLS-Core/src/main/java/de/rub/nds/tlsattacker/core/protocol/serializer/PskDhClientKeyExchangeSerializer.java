@@ -46,8 +46,7 @@ public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSeriali
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentityLength(PskDhClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
@@ -55,8 +54,7 @@ public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSeriali
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentity(PskDhClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());

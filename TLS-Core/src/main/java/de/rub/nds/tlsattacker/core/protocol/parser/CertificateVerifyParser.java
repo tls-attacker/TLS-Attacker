@@ -27,8 +27,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to
-     * start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
@@ -56,8 +55,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
     }
 
     /**
-     * Reads the next bytes as the SignatureHashAlgorithm and writes them in the
-     * message
+     * Reads the next bytes as the SignatureHashAlgorithm and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -69,8 +67,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
      * Message to write in

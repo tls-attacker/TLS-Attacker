@@ -51,8 +51,7 @@ public class ECDHClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * ECDHClientKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ECDHClientKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

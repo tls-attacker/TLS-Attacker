@@ -55,29 +55,27 @@ public class CertificateVerifyPreparatorTest {
     }
 
     /**
-     * Test for correct generation of CertificateVerify.signature for SSLv3 with
-     * empty secret and no handshake_messages. From RFC 6101:
+     * Test for correct generation of CertificateVerify.signature for SSLv3 with empty secret and no handshake_messages.
+     * From RFC 6101:
      *
      * 5.6.8. Certificate Verify
      *
-     * This message is used to provide explicit verification of a client
-     * certificate. This message is only sent following any client certificate
-     * that has signing capability (i.e., all certificates except those
-     * containing fixed Diffie-Hellman parameters).
+     * This message is used to provide explicit verification of a client certificate. This message is only sent
+     * following any client certificate that has signing capability (i.e., all certificates except those containing
+     * fixed Diffie-Hellman parameters).
      *
      * struct { Signature signature; } CertificateVerify;
      *
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 +
-     * MD5(handshake_messages + master_secret + pad_1));
-     * Certificate.signature.sha_hash SHA(master_secret + pad_2 +
-     * SHA(handshake_messages + master_secret + pad_1));
+     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
+     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 + SHA(handshake_messages + master_secret +
+     * pad_1));
      *
      * pad_1: This is identical to the pad_1 defined in Section 5.2.3.1.
      *
      * pad_2: This is identical to the pad_2 defined in Section 5.2.3.1.
      *
-     * Here, handshake_messages refers to all handshake messages starting at
-     * client hello up to but not including this message.
+     * Here, handshake_messages refers to all handshake messages starting at client hello up to but not including this
+     * message.
      *
      * .......
      *
@@ -107,8 +105,7 @@ public class CertificateVerifyPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * CertificateVerifyPreparator.
+     * Test of prepareHandshakeMessageContents method, of class CertificateVerifyPreparator.
      *
      * @throws java.security.NoSuchAlgorithmException
      */

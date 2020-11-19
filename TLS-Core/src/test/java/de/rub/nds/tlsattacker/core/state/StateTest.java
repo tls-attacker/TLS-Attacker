@@ -101,9 +101,8 @@ public class StateTest {
     }
 
     /**
-     * Prevent accidental misuse of single/default context getter. If multiple
-     * contexts are defined, require the user to specify an alias to get the
-     * appropriate context.
+     * Prevent accidental misuse of single/default context getter. If multiple contexts are defined, require the user to
+     * specify an alias to get the appropriate context.
      */
     @Test
     public void getContextRequiresAliasForMultipleDefinedContexts() {

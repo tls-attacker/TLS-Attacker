@@ -53,8 +53,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray padding;
 
     /**
-     * The number of padding bytes which should be added beyond the required
-     * padding
+     * The number of padding bytes which should be added beyond the required padding
      */
     private ModifiableInteger additionalPaddingLength;
 
@@ -69,8 +68,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray authenticatedNonMetaData;
 
     /**
-     * The pure ciphertext part of the record. The output from the negotiated
-     * cipher
+     * The pure ciphertext part of the record. The output from the negotiated cipher
      */
     private ModifiableByteArray ciphertext;
 
@@ -80,8 +78,7 @@ public class RecordCryptoComputations {
     private ModifiableByteArray cbcInitialisationVector;
 
     /**
-     * The data over which the HMACs/tags are computed which are not explicitly
-     * transmitted.
+     * The data over which the HMACs/tags are computed which are not explicitly transmitted.
      */
     private ModifiableByteArray authenticatedMetaData;
 

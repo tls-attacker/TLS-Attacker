@@ -43,8 +43,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the ProtocolVersion and writes them in the
-     * message
+     * Reads the next bytes as the ProtocolVersion and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -55,8 +54,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the CipherSuiteLength and writes them in the
-     * message
+     * Reads the next bytes as the CipherSuiteLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -67,8 +65,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the SessionIDLength and writes them in the
-     * message
+     * Reads the next bytes as the SessionIDLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -79,8 +76,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the ChallengeLength and writes them in the
-     * message
+     * Reads the next bytes as the ChallengeLength and writes them in the message
      *
      * @param msg
      * Message to write in

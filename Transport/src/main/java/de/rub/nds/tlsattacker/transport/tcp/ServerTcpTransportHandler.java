@@ -23,9 +23,8 @@ public class ServerTcpTransportHandler extends TransportHandler {
     private Socket socket;
     private final int port;
     /**
-     * If true, don't create a new ServerSocket and just use the given socket.
-     * Useful for spawning server TransportHandler from an externally managed
-     * ServerSocket.
+     * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
+     * TransportHandler from an externally managed ServerSocket.
      */
     private boolean externalServerSocket = false;
 

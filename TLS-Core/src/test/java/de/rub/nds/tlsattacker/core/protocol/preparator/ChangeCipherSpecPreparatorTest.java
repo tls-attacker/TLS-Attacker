@@ -30,8 +30,7 @@ public class ChangeCipherSpecPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * ChangeCipherSpecPreparator.
+     * Test of prepareProtocolMessageContents method, of class ChangeCipherSpecPreparator.
      */
     @Test
     public void testPrepare() {

@@ -28,8 +28,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Internal default filter that strips unnecessary default values.
  * 
- * This filter works on a normalized workflow trace only. It is the default
- * filter that is normally used before workflow trace serialization.
+ * This filter works on a normalized workflow trace only. It is the default filter that is normally used before workflow
+ * trace serialization.
  */
 public class DefaultFilter extends Filter {
 

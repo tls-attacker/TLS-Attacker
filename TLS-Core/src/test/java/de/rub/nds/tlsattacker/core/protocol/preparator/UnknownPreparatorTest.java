@@ -31,8 +31,7 @@ public class UnknownPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * UnknownPreparator.
+     * Test of prepareProtocolMessageContents method, of class UnknownPreparator.
      */
     @Test
     public void testPrepare() {

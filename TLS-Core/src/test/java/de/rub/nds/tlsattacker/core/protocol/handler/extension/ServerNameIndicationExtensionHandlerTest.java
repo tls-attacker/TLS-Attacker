@@ -36,8 +36,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of adjustTLSContext method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -77,8 +76,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of getPreparator method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getPreparator method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
@@ -86,8 +84,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of getSerializer method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getSerializer method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetSerializer() {

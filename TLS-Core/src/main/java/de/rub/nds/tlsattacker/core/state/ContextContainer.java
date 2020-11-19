@@ -38,14 +38,14 @@ public class ContextContainer {
     private final Map<String, TlsContext> tlsContexts = new HashMap<>();
 
     /**
-     * An inbound TLS context is a context bound to an incoming connection. I.e.
-     * it represents a connection that we accepted from a connecting client.
+     * An inbound TLS context is a context bound to an incoming connection. I.e. it represents a connection that we
+     * accepted from a connecting client.
      */
     private final List<TlsContext> inboundTlsContexts = new ArrayList<>();
 
     /**
-     * An outbound TLS context is a context bound to an outgoing connection.
-     * I.e. it represents a connection established by us to a remote server.
+     * An outbound TLS context is a context bound to an outgoing connection. I.e. it represents a connection established
+     * by us to a remote server.
      */
     private final List<TlsContext> outboundTlsContexts = new ArrayList<>();
 
@@ -160,8 +160,7 @@ public class ContextContainer {
      * Replace existing TlsContext with new TlsContext.
      * <p>
      * </p>
-     * The TlsContext can only be replaced if the connection of both the new and
-     * the old TlsContext equal.
+     * The TlsContext can only be replaced if the connection of both the new and the old TlsContext equal.
      *
      * @param newTlsContext
      * the new TlsContext, not null

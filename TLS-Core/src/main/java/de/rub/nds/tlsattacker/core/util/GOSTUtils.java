@@ -97,7 +97,7 @@ public class GOSTUtils {
     private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
-            ECPoint ecPoint = new ECPoint(point.getX().getData(), point.getY().getData());
+            ECPoint ecPoint = new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
             return KeyFactory.getInstance(keyFactoryAlg).generatePublic(privateKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

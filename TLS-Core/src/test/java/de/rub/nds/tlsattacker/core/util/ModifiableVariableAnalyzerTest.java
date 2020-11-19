@@ -22,8 +22,7 @@ import org.junit.Test;
 public class ModifiableVariableAnalyzerTest {
 
     /**
-     * Test of getAllModifiableVariableFields method, of class
-     * ModifiableVariableAnalyzer.
+     * Test of getAllModifiableVariableFields method, of class ModifiableVariableAnalyzer.
      */
     @Test
     public void testGetAllModifiableVariableFields() {
@@ -39,8 +38,7 @@ public class ModifiableVariableAnalyzerTest {
     }
 
     /**
-     * Test of getRandomModifiableVariableField method, of class
-     * ModifiableVariableAnalyzer.
+     * Test of getRandomModifiableVariableField method, of class ModifiableVariableAnalyzer.
      */
     @Test
     public void testGetRandomModifiableVariableField() {

@@ -76,9 +76,8 @@ public class ClientTcpTransportHandler extends TransportHandler {
     }
 
     /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and
-     * Data is received during the Check the current State of the
-     * TransportHandler will get messed up and an Exception will be thrown.
+     * Checks the current SocketState. NOTE: If you check the SocketState and Data is received during the Check the
+     * current State of the TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
      * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException

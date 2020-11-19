@@ -48,8 +48,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     }
 
     /**
-     * Prepare message for sending. This method invokes before and after method
-     * hooks.
+     * Prepare message for sending. This method invokes before and after method hooks.
      *
      * @param message
      * The Message that should be prepared
@@ -60,8 +59,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     }
 
     /**
-     * Prepare message for sending. This method invokes before and after method
-     * hooks.
+     * Prepare message for sending. This method invokes before and after method hooks.
      *
      * @param message
      * The message that should be prepared
@@ -99,9 +97,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     }
 
     /**
-     * Parses a byteArray from a Position into a MessageObject and returns the
-     * parsed MessageObjet and parser position in a parser result. The current
-     * Chooser is adjusted as
+     * Parses a byteArray from a Position into a MessageObject and returns the parsed MessageObjet and parser position
+     * in a parser result. The current Chooser is adjusted as
      *
      * @param message
      * The byte[] messages which should be parsed
@@ -155,8 +152,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     public abstract ProtocolMessageSerializer getSerializer(MessageT message);
 
     /**
-     * Adjusts the TLS Context according to the received or sending
-     * ProtocolMessage
+     * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
      * The Message for which this context should be adjusted

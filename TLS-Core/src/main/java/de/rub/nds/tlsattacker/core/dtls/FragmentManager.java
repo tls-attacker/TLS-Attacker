@@ -22,9 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manages multiple message fragment collectors. A user can add fragments, check
- * if the message corresponding to a fragment is complete, and construct the
- * message.
+ * Manages multiple message fragment collectors. A user can add fragments, check if the message corresponding to a
+ * fragment is complete, and construct the message.
  */
 public class FragmentManager {
 
@@ -56,8 +55,7 @@ public class FragmentManager {
     }
 
     /**
-     * Returns true if the message corresponding to this messageSeq and epoch is
-     * complete, returns false otherwise.
+     * Returns true if the message corresponding to this messageSeq and epoch is complete, returns false otherwise.
      */
     public boolean isFragmentedMessageComplete(Integer messageSeq, Integer epoch) {
         FragmentKey key = new FragmentKey(messageSeq, epoch);
@@ -114,9 +112,8 @@ public class FragmentManager {
     }
 
     /**
-     * Returns the stored fragmented message with the given messageSeq and
-     * epoch, as a single combined fragment. Returns null if no message was
-     * stored with this messageSeq, or if the message is incomplete.
+     * Returns the stored fragmented message with the given messageSeq and epoch, as a single combined fragment. Returns
+     * null if no message was stored with this messageSeq, or if the message is incomplete.
      * 
      * @param messageSeq
      * @param epoch

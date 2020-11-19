@@ -59,8 +59,7 @@ public class ReceiveMessageHelper {
     }
 
     /**
-     * Receives messages, and tries to receive the messages specified in
-     * messages
+     * Receives messages, and tries to receive the messages specified in messages
      *
      * @param expectedMessages
      * Messages which should be received
@@ -302,9 +301,8 @@ public class ReceiveMessageHelper {
     }
 
     /**
-     * Takes a list of AbstractRecords and tries to sort them by their
-     * epoch/sqn. The sorting ist epoch > sqn. Smaller epochs are sorted before
-     * bigger epochs smaller sqns are sorted before higher sqns
+     * Takes a list of AbstractRecords and tries to sort them by their epoch/sqn. The sorting ist epoch > sqn. Smaller
+     * epochs are sorted before bigger epochs smaller sqns are sorted before higher sqns
      *
      * @param abstractRecordList
      * List that should be sorted
@@ -335,8 +333,8 @@ public class ReceiveMessageHelper {
     }
 
     /**
-     * Tries to parse a byte array as DTLS handshake message fragments, if this
-     * does not work they are parsed as unknown messages
+     * Tries to parse a byte array as DTLS handshake message fragments, if this does not work they are parsed as unknown
+     * messages
      *
      * @param recordBytes
      * @param context

@@ -32,8 +32,7 @@ public class ICEPointReader {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Reads points for the attack on elliptic curves from a file specific for
-     * this named curve
+     * Reads points for the attack on elliptic curves from a file specific for this named curve
      *
      * @param group
      * The NamedCurve as a String
@@ -63,8 +62,8 @@ public class ICEPointReader {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Using the following curves and points");
                 for (ICEPoint p : points) {
-                    LOGGER.debug(p.getOrder() + " , " + p.getX().getData().toString(16) + " , "
-                        + p.getY().getData().toString(16));
+                    LOGGER.debug(p.getOrder() + " , " + p.getFieldX().getData().toString(16) + " , "
+                        + p.getFieldY().getData().toString(16));
                 }
             }
             return points;

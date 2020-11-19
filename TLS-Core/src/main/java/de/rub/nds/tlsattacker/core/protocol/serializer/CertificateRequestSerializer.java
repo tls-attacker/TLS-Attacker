@@ -61,8 +61,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the ClientCertificateTypeCount of the CertificateRequestMessage
-     * into the final byte[]
+     * Writes the ClientCertificateTypeCount of the CertificateRequestMessage into the final byte[]
      */
     private void writeClientCertificateTypesCount(CertificateRequestMessage msg) {
         appendInt(msg.getClientCertificateTypesCount().getValue(), HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
@@ -70,8 +69,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the ClientCertificateType of the CertificateRequestMessage into
-     * the final byte[]
+     * Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[]
      */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
@@ -80,8 +78,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the SignatureHandshakeAlgorithmsLength of the
-     * CertificateRequestMessage into the final byte[]
+     * Writes the SignatureHandshakeAlgorithmsLength of the CertificateRequestMessage into the final byte[]
      */
     private void writeSignatureHandshakeAlgorithmsLength(CertificateRequestMessage msg) {
         appendInt(msg.getSignatureHashAlgorithmsLength().getValue(),
@@ -90,8 +87,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the SignatureHandshakeAlgorithms of the CertificateRequestMessage
-     * into the final byte[]
+     * Writes the SignatureHandshakeAlgorithms of the CertificateRequestMessage into the final byte[]
      */
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
@@ -100,8 +96,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the DistinguishedNamesLength of the CertificateRequestMessage into
-     * the final byte[]
+     * Writes the DistinguishedNamesLength of the CertificateRequestMessage into the final byte[]
      */
     private void writeDistinguishedNamesLength(CertificateRequestMessage msg) {
         appendInt(msg.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
@@ -113,8 +108,7 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the DistinguishedNames of the CertificateRequestMessage into the
-     * final byte[]
+     * Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[]
      */
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());

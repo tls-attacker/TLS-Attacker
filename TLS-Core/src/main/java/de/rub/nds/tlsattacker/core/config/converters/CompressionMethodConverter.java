@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import java.util.Arrays;
 
 /**
- * Converts a string with a compression method to a compression method (for
- * command line purposes).
+ * Converts a string with a compression method to a compression method (for command line purposes).
  */
 public class CompressionMethodConverter implements IStringConverter<CompressionMethod> {
 

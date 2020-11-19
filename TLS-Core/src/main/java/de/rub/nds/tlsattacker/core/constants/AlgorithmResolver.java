@@ -16,19 +16,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Resolves crypto algorithms and their properties from a given cipher suite
- * (and TLS version).
+ * Resolves crypto algorithms and their properties from a given cipher suite (and TLS version).
  */
 public class AlgorithmResolver {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Returns a PRF algorithm based on the protocol version and the cipher
-     * suite. TLS 1.0 and 1.1 used a legacy PRF based on MD5 and SHA-1. TLS 1.2
-     * uses per default SHA256 PRF, but allows for definition of further PRFs in
-     * specific cipher suites (the last part of a cipher suite string identifies
-     * the PRF).
+     * Returns a PRF algorithm based on the protocol version and the cipher suite. TLS 1.0 and 1.1 used a legacy PRF
+     * based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 PRF, but allows for definition of further PRFs in
+     * specific cipher suites (the last part of a cipher suite string identifies the PRF).
      *
      * @param protocolVersion
      * The ProtocolVersion for which the PRFAlgorithm should be returned
@@ -58,13 +55,11 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Returns a digest algorithm based on the protocol version and the cipher
-     * suite. The digest algorithm is used to compute a message digest over the
-     * handshake messages and to compute valid finished messages. TLS 1.0 and
-     * 1.1 used a legacy digest based on MD5 and SHA-1. TLS 1.2 uses per default
-     * SHA256 digest algorithm, but allows for definition of further digest
-     * algorithms in specific cipher suites (the last part of a cipher suite
-     * string identifies the digest).
+     * Returns a digest algorithm based on the protocol version and the cipher suite. The digest algorithm is used to
+     * compute a message digest over the handshake messages and to compute valid finished messages. TLS 1.0 and 1.1 used
+     * a legacy digest based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 digest algorithm, but allows for
+     * definition of further digest algorithms in specific cipher suites (the last part of a cipher suite string
+     * identifies the digest).
      *
      * @param protocolVersion
      * The ProtocolVersion for which the DigestAlgorithm should be returned
@@ -219,12 +214,10 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Depending on the provided cipher suite, the server needs to be
-     * initialized with proper public key(s). Depending on the cipher suite,
-     * there are possibly more than one cipher suites needed.
+     * Depending on the provided cipher suite, the server needs to be initialized with proper public key(s). Depending
+     * on the cipher suite, there are possibly more than one cipher suites needed.
      *
-     * This function returns a list of public key algorithms needed when running
-     * a server with a cipher suite.
+     * This function returns a list of public key algorithms needed when running a server with a cipher suite.
      *
      * @param cipherSuite
      * The selected CipherSuite

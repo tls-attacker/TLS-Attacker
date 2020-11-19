@@ -66,9 +66,8 @@ public enum CipherAlgorithm {
     private final int keySize;
 
     /**
-     * Number of bytes taken from the handshake and used as an initialization
-     * vector / nonce input into the cipher (i.e., number of bytes in
-     * server_write_IV / client_write_IV)
+     * Number of bytes taken from the handshake and used as an initialization vector / nonce input into the cipher
+     * (i.e., number of bytes in server_write_IV / client_write_IV)
      */
     private final int nonceBytesFromHandshake;
 

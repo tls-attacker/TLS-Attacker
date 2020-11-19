@@ -71,8 +71,7 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer<SSL2Cli
     }
 
     /**
-     * Writes the CipherSuitesLength of the SSL2ClientHello into the final
-     * byte[]
+     * Writes the CipherSuitesLength of the SSL2ClientHello into the final byte[]
      */
     private void writeCipherSuiteLength(SSL2ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);

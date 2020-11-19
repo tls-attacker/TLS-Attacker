@@ -58,9 +58,8 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
     }
 
     /**
-     * Checks if the given message is accepted as valid ENCRYPTED-KEY-DATA of a
-     * Client Master Key message in an SSLv2 handshake. This is based on the
-     * "extra clear" oracle vulnerability in OpenSSL (CVE-2016-0703).
+     * Checks if the given message is accepted as valid ENCRYPTED-KEY-DATA of a Client Master Key message in an SSLv2
+     * handshake. This is based on the "extra clear" oracle vulnerability in OpenSSL (CVE-2016-0703).
      *
      * @param msg
      * Potential RSA ciphertext to be checked
@@ -87,19 +86,15 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
     }
 
     /**
-     * Figures out one additional byte of a SECRET-KEY-DATA by brute-forcing
-     * through all possible values. This is relevant for figuring out the actual
-     * plaintext value of ENCRYPTED-KEY-DATA after finding a conformant
-     * ciphertext in an "extra clear" oracle DROWN attack. See section 5.1 of
-     * the DROWN paper for the general idea.
+     * Figures out one additional byte of a SECRET-KEY-DATA by brute-forcing through all possible values. This is
+     * relevant for figuring out the actual plaintext value of ENCRYPTED-KEY-DATA after finding a conformant ciphertext
+     * in an "extra clear" oracle DROWN attack. See section 5.1 of the DROWN paper for the general idea.
      *
      * @param ciphertext
      * An RSA ciphertext representing valid ENCRYPTED-KEY-DATA
      * @param knownPlaintext
-     * The already known portion of SECRET-KEY-DATA, i.e. the plaintext
-     * corresponding to `ciphertext`
-     * @return An additional byte of SECRET-KEY-DATA to be appended to
-     * `knownPlaintext`
+     * The already known portion of SECRET-KEY-DATA, i.e. the plaintext corresponding to `ciphertext`
+     * @return An additional byte of SECRET-KEY-DATA to be appended to `knownPlaintext`
      */
     public byte bruteForceKeyByte(byte[] ciphertext, byte[] knownPlaintext) {
         int pos = knownPlaintext.length;

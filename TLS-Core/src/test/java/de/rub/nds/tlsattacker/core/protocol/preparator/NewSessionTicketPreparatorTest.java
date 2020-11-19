@@ -50,8 +50,7 @@ public class NewSessionTicketPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * NewSessionTicketPreparator.
+     * Test of prepareProtocolMessageContents method, of class NewSessionTicketPreparator.
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */

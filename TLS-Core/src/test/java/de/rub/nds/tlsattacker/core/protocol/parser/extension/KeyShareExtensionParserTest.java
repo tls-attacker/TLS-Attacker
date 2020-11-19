@@ -61,8 +61,7 @@ public class KeyShareExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * KeyShareExtensionParser.
+     * Test of parseExtensionMessageContent method, of class KeyShareExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

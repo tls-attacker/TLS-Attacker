@@ -112,8 +112,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
                     ArrayConverter.concatenate(keyBlob.getSessionEncryptedKey().getEncryptedKey(), keyBlob
                         .getSessionEncryptedKey().getMacKey());
 
-                String sBoxName = oidMappings.get(keyBlob.getTransportParameters().getEncryptionParamSet());
-                byte[] pms = wrap(false, wrapped, sBoxName);
+                String sboxName = oidMappings.get(keyBlob.getTransportParameters().getEncryptionParamSet());
+                byte[] pms = wrap(false, wrapped, sboxName);
                 msg.getComputations().setPremasterSecret(pms);
             }
         } catch (GeneralSecurityException | IOException e) {
@@ -175,10 +175,10 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     }
 
-    private byte[] wrap(boolean wrap, byte[] bytes, String sBoxName) {
-        byte[] sBox = GOST28147Engine.getSBox(sBoxName);
+    private byte[] wrap(boolean wrap, byte[] bytes, String sboxName) {
+        byte[] sbox = GOST28147Engine.getSBox(sboxName);
         KeyParameter keySpec = new KeyParameter(msg.getComputations().getKeyEncryptionKey().getValue());
-        ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sBox);
+        ParametersWithSBox withSBox = new ParametersWithSBox(keySpec, sbox);
         ParametersWithUKM withIV = new ParametersWithUKM(withSBox, msg.getComputations().getUkm().getValue());
 
         GOST28147WrapEngine cipher = new GOST28147WrapEngine();
@@ -198,8 +198,8 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
     private void prepareCek() {
         ASN1ObjectIdentifier param = new ASN1ObjectIdentifier(msg.getComputations().getEncryptionParamSet().getValue());
-        String sBoxName = oidMappings.get(param);
-        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), sBoxName);
+        String sboxName = oidMappings.get(param);
+        byte[] wrapped = wrap(true, msg.getComputations().getPremasterSecret().getValue(), sboxName);
 
         byte[] cek = new byte[32];
         try {
@@ -244,7 +244,7 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
             TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
             msg.setKeyTransportBlob(blob.getEncoded());
             LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
-        } catch (Exception E) {
+        } catch (Exception e) {
             msg.setKeyTransportBlob(new byte[0]);
             LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");
         }

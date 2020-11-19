@@ -21,9 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A simple action to print the last handled application data to console. Per
- * default, this prints the raw byte values of the application data as a hex
- * string. An charset for simple encoding can be given to get readable output
+ * A simple action to print the last handled application data to console. Per default, this prints the raw byte values
+ * of the application data as a hex string. An charset for simple encoding can be given to get readable output
  */
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
@@ -32,16 +31,13 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
     private String lastHandledApplicationData = null;
 
     /**
-     * If set, the lastHandledApplicationData will be encoded as String using
-     * the given charset (that is UTF-8, ISO-8859-1,...) before printing. If
-     * unset, plot raw bytes as hex string.
+     * If set, the lastHandledApplicationData will be encoded as String using the given charset (that is UTF-8,
+     * ISO-8859-1,...) before printing. If unset, plot raw bytes as hex string.
      *
-     * Note: we are using String instead of Charset for serialization
-     * purposes...
+     * Note: we are using String instead of Charset for serialization purposes...
      *
-     * <a href=
-     * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html"
-     * >Charset.html</a> for a list of supported charset names
+     * <a href= "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html" >Charset.html</a> for a list
+     * of supported charset names
      */
     private String stringEncoding = null;
 
@@ -81,8 +77,8 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
     }
 
     /**
-     * Set encoding. Supplied String must match an element from Charset.
-     * Example: US-ASCII Available charsets can be found in StandardCharsets
+     * Set encoding. Supplied String must match an element from Charset. Example: US-ASCII Available charsets can be
+     * found in StandardCharsets
      *
      * @param stringEncoding
      * The encoding that should be used

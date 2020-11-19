@@ -56,8 +56,7 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * SignatureAndHashAlgorithmsExtensionParser.
+     * Test of parseExtensionMessageContent method, of class SignatureAndHashAlgorithmsExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

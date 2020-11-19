@@ -94,8 +94,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     protected Boolean executedAsPlanned = null;
 
     /**
-     * If you want true here, use the more verbose
-     * ForwardMessagesWithPrepareAction.
+     * If you want true here, use the more verbose ForwardMessagesWithPrepareAction.
      */
     @XmlTransient
     protected Boolean withPrepare = false;
@@ -474,9 +473,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     /**
-     * TODO: the equals methods for message/record actions and similar classes
-     * would require that messages and records implement equals for a proper
-     * implementation. The present approach is not satisfying.
+     * TODO: the equals methods for message/record actions and similar classes would require that messages and records
+     * implement equals for a proper implementation. The present approach is not satisfying.
      */
     @Override
     public boolean equals(Object obj) {

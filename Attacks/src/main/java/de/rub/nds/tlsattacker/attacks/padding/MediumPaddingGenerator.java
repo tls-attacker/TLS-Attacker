@@ -31,15 +31,12 @@ import java.util.List;
 public class MediumPaddingGenerator extends PaddingVectorGenerator {
 
     /**
-     * Default length of the encrypted data (app + mac + padding). This value
-     * was chosen to cover all the possible MAC algorithms (with SHA384 which
-     * has a 48 byte long output length) so that two full padding blocks can be
-     * inserted.
+     * Default length of the encrypted data (app + mac + padding). This value was chosen to cover all the possible MAC
+     * algorithms (with SHA384 which has a 48 byte long output length) so that two full padding blocks can be inserted.
      */
     static final int DEFAULT_CIPHERTEXT_LENGTH = 80;
     /**
-     * Default padding length for the construction of modified encrypted
-     * plaintexts
+     * Default padding length for the construction of modified encrypted plaintexts
      */
     static final int DEFAULT_PADDING_LENGTH = 4;
 
@@ -60,8 +57,7 @@ public class MediumPaddingGenerator extends PaddingVectorGenerator {
     }
 
     /**
-     * Create Vectors with Valid Padding but invalid Mac on 3 different
-     * Positions
+     * Create Vectors with Valid Padding but invalid Mac on 3 different Positions
      *
      * @param suite
      * @param version

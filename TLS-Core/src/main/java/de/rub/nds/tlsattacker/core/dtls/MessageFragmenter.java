@@ -45,8 +45,7 @@ public class MessageFragmenter {
     }
 
     /**
-     * Generates a single fragment carrying the contents of the message as
-     * payload.
+     * Generates a single fragment carrying the contents of the message as payload.
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer =

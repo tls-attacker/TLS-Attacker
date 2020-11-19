@@ -31,8 +31,8 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     private ModifiableByteArray completeRecordBytes;
 
     /**
-     * protocol message bytes transported in the record as seen on the transport
-     * layer if encryption is active this is encrypted if not its plaintext
+     * protocol message bytes transported in the record as seen on the transport layer if encryption is active this is
+     * encrypted if not its plaintext
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray protocolMessageBytes;

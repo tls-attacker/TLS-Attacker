@@ -48,8 +48,7 @@ public class DHClientKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * DHClientKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class DHClientKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

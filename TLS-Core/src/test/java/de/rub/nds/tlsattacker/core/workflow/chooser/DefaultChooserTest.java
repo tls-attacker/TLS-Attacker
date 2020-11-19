@@ -131,8 +131,7 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class
-     * DefaultChooser.
+     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
      */
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
@@ -264,8 +263,7 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class
-     * DefaultChooser.
+     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
      */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {

@@ -52,9 +52,8 @@ public abstract class Pkcs1Oracle {
      */
     protected RSAPublicKey publicKey;
     /*
-     * a boolean value indicating if the oracle is a plaintext oracle (oracle
-     * used for testing purposes) or a real oracle needing to decrypt each
-     * ciphertext.
+     * a boolean value indicating if the oracle is a plaintext oracle (oracle used for testing purposes) or a real
+     * oracle needing to decrypt each ciphertext.
      */
 
     /**
@@ -103,8 +102,7 @@ public abstract class Pkcs1Oracle {
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
 
     /**
-     * Returns true if the oracle is a plaintext oracle (does not decrypt the
-     * data received)
+     * Returns true if the oracle is a plaintext oracle (does not decrypt the data received)
      *
      * @return isPlaintextOracle
      */
@@ -129,18 +127,16 @@ public abstract class Pkcs1Oracle {
     }
 
     /**
-     * Oracle types defined in the Crypto'12 paper + specific oracles found
-     * during our research
+     * Oracle types defined in the Crypto'12 paper + specific oracles found during our research
      *
      * TTT checks only 0x00 0x02 ...
      *
-     * FFF checks 0x00 0x02 on the beginning, the first 8 bytes cannot include
-     * 0x00 and the 0x00 byte has to be set on a correct position
+     * FFF checks 0x00 0x02 on the beginning, the first 8 bytes cannot include 0x00 and the 0x00 byte has to be set on a
+     * correct position
      *
      * XMLENC checks if the key has a correct length (16, 24, or 32 bytes)
      *
-     * BigIP checks only the second byte 0x02 (the first 0x00 byte is not
-     * checked at all)
+     * BigIP checks only the second byte 0x02 (the first 0x00 byte is not checked at all)
      *
      * MANGER_0x00 checks only the first byte is equal to 0x00
      */

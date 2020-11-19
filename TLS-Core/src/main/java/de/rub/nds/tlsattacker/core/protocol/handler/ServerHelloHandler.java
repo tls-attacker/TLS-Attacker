@@ -317,8 +317,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case SECT571K1:
             case SECT571R1:
                 Point sharedPoint = curve.mult(privateKey, publicPoint);
-                int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getX().getModulus()).length;
-                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getX().getData(), elementLength);
+                int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
             default:
                 throw new UnsupportedOperationException("KeyShare type " + keyShare.getGroup() + " is unsupported");
         }
@@ -349,6 +349,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         Point sharedSecret =
             curve.mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / Bits.IN_A_BYTE, true);
+        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData(), curveSize / Bits.IN_A_BYTE,
+            true);
     }
 }

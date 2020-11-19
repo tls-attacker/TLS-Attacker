@@ -62,9 +62,8 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     /**
-     * Sets the padding length of the message (record). It is always 0, because
-     * the message is clear-text. This has nothing to do with PKCS#1 padding for
-     * the Premaster Secret as processed by preparePadding().
+     * Sets the padding length of the message (record). It is always 0, because the message is clear-text. This has
+     * nothing to do with PKCS#1 padding for the Premaster Secret as processed by preparePadding().
      */
     private void prepareMessagePaddingLength(SSL2ClientMasterKeyMessage message) {
         message.setPaddingLength(0);
@@ -116,8 +115,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     /**
-     * Generates as many random bytes as required for the secret portion of the
-     * master key in the chosen cipher suite.
+     * Generates as many random bytes as required for the secret portion of the master key in the chosen cipher suite.
      */
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[chooser.getSSL2CipherSuite().getSecretKeyByteNumber()];

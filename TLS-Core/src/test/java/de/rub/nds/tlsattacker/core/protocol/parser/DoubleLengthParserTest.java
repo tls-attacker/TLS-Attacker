@@ -21,8 +21,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 public class DoubleLengthParserTest {
 
     /**
-     * Test parsing of ClientHello message with a Length field of 100, but a
-     * message length of 643.
+     * Test parsing of ClientHello message with a Length field of 100, but a message length of 643.
      */
     @SuppressWarnings("SpellCheckingInspection")
     @Test

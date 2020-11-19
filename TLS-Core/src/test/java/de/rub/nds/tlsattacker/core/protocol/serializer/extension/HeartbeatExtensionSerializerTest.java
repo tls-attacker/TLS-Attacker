@@ -20,8 +20,7 @@ public class HeartbeatExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * HeartbeatExtensionSerializer.
+     * Test of serializeExtensionContent method, of class HeartbeatExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

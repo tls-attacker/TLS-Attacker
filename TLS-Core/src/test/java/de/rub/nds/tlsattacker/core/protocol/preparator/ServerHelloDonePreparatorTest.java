@@ -29,8 +29,7 @@ public class ServerHelloDonePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ServerHelloDonePreparator.
+     * Test of prepareHandshakeMessageContents method, of class ServerHelloDonePreparator.
      */
     @Test
     public void testPrepare() {

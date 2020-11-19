@@ -69,7 +69,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getX().getData())));
+            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
+                .getData())));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {

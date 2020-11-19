@@ -20,8 +20,7 @@ public class EllipticCurvesExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * EllipticCurvesExtensionPreparator.
+     * Test of prepareExtensionContent method, of class EllipticCurvesExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

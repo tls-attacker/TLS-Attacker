@@ -20,9 +20,8 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * This action allows the declaration of multiple actions, the right one will
- * selected at runtime. The usage of two actions with the same Messages is
- * forbidden.
+ * This action allows the declaration of multiple actions, the right one will selected at runtime. The usage of two
+ * actions with the same Messages is forbidden.
  */
 
 public class MultiReceiveAction extends GenericReceiveAction {

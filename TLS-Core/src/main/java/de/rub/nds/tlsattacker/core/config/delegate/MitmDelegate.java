@@ -21,9 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds
- * from command line. It requires at least one "accepting" and one "connecting"
- * connection end.
+ * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds from command line. It requires at least
+ * one "accepting" and one "connecting" connection end.
  */
 public class MitmDelegate extends Delegate {
 

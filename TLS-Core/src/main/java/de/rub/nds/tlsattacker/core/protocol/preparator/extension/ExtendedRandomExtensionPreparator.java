@@ -20,8 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Class which prepares an Extended Random Extension Message for handshake
- * messages, as defined as in
+ * Class which prepares an Extended Random Extension Message for handshake messages, as defined as in
  * https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02
  */
 public class ExtendedRandomExtensionPreparator extends ExtensionPreparator<ExtendedRandomExtensionMessage> {

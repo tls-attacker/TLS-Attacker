@@ -68,9 +68,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a byte[].
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a byte[]. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      * Number of bytes to be parsed
@@ -97,9 +96,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a int. Throws
-     * a ParserException if the number of bytes cannot be parsed. Moves the
-     * pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      * Number of bytes to be parsed
@@ -113,9 +111,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a positive
-     * BigInteger. Throws a ParserException if the number of bytes cannot be
-     * parsed. Moves the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a ParserException if
+     * the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      * Number of bytes to be parsed
@@ -129,9 +126,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a byte.
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a byte. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      * Number of bytes to be parsed

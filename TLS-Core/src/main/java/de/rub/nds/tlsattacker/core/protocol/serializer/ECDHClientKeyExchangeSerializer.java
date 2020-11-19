@@ -52,8 +52,7 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the ECDHClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the ECDHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
@@ -61,8 +60,7 @@ public class ECDHClientKeyExchangeSerializer<T extends ECDHClientKeyExchangeMess
     }
 
     /**
-     * Writes the SerializedPublicKey of the ECDHClientKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the ECDHClientKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());

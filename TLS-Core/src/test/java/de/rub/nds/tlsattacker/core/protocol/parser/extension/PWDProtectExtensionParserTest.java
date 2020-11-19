@@ -28,9 +28,8 @@ public class PWDProtectExtensionParserTest {
     /**
      * Generate test data for the parser and serializer
      *
-     * Note that the "username" is not actually an encrypted byte string in this
-     * test. The parser and serializer don't really care about that. This is
-     * just to test if the field is extracted correctly. The actual
+     * Note that the "username" is not actually an encrypted byte string in this test. The parser and serializer don't
+     * really care about that. This is just to test if the field is extracted correctly. The actual
      * encryption/decryption is done by the handler/preparator.
      */
     @Parameterized.Parameters

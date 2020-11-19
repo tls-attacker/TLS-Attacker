@@ -33,8 +33,7 @@ public class MessageActionResult {
     }
 
     /**
-     * Generates an empty MessageActionResult, that is, a result whose list
-     * fields are empty.
+     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
      */
     public MessageActionResult() {
         this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(),

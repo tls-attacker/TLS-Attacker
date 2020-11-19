@@ -129,8 +129,7 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Receives bytes and decrypts ApplicationMessage contents in converts them
-     * to Strings
+     * Receives bytes and decrypts ApplicationMessage contents in converts them to Strings
      *
      * @return The received String
      * @throws java.io.IOException

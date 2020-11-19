@@ -46,8 +46,7 @@ public class TokenBindingMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * TokenBindingMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class TokenBindingMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

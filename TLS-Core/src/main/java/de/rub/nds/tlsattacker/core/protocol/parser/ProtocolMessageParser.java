@@ -35,8 +35,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the ProtocolMessageParser is supposed to
-     * start parsing
+     * Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
      * The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
@@ -60,8 +59,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     protected abstract T parseMessageContent();
 
     /**
-     * Reads the next bytes as the CompleteResultingMessage and writes them in
-     * the message
+     * Reads the next bytes as the CompleteResultingMessage and writes them in the message
      *
      * @param msg
      * Message to write in

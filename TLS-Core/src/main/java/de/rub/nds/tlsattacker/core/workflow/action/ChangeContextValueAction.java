@@ -24,13 +24,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This action allows to change a value of the {@link TlsContext}. The field
- * that should be changed is referenced by a string.
+ * This action allows to change a value of the {@link TlsContext}. The field that should be changed is referenced by a
+ * string.
  *
- * WARNING: This might not work for every field inside the context, especially
- * when the WorkflowTrace is copied. There might be
- * serialization/deserialization issues with the types used in the
- * {@link TlsContext}.
+ * WARNING: This might not work for every field inside the context, especially when the WorkflowTrace is copied. There
+ * might be serialization/deserialization issues with the types used in the {@link TlsContext}.
  *
  * @param <T>
  * Object type of the field inside the {@link TlsContext}

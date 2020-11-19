@@ -20,8 +20,7 @@ public class SignatureAndHashAlgorithmsExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * SignatureAndHashAlgorithmsExtensionSerializer.
+     * Test of serializeExtensionContent method, of class SignatureAndHashAlgorithmsExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

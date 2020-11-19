@@ -15,10 +15,9 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Provide common alias methods for TLS context/connection bound objects. TLS
- * contexts are referenced by the alias of their connections. Objects
- * implementing this interface provide a uniform way to access aliases that
- * identify the connections they belong to.
+ * Provide common alias methods for TLS context/connection bound objects. TLS contexts are referenced by the alias of
+ * their connections. Objects implementing this interface provide a uniform way to access aliases that identify the
+ * connections they belong to.
  */
 public interface Aliasable {
     public abstract void assertAliasesSetProperly() throws ConfigurationException;

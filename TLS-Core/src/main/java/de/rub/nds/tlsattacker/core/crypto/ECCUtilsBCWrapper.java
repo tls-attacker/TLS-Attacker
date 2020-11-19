@@ -20,8 +20,8 @@ import org.bouncycastle.crypto.tls.TlsECCUtils;
 public class ECCUtilsBCWrapper {
 
     /**
-     * Reads ECC domain parameters from an input stream, based on given named
-     * curves and point formats. It uses the BC functionality.
+     * Reads ECC domain parameters from an input stream, based on given named curves and point formats. It uses the BC
+     * functionality.
      *
      * @param namedGroups
      * The Array of namedGroups
@@ -48,8 +48,7 @@ public class ECCUtilsBCWrapper {
     }
 
     /**
-     * Reads ECC domain parameters from an InputStream, all named formats and
-     * point formats are allowed
+     * Reads ECC domain parameters from an InputStream, all named formats and point formats are allowed
      *
      * @param input
      * The input stream to read from

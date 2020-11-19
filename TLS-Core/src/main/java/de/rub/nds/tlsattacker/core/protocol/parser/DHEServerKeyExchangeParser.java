@@ -33,8 +33,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the ServerKeyExchangeParser is supposed to
-     * start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
      * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
@@ -136,8 +135,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -148,8 +146,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -178,8 +175,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
-     * the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -191,8 +187,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
      * Message to write in

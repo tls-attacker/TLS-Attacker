@@ -65,8 +65,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the pLength of the DHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the pLength of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writePLength(T msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.DH_MODULUS_LENGTH);
@@ -82,8 +81,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the gLength of the DHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the gLength of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeGLength(T msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH);
@@ -99,8 +97,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the DHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
@@ -108,8 +105,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SerializedPublicKey of the DHEServerKeyExchangeMessage into
-     * the final byte[]
+     * Writes the SerializedPublicKey of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -117,8 +113,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
@@ -135,8 +130,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -144,8 +138,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     }
 
     /**
-     * Writes the Signature of the DHEServerKeyExchangeMessage into the final
-     * byte[]
+     * Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());

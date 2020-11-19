@@ -36,8 +36,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
     }
 
     /**
-     * Reads the next bytes as the username length of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the username length of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -48,8 +47,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
     }
 
     /**
-     * Reads the next bytes as the username of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the username of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

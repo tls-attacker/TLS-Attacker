@@ -17,8 +17,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 
 /**
- * Container storing data required for LeakyExportCheckCallable. The primary
- * feature of this is being serializable.
+ * Container storing data required for LeakyExportCheckCallable. The primary feature of this is being serializable.
  */
 public class LeakyExportCheckData implements Serializable {
 

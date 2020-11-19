@@ -45,8 +45,7 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
     }
 
     /**
-     * Writes the ProtocolVersion of the HelloVerifyMessage into the final
-     * byte[]
+     * Writes the ProtocolVersion of the HelloVerifyMessage into the final byte[]
      */
     private void writeProtocolVersion(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getProtocolVersion().getValue());

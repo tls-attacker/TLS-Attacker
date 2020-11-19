@@ -180,8 +180,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Creates an Empty - or almost Empty WorkflowTrace, depending on the
-     * StarTLS flag in the config
+     * Creates an Empty - or almost Empty WorkflowTrace, depending on the StarTLS flag in the config
      *
      * @param connection
      * @return
@@ -279,8 +278,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a handshake workflow for the default connection end defined in
-     * config.
+     * Create a handshake workflow for the default connection end defined in config.
      *
      * @return A HandshakeWorkflow
      */
@@ -328,8 +326,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Creates an extended TLS workflow including an application data and
-     * heartbeat messages
+     * Creates an extended TLS workflow including an application data and heartbeat messages
      *
      * @return A FullWorkflow with ApplicationMessages
      */
@@ -367,8 +364,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a handshake workflow for the default connection end defined in
-     * config.
+     * Create a handshake workflow for the default connection end defined in config.
      */
     private WorkflowTrace createFalseStartWorkflow() {
         return createFalseStartWorkflow(getConnection());
@@ -659,12 +655,10 @@ public class WorkflowConfigurationFactory {
     /**
      * A simple synchronizing proxy for RSA KE.
      *
-     * Synchronizes the secrets between all parties and forwards first round of
-     * exchanged application data messages.
+     * Synchronizes the secrets between all parties and forwards first round of exchanged application data messages.
      *
-     * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
-     * extensions) will brake it. So per default, all extensions are removed and
-     * all cipher suites except RSA suites are removed, too.
+     * Works only for RSA KE ciphers. Extended Master Secret (and possibly other extensions) will brake it. So per
+     * default, all extensions are removed and all cipher suites except RSA suites are removed, too.
      */
     private WorkflowTrace createSyncProxyWorkflow() {
 
@@ -709,8 +703,7 @@ public class WorkflowConfigurationFactory {
         removeExtensions.removeAll(keepExtensions);
 
         // Sorry for fooling the silly formatter with EOL comments :>
-        trace.addTlsActions(
-        // Forward CH, remove extensions and non RSA KE ciphers
+        trace.addTlsActions(// Forward CH, remove extensions and non RSA KE ciphers
             new BufferedGenericReceiveAction(clientToMitmAlias), //
             new CopyBuffersAction(clientToMitmAlias, mitmToServerAlias), //
             new RemBufferedChCiphersAction(mitmToServerAlias, removeCiphers), //
@@ -719,9 +712,8 @@ public class WorkflowConfigurationFactory {
             new ClearBuffersAction(clientToMitmAlias), //
 
             // Forward SH
-            new BufferedGenericReceiveAction(mitmToServerAlias), //
-            new CopyBuffersAction(mitmToServerAlias, clientToMitmAlias), //
-            new PopAndSendAction(clientToMitmAlias), //
+            new BufferedGenericReceiveAction(mitmToServerAlias), new CopyBuffersAction(mitmToServerAlias,
+                clientToMitmAlias), new PopAndSendAction(clientToMitmAlias), //
             new PrintSecretsAction(clientToMitmAlias), //
             new PrintSecretsAction(mitmToServerAlias), //
             // But send our own certificate
@@ -905,8 +897,9 @@ public class WorkflowConfigurationFactory {
                     StarttlsMessage.SMTP_S_READY.getStarttlsMessage(), "US-ASCII"));
                 return workflowTrace;
             }
+            default:
+                return workflowTrace;
         }
-        return workflowTrace;
     }
 
     private WorkflowTrace createDynamicHandshakeWorkflow() {

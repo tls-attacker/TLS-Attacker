@@ -42,8 +42,7 @@ public class CertificateRequestParserTest {
                 ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,
                 null, ProtocolVersion.TLS12 },
             /*
-             * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG,
-             * HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
+             * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG, HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
              * RSA_DSS_ECDSA_TYPES, 0,null, 0, null,ProtocolVersion.SSL3 }
              */});
         // TestData is correct, however Certificate request and other

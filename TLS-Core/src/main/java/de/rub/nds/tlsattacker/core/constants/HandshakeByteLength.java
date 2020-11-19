@@ -33,8 +33,7 @@ public class HandshakeByteLength {
     public static final int EXTENSION_LENGTH = 2;
 
     /**
-     * certificates length field (certificate array can include several
-     * certificates)
+     * certificates length field (certificate array can include several certificates)
      */
     public static final int CERTIFICATES_LENGTH = 3;
     /**
@@ -149,8 +148,7 @@ public class HandshakeByteLength {
      */
     public static final int HASH = 1;
     /**
-     * Length of the signature hash algorithms field in the certificateVerify
-     * message
+     * Length of the signature hash algorithms field in the certificateVerify message
      */
     public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
@@ -164,8 +162,7 @@ public class HandshakeByteLength {
     public static final int ELLIPTIC_CURVE = 1;
 
     /**
-     * Length of the cookie field in DTLS ClientHello and ClientHelloVerify
-     * messages.
+     * Length of the cookie field in DTLS ClientHello and ClientHelloVerify messages.
      */
     public static final int DTLS_HANDSHAKE_COOKIE_LENGTH = 1;
 

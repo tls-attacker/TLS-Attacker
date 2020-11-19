@@ -47,8 +47,7 @@ public class FinishedSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * FinishedSerializer.
+     * Test of serializeHandshakeMessageContent method, of class FinishedSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

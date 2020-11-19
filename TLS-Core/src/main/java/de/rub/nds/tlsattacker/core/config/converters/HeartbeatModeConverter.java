@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import java.util.Arrays;
 
 /**
- * Converts a heartbeat mode string to a HeartbeatMode (for command line
- * purposes).
+ * Converts a heartbeat mode string to a HeartbeatMode (for command line purposes).
  */
 public class HeartbeatModeConverter implements IStringConverter<HeartbeatMode> {
 

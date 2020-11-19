@@ -20,8 +20,7 @@ public class UnknownExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * UnknownExtensionPreparator.
+     * Test of prepareExtensionContent method, of class UnknownExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

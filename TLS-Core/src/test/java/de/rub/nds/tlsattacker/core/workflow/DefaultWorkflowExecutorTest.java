@@ -38,8 +38,7 @@ public class DefaultWorkflowExecutorTest {
     }
 
     /**
-     * Fallback to WorkflowConfigurationFactory with default context should
-     * work.
+     * Fallback to WorkflowConfigurationFactory with default context should work.
      */
     @Test
     public void testExecuteImplicitWorkflowWithDefaultContexts() {

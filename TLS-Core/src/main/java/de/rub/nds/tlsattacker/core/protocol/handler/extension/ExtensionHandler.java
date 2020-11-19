@@ -42,8 +42,7 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
     public abstract ExtensionSerializer getSerializer(MessageT message);
 
     /**
-     * Adjusts the TLS Context according to the received or sending
-     * ProtocolMessage
+     * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
      * The message for which the Context should be adjusted
@@ -56,8 +55,7 @@ public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
     public abstract void adjustTLSExtensionContext(MessageT message);
 
     /**
-     * Tell the context that the extension was proposed/negotiated. Makes the
-     * extension type available in
+     * Tell the context that the extension was proposed/negotiated. Makes the extension type available in
      * TlsContext.isExtension{Proposed,Negotiated}(extType).
      *
      * @param message

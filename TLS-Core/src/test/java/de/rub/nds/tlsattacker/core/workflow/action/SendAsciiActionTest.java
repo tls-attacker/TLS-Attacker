@@ -55,8 +55,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of WorkflowExecutionException of execute method, of class
-     * SendAsciiAction.
+     * Test of WorkflowExecutionException of execute method, of class SendAsciiAction.
      *
      * @throws java.io.IOException
      */

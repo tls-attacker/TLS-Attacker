@@ -37,8 +37,7 @@ public class SupportedVersionsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * SupportedVersionsExtensionHandler.
+     * Test of adjustTLSContext method, of class SupportedVersionsExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {

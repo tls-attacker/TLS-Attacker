@@ -42,8 +42,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShareType of the Extension and writes them
-     * in the message
+     * Reads the next bytes as the keyShareType of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -54,8 +53,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShareLength of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the keyShareLength of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in
@@ -66,8 +64,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     }
 
     /**
-     * Reads the next bytes as the keyShare of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the keyShare of the Extension and writes them in the message
      *
      * @param msg
      * Message to write in

@@ -65,8 +65,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CipherSuiteLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the CipherSuiteLength of the ClientHelloMessage into the final byte[]
      */
     private void writeCipherSuiteLength(ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), HandshakeByteLength.CIPHER_SUITES_LENGTH);
@@ -82,8 +81,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CompressionLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the CompressionLength of the ClientHelloMessage into the final byte[]
      */
     private void writeCompressionLength(ClientHelloMessage msg) {
         appendInt(msg.getCompressionLength().getValue(), HandshakeByteLength.COMPRESSION_LENGTH);
@@ -99,8 +97,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the ExtensionLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the ExtensionLength of the ClientHelloMessage into the final byte[]
      */
     private void writeExtensionLength(ClientHelloMessage msg) {
         appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);

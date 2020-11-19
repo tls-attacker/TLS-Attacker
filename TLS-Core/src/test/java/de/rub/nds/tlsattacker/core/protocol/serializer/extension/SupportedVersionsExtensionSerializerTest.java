@@ -43,8 +43,7 @@ public class SupportedVersionsExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * SupportedVersionsExtensionSerializer.
+     * Test of serializeExtensionContent method, of class SupportedVersionsExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

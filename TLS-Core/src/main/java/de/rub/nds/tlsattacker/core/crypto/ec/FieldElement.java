@@ -19,18 +19,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * Can be used to store elements of a galois field.<br />
  * The attribute data should contain some BigInteger representing the element.<br />
- * The attribute modulus should contain some BigInteger that may be used to
- * identify the field (and for calculations).<br />
+ * The attribute modulus should contain some BigInteger that may be used to identify the field (and for calculations).<br />
  *
- * All arithmetic operations are performed within the laws of the specified
- * field.
+ * All arithmetic operations are performed within the laws of the specified field.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class FieldElement implements Serializable {
 
     /*
-     * FieldElement objects are immutable. This should make deep copies in the
-     * methods of the EllipticCurve class unnecessary.
+     * FieldElement objects are immutable. This should make deep copies in the methods of the EllipticCurve class
+     * unnecessary.
      */
     private final BigInteger data;
     private final BigInteger modulus;

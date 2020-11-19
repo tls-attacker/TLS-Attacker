@@ -37,8 +37,7 @@ public abstract class ECOracle {
     protected EllipticCurve curve;
 
     /**
-     * Takes an ec point and a guessed secret and returns true, in case the
-     * secret was guessed correctly.
+     * Takes an ec point and a guessed secret and returns true, in case the secret was guessed correctly.
      *
      * @param ecPoint
      * The Point
@@ -49,9 +48,8 @@ public abstract class ECOracle {
     public abstract boolean checkSecretCorrectness(Point ecPoint, BigInteger guessedSecret);
 
     /**
-     * Sends the oracle a request with a guessed secret key resulting from the
-     * attack. The oracle responds with true, in case the guessed key was
-     * correct.
+     * Sends the oracle a request with a guessed secret key resulting from the attack. The oracle responds with true, in
+     * case the guessed key was correct.
      *
      * @param guessedSecret
      * The guessed Secret

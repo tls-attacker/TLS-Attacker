@@ -52,8 +52,7 @@ public class CertificateMessageSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * CertificateMessageSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateMessageSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

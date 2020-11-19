@@ -50,8 +50,8 @@ public class ServerUdpTransportHandler extends TransportHandler {
     }
 
     /*
-     * Provides a routine equivalent to TCP's accept method. Blocks until a
-     * client "connects", meaning that data is available to be read.
+     * Provides a routine equivalent to TCP's accept method. Blocks until a client "connects", meaning that data is
+     * available to be read.
      */
     private void waitOnReceive() throws IOException {
         while (inStream.available() == 0) {
