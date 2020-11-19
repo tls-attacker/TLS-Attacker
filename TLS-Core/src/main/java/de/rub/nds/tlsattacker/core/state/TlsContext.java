@@ -1330,8 +1330,16 @@ public class TlsContext {
         return globalDtlsFragmentManager;
     }
 
+    public FragmentManager setDtlsFragmentManager(FragmentManager globalDtlsFragmentManager) {
+        return this.globalDtlsFragmentManager = globalDtlsFragmentManager;
+    }
+
     public CssManager getDtlsCssManager() {
         return globalDtlsCssManager;
+    }
+
+    public CssManager setDtlsCssManager(CssManager globalDtlsCssManager) {
+        return this.globalDtlsCssManager = globalDtlsCssManager;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
