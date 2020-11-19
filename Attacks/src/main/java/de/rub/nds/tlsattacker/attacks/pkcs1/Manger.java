@@ -120,11 +120,6 @@ public class Manger extends Pkcs1Attack {
             if (mmax.equals(mmin)) {
                 break;
             }
-            // intervalSize = int(math.ceil(math.log(mmax-mmin)))
-            // if not intervalSize == prevIntervalSize:
-            // if intervalSize % 10 == 0:
-            // print ">> Manger running. Interval size:",intervalSize,"bit."
-            // prevIntervalSize=intervalSize
         }
 
         if (!interrupted) {

@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
-    private final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
