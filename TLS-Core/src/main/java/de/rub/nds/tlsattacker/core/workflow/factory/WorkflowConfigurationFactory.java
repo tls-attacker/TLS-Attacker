@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -395,6 +397,11 @@ public class WorkflowConfigurationFactory {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = this.createHandshakeWorkflow(conEnd);
 
+        if (config.getHighestProtocolVersion().isDTLS() && config.isFinishWithCloseNotify()) {
+            AlertMessage alert = new AlertMessage();
+            alert.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
+            trace.addTlsAction(new SendAction(alert));
+        }
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace tempTrace = this.createResumptionWorkflow();
         for (TlsAction resumption : tempTrace.getTlsActions()) {
