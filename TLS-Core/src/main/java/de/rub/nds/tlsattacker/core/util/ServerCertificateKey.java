@@ -14,7 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 public enum ServerCertificateKey {
 
-    EC, DH, RSA, NONE;
+    EC,
+    DH,
+    RSA,
+    NONE;
 
     public static ServerCertificateKey getServerCertificateKey(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();

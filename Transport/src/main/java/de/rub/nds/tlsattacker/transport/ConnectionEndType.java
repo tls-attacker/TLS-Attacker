@@ -15,7 +15,8 @@ package de.rub.nds.tlsattacker.transport;
  */
 public enum ConnectionEndType {
 
-    CLIENT, SERVER;
+    CLIENT,
+    SERVER;
 
     public ConnectionEndType getPeer() {
         if (this == CLIENT) {

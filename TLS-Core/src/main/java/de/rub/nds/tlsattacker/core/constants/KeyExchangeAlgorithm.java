@@ -12,9 +12,34 @@ package de.rub.nds.tlsattacker.core.constants;
 
 public enum KeyExchangeAlgorithm {
 
-    NULL, DHE_DSS, DHE_RSA, DHE_PSK, DH_ANON, RSA, PSK_RSA, DH_DSS, DH_RSA, KRB5, SRP_SHA_DSS, SRP_SHA_RSA, SRP_SHA,
-    PSK, ECDH_RSA, ECDH_ANON, ECDH_ECDSA, ECDHE_ECDSA, ECDHE_RSA, ECDHE_PSK, VKO_GOST01, VKO_GOST12, FORTEZZA_KEA,
-    ECMQV_ECDSA, ECMQV_ECNRA, ECDH_ECNRA, CECPQ1_ECDSA, ECCPWD;
+    NULL,
+    DHE_DSS,
+    DHE_RSA,
+    DHE_PSK,
+    DH_ANON,
+    RSA,
+    PSK_RSA,
+    DH_DSS,
+    DH_RSA,
+    KRB5,
+    SRP_SHA_DSS,
+    SRP_SHA_RSA,
+    SRP_SHA,
+    PSK,
+    ECDH_RSA,
+    ECDH_ANON,
+    ECDH_ECDSA,
+    ECDHE_ECDSA,
+    ECDHE_RSA,
+    ECDHE_PSK,
+    VKO_GOST01,
+    VKO_GOST12,
+    FORTEZZA_KEA,
+    ECMQV_ECDSA,
+    ECMQV_ECNRA,
+    ECDH_ECNRA,
+    CECPQ1_ECDSA,
+    ECCPWD;
 
     public boolean isKeyExchangeRsa() {
         return this.equals(this.RSA);

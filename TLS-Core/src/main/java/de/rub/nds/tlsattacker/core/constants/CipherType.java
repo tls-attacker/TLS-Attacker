@@ -11,6 +11,8 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum CipherType {
-    STREAM, BLOCK, AEAD;
+    STREAM,
+    BLOCK,
+    AEAD;
 
 }

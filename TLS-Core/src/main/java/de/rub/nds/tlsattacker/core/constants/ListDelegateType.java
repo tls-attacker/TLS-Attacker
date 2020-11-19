@@ -14,5 +14,9 @@ package de.rub.nds.tlsattacker.core.constants;
  * Types that can be listed via ListDelegate
  */
 public enum ListDelegateType {
-    ciphers, filters, groups, sign_hash_algos, workflow_trace_types
+    ciphers,
+    filters,
+    groups,
+    sign_hash_algos,
+    workflow_trace_types
 }

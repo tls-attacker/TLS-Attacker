@@ -562,7 +562,8 @@ public class EncryptedServerNameIndicationExtensionPreparator extends
     }
 
     public enum EsniPreparatorMode {
-        CLIENT, SERVER;
+        CLIENT,
+        SERVER;
     }
 
 }

@@ -364,7 +364,8 @@ public class SSLUtils {
      * enum { client(0x434C4E54), server(0x53525652) } Sender;
      */
     private static enum Sender {
-        CLIENT("434C4E54"), SERVER("53525652");
+        CLIENT("434C4E54"),
+        SERVER("53525652");
 
         Sender(String hex) {
             value = ArrayConverter.hexStringToByteArray(hex);

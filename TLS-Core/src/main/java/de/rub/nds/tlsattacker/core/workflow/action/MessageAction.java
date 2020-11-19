@@ -74,7 +74,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class MessageAction extends ConnectionBoundAction {
 
     public enum MessageActionDirection {
-        SENDING, RECEIVING
+        SENDING,
+        RECEIVING
     }
 
     @XmlElementWrapper

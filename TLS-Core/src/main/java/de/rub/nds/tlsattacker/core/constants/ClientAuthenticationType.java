@@ -18,7 +18,9 @@ import java.util.Map;
  * 
  */
 public enum ClientAuthenticationType {
-    ANONYMOUS((byte) 0x00), CERTIFICATE_BASED((byte) 0x01), PSK((byte) 0x02);
+    ANONYMOUS((byte) 0x00),
+    CERTIFICATE_BASED((byte) 0x01),
+    PSK((byte) 0x02);
 
     private byte value;
 

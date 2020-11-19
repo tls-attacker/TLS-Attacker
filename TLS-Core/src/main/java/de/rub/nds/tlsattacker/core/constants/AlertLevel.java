@@ -18,7 +18,9 @@ import java.util.Map;
  */
 public enum AlertLevel {
 
-    UNDEFINED((byte) 0), WARNING((byte) 1), FATAL((byte) 2);
+    UNDEFINED((byte) 0),
+    WARNING((byte) 1),
+    FATAL((byte) 2);
 
     private byte value;
 

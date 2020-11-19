@@ -14,5 +14,7 @@ package de.rub.nds.tlsattacker.attacks.constants;
  *
  */
 public enum ModificationPosition {
-    MAC, PADDING, PLAIN
+    MAC,
+    PADDING,
+    PLAIN
 }

@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TokenBindingKeyParameters {
-    RSA2048_PKCS1_5((byte) 0), RSA2048_PSS((byte) 1), ECDSAP256((byte) 2);
+    RSA2048_PKCS1_5((byte) 0),
+    RSA2048_PSS((byte) 1),
+    ECDSAP256((byte) 2);
 
     private final byte keyParameterValue;
     private static final Map<Byte, TokenBindingKeyParameters> MAP;

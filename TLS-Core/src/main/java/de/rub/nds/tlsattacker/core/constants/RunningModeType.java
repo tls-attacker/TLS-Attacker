@@ -11,5 +11,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum RunningModeType {
-    CLIENT, SERVER, MITM
+    CLIENT,
+    SERVER,
+    MITM
 }

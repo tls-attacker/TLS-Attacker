@@ -17,7 +17,8 @@ import java.util.Map;
  * RFC6066 and RFC6961
  */
 public enum CertificateStatusRequestType {
-    OCSP((int) 1), OCSP_multi((int) 2);
+    OCSP((int) 1),
+    OCSP_multi((int) 2);
 
     private final int certificateStatusRequestValue;
     private static final Map<Integer, CertificateStatusRequestType> MAP;

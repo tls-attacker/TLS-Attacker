@@ -181,6 +181,7 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
     }
 
     public enum EsniMessageType {
-        CLIENT, SERVER;
+        CLIENT,
+        SERVER;
     }
 }

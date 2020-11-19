@@ -11,5 +11,6 @@
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 public enum FilterType {
-    DEFAULT, DISCARD_RECORDS,
+    DEFAULT,
+    DISCARD_RECORDS,
 }

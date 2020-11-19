@@ -22,7 +22,9 @@ import java.util.Random;
 
 public enum ECPointFormat {
 
-    UNCOMPRESSED((byte) 0), ANSIX962_COMPRESSED_PRIME((byte) 1), ANSIX962_COMPRESSED_CHAR2((byte) 2);
+    UNCOMPRESSED((byte) 0),
+    ANSIX962_COMPRESSED_PRIME((byte) 1),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
     private byte value;
 

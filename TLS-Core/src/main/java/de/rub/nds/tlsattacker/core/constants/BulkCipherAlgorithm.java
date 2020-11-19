@@ -15,7 +15,20 @@ public enum BulkCipherAlgorithm {
     /**
      * DESede references 3DES
      */
-    NULL, IDEA, DESede, DES40, DES, RC4, RC2, FORTEZZA, CAMELLIA, SEED, ARIA, CHACHA20_POLY1305, GOST28147, AES;
+    NULL,
+    IDEA,
+    DESede,
+    DES40,
+    DES,
+    RC4,
+    RC2,
+    FORTEZZA,
+    CAMELLIA,
+    SEED,
+    ARIA,
+    CHACHA20_POLY1305,
+    GOST28147,
+    AES;
 
     /**
      * @param cipherSuite

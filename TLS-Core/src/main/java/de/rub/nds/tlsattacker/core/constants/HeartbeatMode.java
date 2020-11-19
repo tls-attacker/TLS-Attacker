@@ -16,7 +16,8 @@ import java.util.Random;
 
 public enum HeartbeatMode {
 
-    PEER_ALLOWED_TO_SEND((byte) 1), PEER_NOT_ALLOWED_TO_SEND((byte) 2);
+    PEER_ALLOWED_TO_SEND((byte) 1),
+    PEER_NOT_ALLOWED_TO_SEND((byte) 2);
 
     private byte value;
 

@@ -162,12 +162,13 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_NameConstraints_LEAF_RSAv3(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
             + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate.",
-        false, true), ROOTv3_CAv3_MalformedNameConstraints_LEAF_RSAv3(
+        false, true),
+    ROOTv3_CAv3_MalformedNameConstraints_LEAF_RSAv3(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
             + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate."
             + "Additionally the NameConstraints extension uses implicit tagging where explicit is expected, hence "
-            + "presenting malformed ASN.1.", false, true), ROOTv3_CAv3_CAv3_PathLoop(
-        "Path loop created by two CA certificates signing each other.", false, true),
+            + "presenting malformed ASN.1.", false, true),
+    ROOTv3_CAv3_CAv3_PathLoop("Path loop created by two CA certificates signing each other.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_KeyUsageNothing(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
             + "The leaf certificates key usage extensions allows no key usage at all.", false, true),
@@ -180,16 +181,20 @@ public enum CcaCertificateType {
     ROOTv3_CAv3_LEAF_RSAv3_EmptySigned(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
             + "The leaf certificate points to the intermediate CA but isn't signed at all. (Empty signatureValue)",
-        false, true), ROOTv3_CAv3_LEAF_RSAv3_CertPolicy(
+        false, true),
+    ROOTv3_CAv3_LEAF_RSAv3_CertPolicy(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
             + "The leaf certificate and CA certificate has a certificate policy extension with the any value pointing"
-            + " to an URL.", false, true), ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
+            + " to an URL.", false, true),
+    ROOTv3_CAv3_LEAF_RSAv3_NullSigned(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
             + "The leaf certificate points to the intermediate CA but isn't signed at all. (Null Signature)", false,
-        true), ROOTv3_CAv3_LEAF_RSAv3_MalformedAlgorithmParameters(
+        true),
+    ROOTv3_CAv3_LEAF_RSAv3_MalformedAlgorithmParameters(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA."
             + "The leaf certificate has malformed, but matching (tbsCert and Cert) parameters in the "
-            + "SignatureAlgorithm.", false, true), ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SANCrit(
+            + "SignatureAlgorithm.", false, true),
+    ROOTv3_CAv3_NameConstraints_LEAF_RSAv3_SANCrit(
         "RSA Leaf certificate generated based on the provided (root-)CA certificate with one intermediate CA. "
             + "The intermediate v3 CA certificate imposes NameConstraints that aren't met by the leaf certificate "
             + "in the subject, but are met in the SAN. The extension is marked as critical.", false, true),
@@ -212,7 +217,8 @@ public enum CcaCertificateType {
             + "If the implementation actually tries to verify the CRL and potentially fetch the CRL the test should "
             + "fail "
             + "since there is no valid CRL locally (no fetch) and none hosted at localhost (why would we even want "
-            + "that).", false, true), ROOTv3_NewFakeChain_ROOTv3_CAv3_LEAF_RSAv3(
+            + "that).", false, true),
+    ROOTv3_NewFakeChain_ROOTv3_CAv3_LEAF_RSAv3(
         "A certificate chain in which the ROOT certificate is a lookalike of the real root certificate "
             + "uses a different key. Intermediate CA and leaf certificate are as always.", false, true),
     ROOTv3_CAv3_LEAF_RSAv3_MismatchingAlgorithmParameters("RSA Leaf certificate generated based on the "

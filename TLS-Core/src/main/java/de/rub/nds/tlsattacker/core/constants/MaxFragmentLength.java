@@ -16,7 +16,10 @@ import java.util.Random;
 
 public enum MaxFragmentLength {
 
-    TWO_9((byte) 1), TWO_10((byte) 2), TWO_11((byte) 3), TWO_12((byte) 4);
+    TWO_9((byte) 1),
+    TWO_10((byte) 2),
+    TWO_11((byte) 3),
+    TWO_12((byte) 4);
 
     private byte value;
 

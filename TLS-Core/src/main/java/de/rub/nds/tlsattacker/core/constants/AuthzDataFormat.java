@@ -20,7 +20,10 @@ import java.util.Map;
  * RFC5878
  */
 public enum AuthzDataFormat {
-    X509_ATTR_CERT((byte) 0), SAML_ASSERTION((byte) 1), X509_ATTR_CERT_URL((byte) 2), SAML_ASSERTION_URL((byte) 3);
+    X509_ATTR_CERT((byte) 0),
+    SAML_ASSERTION((byte) 1),
+    X509_ATTR_CERT_URL((byte) 2),
+    SAML_ASSERTION_URL((byte) 3);
 
     private final byte value;
     private static final Map<Byte, AuthzDataFormat> MAP;

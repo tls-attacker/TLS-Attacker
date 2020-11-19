@@ -15,7 +15,8 @@ import java.util.Map;
 
 public enum HeartbeatMessageType {
 
-    HEARTBEAT_REQUEST((byte) 1), HEARTBEAT_RESPONSE((byte) 2);
+    HEARTBEAT_REQUEST((byte) 1),
+    HEARTBEAT_RESPONSE((byte) 2);
 
     private byte value;
 

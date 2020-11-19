@@ -19,10 +19,14 @@ import java.util.Map;
 import org.bouncycastle.util.Arrays;
 
 public enum SSL2CipherSuite implements Serializable {
-    SSL_CK_RC4_128_WITH_MD5(0x010080, 16, 0, 0), SSL_CK_RC4_128_EXPORT40_WITH_MD5(0x020080, 5, 11, 0),
-    SSL_CK_RC2_128_CBC_WITH_MD5(0x030080, 16, 0, 8), SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5(0x040080, 5, 11, 8),
-    SSL_CK_IDEA_128_CBC_WITH_MD5(0x050080, 16, 0, 8), SSL_CK_DES_64_CBC_WITH_MD5(0x060040, 8, 0, 8),
-    SSL_CK_DES_192_EDE3_CBC_WITH_MD5(0x0700C0, 24, 0, 8), SSL_UNKNOWN_CIPHER(0x999999, 0, 0, 0);
+    SSL_CK_RC4_128_WITH_MD5(0x010080, 16, 0, 0),
+    SSL_CK_RC4_128_EXPORT40_WITH_MD5(0x020080, 5, 11, 0),
+    SSL_CK_RC2_128_CBC_WITH_MD5(0x030080, 16, 0, 8),
+    SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5(0x040080, 5, 11, 8),
+    SSL_CK_IDEA_128_CBC_WITH_MD5(0x050080, 16, 0, 8),
+    SSL_CK_DES_64_CBC_WITH_MD5(0x060040, 8, 0, 8),
+    SSL_CK_DES_192_EDE3_CBC_WITH_MD5(0x0700C0, 24, 0, 8),
+    SSL_UNKNOWN_CIPHER(0x999999, 0, 0, 0);
 
     // TODO: I'd rather not inherit from CipherSuite, as this is too different.
     // Robert, what do you think?

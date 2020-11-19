@@ -11,5 +11,9 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum StarttlsType {
-    NONE, FTP, IMAP, POP3, SMTP;
+    NONE,
+    FTP,
+    IMAP,
+    POP3,
+    SMTP;
 }

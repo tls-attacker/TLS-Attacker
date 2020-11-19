@@ -16,8 +16,9 @@ import java.util.Map;
 
 public enum SupplementalDataType {
 
-    USER_MAPPING_DATA(new byte[] { (byte) 0, (byte) 0 }), AUTHZ_DATA(new byte[] { (byte) 0x40, (byte) 0x02 }), UNKNOWN(
-        new byte[0]);
+    USER_MAPPING_DATA(new byte[] { (byte) 0, (byte) 0 }),
+    AUTHZ_DATA(new byte[] { (byte) 0x40, (byte) 0x02 }),
+    UNKNOWN(new byte[0]);
 
     private byte[] value;
 

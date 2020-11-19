@@ -12,6 +12,10 @@ package de.rub.nds.tlsattacker.core.constants;
 
 public enum PublicKeyAlgorithm {
 
-    RSA, EC, DH, GOST01, GOST12
+    RSA,
+    EC,
+    DH,
+    GOST01,
+    GOST12
 
 }

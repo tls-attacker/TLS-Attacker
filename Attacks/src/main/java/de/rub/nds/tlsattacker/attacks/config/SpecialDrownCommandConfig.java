@@ -19,7 +19,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     private enum OracleType {
-        EXTRA_CLEAR, LEAKY_EXPORT
+        EXTRA_CLEAR,
+        LEAKY_EXPORT
     }
 
     public static final String COMMAND = "specialDrown";

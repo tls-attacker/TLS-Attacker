@@ -12,6 +12,14 @@ package de.rub.nds.tlsattacker.transport;
 
 public enum TransportHandlerType {
 
-    TCP, EAP_TLS, UDP, NON_BLOCKING_TCP, STREAM, TCP_TIMING, UDP_TIMING, TCP_PROXY_TIMING, TCP_NO_DELAY,
+    TCP,
+    EAP_TLS,
+    UDP,
+    NON_BLOCKING_TCP,
+    STREAM,
+    TCP_TIMING,
+    UDP_TIMING,
+    TCP_PROXY_TIMING,
+    TCP_NO_DELAY,
 
 }

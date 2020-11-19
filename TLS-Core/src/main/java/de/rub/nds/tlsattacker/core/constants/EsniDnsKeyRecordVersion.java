@@ -15,8 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum EsniDnsKeyRecordVersion {
-    NULL(null), VERSION_FF01(new byte[] { (byte) 0xff, (byte) 0x01 }), VERSION_FF02(new byte[] { (byte) 0xff,
-        (byte) 0x02 }), VERSION_FF03(new byte[] { (byte) 0xff, (byte) 0x03 });
+    NULL(null),
+    VERSION_FF01(new byte[] { (byte) 0xff, (byte) 0x01 }),
+    VERSION_FF02(new byte[] { (byte) 0xff, (byte) 0x02 }),
+    VERSION_FF03(new byte[] { (byte) 0xff, (byte) 0x03 });
 
     EsniDnsKeyRecordVersion(byte[] byteValue) {
         this.byteValue = byteValue;

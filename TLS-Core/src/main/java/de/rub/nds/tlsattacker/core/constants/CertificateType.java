@@ -19,7 +19,9 @@ import java.util.Map;
  * RFC6091 and RFC7250
  */
 public enum CertificateType {
-    X509((byte) 0), OPEN_PGP((byte) 1), RAW_PUBLIC_KEY((byte) 2);
+    X509((byte) 0),
+    OPEN_PGP((byte) 1),
+    RAW_PUBLIC_KEY((byte) 2);
 
     private final byte value;
     private static final Map<Byte, CertificateType> MAP;
