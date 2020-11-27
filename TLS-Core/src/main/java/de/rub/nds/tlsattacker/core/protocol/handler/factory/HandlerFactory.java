@@ -112,8 +112,7 @@ public class HandlerFactory {
      *            The HandshakeMessageType which contains the Extension
      * @return Correct ExtensionHandler
      */
-    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type,
-            HandshakeMessageType handshakeMessageType) {
+    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -146,9 +145,6 @@ public class HandlerFactory {
                     return new ExtendedRandomExtensionHandler(context);
                 case KEY_SHARE_OLD:
                 case KEY_SHARE:
-                    if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
-                        return new HrrKeyShareExtensionHandler(context);
-                    }
                     return new KeyShareExtensionHandler(context, type);
                 case MAX_FRAGMENT_LENGTH:
                     return new MaxFragmentLengthExtensionHandler(context);

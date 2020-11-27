@@ -143,7 +143,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             int pointer = 0;
             while (pointer < pair.getExtensionsLength().getValue()) {
                 ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
-                        pointer, msg.getHandshakeMessageType(), this.getConfig());
+                        pointer, this.getConfig());
                 extensionMessages.add(parser.parse());
                 if (pointer == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing CertificateExtensions");

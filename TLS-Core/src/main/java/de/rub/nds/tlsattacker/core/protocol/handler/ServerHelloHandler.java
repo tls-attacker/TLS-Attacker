@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -27,6 +28,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
@@ -44,6 +46,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
@@ -81,7 +84,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedSessionID(message);
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
-        adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
+        adjustExtensions(message);
         if (!message.isTls13HelloRetryRequest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 adjustHandshakeTrafficSecrets();
@@ -97,6 +100,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 tlsContext.setMasterSecret(session.getMasterSecret());
                 setRecordCipher();
             }
+        } else {
+            adjustHelloRetryDigest(message);
         }
     }
 
@@ -200,7 +205,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustTlsContextAfterSerialize(ServerHelloMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && !message.isTls13HelloRetryRequest()) {
             setServerRecordCipher();
         }
     }
@@ -343,5 +348,30 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         Point sharedSecret = curve
                 .mult(privateKeyScalar, curve.add(curve.mult(scalar, passwordElement), keySharePoint));
         return ArrayConverter.bigIntegerToByteArray(sharedSecret.getX().getData(), curveSize / Bits.IN_A_BYTE, true);
+    }
+
+    private void adjustHelloRetryDigest(ServerHelloMessage message) {
+        try {
+            byte[] lastClientHello = tlsContext.getChooser().getLastClientHello();
+            LOGGER.debug("Replacing current digest for Hello Retry Request using Client Hello: "
+                    + ArrayConverter.bytesToHexString(lastClientHello));
+
+            DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext
+                    .getChooser().getSelectedCipherSuite());
+            MessageDigest hash = MessageDigest.getInstance(algorithm.getJavaName());
+            hash.update(lastClientHello);
+            byte[] clientHelloHash = hash.digest();
+            byte[] serverHelloBytes = message.getCompleteResultingMessage().getValue();
+
+            tlsContext.getDigest().setRawBytes(HandshakeMessageType.MESSAGE_HASH.getArrayValue());
+            tlsContext.getDigest().append(
+                    ArrayConverter.intToBytes(clientHelloHash.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+            tlsContext.getDigest().append(clientHelloHash);
+            tlsContext.getDigest().append(serverHelloBytes);
+            LOGGER.debug("Complete resulting digest: "
+                    + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+        } catch (NoSuchAlgorithmException ex) {
+            LOGGER.error(ex);
+        }
     }
 }

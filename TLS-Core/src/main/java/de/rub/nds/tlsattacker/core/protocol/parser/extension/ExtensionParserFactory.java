@@ -21,8 +21,7 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
-            HandshakeMessageType handshakeMessageType, Config config) {
+    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer, Config config) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new ParserException(
                     "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
@@ -61,20 +60,10 @@ public class ExtensionParserFactory {
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes, config);
                 break;
             case EXTENDED_RANDOM:
-                if ((config == null) || !config.isParseKeyShareOld()) {
-                    parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
-                }
+                parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
                 break;
-            case KEY_SHARE_OLD:
-                if ((config == null) || !config.isParseKeyShareOld()) {
-                    parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
-                    break;
-                }
-                // No break here. Invoke getKeyShareParser in case KEY_SHARE_OLD
-                // by
-                // falling through to the next case (i.e. KEY_SHARE).
             case KEY_SHARE:
-                parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, config);
+                parser = new KeyShareExtensionParser(pointer, extensionBytes, config);
                 break;
             case STATUS_REQUEST:
                 parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes, config);
@@ -182,20 +171,6 @@ public class ExtensionParserFactory {
             parser = new UnknownExtensionParser(pointer, extensionBytes, config);
         }
         return parser;
-    }
-
-    private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type,
-            Config config) {
-        switch (type) {
-            case HELLO_RETRY_REQUEST:
-                return new HRRKeyShareExtensionParser(pointer, extensionBytes, config);
-            case CLIENT_HELLO:
-            case SERVER_HELLO:
-                return new KeyShareExtensionParser(pointer, extensionBytes, config);
-            default:
-                throw new UnsupportedOperationException("KeyShareExtension for following " + type
-                        + " message NOT supported yet.");
-        }
     }
 
     private ExtensionParserFactory() {

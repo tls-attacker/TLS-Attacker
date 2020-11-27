@@ -780,7 +780,6 @@
                   <xs:element name="SignedCertificateTimestampExtension" type="signedCertificateTimestampExtensionMessage"/>
                   <xs:element name="ExtendedRandomExtension" type="extendedRandomExtensionMessage"/>
                   <xs:element name="TokenBindingExtension" type="tokenBindingExtensionMessage"/>
-                  <xs:element name="HRRKeyShareExtension" type="hrrKeyShareExtensionMessage"/>
                   <xs:element name="KeyShareExtension" type="keyShareExtensionMessage"/>
                   <xs:element name="SupportedVersions" type="supportedVersionsExtensionMessage"/>
                   <xs:element name="ALPNExtension" type="alpnExtensionMessage"/>
@@ -1167,23 +1166,14 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="hrrKeyShareExtensionMessage">
-    <xs:complexContent>
-      <xs:extension base="extensionMessage">
-        <xs:sequence>
-          <xs:element name="selectedGroup" type="modifiableByteArray" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="keyShareExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
         <xs:sequence>
-          <xs:element name="keyShareList" type="keyShareEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="keyShareListBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="keyShareListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyShareListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="keyShareList" type="keyShareEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="retryRequestMode" type="modifiableBoolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1418,6 +1408,7 @@
       <xs:extension base="extensionMessage">
         <xs:sequence>
           <xs:element name="maxEarlyDataSize" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="newSessionTicketExtension" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2042,6 +2033,7 @@
         <xs:sequence>
           <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="selectedCompressionMethod" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="autoSetHelloRetryModeInKeyShare" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

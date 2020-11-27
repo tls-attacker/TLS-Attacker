@@ -567,6 +567,8 @@ public class TlsContext {
 
     private byte[] lastServerVerifyData;
 
+    private byte[] lastClientHello;
+
     private Random random;
 
     @XmlTransient
@@ -2482,5 +2484,13 @@ public class TlsContext {
 
     public void setFinalSocketState(SocketState finalSocketState) {
         this.finalSocketState = finalSocketState;
+    }
+
+    public byte[] getLastClientHello() {
+        return lastClientHello;
+    }
+
+    public void setLastClientHello(byte[] lastClientHello) {
+        this.lastClientHello = lastClientHello;
     }
 }

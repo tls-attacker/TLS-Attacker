@@ -14,9 +14,10 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -31,18 +32,13 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
         super(tlsContext);
     }
 
-    protected void adjustExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
+    protected void adjustExtensions(ProtocolMessage message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                    // fix
-                    // design
-                    // flaw
-                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
-                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), handshakeMessageType);
+                        extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
+
             }
         }
     }
@@ -55,7 +51,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
                 HandshakeMessageType handshakeMessageType = handshakeMessage.getHandshakeMessageType();
                 ExtensionHandler extensionHhandler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
+                        extensionMessage.getExtensionTypeConstant());
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator = (EncryptedServerNameIndicationExtensionPreparator) extensionHhandler

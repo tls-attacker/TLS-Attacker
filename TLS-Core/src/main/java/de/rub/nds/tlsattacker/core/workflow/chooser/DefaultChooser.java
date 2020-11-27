@@ -1127,4 +1127,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultMaxEarlyDataSize();
         }
     }
+
+    @Override
+    public byte[] getLastClientHello() {
+        if (context.getLastClientHello() != null) {
+            return context.getLastClientHello();
+        } else {
+            return config.getDefaultLastClientHello();
+        }
+    }
 }

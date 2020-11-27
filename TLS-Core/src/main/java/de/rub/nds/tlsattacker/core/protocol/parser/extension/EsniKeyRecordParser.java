@@ -130,8 +130,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
             }
 
             byte[] extensionBytes = extensionStream.toByteArray();
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0,
-                    HandshakeMessageType.UNKNOWN, config);
+            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0, config);
             ExtensionMessage extensionMessage = parser.parse();
             record.getExtensions().add(extensionMessage);
             i = i + ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH + contentLength;

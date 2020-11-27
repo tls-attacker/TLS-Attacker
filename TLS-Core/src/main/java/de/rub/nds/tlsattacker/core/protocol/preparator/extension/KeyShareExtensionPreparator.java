@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -49,32 +50,53 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         stream = new ByteArrayOutputStream();
 
         if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-            List<KeyShareEntry> serverList = new ArrayList<>();
-            List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
-            for (KeyShareStoreEntry i : clientShares) {
-                if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                    KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig()
-                            .getKeySharePrivate());
-                    serverList.add(keyShareEntry);
-                    break;
-                }
-            }
-            msg.setKeyShareList(serverList);
-        }
-
-        if (msg.getKeyShareList() != null) {
-            for (KeyShareEntry entry : msg.getKeyShareList()) {
-                KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
-                preparator.prepare();
-                KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
-                try {
-                    stream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from KeySharePair", ex);
-                }
+            if (msg.isRetryRequestMode()) {
+                msg.setKeyShareList(setupRetryRequestKeyShareEntry());
+            } else {
+                msg.setKeyShareList(setupRegularServerKeyShareEntry());
             }
         }
 
+        if (!msg.isRetryRequestMode() && msg.getKeyShareList() != null) {
+            prepareKeyShareEntries();
+        }
+    }
+
+    private List<KeyShareEntry> setupRegularServerKeyShareEntry() {
+        List<KeyShareEntry> serverList = new ArrayList<>();
+        List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
+        for (KeyShareStoreEntry i : clientShares) {
+            if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
+                KeyShareEntry keyShareEntry = new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                serverList.add(keyShareEntry);
+                break;
+            }
+        }
+        return serverList;
+    }
+
+    private List<KeyShareEntry> setupRetryRequestKeyShareEntry() {
+        List<KeyShareEntry> serverList = new ArrayList<>();
+        NamedGroup preferredGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
+        KeyShareEntry emptyEntry = new KeyShareEntry();
+        emptyEntry.setGroup(preferredGroup.getValue());
+        emptyEntry.setGroupConfig(preferredGroup);
+        serverList.add(emptyEntry);
+        msg.setKeyShareListBytes(preferredGroup.getValue());
+        return serverList;
+    }
+
+    private void prepareKeyShareEntries() {
+        for (KeyShareEntry entry : msg.getKeyShareList()) {
+            KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
+            preparator.prepare();
+            KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
+            try {
+                stream.write(serializer.serialize());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+            }
+        }
         prepareKeyShareListBytes(msg);
         prepareKeyShareListLength(msg);
     }
