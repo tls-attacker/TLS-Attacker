@@ -78,7 +78,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         this(state, Executors.newFixedThreadPool(POOL_SIZE));
     }
 
-    public void addHook() {
+    private void addHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -153,7 +153,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    public void initialize() {
+    private void initialize() {
         LOGGER.info("Initializing server connection end at port " + bindPort);
         if ((serverSocket != null) && (!serverSocket.isClosed())) {
             LOGGER.debug("Server socket already initialized");
@@ -171,9 +171,10 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     public void kill() {
         this.killed = true;
+        closeSockets();
     }
 
-    public synchronized void closeSockets() {
+    private synchronized void closeSockets() {
         for (Socket s : sockets.toArray(new Socket[] {})) {
             LOGGER.debug("Closing socket " + s);
             clientDone(s);
