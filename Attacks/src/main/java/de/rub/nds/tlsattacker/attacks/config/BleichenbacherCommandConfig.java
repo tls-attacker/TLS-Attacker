@@ -66,7 +66,10 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @Parameter(names = "-workflowType", description = "Which workflow traces should be tested with")
     private BleichenbacherWorkflowType workflowType = BleichenbacherWorkflowType.CKE_CCS_FIN;
 
-    ;
+    /**
+     * How many rescans should be done
+     */
+    private int numberOfIterations = 3;
 
     /**
      *
@@ -180,5 +183,21 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public void setWorkflowType(BleichenbacherWorkflowType workflowType) {
         this.workflowType = workflowType;
+    }
+
+    public int getNumberOfIterations() {
+        return numberOfIterations;
+    }
+
+    public void setNumberOfIterations(int mapListDepth) {
+        this.numberOfIterations = mapListDepth;
+    }
+
+    public CiphersuiteDelegate getCiphersuiteDelegate() {
+        return ciphersuiteDelegate;
+    }
+
+    public ProtocolVersionDelegate getProtocolVersionDelegate() {
+        return protocolVersionDelegate;
     }
 }

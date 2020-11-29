@@ -9,18 +9,16 @@
  */
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
+import de.rub.nds.tlsattacker.attacks.general.Vector;
 import de.rub.nds.tlsattacker.attacks.task.FingerPrintTask;
 
-/**
- *
- */
-public class FingerprintTaskVectorPair {
+public class FingerprintTaskVectorPair<T extends Vector> {
 
     private final FingerPrintTask fingerPrintTask;
 
-    private final PaddingVector vector;
+    private final T vector;
 
-    public FingerprintTaskVectorPair(FingerPrintTask fingerPrintTask, PaddingVector vector) {
+    public FingerprintTaskVectorPair(FingerPrintTask fingerPrintTask, T vector) {
         this.fingerPrintTask = fingerPrintTask;
         this.vector = vector;
     }
@@ -29,7 +27,7 @@ public class FingerprintTaskVectorPair {
         return fingerPrintTask;
     }
 
-    public PaddingVector getVector() {
+    public T getVector() {
         return vector;
     }
 
