@@ -34,6 +34,8 @@ public class PaddingTraceGeneratorFactory {
                 return new ClassicCloseNotifyTraceGenerator(config.getRecordGeneratorType());
             case CLASSIC_DYNAMIC:
                 return new ClassicDynamicPaddingTraceGenerator(config.getRecordGeneratorType());
+            case HEARTBEAT:
+                return new HeartbeatPaddingTraceGenerator(config.getRecordGeneratorType());
             default:
                 throw new IllegalArgumentException("Unknown PaddingTraceGenerator: " + config.getVectorGeneratorType());
         }

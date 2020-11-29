@@ -34,4 +34,8 @@ public enum PaddingVectorGeneratorType {
      *
      */
     CLOSE_NOTIFY,
+    /**
+     *
+     */
+    HEARTBEAT,
 }
