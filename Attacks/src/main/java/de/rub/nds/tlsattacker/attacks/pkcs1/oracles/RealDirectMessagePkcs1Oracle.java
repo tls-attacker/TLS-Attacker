@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
+import de.rub.nds.tlsattacker.attacks.constants.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;

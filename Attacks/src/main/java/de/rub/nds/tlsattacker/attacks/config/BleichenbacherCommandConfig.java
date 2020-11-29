@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
-import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
+import de.rub.nds.tlsattacker.attacks.constants.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;

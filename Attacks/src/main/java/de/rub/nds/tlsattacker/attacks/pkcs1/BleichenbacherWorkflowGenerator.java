@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+import de.rub.nds.tlsattacker.attacks.constants.BleichenbacherWorkflowType;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
