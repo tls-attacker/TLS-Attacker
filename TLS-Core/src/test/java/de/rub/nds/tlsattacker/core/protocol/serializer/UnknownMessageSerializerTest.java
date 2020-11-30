@@ -9,21 +9,23 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnknownSerializerTest {
+public class UnknownMessageSerializerTest {
 
     private UnknownMessage msg;
-    private UnknownSerializer serializer;
+    private UnknownMessageSerializer serializer;
 
     @Before
     public void setUp() {
-        msg = new UnknownMessage();
-        serializer = new UnknownSerializer(msg, ProtocolVersion.TLS12);
+        msg = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
+        serializer = new UnknownMessageSerializer(msg, ProtocolVersion.TLS12);
     }
 
     /**

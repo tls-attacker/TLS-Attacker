@@ -62,6 +62,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
@@ -143,6 +144,8 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
+
+    private boolean throwExceptionOnParserContextViolation = false;
 
     private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;
 
@@ -703,6 +706,12 @@ public class Config implements Serializable {
     private Boolean stopActionsAfterIOException = false;
 
     private Boolean stopTraceAfterUnexpected = false;
+
+    /**
+     * ActionOptions that are automatically applied to Actions of the
+     * MessageFactory
+     */
+    private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
@@ -1314,6 +1323,14 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+    }
+
+    public boolean isThrowExceptionOnParserContextViolation() {
+        return throwExceptionOnParserContextViolation;
+    }
+
+    public void setThrowExceptionOnParserContextViolation(boolean throwExceptionOnParserContextViolation) {
+        this.throwExceptionOnParserContextViolation = throwExceptionOnParserContextViolation;
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
@@ -3687,6 +3704,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientKeyStoreEntries(List<KeyShareStoreEntry> defaultClientKeyStoreEntries) {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
+    }
+
+    public List<ActionOption> getMessageFactoryActionOptions() {
+        return messageFactoryActionOptions;
+    }
+
+    public void setMessageFactoryActionOptions(List<ActionOption> messageFactoryActionOptions) {
+        this.messageFactoryActionOptions = messageFactoryActionOptions;
     }
 
 }

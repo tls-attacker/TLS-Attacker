@@ -1,5 +1,6 @@
 <config>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
+    <throwExceptionOnParserContextViolation>false</throwExceptionOnParserContextViolation>
     <preferedCertificateSignatureType>RSA</preferedCertificateSignatureType>
     <preferedCertificateSignatureGroup>SECP256R1</preferedCertificateSignatureGroup>
     <autoSelectCertificate>true</autoSelectCertificate>
@@ -985,6 +986,9 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
+    <finishWithCloseNotify>false</finishWithCloseNotify>
+    <ignoreRetransmittedCss>false</ignoreRetransmittedCss>
+    <maxRetransmissions>3</maxRetransmissions>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
     <defaultSelectedClientCertificateType>X509</defaultSelectedClientCertificateType>

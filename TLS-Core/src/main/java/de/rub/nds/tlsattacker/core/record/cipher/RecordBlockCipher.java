@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;

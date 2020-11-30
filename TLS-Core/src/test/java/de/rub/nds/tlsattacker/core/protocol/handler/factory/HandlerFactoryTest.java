@@ -36,7 +36,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.ALERT, null) instanceof AlertHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.APPLICATION_DATA, null) instanceof ApplicationMessageHandler);
         assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.HEARTBEAT, null) instanceof HeartbeatMessageHandler);
-        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null) instanceof UnknownHandler);
+        assertTrue(HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null) instanceof UnknownMessageHandler);
     }
 
     @Test

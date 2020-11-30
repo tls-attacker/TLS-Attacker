@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
@@ -25,8 +26,8 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(byte[] message, int pointer) {
-        return new TokenBindingExtensionParser(pointer, message);
+    public TokenBindingExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new TokenBindingExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -48,10 +48,10 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeDefaultPreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction.ReceiveOption;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
@@ -303,7 +303,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         if (individualConfig.getHighestProtocolVersion().isTLS13()) {
             trace = new WorkflowConfigurationFactory(individualConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                     RunningModeType.CLIENT);
-            trace.addTlsAction(new ReceiveAction(ReceiveOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));
+            trace.addTlsAction(new ReceiveAction(ActionOption.CHECK_ONLY_EXPECTED, new NewSessionTicketMessage(false)));
             trace.addTlsAction(new ResetConnectionAction());
 
             // make sure no explicit PreMasterSecret is set upon execution

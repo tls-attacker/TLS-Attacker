@@ -39,7 +39,7 @@ public class PWDClearExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof PWDClearExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PWDClearExtensionParser);
     }
 
     @Test

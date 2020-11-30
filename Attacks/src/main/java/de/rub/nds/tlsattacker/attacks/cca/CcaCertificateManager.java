@@ -26,8 +26,6 @@ import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.security.rsa.RSAPrivateCrtKeyImpl;
-import sun.security.rsa.RSAPublicKeyImpl;
 
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.interfaces.DHPublicKey;
@@ -45,6 +43,8 @@ import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECPoint;
 import java.util.HashMap;
 import java.util.List;
@@ -211,7 +211,7 @@ public class CcaCertificateManager {
      * This is a wrapper function to write a generated certificate chain to
      * disk. This is needed since X.509-Attacker still uses a two dimensional
      * byte array for encoded certificates rather than a LinkedList.
-     * 
+     *
      * @param outputDirectory
      * @param certificates
      * @param ccaCertificateChain
@@ -232,7 +232,7 @@ public class CcaCertificateManager {
     /**
      * Based on the provided parameters this function adds the correct Custom
      * Private/Public Keys to the certificate chain.
-     * 
+     *
      * @param ccaCertificateChain
      * @param keyName
      * @param pubKeyName
@@ -254,15 +254,14 @@ public class CcaCertificateManager {
                     keyBytes = keyFileManager.getKeyFileContent(keyName);
 
                     privateKey = readPrivateKey(new ByteArrayInputStream(keyBytes));
-                    BigInteger modulus = ((RSAPrivateCrtKeyImpl) privateKey).getModulus();
-                    BigInteger d = ((RSAPrivateCrtKeyImpl) privateKey).getPrivateExponent();
+                    BigInteger modulus = ((RSAPrivateKey) privateKey).getModulus();
+                    BigInteger d = ((RSAPrivateKey) privateKey).getPrivateExponent();
                     customPrivateKey = new CustomRSAPrivateKey(modulus, d);
 
                     pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
 
                     PublicKey publicKey = PemUtil.readPublicKey(new ByteArrayInputStream(pubKeyBytes));
-                    customPublicKey = new CustomRsaPublicKey(((RSAPublicKeyImpl) publicKey).getPublicExponent(),
-                            modulus);
+                    customPublicKey = new CustomRsaPublicKey(((RSAPublicKey) publicKey).getPublicExponent(), modulus);
                     break;
                 case DH:
                     keyBytes = keyFileManager.getKeyFileContent(keyName);

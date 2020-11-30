@@ -165,6 +165,7 @@ public class ForwardMessagesActionTest {
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardMessages>");
+            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardMessages>");

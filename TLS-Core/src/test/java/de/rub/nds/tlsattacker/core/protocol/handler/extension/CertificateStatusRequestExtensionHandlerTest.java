@@ -54,7 +54,7 @@ public class CertificateStatusRequestExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof CertificateStatusRequestExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof CertificateStatusRequestExtensionParser);
     }
 
     @Test

@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -21,7 +22,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +37,8 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     }
 
     @Override
-    public SupportedVersionsExtensionParser getParser(byte[] message, int pointer) {
-        return new SupportedVersionsExtensionParser(pointer, message);
+    public SupportedVersionsExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SupportedVersionsExtensionParser(pointer, message, config);
     }
 
     @Override
