@@ -49,7 +49,7 @@ public class ServerTcpTransportHandlerTest {
     @Test
     public void testCloseClientConnection() throws IOException, InterruptedException, ExecutionException {
         handler.closeClientConnection(); // should do nothing
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getPort());
+        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getServerPort());
         FutureTask task = new FutureTask(callable);
         Thread t = new Thread(task);
         t.start();
@@ -90,7 +90,7 @@ public class ServerTcpTransportHandlerTest {
      */
     @Test
     public void testInitialize() throws Exception {
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getPort());
+        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getServerPort());
         Thread t = new Thread(new FutureTask(callable));
         t.start();
         handler.initialize();
@@ -99,7 +99,7 @@ public class ServerTcpTransportHandlerTest {
 
     @Test
     public void fullTest() throws IOException, InterruptedException, ExecutionException {
-        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getPort());
+        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getServerPort());
         FutureTask<Socket> task = new FutureTask(callable);
         Thread t = new Thread(task);
         t.start();

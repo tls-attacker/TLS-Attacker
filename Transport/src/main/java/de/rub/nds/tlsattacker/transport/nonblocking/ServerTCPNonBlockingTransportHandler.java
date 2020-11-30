@@ -10,7 +10,7 @@
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -22,11 +22,11 @@ import java.util.concurrent.TimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
+public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final int port;
+    private int serverPort;
 
     private ServerSocket serverSocket;
 
@@ -38,9 +38,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     private Thread thread;
 
-    public ServerTCPNonBlockingTransportHandler(long timeout, int port) {
+    public ServerTCPNonBlockingTransportHandler(long timeout, int serverPort) {
         super(timeout, ConnectionEndType.SERVER);
-        this.port = port;
+        this.serverPort = serverPort;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        serverSocket = new ServerSocket(port);
+        serverSocket = new ServerSocket(serverPort);
         callable = new AcceptorCallable(serverSocket);
         task = new FutureTask(callable);
         thread = new Thread(task);
@@ -123,7 +123,39 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         if (serverSocket != null) {
             return serverSocket.getLocalPort();
         } else {
-            return port;
+            return serverPort;
         }
+    }
+
+    @Override
+    public Integer getServerPort() {
+        if (!isInitialized()) {
+            return serverSocket.getLocalPort();
+        } else {
+            return serverPort;
+        }
+    }
+
+    @Override
+    public Integer getClientPort() {
+        if (!isInitialized()) {
+            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+        } else {
+            return clientSocket.getPort();
+        }
+    }
+
+    @Override
+    public void setServerPort(int port) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
+        } else {
+            this.serverPort = port;
+        }
+    }
+
+    @Override
+    public void setClientPort(int port) {
+        throw new RuntimeException("A ServerTransportHandler cannot set the client port");
     }
 }

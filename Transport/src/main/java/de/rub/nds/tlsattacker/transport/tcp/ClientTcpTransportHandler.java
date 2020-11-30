@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
@@ -21,12 +20,13 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-public class ClientTcpTransportHandler extends TransportHandler {
+public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     private static final int DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS = 60000;
     protected Socket socket;
     protected String hostname;
-    protected int port;
+    protected int serverPort;
+    protected Integer clientPort;
     protected long connectionTimeout;
 
     public ClientTcpTransportHandler(Connection connection) {
@@ -37,11 +37,21 @@ public class ClientTcpTransportHandler extends TransportHandler {
         this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, timeout, hostname, port);
     }
 
-    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int port) {
+    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int serverPort) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
-        this.port = port;
+        this.serverPort = serverPort;
         this.connectionTimeout = connectionTimeout;
+        clientPort = null;
+    }
+
+    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int serverPort,
+            int clientPort) {
+        super(timeout, ConnectionEndType.CLIENT);
+        this.hostname = hostname;
+        this.serverPort = serverPort;
+        this.connectionTimeout = connectionTimeout;
+        this.clientPort = clientPort;
     }
 
     @Override
@@ -55,7 +65,10 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
+        if (clientPort != null) {
+            socket.bind(new InetSocketAddress(clientPort));
+        }
+        socket.connect(new InetSocketAddress(hostname, serverPort), (int) connectionTimeout);
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + "port");
         }
@@ -99,6 +112,34 @@ public class ClientTcpTransportHandler extends TransportHandler {
             return SocketState.SOCKET_EXCEPTION;
         } catch (IOException ex) {
             return SocketState.IO_EXCEPTION;
+        }
+    }
+
+    @Override
+    public Integer getServerPort() {
+        return serverPort;
+    }
+
+    @Override
+    public Integer getClientPort() {
+        return clientPort;
+    }
+
+    @Override
+    public void setServerPort(int serverPort) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change the server port once the TransportHandler is initialized");
+        } else {
+            this.serverPort = serverPort;
+        }
+    }
+
+    @Override
+    public void setClientPort(int clientPort) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
+        } else {
+            this.clientPort = clientPort;
         }
     }
 

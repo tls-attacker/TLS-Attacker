@@ -130,7 +130,7 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        return "Heartbeat";
+        return "HEARTBEAT";
     }
 
     @Override

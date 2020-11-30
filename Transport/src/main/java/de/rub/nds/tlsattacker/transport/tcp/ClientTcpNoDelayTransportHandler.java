@@ -21,7 +21,7 @@ public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler 
 
     @Override
     public void initialize() throws IOException {
-        socket = new Socket(hostname, port);
+        socket = new Socket(hostname, serverPort);
         socket.setTcpNoDelay(true);
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
