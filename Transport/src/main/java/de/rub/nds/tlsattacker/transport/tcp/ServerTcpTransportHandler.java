@@ -111,7 +111,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
 
     @Override
     public Integer getServerPort() {
-        if (!isInitialized()) {
+        if (isInitialized()) {
             return serverSocket.getLocalPort();
         } else {
             return port;
