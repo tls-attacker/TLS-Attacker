@@ -17,8 +17,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +35,8 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     private FutureTask<Socket> task;
 
     private Thread thread;
+
+    private boolean initialized = false;
 
     public ServerTCPNonBlockingTransportHandler(long timeout, int serverPort) {
         super(timeout, ConnectionEndType.SERVER);
@@ -60,39 +60,33 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
         task = new FutureTask(callable);
         thread = new Thread(task);
         thread.start();
-        recheck();
+        isInitialized();
     }
 
-    public void recheck() throws IOException {
+    @Override
+    public boolean isInitialized() {
+        if (initialized) {
+            return initialized;
+        }
         if (task != null) {
-            if (task.isDone()) {
+            if (callable.isDoneAlready()) {
                 try {
                     clientSocket = task.get();
                     clientSocket.setSoTimeout(1);
                     setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
-                } catch (InterruptedException | ExecutionException ex) {
+                    initialized = true;
+                    return true;
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     LOGGER.warn("Could not retrieve clientSocket");
                     LOGGER.debug(ex);
+                    return false;
                 }
             } else {
                 LOGGER.debug("TransportHandler not yet connected");
+                return false;
             }
         } else {
-            throw new IOException("Transporthandler is not initalized!");
-        }
-    }
-
-    public void recheck(long timeout) throws IOException {
-        try {
-            if (task != null) {
-                clientSocket = task.get(timeout, TimeUnit.MILLISECONDS);
-                if (clientSocket != null) {
-                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
-                }
-            }
-        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
-            LOGGER.warn("Could not retrieve clientSocket");
-            LOGGER.debug(ex);
+            return false;
         }
     }
 

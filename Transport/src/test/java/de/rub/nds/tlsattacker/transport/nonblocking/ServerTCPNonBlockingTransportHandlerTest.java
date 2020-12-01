@@ -52,10 +52,13 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     }
 
     @Test
-    public void testCloseConnection() throws IOException {
+    public void testCloseConnection() throws IOException, InterruptedException {
         handler.initialize();
         new Socket().connect(new InetSocketAddress("localhost", handler.getPort()));
-        handler.recheck(1000);
+        while (!handler.isInitialized()) {
+            Thread.currentThread().sleep(10);
+            // Without this a race condition can occur with the future...
+        }
         handler.closeConnection();
         Exception ex = null;
         try {
@@ -67,13 +70,16 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     }
 
     @Test
-    public void testCloseClientConnection() throws IOException {
+    public void testCloseClientConnection() throws IOException, InterruptedException {
         handler.initialize();
         Socket socket = new Socket();
-        socket.setTcpNoDelay(true);
+        socket.setTcpNoDelay(false);
         socket.connect(new InetSocketAddress("localhost", handler.getPort()));
-
-        handler.recheck(1000);
+        while (!handler.isInitialized()) {
+            Thread.currentThread().sleep(10);
+            // Without this a race condition can occur with the future...
+        }
+        assertTrue(handler.isInitialized());
         Exception ex = null;
         assertNotNull(socket);
         assertTrue(socket.isConnected());
@@ -99,11 +105,13 @@ public class ServerTCPNonBlockingTransportHandlerTest {
         try {
             handler.initialize();
             assertFalse(handler.isInitialized());
-            handler.recheck();
+            handler.isInitialized();
             assertFalse(handler.isInitialized());
             new Socket().connect(new InetSocketAddress("localhost", handler.getPort()));
-            handler.recheck(1000);
-
+            while (!handler.isInitialized()) {
+                Thread.currentThread().sleep(10);
+                // Without this a race condition can occur with the future...
+            }
             assertTrue(handler.isInitialized());
         } catch (IOException ex) {
             fail("Encountered Exception");
@@ -115,25 +123,19 @@ public class ServerTCPNonBlockingTransportHandlerTest {
         }
     }
 
-    /**
-     * Test of recheck method, of class ServerTCPNonBlockingTransportHandler.
-     *
-     * @throws java.io.IOException
-     */
-    @Test(expected = IOException.class)
-    public void testRecheck() throws IOException {
-        handler.recheck();
-    }
-
     @Test
-    public void fullTest() throws IOException {
+    public void fullTest() throws IOException, InterruptedException {
         Socket s = null;
         try {
 
             handler.initialize();
             s = new Socket();
             s.connect(new InetSocketAddress("localhost", handler.getPort()));
-            handler.recheck(1000);
+            handler.isInitialized();
+            while (!handler.isInitialized()) {
+                Thread.currentThread().sleep(10);
+                // Without this a race condition can occur with the future...
+            }
             assertTrue(handler.isInitialized());
             handler.sendData(new byte[] { 1, 2, 3 });
             byte[] receive = new byte[3];

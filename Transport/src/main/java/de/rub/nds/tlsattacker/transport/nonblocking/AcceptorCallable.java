@@ -22,6 +22,8 @@ public class AcceptorCallable implements Callable<Socket> {
 
     private final ServerSocket serverSocket;
 
+    private Socket clientConnection = null;
+
     public AcceptorCallable(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
@@ -29,10 +31,20 @@ public class AcceptorCallable implements Callable<Socket> {
     @Override
     public Socket call() throws Exception {
         try {
-            return serverSocket.accept();
+            clientConnection = serverSocket.accept();
+            return clientConnection;
         } catch (IOException ex) {
             LOGGER.warn("Could not open Accept connection!", ex);
         }
         return null;
+    }
+
+    /**
+     * A faster implection of callable is done to prevent race conditions
+     * 
+     * @return
+     */
+    public synchronized boolean isDoneAlready() {
+        return clientConnection != null;
     }
 }
