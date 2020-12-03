@@ -34,7 +34,7 @@ public class TimingClientTcpTransportHandlerTest {
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
-        handler = new TimingClientTcpTransportHandler(100, "localhost", 0);
+        handler = new TimingClientTcpTransportHandler(100, 100, "localhost", 0);
         handler.closeConnection();
     }
 
@@ -51,7 +51,7 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
             handler =
-                new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -75,7 +75,7 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
             handler =
-                new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

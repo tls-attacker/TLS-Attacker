@@ -39,7 +39,7 @@ public class SendMessageHelperTest {
     public void setUp() throws IOException {
         context = new TlsContext();
         transportHandler =
-            new StreamTransportHandler(0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[] {}),
+            new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[] {}),
                 new ByteArrayOutputStream());
         context.setTransportHandler(transportHandler);
         context.getTransportHandler().initialize();

@@ -25,8 +25,8 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
         super(connection);
     }
 
-    public TimingClientTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public TimingClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
     }
 
     @Override

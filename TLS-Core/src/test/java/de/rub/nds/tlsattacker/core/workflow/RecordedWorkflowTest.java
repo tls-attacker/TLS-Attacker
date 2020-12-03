@@ -100,7 +100,7 @@ public class RecordedWorkflowTest {
         c.setWorkflowExecutorShouldOpen(false);
         WorkflowTrace trace =
             new WorkflowConfigurationFactory(c).createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
-        transportHandler = new ClientRecordingTcpTransportHandler(1000, "localhost", 4555);
+        transportHandler = new ClientRecordingTcpTransportHandler(1000, 1000, "localhost", 4555);
         transportHandler.initialize();
         State state = new State(c, trace);
         state.getTlsContext().setTransportHandler(transportHandler);

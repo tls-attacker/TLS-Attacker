@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
@@ -66,8 +67,15 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
-        List<SignatureAndHashAlgorithm> algoList =
-            convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+        List<SignatureAndHashAlgorithm> algoList;
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            algoList =
+                convertSignatureAndHashAlgorithms(message
+                    .getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).getSignatureAndHashAlgorithms()
+                    .getValue());
+        } else {
+            algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+        }
         tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
         LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to " + algoList.toString());
     }

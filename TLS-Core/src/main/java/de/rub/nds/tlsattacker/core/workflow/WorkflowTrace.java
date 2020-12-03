@@ -15,68 +15,8 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.action.ActivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ApplyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeContextValueAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeDefaultPreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ConnectionBoundAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyContextFieldAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBufferedRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeepCopyBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FindReceivedProtocolMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesWithPrepareAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MultiReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintProposedExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendRaccoonCkeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -88,6 +28,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -507,4 +448,61 @@ public class WorkflowTrace implements Serializable {
         this.dirty = dirty;
     }
 
+    public <T extends TlsAction> T getFirstAction(Class<T> actionCls) {
+        List<TlsAction> actions = this.getTlsActions();
+        for (TlsAction action : actions) {
+            if (action.getClass().equals(actionCls)) {
+                return actionCls.cast(action);
+            }
+        }
+        return null;
+    }
+
+    public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getLastReceivedMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(0);
+        }
+    }
+
+    public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
+        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        messageList =
+            messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
+
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return (T) messageList.get(messageList.size() - 1);
+        }
+    }
 }

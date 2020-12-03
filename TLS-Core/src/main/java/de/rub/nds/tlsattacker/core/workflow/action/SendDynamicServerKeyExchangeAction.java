@@ -12,8 +12,11 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -208,6 +211,24 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         hash = 67 * hash + Objects.hashCode(this.records);
 
         return hash;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        return new ArrayList<ProtocolMessageType>() {
+            {
+                add(ProtocolMessageType.HANDSHAKE);
+            }
+        };
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        return new ArrayList<HandshakeMessageType>() {
+            {
+                add(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+            }
+        };
     }
 
 }

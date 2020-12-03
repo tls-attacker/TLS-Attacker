@@ -11,6 +11,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
@@ -33,6 +35,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
@@ -407,5 +410,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.RECEIVING;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : expectedMessages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
+        }
+        return protocolMessageTypes;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : expectedMessages) {
+            if (msg.isHandshakeMessage()) {
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
+            }
+        }
+        return handshakeMessageTypes;
     }
 }

@@ -12,21 +12,13 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -214,15 +206,16 @@ public enum NamedGroup {
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(groups.toArray(new NamedGroup[groups.size()]));
+        for (NamedGroup i : groups) {
+            bytes.write(i.getValue());
+        }
 
         return bytes.toByteArray();
     }
 
-    public static NamedGroup[] namedGroupsFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
+    public static List<NamedGroup> namedGroupsFromByteArray(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
-            return new NamedGroup[0];
+            return new ArrayList<>();
         }
 
         if (sourceBytes.length % NamedGroup.LENGTH != 0) {
@@ -230,9 +223,19 @@ public enum NamedGroup {
                 + "Source array size is not a multiple of destination type size.");
         }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
-        ObjectInputStream is = new ObjectInputStream(in);
-        NamedGroup[] groups = (NamedGroup[]) is.readObject();
+        int pointer = 0;
+        List<NamedGroup> groups = new ArrayList<>();
+        while (pointer < sourceBytes.length) {
+            byte[] value = new byte[4];
+            value[2] = sourceBytes[pointer];
+            value[3] = sourceBytes[pointer + 1];
+            pointer += 2;
+            NamedGroup group = MAP.get(ByteBuffer.wrap(value).getInt());
+            if (group != null) {
+                groups.add(group);
+            }
+        }
+
         return groups;
     }
 

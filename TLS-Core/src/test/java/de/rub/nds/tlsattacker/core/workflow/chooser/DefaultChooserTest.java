@@ -468,7 +468,7 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetTransportHandler() {
-        TransportHandler transportHandler = new ClientTcpTransportHandler(0, "abc", 0);
+        TransportHandler transportHandler = new ClientTcpTransportHandler(0, 0, "abc", 0);
         context.setTransportHandler(transportHandler);
         assertEquals(transportHandler, chooser.getTransportHandler());
     }

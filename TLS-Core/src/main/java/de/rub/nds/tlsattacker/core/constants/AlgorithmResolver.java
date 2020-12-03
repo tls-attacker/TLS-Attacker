@@ -157,8 +157,8 @@ public class AlgorithmResolver {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                 + " does not specify a KeyExchangeAlgorithm");
         }
-        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
-            + " is not supported yet.");
+        LOGGER.warn("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
+        return KeyExchangeAlgorithm.RSA;
     }
 
     /**
@@ -304,7 +304,9 @@ public class AlgorithmResolver {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                 + " does not specify a Cipher");
         }
-        throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
+
+        LOGGER.warn("The cipher algorithm in " + cipherSuite + " is not supported yet. Falling back to NULL.");
+        return CipherAlgorithm.NULL;
     }
 
     /**

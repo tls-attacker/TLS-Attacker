@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -105,6 +106,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
         @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
         @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
+        @XmlElement(type = GreaseExtensionMessage.class, name = "GreaseExtension"),
         @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
         @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
         @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),

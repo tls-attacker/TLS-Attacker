@@ -10,17 +10,17 @@
 
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServerTcpTransportHandler extends TransportHandler {
+public class ServerTcpTransportHandler extends TcpTransportHandler {
 
     private ServerSocket serverSocket;
-    private Socket socket;
     private final int port;
     /**
      * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
@@ -28,19 +28,24 @@ public class ServerTcpTransportHandler extends TransportHandler {
      */
     private boolean externalServerSocket = false;
 
-    public ServerTcpTransportHandler(long timeout, int port) {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(Connection con) {
+        super(con);
+        this.port = con.getPort();
+    }
+
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
-    public ServerTcpTransportHandler(long timeout, ServerSocket serverSocket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
     }
 
-    public ServerTcpTransportHandler(long timeout, Socket socket) throws IOException {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
+        super(con);
         this.port = socket.getLocalPort();
         this.socket = socket;
         socket.setSoTimeout(1);
@@ -74,6 +79,8 @@ public class ServerTcpTransportHandler extends TransportHandler {
             socket = serverSocket.accept();
             socket.setSoTimeout(1);
         }
+        srcPort = socket.getLocalPort();
+        dstPort = socket.getPort();
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 

@@ -225,7 +225,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret = new byte[macLength];
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getServerKeyShare());
@@ -248,7 +248,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     LOGGER.warn("Client did not send the KeyShareType we expected. Choosing first in his List");
                     pos = 0;
                 }
-                if (tlsContext.getSelectedCipherSuite().isPWD()) {
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getClientKeyShares().get(pos));
                 } else {
                     sharedSecret = computeSharedSecret(tlsContext.getChooser().getClientKeyShares().get(pos));

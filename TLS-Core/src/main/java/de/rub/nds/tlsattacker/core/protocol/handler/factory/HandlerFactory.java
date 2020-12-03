@@ -73,6 +73,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
@@ -279,6 +280,23 @@ public class HandlerFactory {
                     return new PWDClearExtensionHandler(context);
                 case PASSWORD_SALT:
                     return new PasswordSaltExtensionHandler(context);
+                case GREASE_00:
+                case GREASE_01:
+                case GREASE_02:
+                case GREASE_03:
+                case GREASE_04:
+                case GREASE_05:
+                case GREASE_06:
+                case GREASE_07:
+                case GREASE_08:
+                case GREASE_09:
+                case GREASE_10:
+                case GREASE_11:
+                case GREASE_12:
+                case GREASE_13:
+                case GREASE_14:
+                case GREASE_15:
+                    return new GreaseExtensionHandler(context);
                 default:
                     throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
             }

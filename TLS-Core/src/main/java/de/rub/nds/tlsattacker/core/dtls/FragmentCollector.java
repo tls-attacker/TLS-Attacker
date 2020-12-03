@@ -58,7 +58,7 @@ public class FragmentCollector {
                 LOGGER
                     .warn("Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
                 fragmentStream = new FragmentStream(messageLength);
-                this.messageLength = fragment.getLength().getValue();
+                this.messageLength = fragment.getFragmentLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
                 this.type = fragment.getType().getValue();
                 interpreted = false;

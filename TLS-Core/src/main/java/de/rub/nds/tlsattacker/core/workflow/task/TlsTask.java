@@ -45,7 +45,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     @Override
     public ITask call() {
-        Exception exception = null;
+        Throwable exception = null;
         long sleepTime = 0;
         for (int i = 0; i < reexecutions + 1; i++) {
             try {
@@ -72,7 +72,6 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 hasError = true;
                 exception = e;
             } catch (Exception e) {
-                LOGGER.error("Encountered an exception during the execution", e);
                 hasError = true;
                 if (increasingSleepTimes) {
                     sleepTime += additionalSleepTime;
@@ -80,7 +79,14 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 exception = e;
             }
             if (i < reexecutions) {
-                this.reset();
+                try {
+                    this.reset();
+                } catch (Throwable e) {
+                    LOGGER.error("Could not reset state!", e);
+                    hasError = true;
+                    exception = e;
+                    break;
+                }
             }
         }
         if (hasError) {

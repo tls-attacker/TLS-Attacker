@@ -62,6 +62,10 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
             context.setClientSupportedProtocolVersions(versionList);
             context.setHighestClientProtocolVersion(ProtocolVersion.getHighestProtocolVersion(versionList));
         } else {
+            if (context.getConfig().isEnforceSettings()) {
+                context.setSelectedProtocolVersion(context.getChooser().getHighestProtocolVersion());
+                return;
+            }
             if (versionList.size() == 1) {
                 context.setSelectedProtocolVersion(versionList.get(0));
             } else {

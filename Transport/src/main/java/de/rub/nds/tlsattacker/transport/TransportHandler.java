@@ -10,19 +10,24 @@
 
 package de.rub.nds.tlsattacker.transport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected long timeout;
+
+    protected long firstTimeout;
+
+    private boolean firstReceived;
 
     protected OutputStream outStream;
 
@@ -37,13 +42,22 @@ public abstract class TransportHandler {
      */
     private boolean isInStreamTerminating = true;
 
-    public TransportHandler(long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+    public TransportHandler(Connection con) {
+        this.firstTimeout = con.getFirstTimeout();
+        this.type = con.getLocalConnectionEndType();
+        this.timeout = con.getTimeout();
+        this.isInStreamTerminating = false;
+    }
+
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type, boolean isInStreamTerminating) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
         this.isInStreamTerminating = isInStreamTerminating;
     }
 
-    public TransportHandler(long timeout, ConnectionEndType type) {
+    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
+        this.firstTimeout = firstTimeout;
         this.timeout = timeout;
         this.type = type;
     }
@@ -70,8 +84,12 @@ public abstract class TransportHandler {
     @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        long minTimeMillis = System.currentTimeMillis() + timeout;
-        while ((System.currentTimeMillis() < minTimeMillis) && (stream.toByteArray().length == 0)) {
+        long minTimeMillies = System.currentTimeMillis();
+        if (firstReceived)
+            minTimeMillies += timeout;
+        else
+            minTimeMillies += firstTimeout;
+        while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
             if (inStream.available() != 0) {
                 while (inStream.available() != 0) {
                     int read = inStream.read();
@@ -86,18 +104,21 @@ public abstract class TransportHandler {
                         int read = inStream.read();
                         if (read == -1) {
                             // TCP FIN
+                            firstReceived = true;
                             return stream.toByteArray();
                         }
                         inStream.unread(read);
 
                     } catch (SocketException e) {
                         // TCP RST received
+                        firstReceived = true;
                         return stream.toByteArray();
                     } catch (Exception _) {
                     }
                 }
             }
         }
+        firstReceived = true;
         return stream.toByteArray();
     }
 
@@ -138,5 +159,4 @@ public abstract class TransportHandler {
     public boolean isIsInStreamTerminating() {
         return isInStreamTerminating;
     }
-
 }

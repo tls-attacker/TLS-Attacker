@@ -62,7 +62,7 @@ public class KeyShareCalculator {
     }
 
     public static Point createPublicKey(NamedGroup group, BigInteger privateKey) {
-        if (!group.isStandardCurve()) {
+        if (!group.isStandardCurve() && !group.isGrease()) {
             throw new IllegalArgumentException(
                 "Cannot create ClassicEcPublicKey for group which is not a classic curve:" + group.name());
         }

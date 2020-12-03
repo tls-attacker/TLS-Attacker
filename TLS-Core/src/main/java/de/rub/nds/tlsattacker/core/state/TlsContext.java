@@ -70,6 +70,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
+
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class TlsContext {
@@ -90,6 +93,8 @@ public class TlsContext {
      * The end point of the TLS connection that this context represents.
      */
     private AliasedConnection connection;
+
+    private SocketState finalSocketState;
 
     /**
      * Shared key established during the handshake.
@@ -688,7 +693,11 @@ public class TlsContext {
         recordLayerType = config.getRecordLayerType();
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
-        random = new Random(0);
+        if (config.isStealthMode()) {
+            random = new Random();
+        } else {
+            random = new Random(0);
+        }
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
@@ -1953,6 +1962,10 @@ public class TlsContext {
                 throw new ConfigurationException("Connection end not set");
             }
             transportHandler = TransportHandlerFactory.createTransportHandler(connection);
+            if (transportHandler instanceof ClientTcpTransportHandler) {
+                ((ClientTcpTransportHandler) transportHandler).setRetryFailedSocketInitialization(config
+                    .isRetryFailedClientTcpSocketInitialization());
+            }
         }
 
         try {
@@ -2454,5 +2467,13 @@ public class TlsContext {
 
     public void setEcCertificateSignatureCurve(NamedGroup ecCertificateSignatureCurve) {
         this.ecCertificateSignatureCurve = ecCertificateSignatureCurve;
+    }
+
+    public SocketState getFinalSocketState() {
+        return finalSocketState;
+    }
+
+    public void setFinalSocketState(SocketState finalSocketState) {
+        this.finalSocketState = finalSocketState;
     }
 }

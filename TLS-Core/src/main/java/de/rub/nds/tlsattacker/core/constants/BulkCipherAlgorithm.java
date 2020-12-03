@@ -10,6 +10,9 @@
 
 package de.rub.nds.tlsattacker.core.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public enum BulkCipherAlgorithm {
 
     /**
@@ -29,6 +32,7 @@ public enum BulkCipherAlgorithm {
     CHACHA20_POLY1305,
     GOST28147,
     AES;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * @param cipherSuite
@@ -66,7 +70,9 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
         }
-        throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+
+        LOGGER.warn("The cipher algorithm from " + cipherSuite + " is not supported yet. Falling back to NULL.");
+        return NULL;
     }
 
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {

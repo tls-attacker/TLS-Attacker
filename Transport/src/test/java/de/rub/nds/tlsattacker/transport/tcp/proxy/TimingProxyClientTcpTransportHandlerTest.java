@@ -37,7 +37,7 @@ public class TimingProxyClientTcpTransportHandlerTest {
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
-        handler = new TimingProxyClientTcpTransportHandler(100, "localhost", 0);
+        handler = new TimingProxyClientTcpTransportHandler(100, 100, "localhost", 0);
         handler.closeConnection();
     }
 
@@ -55,7 +55,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
             handler =
-                new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket().getLocalPort());
+                new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
@@ -81,7 +82,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
             handler =
-                new TimingProxyClientTcpTransportHandler(100, "127.0.0.1", serverSocketChannel.socket().getLocalPort());
+                new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1", serverSocketChannel.socket()
+                    .getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();

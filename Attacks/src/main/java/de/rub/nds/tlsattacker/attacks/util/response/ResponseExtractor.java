@@ -56,17 +56,12 @@ public class ResponseExtractor {
     }
 
     private static SocketState extractSocketState(State state) {
-        try {
-            if (state.getTlsContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
-                SocketState socketState =
-                    (((ClientTcpTransportHandler) (state.getTlsContext().getTransportHandler())).getSocketState());
-                return socketState;
-            } else {
-                return null;
-            }
-        } catch (InvalidTransportHandlerStateException ex) {
-            LOGGER.warn(ex);
-            return SocketState.DATA_AVAILABLE;
+        if (state.getTlsContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
+            SocketState socketState =
+                (((ClientTcpTransportHandler) (state.getTlsContext().getTransportHandler())).getSocketState());
+            return socketState;
+        } else {
+            return null;
         }
     }
 

@@ -21,5 +21,6 @@ public enum TransportHandlerType {
     UDP_TIMING,
     TCP_PROXY_TIMING,
     TCP_NO_DELAY,
+    TCP_FRAGMENTATION
 
 }

@@ -30,6 +30,10 @@ public abstract class Connection implements Serializable {
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
 
+    protected Integer firstTimeout = null;
+
+    protected Integer connectionTimeout = null;
+
     public Connection() {
     }
 
@@ -52,6 +56,8 @@ public abstract class Connection implements Serializable {
         proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
+        firstTimeout = other.firstTimeout;
+        connectionTimeout = other.connectionTimeout;
     }
 
     public String getIp() {
@@ -124,6 +130,22 @@ public abstract class Connection implements Serializable {
 
     public Integer getTimeout() {
         return timeout;
+    }
+
+    public void setFirstTimeout(Integer firstTimeout) {
+        this.firstTimeout = firstTimeout;
+    }
+
+    public Integer getFirstTimeout() {
+        return firstTimeout;
+    }
+
+    public Integer getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(Integer connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
     }
 
     /**

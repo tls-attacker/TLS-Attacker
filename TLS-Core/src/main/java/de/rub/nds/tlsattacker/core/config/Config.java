@@ -195,6 +195,19 @@ public class Config implements Serializable {
     private OutboundConnection defaultClientConnection;
 
     /**
+     * After executing a workflow trace, the final state of the TCP socket is stored inside the context. By default the
+     * socket timeout for determining this state is set to 1ms. If execution speed is not important, this can be set to
+     * true, so that the regular connection timeout settings are used.
+     */
+    private Boolean receiveFinalTcpSocketStateWithTimeout = false;
+
+    /**
+     * Setting this to true results in multiple attempts to initialize a connection to the server when a
+     * ClientTcpTransportHandler is used.
+     */
+    private Boolean retryFailedClientTcpSocketInitialization = false;
+
+    /**
      * The default connection parameters to use when running TLS-Server.
      */
     private InboundConnection defaultServerConnection;
@@ -697,6 +710,12 @@ public class Config implements Serializable {
      * Stop as soon as all expected messages are received and don't wait for more
      */
     private Boolean earlyStop = false;
+
+    /**
+     * If true, Random of the context is not seeded with an explicit value, thus client/server randoms are not
+     * deterministic.
+     */
+    private Boolean stealthMode = false;
 
     private Boolean stopActionsAfterIOException = false;
 
@@ -1506,6 +1525,14 @@ public class Config implements Serializable {
 
     public void setEarlyStop(Boolean earlyStop) {
         this.earlyStop = earlyStop;
+    }
+
+    public Boolean isStealthMode() {
+        return stealthMode;
+    }
+
+    public void setStealthMode(Boolean stealthMode) {
+        this.stealthMode = stealthMode;
     }
 
     public Point getDefaultTokenBindingECPublicKey() {
@@ -2996,6 +3023,14 @@ public class Config implements Serializable {
         this.defaultServerConnection = defaultServerConnection;
     }
 
+    public Boolean isReceiveFinalTcpSocketStateWithTimeout() {
+        return receiveFinalTcpSocketStateWithTimeout;
+    }
+
+    public void setReceiveFinalTcpSocketStateWithTimeout(Boolean receiveFinalTcpSocketStateWithTimeout) {
+        this.receiveFinalTcpSocketStateWithTimeout = receiveFinalTcpSocketStateWithTimeout;
+    }
+
     public RunningModeType getDefaultRunningMode() {
         return defaultRunningMode;
     }
@@ -3685,12 +3720,24 @@ public class Config implements Serializable {
         this.defaultClientKeyShareNamedGroups = defaultClientKeyShareNamedGroups;
     }
 
+    public void setDefaultClientKeyShareNamedGroups(NamedGroup... defaultClientKeyShareNamedGroups) {
+        this.defaultClientKeyShareNamedGroups = new ArrayList<>(Arrays.asList(defaultClientKeyShareNamedGroups));
+    }
+
     public List<KeyShareStoreEntry> getDefaultClientKeyStoreEntries() {
         return defaultClientKeyStoreEntries;
     }
 
     public void setDefaultClientKeyStoreEntries(List<KeyShareStoreEntry> defaultClientKeyStoreEntries) {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
+    }
+
+    public Boolean isRetryFailedClientTcpSocketInitialization() {
+        return retryFailedClientTcpSocketInitialization;
+    }
+
+    public void setRetryFailedClientTcpSocketInitialization(Boolean retryFailedClientTcpSocketInitialization) {
+        this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
 
     public List<ActionOption> getMessageFactoryActionOptions() {

@@ -11,8 +11,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -36,12 +39,30 @@ public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private Boolean optional = null;
+
     public SendAction() {
         super();
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
+    public SendAction(boolean optional, List<ProtocolMessage> messages) {
         super(messages);
+        this.optional = optional ? optional : null;
+        if (!optional) {
+            boolean tmp = true;
+            for (ProtocolMessage message : messages) {
+                tmp = tmp && !message.isRequired();
+            }
+            this.optional = tmp ? tmp : null;
+        }
+    }
+
+    public SendAction(List<ProtocolMessage> messages) {
+        this(false, messages);
+    }
+
+    public SendAction(boolean optional, ProtocolMessage... messages) {
+        this(optional, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -222,4 +243,31 @@ public class SendAction extends MessageAction implements SendingAction {
         return hash;
     }
 
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
+        }
+        return protocolMessageTypes;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            if (msg.isHandshakeMessage()) {
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
+            }
+        }
+        return handshakeMessageTypes;
+    }
+
+    public boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
+    }
 }
