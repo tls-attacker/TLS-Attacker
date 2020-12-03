@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -39,9 +40,8 @@ public abstract class TcpTransportHandler extends TransportHandler {
     }
 
     /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and
-     * Data is received during the Check the current State of the
-     * TransportHandler will get messed up and an Exception will be thrown.
+     * Checks the current SocketState. NOTE: If you check the SocketState and Data is received during the Check the
+     * current State of the TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
      */
