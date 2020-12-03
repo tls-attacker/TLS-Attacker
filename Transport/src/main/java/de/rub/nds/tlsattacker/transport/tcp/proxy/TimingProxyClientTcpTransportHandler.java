@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -20,7 +21,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 
 public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler implements
-        ProxyableTransportHandler, TimeableTransportHandler {
+    ProxyableTransportHandler, TimeableTransportHandler {
 
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
@@ -75,7 +76,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         socket.close();
 
         if (controlSocket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         controlSocket.close();
     }
@@ -96,7 +97,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     @Override
     public boolean isClosed() throws IOException {
         return socket.isClosed() || socket.isInputShutdown() || controlSocket.isClosed()
-                || controlSocket.isInputShutdown();
+            || controlSocket.isInputShutdown();
     }
 
     @Override

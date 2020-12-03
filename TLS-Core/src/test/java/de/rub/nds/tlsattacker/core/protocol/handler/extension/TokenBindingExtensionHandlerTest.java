@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -29,7 +30,7 @@ public class TokenBindingExtensionHandlerTest {
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
 
     private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] {
-            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
+        TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
     private final byte[] keyParameterByteArrayRepresentation = new byte[] { 0x01, 0x02 };
     private TlsContext context;
     private TokenBindingExtensionHandler handler;
@@ -49,9 +50,9 @@ public class TokenBindingExtensionHandlerTest {
 
         assertEquals(tokenbindingVersion, context.getTokenBindingVersion());
         assertArrayEquals(
-                keyParameter,
-                context.getTokenBindingKeyParameters().toArray(
-                        new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
+            keyParameter,
+            context.getTokenBindingKeyParameters().toArray(
+                new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
     }
 
     @Test

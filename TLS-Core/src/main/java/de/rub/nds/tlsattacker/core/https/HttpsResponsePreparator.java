@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
@@ -32,7 +33,7 @@ public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResp
         for (HttpsHeader header : message.getHeader()) {
             if (header instanceof ContentLengthHeader) {
                 ((ContentLengthHeader) header)
-                        .setConfigLength(message.getResponseContent().getValue().getBytes().length);
+                    .setConfigLength(message.getResponseContent().getValue().getBytes().length);
             }
             header.getPreparator(chooser).prepare();
         }

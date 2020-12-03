@@ -7,14 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import java.util.Arrays;
 
 /**
- * Runnable for benchmarking the brute-force performance of ServerVerifyChecker
- * in a multi-threaded setup.
+ * Runnable for benchmarking the brute-force performance of ServerVerifyChecker in a multi-threaded setup.
  */
 class LeakyExportBenchmarkRunnable implements Runnable {
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -19,7 +20,7 @@ public class CertificateTypeExtensionPreparator extends ExtensionPreparator<Cert
     private final CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionPreparator(Chooser chooser, CertificateTypeExtensionMessage message,
-            ExtensionSerializer<CertificateTypeExtensionMessage> serializer) {
+        ExtensionSerializer<CertificateTypeExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

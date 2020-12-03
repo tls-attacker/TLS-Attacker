@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -36,12 +37,13 @@ public class KeySetGeneratorTest {
     }
 
     /**
-     * Test that for each implemented CipherSuite/ProtocolVersion a KeySet can
-     * be generated without throwing an exception
+     * Test that for each implemented CipherSuite/ProtocolVersion a KeySet can be generated without throwing an
+     * exception
      */
     @Test
     // @Category(IntegrationTests.class)
-    public void testGenerateKeySet() {
+        public
+        void testGenerateKeySet() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 try {

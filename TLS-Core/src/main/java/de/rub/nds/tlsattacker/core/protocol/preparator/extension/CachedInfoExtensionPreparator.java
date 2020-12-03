@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -23,7 +24,7 @@ public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInf
     private final CachedInfoExtensionMessage msg;
 
     public CachedInfoExtensionPreparator(Chooser chooser, CachedInfoExtensionMessage message,
-            ExtensionSerializer<CachedInfoExtensionMessage> serializer) {
+        ExtensionSerializer<CachedInfoExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

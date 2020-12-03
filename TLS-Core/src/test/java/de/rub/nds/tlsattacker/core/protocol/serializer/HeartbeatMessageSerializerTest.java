@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -35,7 +36,7 @@ public class HeartbeatMessageSerializerTest {
     private byte[] padding;
 
     public HeartbeatMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
-            int payloadLength, byte[] payload, byte[] padding) {
+        int payloadLength, byte[] payload, byte[] padding) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -46,8 +47,7 @@ public class HeartbeatMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * HeartbeatMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class HeartbeatMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

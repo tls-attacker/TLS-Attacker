@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,7 +28,7 @@ public class PWDClearExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("001e00050466726564"), 0,
-                ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
+            ExtensionType.PWD_CLEAR, 5, 4, "fred" } });
     }
 
     private final byte[] expectedBytes;
@@ -38,7 +39,7 @@ public class PWDClearExtensionParserTest {
     private final String username;
 
     public PWDClearExtensionParserTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-            int usernameLength, String username) {
+        int usernameLength, String username) {
         this.expectedBytes = expectedBytes;
         this.start = start;
         this.type = type;

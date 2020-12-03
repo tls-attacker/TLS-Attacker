@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
@@ -17,7 +18,7 @@ public class GreaseExtensionPreparator extends ExtensionPreparator<GreaseExtensi
     GreaseExtensionMessage msg;
 
     public GreaseExtensionPreparator(Chooser chooser, GreaseExtensionMessage message,
-            ExtensionSerializer<GreaseExtensionMessage> serializer) {
+        ExtensionSerializer<GreaseExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

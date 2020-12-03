@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -19,7 +20,7 @@ import java.util.List;
 public class CompressionDelegate extends Delegate {
 
     @Parameter(names = "-compression", description = "TLS compression methods to use, divided by a comma. "
-            + "(currently, only NULL compression is supported)", converter = CompressionMethodConverter.class)
+        + "(currently, only NULL compression is supported)", converter = CompressionMethodConverter.class)
     private List<CompressionMethod> compressionMethods;
 
     public CompressionDelegate() {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -42,11 +43,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
-        LOGGER.info("Resseting Cipher");
+        LOGGER.info("Resetting Cipher");
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
-        LOGGER.info("Resetting SecureRenegotaiton");
+        LOGGER.info("Resetting SecureRenegotiation");
         tlsContext.setLastClientVerifyData(new byte[0]);
         tlsContext.setLastServerVerifyData(new byte[0]);
         LOGGER.info("Resetting MessageDigest");

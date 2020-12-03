@@ -2,7 +2,7 @@
 
 [![release](https://img.shields.io/badge/Release-v3.6.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
-[![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
+[![Build Status](https://hydrogen.cloud.nds.rub.de/buildStatus/icon.svg?job=TLS-Attacker)](https://hydrogen.cloud.nds.rub.de/job/TLS-Attacker/)
 
 TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom TLS protocol flow and test it against his TLS library.
 
@@ -38,7 +38,7 @@ If you have the correct Java version you can run the maven command from the TLS-
 $ cd TLS-Attacker
 $ mvn clean install
 ```
-Alternatively, if you are in hurry, you can skip the tests by using:
+Alternatively, if you are in a hurry, you can skip the tests by using:
 ```bash
 $ mvn clean install -DskipTests=true
 ```
@@ -85,7 +85,7 @@ Currently, the following features are supported:
 - SSL 2 (Partially supported)
 - (EC)DH(E), RSA, PSK, SRP, GOST and ANON key exchange algorithms
 - CBC, AEAD and Streamciphers (AES, CAMELLIA, DES, 3DES, IDEA, RC2, ARIA, GOST_28147_CNT_IMIT, RC4, SEED, NULL)
-- ~300 Ciphersuites, ~30 Extensions
+- ~300 Cipher suites, ~30 Extensions
 - Client and Server
 - HTTPS
 - Workflows with more than two parties
@@ -118,7 +118,7 @@ You can use a different cipher suite, TLS version, or connect to a different por
 $ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
 ```
 
-The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
+The Attack's module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
 $ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```
@@ -134,7 +134,8 @@ DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
 TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other.
-Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not stop here and implements alot of different other actions
+Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the framework does not
+ stop here and implements a lot of different other actions
 which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
 
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
@@ -241,15 +242,17 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <messages>
             <Heartbeat>
                 <payloadLength>
-                <integerExplicitValueModification>
-                    <explicitValue>20000</explicitValue>
-                </integerExplicitValueModification>
+                    <IntegerExplicitValueModification>
+                        <explicitValue>20000</explicitValue>
+                    </IntegerExplicitValueModification>
                 </payloadLength>
             </Heartbeat>
-	</messages>
+        </messages>
     </Send>
     <Receive>
-      <Heartbeat/>
+        <messages>
+            <Heartbeat/>
+        </messages>
     </Receive>
 </workflowTrace>
 ```
@@ -260,7 +263,8 @@ Further examples on attacks and further explanations on TLS-Attacker can be foun
 
 ## Advanced Features
 Some actions require context, or configuration to be executed correctly. For example, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
-put into the message, e.g., which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
+put into the message, e.g., which Cipher suites or which protocol version to use. TLS-Attacker draws this information
+ from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
 Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the context is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, TLS-Attacker fills
 this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
 

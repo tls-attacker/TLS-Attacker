@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,7 +20,7 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final static byte CCS_PROTOCOL_TYPE = 1;
+    private static final byte CCS_PROTOCOL_TYPE = 1;
     private final ChangeCipherSpecMessage msg;
 
     public ChangeCipherSpecPreparator(Chooser chooser, ChangeCipherSpecMessage message) {

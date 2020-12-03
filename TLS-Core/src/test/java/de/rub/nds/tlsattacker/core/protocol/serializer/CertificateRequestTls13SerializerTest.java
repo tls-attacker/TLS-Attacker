@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,8 +41,8 @@ public class CertificateRequestTls13SerializerTest {
     private ProtocolVersion version;
 
     public CertificateRequestTls13SerializerTest(byte[] message, HandshakeMessageType type,
-            int certificateRequestContextLength, byte[] certificateRequestContext, int extensionLength,
-            byte[] extensionBytes, ProtocolVersion version) {
+        int certificateRequestContextLength, byte[] certificateRequestContext, int extensionLength,
+        byte[] extensionBytes, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.certificateRequestContextLength = certificateRequestContextLength;
@@ -52,8 +53,7 @@ public class CertificateRequestTls13SerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * CertificateRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateRequestSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

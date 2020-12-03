@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -30,12 +31,12 @@ public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
             appendBytes(trustedAuthority.getSha1Hash().getValue());
         }
         if (trustedAuthority.getDistinguishedNameLength() != null
-                && trustedAuthority.getDistinguishedNameLength().getValue() != null) {
+            && trustedAuthority.getDistinguishedNameLength().getValue() != null) {
             appendInt(trustedAuthority.getDistinguishedNameLength().getValue(),
-                    ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
+                ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
         }
         if (trustedAuthority.getDistinguishedName() != null
-                && trustedAuthority.getDistinguishedName().getValue() != null) {
+            && trustedAuthority.getDistinguishedName().getValue() != null) {
             appendBytes(trustedAuthority.getDistinguishedName().getValue());
         }
 

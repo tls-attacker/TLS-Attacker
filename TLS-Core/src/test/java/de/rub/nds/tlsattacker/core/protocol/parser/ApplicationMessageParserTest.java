@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -24,12 +25,10 @@ public class ApplicationMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 0, new byte[] { 0, 1, 2, 3, 4, 5, 6 },
-                                new byte[] { 0, 1, 2, 3, 4, 5, 6 } },
-                        { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 2, new byte[] { 2, 3, 4, 5, 6 },
-                                new byte[] { 2, 3, 4, 5, 6 } } });
+        return Arrays.asList(new Object[][] {
+            { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 0, new byte[] { 0, 1, 2, 3, 4, 5, 6 },
+                new byte[] { 0, 1, 2, 3, 4, 5, 6 } },
+            { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 2, new byte[] { 2, 3, 4, 5, 6 }, new byte[] { 2, 3, 4, 5, 6 } } });
     }
 
     private final byte[] message;
@@ -51,9 +50,9 @@ public class ApplicationMessageParserTest {
     @Test
     public void testParse() {
         ApplicationMessageParser parser = new ApplicationMessageParser(start, message, ProtocolVersion.TLS12, config);
-        ApplicationMessage applcationMessage = parser.parse();
-        assertArrayEquals(applcationMessage.getCompleteResultingMessage().getValue(), expectedPart);
-        assertArrayEquals(applcationMessage.getData().getValue(), data);
+        ApplicationMessage applicationMessage = parser.parse();
+        assertArrayEquals(applicationMessage.getCompleteResultingMessage().getValue(), expectedPart);
+        assertArrayEquals(applicationMessage.getData().getValue(), data);
     }
 
 }

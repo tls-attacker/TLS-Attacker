@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -42,13 +43,15 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
                 msg.setResponderIDListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTH));
                 msg.setResponderIDList(parseByteArrayField(msg.getResponderIDListLength().getValue()));
                 LOGGER.debug("Parsed the responder ID list with length " + msg.getResponderIDListLength().getValue()
-                        + " and value " + ArrayConverter.bytesToHexString(msg.getResponderIDList()));
+                    + " and value " + ArrayConverter.bytesToHexString(msg.getResponderIDList()));
                 msg.setRequestExtensionLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTH));
                 msg.setRequestExtension(parseByteArrayField(msg.getRequestExtensionLength().getValue()));
                 LOGGER.debug("Parsed the request extension with length " + msg.getRequestExtensionLength().getValue()
-                        + " and value " + ArrayConverter.bytesToHexString(msg.getRequestExtension()));
+                    + " and value " + ArrayConverter.bytesToHexString(msg.getRequestExtension()));
             } catch (ParserException e) {
-                LOGGER.debug("Certificate Status Request extension parsing failed. Trying to parse as TLS 1.3 CertificateEntry extension.");
+                LOGGER
+                    .debug("Certificate Status Request extension parsing failed. Trying to parse as TLS 1.3 CertificateEntry"
+                        + " extension.");
                 parseAsCertificateStatus(msg);
             }
 
@@ -57,7 +60,9 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
             // 0, it means that we parsed too little, and therefore likely is a
             // TLS 1.3 extension.
             if ((getPointer() - startOfContentPointer - msg.getExtensionLength().getValue()) < 0) {
-                LOGGER.debug("Certificate Status Request extension parsing left some bytes over. Trying to parse as TLS 1.3 CertificateEntry extension.");
+                LOGGER
+                    .debug("Certificate Status Request extension parsing left some bytes over. Trying to parse as TLS 1.3 "
+                        + "CertificateEntry extension.");
                 parseAsCertificateStatus(msg);
             }
         }
@@ -67,8 +72,8 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     private void parseAsCertificateStatus(CertificateStatusRequestExtensionMessage msg) {
         // Reset parser and start again for TLS 1.3 extension
         setPointer(startOfContentPointer);
-        CertificateStatusGenericParser certificateStatusGenericParser = new CertificateStatusGenericParser(0,
-                parseByteArrayField(msg.getExtensionLength().getValue()));
+        CertificateStatusGenericParser certificateStatusGenericParser =
+            new CertificateStatusGenericParser(0, parseByteArrayField(msg.getExtensionLength().getValue()));
         CertificateStatusObject certificateStatus = certificateStatusGenericParser.parse();
 
         // Set TLS 1.3 fields

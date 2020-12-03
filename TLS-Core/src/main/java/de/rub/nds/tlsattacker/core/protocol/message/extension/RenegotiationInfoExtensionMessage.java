@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -51,7 +52,7 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
     }
 
     public void setRenegotiationInfoLength(int renegotiationInfoLength) {
-        this.renegotiationInfoLength = ModifiableVariableFactory.safelySetValue(this.renegotiationInfoLength,
-                renegotiationInfoLength);
+        this.renegotiationInfoLength =
+            ModifiableVariableFactory.safelySetValue(this.renegotiationInfoLength, renegotiationInfoLength);
     }
 }

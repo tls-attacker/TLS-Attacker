@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,13 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +36,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private ByteArrayOutputStream stream;
 
     public KeyShareExtensionPreparator(Chooser chooser, KeyShareExtensionMessage message,
-            KeyShareExtensionSerializer serializer) {
+        KeyShareExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

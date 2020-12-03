@@ -7,18 +7,21 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * This action allows the declaration of multiple actions, the right one will
- * selected at runtime. The usage of two actions with the same Messages is
- * forbidden.
+ * This action allows the declaration of multiple actions, the right one will selected at runtime. The usage of two
+ * actions with the same Messages is forbidden.
  */
 
 public class MultiReceiveAction extends GenericReceiveAction {

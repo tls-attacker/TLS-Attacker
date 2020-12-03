@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class SocketOpenerCallable implements Callable<Socket> {
                 if (socket.isConnected()) {
                     return socket;
                 }
-            } catch (IOException E) {
-                LOGGER.debug(E);
+            } catch (IOException e) {
+                LOGGER.debug(e);
                 return null;
             }
         }

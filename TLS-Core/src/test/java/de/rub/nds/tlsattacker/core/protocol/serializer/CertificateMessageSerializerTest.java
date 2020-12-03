@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -39,7 +40,7 @@ public class CertificateMessageSerializerTest {
     private ProtocolVersion version;
 
     public CertificateMessageSerializerTest(byte[] message, HandshakeMessageType type, int length,
-            int certificatesLength, byte[] certificateBytes, ProtocolVersion version) {
+        int certificatesLength, byte[] certificateBytes, ProtocolVersion version) {
         this.message = message;
         this.start = 0;
         this.expectedPart = message;
@@ -51,8 +52,7 @@ public class CertificateMessageSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * CertificateMessageSerializer.
+     * Test of serializeHandshakeMessageContent method, of class CertificateMessageSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

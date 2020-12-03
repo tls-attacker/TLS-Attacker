@@ -7,7 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.cca;
+
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
+import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
+import static de.rub.nds.x509attacker.X509Attacker.registerTypes;
+import static de.rub.nds.x509attacker.X509Attacker.registerXmlClasses;
+import static de.rub.nds.x509attacker.X509Attacker.writeCertificates;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
@@ -19,17 +26,20 @@ import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.delegate.CcaDelegate;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.keys.*;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDhPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDsaPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.crypto.interfaces.DHPrivateKey;
-import javax.crypto.interfaces.DHPublicKey;
-import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,10 +60,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
-import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
-import static de.rub.nds.x509attacker.X509Attacker.*;
+import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
+import javax.security.auth.x500.X500Principal;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CcaCertificateManager {
 
@@ -77,10 +88,10 @@ public class CcaCertificateManager {
         // Load X.509 root certificate and get Subject principal
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-                    ccaFileManager.getFileContent(rootCertificate));
-            X509Certificate x509Certificate = (X509Certificate) certificateFactory
-                    .generateCertificate(byteArrayInputStream);
+            ByteArrayInputStream byteArrayInputStream =
+                new ByteArrayInputStream(ccaFileManager.getFileContent(rootCertificate));
+            X509Certificate x509Certificate =
+                (X509Certificate) certificateFactory.generateCertificate(byteArrayInputStream);
             X500Principal x500PrincipalSubject = x509Certificate.getSubjectX500Principal();
             byte[] encodedSubject = x500PrincipalSubject.getEncoded();
             StringBuilder stringBuilder = new StringBuilder();
@@ -91,7 +102,7 @@ public class CcaCertificateManager {
 
         } catch (CertificateException ce) {
             LOGGER.error("Error while either instantiating X.509 CertificateFactory or generating certificate from "
-                    + "fileInputStream. " + ce);
+                + "fileInputStream. " + ce);
             return null;
         }
     }
@@ -144,8 +155,8 @@ public class CcaCertificateManager {
 
         String xmlSubject = extractXMLCertificateSubject(certificateInputDirectory, rootCertificate);
 
-        InputStream inputStream = Attacker.class.getResourceAsStream("/xmlcerts/" + ccaCertificateType.toString()
-                + ".xml");
+        InputStream inputStream =
+            Attacker.class.getResourceAsStream("/xmlcerts/" + ccaCertificateType.toString() + ".xml");
         String xmlString = new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
 
         if (xmlString == null) {
@@ -188,16 +199,14 @@ public class CcaCertificateManager {
     /**
      *
      * @param xmlString
-     *            Content of the XML file describing the certificate chain.
+     * Content of the XML file describing the certificate chain.
      * @param rootCertificateKeyName
-     *            Name of the root certificates key.
+     * Name of the root certificates key.
      * @param rootCaSubject
-     *            ASN.1 Subject of the root certificate encoded as a hex string.
-     * @return The xmlString in which the placeholder for the issuer (which is
-     *         the root CA) has been replaced with the hex string encoding the
-     *         root CAs subject. Additionally, the key placeholder has been
-     *         replaced with the filename of the keyfile of the root CA
-     *         certificate.
+     * ASN.1 Subject of the root certificate encoded as a hex string.
+     * @return The xmlString in which the placeholder for the issuer (which is the root CA) has been replaced with the
+     * hex string encoding the root CAs subject. Additionally, the key placeholder has been replaced with the filename
+     * of the keyfile of the root CA certificate.
      */
     private String replacePlaceholders(String xmlString, String rootCertificateKeyName, String rootCaSubject) {
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
@@ -208,16 +217,15 @@ public class CcaCertificateManager {
     }
 
     /**
-     * This is a wrapper function to write a generated certificate chain to
-     * disk. This is needed since X.509-Attacker still uses a two dimensional
-     * byte array for encoded certificates rather than a LinkedList.
+     * This is a wrapper function to write a generated certificate chain to disk. This is needed since X.509-Attacker
+     * still uses a two dimensional byte array for encoded certificates rather than a LinkedList.
      *
      * @param outputDirectory
      * @param certificates
      * @param ccaCertificateChain
      */
     private void saveCertificateChainToFile(String outputDirectory, List<Asn1Encodable> certificates,
-            CcaCertificateChain ccaCertificateChain) {
+        CcaCertificateChain ccaCertificateChain) {
         byte[][] encodedCertificates = new byte[certificates.size()][];
         for (int i = 0; i < ccaCertificateChain.getEncodedCertificates().size(); i++) {
             encodedCertificates[i] = ccaCertificateChain.getEncodedCertificates().get(i);
@@ -230,18 +238,18 @@ public class CcaCertificateManager {
     }
 
     /**
-     * Based on the provided parameters this function adds the correct Custom
-     * Private/Public Keys to the certificate chain.
+     * Based on the provided parameters this function adds the correct Custom Private/Public Keys to the certificate
+     * chain.
      *
      * @param ccaCertificateChain
      * @param keyName
      * @param pubKeyName
      * @param keyType
      * @param keyFileManager
-     * @return Boolean indicating if an error occured.
+     * @return Boolean indicating if an error occurred.
      */
     private boolean setLeafCertificateKeys(CcaCertificateChain ccaCertificateChain, String keyName, String pubKeyName,
-            String keyType, KeyFileManager keyFileManager) {
+        String keyType, KeyFileManager keyFileManager) {
         CustomPrivateKey customPrivateKey;
         CustomPublicKey customPublicKey;
         byte[] keyBytes;
@@ -296,11 +304,11 @@ public class CcaCertificateManager {
                     pubKeyBytes = keyFileManager.getKeyFileContent(pubKeyName);
                     publicKey = readPublicKey(new ByteArrayInputStream(pubKeyBytes));
 
-                    ECPoint x3 = ((ECPublicKey) publicKey).getW();
-                    BigInteger pKey = ((ECPrivateKey) privateKey).getS();
-                    NamedGroup nGroup = NamedGroup.getNamedGroup((ECPrivateKey) privateKey);
-                    customPrivateKey = new CustomECPrivateKey(pKey, nGroup);
-                    customPublicKey = new CustomEcPublicKey(x3.getAffineX(), x3.getAffineY(), nGroup);
+                    ECPoint publicPoint = ((ECPublicKey) publicKey).getW();
+                    BigInteger ecPrivateKey = ((ECPrivateKey) privateKey).getS();
+                    NamedGroup ngroup = NamedGroup.getNamedGroup((ECPrivateKey) privateKey);
+                    customPrivateKey = new CustomECPrivateKey(ecPrivateKey, ngroup);
+                    customPublicKey = new CustomEcPublicKey(publicPoint.getAffineX(), publicPoint.getAffineY(), ngroup);
                     break;
                 default:
                     LOGGER.error("Unknown or unsupported value for keyType attribute of keyInfo in XMLCertificate.");

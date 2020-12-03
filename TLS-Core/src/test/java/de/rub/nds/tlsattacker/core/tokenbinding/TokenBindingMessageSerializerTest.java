@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -45,8 +46,7 @@ public class TokenBindingMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * TokenBindingMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class TokenBindingMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

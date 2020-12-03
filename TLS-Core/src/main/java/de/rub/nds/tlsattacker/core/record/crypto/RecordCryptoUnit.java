@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class RecordCryptoUnit {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected ArrayList<RecordCipher> recordCipherList;
 

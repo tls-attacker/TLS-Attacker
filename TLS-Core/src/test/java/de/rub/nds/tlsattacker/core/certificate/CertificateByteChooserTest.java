@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import java.security.Security;
@@ -58,7 +59,7 @@ public class CertificateByteChooserTest {
             LOGGER.debug("-------------------------");
             LOGGER.debug("Pk type:" + pair.getCertPublicKeyType());
             LOGGER.debug("Cert signature type: " + pair.getCertSignatureType());
-            LOGGER.debug("PublickeyGroup: " + pair.getPublicKeyGroup());
+            LOGGER.debug("PublicKeyGroup: " + pair.getPublicKeyGroup());
         }
     }
 

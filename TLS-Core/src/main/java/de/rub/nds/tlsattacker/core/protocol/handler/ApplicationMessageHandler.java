@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,7 +30,7 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
     @Override
     public ApplicationMessageParser getParser(byte[] message, int pointer) {
         return new ApplicationMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

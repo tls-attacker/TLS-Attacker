@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
@@ -45,7 +46,7 @@ public class TransportHandlerFactory {
                 }
             case NON_BLOCKING_TCP:
                 if (localConEndType == ConnectionEndType.CLIENT) {
-                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
+                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-TransportHandler is not supported");
                 } else {
                     return new ServerTCPNonBlockingTransportHandler(con);
                 }
@@ -68,14 +69,14 @@ public class TransportHandlerFactory {
                     return new TimingProxyClientTcpTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                            "TCP_PROXY_TIMING for server sockets is currently not supported");
+                        "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new ClientTcpNoDelayTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                            "This transport handler type is only supported in client mode");
+                        "This transport handler type is only supported in client mode");
                 }
             case TCP_FRAGMENTATION:
                 if (localConEndType == ConnectionEndType.CLIENT) {

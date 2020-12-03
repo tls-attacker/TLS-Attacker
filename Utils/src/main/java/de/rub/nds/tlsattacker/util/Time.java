@@ -7,14 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.util;
 
 public class Time {
 
     /**
-     * Unix time means number of seconds since 1970, in GMT time zone.
-     * Date.getTime() returns number of milliseconds since 1970 in GMT, thus we
-     * convert it to seconds.
+     * Unix time means number of seconds since 1970, in GMT time zone. Date.getTime() returns number of milliseconds
+     * since 1970 in GMT, thus we convert it to seconds.
      * 
      * @return unix time
      */

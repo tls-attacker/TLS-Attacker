@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -57,8 +58,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     public void setSignatureHashAlgorithm(byte[] signatureHashAlgorithm) {
-        this.signatureHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm,
-                signatureHashAlgorithm);
+        this.signatureHashAlgorithm =
+            ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm, signatureHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {

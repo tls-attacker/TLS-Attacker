@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -38,8 +39,7 @@ public class ChangeCipherSpecSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * ChangeCipherSpecSerializer.
+     * Test of serializeProtocolMessageContent method, of class ChangeCipherSpecSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

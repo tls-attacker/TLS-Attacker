@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -31,7 +32,7 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
 
     public ClientTcpFragmentationTransportHandler(Connection connection) {
         this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection
-                .getIp(), connection.getPort());
+            .getIp(), connection.getPort());
     }
 
     public ClientTcpFragmentationTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
@@ -39,7 +40,7 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
     }
 
     public ClientTcpFragmentationTransportHandler(long connectionTimeout, long firstTimeout, long timeout,
-            String hostname, int port) {
+        String hostname, int port) {
         super(connectionTimeout, firstTimeout, timeout, hostname, port);
     }
 

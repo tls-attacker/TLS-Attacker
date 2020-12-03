@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -35,8 +36,7 @@ public class ApplicationMessageSerializerTest {
     }
 
     /**
-     * Test of serializeProtocolMessageContent method, of class
-     * ApplicationMessageSerializer.
+     * Test of serializeProtocolMessageContent method, of class ApplicationMessageSerializer.
      */
     @Test
     public void testSerializeProtocolMessageContent() {

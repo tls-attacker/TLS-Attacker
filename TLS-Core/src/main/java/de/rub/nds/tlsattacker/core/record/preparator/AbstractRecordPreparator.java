@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- *            The AbstractRecord that should be prepared
+ * The AbstractRecord that should be prepared
  */
 public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends Preparator<T> {
 
@@ -32,8 +33,8 @@ public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends
         this.type = type;
     }
 
-    protected void prepareConentMessageType(ProtocolMessageType tpye) {
-        getObject().setContentMessageType(type);
-        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(tpye.getArrayValue()));
+    protected void prepareContentMessageType(ProtocolMessageType type) {
+        getObject().setContentMessageType(this.type);
+        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));
     }
 }

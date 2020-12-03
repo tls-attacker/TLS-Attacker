@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -146,7 +147,7 @@ public class ParserSerializerStressTest {
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
                 return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
-                        ProtocolMessageType.UNKNOWN, config);
+                    ProtocolMessageType.UNKNOWN, config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }
@@ -174,10 +175,10 @@ public class ParserSerializerStressTest {
                 return new DHEServerKeyExchangeSerializer((DHEServerKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 9:
                 return new ECDHClientKeyExchangeSerializer((ECDHClientKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 10:
                 return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 11:
                 return new FinishedSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
             case 12:

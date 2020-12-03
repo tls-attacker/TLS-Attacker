@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.Serializable;
@@ -148,8 +149,7 @@ public abstract class Connection implements Serializable {
     }
 
     /**
-     * Get the connection end type of the connection end. This must be
-     * implemented by all children.
+     * Get the connection end type of the connection end. This must be implemented by all children.
      *
      * @return the connection end type of the connection end.
      */

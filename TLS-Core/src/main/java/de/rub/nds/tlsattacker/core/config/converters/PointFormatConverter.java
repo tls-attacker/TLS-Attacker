@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -15,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import java.util.Arrays;
 
 /**
- * Converts an EC point format string to an ECPointFormat (for command line
- * purposes).
+ * Converts an EC point format string to an ECPointFormat (for command line purposes).
  */
 public class PointFormatConverter implements IStringConverter<ECPointFormat> {
 
@@ -27,7 +27,7 @@ public class PointFormatConverter implements IStringConverter<ECPointFormat> {
             return ECPointFormat.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a ECPointFormat. "
-                    + "Available values are: " + Arrays.toString(ECPointFormat.values()));
+                + "Available values are: " + Arrays.toString(ECPointFormat.values()));
         }
     }
 }

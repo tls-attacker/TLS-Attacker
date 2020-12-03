@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -30,7 +31,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     public ClientTcpTransportHandler(Connection connection) {
         this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(), connection
-                .getIp(), connection.getPort());
+            .getIp(), connection.getPort());
     }
 
     public ClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
@@ -47,7 +48,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void closeConnection() throws IOException {
         if (socket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
         socket.close();
     }

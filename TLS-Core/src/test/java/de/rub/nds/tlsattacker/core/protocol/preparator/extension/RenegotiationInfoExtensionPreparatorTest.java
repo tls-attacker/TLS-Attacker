@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -31,7 +32,8 @@ public class RenegotiationInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RenegotiationInfoExtensionMessage();
-        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message,
+        preparator =
+            new RenegotiationInfoExtensionPreparator(context.getChooser(), message,
                 new RenegotiationInfoExtensionSerializer(message));
 
     }

@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.server.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
@@ -37,7 +38,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "server";
 
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -73,7 +74,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.ciphersuiteDelegate = new CiphersuiteDelegate();
+        this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();

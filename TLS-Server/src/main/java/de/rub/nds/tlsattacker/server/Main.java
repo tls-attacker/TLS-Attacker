@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.server;
 
 import com.beust.jcommander.JCommander;
@@ -43,14 +44,14 @@ public class Main {
                 tlsConfig = config.createConfig();
                 TlsServer server = new TlsServer();
                 server.run(tlsConfig);
-            } catch (ConfigurationException E) {
+            } catch (ConfigurationException e) {
                 LOGGER.warn("Encountered a ConfigurationException aborting. Try -debug for more info");
-                LOGGER.debug(E);
+                LOGGER.debug(e);
                 commander.usage();
             }
-        } catch (ParameterException E) {
+        } catch (ParameterException e) {
             LOGGER.warn("Could not parse provided parameters. Try -debug for more info");
-            LOGGER.debug(E);
+            LOGGER.debug(e);
             commander.usage();
         }
     }

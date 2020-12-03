@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,7 +28,7 @@ public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExten
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing UnknoenExtensionMessage");
+        LOGGER.debug("Serializing UnknownExtensionMessage");
         if (hasExtensionData(msg)) {
             writeExtensionData(msg);
         }

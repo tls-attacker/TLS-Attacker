@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
@@ -28,7 +29,7 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
     @Override
     public SrpClientKeyExchangeParser getParser(byte[] message, int pointer) {
         return new SrpClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

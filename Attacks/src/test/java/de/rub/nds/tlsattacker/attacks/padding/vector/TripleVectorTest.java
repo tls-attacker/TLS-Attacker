@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding.vector;
 
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -14,11 +15,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TrippleVectorTest {
+public class TripleVectorTest {
 
     private Record r;
 
-    public TrippleVectorTest() {
+    public TripleVectorTest() {
     }
 
     @Before

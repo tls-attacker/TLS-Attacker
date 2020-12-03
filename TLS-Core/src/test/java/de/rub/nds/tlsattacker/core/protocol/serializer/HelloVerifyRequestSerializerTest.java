@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -37,7 +38,7 @@ public class HelloVerifyRequestSerializerTest {
     private byte[] cookie;
 
     public HelloVerifyRequestSerializerTest(byte[] message, HandshakeMessageType type, int length,
-            byte[] protocolVersion, byte cookieLength, byte[] cookie) {
+        byte[] protocolVersion, byte cookieLength, byte[] cookie) {
         this.message = message;
         this.type = type;
         this.length = length;
@@ -47,8 +48,7 @@ public class HelloVerifyRequestSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * HelloVerifyRequestSerializer.
+     * Test of serializeHandshakeMessageContent method, of class HelloVerifyRequestSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
