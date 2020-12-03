@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -15,7 +16,8 @@ import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
 
 public class SessionResumptionDelegate extends Delegate {
 
-    @Parameter(names = "-session_id", description = "The session ID to resume in hex", converter = ByteArrayConverter.class)
+    @Parameter(names = "-session_id", description = "The session ID to resume in hex",
+        converter = ByteArrayConverter.class)
     private byte[] sessionId = null;
 
     public SessionResumptionDelegate() {

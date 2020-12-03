@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -38,6 +39,6 @@ public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     private void prepareClientServerRandom(PskServerKeyExchangeMessage msg) {
         msg.getComputations().setClientServerRandom(chooser.getClientRandom());
         LOGGER.debug("ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 }

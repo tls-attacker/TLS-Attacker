@@ -47,7 +47,5 @@ Utils/.settings/org.eclipse.jdt.core.prefs
 resources/*.pem
 .project
 test.sh
-.settings/
 .classpath
 .idea
-*.iml

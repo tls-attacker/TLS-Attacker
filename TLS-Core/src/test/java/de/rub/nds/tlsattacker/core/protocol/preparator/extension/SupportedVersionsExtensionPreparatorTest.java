@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,8 @@ public class SupportedVersionsExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SupportedVersionsExtensionMessage();
-        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message,
+        preparator =
+            new SupportedVersionsExtensionPreparator(context.getChooser(), message,
                 new SupportedVersionsExtensionSerializer(message));
     }
 
@@ -48,7 +50,7 @@ public class SupportedVersionsExtensionPreparatorTest {
         context.getConfig().setSupportedVersions(supportedVersions);
         preparator.prepare();
         assertArrayEquals(message.getSupportedVersions().getValue(),
-                ArrayConverter.concatenate(ProtocolVersion.TLS13.getValue(), ProtocolVersion.TLS12.getValue()));
+            ArrayConverter.concatenate(ProtocolVersion.TLS13.getValue(), ProtocolVersion.TLS12.getValue()));
         assertTrue(message.getSupportedVersionsLength().getValue() == 4);
     }
 

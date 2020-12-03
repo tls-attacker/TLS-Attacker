@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -37,8 +38,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Find the files for this test at
- * src/test/resources/workflow_trace_serialization_tests-negative
+ * Find the files for this test at src/test/resources/workflow_trace_serialization_tests-negative
  */
 @Category(SlowTests.class)
 @RunWith(Parameterized.class)
@@ -46,7 +46,7 @@ public class WorkflowTraceNormalizerTestBadInput {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String TEST_VECTOR_DIR = "/worklfow_trace_serialization_tests-negative";
+    private static final String TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-negative";
 
     /**
      * Run each test with a file from TEST_VECTOR_DIR as parameter.
@@ -93,12 +93,10 @@ public class WorkflowTraceNormalizerTestBadInput {
     }
 
     /**
-     * Test that attempts to normalize bad workflow traces throws proper
-     * exceptions.
+     * Test that attempts to normalize bad workflow traces throws proper exceptions.
      *
-     * TODO: This could be more fine grained. I.e. split the test into multiple
-     * sub tests that test a particular category of bad inputs. This would
-     * enable testing the more detailed exception messages.
+     * TODO: This could be more fine grained. I.e. split the test into multiple sub tests that test a particular
+     * category of bad inputs. This would enable testing the more detailed exception messages.
      */
     @Test
     public void normalizingBadInputsFails() {
@@ -112,8 +110,7 @@ public class WorkflowTraceNormalizerTestBadInput {
     }
 
     /**
-     * Loads a test vector from file. Have a look at the test vectors to see the
-     * required format.
+     * Loads a test vector from file. Have a look at the test vectors to see the required format.
      *
      * @param testVectorPath
      */
@@ -138,7 +135,8 @@ public class WorkflowTraceNormalizerTestBadInput {
         }
 
         try {
-            trace = WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
+            trace =
+                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- *            The HandshakeMessage that should be prepared
+ * The HandshakeMessage that should be prepared
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 
@@ -77,7 +78,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 handler.getPreparator(extensionMessage).prepare();
                 try {
@@ -100,19 +102,19 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     // TODO fix design flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 Preparator preparator = handler.getPreparator(extensionMessage);
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
                 } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
-                        && msg instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && msg instanceof ClientHelloMessage && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) msg;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                            .setClientHelloMessage(clientHelloMessage);
+                        .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
 

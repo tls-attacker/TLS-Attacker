@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -44,7 +45,7 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
     @Override
     public void adjustTLSContext(AlertMessage message) {
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()
-                && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
+            && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
             LOGGER.debug("Setting received Fatal Alert in Context");
             tlsContext.setReceivedFatalAlert(true);
         }

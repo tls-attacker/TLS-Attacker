@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -66,7 +67,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
                 if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 handler.getPreparator(extensionMessage).prepare();
                 try {

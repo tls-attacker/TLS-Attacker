@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,7 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2Ser
         writeMessageLength(message);
         writeType(message);
         writeSessionIdHit(message);
-        writeCetificateType(message);
+        writeCertificateType(message);
         writeProtocolVersion(message);
         writeCertificateLength(message);
         writeCipherSuitesLength(message);
@@ -76,7 +77,7 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2Ser
     /**
      * Writes the CertificateType of the SSL2ServerHello into the final byte[]
      */
-    private void writeCetificateType(SSL2ServerHelloMessage message) {
+    private void writeCertificateType(SSL2ServerHelloMessage message) {
         appendByte(message.getCertificateType().getValue());
         LOGGER.debug("CertificateType: " + message.getCertificateType().getValue());
     }
@@ -98,12 +99,11 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer<SSL2Ser
     }
 
     /**
-     * Writes the CipherSuitesLength of the SSL2ServerHello into the final
-     * byte[]
+     * Writes the CipherSuitesLength of the SSL2ServerHello into the final byte[]
      */
     private void writeCipherSuitesLength(SSL2ServerHelloMessage message) {
         appendInt(message.getCipherSuitesLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);
-        LOGGER.debug("ChipherSuitesLength: " + message.getCipherSuitesLength().getValue());
+        LOGGER.debug("CipherSuitesLength: " + message.getCipherSuitesLength().getValue());
     }
 
     /**

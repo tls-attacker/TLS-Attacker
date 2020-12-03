@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,13 +26,11 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HandshakeMessageParser is
-     *            supposed to start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HandshakeMessageParser is supposed to
-     *            parse
+     * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
     public FinishedParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.FINISHED, version, config);
@@ -52,11 +51,11 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      * Reads the next bytes as the VerifyData and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseVerifyData(FinishedMessage msg) {
         msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
-        LOGGER.debug("VerifiyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

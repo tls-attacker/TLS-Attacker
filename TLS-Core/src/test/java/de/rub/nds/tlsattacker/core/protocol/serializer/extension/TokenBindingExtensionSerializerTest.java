@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -35,7 +36,7 @@ public class TokenBindingExtensionSerializerTest {
     private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
+        TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;

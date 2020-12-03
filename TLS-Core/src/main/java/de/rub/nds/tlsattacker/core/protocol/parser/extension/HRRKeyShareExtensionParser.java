@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -36,11 +37,10 @@ public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExten
     }
 
     /**
-     * Reads the next bytes as the selectedGroup of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the selectedGroup of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSelectedGroup(HRRKeyShareExtensionMessage msg) {
         msg.setSelectedGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));

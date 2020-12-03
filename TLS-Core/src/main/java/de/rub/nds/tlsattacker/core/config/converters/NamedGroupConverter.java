@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -15,8 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Arrays;
 
 /**
- * Converts a string named group to a NamedGroup type (for command line
- * purposes).
+ * Converts a string named group to a NamedGroup type (for command line purposes).
  */
 public class NamedGroupConverter implements IStringConverter<NamedGroup> {
 
@@ -27,7 +27,7 @@ public class NamedGroupConverter implements IStringConverter<NamedGroup> {
             return NamedGroup.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a NamedGroup. "
-                    + "Available values are: " + Arrays.toString(NamedGroup.values()));
+                + "Available values are: " + Arrays.toString(NamedGroup.values()));
         }
     }
 }

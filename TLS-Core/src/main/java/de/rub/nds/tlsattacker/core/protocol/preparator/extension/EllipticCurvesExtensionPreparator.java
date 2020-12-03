@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,7 +30,7 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
     private final EllipticCurvesExtensionMessage msg;
 
     public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message,
-            EllipticCurvesExtensionSerializer serializer) {
+        EllipticCurvesExtensionSerializer serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

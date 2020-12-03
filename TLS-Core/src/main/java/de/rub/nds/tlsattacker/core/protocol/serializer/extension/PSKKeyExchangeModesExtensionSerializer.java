@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -45,6 +46,6 @@ public class PSKKeyExchangeModesExtensionSerializer extends ExtensionSerializer<
     private void writeKeyExchangeModesListBytes(PSKKeyExchangeModesExtensionMessage msg) {
         appendBytes(msg.getKeyExchangeModesListBytes().getValue());
         LOGGER.debug("KeyExchangeModesListBytes: "
-                + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
     }
 }

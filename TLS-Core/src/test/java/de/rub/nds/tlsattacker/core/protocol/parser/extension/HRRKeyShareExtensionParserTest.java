@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,8 +28,8 @@ public class HRRKeyShareExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("00280002001D"), 0,
-                ArrayConverter.hexStringToByteArray("00280002001D"), ExtensionType.KEY_SHARE_OLD, 2,
-                ArrayConverter.hexStringToByteArray("001D") } });
+            ArrayConverter.hexStringToByteArray("00280002001D"), ExtensionType.KEY_SHARE_OLD, 2,
+            ArrayConverter.hexStringToByteArray("001D") } });
     }
 
     private byte[] extension;
@@ -39,7 +40,7 @@ public class HRRKeyShareExtensionParserTest {
     private byte[] selectedGroup;
 
     public HRRKeyShareExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-            int extensionLength, byte[] selectedGroup) {
+        int extensionLength, byte[] selectedGroup) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -49,8 +50,7 @@ public class HRRKeyShareExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * HRRKeyShareExtensionParser.
+     * Test of parseExtensionMessageContent method, of class HRRKeyShareExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {

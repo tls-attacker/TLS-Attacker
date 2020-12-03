@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.state.State;
@@ -53,8 +54,8 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        executorService = new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(),
-                factory);
+        executorService =
+            new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory);
         completionService = new ExecutorCompletionService<>(executorService);
         this.reexecutions = reexecutions;
         this.size = size;
@@ -125,13 +126,11 @@ public class ParallelExecutor {
     }
 
     /**
-     * Creates a new thread monitoring the completionService. If the last
-     * {@link TlsTask} was finished more than 20 seconds ago, the function
-     * assiged to {@link ParallelExecutor#timeoutAction } is executed.
+     * Creates a new thread monitoring the completionService. If the last {@link TlsTask} was finished more than 20
+     * seconds ago, the function assiged to {@link ParallelExecutor#timeoutAction } is executed.
      *
-     * The {@link ParallelExecutor#timeoutAction } function can, for example, try
-     * to restart the client/server, so that the remaining {@link TlsTask}s can
-     * be finished.
+     * The {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that
+     * the remaining {@link TlsTask}s can be finished.
      */
     public void armTimeoutAction() {
         if (timeoutAction == null) {

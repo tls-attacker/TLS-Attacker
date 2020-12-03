@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -39,12 +40,12 @@ public class HttpsResponseMessage extends ProtocolMessage {
     private ModifiableString responseContent;
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),
-            @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-            @XmlElement(type = DateHeader.class, name = "DateHeader"),
-            @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-            @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-            @XmlElement(type = HostHeader.class, name = "HostHeader"),
-            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
+        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+        @XmlElement(type = DateHeader.class, name = "DateHeader"),
+        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+        @XmlElement(type = HostHeader.class, name = "HostHeader"),
+        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
     @HoldsModifiableVariable
     private List<HttpsHeader> header;
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,13 +27,11 @@ public class PSKBinderParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
-                .asList(new Object[][] { {
-                        0,
-                        ArrayConverter
-                                .hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
-                        32,
-                        ArrayConverter
-                                .hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
+            .asList(new Object[][] { {
+                0,
+                ArrayConverter
+                    .hexStringToByteArray("2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"), 32,
+                ArrayConverter.hexStringToByteArray("34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9") } });
     }
 
     private final int startPosition;

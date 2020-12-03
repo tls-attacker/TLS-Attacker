@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -70,8 +71,7 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer<SSL2Cli
     }
 
     /**
-     * Writes the CipherSuitesLength of the SSL2ClientHello into the final
-     * byte[]
+     * Writes the CipherSuitesLength of the SSL2ClientHello into the final byte[]
      */
     private void writeCipherSuiteLength(SSL2ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);

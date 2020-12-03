@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 /**
@@ -19,8 +20,7 @@ public enum GuessProviderType {
      */
     INCREMENTING,
     /**
-     * A WordListGuessProvider uses an InputSource to try all words from the
-     * InputSource
+     * A WordListGuessProvider uses an InputSource to try all words from the InputSource
      */
     WORDLIST
 }

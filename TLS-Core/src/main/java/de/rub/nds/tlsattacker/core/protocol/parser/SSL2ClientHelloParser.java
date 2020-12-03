@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -42,11 +43,10 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the ProtocolVersion and writes them in the
-     * message
+     * Reads the next bytes as the ProtocolVersion and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseProtocolVersion(SSL2ClientHelloMessage msg) {
         msg.setProtocolVersion(parseByteArrayField(SSL2ByteLength.VERSION));
@@ -54,11 +54,10 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the CipherSuiteLength and writes them in the
-     * message
+     * Reads the next bytes as the CipherSuiteLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCipherSuiteLength(SSL2ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(SSL2ByteLength.CIPHERSUITE_LENGTH));
@@ -66,11 +65,10 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the SessionIDLength and writes them in the
-     * message
+     * Reads the next bytes as the SessionIDLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSessionIDLength(SSL2ClientHelloMessage msg) {
         msg.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
@@ -78,11 +76,10 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
     }
 
     /**
-     * Reads the next bytes as the ChallengeLength and writes them in the
-     * message
+     * Reads the next bytes as the ChallengeLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseChallengeLength(SSL2ClientHelloMessage msg) {
         msg.setChallengeLength(parseIntField(SSL2ByteLength.CHALLENGE_LENGTH));
@@ -93,18 +90,18 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
      * Reads the next bytes as the CipherSuites and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCipherSuites(SSL2ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        LOGGER.debug("ChipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     /**
      * Reads the next bytes as the SessionID and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSessionID(SSL2ClientHelloMessage msg) {
         msg.setSessionID(parseByteArrayField(msg.getSessionIdLength().getValue()));
@@ -115,7 +112,7 @@ public class SSL2ClientHelloParser extends SSL2HandshakeMessageParser<SSL2Client
      * Reads the next bytes as the Challenge and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseChallenge(SSL2ClientHelloMessage msg) {
         msg.setChallenge(parseByteArrayField(msg.getChallengeLength().getValue()));

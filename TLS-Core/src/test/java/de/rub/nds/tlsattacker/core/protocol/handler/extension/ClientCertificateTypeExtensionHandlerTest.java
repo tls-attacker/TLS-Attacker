@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -25,7 +26,7 @@ import org.junit.Test;
 
 public class ClientCertificateTypeExtensionHandlerTest {
     private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509,
-            CertificateType.RAW_PUBLIC_KEY);
+        CertificateType.RAW_PUBLIC_KEY);
     private ClientCertificateTypeExtensionHandler handler;
     private TlsContext context;
 

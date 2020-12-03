@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,9 +16,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ServerNamePairSerializierTest {
+public class ServerNamePairSerializerTest {
 
-    private ServerNamePairSerializier serializer;
+    private ServerNamePairSerializer serializer;
     private ServerNamePair pair;
 
     @Before
@@ -25,7 +26,7 @@ public class ServerNamePairSerializierTest {
     }
 
     /**
-     * Test of serializeBytes method, of class ServerNamePairSerializier.
+     * Test of serializeBytes method, of class ServerNamePairSerializer.
      */
     @Test
     public void testSerializeBytes() {
@@ -33,7 +34,7 @@ public class ServerNamePairSerializierTest {
         pair.setServerNameLength(123);
         pair.setServerNameType((byte) 3);
         pair.setServerName(new byte[] { 1, 2, 3, 4, });
-        serializer = new ServerNamePairSerializier(pair);
+        serializer = new ServerNamePairSerializer(pair);
         byte[] result = serializer.serialize();
         assertArrayEquals(ArrayConverter.hexStringToByteArray("03007B01020304"), result);
     }

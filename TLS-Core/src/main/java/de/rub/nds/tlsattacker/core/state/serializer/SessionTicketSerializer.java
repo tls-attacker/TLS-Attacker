@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -48,7 +49,7 @@ public class SessionTicketSerializer extends Serializer<SessionTicket> {
     private void writeEncryptedState(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getEncryptedState().getValue());
         LOGGER.debug("EncryptedState: "
-                + ArrayConverter.bytesToHexString(sessionTicket.getEncryptedState().getValue(), true, true));
+            + ArrayConverter.bytesToHexString(sessionTicket.getEncryptedState().getValue(), true, true));
     }
 
     private void writeMAC(SessionTicket sessionTicket) {

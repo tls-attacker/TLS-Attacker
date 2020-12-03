@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -98,7 +99,7 @@ public class CertificateRequestHandlerTest {
 
         message.setCertificateRequestContext(new byte[] { 1, 2, 3, 4, 5, 6 });
         message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class).setSignatureAndHashAlgorithms(
-                new byte[] { 03, 01, 01, 03 });
+            new byte[] { 03, 01, 01, 03 });
         handler.adjustTLSContext(message);
         assertArrayEquals(context.getCertificateRequestContext(), ArrayConverter.hexStringToByteArray("010203040506"));
         assertTrue(context.getServerSupportedSignatureAndHashAlgorithms().size() == 2);

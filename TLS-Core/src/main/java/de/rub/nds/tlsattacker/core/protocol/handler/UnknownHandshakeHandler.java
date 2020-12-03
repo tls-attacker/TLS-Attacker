@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
@@ -29,7 +30,7 @@ public class UnknownHandshakeHandler extends HandshakeMessageHandler<UnknownHand
     @Override
     public UnknownHandshakeParser getParser(byte[] message, int pointer) {
         return new UnknownHandshakeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

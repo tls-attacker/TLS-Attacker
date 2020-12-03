@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DtlsHandshakeMessageFragmentParser extends HandshakeMessageParser<DtlsHandshakeMessageFragment> {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DtlsHandshakeMessageFragmentParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.UNKNOWN, version, config);

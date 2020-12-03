@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -41,8 +42,8 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage {
     }
 
     public void setCertificateTypesLength(int certificateTypesLength) {
-        this.certificateTypesLength = ModifiableVariableFactory.safelySetValue(this.certificateTypesLength,
-                certificateTypesLength);
+        this.certificateTypesLength =
+            ModifiableVariableFactory.safelySetValue(this.certificateTypesLength, certificateTypesLength);
     }
 
     public ModifiableByteArray getCertificateTypes() {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -29,7 +30,9 @@ public class StateExecutionServerTask extends TlsTask {
     private static final Logger LOGGER = LogManager.getLogger();
     private final State state;
     private final ServerSocket serverSocket;
-    private Callable<Integer> beforeAcceptCallback = () -> { return 0; };
+    private Callable<Integer> beforeAcceptCallback = () -> {
+        return 0;
+    };
     private boolean stateFinished = false;
 
     public StateExecutionServerTask(State state, ServerSocket serverSocket, int reexecutions) {
@@ -119,7 +122,6 @@ public class StateExecutionServerTask extends TlsTask {
     public void reset() {
         state.reset();
     }
-
 
     public Callable<Integer> getBeforeAcceptCallback() {
         return beforeAcceptCallback;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,9 +34,8 @@ public class ICEAttacker {
     private final ServerType server;
 
     /**
-     * Oracle point multiplication is error prone so with a possibility of about
-     * 1-5% we can get an invalid result. Thus, we perform additional equations
-     * and make combinations with these equations. This gives us a higher
+     * Oracle point multiplication is error prone so with a possibility of about 1-5% we can get an invalid result.
+     * Thus, we perform additional equations and make combinations with these equations. This gives us a higher
      * probability that we get a valid result.
      */
     private final int oracleAdditionalEquations;
@@ -75,6 +75,10 @@ public class ICEAttacker {
             case ORACLE:
                 result = attackOracle();
                 break;
+            default: // does not occur as all Enum types are handled
+                result = attackNormal();
+                break;
+
         }
         LOGGER.info("Time needed for the attack: {} seconds", ((System.currentTimeMillis() - currentTime) / 1000));
         return result;
@@ -97,10 +101,9 @@ public class ICEAttacker {
                 BigInteger prodModuli = computeModuliProduct(moduli);
                 if (prodModuli.bitLength() > (curve.getModulus().bitLength() * 2)) {
                     /**
-                     * It is not necessary to test all the points. For a correct
-                     * CRT computation it is just needed that the moduli product
-                     * is larger than the secret we are searching for. Thus, we
-                     * can remove some of the values
+                     * It is not necessary to test all the points. For a correct CRT computation it is just needed that
+                     * the moduli product is larger than the secret we are searching for. Thus, we can remove some of
+                     * the values
                      */
                     LOGGER.info("We have found enough congruences for computing a CRT");
                     break;
@@ -110,7 +113,7 @@ public class ICEAttacker {
             }
         }
 
-        BigInteger sqrtResult = MathHelper.CRT(congs, moduli);
+        BigInteger sqrtResult = MathHelper.crt(congs, moduli);
         BigInteger result = MathHelper.bigIntSqRootFloor(sqrtResult);
         LOGGER.info("Result found: {}", result);
         LOGGER.info("Number of server queries: {}", oracle.getNumberOfQueries());
@@ -136,10 +139,9 @@ public class ICEAttacker {
                 BigInteger prodModuli = computeModuliProduct(moduli);
                 if (prodModuli.bitLength() > (curve.getModulus().bitLength() * 2 + 4)) {
                     /**
-                     * It is not necessary to test all the points. For a correct
-                     * CRT computation it is just needed that the moduli product
-                     * is larger than the secret we are searching for. Thus, we
-                     * can remove some of the values
+                     * It is not necessary to test all the points. For a correct CRT computation it is just needed that
+                     * the moduli product is larger than the secret we are searching for. Thus, we can remove some of
+                     * the values
                      */
                     LOGGER.info("We have found enough congruences for computing a CRT, computing additional equations");
                     if (additionalEquations == oracleAdditionalEquations) {
@@ -157,8 +159,8 @@ public class ICEAttacker {
         BigInteger[] congsArray = ArrayConverter.convertListToArray(congs);
         BigInteger[] moduliArray = ArrayConverter.convertListToArray(moduli);
         int lastElementPointer = usedOracleEquations.length - 1;
-        BigInteger result = bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray,
-                lastElementPointer);
+        BigInteger result =
+            bruteForceWithAdditionalOracleEquations(usedOracleEquations, congsArray, moduliArray, lastElementPointer);
 
         if (result != null) {
             LOGGER.info("Result found: {}", result);
@@ -170,25 +172,24 @@ public class ICEAttacker {
     }
 
     /**
-     * Creates recursively all possible combinations of equations and tries to
-     * compute the server private key with CRT.
+     * Creates recursively all possible combinations of equations and tries to compute the server private key with CRT.
      *
      * @param usedOracleEquations
-     *            The used oracle equations
+     * The used oracle equations
      * @param congs
-     *            The congruences
+     * The congruences
      * @param modulis
-     *            The modulis
+     * The modulis
      * @param pointer
-     *            the pointer
+     * the pointer
      * @return
      */
     public BigInteger bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
-            BigInteger[] modulis, int pointer) {
+        BigInteger[] modulis, int pointer) {
 
         int[] eq = Arrays.copyOf(usedOracleEquations, usedOracleEquations.length);
-        int maxValue = (pointer == usedOracleEquations.length - 1) ? (congs.length)
-                : (usedOracleEquations[pointer + 1]);
+        int maxValue =
+            (pointer == usedOracleEquations.length - 1) ? (congs.length) : (usedOracleEquations[pointer + 1]);
         int minValue = usedOracleEquations[pointer];
         for (int i = minValue; i < maxValue; i++) {
             eq[pointer] = i;
@@ -211,11 +212,11 @@ public class ICEAttacker {
      * Computes CRT from a given combination of congs and modulis
      *
      * @param usedOracleEquations
-     *            The used oracle equations
+     * The used oracle equations
      * @param congs
-     *            The congruences
+     * The congruences
      * @param modulis
-     *            The modulis
+     * The modulis
      * @return CRTF
      */
     private BigInteger computeCRTFromCombination(int[] usedOracleEquations, BigInteger[] congs, BigInteger[] modulis) {
@@ -225,7 +226,7 @@ public class ICEAttacker {
             usedCongs[i] = congs[usedOracleEquations[i]];
             usedModulis[i] = modulis[usedOracleEquations[i]];
         }
-        return MathHelper.CRT(usedCongs, usedModulis);
+        return MathHelper.crt(usedCongs, usedModulis);
     }
 
     private int[] initializeUsedOracleEquations(int size) {
@@ -240,7 +241,7 @@ public class ICEAttacker {
      * Uses the oracle to get a congruence for a specific point
      *
      * @param point
-     *            A Point
+     * A Point
      * @return The Congruence
      */
     private BigInteger getCongruence(ICEPoint point) {
@@ -249,7 +250,7 @@ public class ICEAttacker {
         for (int i = 1; i < point.getOrder(); i++) {
             secretModOrder = secretModOrder.add(BigInteger.ONE);
             Point guess = curve.mult(secretModOrder, point);
-            if (oracle.checkSecretCorrectnes(point, guess.getX().getData())) {
+            if (oracle.checkSecretCorrectness(point, guess.getFieldX().getData())) {
                 return secretModOrder;
             }
         }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
@@ -29,8 +30,7 @@ public class UnknownHandshakePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * UnknownHandshakePreparator.
+     * Test of prepareHandshakeMessageContents method, of class UnknownHandshakePreparator.
      */
     @Test
     public void testPrepare() {

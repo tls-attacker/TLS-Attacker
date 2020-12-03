@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,8 +27,8 @@ public class ClientAuthzExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.CLIENT_AUTHZ,
-                ArrayConverter.hexStringToByteArray("000700050400010203"), 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("00010203") } });
+            ArrayConverter.hexStringToByteArray("000700050400010203"), 5, 0, 4,
+            ArrayConverter.hexStringToByteArray("00010203") } });
     }
 
     private final ExtensionType extensionType;
@@ -40,7 +41,7 @@ public class ClientAuthzExtensionParserTest {
     private ClientAuthzExtensionMessage msg;
 
     public ClientAuthzExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-            int startParsing, int authzFormatListLength, byte[] authzFormatList) {
+        int startParsing, int authzFormatListLength, byte[] authzFormatList) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

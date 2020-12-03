@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -85,16 +86,16 @@ public class SRPServerComputations extends KeyExchangeComputations {
         this.modulus = modulus;
     }
 
+    public void setModulus(BigInteger modulus) {
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
+    }
+
     public ModifiableBigInteger getGenerator() {
         return generator;
     }
 
     public void setGenerator(ModifiableBigInteger generator) {
         this.generator = generator;
-    }
-
-    public void setModulus(BigInteger modulus) {
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
     public void setGenerator(BigInteger generator) {

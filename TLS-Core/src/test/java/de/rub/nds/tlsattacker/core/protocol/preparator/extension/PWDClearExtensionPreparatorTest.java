@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -27,8 +28,8 @@ public class PWDClearExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PWDClearExtensionMessage();
-        preparator = new PWDClearExtensionPreparator(context.getChooser(), message, new PWDClearExtensionSerializer(
-                message));
+        preparator =
+            new PWDClearExtensionPreparator(context.getChooser(), message, new PWDClearExtensionSerializer(message));
     }
 
     @Test

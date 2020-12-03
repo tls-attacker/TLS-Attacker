@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -122,7 +123,7 @@ public class SendDynamicServerCertificateActionTest {
         assertTrue(action.getSendMessages().isEmpty());
         action.execute(state);
         assertTrue(action.getSendMessages().size() == 1
-                && action.getSendMessages().get(0) instanceof CertificateMessage);
+            && action.getSendMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test

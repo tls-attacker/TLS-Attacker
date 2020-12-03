@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -40,8 +41,8 @@ public class GenericReceiveAsciiAction extends AsciiAction {
             setAsciiText(new String(fetchData, getEncoding()));
             LOGGER.info("Received:" + getAsciiText());
             setExecuted(true);
-        } catch (IOException E) {
-            LOGGER.debug(E);
+        } catch (IOException e) {
+            LOGGER.debug(e);
             setExecuted(false);
         }
     }

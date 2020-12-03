@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -65,7 +66,8 @@ public class BasicTlsClientServerTest {
                 ;
 
             LOGGER.info("Starting test client");
-            BasicTlsClient client = new BasicTlsClient("localhost", tlsServer.getPort(), ProtocolVersion.TLS12,
+            BasicTlsClient client =
+                new BasicTlsClient("localhost", tlsServer.getPort(), ProtocolVersion.TLS12,
                     CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
             client.setRetryConnect(false);
             Thread clientThread = new Thread(client);
@@ -81,8 +83,8 @@ public class BasicTlsClientServerTest {
             tlsServer.shutdown();
             LOGGER.info("Done.");
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException | InterruptedException ex) {
+            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+            | KeyManagementException | InterruptedException ex) {
             fail();
         }
     }

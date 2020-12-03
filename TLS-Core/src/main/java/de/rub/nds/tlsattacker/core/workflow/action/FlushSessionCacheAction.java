@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -27,7 +28,7 @@ public class FlushSessionCacheAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        LOGGER.info("Resseting Connection Cache");
+        LOGGER.info("Reset Connection Cache");
         state.getTlsContext().getSessionList().clear();
         state.getTlsContext().setClientSessionId(new byte[0]);
         state.getTlsContext().setServerSessionId(new byte[0]);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -24,8 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Execute a workflow trace for each new connection/socket that connects to the
- * server.
+ * Execute a workflow trace for each new connection/socket that connects to the server.
  *
  * Highly experimental. Just a starting point.
  */
@@ -162,6 +162,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                    ;
                 }
             }
         } catch (InterruptedException ie) {

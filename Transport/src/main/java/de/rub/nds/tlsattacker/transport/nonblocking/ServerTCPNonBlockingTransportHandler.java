@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -83,7 +84,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
                 LOGGER.debug("TransportHandler not yet connected");
             }
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 
@@ -113,7 +114,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
             }
             return false;
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -36,14 +37,13 @@ public class SupportedVersionsExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * SupportedVersionsExtensionHandler.
+     * Test of adjustTLSContext method, of class SupportedVersionsExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(),
-                ProtocolVersion.TLS13.getValue()));
+            ProtocolVersion.TLS13.getValue()));
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientSupportedProtocolVersions().size() == 2);
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());

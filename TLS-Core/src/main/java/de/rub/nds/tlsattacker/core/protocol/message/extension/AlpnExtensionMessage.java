@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -63,8 +64,8 @@ public class AlpnExtensionMessage extends ExtensionMessage {
     }
 
     public void setAlpnExtensionLength(int alpnExtensionLength) {
-        this.alpnExtensionLength = ModifiableVariableFactory.safelySetValue(this.alpnExtensionLength,
-                alpnExtensionLength);
+        this.alpnExtensionLength =
+            ModifiableVariableFactory.safelySetValue(this.alpnExtensionLength, alpnExtensionLength);
     }
 
     public ModifiableByteArray getAlpnAnnouncedProtocols() {
@@ -76,8 +77,8 @@ public class AlpnExtensionMessage extends ExtensionMessage {
     }
 
     public void setAlpnAnnouncedProtocols(byte[] alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = ModifiableVariableFactory.safelySetValue(this.alpnAnnouncedProtocols,
-                alpnAnnouncedProtocols);
+        this.alpnAnnouncedProtocols =
+            ModifiableVariableFactory.safelySetValue(this.alpnAnnouncedProtocols, alpnAnnouncedProtocols);
     }
 
 }

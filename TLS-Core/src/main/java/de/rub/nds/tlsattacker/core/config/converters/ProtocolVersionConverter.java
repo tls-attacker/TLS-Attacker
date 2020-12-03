@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -14,8 +15,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 /**
- * Converts a protocol version string to a protocol Version enum (for command
- * line purposes).
+ * Converts a protocol version string to a protocol Version enum (for command line purposes).
  */
 public class ProtocolVersionConverter implements IStringConverter<ProtocolVersion> {
 

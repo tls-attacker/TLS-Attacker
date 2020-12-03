@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -17,7 +18,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 public class StarttlsDelegate extends Delegate {
 
-    @Parameter(names = "-starttls", required = false, description = "Starttls protocol. Choose from ftp, imap, pop3, smtp.", converter = StarttlsTypeConverter.class)
+    @Parameter(names = "-starttls", required = false,
+        description = "Starttls protocol. Choose from ftp, imap, pop3, smtp.", converter = StarttlsTypeConverter.class)
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     public StarttlsDelegate() {

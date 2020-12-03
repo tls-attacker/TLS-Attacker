@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -91,8 +92,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setClientHelloKeyShare(byte[] clientHelloKeyShare) {
-        this.clientHelloKeyShare = ModifiableVariableFactory.safelySetValue(this.clientHelloKeyShare,
-                clientHelloKeyShare);
+        this.clientHelloKeyShare =
+            ModifiableVariableFactory.safelySetValue(this.clientHelloKeyShare, clientHelloKeyShare);
     }
 
     public ModifiableByteArray getEsniServerPublicKey() {
@@ -104,8 +105,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniServerPublicKey(byte[] esniServerPublicKey) {
-        this.esniServerPublicKey = ModifiableVariableFactory.safelySetValue(this.esniServerPublicKey,
-                esniServerPublicKey);
+        this.esniServerPublicKey =
+            ModifiableVariableFactory.safelySetValue(this.esniServerPublicKey, esniServerPublicKey);
     }
 
     public ModifiableByteArray getEsniContentsHash() {

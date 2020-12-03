@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import com.google.common.io.ByteStreams;
@@ -61,10 +62,10 @@ public class CertificateStatusParserTest {
     public void testParseCertificateStatus() {
         Assert.assertEquals("1.3.14.3.2.26", certificateStatusGood.getHashAlgorithmIdentifier());
 
-        byte[] expectedNameHash = { 126, -26, 106, -25, 114, -102, -77, -4, -8, -94, 32, 100, 108, 22, -95, 45, 96,
-                113, 8, 93 };
-        byte[] expectedKeyHash = { -88, 74, 106, 99, 4, 125, -35, -70, -26, -47, 57, -73, -90, 69, 101, -17, -13, -88,
-                -20, -95 };
+        byte[] expectedNameHash =
+            { 126, -26, 106, -25, 114, -102, -77, -4, -8, -94, 32, 100, 108, 22, -95, 45, 96, 113, 8, 93 };
+        byte[] expectedKeyHash =
+            { -88, 74, 106, 99, 4, 125, -35, -70, -26, -47, 57, -73, -90, 69, 101, -17, -13, -88, -20, -95 };
         BigInteger expectedSerialNumber = new BigInteger("403767931667699214058966529413005128395827");
         Assert.assertArrayEquals(expectedNameHash, certificateStatusGood.getIssuerNameHash());
         Assert.assertArrayEquals(expectedKeyHash, certificateStatusGood.getIssuerKeyHash());
