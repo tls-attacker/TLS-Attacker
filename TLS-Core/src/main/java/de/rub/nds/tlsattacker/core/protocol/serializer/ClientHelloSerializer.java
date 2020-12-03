@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,9 +27,9 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      * Constructor for the ClientHelloSerializer
      *
      * @param message
-     *            Message that should be serialized
+     * Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
     public ClientHelloSerializer(ClientHelloMessage message, ProtocolVersion version) {
         super(message, version);
@@ -64,8 +65,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CihperSuiteLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the CipherSuiteLength of the ClientHelloMessage into the final byte[]
      */
     private void writeCipherSuiteLength(ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), HandshakeByteLength.CIPHER_SUITES_LENGTH);
@@ -73,7 +73,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CihperSuites of the ClientHelloMessage into the final byte[]
+     * Writes the CipherSuites of the ClientHelloMessage into the final byte[]
      */
     private void writeCipherSuites(ClientHelloMessage msg) {
         appendBytes(msg.getCipherSuites().getValue());
@@ -81,8 +81,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CompressionLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the CompressionLength of the ClientHelloMessage into the final byte[]
      */
     private void writeCompressionLength(ClientHelloMessage msg) {
         appendInt(msg.getCompressionLength().getValue(), HandshakeByteLength.COMPRESSION_LENGTH);
@@ -98,8 +97,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the ExtensionLength of the ClientHelloMessage into the final
-     * byte[]
+     * Writes the ExtensionLength of the ClientHelloMessage into the final byte[]
      */
     private void writeExtensionLength(ClientHelloMessage msg) {
         appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);

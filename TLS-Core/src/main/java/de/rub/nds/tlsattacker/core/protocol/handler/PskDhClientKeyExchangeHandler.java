@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
@@ -24,7 +25,7 @@ public class PskDhClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskD
     @Override
     public PskDhClientKeyExchangeParser getParser(byte[] message, int pointer) {
         return new PskDhClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

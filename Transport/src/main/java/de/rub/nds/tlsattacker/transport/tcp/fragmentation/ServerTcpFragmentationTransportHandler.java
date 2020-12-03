@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -30,7 +31,7 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
     }
 
     public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
-            throws IOException {
+        throws IOException {
         super(firstTimeout, timeout, serverSocket);
     }
 

@@ -7,14 +7,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
- * @param <AbstractRecord>
- *            The AbstractRecord that should be serialized
+ * @param <AbstractRecordT>
+ * The AbstractRecord that should be serialized
  */
-public abstract class AbstractRecordSerializer<AbstractRecord> extends Serializer<AbstractRecord> {
+public abstract class AbstractRecordSerializer<AbstractRecordT> extends Serializer<AbstractRecordT> {
 
 }

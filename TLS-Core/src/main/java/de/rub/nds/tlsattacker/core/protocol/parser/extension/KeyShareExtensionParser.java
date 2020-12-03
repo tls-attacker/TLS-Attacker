@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -53,7 +54,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
         parseKeyShareListLength(msg);
         if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
-                .getExtensionLength().getValue()) {
+            .getExtensionLength().getValue()) {
             parseKeyShareListBytes(msg);
         } else {
             msg.setKeyShareListLength(msg.getExtensionLength().getValue());
@@ -84,11 +85,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keySahreListLength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the keyShareListLength of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
@@ -96,11 +96,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareListBytes of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the keyShareListBytes of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
@@ -108,11 +107,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     /**
-     * Reads the next bytes as the keyShareList of the Extension and writes them
-     * in the message
+     * Reads the next bytes as the keyShareList of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);

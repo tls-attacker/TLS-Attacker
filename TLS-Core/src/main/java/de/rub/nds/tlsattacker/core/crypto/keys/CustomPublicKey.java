@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -23,5 +24,5 @@ public abstract class CustomPublicKey implements Serializable {
 
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 
-    public abstract int keysize();
+    public abstract int keySize();
 }

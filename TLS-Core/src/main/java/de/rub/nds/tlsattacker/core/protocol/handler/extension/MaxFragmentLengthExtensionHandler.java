@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     public void adjustTLSExtensionContext(MaxFragmentLengthExtensionMessage message) {
         byte[] maxFragmentLengthBytes = message.getMaxFragmentLength().getValue();
         if (maxFragmentLengthBytes.length != 1) {
-            throw new AdjustmentException("Cannot adjust MaxFragmentLength to a resonable value");
+            throw new AdjustmentException("Cannot adjust MaxFragmentLength to a reasonable value");
         }
         MaxFragmentLength length = MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
         if (length == null) {

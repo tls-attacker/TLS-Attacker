@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -106,7 +107,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param selectedIdentity
-     *            the selectedIdentity to set
+     * the selectedIdentity to set
      */
     public void setSelectedIdentity(ModifiableInteger selectedIdentity) {
         this.selectedIdentity = selectedIdentity;
@@ -125,7 +126,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param identityListBytes
-     *            the identityListBytes to set
+     * the identityListBytes to set
      */
     public void setIdentityListBytes(ModifiableByteArray identityListBytes) {
         this.identityListBytes = identityListBytes;
@@ -144,7 +145,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     /**
      * @param binderListBytes
-     *            the binderListBytes to set
+     * the binderListBytes to set
      */
     public void setBinderListBytes(ModifiableByteArray binderListBytes) {
         this.binderListBytes = binderListBytes;

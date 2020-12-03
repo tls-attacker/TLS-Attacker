@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -16,9 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandle
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
@@ -44,7 +44,7 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public EmptyClientComputations getComputations() {
         return computations;
-    };
+    }
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {

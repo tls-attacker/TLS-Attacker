@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -26,7 +27,8 @@ public class WorkflowTraceMutator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList, @Nonnull ProtocolMessageType type, @Nullable ProtocolMessage replaceMessage) {
+    private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList,
+        @Nonnull ProtocolMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
                 if (e.getProtocolMessageType() == type) {
@@ -44,7 +46,8 @@ public class WorkflowTraceMutator {
         }
     }
 
-    private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList, @Nonnull HandshakeMessageType type, @Nullable ProtocolMessage replaceMessage) {
+    private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList,
+        @Nonnull HandshakeMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
                 if (e.isHandshakeMessage() && ((HandshakeMessage) e).getHandshakeMessageType() == type) {
@@ -63,7 +66,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceSendingMessage(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            @Nullable ProtocolMessage replaceMessage) {
+        @Nullable ProtocolMessage replaceMessage) {
         List<SendingAction> sendingActions = WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
         List<SendingAction> deleteActions = new ArrayList<>();
         for (SendingAction i : sendingActions) {
@@ -78,7 +81,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceSendingMessage(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            @Nullable HandshakeMessage replaceMessage) {
+        @Nullable HandshakeMessage replaceMessage) {
         List<SendingAction> sendingActions = WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
         List<SendingAction> deleteActions = new ArrayList<>();
         for (SendingAction i : sendingActions) {
@@ -101,7 +104,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
+        @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
         for (ReceivingAction i : receivingActions) {
@@ -116,7 +119,7 @@ public class WorkflowTraceMutator {
                 if (message.getProtocolMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
-                                "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
+                            "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
                     }
                     ((ReceiveTillAction) i).setWaitTillMessage(replaceMessage);
                 }
@@ -129,7 +132,7 @@ public class WorkflowTraceMutator {
     }
 
     public static void replaceReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
+        @Nullable ProtocolMessage replaceMessage) throws WorkflowTraceMutationException {
         List<ReceivingAction> receivingActions = WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
         List<ReceivingAction> deleteActions = new ArrayList<>();
         for (ReceivingAction i : receivingActions) {
@@ -144,7 +147,7 @@ public class WorkflowTraceMutator {
                 if (message.isHandshakeMessage() && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     if (replaceMessage == null) {
                         throw new WorkflowTraceMutationException(
-                                "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
+                            "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
                     }
                     ((ReceiveTillAction) i).setWaitTillMessage(replaceMessage);
                 }
@@ -157,17 +160,17 @@ public class WorkflowTraceMutator {
     }
 
     public static void deleteReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type)
-            throws WorkflowTraceMutationException {
+        throws WorkflowTraceMutationException {
         replaceReceivingMessage(trace, type, null);
     }
 
     public static void deleteReceivingMessage(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type)
-            throws WorkflowTraceMutationException {
+        throws WorkflowTraceMutationException {
         replaceReceivingMessage(trace, type, null);
     }
 
     private static void truncate(@Nonnull WorkflowTrace trace, @Nonnull Object type, WorkflowTruncationMode mode,
-            Boolean sending, Boolean untilLast) {
+        Boolean sending, Boolean untilLast) {
         TlsAction action = null;
         if (untilLast != null && untilLast == true) {
             if (type instanceof HandshakeMessageType) {
@@ -217,15 +220,17 @@ public class WorkflowTraceMutator {
             if (action instanceof SendAction) {
                 messages = ((SendAction) action).getSendMessages();
             } else if (!(action instanceof SendDynamicServerCertificateAction)
-                    && !(action instanceof SendDynamicClientKeyExchangeAction)
-                    && !(action instanceof SendDynamicServerKeyExchangeAction)) {
-                LOGGER.warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
+                && !(action instanceof SendDynamicClientKeyExchangeAction)
+                && !(action instanceof SendDynamicServerKeyExchangeAction)) {
+                LOGGER
+                    .warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
             }
         } else if (action instanceof ReceivingAction) {
             if (action instanceof ReceiveAction) {
                 messages = ((ReceiveAction) action).getExpectedMessages();
             } else if (!(action instanceof ReceiveTillAction)) {
-                LOGGER.warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
+                LOGGER
+                    .warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
             }
         }
 
@@ -281,60 +286,62 @@ public class WorkflowTraceMutator {
     }
 
     public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean sending,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
     public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean sending,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
     public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
     public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
     public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
     public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
-    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void
+        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
-    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void
+        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
     public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
     public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
     public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 
     public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
-            Boolean untilLast) {
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 

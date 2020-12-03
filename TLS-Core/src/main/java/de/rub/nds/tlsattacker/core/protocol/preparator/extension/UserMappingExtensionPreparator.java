@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
@@ -22,7 +23,7 @@ public class UserMappingExtensionPreparator extends ExtensionPreparator<UserMapp
     private final UserMappingExtensionMessage msg;
 
     public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message,
-            UserMappingExtensionSerializer serializer) {
+        UserMappingExtensionSerializer serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

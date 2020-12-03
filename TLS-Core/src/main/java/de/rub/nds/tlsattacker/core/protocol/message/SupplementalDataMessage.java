@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -67,8 +68,8 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     public void setSupplementalDataLength(int supplementalDataLength) {
-        this.supplementalDataLength = ModifiableVariableFactory.safelySetValue(this.supplementalDataLength,
-                supplementalDataLength);
+        this.supplementalDataLength =
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataLength, supplementalDataLength);
     }
 
     public ModifiableByteArray getSupplementalDataBytes() {
@@ -80,8 +81,8 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     public void setSupplementalDataBytes(byte[] supplementalDataBytes) {
-        this.supplementalDataBytes = ModifiableVariableFactory.safelySetValue(this.supplementalDataBytes,
-                supplementalDataBytes);
+        this.supplementalDataBytes =
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataBytes, supplementalDataBytes);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
                 sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataEntryType().getValue());
                 sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataEntryLength().getValue());
                 sb.append("\n   Supplemental Data : ").append(
-                        ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+                    ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
             }
         } else {
             sb.append("null");

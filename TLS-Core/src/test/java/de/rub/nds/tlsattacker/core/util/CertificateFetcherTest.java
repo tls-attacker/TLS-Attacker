@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -97,8 +98,8 @@ public class CertificateFetcherTest {
     @Category(IntegrationTests.class)
     public void testFetchServerCertificate() throws Exception {
         byte[] actualEncoded = CertificateFetcher.fetchServerCertificate(config).getCertificateList()[0].getEncoded();
-        Certificate actual = CertificateFactory.getInstance("X.509").generateCertificate(
-                new ByteArrayInputStream(actualEncoded));
+        Certificate actual =
+            CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(actualEncoded));
         assertNotNull(actual);
         assertEquals(expectedCertificate, actual);
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -30,8 +31,7 @@ public class UnknownPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * UnknownPreparator.
+     * Test of prepareProtocolMessageContents method, of class UnknownPreparator.
      */
     @Test
     public void testPrepare() {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -58,7 +59,7 @@ public class ChangeServerRandomAction extends ConnectionBoundAction {
         oldValue = tlsContext.getServerRandom();
         tlsContext.setServerRandom(newValue);
         LOGGER.info("Changed ServerRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
-                + ArrayConverter.bytesToHexString(newValue));
+            + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 

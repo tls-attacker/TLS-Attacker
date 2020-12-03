@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -39,8 +40,8 @@ public class ClientCertificateTypeExtensionSerializerTest {
     private ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, Integer certificateTypesLength,
-            List<CertificateType> certificateTypes, boolean isClientState) {
+        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

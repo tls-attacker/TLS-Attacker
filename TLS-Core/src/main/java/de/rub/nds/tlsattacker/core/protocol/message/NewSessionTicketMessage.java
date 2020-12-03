@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -44,7 +45,7 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     public NewSessionTicketMessage(boolean includeInDigest) {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        isIncludeInDigestDefault = includeInDigest;
         ticket = new SessionTicket();
     }
 
@@ -55,7 +56,7 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
         super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        isIncludeInDigestDefault = includeInDigest;
         ticket = new SessionTicket();
         if (tlsConfig.isAddEarlyDataExtension()) {
             addExtension(new EarlyDataExtensionMessage(true));

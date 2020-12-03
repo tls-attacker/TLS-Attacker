@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.exceptions;
 
 public class InvalidChooserTypeException extends RuntimeException {
@@ -27,7 +28,7 @@ public class InvalidChooserTypeException extends RuntimeException {
     }
 
     public InvalidChooserTypeException(String message, Throwable cause, boolean enableSuppression,
-            boolean writableStackTrace) {
+        boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

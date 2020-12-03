@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,7 +48,7 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
     private void parseObfuscatedTicketAge(PSKIdentity pskIdentity) {
         pskIdentity.setObfuscatedTicketAge(parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH));
         LOGGER.debug("Obfuscated ticket age:"
-                + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
+            + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -89,7 +90,7 @@ public abstract class Chooser {
 
     public abstract List<CompressionMethod> getClientSupportedCompressions();
 
-    public abstract List<CipherSuite> getClientSupportedCiphersuites();
+    public abstract List<CipherSuite> getClientSupportedCipherSuites();
 
     public abstract List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms();
 
@@ -297,7 +298,7 @@ public abstract class Chooser {
 
     public abstract List<KeyShareStoreEntry> getEsniServerKeyShareEntries();
 
-    public abstract List<CipherSuite> getEsniServerCiphersuites();
+    public abstract List<CipherSuite> getEsniServerCipherSuites();
 
     public abstract Integer getEsniPaddedLength();
 

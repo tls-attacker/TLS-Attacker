@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
@@ -19,7 +20,7 @@ public class ClientAuthzExtensionPreparator extends ExtensionPreparator<ClientAu
     private final ClientAuthzExtensionMessage msg;
 
     public ClientAuthzExtensionPreparator(Chooser chooser, ClientAuthzExtensionMessage message,
-            ExtensionSerializer<ClientAuthzExtensionMessage> serializer) {
+        ExtensionSerializer<ClientAuthzExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

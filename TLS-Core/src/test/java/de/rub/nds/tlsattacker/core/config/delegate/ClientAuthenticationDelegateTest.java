@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -29,8 +30,7 @@ public class ClientAuthenticationDelegateTest {
     }
 
     /**
-     * Test of isClientAuthentication method, of class
-     * ClientAuthenticationDelegate.
+     * Test of isClientAuthentication method, of class ClientAuthenticationDelegate.
      */
     @Test
     public void testIsClientAuthentication() {
@@ -42,8 +42,7 @@ public class ClientAuthenticationDelegateTest {
     }
 
     /**
-     * Test of setClientAuthentication method, of class
-     * ClientAuthenticationDelegate.
+     * Test of setClientAuthentication method, of class ClientAuthenticationDelegate.
      */
     @Test
     public void testSetClientAuthentication() {

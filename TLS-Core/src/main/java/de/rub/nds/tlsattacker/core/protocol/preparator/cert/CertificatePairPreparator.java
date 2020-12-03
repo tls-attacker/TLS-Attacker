@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -61,7 +62,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant());
                 handler.getPreparator(extensionMessage).prepare();
                 try {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -39,7 +40,7 @@ public class CertificateStatusSerializerTest {
     private byte[] expectedPart;
 
     public CertificateStatusSerializerTest(byte[] message, HandshakeMessageType type, int length,
-            int certificateStatusType, int ocspResponseLength, byte[] ocspResponseBytes, ProtocolVersion version) {
+        int certificateStatusType, int ocspResponseLength, byte[] ocspResponseBytes, ProtocolVersion version) {
         this.message = message;
         this.expectedPart = message;
         this.type = type;

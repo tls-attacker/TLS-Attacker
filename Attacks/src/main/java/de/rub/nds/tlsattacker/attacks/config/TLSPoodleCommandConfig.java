@@ -7,11 +7,12 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
@@ -35,7 +36,7 @@ public class TLSPoodleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
@@ -48,7 +49,7 @@ public class TLSPoodleCommandConfig extends AttackConfig {
     public TLSPoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
+        ciphersuiteDelegate = new CipherSuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
@@ -79,11 +80,11 @@ public class TLSPoodleCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCipherSuites(cipherSuites);
         }
-        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             if (!suite.isCBC()) {
-                throw new ConfigurationException("This attack only works with CBC Ciphersuites");
+                throw new ConfigurationException("This attack only works with CBC Cipher suites");
             }
         }
         config.setStopActionsAfterFatal(true);
@@ -97,7 +98,7 @@ public class TLSPoodleCommandConfig extends AttackConfig {
         config.setStopReceivingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
-        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCipherSuites()) {
             KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
             if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
                 containsEc = true;

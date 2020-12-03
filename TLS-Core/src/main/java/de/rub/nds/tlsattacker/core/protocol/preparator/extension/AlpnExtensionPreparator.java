@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -28,7 +29,7 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
     private final AlpnExtensionMessage msg;
 
     public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message,
-            ExtensionSerializer<AlpnExtensionMessage> serializer) {
+        ExtensionSerializer<AlpnExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
@@ -48,9 +49,9 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
         }
         msg.setAlpnAnnouncedProtocols(stream.toByteArray());
         LOGGER.debug("Prepared the ALPN Extension with announced protocols "
-                + ArrayConverter.bytesToHexString(msg.getAlpnAnnouncedProtocols()));
+            + ArrayConverter.bytesToHexString(msg.getAlpnAnnouncedProtocols()));
         msg.setAlpnExtensionLength(msg.getAlpnAnnouncedProtocols().getValue().length);
         LOGGER.debug("Prepared the ALPN Extension with announced protocols length "
-                + msg.getAlpnExtensionLength().getValue());
+            + msg.getAlpnExtensionLength().getValue());
     }
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -164,7 +165,7 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
         } else {
             sb.append("null");
         }
-        sb.append("\n  Challange: ");
+        sb.append("\n  Challenge: ");
         if (getChallenge() != null && getChallenge().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
         } else {

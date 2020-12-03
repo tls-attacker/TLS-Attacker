@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +24,7 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
     private final SRPExtensionMessage message;
 
     public SRPExtensionPreparator(Chooser chooser, SRPExtensionMessage message,
-            ExtensionSerializer<SRPExtensionMessage> serializer) {
+        ExtensionSerializer<SRPExtensionMessage> serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -32,10 +33,10 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
     public void prepareExtensionContent() {
         message.setSrpIdentifier(chooser.getConfig().getSecureRemotePasswordExtensionIdentifier());
         LOGGER.debug("Prepared the SRP Extension with user identifier "
-                + ArrayConverter.bytesToHexString(message.getSrpIdentifier().getValue()));
+            + ArrayConverter.bytesToHexString(message.getSrpIdentifier().getValue()));
         message.setSrpIdentifierLength(message.getSrpIdentifier().getValue().length);
         LOGGER.debug("Prepared the SRP Extension with user identifier length "
-                + message.getSrpIdentifierLength().getValue());
+            + message.getSrpIdentifierLength().getValue());
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.tracetool.main;
 
 import com.beust.jcommander.JCommander;
@@ -33,8 +34,8 @@ import org.apache.logging.log4j.Logger;
  * <ul>
  * <li>Generate trace templates for common workflows (in XML)</li>
  * <li>Apply filters to workflow trace inputs</li>
- * <li>Verify if a workflow trace is normalized, i.e. well defined for
- * standalone execution without the need of an additional Configuration</li>
+ * <li>Verify if a workflow trace is normalized, i.e. well defined for standalone execution without the need of an
+ * additional Configuration</li>
  * </ul>
  */
 public class TraceTool {
@@ -85,7 +86,7 @@ public class TraceTool {
             }
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                    + " - See debug messages for more details.");
+                + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {

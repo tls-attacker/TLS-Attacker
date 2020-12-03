@@ -7,14 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EllipticCurveType defined in rfc4492:
- * https://tools.ietf.org/html/rfc4492#section-5.4
+ * EllipticCurveType defined in rfc4492: https://tools.ietf.org/html/rfc4492#section-5.4
  */
 public enum EllipticCurveType {
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -37,11 +38,10 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
     }
 
     /**
-     * Reads the next bytes as the username length of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the username length of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseUsernameLength(PWDProtectExtensionMessage msg) {
         msg.setUsernameLength(parseIntField(ExtensionByteLength.PWD_NAME));
@@ -49,11 +49,10 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
     }
 
     /**
-     * Reads the next bytes as the username of the Extension and writes them in
-     * the message
+     * Reads the next bytes as the username of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseUsername(PWDProtectExtensionMessage msg) {
         msg.setUsername(parseByteArrayField(msg.getUsernameLength().getValue()));

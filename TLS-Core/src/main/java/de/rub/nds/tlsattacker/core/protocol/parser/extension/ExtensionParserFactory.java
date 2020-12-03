@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -24,7 +25,7 @@ public class ExtensionParserFactory {
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer, Config config) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new ParserException(
-                    "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
+                "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
@@ -164,10 +165,13 @@ public class ExtensionParserFactory {
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes, config);
                 break;
+            default:
+                parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+                break;
         }
         if (parser == null) {
             LOGGER.debug("The ExtensionParser for the " + type.name()
-                    + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
+                + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
             parser = new UnknownExtensionParser(pointer, extensionBytes, config);
         }
         return parser;

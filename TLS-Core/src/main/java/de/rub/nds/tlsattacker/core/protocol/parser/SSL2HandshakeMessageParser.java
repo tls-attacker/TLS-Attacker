@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -29,7 +30,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
      * Reads the next bytes as the MessageLength and writes them in the message
      *
      * @param message
-     *            Message to write in
+     * Message to write in
      */
     protected void parseMessageLength(T message) {
         // The "wonderful" SSL2 message length field:
@@ -57,7 +58,7 @@ public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage>
      * Reads the next bytes as the Type and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));

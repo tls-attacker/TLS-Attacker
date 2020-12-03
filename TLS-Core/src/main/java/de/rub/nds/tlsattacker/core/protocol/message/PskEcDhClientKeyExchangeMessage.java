@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -23,7 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
+        type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

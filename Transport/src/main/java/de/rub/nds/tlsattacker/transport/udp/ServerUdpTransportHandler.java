@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -43,14 +44,15 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     }
 
     /*
-     * Provides a routine equivalent to TCP's accept method. Blocks until a
-     * client "connects", meaning that data is available to be read.
+     * Provides a routine equivalent to TCP's accept method. Blocks until a client "connects", meaning that data is
+     * available to be read.
      */
     private void waitOnReceive() throws IOException {
         while (inStream.available() == 0) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException e) {
+                ;
             }
         }
     }

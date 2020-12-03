@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import java.io.IOException;
@@ -42,8 +43,7 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     }
 
     /**
-     * Test of closeConnection method, of class
-     * ServerTCPNonBlockingTransportHandler.
+     * Test of closeConnection method, of class ServerTCPNonBlockingTransportHandler.
      *
      * @throws java.io.IOException
      */

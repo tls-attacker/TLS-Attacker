@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -64,8 +65,8 @@ public class MangerAttackPlaintextTest {
         cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
         byte[] message = cipher.doFinal(cipherBytes);
 
-        Pkcs1Oracle oracle = new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00,
-                cipher.getBlockSize());
+        Pkcs1Oracle oracle =
+            new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00, cipher.getBlockSize());
 
         // we are handling plaintexts, so we insert raw message there
         Manger attacker = new Manger(message, oracle);
@@ -73,7 +74,7 @@ public class MangerAttackPlaintextTest {
         BigInteger solution = attacker.getSolution();
 
         Assert.assertArrayEquals("The computed solution for Manger attack must be equal to the original message",
-                message, solution.toByteArray());
+            message, solution.toByteArray());
 
         // test with a message not starting with 0x00
         message = ArrayConverter.concatenate(new byte[] { 1 }, message);
@@ -83,7 +84,7 @@ public class MangerAttackPlaintextTest {
         solution = attacker.getSolution();
 
         Assert.assertArrayEquals("The computed solution for Manger attack must be equal to the original message",
-                message, solution.toByteArray());
+            message, solution.toByteArray());
     }
 
     /**
@@ -115,7 +116,8 @@ public class MangerAttackPlaintextTest {
             cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
             byte[] message = cipher.doFinal(cipherBytes);
 
-            Pkcs1Oracle oracle = new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00,
+            Pkcs1Oracle oracle =
+                new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00,
                     cipher.getBlockSize());
 
             // we are handling plaintexts, so we insert raw message there
@@ -124,7 +126,7 @@ public class MangerAttackPlaintextTest {
             BigInteger solution = attacker.getSolution();
 
             Assert.assertArrayEquals("The computed solution for Manger attack must be equal to the original message",
-                    message, solution.toByteArray());
+                message, solution.toByteArray());
 
             queries.add(oracle.getNumberOfQueries());
         }

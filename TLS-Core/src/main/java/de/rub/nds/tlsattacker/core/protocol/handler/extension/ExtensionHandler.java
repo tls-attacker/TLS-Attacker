@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -21,10 +22,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <Message>
- *            The ExtensionMessage that should be handled
+ * @param <MessageT>
+ * The ExtensionMessage that should be handled
  */
-public abstract class ExtensionHandler<Message extends ExtensionMessage> {
+public abstract class ExtensionHandler<MessageT extends ExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -36,32 +37,30 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
     public abstract ExtensionParser getParser(byte[] message, int pointer, Config config);
 
-    public abstract ExtensionPreparator getPreparator(Message message);
+    public abstract ExtensionPreparator getPreparator(MessageT message);
 
-    public abstract ExtensionSerializer getSerializer(Message message);
+    public abstract ExtensionSerializer getSerializer(MessageT message);
 
     /**
-     * Adjusts the TLS Context according to the received or sending
-     * ProtocolMessage
+     * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
-     *            The message for which the Context should be adjusted
+     * The message for which the Context should be adjusted
      */
-    public final void adjustTLSContext(Message message) {
+    public final void adjustTLSContext(MessageT message) {
         markExtensionInContext(message);
         adjustTLSExtensionContext(message);
     }
 
-    public abstract void adjustTLSExtensionContext(Message message);
+    public abstract void adjustTLSExtensionContext(MessageT message);
 
     /**
-     * Tell the context that the extension was proposed/negotiated. Makes the
-     * extension type available in
+     * Tell the context that the extension was proposed/negotiated. Makes the extension type available in
      * TlsContext.isExtension{Proposed,Negotiated}(extType).
      *
      * @param message
      */
-    private void markExtensionInContext(Message message) {
+    private void markExtensionInContext(MessageT message) {
         ExtensionType extType = message.getExtensionTypeConstant();
         ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {

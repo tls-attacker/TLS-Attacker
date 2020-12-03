@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.cca.vector;
 
 import de.rub.nds.tlsattacker.attacks.cca.CcaCertificateType;
@@ -25,7 +26,7 @@ public class CcaVector {
     private final CcaCertificateType ccaCertificateType;
 
     public CcaVector(ProtocolVersion protocolVersion, CipherSuite cipherSuite, CcaWorkflowType ccaWorkflowType,
-            CcaCertificateType ccaCertificateType) {
+        CcaCertificateType ccaCertificateType) {
         this.protocolVersion = protocolVersion;
         this.cipherSuite = cipherSuite;
         this.ccaWorkflowType = ccaWorkflowType;
@@ -51,7 +52,7 @@ public class CcaVector {
     @Override
     public String toString() {
         return "CcaTask{protocolVersion=" + protocolVersion + ", cipherSuite=" + cipherSuite + ", workflowType="
-                + ccaWorkflowType + ", certificateType=" + ccaCertificateType + "}";
+            + ccaWorkflowType + ", certificateType=" + ccaCertificateType + "}";
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -50,7 +51,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     @Override
     public ClientHelloParser getParser(byte[] message, int pointer) {
         return new ClientHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         adjustExtensions(message);
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+            && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
                 setClientRecordCipherEarly();
@@ -92,11 +93,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
-        tlsContext.setClientSupportedCiphersuites(suiteList);
+        tlsContext.setClientSupportedCipherSuites(suiteList);
         if (suiteList != null) {
-            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + suiteList.toString());
         } else {
-            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + null);
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + null);
         }
     }
 
@@ -125,7 +126,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
-                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+                + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
         }
     }
 
@@ -150,7 +151,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private List<CipherSuite> convertCipherSuites(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
             LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                    + " to a List<CipherSuite>");
+                + " to a List<CipherSuite>");
             return null;
         }
         List<CipherSuite> list = new LinkedList<>();
@@ -172,7 +173,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     @Override
     public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+            && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
                 setClientRecordCipherEarly();
@@ -183,16 +184,17 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustEarlyTrafficSecret() throws CryptoException {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser()
+        HKDFAlgorithm hkdfAlgorithm =
+            AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo =
+            AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getChooser()
                 .getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext
-                .getChooser().getEarlyDataCipherSuite());
 
-        byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
+        byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
         tlsContext.setEarlySecret(earlySecret);
-        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
-                .getChooser().getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest()
-                .getRawBytes());
+        byte[] earlyTrafficSecret =
+            HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getChooser().getEarlySecret(),
+                HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
         tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
@@ -202,10 +204,12 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
 
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+            KeySet clientKeySet =
+                KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
                     tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
-                    .getChooser().getEarlyDataCipherSuite());
+            RecordCipher recordCipherClient =
+                RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext.getChooser()
+                    .getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {

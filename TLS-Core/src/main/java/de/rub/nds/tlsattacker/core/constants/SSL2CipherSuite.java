@@ -7,10 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ public enum SSL2CipherSuite implements Serializable {
         }
     }
 
-    public static List<SSL2CipherSuite> getCiphersuites(byte[] values) {
+    public static List<SSL2CipherSuite> getCipherSuites(byte[] values) {
         List<SSL2CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         while (pointer < values.length) {
@@ -95,7 +95,7 @@ public enum SSL2CipherSuite implements Serializable {
 
     public boolean isWeak() {
         return this == SSL_CK_DES_64_CBC_WITH_MD5 || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
-                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
+            || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
     }
 
     public boolean isExport() {

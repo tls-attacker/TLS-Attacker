@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -52,8 +53,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
             msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
-            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCiphersuites()) {
-                if (chooser.getClientSupportedCiphersuites().contains(suite)) {
+            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCipherSuites()) {
+                if (chooser.getClientSupportedCipherSuites().contains(suite)) {
                     selectedSuite = suite;
                     break;
                 }
@@ -64,7 +65,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
-        LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER
+            .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -29,7 +30,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public ChangeCipherSpecParser getParser(byte[] message, int pointer) {
         return new ChangeCipherSpecParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override
@@ -45,7 +46,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()
-                && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecompressor();

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -61,7 +62,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                     }
                     hasError = true;
                 }
-            } catch (TransportHandlerConnectException E) {
+            } catch (TransportHandlerConnectException e) {
                 LOGGER.warn("Could not connect to target. Sleep and Retry");
                 try {
                     Thread.sleep(additionalTcpTimeout);
@@ -69,13 +70,13 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                     LOGGER.error("Interrupted during sleep", ex);
                 }
                 hasError = true;
-                exception = E;
-            } catch (Exception E) {
+                exception = e;
+            } catch (Exception e) {
                 hasError = true;
                 if (increasingSleepTimes) {
                     sleepTime += additionalSleepTime;
                 }
-                exception = E;
+                exception = e;
             }
             if (i < reexecutions) {
                 try {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -40,6 +41,10 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
         this.pointFormats = ModifiableVariableFactory.safelySetValue(pointFormats, array);
     }
 
+    public void setPointFormats(ModifiableByteArray pointFormats) {
+        this.pointFormats = pointFormats;
+    }
+
     public ModifiableInteger getPointFormatsLength() {
         return pointFormatsLength;
     }
@@ -50,9 +55,5 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
     public void setPointFormatsLength(ModifiableInteger pointFormatsLength) {
         this.pointFormatsLength = pointFormatsLength;
-    }
-
-    public void setPointFormats(ModifiableByteArray pointFormats) {
-        this.pointFormats = pointFormats;
     }
 }

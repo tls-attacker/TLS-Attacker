@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -40,7 +41,7 @@ public class ResponseFingerprint {
      * @param socketState
      */
     public ResponseFingerprint(List<ProtocolMessage> messageList, List<AbstractRecord> recordList,
-            SocketState socketState) {
+        SocketState socketState) {
         this.messageList = messageList;
         this.recordList = recordList;
         this.socketState = socketState;
@@ -86,8 +87,8 @@ public class ResponseFingerprint {
             records.append(someRecord.getClass().getSimpleName()).append(",");
         }
 
-        return "ResponseFingerprint[ Messages=[" + messages.toString() + "], Reccords=[" + records.toString()
-                + "], SocketState=" + socketState + ']';
+        return "ResponseFingerprint[ Messages=[" + messages.toString() + "], Records=[" + records.toString()
+            + "], SocketState=" + socketState + ']';
     }
 
     public String toHumanReadable() {
@@ -96,8 +97,8 @@ public class ResponseFingerprint {
             switch (message.getProtocolMessageType()) {
                 case ALERT:
                     AlertMessage alert = (AlertMessage) message;
-                    AlertDescription alertDescription = AlertDescription.getAlertDescription(alert.getDescription()
-                            .getValue());
+                    AlertDescription alertDescription =
+                        AlertDescription.getAlertDescription(alert.getDescription().getValue());
                     AlertLevel alertLevel = AlertLevel.getAlertLevel(alert.getLevel().getValue());
                     if (alertDescription != null && alertLevel != null && alertLevel != AlertLevel.UNDEFINED) {
                         if (alertLevel == AlertLevel.FATAL) {
@@ -107,7 +108,7 @@ public class ResponseFingerprint {
                         }
                     } else {
                         resultString.append("{ALERT-").append(alert.getDescription().getValue()).append("-")
-                                .append(alert.getLevel()).append("}");
+                            .append(alert.getLevel()).append("}");
                     }
                     break;
                 case APPLICATION_DATA:
@@ -143,8 +144,8 @@ public class ResponseFingerprint {
                     resultString.append("B(" + ((Record) record).getLength().getValue() + "),");
                 }
             }
-            resultString.deleteCharAt(resultString.length() - 1); // remove last
-                                                                  // commatar
+            // remove last commas
+            resultString.deleteCharAt(resultString.length() - 1);
             resultString.append("]");
         }
         resultString.append(" ");
@@ -168,6 +169,8 @@ public class ResponseFingerprint {
                 case UP:
                     resultString.append("U");
                     break;
+                default: // should never occur as all ENUM types are handled
+                    throw new UnsupportedOperationException("Unknown Socket State");
             }
         }
         return resultString.toString();
@@ -214,9 +217,9 @@ public class ResponseFingerprint {
                     if (!this.recordList.get(i).getClass().equals(other.recordList.get(i).getClass())) {
                         return false;
                     }
-                    // This also finds fragmentations issues
+                    // This also finds fragmentation issues
                     if (this.recordList.get(i).getCompleteRecordBytes().getValue().length != other.recordList.get(i)
-                            .getCompleteRecordBytes().getValue().length) {
+                        .getCompleteRecordBytes().getValue().length) {
                         return false;
                     }
                     if (this.recordList.get(i) instanceof Record && other.recordList.get(i) instanceof Record) {
@@ -224,19 +227,19 @@ public class ResponseFingerprint {
                         Record thisRecord = (Record) this.getRecordList().get(i);
                         Record otherRecord = (Record) other.getRecordList().get(i);
                         if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType()
-                                .getValue()) {
+                            .getValue()) {
                             return false;
                         }
 
                         if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord.getProtocolVersion()
-                                .getValue())) {
+                            .getValue())) {
                             return false;
                         }
 
                     } else {
                         // Comparing BlobRecords
                         if (!Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
-                                .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                            .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
                             return false;
                         }
                     }
@@ -284,7 +287,7 @@ public class ResponseFingerprint {
             AlertMessage alertOne = (AlertMessage) messageOne;
             AlertMessage alertTwo = (AlertMessage) messageTwo;
             if (alertOne.getDescription().getValue() != alertTwo.getDescription().getValue()
-                    || alertOne.getLevel().getValue() != alertTwo.getLevel().getValue()) {
+                || alertOne.getLevel().getValue() != alertTwo.getLevel().getValue()) {
                 return false;
             }
         }

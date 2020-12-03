@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -113,9 +114,9 @@ public class WorkflowTraceUtilTest {
         rcvServerHello.setMessages(new ServerHelloMessage());
         rcvFinishedMessage.setMessages(new FinishedMessage());
         rcvMultipleProtocolMessages.setMessages(new HeartbeatMessage(), new HeartbeatMessage(),
-                msgHeartbeatMessageWithLength);
+            msgHeartbeatMessageWithLength);
         rcvMultipleHandshakeMessages.setMessages(new ServerHelloMessage(), new HeartbeatMessage(),
-                msgServerHelloMessageWithCipherSuite);
+            msgServerHelloMessageWithCipherSuite);
         rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
 
         sHeartbeat = new SendAction();
@@ -144,22 +145,22 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(rcvMultipleProtocolMessages);
 
         assertNotSame(rcvMultipleProtocolMessages.getMessages().get(0),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertNotSame(rcvMultipleProtocolMessages.getMessages().get(1),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertSame(rcvMultipleProtocolMessages.getMessages().get(2),
-                WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
 
         assertNull(WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
 
         trace.addTlsAction(rcvMultipleHandshakeMessages);
 
         assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(0),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertNotSame(rcvMultipleHandshakeMessages.getMessages().get(1),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertSame(rcvMultipleHandshakeMessages.getMessages().get(2),
-                WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
+            WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
     }
 
     @Test
@@ -253,15 +254,15 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(sHeartbeatExtension);
 
         assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
         assertNull(WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
 
         trace.addTlsAction(sEncryptThenMacExtension);
 
         assertSame(msgServerHelloWithHeartbeatExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.HEARTBEAT, trace));
         assertSame(msgServerHelloWithEncryptThenMacExtension.getExtensions().get(0),
-                WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
+            WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
     }
 
     private void pwf(String pre, WorkflowTrace trace) {
@@ -283,9 +284,9 @@ public class WorkflowTraceUtilTest {
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
         assertEquals(sClientHello,
-                WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
+            WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
         assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace)
-                .get(0));
+            .get(0));
 
         trace.addTlsAction(sHeartbeat);
 
@@ -293,35 +294,35 @@ public class WorkflowTraceUtilTest {
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).size());
         assertEquals(sHeartbeat, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace)
-                .get(0));
+            .get(0));
     }
 
     @Test
     public void testGetReceivingActionsForMessage() {
         assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace)
-                .size());
+            .size());
 
         ReceiveAction serverHelloRAction = new ReceiveAction(new ServerHelloMessage());
         trace.addTlsAction(serverHelloRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
-                .size());
+            .size());
         assertEquals(serverHelloRAction,
-                WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
+            WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
         assertEquals(serverHelloRAction,
-                WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
+            WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
 
         ReceiveAction alertRAction = new ReceiveAction(new AlertMessage());
         trace.addTlsAction(alertRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
-                .size());
+            .size());
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).size());
         assertEquals(alertRAction, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace)
-                .get(0));
+            .get(0));
     }
 
     @Test
@@ -339,22 +340,22 @@ public class WorkflowTraceUtilTest {
     @Test
     public void testGetFirstReceivingActionForMessage() {
         trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
+            new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
         assertEquals(trace.getTlsActions().get(0),
-                WorkflowTraceUtil.getFirstReceivingActionForMessage(HandshakeMessageType.FINISHED, trace));
+            WorkflowTraceUtil.getFirstReceivingActionForMessage(HandshakeMessageType.FINISHED, trace));
     }
 
     @Test
     public void testGetFirstSendingActionForMessage() {
         trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
+            new SendAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
         assertEquals(trace.getTlsActions().get(2),
-                WorkflowTraceUtil.getFirstSendingActionForMessage(HandshakeMessageType.FINISHED, trace));
+            WorkflowTraceUtil.getFirstSendingActionForMessage(HandshakeMessageType.FINISHED, trace));
     }
 
     @Test
     public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds() throws JAXBException, IOException {
-        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_defaullt_alias.xml");
+        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_default_alias.xml");
 
         try {
             trace = WorkflowTraceSerializer.read(stream);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Point point;
 
@@ -108,7 +109,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public ECPoint getW() {
-        return new ECPoint(point.getX().getData(), point.getY().getData());
+        return new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());
     }
 
     @Override
@@ -211,7 +212,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     }
 
     @Override
-    public int keysize() {
+    public int keySize() {
         if (group == null || group.getCoordinateSizeInBit() == null) {
             return 0;
         }

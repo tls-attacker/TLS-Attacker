@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,8 +38,7 @@ public abstract class TransportHandler {
     private final ConnectionEndType type;
 
     /**
-     * True {@link inStream} is expected to reach the End of Stream, meaning
-     * read will return -1.
+     * True {@link inStream} is expected to reach the End of Stream, meaning read will return -1.
      */
     private boolean isInStreamTerminating = true;
 
@@ -81,6 +81,7 @@ public abstract class TransportHandler {
         return stream.toByteArray();
     }
 
+    @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis();
@@ -97,7 +98,7 @@ public abstract class TransportHandler {
             } else {
                 if (isInStreamTerminating) {
                     try {
-                        // dont ask - the java api does not allow this
+                        // don't ask - the java api does not allow this
                         // otherwise...
                         Thread.sleep(1);
                         int read = inStream.read();
@@ -108,11 +109,11 @@ public abstract class TransportHandler {
                         }
                         inStream.unread(read);
 
-                    } catch (SocketException E) {
+                    } catch (SocketException e) {
                         // TCP RST received
                         firstReceived = true;
                         return stream.toByteArray();
-                    } catch (Exception E) {
+                    } catch (Exception _) {
                     }
                 }
             }
@@ -123,7 +124,7 @@ public abstract class TransportHandler {
 
     public void sendData(byte[] data) throws IOException {
         if (!initialized) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("Transport handler is not initialized!");
         }
         outStream.write(data);
         outStream.flush();
