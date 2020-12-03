@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -131,19 +132,13 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         int pointer = 0;
-        HandshakeMessageType type;
-        // This is not so nice but the KeyShareExtension message has to be
-        // parsed with a different
-        //
-        if (message instanceof ServerHelloMessage && ((ServerHelloMessage) message).isTls13HelloRetryRequest()) {
-            type = HandshakeMessageType.HELLO_RETRY_REQUEST;
-        } else {
-            type = message.getHandshakeMessageType();
-        }
         while (pointer < extensionBytes.length) {
-
             ExtensionParser parser =
-                ExtensionParserFactory.getExtensionParser(extensionBytes, pointer, type, this.getConfig());
+                ExtensionParserFactory.getExtensionParser(extensionBytes, pointer, this.getConfig());
+            if (message instanceof ServerHelloMessage && ((ServerHelloMessage) message).isTls13HelloRetryRequest()
+                && parser instanceof KeyShareExtensionParser) {
+                ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(true);
+            }
             extensionMessages.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing Extensions");

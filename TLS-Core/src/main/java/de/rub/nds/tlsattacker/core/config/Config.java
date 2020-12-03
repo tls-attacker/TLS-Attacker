@@ -493,6 +493,11 @@ public class Config implements Serializable {
     private Boolean addEarlyDataExtension = false;
 
     /**
+     * The maximum amount of early data included in the EarlyDataExtension
+     */
+    private Integer defaultMaxEarlyDataSize = 16384;
+
+    /**
      * If we generate ClientHello with the EncryptedServerNameIndication extension
      */
     private Boolean addEncryptedServerNameIndicationExtension = false;
@@ -689,6 +694,17 @@ public class Config implements Serializable {
      * Contains all values related to TLS 1.3 PSKs.
      */
     private List<PskSet> defaultPskSets = new LinkedList<>();
+
+    /**
+     * Always includes at most 1 PSK in the PreShareKey Extension.
+     */
+    private Boolean limitPsksToOne = false;
+
+    /**
+     * If records are predefined for a SendAction, assign each message a predefined record and place automatically
+     * generated ones in between.
+     */
+    private Boolean preserveMessageRecordRelation = false;
 
     /**
      * Do we use a psk for our secrets?
@@ -933,10 +949,6 @@ public class Config implements Serializable {
     private byte[] defaultServerRandom = ArrayConverter
         .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
-    // Parse Extensions of Type 40 as key share extension instead of
-    // Extended Random like in TLS13-Drafts 14 - 22.
-    private Boolean parseKeyShareOld = true;
-
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
 
@@ -1111,6 +1123,9 @@ public class Config implements Serializable {
     private byte[] defaultSessionTicketIdentity =
         ArrayConverter
             .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultLastClientHello = new byte[32];
 
     /**
      * ClientAuthentication Type, not fully implemented yet
@@ -1485,14 +1500,6 @@ public class Config implements Serializable {
 
     public void setUseFreshRandom(Boolean useFreshRandom) {
         this.useFreshRandom = useFreshRandom;
-    }
-
-    public Boolean isParseKeyShareOld() {
-        return parseKeyShareOld;
-    }
-
-    public void setParseKeyShareOld(boolean parseKeyShareOld) {
-        this.parseKeyShareOld = parseKeyShareOld;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -3732,6 +3739,14 @@ public class Config implements Serializable {
         this.defaultClientKeyStoreEntries = defaultClientKeyStoreEntries;
     }
 
+    public List<ActionOption> getMessageFactoryActionOptions() {
+        return messageFactoryActionOptions;
+    }
+
+    public void setMessageFactoryActionOptions(List<ActionOption> messageFactoryActionOptions) {
+        this.messageFactoryActionOptions = messageFactoryActionOptions;
+    }
+
     public Boolean isRetryFailedClientTcpSocketInitialization() {
         return retryFailedClientTcpSocketInitialization;
     }
@@ -3740,12 +3755,36 @@ public class Config implements Serializable {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
 
-    public List<ActionOption> getMessageFactoryActionOptions() {
-        return messageFactoryActionOptions;
+    public Boolean isLimitPsksToOne() {
+        return limitPsksToOne;
     }
 
-    public void setMessageFactoryActionOptions(List<ActionOption> messageFactoryActionOptions) {
-        this.messageFactoryActionOptions = messageFactoryActionOptions;
+    public void setLimitPsksToOne(Boolean limitPsksToOne) {
+        this.limitPsksToOne = limitPsksToOne;
+    }
+
+    public Boolean isPreserveMessageRecordRelation() {
+        return preserveMessageRecordRelation;
+    }
+
+    public void setPreserveMessageRecordRelation(Boolean preserveMessageRecordRelation) {
+        this.preserveMessageRecordRelation = preserveMessageRecordRelation;
+    }
+
+    public Integer getDefaultMaxEarlyDataSize() {
+        return defaultMaxEarlyDataSize;
+    }
+
+    public void setDefaultMaxEarlyDataSize(Integer defaultMaxEarlyDataSize) {
+        this.defaultMaxEarlyDataSize = defaultMaxEarlyDataSize;
+    }
+
+    public byte[] getDefaultLastClientHello() {
+        return defaultLastClientHello;
+    }
+
+    public void setDefaultLastClientHello(byte[] defaultLastClientHello) {
+        this.defaultLastClientHello = defaultLastClientHello;
     }
 
 }

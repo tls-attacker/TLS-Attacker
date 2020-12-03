@@ -907,6 +907,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
+    <defaultMaxEarlyDataSize>16384</defaultMaxEarlyDataSize>
     <addEncryptedServerNameIndicationExtension>false</addEncryptedServerNameIndicationExtension>
     <addPWDClearExtension>false</addPWDClearExtension>
     <addPWDProtectExtension>false</addPWDProtectExtension>
@@ -946,6 +947,8 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <earlySecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</earlySecret>
     <earlyDataCipherSuite>TLS_AES_128_GCM_SHA256</earlyDataCipherSuite>
     <earlyDataPsk>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</earlyDataPsk>
+    <limitPsksToOne>false</limitPsksToOne>
+    <preserveMessageRecordRelation>false</preserveMessageRecordRelation>
     <usePsk>false</usePsk>
     <earlyData>54 4C 53 2D 41 74 74 61 63 6B 65 72 0A</earlyData>
     <distinguishedNames/>
@@ -1036,7 +1039,6 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultServerExtendedRandom>AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB CC DD EE FF AA BB</defaultServerExtendedRandom>
     <defaultClientRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultClientRandom>
     <defaultServerRandom>00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF FF EE DD CC BB AA 99 88 77 66 55 44 33 22 11 00</defaultServerRandom>
-    <parseKeyShareOld>true</parseKeyShareOld>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
@@ -1124,6 +1126,7 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <defaultSessionTicketAgeAdd>CB 8D BE 8E</defaultSessionTicketAgeAdd>
     <defaultSessionTicketNonce>00</defaultSessionTicketNonce>
     <defaultSessionTicketIdentity>52 66 D2 1A BE 0F 51 56 10 6E B1 F0 EC 54 A4 8A 90 FB C1 36 DE 99 0A 88 81 19 22 11 CC 83 AA 79 92 CE B6 7D 7A 40 B3 F3 04 FD EA 87 E4 CA 61 04 2C 19 64 1F D7 49 39 75 EC 69 A3 EC 3F 5F B6 40 4A A4 AC 5A CD 5E FB EA 15 D4 54 D8 98 88 A4 6F C4 E6 C6 B9 A3 E0 EE 08 EA 21 53 83 72 CE D8 D0 AC A4 53 CE AE 44 CE 37 2A 53 88 AB 4C EF 67 C5 EA E8 CC 1C 72 73 5D 26 46 C1 9B 2C 50 A4 EE 9B C9 7E 70 C6 B5 7C AB 27 6A 11 A5 9F C5 CB E0 F5 D2 51 9E 16 4F BF 9F 07 A9 DD 05 3B CF C0 89 39 B4 75 C7 A2 E7 6F 04 EF 2A 06 CC 96 72 BD 40 34</defaultSessionTicketIdentity>
+    <defaultLastClientHello>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultLastClientHello>
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
     <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
     <defaultClientPWDUsername>fred</defaultClientPWDUsername>

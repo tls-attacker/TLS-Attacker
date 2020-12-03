@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -32,19 +31,13 @@ public abstract class HandshakeMessageHandler<ProtocolMessageT extends Handshake
         super(tlsContext);
     }
 
-    protected void adjustExtensions(ProtocolMessageT message, HandshakeMessageType handshakeMessageType) {
+    protected void adjustExtensions(HandshakeMessage message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                    // fix
-                    // design
-                    // flaw
-                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
-                }
                 ExtensionHandler handler =
-                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant(),
-                        handshakeMessageType);
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
+
             }
         }
     }
@@ -57,8 +50,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessageT extends Handshake
 
                 HandshakeMessageType handshakeMessageType = handshakeMessage.getHandshakeMessageType();
                 ExtensionHandler extensionHandler =
-                    HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant(),
-                        handshakeMessageType);
+                    HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =

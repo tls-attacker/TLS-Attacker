@@ -231,4 +231,20 @@ public enum ExtensionType {
         list.add(EXTENDED_RANDOM);
         return list;
     }
+
+    public static boolean allowedInEncryptedExtensions(ExtensionType extType) {
+        switch (extType) {
+            case SERVER_NAME_INDICATION:
+            case MAX_FRAGMENT_LENGTH:
+            case ELLIPTIC_CURVES:
+            case USE_SRTP:
+            case HEARTBEAT:
+            case ALPN:
+            case CLIENT_CERTIFICATE_TYPE:
+            case SERVER_CERTIFICATE_TYPE:
+            case EARLY_DATA:
+                return true;
+        }
+        return false;
+    }
 }

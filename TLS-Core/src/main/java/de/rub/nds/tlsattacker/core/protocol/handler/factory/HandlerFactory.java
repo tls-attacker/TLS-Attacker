@@ -75,7 +75,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExte
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
@@ -190,12 +189,9 @@ public class HandlerFactory {
      * Current TlsContext
      * @param type
      * Type of the Extension
-     * @param handshakeMessageType
-     * The HandshakeMessageType which contains the Extension
      * @return Correct ExtensionHandler
      */
-    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type,
-        HandshakeMessageType handshakeMessageType) {
+    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -228,9 +224,6 @@ public class HandlerFactory {
                     return new ExtendedRandomExtensionHandler(context);
                 case KEY_SHARE_OLD:
                 case KEY_SHARE:
-                    if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
-                        return new HrrKeyShareExtensionHandler(context);
-                    }
                     return new KeyShareExtensionHandler(context, type);
                 case MAX_FRAGMENT_LENGTH:
                     return new MaxFragmentLengthExtensionHandler(context);

@@ -629,7 +629,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public NamedGroup getEcCertificateCurve() {
-        if (context.getSelectedGroup() != null) {
+        if (context.getEcCertificateCurve() != null) {
             return context.getEcCertificateCurve();
         } else {
             return config.getDefaultEcCertificateCurve();
@@ -1115,6 +1115,24 @@ public class DefaultChooser extends Chooser {
             return context.getEsniNotAfter();
         } else {
             return config.getDefaultEsniNotAfter();
+        }
+    }
+
+    @Override
+    public Integer getMaxEarlyDataSize() {
+        if (context.getMaxEarlyDataSize() != null) {
+            return context.getMaxEarlyDataSize();
+        } else {
+            return config.getDefaultMaxEarlyDataSize();
+        }
+    }
+
+    @Override
+    public byte[] getLastClientHello() {
+        if (context.getLastClientHello() != null) {
+            return context.getLastClientHello();
+        } else {
+            return config.getDefaultLastClientHello();
         }
     }
 }

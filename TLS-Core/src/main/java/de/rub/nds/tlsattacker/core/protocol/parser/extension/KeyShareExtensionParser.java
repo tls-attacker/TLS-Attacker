@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -27,15 +28,30 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private List<KeyShareEntry> entryList;
 
+    private boolean helloRetryRequestHint = false;
+
     public KeyShareExtensionParser(int startposition, byte[] array, Config config) {
         super(startposition, array, config);
     }
 
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
-        LOGGER.debug("Parsing KeyShareExtensionMessage");
+        if (helloRetryRequestHint) {
+            parseHRRKeyShare(msg);
+        } else {
+            parseRegularKeyShare(msg);
+        }
+        msg.setRetryRequestMode(helloRetryRequestHint);
+    }
+
+    @Override
+    protected KeyShareExtensionMessage createExtensionMessage() {
+        return new KeyShareExtensionMessage();
+    }
+
+    private void parseRegularKeyShare(KeyShareExtensionMessage msg) {
+        LOGGER.debug("Parsing KeyShareExtensionMessage as regular KeyShareExtension");
         parseKeyShareListLength(msg);
-        LOGGER.debug("Parsing KeyShareExtensionMessage");
         if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
             .getExtensionLength().getValue()) {
             parseKeyShareListBytes(msg);
@@ -58,9 +74,13 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         parseKeyShareList(msg);
     }
 
-    @Override
-    protected KeyShareExtensionMessage createExtensionMessage() {
-        return new KeyShareExtensionMessage();
+    private void parseHRRKeyShare(KeyShareExtensionMessage msg) {
+        LOGGER.debug("Parsing KeyShareExtensionMessage as HelloRetryRequest KeyShareExtension");
+        msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
+        entryList = new LinkedList<>();
+        KeyShareEntryParser parser = new KeyShareEntryParser(0, msg.getKeyShareListBytes().getValue());
+        entryList.add(parser.parse());
+        parseKeyShareList(msg);
     }
 
     /**
@@ -93,5 +113,13 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);
+    }
+
+    public boolean isHelloRetryRequestHint() {
+        return helloRetryRequestHint;
+    }
+
+    public void setHelloRetryRequestHint(boolean helloRetryRequestHint) {
+        this.helloRetryRequestHint = helloRetryRequestHint;
     }
 }

@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -154,5 +155,10 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
             return false;
         }
         return this.group == other.group;
+    }
+
+    @Override
+    public String toString() {
+        return ArrayConverter.bytesToHexString(privateKey.toByteArray());
     }
 }

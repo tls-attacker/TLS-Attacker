@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
@@ -168,7 +167,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 }
 
                 if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-                    adjustExtensions(message);
+                    adjustCertExtensions(message);
                 }
                 break;
             default:
@@ -194,19 +193,13 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         }
     }
 
-    private void adjustExtensions(CertificateMessage message) {
+    private void adjustCertExtensions(CertificateMessage message) {
         if (message.getCertificatesListAsEntry() != null) {
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
-                        HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
-                        // TODO: fix design flaw
-                        if (extension instanceof HRRKeyShareExtensionMessage) {
-                            handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
-                        }
                         ExtensionHandler handler =
-                            HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant(),
-                                handshakeMessageType);
+                            HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                         handler.adjustTLSContext(extension);
                     }
                 }

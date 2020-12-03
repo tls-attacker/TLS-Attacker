@@ -118,17 +118,16 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
 
         List<PskSet> pskSets = context.getChooser().getPskSets();
-        byte[] earlyDataPsk = null;
         for (int x = 0; x < pskSets.size(); x++) {
             if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity()
                 .getValue())) {
                 context.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
                 context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(earlyDataPsk));
+                LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKey()));
                 break;
             }
         }
-        if (earlyDataPsk == null) {
+        if (context.getEarlyDataPsk() == null) {
             LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
         }
     }

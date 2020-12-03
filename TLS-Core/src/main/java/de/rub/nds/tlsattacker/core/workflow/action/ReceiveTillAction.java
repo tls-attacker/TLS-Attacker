@@ -297,6 +297,11 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
+    }
+
+    @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<ProtocolMessageType>() {
             {
@@ -315,10 +320,5 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
     }
 }

@@ -24,20 +24,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkflowTraceMutator {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static void replaceMessagesInList(@Nonnull List<ProtocolMessage> messageList,
         @Nonnull ProtocolMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
-                if (e.getProtocolMessageType() == type)
+                if (e.getProtocolMessageType() == type) {
                     return replaceMessage;
+                }
                 return e;
             });
         } else {
             messageList.removeIf(m -> {
-                if (m.getProtocolMessageType() == type)
+                if (m.getProtocolMessageType() == type) {
                     return true;
+                }
                 return false;
             });
         }
@@ -47,14 +50,16 @@ public class WorkflowTraceMutator {
         @Nonnull HandshakeMessageType type, @Nullable ProtocolMessage replaceMessage) {
         if (replaceMessage != null) {
             messageList.replaceAll(e -> {
-                if (e.isHandshakeMessage() && ((HandshakeMessage) e).getHandshakeMessageType() == type)
+                if (e.isHandshakeMessage() && ((HandshakeMessage) e).getHandshakeMessageType() == type) {
                     return replaceMessage;
+                }
                 return e;
             });
         } else {
             messageList.removeIf(m -> {
-                if (m.isHandshakeMessage() && ((HandshakeMessage) m).getHandshakeMessageType() == type)
+                if (m.isHandshakeMessage() && ((HandshakeMessage) m).getHandshakeMessageType() == type) {
                     return true;
+                }
                 return false;
             });
         }
@@ -165,26 +170,48 @@ public class WorkflowTraceMutator {
     }
 
     private static void truncate(@Nonnull WorkflowTrace trace, @Nonnull Object type, WorkflowTruncationMode mode,
-        Boolean sending) {
+        Boolean sending, Boolean untilLast) {
         TlsAction action = null;
-        if (type instanceof HandshakeMessageType) {
-            if (sending == null)
-                action = WorkflowTraceUtil.getFirstActionForMessage((HandshakeMessageType) type, trace);
-            else if (sending)
-                action = WorkflowTraceUtil.getFirstSendingActionForMessage((HandshakeMessageType) type, trace);
-            else
-                action = WorkflowTraceUtil.getFirstReceivingActionForMessage((HandshakeMessageType) type, trace);
-        } else if (type instanceof ProtocolMessageType) {
-            if (sending == null)
-                action = WorkflowTraceUtil.getFirstActionForMessage((ProtocolMessageType) type, trace);
-            else if (sending)
-                action = WorkflowTraceUtil.getFirstSendingActionForMessage((ProtocolMessageType) type, trace);
-            else
-                action = WorkflowTraceUtil.getFirstReceivingActionForMessage((ProtocolMessageType) type, trace);
+        if (untilLast != null && untilLast == true) {
+            if (type instanceof HandshakeMessageType) {
+                if (sending == null) {
+                    action = WorkflowTraceUtil.getLastActionForMessage((HandshakeMessageType) type, trace);
+                } else if (sending) {
+                    action = WorkflowTraceUtil.getLastSendingActionForMessage((HandshakeMessageType) type, trace);
+                } else {
+                    action = WorkflowTraceUtil.getLastReceivingActionForMessage((HandshakeMessageType) type, trace);
+                }
+            } else if (type instanceof ProtocolMessageType) {
+                if (sending == null) {
+                    action = WorkflowTraceUtil.getLastActionForMessage((ProtocolMessageType) type, trace);
+                } else if (sending) {
+                    action = WorkflowTraceUtil.getLastSendingActionForMessage((ProtocolMessageType) type, trace);
+                } else {
+                    action = WorkflowTraceUtil.getLastReceivingActionForMessage((ProtocolMessageType) type, trace);
+                }
+            }
+        } else {
+            if (type instanceof HandshakeMessageType) {
+                if (sending == null) {
+                    action = WorkflowTraceUtil.getFirstActionForMessage((HandshakeMessageType) type, trace);
+                } else if (sending) {
+                    action = WorkflowTraceUtil.getFirstSendingActionForMessage((HandshakeMessageType) type, trace);
+                } else {
+                    action = WorkflowTraceUtil.getFirstReceivingActionForMessage((HandshakeMessageType) type, trace);
+                }
+            } else if (type instanceof ProtocolMessageType) {
+                if (sending == null) {
+                    action = WorkflowTraceUtil.getFirstActionForMessage((ProtocolMessageType) type, trace);
+                } else if (sending) {
+                    action = WorkflowTraceUtil.getFirstSendingActionForMessage((ProtocolMessageType) type, trace);
+                } else {
+                    action = WorkflowTraceUtil.getFirstReceivingActionForMessage((ProtocolMessageType) type, trace);
+                }
+            }
         }
-
-        if (action == null)
+        if (action == null) {
             return;
+        }
 
         int messageIndex = -1;
         int actionIndex = trace.getTlsActions().indexOf(action);
@@ -209,19 +236,22 @@ public class WorkflowTraceMutator {
 
         for (ProtocolMessage i : messages) {
             if (type instanceof HandshakeMessageType) {
-                if (!i.isHandshakeMessage())
+                if (!i.isHandshakeMessage()) {
                     continue;
+                }
                 if (((HandshakeMessage) i).getHandshakeMessageType() == type) {
                     messageIndex = messages.indexOf(i);
-                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT)
+                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
+                    }
                     break;
                 }
             } else {
                 if (i.getProtocolMessageType() == type) {
                     messageIndex = messages.indexOf(i);
-                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT)
+                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
+                    }
                     break;
                 }
             }
@@ -247,60 +277,72 @@ public class WorkflowTraceMutator {
         }
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, null);
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, null, untilLast);
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, null);
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, null, untilLast);
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean sending) {
-        truncate(trace, type, WorkflowTruncationMode.AT, sending);
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean sending,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
-    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean sending) {
-        truncate(trace, type, WorkflowTruncationMode.AT, sending);
+    public static void truncateAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean sending,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
 
-    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, true);
+    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
-    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, true);
+    public static void truncateSendingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, true, untilLast);
     }
 
-    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, false);
+    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
-    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AT, false);
+    public static void truncateReceivingAt(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
-    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, null);
+    public static void
+        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
-    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, null);
+    public static void
+        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
-    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, true);
+    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
-    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, true);
+    public static void truncateSendingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, true, untilLast);
     }
 
-    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, false);
+    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 
-    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, false);
+    public static void truncateReceivingAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+        Boolean untilLast) {
+        truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
 
 }

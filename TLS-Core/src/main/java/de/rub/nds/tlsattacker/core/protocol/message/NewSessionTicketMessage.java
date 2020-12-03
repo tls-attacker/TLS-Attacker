@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -57,6 +58,9 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
         isIncludeInDigestDefault = includeInDigest;
         ticket = new SessionTicket();
+        if (tlsConfig.isAddEarlyDataExtension()) {
+            addExtension(new EarlyDataExtensionMessage(true));
+        }
     }
 
     public ModifiableLong getTicketLifetimeHint() {

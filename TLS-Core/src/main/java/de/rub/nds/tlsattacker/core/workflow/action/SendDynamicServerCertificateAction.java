@@ -210,6 +210,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
         return MessageActionDirection.SENDING;
     }
 
+    @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         return new ArrayList<ProtocolMessageType>() {
             {

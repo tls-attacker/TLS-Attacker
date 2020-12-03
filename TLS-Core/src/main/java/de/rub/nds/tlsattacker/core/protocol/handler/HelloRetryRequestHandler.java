@@ -64,8 +64,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
                     handshakeMessageType = HandshakeMessageType.CLIENT_HELLO;
                 }
                 ExtensionHandler handler =
-                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant(),
-                        handshakeMessageType);
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant());
                 handler.adjustTLSContext(extension);
             }
         }

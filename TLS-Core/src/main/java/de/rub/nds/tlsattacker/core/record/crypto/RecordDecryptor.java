@@ -77,7 +77,7 @@ public class RecordDecryptor extends Decryptor {
         context.increaseReadSequenceNumber();
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
             && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            checkForEndOfEarlyData(record.getComputations().getPlainRecordBytes().getValue());
+            checkForEndOfEarlyData(record.getCleanProtocolMessageBytes().getValue());
         }
     }
 

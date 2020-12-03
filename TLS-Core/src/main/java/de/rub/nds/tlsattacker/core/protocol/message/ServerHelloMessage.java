@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -74,6 +75,8 @@ public class ServerHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
+
+    private boolean autoSetHelloRetryModeInKeyShare = true;
 
     public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
@@ -289,5 +292,24 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
+    }
+
+    public static byte[] getHelloRetryRequestRandom() {
+        return HELLO_RETRY_REQUEST_RANDOM;
+    }
+
+    public boolean isAutoSetHelloRetryModeInKeyShare() {
+        return autoSetHelloRetryModeInKeyShare;
+    }
+
+    public void setAutoSetHelloRetryModeInKeyShare(boolean autoSetHelloRetryModeInKeyShare) {
+        this.autoSetHelloRetryModeInKeyShare = autoSetHelloRetryModeInKeyShare;
+    }
+
+    public boolean setRetryRequestModeInKeyShare() {
+        if (Boolean.TRUE.equals(isTls13HelloRetryRequest()) && autoSetHelloRetryModeInKeyShare) {
+            return true;
+        }
+        return false;
     }
 }

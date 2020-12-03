@@ -39,7 +39,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecr
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
@@ -119,7 +118,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             name = "SignedCertificateTimestampExtension"),
         @XmlElement(type = ExtendedRandomExtensionMessage.class, name = "ExtendedRandomExtension"),
         @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
-        @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
         @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
         @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
         @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),

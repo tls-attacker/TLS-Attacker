@@ -51,7 +51,16 @@ public class SendMessageHelper {
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig().getDtlsMaximumFragmentLength());
-        for (ProtocolMessage message : messages) {
+        List<AbstractRecord> preservedRecords = new LinkedList<>();
+        if (context.getConfig().isPreserveMessageRecordRelation()) {
+            preservedRecords = records;
+            records = new LinkedList<>();
+        }
+        for (int i = 0; i < messages.size(); i++) {
+            if (context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
+                records.add(preservedRecords.get(i));
+            }
+            ProtocolMessage message = messages.get(i);
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                 && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);

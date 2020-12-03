@@ -299,7 +299,8 @@ public class CertificateKeyPair implements Serializable {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
-        if (!(publicKey instanceof CustomEcPublicKey)) {
+        if (!(publicKey instanceof CustomEcPublicKey)
+            || (certSignatureType != CertificateKeyType.ECDH && certSignatureType != CertificateKeyType.ECDSA)) {
             return null;
         }
         if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {

@@ -13,6 +13,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,9 +48,17 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
             writeSignatureAndHashAlgorithm(msg);
+            SignatureAndHashAlgorithm sigHashAlg =
+                SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(msg.getSignatureAndHashAlgorithm().getValue());
+            if (sigHashAlg == null || sigHashAlg.getSignatureAlgorithm() != SignatureAlgorithm.ANONYMOUS) {
+                writeSignatureLength(msg);
+                writeSignature(msg);
+            }
+        } else {
+            writeSignatureLength(msg);
+            writeSignature(msg);
         }
-        writeSignatureLength(msg);
-        writeSignature(msg);
+
         return getAlreadySerialized();
     }
 

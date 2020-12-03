@@ -161,7 +161,7 @@ public class TlsContext {
     /**
      * Maximum number of bytes to transmit as early-data.
      */
-    private long maxEarlyDataSize;
+    private Integer maxEarlyDataSize;
 
     /**
      * Master secret established during the handshake.
@@ -565,6 +565,8 @@ public class TlsContext {
     private byte[] lastClientVerifyData;
 
     private byte[] lastServerVerifyData;
+
+    private byte[] lastClientHello;
 
     private Random random;
 
@@ -2025,7 +2027,7 @@ public class TlsContext {
     /**
      * @return the maxEarlyDataSize
      */
-    public long getMaxEarlyDataSize() {
+    public Integer getMaxEarlyDataSize() {
         return maxEarlyDataSize;
     }
 
@@ -2033,7 +2035,7 @@ public class TlsContext {
      * @param maxEarlyDataSize
      * the maxEarlyDataSize to set
      */
-    public void setMaxEarlyDataSize(long maxEarlyDataSize) {
+    public void setMaxEarlyDataSize(Integer maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
     }
 
@@ -2475,5 +2477,13 @@ public class TlsContext {
 
     public void setFinalSocketState(SocketState finalSocketState) {
         this.finalSocketState = finalSocketState;
+    }
+
+    public byte[] getLastClientHello() {
+        return lastClientHello;
+    }
+
+    public void setLastClientHello(byte[] lastClientHello) {
+        this.lastClientHello = lastClientHello;
     }
 }

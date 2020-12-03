@@ -73,7 +73,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        adjustExtensions(message, HandshakeMessageType.CLIENT_HELLO);
+        adjustExtensions(message);
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
             && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
@@ -84,6 +84,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 throw new AdjustmentException("Could not adjust", ex);
             }
         }
+        tlsContext.setLastClientHello(message.getCompleteResultingMessage().getValue());
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {

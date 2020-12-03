@@ -23,15 +23,21 @@ public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final EarlyDataExtensionMessage msg;
+
     public EarlyDataExtensionPreparator(Chooser chooser, EarlyDataExtensionMessage message,
         ExtensionSerializer<EarlyDataExtensionMessage> serializer) {
         super(chooser, message, serializer);
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EarlyDataExtensionMessage");
         // Empty in 0-RTT-Messages
+        if (msg.isNewSessionTicketExtension()) {
+            msg.setMaxEarlyDataSize(chooser.getMaxEarlyDataSize());
+        }
     }
 
 }
