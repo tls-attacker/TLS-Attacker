@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,15 +26,13 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
      * Constructor for the Parser class
      *
      * @param startposition
-     *            Position in the array where the ClientKeyExchangeParser is
-     *            supposed to start parsing
+     * Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to
-     *            parse
+     * The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
@@ -57,11 +56,10 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
@@ -69,11 +67,10 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKey(T msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));

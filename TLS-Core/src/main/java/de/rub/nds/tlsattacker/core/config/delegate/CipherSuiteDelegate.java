@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -18,13 +19,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CiphersuiteDelegate extends Delegate {
+public class CipherSuiteDelegate extends Delegate {
 
-    @Parameter(names = "-cipher", description = "TLS Ciphersuites to use, divided by a comma, e.g. "
-            + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
+    @Parameter(names = "-cipher", description = "TLS cipher suites to use, divided by a comma, e.g. "
+        + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
     private List<CipherSuite> cipherSuites = null;
 
-    public CiphersuiteDelegate() {
+    public CipherSuiteDelegate() {
     }
 
     public List<CipherSuite> getCipherSuites() {
@@ -45,8 +46,8 @@ public class CiphersuiteDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (cipherSuites != null) {
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
-            config.setDefaultServerSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCipherSuites(cipherSuites);
+            config.setDefaultServerSupportedCipherSuites(cipherSuites);
             if (cipherSuites.size() > 0) {
                 config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
             }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -37,7 +38,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     @Override
     public EncryptedExtensionsParser getParser(byte[] message, int pointer) {
         return new EncryptedExtensionsParser(pointer, message, tlsContext.getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override
@@ -60,11 +61,12 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
                     // fix
                     // design
-                    // flawv
+                    // flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), handshakeMessageType);
+                ExtensionHandler handler =
+                    HandlerFactory.getExtensionHandler(tlsContext, extension.getExtensionTypeConstant(),
+                        handshakeMessageType);
                 handler.adjustTLSContext(extension);
             }
         }

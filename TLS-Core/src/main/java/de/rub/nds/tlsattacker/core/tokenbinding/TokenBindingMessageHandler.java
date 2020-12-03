@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -21,7 +22,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
     @Override
     public TokenBindingMessageParser getParser(byte[] message, int pointer) {
         return new TokenBindingMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

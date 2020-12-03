@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,7 +36,7 @@ public class PseudoRandomFunctionTest {
      */
     @Test
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
-            @Mocked final SecurityParameters mockedParameters) throws CryptoException {
+        @Mocked final SecurityParameters mockedParameters) throws CryptoException {
         // Record expectations if/as needed:
         new Expectations() {
             {
@@ -77,19 +78,24 @@ public class PseudoRandomFunctionTest {
         assertArrayEquals(result1, result2);
 
         Security.addProvider(new BouncyCastleProvider());
-        seed = ArrayConverter
+        seed =
+            ArrayConverter
                 .hexStringToByteArray("DD65AFF37A86CD3BECFAF84BE5C85787009FCE23DED71B513EC6F97BA44CF654C6891E4146BBE9DE33DFE9936917C47ED8810D90DDFA90CBDFFAEAD7");
-        result1 = ArrayConverter
+        result1 =
+            ArrayConverter
                 .hexStringToByteArray("49BC96FF7CB5A404DFBE1F06CFE49A01D728BDBCDA0FDD87F9B349FF9E2537959F2D0DB3C4480E2C1916D19C2FF5623D");
         result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_GOSTR3411, secret, label, seed, size);
 
         assertArrayEquals(result1, result2);
 
-        secret = ArrayConverter
+        secret =
+            ArrayConverter
                 .hexStringToByteArray("0DA8674196F2496C4EE1E4779DE04990BE3CE4655252F1961E707B61178436131369D11E7DA84C05374535B95550DD0F");
-        seed = ArrayConverter
+        seed =
+            ArrayConverter
                 .hexStringToByteArray("52E78F4F4E131F8CABAFD5D7C9C62A5EDF62CADB4D033131FE9B83DE9D459EFD52E78F4F6AA0FE312217AEF691AD763932945E8CEDD7F96E3C336B0866A66698");
-        result1 = ArrayConverter
+        result1 =
+            ArrayConverter
                 .hexStringToByteArray("6622B653451DBB85BA0494959A6255F02100B93FCF09AF94176A3CA6E7FD09DCDA0357FE5AF3110EBC7B2466B66AB37E");
         result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256, secret, label, seed, size);
 

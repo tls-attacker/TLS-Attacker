@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -31,7 +32,7 @@ public class GOSTClientKeyExchangeHandler extends ClientKeyExchangeHandler<GOSTC
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
         return new GOSTClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

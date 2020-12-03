@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -106,11 +107,18 @@ public class CertificateMessage extends HandshakeMessage {
         this.certificatesList = certificatesList;
     }
 
-    public void addCertificateList(CertificatePair CertificatePair) {
+    public void addCertificateList(CertificatePair certificatePair) {
         if (this.certificatesList == null) {
             certificatesList = new LinkedList<>();
         }
-        this.certificatesList.add(CertificatePair);
+        this.certificatesList.add(certificatePair);
+    }
+
+    public void addCertificateList(CertificateEntry certificateEntry) {
+        if (this.certificatesListAsEntry == null) {
+            certificatesListAsEntry = new LinkedList<>();
+        }
+        this.certificatesListAsEntry.add(certificateEntry);
     }
 
     public List<CertificateEntry> getCertificatesListAsEntry() {
@@ -119,13 +127,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public void setCertificatesListAsEntry(List<CertificateEntry> certificatesListAsEntry) {
         this.certificatesListAsEntry = certificatesListAsEntry;
-    }
-
-    public void addCertificateList(CertificateEntry certificateEntry) {
-        if (this.certificatesListAsEntry == null) {
-            certificatesListAsEntry = new LinkedList<>();
-        }
-        this.certificatesListAsEntry.add(certificateEntry);
     }
 
     public ModifiableInteger getRequestContextLength() {

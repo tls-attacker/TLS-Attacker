@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -34,8 +35,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of getTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of getTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testGetTransportHandlerType() {
@@ -56,8 +56,7 @@ public class TransportHandlerDelegateTest {
     }
 
     /**
-     * Test of setTransportHandlerType method, of class
-     * TransportHandlerDelegate.
+     * Test of setTransportHandlerType method, of class TransportHandlerDelegate.
      */
     @Test
     public void testSetTransportHandlerType() {

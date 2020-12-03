@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
@@ -29,8 +30,9 @@ public class HRRKeyShareExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new HRRKeyShareExtensionMessage();
-        preparator = new HRRKeyShareExtensionPreparator(context.getChooser(), message,
-                new HRRKeyShareExtensionSerializer(message));
+        preparator =
+            new HRRKeyShareExtensionPreparator(context.getChooser(), message, new HRRKeyShareExtensionSerializer(
+                message));
     }
 
     /**
@@ -40,7 +42,7 @@ public class HRRKeyShareExtensionPreparatorTest {
     public void testPrepare() {
         preparator.prepare();
         assertArrayEquals(message.getSelectedGroup().getValue(), context.getConfig().getDefaultSelectedNamedGroup()
-                .getValue());
+            .getValue());
     }
 
     @Test

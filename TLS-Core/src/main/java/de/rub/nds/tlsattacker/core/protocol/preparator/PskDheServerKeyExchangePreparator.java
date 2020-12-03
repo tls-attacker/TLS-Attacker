@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -54,7 +55,8 @@ public class PskDheServerKeyExchangePreparator extends DHEServerKeyExchangePrepa
 
     protected void setComputedPskDhGenerator(PskDheServerKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getPSKGenerator());
-        LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
+        LOGGER
+            .debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 
     private void preparePskPublicKey(PskDheServerKeyExchangeMessage msg) {

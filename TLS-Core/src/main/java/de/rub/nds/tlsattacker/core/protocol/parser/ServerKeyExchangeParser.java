@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -16,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 
 /**
  * @param <T>
- *            The ServerKeyExchangeMessage that should be parsed
+ * The ServerKeyExchangeMessage that should be parsed
  */
 public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
@@ -24,20 +25,18 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the ServerKeyExchangeParser is
-     *            supposed to start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ServerKeyExchangeParser is supposed to
-     *            parse
+     * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param expectedType
-     *            The Handshake message type that is expected
+     * The Handshake message type that is expected
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType,
-            ProtocolVersion version, Config config) {
+        ProtocolVersion version, Config config) {
         super(pointer, array, expectedType, version, config);
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -43,8 +44,8 @@ public class DHEServerKeyExchangeSerializerTest {
     private final ProtocolVersion version;
 
     public DHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, int pLength,
-            byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey,
-            byte[] signatureAndHashAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
+        byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey, byte[] signatureAndHashAlgo,
+        int sigLength, byte[] signature, ProtocolVersion version) {
         this.expectedPart = message;
         this.type = type;
         this.length = length;
@@ -61,8 +62,7 @@ public class DHEServerKeyExchangeSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * DHEServerKeyExchangeSerializer.
+     * Test of serializeHandshakeMessageContent method, of class DHEServerKeyExchangeSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {

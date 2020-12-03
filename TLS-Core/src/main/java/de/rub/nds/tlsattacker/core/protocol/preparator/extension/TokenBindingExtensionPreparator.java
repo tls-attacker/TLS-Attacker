@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -20,7 +21,7 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
     private final TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message,
-            TokenBindingExtensionSerializer serializer) {
+        TokenBindingExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }

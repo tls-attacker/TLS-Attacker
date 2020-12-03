@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -26,7 +27,7 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
     private final RecordCompressor compressor;
 
     public BlobRecordPreparator(Chooser chooser, BlobRecord record, Encryptor encryptor, ProtocolMessageType type,
-            RecordCompressor compressor) {
+        RecordCompressor compressor) {
         super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;

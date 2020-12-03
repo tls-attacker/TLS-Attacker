@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,15 +30,13 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the ServerKeyExchangeParser is
-     *            supposed to start parsing
+     * Position in the array where the ServerKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ServerKeyExchangeParser is supposed to
-     *            parse
+     * The byte[] which the ServerKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public SrpServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
@@ -71,7 +70,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as the nLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseModulusLength(SrpServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.SRP_MODULUS_LENGTH));
@@ -82,7 +81,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as N and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseModulus(SrpServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
@@ -93,7 +92,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as the saltLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSaltLength(SrpServerKeyExchangeMessage msg) {
         msg.setSaltLength(parseIntField(HandshakeByteLength.SRP_SALT_LENGTH));
@@ -104,7 +103,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as Salt and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSalt(SrpServerKeyExchangeMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
@@ -115,7 +114,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as the gLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseGeneratorLength(SrpServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.SRP_GENERATOR_LENGTH));
@@ -126,7 +125,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as G and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseGenerator(SrpServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
@@ -134,11 +133,10 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKeyLength(SrpServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.SRP_PUBLICKEY_LENGTH));
@@ -146,11 +144,10 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
@@ -176,24 +173,22 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     }
 
     /**
-     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
-     * the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug("SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the
-     * message
+     * Reads the next bytes as the SignatureLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignatureLength(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
@@ -204,7 +199,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * Reads the next bytes as the Signature and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseSignature(SrpServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));

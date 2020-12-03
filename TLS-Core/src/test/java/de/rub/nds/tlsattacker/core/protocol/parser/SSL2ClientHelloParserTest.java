@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,13 +31,13 @@ public class SSL2ClientHelloParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
-                .asList(new Object[][] { {
-                        ArrayConverter
-                                .hexStringToByteArray("802b0100020012000000100100800700c0030080060040020080040080bc4c7de14f6fc8bff4428f159fb24f2b"),
-                        ProtocolVersion.SSL2, 43, HandshakeMessageType.CLIENT_HELLO, ProtocolVersion.SSL2.getValue(),
-                        18/* 0x0012 */, 0, 16/* 0x0010 */,
-                        ArrayConverter.hexStringToByteArray("0100800700c0030080060040020080040080"), new byte[0],
-                        ArrayConverter.hexStringToByteArray("bc4c7de14f6fc8bff4428f159fb24f2b") } });
+            .asList(new Object[][] { {
+                ArrayConverter
+                    .hexStringToByteArray("802b0100020012000000100100800700c0030080060040020080040080bc4c7de14f6fc8bff4428f159fb24f2b"),
+                ProtocolVersion.SSL2, 43, HandshakeMessageType.CLIENT_HELLO, ProtocolVersion.SSL2.getValue(),
+                18/* 0x0012 */, 0, 16/* 0x0010 */,
+                ArrayConverter.hexStringToByteArray("0100800700c0030080060040020080040080"), new byte[0],
+                ArrayConverter.hexStringToByteArray("bc4c7de14f6fc8bff4428f159fb24f2b") } });
     }
 
     private final byte[] message;
@@ -53,8 +54,8 @@ public class SSL2ClientHelloParserTest {
     private final Config config = Config.createConfig();
 
     public SSL2ClientHelloParserTest(byte[] message, ProtocolVersion version, int messageLength,
-            HandshakeMessageType type, byte[] protocolVersion, int cipherSuiteLength, int sessionIdLength,
-            int challengeLength, byte[] cipherSuites, byte[] sessionId, byte[] challenge) {
+        HandshakeMessageType type, byte[] protocolVersion, int cipherSuiteLength, int sessionIdLength,
+        int challengeLength, byte[] cipherSuites, byte[] sessionId, byte[] challenge) {
         this.message = message;
         this.version = version;
         this.messageLength = messageLength;

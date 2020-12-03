@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -33,7 +34,7 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     /**
      * @param maxEarlyDataSize
-     *            the maxEarlyDataSize to set
+     * the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;

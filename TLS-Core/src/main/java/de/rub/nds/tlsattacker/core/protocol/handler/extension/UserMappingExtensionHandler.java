@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -45,9 +46,9 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
     @Override
     public void adjustTLSExtensionContext(UserMappingExtensionMessage message) {
         context.setUserMappingExtensionHintType(UserMappingExtensionHintType.getExtensionType(message
-                .getUserMappingType().getValue()));
+            .getUserMappingType().getValue()));
         LOGGER.debug("Adjusted the TLS context user mapping extension hint type to "
-                + context.getUserMappingExtensionHintType().getValue());
+            + context.getUserMappingExtensionHintType().getValue());
     }
 
 }

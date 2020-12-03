@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.stream;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -80,7 +81,7 @@ public class StreamTransportHandlerTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testCloseClientconnection() throws IOException {
+    public void testCloseClientConnection() throws IOException {
         handler.initialize();
         handler.closeClientConnection();
     }

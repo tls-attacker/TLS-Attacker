@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -47,7 +48,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
     @Override
     public void closeConnection() throws IOException {
         if (socket == null) {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
         socket.close();
     }
@@ -75,9 +76,8 @@ public class ClientTcpTransportHandler extends TransportHandler {
     }
 
     /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and
-     * Data is received during the Check the current State of the
-     * TransportHandler will get messed up and an Exception will be thrown.
+     * Checks the current SocketState. NOTE: If you check the SocketState and Data is received during the Check the
+     * current State of the TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
      * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException

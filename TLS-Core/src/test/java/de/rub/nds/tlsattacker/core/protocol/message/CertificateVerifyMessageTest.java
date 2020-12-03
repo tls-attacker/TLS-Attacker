@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import org.junit.After;
@@ -34,7 +35,7 @@ public class CertificateVerifyMessageTest {
     public void testToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("CertificateVerifyMessage:").append("\n  SignatureAndHashAlgorithm: ").append("null")
-                .append("\n  Signature Length: ").append("null").append("\n  Signature: ").append("null");
+            .append("\n  Signature Length: ").append("null").append("\n  Signature: ").append("null");
         assertEquals(message.toString(), sb.toString());
     }
 }

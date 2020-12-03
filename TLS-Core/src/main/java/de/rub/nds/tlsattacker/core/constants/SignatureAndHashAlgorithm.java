@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
-
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
 import java.security.spec.MGF1ParameterSpec;
@@ -23,13 +24,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Construction of a hash and signature algorithm. Very confusing, consists of
- * two bytes, the first is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
+ * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first is hash algorithm:
+ * {HashAlgorithm, SignatureAlgorithm}
  */
 public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000),
@@ -170,14 +170,14 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(SignatureAlgorithm signatureAlgo,
-            HashAlgorithm hashAlgo) {
+        HashAlgorithm hashAlgo) {
         for (SignatureAndHashAlgorithm algo : values()) {
             if (algo.getHashAlgorithm() == hashAlgo && algo.getSignatureAlgorithm() == signatureAlgo) {
                 return algo;
             }
         }
         throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
-                + signatureAlgo + " Hash:" + hashAlgo);
+            + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {
@@ -259,16 +259,17 @@ public enum SignatureAndHashAlgorithm {
                     break;
                 case NONE:
                     break;
+                default:
+                    break;
             }
-
             signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
-                    1));
+                1));
         }
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
-        Sets.SetView<SignatureAndHashAlgorithm> intersection = Sets.intersection(
-                Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
+        Sets.SetView<SignatureAndHashAlgorithm> intersection =
+            Sets.intersection(Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
                 Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
         List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
         List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
@@ -322,8 +323,11 @@ public enum SignatureAndHashAlgorithm {
                         }
                     }
                     break;
+                default:
+                    // we skip the default case to find an algorithm in the next
+                    // iteration
+                    ;
             }
-
             if (found) {
                 break;
             }

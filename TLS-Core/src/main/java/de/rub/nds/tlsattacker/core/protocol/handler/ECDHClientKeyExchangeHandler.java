@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -36,7 +37,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     @Override
     public ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
         return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override
@@ -63,15 +64,15 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             LOGGER.debug("Adjusting Montgomery EC PublicKey");
-            // TODO This is only a temporary solution. Montgomory Curves need to
+            // TODO This is only a temporary solution. Montgomery Curves need to
             // be integrated into the new EC framework
             RFC7748Curve curve = (RFC7748Curve) CurveFactory.getCurve(usedGroup);
-            BigInteger xCoordinate;
+            BigInteger xcoordinate;
             if (serializedPoint.length != 0) {
-                xCoordinate = new BigInteger(serializedPoint);
+                xcoordinate = new BigInteger(serializedPoint);
             } else {
                 LOGGER.warn("Encoding 0 length byte-array");
-                xCoordinate = BigInteger.ZERO;
+                xcoordinate = BigInteger.ZERO;
             }
             tlsContext.setClientEcPublicKey(curve.createAPointOnCurve(new BigInteger(serializedPoint)));
         } else {

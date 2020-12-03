@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -49,8 +50,10 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setClientPublicKey(Point point) {
-        this.clientPublicKeyX = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getX().getData());
-        this.clientPublicKeyY = ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getY().getData());
+        this.clientPublicKeyX =
+            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());
+        this.clientPublicKeyY =
+            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getFieldY().getData());
     }
 
     public ModifiableBigInteger getClientPublicKeyX() {
@@ -125,6 +128,10 @@ public class GOSTClientComputations extends KeyExchangeComputations {
         this.ukm = ukm;
     }
 
+    public void setUkm(byte[] ukm) {
+        this.ukm = ModifiableVariableFactory.safelySetValue(this.ukm, ukm);
+    }
+
     public void setCekEnc(ModifiableByteArray cekEnc) {
         this.encryptedKey = cekEnc;
     }
@@ -139,10 +146,6 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     public void setKek(ModifiableByteArray kek) {
         this.keyEncryptionKey = kek;
-    }
-
-    public void setUkm(byte[] ukm) {
-        this.ukm = ModifiableVariableFactory.safelySetValue(this.ukm, ukm);
     }
 
 }

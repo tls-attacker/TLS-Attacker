@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
@@ -37,8 +38,8 @@ public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
         conf.setWorkflowTraceType(WorkflowTraceType.SIMPLE_MITM_PROXY);
         State state = new State(conf);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                WorkflowExecutorType.DEFAULT, state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
         workflowExecutor.executeWorkflow();
     }
 

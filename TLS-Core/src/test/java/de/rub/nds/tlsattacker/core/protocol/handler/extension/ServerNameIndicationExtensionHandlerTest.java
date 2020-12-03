@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -35,8 +36,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of adjustTLSContext method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -76,8 +76,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of getPreparator method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getPreparator method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
@@ -85,8 +84,7 @@ public class ServerNameIndicationExtensionHandlerTest {
     }
 
     /**
-     * Test of getSerializer method, of class
-     * ServerNameIndicationExtensionHandler.
+     * Test of getSerializer method, of class ServerNameIndicationExtensionHandler.
      */
     @Test
     public void testGetSerializer() {

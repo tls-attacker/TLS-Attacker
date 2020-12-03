@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -38,7 +39,7 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
 
     /**
      * @param singedTimestamp
-     *            - Timestamp as MidifiableByteArray
+     * - Timestamp as ModifiableByteArray
      */
     public void setSignedTimestamp(ModifiableByteArray singedTimestamp) {
         this.singedTimestamp = singedTimestamp;
@@ -46,7 +47,7 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
 
     /**
      * @param singedTimestamp
-     *            - Timestamp as byte array
+     * - Timestamp as byte array
      */
     public void setSignedTimestamp(byte[] singedTimestamp) {
         this.singedTimestamp = ModifiableVariableFactory.safelySetValue(this.singedTimestamp, singedTimestamp);

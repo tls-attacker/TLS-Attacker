@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
@@ -16,7 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class TruncatedHmacExtensionPreparator extends ExtensionPreparator<TruncatedHmacExtensionMessage> {
 
     public TruncatedHmacExtensionPreparator(Chooser chooser, TruncatedHmacExtensionMessage message,
-            TruncatedHmacExtensionSerializer serializer) {
+        TruncatedHmacExtensionSerializer serializer) {
         super(chooser, message, serializer);
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -27,7 +28,7 @@ public class HeartbeatMessageHandler extends ProtocolMessageHandler<HeartbeatMes
     @Override
     public HeartbeatMessageParser getParser(byte[] message, int pointer) {
         return new HeartbeatMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

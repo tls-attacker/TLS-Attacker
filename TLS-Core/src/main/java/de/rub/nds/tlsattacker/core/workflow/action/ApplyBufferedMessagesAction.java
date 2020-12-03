@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -21,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Apply buffered message to the given context.
  *
- * Call adjustContext() for each message in the context. Does not remove the
- * messages from buffer after execution.
+ * Call adjustContext() for each message in the context. Does not remove the messages from buffer after execution.
  */
 public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
 

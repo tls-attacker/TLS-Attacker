@@ -7,19 +7,18 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.udp;
-
-import java.io.IOException;
-import java.io.PushbackInputStream;
-import java.net.DatagramSocket;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
+import java.io.IOException;
+import java.io.PushbackInputStream;
+import java.net.DatagramSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerUdpTransportHandler extends TransportHandler {
 
@@ -51,14 +50,15 @@ public class ServerUdpTransportHandler extends TransportHandler {
     }
 
     /*
-     * Provides a routine equivalent to TCP's accept method. Blocks until a
-     * client "connects", meaning that data is available to be read.
+     * Provides a routine equivalent to TCP's accept method. Blocks until a client "connects", meaning that data is
+     * available to be read.
      */
     private void waitOnReceive() throws IOException {
         while (inStream.available() == 0) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException e) {
+                ;
             }
         }
     }

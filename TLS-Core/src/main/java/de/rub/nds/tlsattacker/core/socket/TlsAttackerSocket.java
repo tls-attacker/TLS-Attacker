@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -41,9 +42,9 @@ public class TlsAttackerSocket {
      * Sends without encryption etc
      *
      * @param bytes
-     *            The raw bytes which should be send
+     * The raw bytes which should be send
      * @throws java.io.IOException
-     *             If something goes wrong during Transmission
+     * If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
         state.getTlsContext().getTransportHandler().sendData(bytes);
@@ -54,7 +55,7 @@ public class TlsAttackerSocket {
      *
      * @return The Raw received Bytes
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     * If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
         return state.getTlsContext().getTransportHandler().fetchData();
@@ -64,7 +65,7 @@ public class TlsAttackerSocket {
      * Sends a String as ApplicationMessages
      *
      * @param string
-     *            The String which should be send in ApplicationMessages
+     * The String which should be send in ApplicationMessages
      */
     public void send(String string) {
         send(string.getBytes(Charset.defaultCharset()));
@@ -74,7 +75,7 @@ public class TlsAttackerSocket {
      * Sends bytes as ApplicationMessages
      *
      * @param bytes
-     *            ApplicationMessages to send
+     * ApplicationMessages to send
      */
     public void send(byte[] bytes) {
         ApplicationMessage message = new ApplicationMessage();
@@ -95,12 +96,18 @@ public class TlsAttackerSocket {
         } while (actuallyRead > 0);
     }
 
+    public void send(ProtocolMessage message) {
+        SendAction action = new SendAction(message);
+        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        action.execute(state);
+    }
+
     /**
      * Receives bytes and decrypts ApplicationMessage contents
      *
      * @return Received bytes The bytes which are received
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     * If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
@@ -122,21 +129,14 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Receives bytes and decrypts ApplicationMessage contents in converts them
-     * to Strings
+     * Receives bytes and decrypts ApplicationMessage contents in converts them to Strings
      *
      * @return The received String
      * @throws java.io.IOException
-     *             If something goes wrong during the receive
+     * If something goes wrong during the receive
      */
     public String receiveString() throws IOException {
         return new String(receiveBytes(), Charset.defaultCharset());
-    }
-
-    public void send(ProtocolMessage message) {
-        SendAction action = new SendAction(message);
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
-        action.execute(state);
     }
 
     public void close() throws IOException {

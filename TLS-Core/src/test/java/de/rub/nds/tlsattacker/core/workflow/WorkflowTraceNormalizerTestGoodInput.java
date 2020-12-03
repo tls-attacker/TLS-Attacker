@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -39,8 +40,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Find the files for this test at
- * src/test/resources/workflow_trace_serialization_tests-positive
+ * Find the files for this test at src/test/resources/workflow_trace_serialization_tests-positive
  */
 @Category(SlowTests.class)
 @RunWith(Parameterized.class)
@@ -56,7 +56,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        File testVectorDir = new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
+        File testVectorDir =
+            new File(WorkflowTraceNormalizerTestGoodInput.class.getResource(TEST_VECTOR_DIR).getFile());
 
         Collection<Object[]> testVectors = new ArrayList<>();
         for (File tv : testVectorDir.listFiles()) {
@@ -114,8 +115,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
     }
 
     /**
-     * Loads a test vector from file. Have a look at the test vectors to see the
-     * required format.
+     * Loads a test vector from file. Have a look at the test vectors to see the required format.
      *
      * @param testVectorPath
      */
@@ -144,7 +144,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
         }
 
         try {
-            trace = WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
+            trace =
+                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
                     .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);

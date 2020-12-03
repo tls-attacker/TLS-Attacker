@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -39,8 +40,8 @@ public class ChangeCipherSuiteActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException,
-            InvalidAlgorithmParameterException, InvalidAlgorithmParameterException, CryptoException {
+        InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException,
+        InvalidAlgorithmParameterException, InvalidAlgorithmParameterException, CryptoException {
         Config config = Config.createConfig();
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         WorkflowTrace trace = new WorkflowTrace();
@@ -50,7 +51,7 @@ public class ChangeCipherSuiteActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(
-                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+            new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
     }
 
     /**

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.util.Comparator;
@@ -15,7 +16,7 @@ import java.util.Comparator;
  *
  *
  */
-public class ICEPointCopmparator implements Comparator<ICEPoint> {
+public class ICEPointComparator implements Comparator<ICEPoint> {
 
     /**
      *

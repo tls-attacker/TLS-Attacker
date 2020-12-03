@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -32,7 +33,7 @@ public class ClientHelloSerializerTest {
     private final HandshakeMessageType type;
     private final int length;
     private final byte[] protocolVersion;
-    private final byte[] unixtime;
+    private final byte[] unixTime;
     private final byte[] random;
     private final int sessionIdLength;
     private final byte[] sessionID;
@@ -46,15 +47,15 @@ public class ClientHelloSerializerTest {
     private final byte[] cookie;
 
     public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
-            byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
-            int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
-            Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
+        byte[] protocolVersion, byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID,
+        int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
+        Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.expectedPart = message;
         this.type = type;
         this.length = length;
         this.version = version;
         this.protocolVersion = protocolVersion;
-        this.unixtime = unixtime;
+        this.unixTime = unixTime;
         this.random = random;
         this.sessionIdLength = sessionIdLength;
         this.sessionID = sessionID;
@@ -69,8 +70,7 @@ public class ClientHelloSerializerTest {
     }
 
     /**
-     * Test of serializeHandshakeMessageContent method, of class
-     * ClientHelloSerializer.
+     * Test of serializeHandshakeMessageContent method, of class ClientHelloSerializer.
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
@@ -94,7 +94,7 @@ public class ClientHelloSerializerTest {
         clientMessage.setSessionId(sessionID);
         clientMessage.setSessionIdLength(sessionIdLength);
         clientMessage.setCompleteResultingMessage(expectedPart);
-        clientMessage.setUnixTime(unixtime);
+        clientMessage.setUnixTime(unixTime);
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
         ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);

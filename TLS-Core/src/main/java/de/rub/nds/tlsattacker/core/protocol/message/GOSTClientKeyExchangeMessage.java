@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -30,7 +31,8 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @XmlElement
     protected GOSTClientComputations computations;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1,
+        type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyTransportBlob;
 
     public GOSTClientKeyExchangeMessage() {

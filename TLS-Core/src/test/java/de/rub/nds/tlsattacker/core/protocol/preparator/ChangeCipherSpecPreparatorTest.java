@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -29,8 +30,7 @@ public class ChangeCipherSpecPreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * ChangeCipherSpecPreparator.
+     * Test of prepareProtocolMessageContents method, of class ChangeCipherSpecPreparator.
      */
     @Test
     public void testPrepare() {

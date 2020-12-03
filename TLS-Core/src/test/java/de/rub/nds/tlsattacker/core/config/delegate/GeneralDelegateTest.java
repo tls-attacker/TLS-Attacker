@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -136,7 +137,7 @@ public class GeneralDelegateTest {
     @Test
     public void testApplyDelegate() {
         // Just check that applyDelegate does not throw an Exception
-        // TODO check that loglevel gets set
+        // TODO check that logLevel gets set
         Config config = Config.createConfig();
         delegate.setKeylogfile("abc");
         delegate.applyDelegate(config);

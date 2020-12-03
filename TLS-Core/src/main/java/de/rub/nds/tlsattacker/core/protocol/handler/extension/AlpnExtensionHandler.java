@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -45,8 +46,8 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
     @Override
     public void adjustTLSExtensionContext(AlpnExtensionMessage message) {
         context.setAlpnAnnouncedProtocols(message.getAlpnAnnouncedProtocols().getValue());
-        LOGGER.debug("Adjustet the TLS context ALPN announced protocols to "
-                + ArrayConverter.bytesToHexString(message.getAlpnAnnouncedProtocols()));
+        LOGGER.debug("Adjusted the TLS context ALPN announced protocols to "
+            + ArrayConverter.bytesToHexString(message.getAlpnAnnouncedProtocols()));
     }
 
 }

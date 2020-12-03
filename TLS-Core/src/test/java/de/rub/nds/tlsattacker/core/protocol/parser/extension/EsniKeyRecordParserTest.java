@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static org.junit.Assert.*;
@@ -33,7 +34,8 @@ public class EsniKeyRecordParserTest {
     @Test
     public void test1() {
 
-        byte[] recordBytes = ArrayConverter
+        byte[] recordBytes =
+            ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
         EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
@@ -47,7 +49,7 @@ public class EsniKeyRecordParserTest {
         KeyShareStoreEntry keyShareStoreEntry = new KeyShareStoreEntry();
         keyShareStoreEntry.setGroup(NamedGroup.ECDH_X25519);
         keyShareStoreEntry.setPublicKey(ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
+            .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
         List<KeyShareStoreEntry> expectedKeyList = new LinkedList();
         expectedKeyList.add(keyShareStoreEntry);
         List<KeyShareStoreEntry> resultKeyList = esniKeyRecord.getKeys();
@@ -60,12 +62,12 @@ public class EsniKeyRecordParserTest {
         int resultPaddedLength = esniKeyRecord.getPaddedLength();
 
         byte[] expectedNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
-        byte[] resultNotBefore = ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(),
-                ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
+        byte[] resultNotBefore =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(), ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
 
         byte[] expectedNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
-        byte[] resultNotAfter = ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(),
-                ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
+        byte[] resultNotAfter =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(), ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
 
         int expectedExtensionsLength = 0;
         int resultExtensionsLength = esniKeyRecord.getExtensions().size();
@@ -105,7 +107,8 @@ public class EsniKeyRecordParserTest {
     @Test
     public void test2() {
 
-        byte[] recordBytes = ArrayConverter
+        byte[] recordBytes =
+            ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac5818118633259444120004130113020104000000005dcc3a45000000005dda12050000");
         EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
@@ -119,7 +122,7 @@ public class EsniKeyRecordParserTest {
         KeyShareStoreEntry keyShareStoreEntry = new KeyShareStoreEntry();
         keyShareStoreEntry.setGroup(NamedGroup.ECDH_X25519);
         keyShareStoreEntry.setPublicKey(ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
+            .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
         List<KeyShareStoreEntry> expectedKeyList = new LinkedList();
         expectedKeyList.add(keyShareStoreEntry);
         List<KeyShareStoreEntry> resultKeyList = esniKeyRecord.getKeys();
@@ -134,12 +137,12 @@ public class EsniKeyRecordParserTest {
         int resultPaddedLength = esniKeyRecord.getPaddedLength();
 
         byte[] expectedNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
-        byte[] resultNotBefore = ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(),
-                ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
+        byte[] resultNotBefore =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(), ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
 
         byte[] expectedNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
-        byte[] resultNotAfter = ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(),
-                ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
+        byte[] resultNotAfter =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(), ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
 
         int expectedExtensionsLength = 0;
         int resultExtensionsLength = esniKeyRecord.getExtensions().size();
@@ -178,7 +181,8 @@ public class EsniKeyRecordParserTest {
 
     @Test
     public void test3() {
-        byte[] recordBytes = ArrayConverter
+        byte[] recordBytes =
+            ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0046001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412001E001Efa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325940004130113020104000000005dcc3a45000000005dda12050000");
 
         EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
@@ -195,13 +199,13 @@ public class EsniKeyRecordParserTest {
         KeyShareStoreEntry keyShareStoreEntry1 = new KeyShareStoreEntry();
         keyShareStoreEntry1.setGroup(NamedGroup.ECDH_X25519);
         keyShareStoreEntry1.setPublicKey(ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
+            .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
         expectedKeyList.add(keyShareStoreEntry1);
 
         KeyShareStoreEntry keyShareStoreEntry2 = new KeyShareStoreEntry();
         keyShareStoreEntry2.setGroup(NamedGroup.ECDH_X448);
         keyShareStoreEntry2.setPublicKey(ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac58181186332594"));
+            .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac58181186332594"));
         expectedKeyList.add(keyShareStoreEntry2);
 
         List<KeyShareStoreEntry> resultKeyList = esniKeyRecord.getKeys();
@@ -216,12 +220,12 @@ public class EsniKeyRecordParserTest {
         int resultPaddedLength = esniKeyRecord.getPaddedLength();
 
         byte[] expectedNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
-        byte[] resultNotBefore = ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(),
-                ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
+        byte[] resultNotBefore =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(), ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
 
         byte[] expectedNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
-        byte[] resultNotAfter = ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(),
-                ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
+        byte[] resultNotAfter =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(), ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
 
         int expectedExtensionsLength = 0;
         int resultExtensionsLength = esniKeyRecord.getExtensions().size();
@@ -262,7 +266,8 @@ public class EsniKeyRecordParserTest {
     @Test
     public void test4() {
 
-        byte[] recordBytes = ArrayConverter
+        byte[] recordBytes =
+            ArrayConverter
                 .hexStringToByteArray("ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050014ffce0010a7284c9a52f15c13644b947261774657");
         EsniKeyRecordParser parser = new EsniKeyRecordParser(0, recordBytes, config);
         EsniKeyRecord esniKeyRecord = parser.parse();
@@ -276,7 +281,7 @@ public class EsniKeyRecordParserTest {
         KeyShareStoreEntry keyShareStoreEntry = new KeyShareStoreEntry();
         keyShareStoreEntry.setGroup(NamedGroup.ECDH_X25519);
         keyShareStoreEntry.setPublicKey(ArrayConverter
-                .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
+            .hexStringToByteArray("fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"));
         List<KeyShareStoreEntry> expectedKeyList = new LinkedList();
         expectedKeyList.add(keyShareStoreEntry);
         List<KeyShareStoreEntry> resultKeyList = esniKeyRecord.getKeys();
@@ -289,16 +294,16 @@ public class EsniKeyRecordParserTest {
         int resultPaddedLength = esniKeyRecord.getPaddedLength();
 
         byte[] expectedNotBefore = ArrayConverter.hexStringToByteArray("000000005dcc3a45");
-        byte[] resultNotBefore = ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(),
-                ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
+        byte[] resultNotBefore =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotBefore(), ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
 
         byte[] expectedNotAfter = ArrayConverter.hexStringToByteArray("000000005dda1205");
-        byte[] resultNotAfter = ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(),
-                ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
+        byte[] resultNotAfter =
+            ArrayConverter.longToBytes(esniKeyRecord.getNotAfter(), ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
 
         byte[] expectedExtensionNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
-        EncryptedServerNameIndicationExtensionMessage resultExtension = (EncryptedServerNameIndicationExtensionMessage) esniKeyRecord
-                .getExtensions().get(0);
+        EncryptedServerNameIndicationExtensionMessage resultExtension =
+            (EncryptedServerNameIndicationExtensionMessage) esniKeyRecord.getExtensions().get(0);
         byte[] resultExtensionNonce = resultExtension.getServerNonce().getOriginalValue();
 
         int expectedExtensionsLength = 1;

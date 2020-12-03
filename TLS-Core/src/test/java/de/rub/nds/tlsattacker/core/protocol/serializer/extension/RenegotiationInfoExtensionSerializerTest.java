@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -32,7 +33,7 @@ public class RenegotiationInfoExtensionSerializerTest {
     private final byte[] expectedBytes;
 
     public RenegotiationInfoExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;

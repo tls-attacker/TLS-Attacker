@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -73,9 +74,9 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.HEARTBEAT, null) instanceof HeartbeatExtensionHandler);
         context.getConfig().setParseKeyShareOld(true);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE_OLD,
-                HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
+            HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE,
-                HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
+            HandshakeMessageType.HELLO_RETRY_REQUEST) instanceof HrrKeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE_OLD, null) instanceof KeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.KEY_SHARE, null) instanceof KeyShareExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.MAX_FRAGMENT_LENGTH, null) instanceof MaxFragmentLengthExtensionHandler);

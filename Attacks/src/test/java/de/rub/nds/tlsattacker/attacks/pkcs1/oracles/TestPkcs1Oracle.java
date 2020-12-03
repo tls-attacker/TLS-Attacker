@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import org.apache.logging.log4j.LogManager;
@@ -102,8 +103,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * Returns true if and only if the message contains a 0x00 byte in the
-     * decrypted text (except of the first 8 bytes)
+     * Returns true if and only if the message contains a 0x00 byte in the decrypted text (except of the first 8 bytes)
      *
      * @param msg
      * @return
@@ -120,8 +120,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * Returns true if and only if the message contains no 0x00 byte in the
-     * first 8 bytes of the decrypted text
+     * Returns true if and only if the message contains no 0x00 byte in the first 8 bytes of the decrypted text
      *
      * @param msg
      * @return
@@ -137,8 +136,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * Returns true if and only if the message contains the 0x00 byte on the
-     * correct position in the plaintext.
+     * Returns true if and only if the message contains the 0x00 byte on the correct position in the plaintext.
      *
      * @param msg
      * @return
@@ -158,8 +156,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * <ul>
      * <li>first two bytes are equal to 0x00 0x02</li>
      * <li>the following 8 bytes do not contain 0x00</li>
-     * <li>the following (l-48-80) bytes contain at least one 0x00 byte, where l
-     * is the message/key length</li>
+     * <li>the following (l-48-80) bytes contain at least one 0x00 byte, where l is the message/key length</li>
      * </ul>
      *
      * @param msg
@@ -195,8 +192,8 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * Presents an XML Encryption oracle. This oracle checks, if the wrapped key
-     * has a correct size. It must be either 16, 24, or 32 bytes long.
+     * Presents an XML Encryption oracle. This oracle checks, if the wrapped key has a correct size. It must be either
+     * 16, 24, or 32 bytes long.
      *
      * @param msg
      * @return
@@ -232,13 +229,12 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * Checks, if 0x00 is defined on a good position and if before this 0x00
-     * byte is no other 0x00
+     * Checks, if 0x00 is defined on a good position and if before this 0x00 byte is no other 0x00
      *
      * @param keySize
-     *            the length of the key included in the PKCS1 message
+     * the length of the key included in the PKCS1 message
      * @param msg
-     *            message
+     * message
      * @return
      */
     private boolean hasCorrectKeySize(final int keySize, final byte[] msg) {
@@ -246,9 +242,8 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
         // check if the second last byte is equal to 0x00
         if (msg[msg.length - keySize - 1] == 0x00) {
             /*
-             * Starts from 10 because the first 8 bytes are checked by
-             * checkSecond and the first 2 bytes are the PKCS type (covered by
-             * implicit check of checkDecryptedBytes)
+             * Starts from 10 because the first 8 bytes are checked by checkSecond and the first 2 bytes are the PKCS
+             * type (covered by implicit check of checkDecryptedBytes)
              */
             if (!containsByte((byte) 0x00, msg, 10, msg.length - keySize - 1)) {
                 result = true;

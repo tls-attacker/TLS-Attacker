@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,8 +21,8 @@ public class CertificateAdapter extends XmlAdapter<String, Certificate> {
     @Override
     public Certificate unmarshal(String v) throws Exception {
 
-        Certificate cert = Certificate.parse(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll(
-                "\\s+", ""))));
+        Certificate cert =
+            Certificate.parse(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+", ""))));
         return cert;
     }
 

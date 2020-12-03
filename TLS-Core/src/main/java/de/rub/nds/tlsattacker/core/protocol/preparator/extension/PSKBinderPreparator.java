@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -38,8 +39,8 @@ public class PSKBinderPreparator extends Preparator<PSKBinder> {
 
     private void prepareBinderValue() {
         try {
-            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskBinder.getBinderCipherConfig());
-            int macLen = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(pskBinder.getBinderCipherConfig());
+            int macLen = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
 
             pskBinder.setBinderEntry(new byte[macLen]);
             pskBinder.setBinderEntryLength(pskBinder.getBinderEntry().getValue().length);

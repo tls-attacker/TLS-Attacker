@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
@@ -23,7 +24,7 @@ public class SupplementalDataHandler extends HandshakeMessageHandler<Supplementa
     @Override
     public SupplementalDataParser getParser(byte[] message, int pointer) {
         return new SupplementalDataParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -71,30 +72,32 @@ public class RealDirectMessageECOracle extends ECOracle {
     }
 
     @Override
-    public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
+    public boolean checkSecretCorrectness(Point ecPoint, BigInteger secret) {
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
                 RunningModeType.CLIENT);
 
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+        ECDHClientKeyExchangeMessage message =
+            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         message.prepareComputations();
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX().getData()));
+        x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getFieldX().getData()));
         message.getComputations().setPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY().getData()));
+        y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getFieldY().getData()));
         message.getComputations().setPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, secret);
-        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, secret);
+        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {
@@ -102,8 +105,8 @@ public class RealDirectMessageECOracle extends ECOracle {
         }
 
         State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         boolean valid = true;
         try {
@@ -125,26 +128,26 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         Point p = curve.mult(guessedSecret, checkPoint);
-        byte[] pms = BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getX()
-                .getData());
+        byte[] pms =
+            BigIntegers.asUnsignedByteArray(curve.getModulus().bitLength() / Bits.IN_A_BYTE, p.getFieldX().getData());
         return Arrays.equals(checkPMS, pms);
     }
 
     /**
-     * Executes a valid workflow with valid points etc. and saves the values for
-     * further validation purposes.
+     * Executes a valid workflow with valid points etc. and saves the values for further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
         State state = new State(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         WorkflowTrace trace = state.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
 
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+        ECDHClientKeyExchangeMessage message =
+            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates

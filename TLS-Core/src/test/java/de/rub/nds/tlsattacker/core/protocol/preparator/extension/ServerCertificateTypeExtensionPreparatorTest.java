@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -34,7 +35,8 @@ public class ServerCertificateTypeExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new ServerCertificateTypeExtensionMessage();
-        preparator = new ServerCertificateTypeExtensionPreparator(context.getChooser(), msg,
+        preparator =
+            new ServerCertificateTypeExtensionPreparator(context.getChooser(), msg,
                 new ServerCertificateTypeExtensionSerializer(msg));
     }
 

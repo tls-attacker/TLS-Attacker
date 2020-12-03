@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.connection;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -20,7 +21,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "alias", "ip", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
-        "proxyControlHostname", "timeout", "transportHandlerType" })
+    "proxyControlHostname", "timeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
@@ -175,7 +176,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             }
             if (port < 0 || port > 65535) {
                 throw new ConfigurationException("Attempt to set default port "
-                        + "failed. Port must be in interval [0,65535], but is " + port);
+                    + "failed. Port must be in interval [0,65535], but is " + port);
             }
         }
     }
@@ -185,7 +186,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             alias = null;
         }
         if (transportHandlerType == defaultCon.getTransportHandlerType()
-                || transportHandlerType == DEFAULT_TRANSPORT_HANDLER_TYPE) {
+            || transportHandlerType == DEFAULT_TRANSPORT_HANDLER_TYPE) {
             transportHandlerType = null;
         }
         if (Objects.equals(timeout, defaultCon.getTimeout()) || Objects.equals(timeout, DEFAULT_TIMEOUT)) {

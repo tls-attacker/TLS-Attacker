@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -67,8 +68,8 @@ public enum NamedGroup {
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144", 6144),
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192", 8192),
     EXPLICIT_PRIME(new byte[] { (byte) 0xFF, (byte) 1 }, "UNDEFINED", 0),
-    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     // GREASE constants
+    EXPLICIT_CHAR2(new byte[] { (byte) 0xFF, (byte) 2 }, "UNDEFINED", 0),
     GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }, "GREASE", null),
     GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }, "GREASE", null),
     GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }, "GREASE", null),
@@ -99,7 +100,7 @@ public enum NamedGroup {
     private static final Map<Integer, NamedGroup> MAP;
 
     private static final Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
-            FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
+        FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName, Integer coordinateSizeInBit) {
         this.value = value;
@@ -153,13 +154,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (publicKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && publicKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                        && publicKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -173,13 +174,13 @@ public enum NamedGroup {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
                     if (privateKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getX().getData())
-                            && privateKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getY().getData())) {
+                        .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                        && privateKey.getParams().getGenerator().getAffineY()
+                            .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
                         return group;
                     }
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.debug("Could not test " + group.name() + " not completly integrated");
+                } catch (UnsupportedOperationException e) {
+                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
                 }
             }
         }
@@ -226,7 +227,7 @@ public enum NamedGroup {
 
         if (sourceBytes.length % NamedGroup.LENGTH != 0) {
             throw new IllegalArgumentException("Failed to convert byte array. "
-                    + "Source array size is not a multiple of destination type size.");
+                + "Source array size is not a multiple of destination type size.");
         }
 
         ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);

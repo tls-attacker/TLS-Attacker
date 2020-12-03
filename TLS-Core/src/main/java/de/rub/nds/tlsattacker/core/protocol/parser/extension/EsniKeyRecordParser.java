@@ -7,17 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-
-import de.rub.nds.tlsattacker.core.config.Config;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -28,6 +22,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
@@ -90,7 +89,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
         int cipherSuitesLen = this.parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
         byte[] cipherSuitesBytes = this.parseByteArrayField(cipherSuitesLen);
-        List<CipherSuite> cipherSuites = CipherSuite.getCiphersuites(cipherSuitesBytes);
+        List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(cipherSuitesBytes);
         record.setCipherSuiteList(cipherSuites);
     }
 
@@ -130,8 +129,8 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
             }
 
             byte[] extensionBytes = extensionStream.toByteArray();
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0,
-                    HandshakeMessageType.UNKNOWN, config);
+            ExtensionParser parser =
+                ExtensionParserFactory.getExtensionParser(extensionBytes, 0, HandshakeMessageType.UNKNOWN, config);
             ExtensionMessage extensionMessage = parser.parse();
             record.getExtensions().add(extensionMessage);
             i = i + ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH + contentLength;
