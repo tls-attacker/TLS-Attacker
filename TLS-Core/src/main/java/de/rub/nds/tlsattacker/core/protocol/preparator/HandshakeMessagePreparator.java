@@ -77,9 +77,9 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
                 if (extensionMessage instanceof KeyShareExtensionMessage && msg instanceof ServerHelloMessage) {
-                    ServerHelloMessage sHello = (ServerHelloMessage) msg;
+                    ServerHelloMessage serverHello = (ServerHelloMessage) msg;
                     KeyShareExtensionMessage ksExt = (KeyShareExtensionMessage) extensionMessage;
-                    if (sHello.setRetryRequestModeInKeyShare()) {
+                    if (serverHello.setRetryRequestModeInKeyShare()) {
                         ksExt.setRetryRequestMode(true);
                     }
                 }
