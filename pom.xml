@@ -278,7 +278,6 @@
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>0.5.2</version>
                     <configuration>
-                        <lineEnding>CRLF</lineEnding>
                         <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
                     </configuration>
                 </plugin>
@@ -305,7 +304,6 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <configuration>
                     <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
-                    <lineEnding>CRLF</lineEnding>
                 </configuration>
                 <executions>
                     <execution>
