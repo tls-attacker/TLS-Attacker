@@ -563,9 +563,21 @@ public enum CipherSuite {
         return (this.name().contains("_CBC"));
     }
 
-    public boolean isUsingPadding() {
-        // todo this should be extended
-        return (this.name().contains("_CBC"));
+    public Boolean isUsingPadding(ProtocolVersion protocolVersion) {
+        CipherType type = AlgorithmResolver.getCipherType(this);
+        switch (type) {
+            case STREAM:
+                return false;
+            case BLOCK:
+                return true;
+            case AEAD:
+                if (protocolVersion != ProtocolVersion.TLS13) {
+                    return false;
+                } else {
+                    return true;
+                }
+        }
+        return null;
     }
 
     public boolean isUsingMac() {

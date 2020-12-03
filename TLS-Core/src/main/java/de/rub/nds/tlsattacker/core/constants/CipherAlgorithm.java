@@ -102,14 +102,4 @@ public enum CipherAlgorithm {
     public int getBlocksize() {
         return blocksize;
     }
-
-    // TODO: does this replace the incomplete function in CipherSuite?
-    public boolean usesPadding() {
-        if (this.name().contains("CBC") || this.name().contains("IDEA")) {
-            return true;
-        } else if (this.name() == "ChaCha20Poly1305" || this.name() == "RC2_128") {
-            return true;
-        }
-        return false;
-    }
 }
