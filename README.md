@@ -241,15 +241,17 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <messages>
             <Heartbeat>
                 <payloadLength>
-                <integerExplicitValueModification>
-                    <explicitValue>20000</explicitValue>
-                </integerExplicitValueModification>
+                    <IntegerExplicitValueModification>
+                        <explicitValue>20000</explicitValue>
+                    </IntegerExplicitValueModification>
                 </payloadLength>
             </Heartbeat>
-	</messages>
+        </messages>
     </Send>
     <Receive>
-      <Heartbeat/>
+        <messages>
+            <Heartbeat/>
+        </messages>
     </Receive>
 </workflowTrace>
 ```
