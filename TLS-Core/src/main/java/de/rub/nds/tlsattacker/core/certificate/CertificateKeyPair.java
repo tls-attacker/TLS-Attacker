@@ -66,14 +66,14 @@ public class CertificateKeyPair implements Serializable {
     private final byte[] certificateBytes;
 
     @XmlElements(value = { @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),
-            @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
-            @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
+        @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
+        @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
             @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey") })
     private final CustomPublicKey publicKey;
 
     @XmlElements(value = { @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey"),
-            @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
-            @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
+        @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
+        @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
             @XmlElement(type = CustomECPrivateKey.class, name = "EcPrivateKey") })
     private final CustomPrivateKey privateKey;
 
@@ -151,7 +151,7 @@ public class CertificateKeyPair implements Serializable {
         // pack them accordingly
         this.certificateBytes = ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateBytes.length
                 + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
-                .intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH), certificateBytes);
+                        .intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH), certificateBytes);
         this.publicKeyGroup = null;
         this.signatureGroup = null;
         gostCurve = null;
@@ -288,7 +288,7 @@ public class CertificateKeyPair implements Serializable {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
-        if (!(publicKey instanceof CustomEcPublicKey)) {
+        if (!(publicKey instanceof CustomEcPublicKey) || (certSignatureType != CertificateKeyType.ECDH && certSignatureType != CertificateKeyType.ECDSA)) {
             return null;
         }
         if (((CustomEcPublicKey) publicKey).getGostCurve() != null) {
