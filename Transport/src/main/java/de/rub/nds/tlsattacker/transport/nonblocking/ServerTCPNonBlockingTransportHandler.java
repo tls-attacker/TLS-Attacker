@@ -75,7 +75,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
             return initialized;
         }
         if (task != null) {
-            if (callable.isDoneAlready()) {
+            if (task.isDone()) {
                 try {
                     socket = task.get();
                     socket.setSoTimeout(1);
