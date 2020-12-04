@@ -138,6 +138,8 @@ public class WorkflowConfigurationFactory {
                 return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
+            case DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
+                return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
             case RESUMPTION:
@@ -213,6 +215,9 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the given connection end.
+     *
+     * @param connection
+     * @return
      */
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createTlsEntryWorkflowTrace(connection);
@@ -473,7 +478,9 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new RenegotiationAction());
         WorkflowTrace renegotiationTrace = createResumptionWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -485,7 +492,9 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -500,7 +509,9 @@ public class WorkflowConfigurationFactory {
                 config));
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            trace.addTlsAction(reneAction);
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }
@@ -1009,6 +1020,19 @@ public class WorkflowConfigurationFactory {
             }
         } else {
             LOGGER.error("Not implemented for ConnectionEndType.SERVER");
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createDynamicClientRenegotiationWithoutResumption() {
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new FlushSessionCacheAction());
+        WorkflowTrace renegotiationTrace = createDynamicHandshakeWorkflow();
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+                trace.addTlsAction(reneAction);
+            }
         }
         return trace;
     }

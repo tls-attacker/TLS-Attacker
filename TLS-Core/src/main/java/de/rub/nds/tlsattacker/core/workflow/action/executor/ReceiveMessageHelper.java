@@ -106,6 +106,15 @@ public class ReceiveMessageHelper {
                 receivedBytes = receiveByteArray(context);
                 MessageActionResult tempResult = handleReceivedBytes(receivedBytes, context);
                 result = result.merge(tempResult);
+                boolean receivedFatalAlert = testIfReceivedFatalAlert(tempResult.getMessageList());
+                if (receivedFatalAlert && context.getConfig().isStopReceivingAfterFatal()) {
+                    break;
+                }
+                boolean receivedWarningAlert = testIfReceivedWarningAlert(tempResult.getMessageList());
+                if (receivedWarningAlert && context.getConfig().getStopReceivingAfterWarning()) {
+                    break;
+                }
+
                 for (ProtocolMessage message : result.getMessageList()) {
                     if (message.getClass().equals(waitTillMessage.getClass())) {
                         LOGGER.debug("Received message we waited for");
@@ -180,6 +189,18 @@ public class ReceiveMessageHelper {
         return false;
     }
 
+    private boolean testIfReceivedWarningAlert(List<ProtocolMessage> messages) {
+        for (ProtocolMessage message : messages) {
+            if (message instanceof AlertMessage) {
+                AlertMessage alert = (AlertMessage) message;
+                if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean testIfReceivedAllExpectedMessage(List<ProtocolMessage> expectedMessages,
         List<ProtocolMessage> actualMessages, boolean earlyStop) {
         if (actualMessages.size() != expectedMessages.size() && !earlyStop) {
@@ -201,9 +222,14 @@ public class ReceiveMessageHelper {
         List<ProtocolMessage> receivedMessages, TlsContext context) {
 
         boolean receivedFatalAlert = testIfReceivedFatalAlert(receivedMessages);
-        if (receivedFatalAlert) {
+        if (receivedFatalAlert && context.getConfig().isStopReceivingAfterFatal()) {
             return false;
         }
+        boolean receivedWarningAlert = testIfReceivedWarningAlert(receivedMessages);
+        if (receivedWarningAlert && context.getConfig().getStopReceivingAfterWarning()) {
+            return false;
+        }
+
         boolean receivedAllExpectedMessages =
             testIfReceivedAllExpectedMessage(expectedMessages, receivedMessages, context.getConfig().isEarlyStop());
         if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {

@@ -12,8 +12,12 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -71,6 +75,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
             if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if ((state.getConfig().getStopActionsAfterWarning() && isReceivedWarningAlert())) {
+                LOGGER.debug("Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
                 break;
             }
             if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
@@ -134,6 +142,21 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     private boolean isReceivedFatalAlert() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a at least one TLS context received a warning alert.
+     */
+    private boolean isReceivedWarningAlert() {
+        List<ProtocolMessage> allReceivedMessages =
+            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
+        for (ProtocolMessage message : allReceivedMessages) {
+            AlertMessage alert = (AlertMessage) message;
+            if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
                 return true;
             }
         }

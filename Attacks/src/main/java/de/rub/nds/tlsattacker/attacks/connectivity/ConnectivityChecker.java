@@ -121,10 +121,10 @@ public class ConnectivityChecker {
         executor.executeWorkflow();
         if (trace.allActionsExecuted()) {
             for (TlsAction action : trace.getTlsActions()) {
-                if (action instanceof AsciiAction || !(action instanceof SendAsciiAction)) {
+                if (action instanceof AsciiAction && !(action instanceof SendAsciiAction)) {
                     AsciiAction asciiAction = (AsciiAction) action;
                     if (asciiAction.getAsciiText() != null) {
-                        if (asciiAction.getAsciiText().toLowerCase().contains("TLS negotiation".toLowerCase())) {
+                        if (asciiAction.getAsciiText().contains(config.getStarttlsType().getNegotiatationString())) {
                             return true;
                         }
                     }
