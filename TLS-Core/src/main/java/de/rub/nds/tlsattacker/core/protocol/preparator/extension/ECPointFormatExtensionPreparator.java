@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,7 +28,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
     private final ECPointFormatExtensionMessage msg;
 
     public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message,
-            ECPointFormatExtensionSerializer serializer) {
+        ECPointFormatExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

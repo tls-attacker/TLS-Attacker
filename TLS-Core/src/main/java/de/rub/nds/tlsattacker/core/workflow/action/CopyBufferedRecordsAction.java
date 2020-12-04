@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -24,6 +25,7 @@ public class CopyBufferedRecordsAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setRecordBuffer(src.getRecordBuffer());
+        setExecuted(true);
     }
 
     @Override

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
@@ -44,7 +45,7 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3, 4 }, 0) instanceof UnknownExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3, 4 }, 0, context.getConfig()) instanceof UnknownExtensionParser);
     }
 
     /**

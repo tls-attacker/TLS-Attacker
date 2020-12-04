@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -26,7 +27,7 @@ import org.junit.Test;
 public class CachedInfoExtensionHandlerTest {
 
     private final List<CachedObject> cachedObjects = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01,
-            0x02 }), new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
+        0x02 }), new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
     private CachedInfoExtensionHandler handler;
     private TlsContext context;
 
@@ -40,8 +41,8 @@ public class CachedInfoExtensionHandlerTest {
     public void testAdjustTLSContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
-        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg,
-                new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator =
+            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
         preparator.prepare();
 
         handler.adjustTLSContext(msg);
@@ -51,7 +52,7 @@ public class CachedInfoExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof CachedInfoExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof CachedInfoExtensionParser);
     }
 
     @Test
@@ -70,7 +71,7 @@ public class CachedInfoExtensionHandlerTest {
             CachedObject actualObject = actual.get(i);
 
             assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
-                    .getValue());
+                .getValue());
             assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength().getValue());
             assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
         }

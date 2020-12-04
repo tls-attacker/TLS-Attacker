@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -33,13 +34,13 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
      */
     protected ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
+        ReceiveMessageHelper receiveMessageHelper) {
         super(receiveFromAlias, forwardToAlias, receiveMessageHelper);
         withPrepare = true;
     }
 
     public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
-            List<ProtocolMessage> messages) {
+        List<ProtocolMessage> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }

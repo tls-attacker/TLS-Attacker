@@ -7,11 +7,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 public class AlertMessage extends ProtocolMessage {
@@ -28,6 +31,7 @@ public class AlertMessage extends ProtocolMessage {
     /**
      * config array used to configure alert message
      */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] config;
     /**
      * alert level
@@ -150,7 +154,7 @@ public class AlertMessage extends ProtocolMessage {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
+            && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
 
     }
 

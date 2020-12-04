@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -21,8 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Describes Server Name Indication extension from
- * http://tools.ietf.org/html/rfc6066
+ * Describes Server Name Indication extension from http://tools.ietf.org/html/rfc6066
  */
 public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 

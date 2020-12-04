@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
@@ -30,7 +32,7 @@ public class UserMappingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new UserMappingExtensionParser(startposition, extensionBytes);
+        parser = new UserMappingExtensionParser(startposition, extensionBytes, Config.createConfig());
     }
 
     @Test

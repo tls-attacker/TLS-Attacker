@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,8 +21,8 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
     private static final Logger LOGGER = LogManager.getLogger();
     private final CertificateStatusMessage msg;
 
-    private final static int TYPE_OCSP = 1;
-    private final static int TYPE_OCSP_MULTI = 2;
+    private static final int TYPE_OCSP = 1;
+    private static final int TYPE_OCSP_MULTI = 2;
 
     public CertificateStatusPreparator(Chooser chooser, CertificateStatusMessage message) {
         super(chooser, message);

@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
@@ -27,8 +29,8 @@ public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
     }
 
     @Override
-    public SRPExtensionParser getParser(byte[] message, int pointer) {
-        return new SRPExtensionParser(pointer, message);
+    public SRPExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SRPExtensionParser(pointer, message, config);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
     public void adjustTLSExtensionContext(SRPExtensionMessage message) {
         context.setSecureRemotePasswordExtensionIdentifier(message.getSrpIdentifier().getValue());
         LOGGER.debug("Adjusted the TLSContext secure remote password extension identifier to "
-                + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));
+            + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));
     }
 
 }

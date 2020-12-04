@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -56,20 +57,20 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
         this.extensionType = ModifiableVariableFactory.safelySetValue(extensionType, array);
     }
 
-    public void setExtensionLength(int length) {
-        this.extensionLength = ModifiableVariableFactory.safelySetValue(extensionLength, length);
-    }
-
-    public void setExtensionBytes(byte[] data) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(extensionBytes, data);
-    }
-
     public void setExtensionType(ModifiableByteArray extensionType) {
         this.extensionType = extensionType;
     }
 
+    public void setExtensionLength(int length) {
+        this.extensionLength = ModifiableVariableFactory.safelySetValue(extensionLength, length);
+    }
+
     public void setExtensionLength(ModifiableInteger extensionLength) {
         this.extensionLength = extensionLength;
+    }
+
+    public void setExtensionBytes(byte[] data) {
+        this.extensionBytes = ModifiableVariableFactory.safelySetValue(extensionBytes, data);
     }
 
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +24,7 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
     private final HeartbeatExtensionMessage msg;
 
     public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message,
-            HeartbeatExtensionSerializer serializer) {
+        HeartbeatExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

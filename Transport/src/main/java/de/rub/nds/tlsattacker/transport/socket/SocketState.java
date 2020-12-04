@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.socket;
 
 public enum SocketState {
@@ -15,5 +16,6 @@ public enum SocketState {
     DATA_AVAILABLE,
     TIMEOUT,
     SOCKET_EXCEPTION,
-    IO_EXCEPTION
+    IO_EXCEPTION,
+    UNAVAILABLE
 }

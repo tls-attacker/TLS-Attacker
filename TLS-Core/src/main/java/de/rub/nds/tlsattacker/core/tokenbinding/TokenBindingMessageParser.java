@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -36,8 +37,8 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
         message.setKeyParameter(parseByteField(TokenBindingLength.KEY_PARAMETER));
         LOGGER.debug("KeyParameter:" + message.getKeyParameter().getValue());
 
-        TokenBindingKeyParameters keyParameter = TokenBindingKeyParameters.getTokenBindingKeyParameter(message
-                .getKeyParameter().getValue());
+        TokenBindingKeyParameters keyParameter =
+            TokenBindingKeyParameters.getTokenBindingKeyParameter(message.getKeyParameter().getValue());
         message.setKeyLength(parseIntField(TokenBindingLength.KEY));
         LOGGER.debug("KeyLength:" + message.getKeyLength().getValue());
 

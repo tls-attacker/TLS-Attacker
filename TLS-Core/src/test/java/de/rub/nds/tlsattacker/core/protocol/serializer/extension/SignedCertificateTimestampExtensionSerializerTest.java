@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -32,7 +33,7 @@ public class SignedCertificateTimestampExtensionSerializerTest {
     private SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            byte[] timestamp, byte[] expectedBytes, int startPosition) {
+        byte[] timestamp, byte[] expectedBytes, int startPosition) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.timestamp = timestamp;
@@ -46,8 +47,8 @@ public class SignedCertificateTimestampExtensionSerializerTest {
         message.setExtensionLength(extensionLength);
         message.setSignedTimestamp(timestamp);
 
-        SignedCertificateTimestampExtensionSerializer serializer = new SignedCertificateTimestampExtensionSerializer(
-                message);
+        SignedCertificateTimestampExtensionSerializer serializer =
+            new SignedCertificateTimestampExtensionSerializer(message);
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
 }

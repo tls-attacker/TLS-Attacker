@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import java.io.IOException;
@@ -22,6 +23,8 @@ public class AcceptorCallable implements Callable<Socket> {
 
     private final ServerSocket serverSocket;
 
+    private Socket clientConnection = null;
+
     public AcceptorCallable(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
@@ -29,7 +32,8 @@ public class AcceptorCallable implements Callable<Socket> {
     @Override
     public Socket call() throws Exception {
         try {
-            return serverSocket.accept();
+            clientConnection = serverSocket.accept();
+            return clientConnection;
         } catch (IOException ex) {
             LOGGER.warn("Could not open Accept connection!", ex);
         }

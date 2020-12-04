@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.state.State;
@@ -42,13 +43,14 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
 
     @Override
     protected void copyField(TlsContext srcContext, TlsContext dstContext) {
-        DeepCopyBufferedRecordsAction copyRecords = new DeepCopyBufferedRecordsAction(super.getSrcContextAlias(),
-                super.getDstContextAlias());
-        DeepCopyBufferedMessagesAction copyMessages = new DeepCopyBufferedMessagesAction(super.getSrcContextAlias(),
-                super.getDstContextAlias());
+        DeepCopyBufferedRecordsAction copyRecords =
+            new DeepCopyBufferedRecordsAction(super.getSrcContextAlias(), super.getDstContextAlias());
+        DeepCopyBufferedMessagesAction copyMessages =
+            new DeepCopyBufferedMessagesAction(super.getSrcContextAlias(), super.getDstContextAlias());
 
         copyRecords.execute(state);
         copyMessages.execute(state);
+        setExecuted(true);
     }
 
 }

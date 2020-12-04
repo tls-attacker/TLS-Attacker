@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -122,13 +123,13 @@ public class ForwardMessagesActionTest {
         action = new ForwardMessagesAction(null, ctx2Alias, alert);
         exception.expect(WorkflowExecutionException.class);
         exception
-                .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
+            .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
         action.execute(state);
 
         action = new ForwardMessagesAction(ctx1Alias, null, alert);
         exception.expect(WorkflowExecutionException.class);
         exception
-                .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
+            .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
@@ -137,13 +138,13 @@ public class ForwardMessagesActionTest {
         action = new ForwardMessagesAction("", ctx2Alias, alert);
         exception.expect(WorkflowExecutionException.class);
         exception
-                .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
+            .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
         action.execute(state);
 
         action = new ForwardMessagesAction(ctx1Alias, "", alert);
         exception.expect(WorkflowExecutionException.class);
         exception
-                .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
+            .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
@@ -165,6 +166,7 @@ public class ForwardMessagesActionTest {
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardMessages>");
+            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardMessages>");

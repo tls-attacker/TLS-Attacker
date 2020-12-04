@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -54,8 +55,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of WorkflowExecutionException of execute method, of class
-     * SendAsciiAction.
+     * Test of WorkflowExecutionException of execute method, of class SendAsciiAction.
      *
      * @throws java.io.IOException
      */
@@ -66,7 +66,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of reset method, of class SendAsciiAcion.
+     * Test of reset method, of class SendAsciiAction.
      */
     @Test
     public void testReset() {
@@ -75,7 +75,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of executedAsPlanned method, of class SendAsciiAcion.
+     * Test of executedAsPlanned method, of class SendAsciiAction.
      */
     @Test
     public void testExecutedAsPlanned() {
@@ -85,7 +85,7 @@ public class SendAsciiActionTest {
     }
 
     /**
-     * Test of getAsciiString method, of class SendAsciiAcion.
+     * Test of getAsciiString method, of class SendAsciiAction.
      */
     @Test
     public void testGetAsciiString() {

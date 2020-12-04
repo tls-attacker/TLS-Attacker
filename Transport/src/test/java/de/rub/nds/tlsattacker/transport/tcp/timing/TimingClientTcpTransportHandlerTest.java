@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class TimingClientTcpTransportHandlerTest {
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
-        handler = new TimingClientTcpTransportHandler(100, "localhost", 0);
+        handler = new TimingClientTcpTransportHandler(100, 100, "localhost", 0);
         handler.closeConnection();
     }
 
@@ -49,7 +50,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler =
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -72,7 +74,8 @@ public class TimingClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler = new TimingClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
+            handler =
+                new TimingClientTcpTransportHandler(100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.task;
 
 import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
@@ -34,7 +35,7 @@ public class FingerPrintTask extends TlsTask {
     }
 
     public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions,
-            long additionalTcpTimeout) {
+        long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.state = state;
     }

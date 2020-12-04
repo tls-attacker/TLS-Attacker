@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -20,9 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * TLS Action bound to a single connection/TLS context. This should be the
- * default abstract base class for most actions. Provides automatic fallback to
- * default context alias.
+ * TLS Action bound to a single connection/TLS context. This should be the default abstract base class for most actions.
+ * Provides automatic fallback to default context alias.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends TlsAction {
@@ -67,12 +67,12 @@ public abstract class ConnectionBoundAction extends TlsAction {
     @Override
     public boolean containsAllAliases(Collection<String> aliases) {
         return getAllAliases().containsAll(aliases);
-    };
+    }
 
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
-    };
+    }
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {

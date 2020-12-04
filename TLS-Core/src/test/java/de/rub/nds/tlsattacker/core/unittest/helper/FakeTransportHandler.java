@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -22,7 +23,7 @@ public class FakeTransportHandler extends TransportHandler {
     private Boolean opened = false;
 
     public FakeTransportHandler(ConnectionEndType type) {
-        super(0, type);
+        super(0, 0, type);
         fetchableByte = new byte[0];
     }
 

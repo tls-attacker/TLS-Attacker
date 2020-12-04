@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.udp.timing;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -19,8 +20,8 @@ public class TimingClientUdpTransportHandler extends ClientUdpTransportHandler i
         super(connection);
     }
 
-    public TimingClientUdpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public TimingClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
     }
 
     @Override

@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -32,9 +34,8 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray requestExtension;
 
     /**
-     * As a TLS 1.3 CertificateEntry extension, this extension uses the format
-     * of a CertificateStatus message. If this is the case, let's have the same
-     * fields as such a message.
+     * As a TLS 1.3 CertificateEntry extension, this extension uses the format of a CertificateStatus message. If this
+     * is the case, let's have the same fields as such a message.
      */
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -59,8 +60,8 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     }
 
     public void setCertificateStatusRequestType(int certificateStatusRequestType) {
-        this.certificateStatusRequestType = safelySetValue(this.certificateStatusRequestType,
-                certificateStatusRequestType);
+        this.certificateStatusRequestType =
+            safelySetValue(this.certificateStatusRequestType, certificateStatusRequestType);
     }
 
     public ModifiableInteger getResponderIDListLength() {

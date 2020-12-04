@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -35,12 +36,13 @@ public class RecordCipherFactory {
                         return new RecordBlockCipher(context, keySet);
                     case STREAM:
                         return new RecordStreamCipher(context, keySet);
+                    default:
+                        LOGGER.warn("UnknownCipherType:" + type.name());
+                        return new RecordNullCipher(context);
                 }
-                LOGGER.warn("UnknownCipherType:" + type.name());
-                return new RecordNullCipher(context);
             }
-        } catch (Exception E) {
-            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", E);
+        } catch (Exception e) {
+            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", e);
             return new RecordNullCipher(context);
         }
     }

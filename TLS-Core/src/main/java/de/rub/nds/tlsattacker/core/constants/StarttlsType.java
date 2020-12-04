@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum StarttlsType {
@@ -17,9 +18,8 @@ public enum StarttlsType {
     SMTP("220");
 
     /**
-     * This string is used to identify if the server accepted a STARTTLS
-     * command. If it is present in the response we believe that the server
-     * supports starttls.
+     * This string is used to identify if the server accepted a STARTTLS command. If it is present in the response we
+     * believe that the server supports starttls.
      */
     private String negotiatationString;
 

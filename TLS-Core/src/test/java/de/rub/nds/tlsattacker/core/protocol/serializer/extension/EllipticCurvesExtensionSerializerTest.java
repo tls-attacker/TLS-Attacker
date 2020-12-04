@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import org.junit.Before;
@@ -19,8 +20,7 @@ public class EllipticCurvesExtensionSerializerTest {
     }
 
     /**
-     * Test of serializeExtensionContent method, of class
-     * EllipticCurvesExtensionSerializer.
+     * Test of serializeExtensionContent method, of class EllipticCurvesExtensionSerializer.
      */
     @Test
     public void testSerializeExtensionContent() {

@@ -7,8 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -29,8 +31,8 @@ public class TokenBindingExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
-                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
-                new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
+            new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
+            new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
     }
 
     private final ExtensionType extensionType;
@@ -43,7 +45,7 @@ public class TokenBindingExtensionParserTest {
     private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
+        TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;
@@ -54,7 +56,7 @@ public class TokenBindingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new TokenBindingExtensionParser(0, extensionBytes);
+        parser = new TokenBindingExtensionParser(0, extensionBytes, Config.createConfig());
     }
 
     @Test

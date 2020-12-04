@@ -7,8 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -21,8 +23,8 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public CachedInfoExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
@@ -39,8 +41,8 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
         }
 
         while (position < msg.getCachedInfoLength().getValue()) {
-            CachedObjectParser parser = new CachedObjectParser(position, msg.getCachedInfoBytes().getValue(),
-                    connectionEndType);
+            CachedObjectParser parser =
+                new CachedObjectParser(position, msg.getCachedInfoBytes().getValue(), connectionEndType);
             cachedObjectList.add(parser.parse());
             if (position == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing CachedObjects");

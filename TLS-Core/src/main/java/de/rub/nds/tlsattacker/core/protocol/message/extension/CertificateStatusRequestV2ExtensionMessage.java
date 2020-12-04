@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -43,8 +44,8 @@ public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage
     }
 
     public void setStatusRequestListLength(int statusRequestListLength) {
-        this.statusRequestListLength = ModifiableVariableFactory.safelySetValue(this.statusRequestListLength,
-                statusRequestListLength);
+        this.statusRequestListLength =
+            ModifiableVariableFactory.safelySetValue(this.statusRequestListLength, statusRequestListLength);
     }
 
     public List<RequestItemV2> getStatusRequestList() {

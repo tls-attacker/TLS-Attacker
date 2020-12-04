@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 public abstract class AsciiAction extends TlsAction {
@@ -39,7 +40,7 @@ public abstract class AsciiAction extends TlsAction {
 
     /**
      * @param asciiText
-     *            the asciiText to set
+     * the asciiText to set
      */
     public void setAsciiText(String asciiText) {
         this.asciiText = asciiText;

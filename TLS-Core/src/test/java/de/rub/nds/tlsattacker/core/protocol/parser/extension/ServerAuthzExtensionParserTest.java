@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import java.util.Arrays;
@@ -25,8 +27,8 @@ public class ServerAuthzExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.SERVER_AUTHZ,
-                ArrayConverter.hexStringToByteArray("000800050400010203"), 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("00010203") } });
+            ArrayConverter.hexStringToByteArray("000800050400010203"), 5, 0, 4,
+            ArrayConverter.hexStringToByteArray("00010203") } });
     }
 
     private final ExtensionType extensionType;
@@ -39,7 +41,7 @@ public class ServerAuthzExtensionParserTest {
     private ServerAuthzExtensionMessage msg;
 
     public ServerAuthzExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-            int startParsing, int authzFormatListLength, byte[] authzFormatList) {
+        int startParsing, int authzFormatListLength, byte[] authzFormatList) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
@@ -50,7 +52,7 @@ public class ServerAuthzExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        parser = new ServerAuthzExtensionParser(startParsing, expectedBytes);
+        parser = new ServerAuthzExtensionParser(startParsing, expectedBytes, Config.createConfig());
         msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());

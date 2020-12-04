@@ -7,10 +7,12 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -54,7 +56,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -144,7 +146,8 @@ public class ParserSerializerStressTest {
             case 18:
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
-                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12, config);
+                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
+                    ProtocolMessageType.UNKNOWN, config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }
@@ -172,10 +175,10 @@ public class ParserSerializerStressTest {
                 return new DHEServerKeyExchangeSerializer((DHEServerKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 9:
                 return new ECDHClientKeyExchangeSerializer((ECDHClientKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 10:
                 return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message,
-                        ProtocolVersion.TLS12);
+                    ProtocolVersion.TLS12);
             case 11:
                 return new FinishedSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
             case 12:
@@ -193,7 +196,7 @@ public class ParserSerializerStressTest {
             case 18:
                 return new UnknownHandshakeSerializer((UnknownHandshakeMessage) message, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownSerializer((UnknownMessage) message, ProtocolVersion.TLS12);
+                return new UnknownMessageSerializer((UnknownMessage) message, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

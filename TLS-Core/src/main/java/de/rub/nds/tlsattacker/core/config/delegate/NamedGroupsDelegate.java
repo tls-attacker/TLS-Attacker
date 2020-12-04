@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -20,9 +21,11 @@ import java.util.List;
 
 public class NamedGroupsDelegate extends Delegate {
 
-    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
+    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma",
+        converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats = null;
-    @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma", converter = NamedGroupConverter.class)
+    @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma",
+        converter = NamedGroupConverter.class)
     private List<NamedGroup> namedGroups = null;
 
     public NamedGroupsDelegate() {

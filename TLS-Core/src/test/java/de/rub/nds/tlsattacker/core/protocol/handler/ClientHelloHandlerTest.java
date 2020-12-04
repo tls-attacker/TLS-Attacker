@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -67,6 +68,7 @@ public class ClientHelloHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ClientHelloMessage message = new ClientHelloMessage();
+        message.setCompleteResultingMessage(new byte[0]);
         message.setUnixTime(new byte[] { 0, 1, 2 });
         message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
         message.setCompressions(new byte[] { 0, 1 });
@@ -80,9 +82,9 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCiphersuites().size() == 2);
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
+        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertNull(context.getDtlsCookie());
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
@@ -90,6 +92,7 @@ public class ClientHelloHandlerTest {
     @Test
     public void testAdjustTLSContextWithCookie() {
         ClientHelloMessage message = new ClientHelloMessage();
+        message.setCompleteResultingMessage(new byte[0]);
         message.setUnixTime(new byte[] { 0, 1, 2 });
         message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
         message.setCompressions(new byte[] { 0, 1 });
@@ -103,9 +106,9 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
         assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
-        assertTrue(context.getClientSupportedCiphersuites().size() == 2);
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
-        assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
+        assertTrue(context.getClientSupportedCipherSuites().size() == 2);
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
+        assertTrue(context.getClientSupportedCipherSuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
         assertArrayEquals(context.getDtlsCookie(), new byte[] { 2, 2, 3 });
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }

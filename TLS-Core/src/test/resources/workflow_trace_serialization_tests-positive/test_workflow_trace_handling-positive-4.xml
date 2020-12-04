@@ -1,5 +1,5 @@
 Test that user default connections that are explicitly overwritten in the
-workflow trace are not overwritten by noramlizing and filtering.
+workflow trace are not overwritten by normalizing and filtering.
 
 # Given this config:
 <config>

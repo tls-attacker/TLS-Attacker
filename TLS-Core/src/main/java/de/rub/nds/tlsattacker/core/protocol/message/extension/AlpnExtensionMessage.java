@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -17,7 +18,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,24 +26,19 @@ import java.util.List;
 public class AlpnExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    private ModifiableInteger alpnExtensionLength;
+    private ModifiableInteger proposedAlpnProtocolsLength;
     @ModifiableVariableProperty
-    private ModifiableByteArray alpnAnnouncedProtocols;
+    private ModifiableByteArray proposedAlpnProtocols;
 
     @HoldsModifiableVariable
     private List<AlpnEntry> alpnEntryList;
 
     public AlpnExtensionMessage() {
         super(ExtensionType.ALPN);
-        alpnEntryList = new LinkedList<>();
     }
 
     public AlpnExtensionMessage(Config config) {
         super(ExtensionType.ALPN);
-        alpnEntryList = new LinkedList<>();
-        for (String string : config.getAlpnAnnouncedProtocols()) {
-            alpnEntryList.add(new AlpnEntry(string.getBytes()));
-        }
     }
 
     public List<AlpnEntry> getAlpnEntryList() {
@@ -54,30 +49,30 @@ public class AlpnExtensionMessage extends ExtensionMessage {
         this.alpnEntryList = alpnEntryList;
     }
 
-    public ModifiableInteger getAlpnExtensionLength() {
-        return alpnExtensionLength;
+    public ModifiableInteger getProposedAlpnProtocolsLength() {
+        return proposedAlpnProtocolsLength;
     }
 
-    public void setAlpnExtensionLength(ModifiableInteger alpnExtensionLength) {
-        this.alpnExtensionLength = alpnExtensionLength;
+    public void setProposedAlpnProtocolsLength(ModifiableInteger proposedAlpnProtocolsLength) {
+        this.proposedAlpnProtocolsLength = proposedAlpnProtocolsLength;
     }
 
-    public void setAlpnExtensionLength(int alpnExtensionLength) {
-        this.alpnExtensionLength = ModifiableVariableFactory.safelySetValue(this.alpnExtensionLength,
-                alpnExtensionLength);
+    public void setProposedAlpnProtocolsLength(int proposedAlpnProtocolsLength) {
+        this.proposedAlpnProtocolsLength =
+            ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocolsLength, proposedAlpnProtocolsLength);
     }
 
-    public ModifiableByteArray getAlpnAnnouncedProtocols() {
-        return alpnAnnouncedProtocols;
+    public ModifiableByteArray getProposedAlpnProtocols() {
+        return proposedAlpnProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(ModifiableByteArray alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    public void setProposedAlpnProtocols(ModifiableByteArray proposedAlpnProtocols) {
+        this.proposedAlpnProtocols = proposedAlpnProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(byte[] alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = ModifiableVariableFactory.safelySetValue(this.alpnAnnouncedProtocols,
-                alpnAnnouncedProtocols);
+    public void setProposedAlpnProtocols(byte[] proposedAlpnProtocols) {
+        this.proposedAlpnProtocols =
+            ModifiableVariableFactory.safelySetValue(this.proposedAlpnProtocols, proposedAlpnProtocols);
     }
 
 }

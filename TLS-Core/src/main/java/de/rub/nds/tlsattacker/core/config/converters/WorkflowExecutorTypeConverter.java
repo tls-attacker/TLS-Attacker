@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -20,7 +21,7 @@ public class WorkflowExecutorTypeConverter implements IStringConverter<WorkflowE
         try {
             return WorkflowExecutorType.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Could not parse WorkfloweExecutorType.");
+            throw new ParameterException("Could not parse WorkflowExecutorType.");
         }
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,8 +21,15 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     private ModifiableInteger maxEarlyDataSize;
 
+    private boolean newSessionTicketExtension = false;
+
     public EarlyDataExtensionMessage() {
         super(ExtensionType.EARLY_DATA);
+    }
+
+    public EarlyDataExtensionMessage(boolean newSessionTicketExtension) {
+        super(ExtensionType.EARLY_DATA);
+        this.newSessionTicketExtension = newSessionTicketExtension;
     }
 
     /**
@@ -33,7 +41,7 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     /**
      * @param maxEarlyDataSize
-     *            the maxEarlyDataSize to set
+     * the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
@@ -41,5 +49,13 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     public void setMaxEarlyDataSize(int maxEarlyDataSize) {
         this.maxEarlyDataSize = ModifiableVariableFactory.safelySetValue(this.maxEarlyDataSize, maxEarlyDataSize);
+    }
+
+    public boolean isNewSessionTicketExtension() {
+        return newSessionTicketExtension;
+    }
+
+    public void setNewSessionTicketExtension(boolean newSessionTicketExtension) {
+        this.newSessionTicketExtension = newSessionTicketExtension;
     }
 }

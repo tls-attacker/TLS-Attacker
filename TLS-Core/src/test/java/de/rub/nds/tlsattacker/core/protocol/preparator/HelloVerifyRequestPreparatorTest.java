@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,8 +36,7 @@ public class HelloVerifyRequestPreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * HelloVerifyRequestPreparator.
+     * Test of prepareHandshakeMessageContents method, of class HelloVerifyRequestPreparator.
      */
     @Test
     public void testPrepare() {

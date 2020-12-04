@@ -7,12 +7,16 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 
 public class UnknownMessageTest {
 
@@ -20,7 +24,7 @@ public class UnknownMessageTest {
 
     @Before
     public void setUp() {
-        message = new UnknownMessage();
+        message = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
     }
 
     @After

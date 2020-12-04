@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -37,7 +38,7 @@ public class ChangeServerRandomActionTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException, CryptoException {
+        InvalidAlgorithmParameterException, CryptoException {
         action = new ChangeServerRandomAction(new byte[] { 0, 1 });
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
@@ -48,7 +49,7 @@ public class ChangeServerRandomActionTest {
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
 
         tlsContext.getRecordLayer().setRecordCipher(
-                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+            new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
     }
 
     @After

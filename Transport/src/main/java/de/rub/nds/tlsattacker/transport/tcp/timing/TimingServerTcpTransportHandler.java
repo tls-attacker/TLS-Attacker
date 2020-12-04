@@ -7,15 +7,21 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler implements TimeableTransportHandler {
 
-    public TimingServerTcpTransportHandler(long timeout, int port) {
-        super(timeout, port);
+    public TimingServerTcpTransportHandler(Connection con) {
+        super(con);
+    }
+
+    public TimingServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
+        super(firstTimeout, timeout, port);
     }
 
     @Override

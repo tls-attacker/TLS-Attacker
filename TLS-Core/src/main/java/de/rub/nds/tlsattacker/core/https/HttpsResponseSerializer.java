@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -31,7 +32,7 @@ public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResp
     public byte[] serializeProtocolMessageContent() {
         StringBuilder builder = new StringBuilder();
         builder.append(message.getResponseProtocol().getValue()).append(" ")
-                .append(message.getResponseStatusCode().getValue()).append("\r\n");
+            .append(message.getResponseStatusCode().getValue()).append("\r\n");
         for (HttpsHeader header : message.getHeader()) {
             HttpsHeaderSerializer serializer = new HttpsHeaderSerializer(header);
             builder.append(new String(serializer.serialize()));

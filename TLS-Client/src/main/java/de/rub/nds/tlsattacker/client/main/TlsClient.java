@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.client.main;
 
 import com.beust.jcommander.JCommander;
@@ -30,7 +31,7 @@ public class TlsClient {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(config);
         try {
@@ -49,25 +50,26 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
-            } catch (Exception E) {
-                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", E);
+            } catch (Exception e) {
+                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", e);
             }
-        } catch (ParameterException E) {
-            LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
-            LOGGER.debug(E);
+        } catch (ParameterException e) {
+            LOGGER.error("Could not parse provided parameters. " + e.getLocalizedMessage());
+            LOGGER.debug(e);
             commander.usage();
         }
     }
 
     public void startTlsClient(Config config) {
         State state = new State(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER
+                .warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
 import com.beust.jcommander.JCommander;
@@ -61,13 +62,13 @@ public class TlsMitm implements Runnable {
             executeMitmWorkflow(config);
         } catch (WorkflowExecutionException wee) {
             LOGGER.error("The TLS protocol flow was not executed completely. " + wee.getLocalizedMessage()
-                    + " - See debug messages for more details.");
+                + " - See debug messages for more details.");
             LOGGER.error(wee.getLocalizedMessage());
             LOGGER.debug(wee);
             throw wee;
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                    + " - See debug messages for more details.");
+                + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
@@ -80,8 +81,8 @@ public class TlsMitm implements Runnable {
     public void executeMitmWorkflow(Config config) throws ConfigurationException, WorkflowExecutionException {
         LOGGER.debug("Creating and launching mitm.");
         State state = new State(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
     }
 }

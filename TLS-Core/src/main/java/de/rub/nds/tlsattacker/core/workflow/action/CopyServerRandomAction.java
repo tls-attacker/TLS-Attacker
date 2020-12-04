@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,7 +34,7 @@ public class CopyServerRandomAction extends CopyContextFieldAction {
         dst.setServerRandom(src.getServerRandom());
         LOGGER.debug("Copying server random from " + src + " to " + dst);
         LOGGER.debug("Copied server random is: " + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
-
+        setExecuted(true);
     }
 
     @Override

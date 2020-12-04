@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public class RenegotiationInfoExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, 0, new byte[] {},
-                ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
+            ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -40,7 +42,7 @@ public class RenegotiationInfoExtensionParserTest {
     private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
-            int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
@@ -51,7 +53,7 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new RenegotiationInfoExtensionParser(startParsing, expectedBytes);
+        parser = new RenegotiationInfoExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

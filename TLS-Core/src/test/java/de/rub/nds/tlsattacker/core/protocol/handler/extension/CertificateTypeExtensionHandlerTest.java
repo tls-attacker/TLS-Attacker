@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -46,7 +47,7 @@ public class CertificateTypeExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof CertificateTypeExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof CertificateTypeExtensionParser);
     }
 
     @Test

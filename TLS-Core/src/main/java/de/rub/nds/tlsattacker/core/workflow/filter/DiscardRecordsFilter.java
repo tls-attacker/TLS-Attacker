@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -31,7 +32,7 @@ public class DiscardRecordsFilter extends Filter {
      * Apply filter to trace.
      *
      * @param trace
-     *            The workflow trace that should be filtered.
+     * The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {

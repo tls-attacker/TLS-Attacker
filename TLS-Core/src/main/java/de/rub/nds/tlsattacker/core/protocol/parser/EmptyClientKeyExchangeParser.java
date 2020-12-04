@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -23,13 +24,11 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
      * Constructor for the Parser class
      *
      * @param startposition
-     *            Position in the array where the ClientKeyExchangeParser is
-     *            supposed to start parsing
+     * Position in the array where the ClientKeyExchangeParser is supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to
-     *            parse
+     * The byte[] which the ClientKeyExchangeParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
      */
     public EmptyClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {

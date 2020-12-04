@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.exceptions.ObjectCreationException;
@@ -53,7 +54,7 @@ public class MessageFactory {
         try {
             return extensionClass.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
+            | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create Extension", ex);
         }
     }
@@ -65,7 +66,7 @@ public class MessageFactory {
         try {
             return protocolMessageClass.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
+            | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create ProtocolMessage", ex);
         }
     }
