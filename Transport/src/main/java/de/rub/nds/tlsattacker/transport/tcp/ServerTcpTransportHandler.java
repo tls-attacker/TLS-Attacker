@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -21,7 +20,8 @@ import java.net.Socket;
 public class ServerTcpTransportHandler extends TcpTransportHandler {
 
     private ServerSocket serverSocket;
-    private final int port;
+    private Socket socket;
+    private int port;
     /**
      * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
      * TransportHandler from an externally managed ServerSocket.
@@ -117,11 +117,35 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         }
     }
 
-    public int getPort() {
-        if (serverSocket != null) {
+    @Override
+    public Integer getSrcPort() {
+        if (isInitialized()) {
             return serverSocket.getLocalPort();
         } else {
             return port;
         }
+    }
+
+    @Override
+    public Integer getDstPort() {
+        if (!isInitialized()) {
+            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+        } else {
+            return socket.getPort();
+        }
+    }
+
+    @Override
+    public void setSrcPort(int port) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
+        } else {
+            this.port = port;
+        }
+    }
+
+    @Override
+    public void setDstPort(int port) {
+        throw new RuntimeException("A ServerTransportHandler cannot set the client port");
     }
 }

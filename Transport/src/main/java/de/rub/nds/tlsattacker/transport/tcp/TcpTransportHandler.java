@@ -21,6 +21,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 public abstract class TcpTransportHandler extends TransportHandler {
+
     protected Socket socket;
 
     protected int srcPort;
@@ -79,11 +80,11 @@ public abstract class TcpTransportHandler extends TransportHandler {
         return getSocketState(false);
     }
 
-    public int getSrcPort() {
-        return srcPort;
-    }
+    public abstract Integer getSrcPort();
 
-    public int getDstPort() {
-        return dstPort;
-    }
+    public abstract Integer getDstPort();
+
+    public abstract void setSrcPort(int port);
+
+    public abstract void setDstPort(int port);
 }

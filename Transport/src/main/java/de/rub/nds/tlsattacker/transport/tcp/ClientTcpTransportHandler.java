@@ -22,10 +22,12 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ClientTcpTransportHandler extends TcpTransportHandler {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected String hostname;
-    protected int port;
+    protected int serverPort;
+    protected Integer clientPort;
     protected long connectionTimeout;
     private boolean retryFailedSocketInitialization = false;
 
@@ -38,11 +40,22 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         this(timeout, firstTimeout, timeout, hostname, port);
     }
 
-    public ClientTcpTransportHandler(long connectionTimeout, long firstTimeout, long timeout, String hostname, int port) {
+    public ClientTcpTransportHandler(long connectionTimeout, long firstTimeout, long timeout, String hostname,
+        int serverPort) {
         super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
-        this.port = port;
+        this.serverPort = serverPort;
         this.connectionTimeout = connectionTimeout;
+        clientPort = null;
+    }
+
+    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int serverPort,
+        int clientPort) {
+        super(connectionTimeout, timeout, ConnectionEndType.CLIENT);
+        this.hostname = hostname;
+        this.serverPort = serverPort;
+        this.connectionTimeout = connectionTimeout;
+        this.clientPort = clientPort;
     }
 
     @Override
@@ -59,17 +72,17 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         while (System.currentTimeMillis() < timeoutTime || this.connectionTimeout == 0) {
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(hostname, port), (int) connectionTimeout);
+                socket.connect(new InetSocketAddress(hostname, serverPort), (int) connectionTimeout);
                 if (!socket.isConnected()) {
-                    throw new ConnectException("Could not connect to " + hostname + ":" + port);
+                    throw new ConnectException("Could not connect to " + hostname + ":" + serverPort);
                 }
                 break;
             } catch (Exception e) {
                 if (!retryFailedSocketInitialization) {
-                    LOGGER.warn("Socket initialization to {}:{} failed", hostname, port, e);
+                    LOGGER.warn("Socket initialization to {}:{} failed", hostname, serverPort, e);
                     break;
                 }
-                LOGGER.warn("Server @{}:{} is not available yet", hostname, port);
+                LOGGER.warn("Server @{}:{} is not available yet", hostname, serverPort);
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ignore) {
@@ -98,6 +111,34 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     public boolean isRetryFailedSocketInitialization() {
         return retryFailedSocketInitialization;
+    }
+
+    @Override
+    public Integer getDstPort() {
+        return serverPort;
+    }
+
+    @Override
+    public Integer getSrcPort() {
+        return clientPort;
+    }
+
+    @Override
+    public void setDstPort(int serverPort) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change the server port once the TransportHandler is initialized");
+        } else {
+            this.serverPort = serverPort;
+        }
+    }
+
+    @Override
+    public void setSrcPort(int clientPort) {
+        if (isInitialized()) {
+            throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
+        } else {
+            this.clientPort = clientPort;
+        }
     }
 
     public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
