@@ -25,13 +25,13 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
     @Override
     public void parseExtensionMessageContent(AlpnExtensionMessage msg) {
-        msg.setAlpnExtensionLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
-        byte[] announcedProtocols = parseByteArrayField(msg.getAlpnExtensionLength().getValue());
-        msg.setAlpnAnnouncedProtocols(announcedProtocols);
+        msg.setProposedAlpnProtocolsLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
+        byte[] proposedProtocol = parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
+        msg.setProposedAlpnProtocols(proposedProtocol);
         List<AlpnEntry> entryList = new LinkedList<>();
         int pointer = 0;
-        while (pointer < announcedProtocols.length) {
-            AlpnEntryParser parser = new AlpnEntryParser(pointer, announcedProtocols);
+        while (pointer < proposedProtocol.length) {
+            AlpnEntryParser parser = new AlpnEntryParser(pointer, proposedProtocol);
             entryList.add(parser.parse());
             pointer = parser.getPointer();
         }

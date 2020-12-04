@@ -35,8 +35,8 @@ public class AlpnExtensionParserTest {
     private final byte[] expectedBytes;
     private final int extensionLength;
     private final int startParsing;
-    private final int alpnExtensionLength;
-    private final byte[] alpnAnnouncedProtocols;
+    private final int proposedAlpnProtocolsLength;
+    private final byte[] proposedAlpnProtocols;
     private AlpnExtensionParser parser;
     private AlpnExtensionMessage message;
 
@@ -46,8 +46,8 @@ public class AlpnExtensionParserTest {
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
         this.startParsing = startParsing;
-        this.alpnExtensionLength = alpnExtensionLength;
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+        this.proposedAlpnProtocolsLength = alpnExtensionLength;
+        this.proposedAlpnProtocols = alpnAnnouncedProtocols;
     }
 
     @Before
@@ -61,8 +61,8 @@ public class AlpnExtensionParserTest {
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
-        assertEquals(alpnExtensionLength, (long) message.getAlpnExtensionLength().getValue());
-        assertArrayEquals(alpnAnnouncedProtocols, message.getAlpnAnnouncedProtocols().getValue());
+        assertEquals(proposedAlpnProtocolsLength, (long) message.getProposedAlpnProtocolsLength().getValue());
+        assertArrayEquals(proposedAlpnProtocols, message.getProposedAlpnProtocols().getValue());
     }
 
 }

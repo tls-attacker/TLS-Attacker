@@ -24,9 +24,8 @@ public class AlpnExtensionSerializer extends ExtensionSerializer<AlpnExtensionMe
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getAlpnExtensionLength().getValue(), ExtensionByteLength.ALPN_EXTENSION_LENGTH);
-        appendBytes(message.getAlpnAnnouncedProtocols().getValue());
-
+        appendInt(message.getProposedAlpnProtocolsLength().getValue(), ExtensionByteLength.ALPN_EXTENSION_LENGTH);
+        appendBytes(message.getProposedAlpnProtocols().getValue());
         return getAlreadySerialized();
     }
 

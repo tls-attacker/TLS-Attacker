@@ -519,7 +519,9 @@ public class TlsContext {
      */
     private boolean tokenBindingNegotiatedSuccessfully = false;
 
-    private byte[] alpnAnnouncedProtocols;
+    private List<String> proposedAlpnProtocols;
+
+    private String selectedAlpnProtocol;
 
     private List<CertificateType> certificateTypeClientDesiredTypes;
 
@@ -1673,12 +1675,20 @@ public class TlsContext {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public byte[] getAlpnAnnouncedProtocols() {
-        return alpnAnnouncedProtocols;
+    public String getSelectedAlpnProtocol() {
+        return selectedAlpnProtocol;
     }
 
-    public void setAlpnAnnouncedProtocols(byte[] alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    public void setSelectedAlpnProtocol(String selectedAlpnProtocol) {
+        this.selectedAlpnProtocol = selectedAlpnProtocol;
+    }
+
+    public List<String> getProposedAlpnProtocols() {
+        return proposedAlpnProtocols;
+    }
+
+    public void setProposedAlpnProtocols(List<String> proposedAlpnProtocols) {
+        this.proposedAlpnProtocols = proposedAlpnProtocols;
     }
 
     public byte[] getSecureRemotePasswordExtensionIdentifier() {

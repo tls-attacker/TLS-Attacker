@@ -24,8 +24,8 @@ public class AlpnEntryParser extends Parser<AlpnEntry> {
     public AlpnEntry parse() {
         AlpnEntry entry = new AlpnEntry();
         entry.setAlpnEntryLength(parseIntField(ExtensionByteLength.ALPN_ENTRY_LENGTH));
-        entry.setAlpnEntryBytes(parseByteArrayField(entry.getAlpnEntryLength().getValue()));
-        entry.setAlpnEntryConfig(entry.getAlpnEntryBytes().getValue());
+        entry.setAlpnEntry(new String(parseByteArrayField(entry.getAlpnEntryLength().getValue())));
+        entry.setAlpnEntryConfig(entry.getAlpnEntry().getValue());
         return entry;
     }
 

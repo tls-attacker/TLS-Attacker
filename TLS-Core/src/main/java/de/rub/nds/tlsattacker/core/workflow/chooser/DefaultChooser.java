@@ -1119,6 +1119,14 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public List<String> getProposedAlpnProtocols() {
+        if (context.getProposedAlpnProtocols() != null) {
+            return context.getProposedAlpnProtocols();
+        } else {
+            return config.getDefaultProposedAlpnProtocols();
+        }
+    }
+
     public Integer getMaxEarlyDataSize() {
         if (context.getMaxEarlyDataSize() != null) {
             return context.getMaxEarlyDataSize();

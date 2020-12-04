@@ -31,19 +31,19 @@ public class AlpnExtensionSerializerTest {
     private final byte[] expectedBytes;
     private final int extensionLength;
     private final int startParsing;
-    private final int alpnExtensionLength;
-    private final byte[] alpnAnnouncedProtocols;
+    private final int proposedAlpnProtocolsLength;
+    private final byte[] proposedAlpnProtocols;
     private AlpnExtensionSerializer serializer;
     private AlpnExtensionMessage message;
 
     public AlpnExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, int alpnExtensionLength, byte[] alpnAnnouncedProtocols) {
+        int startParsing, int proposedAlpnProtocolsLength, byte[] proposedAlpnProtocols) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
         this.startParsing = startParsing;
-        this.alpnExtensionLength = alpnExtensionLength;
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+        this.proposedAlpnProtocolsLength = proposedAlpnProtocolsLength;
+        this.proposedAlpnProtocols = proposedAlpnProtocols;
     }
 
     @Before
@@ -56,8 +56,8 @@ public class AlpnExtensionSerializerTest {
     public void testSerializeExtensionContent() {
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
-        message.setAlpnExtensionLength(alpnExtensionLength);
-        message.setAlpnAnnouncedProtocols(alpnAnnouncedProtocols);
+        message.setProposedAlpnProtocolsLength(proposedAlpnProtocolsLength);
+        message.setProposedAlpnProtocols(proposedAlpnProtocols);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

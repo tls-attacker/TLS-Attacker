@@ -11,8 +11,8 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.alpn;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
@@ -20,14 +20,14 @@ public class AlpnEntry extends ModifiableVariableHolder implements Serializable 
 
     private ModifiableInteger alpnEntryLength;
 
-    private ModifiableByteArray alpnEntryBytes;
+    private ModifiableString alpnEntry;
 
-    private byte[] alpnEntryConfig;
+    private String alpnEntryConfig;
 
     public AlpnEntry() {
     }
 
-    public AlpnEntry(byte[] alpnEntryConfig) {
+    public AlpnEntry(String alpnEntryConfig) {
         this.alpnEntryConfig = alpnEntryConfig;
     }
 
@@ -43,23 +43,23 @@ public class AlpnEntry extends ModifiableVariableHolder implements Serializable 
         this.alpnEntryLength = ModifiableVariableFactory.safelySetValue(this.alpnEntryLength, alpnEntryLength);
     }
 
-    public ModifiableByteArray getAlpnEntryBytes() {
-        return alpnEntryBytes;
+    public ModifiableString getAlpnEntry() {
+        return alpnEntry;
     }
 
-    public void setAlpnEntryBytes(ModifiableByteArray alpnEntryBytes) {
-        this.alpnEntryBytes = alpnEntryBytes;
+    public void setAlpnEntry(ModifiableString alpnEntry) {
+        this.alpnEntry = alpnEntry;
     }
 
-    public void setAlpnEntryBytes(byte[] alpnEntryBytes) {
-        this.alpnEntryBytes = ModifiableVariableFactory.safelySetValue(this.alpnEntryBytes, alpnEntryBytes);
+    public void setAlpnEntry(String alpnEntry) {
+        this.alpnEntry = ModifiableVariableFactory.safelySetValue(this.alpnEntry, alpnEntry);
     }
 
-    public byte[] getAlpnEntryConfig() {
+    public String getAlpnEntryConfig() {
         return alpnEntryConfig;
     }
 
-    public void setAlpnEntryConfig(byte[] alpnEntryConfig) {
+    public void setAlpnEntryConfig(String alpnEntryConfig) {
         this.alpnEntryConfig = alpnEntryConfig;
     }
 }

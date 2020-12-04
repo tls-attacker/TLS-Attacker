@@ -868,7 +868,8 @@ A9 DA F4 93 96 CF 12 EC  47 EF A7 A0 D3 88 2F 8B
     <certificateStatusRequestExtensionRequestType>OCSP</certificateStatusRequestExtensionRequestType>
     <certificateStatusRequestExtensionResponderIDList/>
     <certificateStatusRequestExtensionRequestExtension/>
-    <alpnAnnouncedProtocols>h2</alpnAnnouncedProtocols>
+    <defaultProposedAlpnProtocols>h2</defaultProposedAlpnProtocols>
+    <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfiles>

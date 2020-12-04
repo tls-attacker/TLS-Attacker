@@ -306,5 +306,7 @@ public abstract class Chooser {
 
     public abstract Long getEsniNotAfter();
 
+    public abstract List<String> getProposedAlpnProtocols();
+
     public abstract byte[] getLastClientHello();
 }

@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -338,7 +339,9 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
-    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
+    private List<String> defaultProposedAlpnProtocols;
+
+    private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
 
     /**
      * Default SRP Identifier
@@ -1366,6 +1369,17 @@ public class Config implements Serializable {
         } catch (IOException ex) {
             throw new ConfigurationException("Could not create default config", ex);
         }
+
+        defaultProposedAlpnProtocols = new LinkedList<>();
+        defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public String getDefaultSelectedAlpnProtocol() {
+        return defaultSelectedAlpnProtocol;
+    }
+
+    public void setDefaultSelectedAlpnProtocol(String defaultSelectedAlpnProtocol) {
+        this.defaultSelectedAlpnProtocol = defaultSelectedAlpnProtocol;
     }
 
     public boolean isThrowExceptionOnParserContextViolation() {
@@ -3259,12 +3273,16 @@ public class Config implements Serializable {
         this.usePsk = usePsk;
     }
 
-    public String[] getAlpnAnnouncedProtocols() {
-        return alpnAnnouncedProtocols;
+    public List<String> getDefaultProposedAlpnProtocols() {
+        return defaultProposedAlpnProtocols;
     }
 
-    public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
-        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    public void setDefaultProposedAlpnProtocols(List<String> defaultProposedAlpnProtocols) {
+        this.defaultProposedAlpnProtocols = defaultProposedAlpnProtocols;
+    }
+
+    public void setDefaultProposedAlpnProtocols(String... alpnAnnouncedProtocols) {
+        this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
     }
 
     public NamedGroup getDefaultEcCertificateCurve() {
