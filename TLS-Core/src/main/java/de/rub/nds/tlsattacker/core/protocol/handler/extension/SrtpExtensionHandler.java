@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
@@ -28,8 +30,8 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
     }
 
     @Override
-    public SrtpExtensionParser getParser(byte[] message, int pointer) {
-        return new SrtpExtensionParser(pointer, message);
+    public SrtpExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new SrtpExtensionParser(pointer, message, config);
     }
 
     @Override
@@ -45,11 +47,11 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
     @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
         context.setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles
-                .getProfilesAsArrayList(message.getSrtpProtectionProfiles().getValue()));
+            .getProfilesAsArrayList(message.getSrtpProtectionProfiles().getValue()));
         LOGGER.debug("Adjusted the TLS context secure realtime transport protocol protection profiles to "
-                + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
+            + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
         context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
         LOGGER.debug("Adjusted the TLS context secure realtime transport protocol master key identifier to "
-                + ArrayConverter.bytesToHexString(message.getSrtpMki()));
+            + ArrayConverter.bytesToHexString(message.getSrtpMki()));
     }
 }

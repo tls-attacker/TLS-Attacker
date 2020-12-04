@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -22,15 +23,21 @@ public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final EarlyDataExtensionMessage msg;
+
     public EarlyDataExtensionPreparator(Chooser chooser, EarlyDataExtensionMessage message,
-            ExtensionSerializer<EarlyDataExtensionMessage> serializer) {
+        ExtensionSerializer<EarlyDataExtensionMessage> serializer) {
         super(chooser, message, serializer);
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EarlyDataExtensionMessage");
         // Empty in 0-RTT-Messages
+        if (msg.isNewSessionTicketExtension()) {
+            msg.setMaxEarlyDataSize(chooser.getMaxEarlyDataSize());
+        }
     }
 
 }

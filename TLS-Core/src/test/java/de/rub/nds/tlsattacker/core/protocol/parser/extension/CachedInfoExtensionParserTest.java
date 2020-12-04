@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -32,18 +34,17 @@ public class CachedInfoExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ExtensionType.CACHED_INFO, ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
-                        Arrays.asList(new CachedObject((byte) 1, null, null), new CachedObject((byte) 2, null, null)),
-                        ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
-                {
-                        ExtensionType.CACHED_INFO,
-                        ConnectionEndType.CLIENT,
-                        13,
-                        ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
-                        Arrays.asList(
-                                new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
-                                new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
-                        ArrayConverter.hexStringToByteArray("0019000f000d01060102030405060203070809"), 15 } });
+            { ExtensionType.CACHED_INFO, ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
+                Arrays.asList(new CachedObject((byte) 1, null, null), new CachedObject((byte) 2, null, null)),
+                ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
+            {
+                ExtensionType.CACHED_INFO,
+                ConnectionEndType.CLIENT,
+                13,
+                ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
+                Arrays.asList(new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
+                    new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
+                ArrayConverter.hexStringToByteArray("0019000f000d01060102030405060203070809"), 15 } });
     }
 
     private final ExtensionType type;
@@ -55,7 +56,7 @@ public class CachedInfoExtensionParserTest {
     private final int extensionLength;
 
     public CachedInfoExtensionParserTest(ExtensionType type, ConnectionEndType connectionEndType, int cachedInfoLength,
-            byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
+        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
         this.type = type;
         this.connectionEndType = connectionEndType;
         this.cachedInfoLength = cachedInfoLength;
@@ -69,7 +70,7 @@ public class CachedInfoExtensionParserTest {
     public void testParse() {
         TlsContext context = new TlsContext();
 
-        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes);
+        CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes, Config.createConfig());
         CachedInfoExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
@@ -84,16 +85,16 @@ public class CachedInfoExtensionParserTest {
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            CachedObjectPreparator preparator = new CachedObjectPreparator(new TlsContext().getChooser(),
-                    expectedObject);
+            CachedObjectPreparator preparator =
+                new CachedObjectPreparator(new TlsContext().getChooser(), expectedObject);
             preparator.prepare();
 
             assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
-                    .getValue());
+                .getValue());
 
             if (expectedObject.getHashValueLength() != null && expectedObject.getHashValueLength().getValue() != null) {
                 assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
-                        .getValue());
+                    .getValue());
             } else {
                 assertNull(actualObject.getHashValueLength());
             }

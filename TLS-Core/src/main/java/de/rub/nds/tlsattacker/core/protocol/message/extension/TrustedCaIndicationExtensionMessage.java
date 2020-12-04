@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -40,8 +41,8 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
     }
 
     public void setTrustedAuthoritiesLength(int trustedAuthoritiesLength) {
-        this.trustedAuthoritiesLength = ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesLength,
-                trustedAuthoritiesLength);
+        this.trustedAuthoritiesLength =
+            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesLength, trustedAuthoritiesLength);
     }
 
     public List<TrustedAuthority> getTrustedAuthorities() {
@@ -61,8 +62,8 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
     }
 
     public void setTrustedAuthoritiesBytes(byte[] trustedAuthoritiesBytes) {
-        this.trustedAuthoritiesBytes = ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesBytes,
-                trustedAuthoritiesBytes);
+        this.trustedAuthoritiesBytes =
+            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesBytes, trustedAuthoritiesBytes);
     }
 
 }

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -66,7 +67,7 @@ public class RecordDecryptor extends Decryptor {
         try {
             recordCipher.decrypt(record);
         } catch (CryptoException | ParserException ex) {
-            LOGGER.warn("Could not decrypt Record. Using NulLCipher instead", ex);
+            LOGGER.warn("Could not decrypt Record. Using NullCipher instead", ex);
             try {
                 nullCipher.decrypt(record);
             } catch (CryptoException ex1) {
@@ -75,8 +76,8 @@ public class RecordDecryptor extends Decryptor {
         }
         context.increaseReadSequenceNumber();
         if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            checkForEndOfEarlyData(record.getComputations().getPlainRecordBytes().getValue());
+            && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            checkForEndOfEarlyData(record.getCleanProtocolMessageBytes().getValue());
         }
     }
 
@@ -91,10 +92,12 @@ public class RecordDecryptor extends Decryptor {
         try {
             context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use handshake secrets");
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(context, context.getChooser()
-                    .getSelectedProtocolVersion(), context.getActiveClientKeySetType());
-            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(context, clientKeySet, context
-                    .getChooser().getSelectedCipherSuite());
+            KeySet clientKeySet =
+                KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+                    context.getActiveClientKeySetType());
+            RecordCipher recordCipherClient =
+                RecordCipherFactory.getRecordCipher(context, clientKeySet, context.getChooser()
+                    .getSelectedCipherSuite());
             context.getRecordLayer().setRecordCipher(recordCipherClient);
             context.getRecordLayer().updateDecryptionCipher();
             context.setReadSequenceNumber(0);

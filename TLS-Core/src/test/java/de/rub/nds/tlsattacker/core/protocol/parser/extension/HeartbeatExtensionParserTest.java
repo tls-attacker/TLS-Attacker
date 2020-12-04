@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import java.util.Arrays;
@@ -25,10 +27,10 @@ public class HeartbeatExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"),
-                ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
-                                                                   // same for
-                                                                   // TLS10 and
-                                                                   // TLS11
+            ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
+        // same for
+        // TLS10 and
+        // TLS11
     }
 
     private final byte[] extension;
@@ -48,12 +50,11 @@ public class HeartbeatExtensionParserTest {
     }
 
     /**
-     * Test of parseExtensionMessageContent method, of class
-     * HeartbeatExtensionParser.
+     * Test of parseExtensionMessageContent method, of class HeartbeatExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {
-        HeartbeatExtensionParser parser = new HeartbeatExtensionParser(start, extension);
+        HeartbeatExtensionParser parser = new HeartbeatExtensionParser(start, extension, Config.createConfig());
         HeartbeatExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

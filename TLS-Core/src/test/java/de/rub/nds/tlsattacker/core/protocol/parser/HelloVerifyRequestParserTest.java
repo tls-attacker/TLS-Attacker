@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,9 +28,9 @@ public class HelloVerifyRequestParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { {
-                ArrayConverter.hexStringToByteArray("03000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
-                HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
-                ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381") } });
+            ArrayConverter.hexStringToByteArray("03000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
+            HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
+            ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381") } });
     }
 
     private final byte[] message;
@@ -43,7 +44,7 @@ public class HelloVerifyRequestParserTest {
     private final Config config = Config.createConfig();
 
     public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
-            byte cookieLength, byte[] cookie) {
+        byte cookieLength, byte[] cookie) {
         this.message = message;
         this.type = type;
         this.length = length;

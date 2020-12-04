@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,7 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  */
 public class SRPExtensionMessage extends ExtensionMessage {
 
-    // UTF-8 encoed and according to RFC 4013 with the SASLprep profile
+    // UTF-8 encoded and according to RFC 4013 with the SASLprep profile
     @ModifiableVariableProperty
     private ModifiableByteArray srpIdentifier;
 
@@ -52,8 +53,8 @@ public class SRPExtensionMessage extends ExtensionMessage {
     }
 
     public void setSrpIdentifierLength(int srpIdentifierLength) {
-        this.srpIdentifierLength = ModifiableVariableFactory.safelySetValue(this.srpIdentifierLength,
-                srpIdentifierLength);
+        this.srpIdentifierLength =
+            ModifiableVariableFactory.safelySetValue(this.srpIdentifierLength, srpIdentifierLength);
     }
 
 }

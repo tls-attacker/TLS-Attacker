@@ -7,12 +7,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeySet {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] clientWriteMacSecret;
     private byte[] serverWriteMacSecret;
@@ -88,8 +93,10 @@ public class KeySet {
 
     public byte[] getReadKey(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.SERVER) {
+            LOGGER.debug("getReadKey: Using clientWriteKey for connectionEndType {}", connectionEndType);
             return clientWriteKey;
         } else {
+            LOGGER.debug("getReadKey: Using serverWriteKey for connectionEndType {}", connectionEndType);
             return serverWriteKey;
         }
     }
@@ -135,7 +142,7 @@ public class KeySet {
 
     /**
      * @param keySetType
-     *            the keySetType to set
+     * the keySetType to set
      */
     public void setKeySetType(Tls13KeySetType keySetType) {
         this.keySetType = keySetType;

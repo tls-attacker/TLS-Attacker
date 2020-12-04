@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 /**
@@ -32,13 +33,16 @@ public enum CipherAlgorithm {
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
     ChaCha20Poly1305(32, 12, 0, 0, "ChaCha20Poly1305"),
-    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
+    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently
+    // uses
+    // des
+    // 56bit
     ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     ARIA_256_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
-    FORTEZZA_CBC(0, 0, 0, 0);// TODO
+    FORTEZZA_CBC(0, 0, 0, 0); // TODO
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
         this.keySize = keySize;
@@ -62,9 +66,8 @@ public enum CipherAlgorithm {
     private final int keySize;
 
     /**
-     * Number of bytes taken from the handshake and used as an initialization
-     * vector / nonce input into the cipher (i.e., number of bytes in
-     * server_write_IV / client_write_IV)
+     * Number of bytes taken from the handshake and used as an initialization vector / nonce input into the cipher
+     * (i.e., number of bytes in server_write_IV / client_write_IV)
      */
     private final int nonceBytesFromHandshake;
 

@@ -12,6 +12,7 @@
  * "BcChaCha20Poly1305".
  * See RFC7905 for further information.
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,7 +26,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.util.Arrays;
 
-public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
+public class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -41,7 +42,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     public ChaCha20Poly1305Cipher(byte[] key) {
         if (key.length != 32) {
             LOGGER.warn("Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: " + key.length
-                    + ". Padding/Trimming to 32 Byte.");
+                + ". Padding/Trimming to 32 Byte.");
             if (key.length > 32) {
                 key = Arrays.copyOfRange(key, 0, 32);
             } else {
@@ -73,7 +74,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     @Override
     public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext) {
         this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
+            new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionalAuthenticatedData.length;
         int ciphertextLength = ciphertext.length - (tagLength / Bits.IN_A_BYTE);
         byte[] plaintext = new byte[getOutputSize(false, ciphertext.length)];
@@ -83,10 +84,10 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
         updateMAC(additionalAuthenticatedData, 0, additionalDataLength);
         updateMAC(ciphertext, 0, ciphertextLength);
 
-        byte[] aadLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
-                Long.valueOf(additionalDataLength), 8));
-        byte[] ciphertextLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
-                Long.valueOf(ciphertextLength), 8));
+        byte[] aadLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+        byte[] ciphertextLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(ciphertextLength), 8));
 
         byte[] calculatedMAC = ArrayConverter.concatenate(aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
         this.mac.update(calculatedMAC, 0, (tagLength / Bits.IN_A_BYTE));
@@ -119,7 +120,7 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
     @Override
     public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
         this.cipher.init(true, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
-                new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
+            new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionAuthenticatedData.length;
         int plaintextLength = someBytes.length;
         byte[] ciphertext = new byte[getOutputSize(true, plaintextLength)];
@@ -131,12 +132,12 @@ public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCiphe
 
         updateMAC(ciphertext, 0, plaintextLength);
 
-        byte[] aadLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
-                Long.valueOf(additionalDataLength), 8));
-        byte[] plaintextLengthLittleEndian = ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(
-                Long.valueOf(plaintextLength), 8));
-        byte[] aadPlaintextLengthsLittleEndian = ArrayConverter.concatenate(aadLengthLittleEndian,
-                plaintextLengthLittleEndian, 8);
+        byte[] aadLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+        byte[] plaintextLengthLittleEndian =
+            ArrayConverter.reverseByteOrder(ArrayConverter.longToBytes(Long.valueOf(plaintextLength), 8));
+        byte[] aadPlaintextLengthsLittleEndian =
+            ArrayConverter.concatenate(aadLengthLittleEndian, plaintextLengthLittleEndian, 8);
 
         mac.update(aadPlaintextLengthsLittleEndian, 0, (tagLength / Bits.IN_A_BYTE));
         mac.doFinal(ciphertext, 0 + plaintextLength);

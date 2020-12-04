@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -37,13 +38,13 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     protected ProtocolMessageType protocolMessageType;
 
     @XmlTransient
-    protected boolean GOING_TO_BE_SENT_DEFAULT = true;
+    protected boolean goingToBeSentDefault = true;
 
     @XmlTransient
-    protected boolean REQUIRED_DEFAULT = true;
+    protected boolean requiredDefault = true;
 
     @XmlTransient
-    protected boolean ADJUST_CONTEXT_DEFAULT = true;
+    protected boolean adjustContextDefault = true;
 
     /**
      * Defines whether this message is necessarily required in the workflow.
@@ -51,9 +52,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean required;
     /**
-     * Defines if the message should be sent during the workflow. Using this
-     * flag it is possible to omit a message is sent during the handshake while
-     * it is executed to initialize specific variables.
+     * Defines if the message should be sent during the workflow. Using this flag it is possible to omit a message is
+     * sent during the handshake while it is executed to initialize specific variables.
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean goingToBeSent;
@@ -76,7 +76,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
-            return REQUIRED_DEFAULT;
+            return requiredDefault;
         }
         return required.getValue();
     }
@@ -87,7 +87,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public boolean isGoingToBeSent() {
         if (goingToBeSent == null || goingToBeSent.getValue() == null) {
-            return GOING_TO_BE_SENT_DEFAULT;
+            return goingToBeSentDefault;
         }
         return goingToBeSent.getValue();
     }
@@ -122,13 +122,13 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     }
 
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-        this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-                completeResultingMessage);
+        this.completeResultingMessage =
+            ModifiableVariableFactory.safelySetValue(this.completeResultingMessage, completeResultingMessage);
     }
 
     public boolean getAdjustContext() {
         if (adjustContext == null || adjustContext.getValue() == null) {
-            return ADJUST_CONTEXT_DEFAULT;
+            return adjustContextDefault;
         }
         return adjustContext.getValue();
     }

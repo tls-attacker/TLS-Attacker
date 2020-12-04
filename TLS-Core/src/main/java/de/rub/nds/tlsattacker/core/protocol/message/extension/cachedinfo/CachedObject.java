@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -32,7 +33,7 @@ public class CachedObject extends ModifiableVariableHolder {
     byte[] hashValueConfig;
 
     public CachedObject(byte preparatorCachedInformationType, Integer preparatorHashValueLength,
-            byte[] preparatorHashValue) {
+        byte[] preparatorHashValue) {
         this.cachedInformationTypeConfig = preparatorCachedInformationType;
         this.hashValueLengthConfig = preparatorHashValueLength;
         this.hashValueConfig = preparatorHashValue;
@@ -50,8 +51,8 @@ public class CachedObject extends ModifiableVariableHolder {
     }
 
     public void setCachedInformationType(byte cachedInformationType) {
-        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
-                cachedInformationType);
+        this.cachedInformationType =
+            ModifiableVariableFactory.safelySetValue(this.cachedInformationType, cachedInformationType);
     }
 
     public ModifiableInteger getHashValueLength() {
@@ -82,8 +83,8 @@ public class CachedObject extends ModifiableVariableHolder {
         return cachedInformationTypeConfig;
     }
 
-    public void setCachedInformationTypeConfig(byte CachedInformationTypeConfig) {
-        this.cachedInformationTypeConfig = CachedInformationTypeConfig;
+    public void setCachedInformationTypeConfig(byte cachedInformationTypeConfig) {
+        this.cachedInformationTypeConfig = cachedInformationTypeConfig;
     }
 
     public Integer getHashValueLengthConfig() {

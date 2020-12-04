@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -20,7 +21,7 @@ public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message,
-            ExtendedMasterSecretExtensionSerializer serializer) {
+        ExtendedMasterSecretExtensionSerializer serializer) {
         super(chooser, message, serializer);
     }
 

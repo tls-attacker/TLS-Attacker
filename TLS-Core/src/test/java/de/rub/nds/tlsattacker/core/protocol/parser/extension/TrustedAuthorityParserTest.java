@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,15 +27,15 @@ public class TrustedAuthorityParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { TrustedCaIndicationIdentifierType.PRE_AGREED, null, null, null, new byte[] { 0 } },
-                { TrustedCaIndicationIdentifierType.KEY_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
-                        ArrayConverter.hexStringToByteArray("01da39a3ee5e6b4b0d3255bfef95601890afd80709") },
-                { TrustedCaIndicationIdentifierType.X509_NAME, null, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 },
-                        new byte[] { 0x02, 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 } },
-                { TrustedCaIndicationIdentifierType.CERT_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
-                        ArrayConverter.hexStringToByteArray("03da39a3ee5e6b4b0d3255bfef95601890afd80709") } });
+            { TrustedCaIndicationIdentifierType.PRE_AGREED, null, null, null, new byte[] { 0 } },
+            { TrustedCaIndicationIdentifierType.KEY_SHA1_HASH,
+                ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
+                ArrayConverter.hexStringToByteArray("01da39a3ee5e6b4b0d3255bfef95601890afd80709") },
+            { TrustedCaIndicationIdentifierType.X509_NAME, null, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 },
+                new byte[] { 0x02, 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 } },
+            { TrustedCaIndicationIdentifierType.CERT_SHA1_HASH,
+                ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
+                ArrayConverter.hexStringToByteArray("03da39a3ee5e6b4b0d3255bfef95601890afd80709") } });
     }
 
     private final TrustedCaIndicationIdentifierType identifier;
@@ -44,7 +45,7 @@ public class TrustedAuthorityParserTest {
     private final byte[] parserBytes;
 
     public TrustedAuthorityParserTest(TrustedCaIndicationIdentifierType identifier, byte[] hash,
-            Integer distNameLength, byte[] distName, byte[] parserBytes) {
+        Integer distNameLength, byte[] distName, byte[] parserBytes) {
         this.identifier = identifier;
         this.hash = hash;
         this.distNameLength = distNameLength;

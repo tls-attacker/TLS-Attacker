@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class ClearBuffersAction extends MessageAction {
+public class ClearBuffersAction extends ConnectionBoundAction {
 
     public ClearBuffersAction() {
         super();

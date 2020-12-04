@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -56,7 +57,7 @@ public class EllipticCurvesExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 1, 2 }, 0) instanceof EllipticCurvesExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 1, 2 }, 0, context.getConfig()) instanceof EllipticCurvesExtensionParser);
     }
 
     /**

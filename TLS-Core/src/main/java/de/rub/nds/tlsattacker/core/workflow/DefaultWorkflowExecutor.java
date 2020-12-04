@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
@@ -21,6 +22,10 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +50,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                     LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
                 }
                 ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initiliazed");
+                LOGGER.debug("Connection for " + ctx + " initialized");
             }
         }
 
@@ -54,6 +59,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         state.getWorkflowTrace().reset();
+        state.setStartTimestamp(System.currentTimeMillis());
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
@@ -75,13 +81,29 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
+                state.setExecutionException(ex);
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            } catch (Exception e) {
+                LOGGER.error("", e);
+                state.setExecutionException(e);
+                throw e;
+            } finally {
+                state.setEndTimestamp(System.currentTimeMillis());
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
             }
+        }
+
+        TransportHandler handler = state.getTlsContext().getTransportHandler();
+        if (handler instanceof TcpTransportHandler) {
+            SocketState socketSt =
+                ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+            state.getTlsContext().setFinalSocketState(socketSt);
+        } else {
+            state.getTlsContext().setFinalSocketState(SocketState.UNAVAILABLE);
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
@@ -95,7 +117,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
+        if (state.getConfig().isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
 

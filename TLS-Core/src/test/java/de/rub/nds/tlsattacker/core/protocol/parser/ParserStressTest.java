@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -18,9 +20,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * This test makes sure that the parsers dont throw other exceptions other than
- * parser exceptions Not every message is always parsable, but the parser should
- * be able to deal with everything
+ * This test makes sure that the parsers don't throw other exceptions other than parser exceptions Not every message is
+ * always parsable, but the parser should be able to deal with everything
  */
 public class ParserStressTest {
 
@@ -88,7 +89,8 @@ public class ParserStressTest {
             case 18:
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
-                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12, config);
+                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
+                    ProtocolMessageType.UNKNOWN, config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

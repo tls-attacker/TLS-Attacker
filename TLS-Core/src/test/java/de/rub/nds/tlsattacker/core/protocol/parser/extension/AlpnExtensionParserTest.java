@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import java.util.Arrays;
@@ -25,8 +27,8 @@ public class AlpnExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.ALPN,
-                ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0, 12,
-                ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
+            ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0, 12,
+            ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
     }
 
     private final ExtensionType extensionType;
@@ -39,7 +41,7 @@ public class AlpnExtensionParserTest {
     private AlpnExtensionMessage message;
 
     public AlpnExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-            int startParsing, int alpnExtensionLength, byte[] alpnAnnouncedProtocols) {
+        int startParsing, int alpnExtensionLength, byte[] alpnAnnouncedProtocols) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
@@ -50,7 +52,7 @@ public class AlpnExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new AlpnExtensionParser(startParsing, expectedBytes);
+        parser = new AlpnExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

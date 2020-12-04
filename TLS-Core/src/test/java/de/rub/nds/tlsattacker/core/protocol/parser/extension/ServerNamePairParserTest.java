@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -22,14 +23,14 @@ public class ServerNamePairParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        byte[] rwTestServerNamePairBytes = new byte[] { 0x00, 0x00, 0x0b, 0x74, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72,
-                0x2e, 0x63, 0x6f, 0x6d };
+        byte[] rwTestServerNamePairBytes =
+            new byte[] { 0x00, 0x00, 0x0b, 0x74, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x2e, 0x63, 0x6f, 0x6d };
         byte[] rwTestServerName = new byte[] { 0x74, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x2e, 0x63, 0x6f, 0x6d };
         int rwTestNameLength = 11;
         byte rwTestServerType = 0x00;
 
         return Arrays.asList(new Object[][] { { rwTestServerNamePairBytes, rwTestServerName, rwTestNameLength,
-                rwTestServerType } });
+            rwTestServerType } });
     }
 
     private final byte[] servernamePairBytes;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
@@ -22,7 +23,7 @@ public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<Ma
     private final MaxFragmentLengthExtensionMessage message;
 
     public MaxFragmentLengthExtensionPreparator(Chooser chooser, MaxFragmentLengthExtensionMessage message,
-            MaxFragmentLengthExtensionSerializer serializer) {
+        MaxFragmentLengthExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }

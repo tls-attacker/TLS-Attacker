@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -22,7 +23,7 @@ public class SignatureAndHashAlgorithmConverter implements IStringConverter<Sign
             return SignatureAndHashAlgorithm.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Value " + value + " cannot be converted to a SignatureAndHashAlgorithm. "
-                    + "Available values are: " + Arrays.toString(SignatureAndHashAlgorithm.values()));
+                + "Available values are: " + Arrays.toString(SignatureAndHashAlgorithm.values()));
         }
     }
 

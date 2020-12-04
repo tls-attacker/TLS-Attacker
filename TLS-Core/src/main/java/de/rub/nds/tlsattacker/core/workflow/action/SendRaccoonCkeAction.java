@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -19,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
@@ -47,10 +49,10 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         super();
     }
 
-    public SendRaccoonCkeAction(boolean withNullByte, BigInteger intialSecret) {
+    public SendRaccoonCkeAction(boolean withNullByte, BigInteger initialSecret) {
         super();
         this.withNullByte = withNullByte;
-        this.initialSecret = intialSecret;
+        this.initialSecret = initialSecret;
     }
 
     public SendRaccoonCkeAction(String connectionAlias) {
@@ -85,10 +87,10 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)") + ": "
-                    + sending);
+                + sending);
         } else {
             LOGGER.info("Sending Raccoon Cke message " + (withNullByte ? "(withNullByte)" : "(withoutNullByte)")
-                    + ": (" + connectionAlias + "): " + sending);
+                + ": (" + connectionAlias + "): " + sending);
         }
 
         try {
@@ -96,10 +98,10 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException E) {
+        } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
-            setExecuted(false);
+            LOGGER.debug(e);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -107,17 +109,18 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage(state.getConfig());
         Chooser chooser = state.getTlsContext().getChooser();
-        byte[] clientPublicKey = getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
-                chooser.getDhServerPublicKey(), initialSecret, withNullByte);
+        byte[] clientPublicKey =
+            getClientPublicKey(chooser.getServerDhGenerator(), chooser.getServerDhModulus(),
+                chooser.getServerDhPublicKey(), initialSecret, withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
     }
 
     private byte[] getClientPublicKey(BigInteger g, BigInteger m, BigInteger serverPublicKey,
-            BigInteger initialClientDhSecret, boolean withNullByte) {
+        BigInteger initialClientDhSecret, boolean withNullByte) {
         int length = ArrayConverter.bigIntegerToByteArray(m).length;
-        byte[] pms = ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m),
-                length);
+        byte[] pms =
+            ArrayConverter.bigIntegerToNullPaddedByteArray(serverPublicKey.modPow(initialClientDhSecret, m), length);
 
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
@@ -258,4 +261,8 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         return hash;
     }
 
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }

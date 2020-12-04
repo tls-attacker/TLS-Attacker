@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
@@ -27,8 +29,8 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
     }
 
     @Override
-    public PaddingExtensionParser getParser(byte[] message, int pointer) {
-        return new PaddingExtensionParser(pointer, message);
+    public PaddingExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PaddingExtensionParser(pointer, message, config);
     }
 
     @Override
@@ -42,16 +44,16 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
     }
 
     /**
-     * Adjusts the TLS context based on the lenght of the padding extension.
+     * Adjusts the TLS context based on the length of the padding extension.
      *
      * @param message
-     *            The message for which the context should be adjusted
+     * The message for which the context should be adjusted
      */
     @Override
     public void adjustTLSExtensionContext(PaddingExtensionMessage message) {
         context.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
         LOGGER.debug("The context PaddingExtension bytes were set to "
-                + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
+            + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
     }
 
 }

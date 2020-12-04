@@ -7,11 +7,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,9 +45,9 @@ public class SendAsciiAction extends AsciiAction {
             LOGGER.info("Sending ASCII message: " + getAsciiText());
             tlsContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
             setExecuted(true);
-        } catch (IOException E) {
-            LOGGER.debug(E);
-            setExecuted(false);
+        } catch (IOException e) {
+            LOGGER.debug(e);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -55,7 +56,7 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 123 }, 0) instanceof ECPointFormatExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
     }
 
     /**

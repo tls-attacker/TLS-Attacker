@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
@@ -31,12 +33,12 @@ public class TrustedCaIndicationExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { {
-                ExtensionType.TRUSTED_CA_KEYS,
-                ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"),
-                0,
-                11,
-                Arrays.asList(new TrustedAuthority((byte) 0, null, null, null), new TrustedAuthority((byte) 2, null, 5,
-                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
+            ExtensionType.TRUSTED_CA_KEYS,
+            ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"),
+            0,
+            11,
+            Arrays.asList(new TrustedAuthority((byte) 0, null, null, null), new TrustedAuthority((byte) 2, null, 5,
+                new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
     }
 
     private final ExtensionType type;
@@ -47,7 +49,7 @@ public class TrustedCaIndicationExtensionParserTest {
     private final int trustedAuthoritiesLength;
 
     public TrustedCaIndicationExtensionParserTest(ExtensionType type, byte[] extensionBytes, int startposition,
-            int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
+        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
         this.type = type;
         this.extensionBytes = extensionBytes;
         this.startposition = startposition;
@@ -66,8 +68,8 @@ public class TrustedCaIndicationExtensionParserTest {
 
     @Test
     public void testParse() {
-        TrustedCaIndicationExtensionParser parser = new TrustedCaIndicationExtensionParser(startposition,
-                extensionBytes);
+        TrustedCaIndicationExtensionParser parser =
+            new TrustedCaIndicationExtensionParser(startposition, extensionBytes, Config.createConfig());
         TrustedCaIndicationExtensionMessage msg = parser.parse();
 
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
@@ -84,9 +86,9 @@ public class TrustedCaIndicationExtensionParserTest {
 
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
             if (expectedObject.getDistinguishedNameLength() != null
-                    && expectedObject.getDistinguishedNameLength().getValue() != null) {
+                && expectedObject.getDistinguishedNameLength().getValue() != null) {
                 assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
-                        .getDistinguishedNameLength().getValue());
+                    .getDistinguishedNameLength().getValue());
             } else {
                 assertNull(actualObject.getDistinguishedNameLength());
             }
@@ -96,9 +98,9 @@ public class TrustedCaIndicationExtensionParserTest {
                 assertNull(actualObject.getSha1Hash());
             }
             if (expectedObject.getDistinguishedName() != null
-                    && expectedObject.getDistinguishedName().getValue() != null) {
+                && expectedObject.getDistinguishedName().getValue() != null) {
                 assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
-                        .getValue());
+                    .getValue());
             } else {
                 assertNull(actualObject.getDistinguishedName());
             }

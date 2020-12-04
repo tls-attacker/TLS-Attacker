@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -61,7 +62,7 @@ public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
         oldValue = tlsContext.getConfig().getDefaultPreMasterSecret();
         tlsContext.getConfig().setDefaultPreMasterSecret(newValue);
         LOGGER.info("Changed DefaultPreMasterSecret from " + ArrayConverter.bytesToHexString(oldValue)
-                + " in config to " + ArrayConverter.bytesToHexString(newValue));
+            + " in config to " + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -29,8 +30,8 @@ public class SrtpExtensionHandlerTest {
     private TlsContext context;
     private SrtpExtensionHandler handler;
     private final List<SrtpProtectionProfiles> profiles = Arrays.asList(
-            SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+        SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
+        SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
     private final byte[] profilesAsBytes = new byte[] { 0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06 };
     private final byte[] mki = new byte[] {};
 
@@ -55,7 +56,7 @@ public class SrtpExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof SrtpExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof SrtpExtensionParser);
     }
 
     @Test

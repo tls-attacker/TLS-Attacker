@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import java.io.ByteArrayOutputStream;
@@ -51,12 +52,12 @@ public class FragmentStream {
      * Checks if the fragment stream is complete up to the specified index
      *
      * @param tillIndex
-     *            Bytes till the maximium index
+     * Bytes till the maximum index
      * @return true if all keys are in the map, otherwise false
      */
     public boolean isComplete(int tillIndex) {
         if (tillIndex < 0) {
-            throw new IllegalArgumentException("Cannot check stream for completnes with negative index: " + tillIndex);
+            throw new IllegalArgumentException("Cannot check stream for completeness with negative index: " + tillIndex);
         }
         for (int i = 0; i < tillIndex; i++) {
             if (!fragmentByteMap.containsKey(i)) {
@@ -67,11 +68,10 @@ public class FragmentStream {
     }
 
     /**
-     * Returns the fragment streams contents and fills any holes in it with the
-     * specified filling byte
+     * Returns the fragment streams contents and fills any holes in it with the specified filling byte
      *
      * @param fillingByte
-     *            the byte with which we fill holes in the fragment
+     * the byte with which we fill holes in the fragment
      * @return the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
@@ -88,12 +88,12 @@ public class FragmentStream {
         }
         if (fillingCounter > 0) {
             LOGGER.warn("Had to fill " + fillingCounter
-                    + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
+                + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than indended message size(intendet size: " + intendedSize
-                        + " but found byte for: " + i + "). Ignoring");
+                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
+                    + " but found byte for: " + i + "). Ignoring");
             }
         }
         return stream.toByteArray();
@@ -120,8 +120,8 @@ public class FragmentStream {
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than indended message size(intendet size: " + intendedSize
-                        + " but found byte for: " + i + "). Ignoring");
+                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
+                    + " but found byte for: " + i + "). Ignoring");
             }
         }
         return stream.toByteArray();

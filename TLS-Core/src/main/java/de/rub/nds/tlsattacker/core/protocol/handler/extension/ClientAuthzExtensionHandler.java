@@ -7,8 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
@@ -23,8 +25,8 @@ public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExt
     }
 
     @Override
-    public ClientAuthzExtensionParser getParser(byte[] message, int pointer) {
-        return new ClientAuthzExtensionParser(pointer, message);
+    public ClientAuthzExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new ClientAuthzExtensionParser(pointer, message, config);
     }
 
     @Override

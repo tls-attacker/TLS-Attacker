@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.supplementaldata;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -38,8 +39,8 @@ public class SupplementalDataEntry {
     }
 
     public void setSupplementalDataEntry(byte[] supplementalDataEntry) {
-        this.supplementalDataEntry = ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry,
-                supplementalDataEntry);
+        this.supplementalDataEntry =
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry, supplementalDataEntry);
     }
 
     public ModifiableInteger getSupplementalDataEntryType() {
@@ -51,8 +52,8 @@ public class SupplementalDataEntry {
     }
 
     public void setSupplementalDataEntryType(int supplementalDataEntryType) {
-        this.supplementalDataEntryType = ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryType,
-                supplementalDataEntryType);
+        this.supplementalDataEntryType =
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryType, supplementalDataEntryType);
     }
 
     public ModifiableInteger getSupplementalDataEntryLength() {
@@ -64,8 +65,8 @@ public class SupplementalDataEntry {
     }
 
     public void setSupplementalDataEntryLength(int supplementalDataEntryLength) {
-        this.supplementalDataEntryLength = ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryLength,
-                supplementalDataEntryLength);
+        this.supplementalDataEntryLength =
+            ModifiableVariableFactory.safelySetValue(this.supplementalDataEntryLength, supplementalDataEntryLength);
     }
 
 }

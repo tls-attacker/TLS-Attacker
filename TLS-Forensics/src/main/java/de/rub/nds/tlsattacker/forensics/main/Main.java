@@ -7,7 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.forensics.main;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -16,7 +19,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.forensics.analyzer.ForensicAnalyzer;
 import de.rub.nds.tlsattacker.forensics.config.TlsForensicsConfig;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -75,9 +77,9 @@ public class Main {
                             } else {
                                 CONSOLE.info("PrivateKey file does not look like an RSA private key!");
                             }
-                        } catch (Exception E) {
+                        } catch (Exception e) {
                             CONSOLE.info("Could not read private key");
-                            LOGGER.warn(E);
+                            LOGGER.warn(e);
                             return;
                         } finally {
                             if (parser != null) {
@@ -96,18 +98,18 @@ public class Main {
                 LOGGER.info(trace.toString());
                 LOGGER.info("Reconstructed WorkflowTrace:");
                 LOGGER.info(realWorkflowTrace.toString());
-            } catch (ConfigurationException E) {
+            } catch (ConfigurationException e) {
                 LOGGER.info("Encountered an Exception. Aborting.");
-                LOGGER.warn(E);
+                LOGGER.warn(e);
             } catch (JAXBException | XMLStreamException | IOException ex1) {
                 LOGGER.warn(ex1);
             }
-        } catch (ParameterException E) {
+        } catch (ParameterException e) {
             LOGGER.info("Could not parse provided parameters");
-            LOGGER.debug(E);
-            LOGGER.warn(E);
+            LOGGER.debug(e);
+            LOGGER.warn(e);
             commander.usage();
-            ex = E;
+            ex = e;
         }
 
     }

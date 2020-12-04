@@ -7,19 +7,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
-
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.Record;
-import org.xbill.DNS.TXTRecord;
-import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Type;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -29,6 +18,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.TXTRecord;
+import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 public class EsniKeyDnsRequestAction extends TlsAction {
 
@@ -77,7 +76,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
             LOGGER.warn("Failed to base64 decode Resource Record for" + hostname + ". Resource Record: "
-                    + esniKeyRecordStr);
+                + esniKeyRecordStr);
             setExecuted(true);
             return;
         }
@@ -90,7 +89,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());
         tlsContext.setEsniServerKeyShareEntries(esniKeyRecord.getKeys());
-        tlsContext.setEsniServerCiphersuites(esniKeyRecord.getCipherSuites());
+        tlsContext.setEsniServerCipherSuites(esniKeyRecord.getCipherSuites());
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());

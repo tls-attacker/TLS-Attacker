@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,7 +48,7 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {
         entry.setSupplementalDataEntry(parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
         LOGGER.debug("SupplementalDataEntry: "
-                + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+            + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
     }
 
 }

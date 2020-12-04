@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -23,11 +24,11 @@ public class CipherWrapper {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static EncryptionCipher getEncryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
-            KeySet keySet) {
+        KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getWriteKey(connectionEndType),
-                    keySet.getWriteIv(connectionEndType));
+                keySet.getWriteIv(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.ChaCha20Poly1305) {
             return new ChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
@@ -41,11 +42,11 @@ public class CipherWrapper {
     }
 
     public static DecryptionCipher getDecryptionCipher(CipherSuite cipherSuite, ConnectionEndType connectionEndType,
-            KeySet keySet) {
+        KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
             return new GOST28147Cipher(GOSTUtils.getGostSpec(cipherSuite), keySet.getReadKey(connectionEndType),
-                    keySet.getReadIv(connectionEndType));
+                keySet.getReadIv(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.ChaCha20Poly1305) {
             return new ChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {

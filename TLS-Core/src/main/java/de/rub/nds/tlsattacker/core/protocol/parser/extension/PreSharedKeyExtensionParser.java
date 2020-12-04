@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
@@ -26,21 +28,21 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PreSharedKeyExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public PreSharedKeyExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
-        if (super.getBytesLeft() > 2) // Client -> Server
-        {
-            parsePreSharedKeyIdentitiyListLength(msg);
+        // Client -> Server
+        if (super.getBytesLeft() > 2) {
+            parsePreSharedKeyIdentityListLength(msg);
             parsePreSharedKeyIdentityListBytes(msg);
             parsePreSharedKeyBinderListLength(msg);
             parsePreSharedKeyBinderListBytes(msg);
-        } else // Server -> Client
-        {
+        } else {
+            // Server -> Client
             parseSelectedIdentity(msg);
         }
     }
@@ -50,7 +52,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         return new PreSharedKeyExtensionMessage();
     }
 
-    private void parsePreSharedKeyIdentitiyListLength(PreSharedKeyExtensionMessage msg) {
+    private void parsePreSharedKeyIdentityListLength(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH));
         LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
     }

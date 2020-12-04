@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -37,7 +38,7 @@ public class PWDProtectExtensionSerializerTest {
     private PWDProtectExtensionSerializer serializer;
 
     public PWDProtectExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-            int usernameLength, byte[] username) {
+        int usernameLength, byte[] username) {
         this.expectedBytes = expectedBytes;
         this.start = start;
         this.type = type;

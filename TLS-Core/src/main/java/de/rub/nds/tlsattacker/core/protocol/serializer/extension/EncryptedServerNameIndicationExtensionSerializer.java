@@ -7,17 +7,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EncryptedServerNameIndicationExtensionSerializer extends
-        ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
+    ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final EncryptedServerNameIndicationExtensionMessage msg;
@@ -74,7 +74,7 @@ public class EncryptedServerNameIndicationExtensionSerializer extends
     private void writeKeyExchange(EncryptedServerNameIndicationExtensionMessage msg) {
         appendBytes(msg.getKeyShareEntry().getPublicKey().getValue());
         LOGGER.debug("KeyKeyShareEntry: "
-                + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getKeyShareEntry().getPublicKey().getValue()));
     }
 
     private void writeRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {

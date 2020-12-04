@@ -36,7 +36,7 @@
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
-    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCipherSuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuites>
     <supportedCompressionMethods>NULL</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
     <pointFormats>UNCOMPRESSED</pointFormats>

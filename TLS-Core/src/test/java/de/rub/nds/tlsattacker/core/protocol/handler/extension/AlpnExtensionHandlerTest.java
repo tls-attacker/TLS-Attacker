@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,7 +56,7 @@ public class AlpnExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof AlpnExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof AlpnExtensionParser);
     }
 
     @Test

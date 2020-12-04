@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,6 +35,7 @@ public class CopyClientRandomAction extends CopyContextFieldAction {
         dst.setClientRandom(src.getClientRandom());
         LOGGER.debug("Copying client random from " + src + " to " + dst);
         LOGGER.debug("Copied client random is: " + ArrayConverter.bytesToHexString(dst.getClientRandom(), true, true));
+        setExecuted(true);
     }
 
     @Override

@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.client.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CompressionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
@@ -38,9 +39,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
-    private GeneralDelegate generalDelegate;
-    @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private CompressionDelegate compressionDelegate;
     @ParametersDelegate
@@ -78,8 +77,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        generalDelegate = delegate;
-        this.ciphersuiteDelegate = new CiphersuiteDelegate();
+        this.ciphersuiteDelegate = new CipherSuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();

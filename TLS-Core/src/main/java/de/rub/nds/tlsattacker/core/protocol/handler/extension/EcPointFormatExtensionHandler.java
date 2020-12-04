@@ -7,8 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
@@ -49,8 +51,8 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
     }
 
     @Override
-    public ECPointFormatExtensionParser getParser(byte[] message, int pointer) {
-        return new ECPointFormatExtensionParser(pointer, message);
+    public ECPointFormatExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new ECPointFormatExtensionParser(pointer, message, config);
     }
 
     @Override

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -49,7 +50,7 @@ public class BlobRecordTest {
     @Test
     public void testGetRecordPreparator() {
         assertEquals(record.getRecordPreparator(chooser, encryptor, compressor, ProtocolMessageType.ALERT).getClass(),
-                BlobRecordPreparator.class);
+            BlobRecordPreparator.class);
     }
 
     /**

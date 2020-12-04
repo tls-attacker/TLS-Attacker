@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -21,9 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manages multiple message fragment collectors. A user can add fragments, check
- * if the message corresponding to a fragment is complete, and construct the
- * message.
+ * Manages multiple message fragment collectors. A user can add fragments, check if the message corresponding to a
+ * fragment is complete, and construct the message.
  */
 public class FragmentManager {
 
@@ -41,8 +41,9 @@ public class FragmentManager {
         FragmentKey key = new FragmentKey(fragment.getMessageSeq().getValue(), fragment.getEpoch().getValue());
         FragmentCollector collector = fragments.get(key);
         if (collector == null) {
-            collector = new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq()
-                    .getValue(), fragment.getLength().getValue());
+            collector =
+                new FragmentCollector(config, fragment.getType().getValue(), fragment.getMessageSeq().getValue(),
+                    fragment.getLength().getValue());
             fragments.put(key, collector);
         }
         if (collector.wouldAdd(fragment)) {
@@ -54,8 +55,7 @@ public class FragmentManager {
     }
 
     /**
-     * Returns true if the message corresponding to this messageSeq and epoch is
-     * complete, returns false otherwise.
+     * Returns true if the message corresponding to this messageSeq and epoch is complete, returns false otherwise.
      */
     public boolean isFragmentedMessageComplete(Integer messageSeq, Integer epoch) {
         FragmentKey key = new FragmentKey(messageSeq, epoch);
@@ -91,7 +91,7 @@ public class FragmentManager {
                 } else {
                     if (onlyIfComplete && !fragmentCollector.isMessageComplete()) {
                         LOGGER.debug("Incomplete message. Not processing: msg_sqn: " + key.getMessageSeq() + " epoch: "
-                                + key.getEpoch());
+                            + key.getEpoch());
                     } else {
                         handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
                         fragmentCollector.setInterpreted(true);
@@ -112,9 +112,8 @@ public class FragmentManager {
     }
 
     /**
-     * Returns the stored fragmented message with the given messageSeq and
-     * epoch, as a single combined fragment. Returns null if no message was
-     * stored with this messageSeq, or if the message is incomplete.
+     * Returns the stored fragmented message with the given messageSeq and epoch, as a single combined fragment. Returns
+     * null if no message was stored with this messageSeq, or if the message is incomplete.
      * 
      * @param messageSeq
      * @param epoch

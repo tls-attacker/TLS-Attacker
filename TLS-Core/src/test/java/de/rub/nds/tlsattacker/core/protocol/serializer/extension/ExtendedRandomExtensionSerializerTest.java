@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class ExtendedRandomExtensionSerializerTest {
     private ExtendedRandomExtensionMessage message;
 
     public ExtendedRandomExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            byte[] extendedRandom, byte[] expectedBytes, int startParsing) {
+        byte[] extendedRandom, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extendedRandom = extendedRandom;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -24,13 +25,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A RecordGroup comprises records which should be decrypted/processed together.
- * They share the following characteristics: 1. they are of the same type (blob
- * or real records); 2. they use the same cipher state (for DTLS, this means
- * they have the same epoch); 3. their content is of the same type.
+ * A RecordGroup comprises records which should be decrypted/processed together. They share the following
+ * characteristics: 1. they are of the same type (blob or real records); 2. they use the same cipher state (for DTLS,
+ * this means they have the same epoch); 3. their content is of the same type.
  *
- * The class also provides functionality for grouping records into RecordGroups,
- * decrypting and parsing them.
+ * The class also provides functionality for grouping records into RecordGroups, decrypting and parsing them.
  */
 public class RecordGroup {
 
@@ -70,7 +69,7 @@ public class RecordGroup {
     }
 
     public ProtocolMessageType getProtocolMessageType() {
-        if (!records.isEmpty()) {
+        if (!records.isEmpty() && records.get(0).getContentMessageType() != null) {
             return ProtocolMessageType.getContentType(records.get(0).getContentMessageType().getValue());
         }
         return null;
@@ -125,7 +124,7 @@ public class RecordGroup {
             isFitting = true;
         } else {
             if (Objects.equals(record.getContentMessageType(), getProtocolMessageType())
-                    && record.getClass().equals(records.get(0).getClass())) {
+                && record.getClass().equals(records.get(0).getClass())) {
                 if (getDtlsEpoch() != null) {
                     if (Objects.equals(getRecordEpoch(record), getDtlsEpoch())) {
                         isFitting = true;
@@ -155,9 +154,9 @@ public class RecordGroup {
         if (record instanceof Record) {
             RecordCryptoComputations computations = ((Record) record).getComputations();
             if (computations != null
-                    && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
-                            || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
-                            computations.getAuthenticationTagValid(), Boolean.FALSE))) {
+                && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
+                    || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
+                    computations.getAuthenticationTagValid(), Boolean.FALSE))) {
                 return true;
             }
         }
@@ -165,9 +164,8 @@ public class RecordGroup {
     }
 
     /**
-     * If the parsed record group contains invalid records we need to seperate
-     * them into smaller groups and only parse them one by one to make sure we
-     * can respect invalidAsUnknown flags
+     * If the parsed record group contains invalid records we need to separate them into smaller groups and only parse
+     * them one by one to make sure we can respect invalidAsUnknown flags
      *
      * @return
      */

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -43,15 +44,15 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] fragmentContentConfig,
-            int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
+        int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
         super(handshakeMessageType);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
         this.fragmentContentConfig = fragmentContentConfig;
         this.messageSequenceConfig = messageSequenceConfig;
         this.offsetConfig = offsetConfig;
@@ -60,14 +61,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
-        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
-        ADJUST_CONTEXT_DEFAULT = false;
+        isIncludeInDigestDefault = false;
+        adjustContextDefault = false;
     }
 
     @Override

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,14 +36,14 @@ public class AlpnExtensionPreparatorTest {
         context = new TlsContext();
         msg = new AlpnExtensionMessage(Config.createConfig());
         preparator = new AlpnExtensionPreparator(context.getChooser(), msg, new AlpnExtensionSerializer(msg));
-        protocolsWithLength = ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength },
-                announcedProtocols.getBytes());
+        protocolsWithLength =
+            ArrayConverter.concatenate(new byte[] { proposedAlpnProtocolLength }, announcedProtocols.getBytes());
     }
 
     @Test
     public void testPreparator() {
 
-        context.getConfig().setAlpnAnnouncedProtocols(new String[] { announcedProtocols });
+        context.getConfig().setDefaultProposedAlpnProtocols(new String[] { announcedProtocols });
 
         preparator.prepare();
 

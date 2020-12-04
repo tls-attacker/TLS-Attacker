@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,18 +32,17 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
 /**
- * Checks if a Server-Verify message successfully decrypts to the expected
- * Client Random value, i.e. the client's challenge. TLS-Attacker's SSLv2
- * implementation does not actually implement symmetric encryption, so we build
- * the minimal required parts here.
+ * Checks if a Server-Verify message successfully decrypts to the expected Client Random value, i.e. the client's
+ * challenge. TLS-Attacker's SSLv2 implementation does not actually implement symmetric encryption, so we build the
+ * minimal required parts here.
  */
 public class ServerVerifyChecker {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Checks if the given message decrypts to the Client Random value from the
-     * given TLS context under the cipher suite from the TLS context.
+     * Checks if the given message decrypts to the Client Random value from the given TLS context under the cipher suite
+     * from the TLS context.
      *
      * @return True for successful decryption to the expected value
      */
@@ -113,7 +113,7 @@ public class ServerVerifyChecker {
         byte[] iv = context.getSSL2Iv();
 
         return decryptRC2(clientReadKey, message.getEncryptedPart().getValue(), iv, message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     static byte[] decryptRC2(byte[] clientReadKey, byte[] encrypted, byte[] iv, int paddingLength) {
@@ -139,7 +139,7 @@ public class ServerVerifyChecker {
         cbcDes.init(false, cbcDesParams);
 
         return processEncryptedBlocks(cbcDes, message.getEncryptedPart().getValue(), message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     private static byte[] decryptCbcDesEde3(SSL2ServerVerifyMessage message, TlsContext context) {
@@ -155,19 +155,17 @@ public class ServerVerifyChecker {
         cbcDesEde.init(false, params);
 
         return processEncryptedBlocks(cbcDesEde, message.getEncryptedPart().getValue(), message.getPaddingLength()
-                .getValue());
+            .getValue());
     }
 
     /**
-     * Computes KEY-MATERIAL from information contained in the TLS context using
-     * MD5.
+     * Computes KEY-MATERIAL from information contained in the TLS context using MD5.
      *
      * @param tlsContext
-     *            The TLS context to get information for key derivation from.
+     * The TLS context to get information for key derivation from.
      * @param index
-     *            Additional characters to mix into key derivation. This will
-     *            usually either be an empty String, or one of "0" and "1" for
-     *            KEY-MATERIAL-0 resp. KEY-MATERIAL-1.
+     * Additional characters to mix into key derivation. This will usually either be an empty String, or one of "0" and
+     * "1" for KEY-MATERIAL-0 resp. KEY-MATERIAL-1.
      */
     private static byte[] makeKeyMaterial(TlsContext tlsContext, String index) {
         SSL2CipherSuite cipherSuite = tlsContext.getChooser().getSSL2CipherSuite();

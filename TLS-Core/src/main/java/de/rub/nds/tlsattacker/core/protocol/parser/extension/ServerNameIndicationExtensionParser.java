@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
@@ -25,8 +27,8 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     private List<ServerNamePair> pairList;
 
-    public ServerNameIndicationExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ServerNameIndicationExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
@@ -37,8 +39,8 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
             int position = 0;
             pairList = new LinkedList<>();
             while (position < msg.getServerNameListLength().getValue()) {
-                ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes()
-                        .getValue());
+                ServerNamePairParser parser =
+                    new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
                 pairList.add(parser.parse());
                 if (position == parser.getPointer()) {
                     throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
@@ -57,11 +59,10 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListlength of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListLength of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST));
@@ -69,23 +70,22 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
     }
 
     /**
-     * Reads the next bytes as the serverNameListBytes of the Extension and
-     * writes them in the message
+     * Reads the next bytes as the serverNameListBytes of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(parseByteArrayField(msg.getServerNameListLength().getValue()));
-        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER
+            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     /**
-     * Reads the next bytes as the serverNameList of the Extension and writes
-     * them in the message
+     * Reads the next bytes as the serverNameList of the Extension and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseServerNameList(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameList(pairList);

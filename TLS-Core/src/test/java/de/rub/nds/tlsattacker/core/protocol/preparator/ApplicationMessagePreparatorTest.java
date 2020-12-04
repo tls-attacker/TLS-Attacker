@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -29,8 +30,7 @@ public class ApplicationMessagePreparatorTest {
     }
 
     /**
-     * Test of prepareProtocolMessageContents method, of class
-     * ApplicationMessagePreparator.
+     * Test of prepareProtocolMessageContents method, of class ApplicationMessagePreparator.
      */
     @Test
     public void testPrepare() {

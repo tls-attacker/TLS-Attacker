@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -16,8 +17,7 @@ import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.util.Arrays;
 
 /**
- * An Implementation of X25519 which does not care if the private key does not
- * have the correct format
+ * An Implementation of X25519 which does not care if the private key does not have the correct format
  */
 public class ForgivingX25519Curve {
 
@@ -26,33 +26,31 @@ public class ForgivingX25519Curve {
     public static final int ELEMENT_SIZE = 32;
 
     /**
-     * Generates a publicKey for a given private key. The key is truncated or
-     * padded to the correct size if necessary
+     * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
      * @param privateKey
-     *            The private key to use
-     * @return publickey The computed public key
+     * The private key to use
+     * @return publicKey The computed public key
      */
     public static byte[] computePublicKey(BigInteger privateKey) {
         return computePublicKey(privateKey.toByteArray());
     }
 
     /**
-     * Generates a publicKey for a given private key. The key is truncated or
-     * padded to the correct size if necessary
+     * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
      * @param privateKey
-     *            The private key to use
-     * @return publickey The computed public key
+     * The private key to use
+     * @return publicKey The computed public key
      */
     public static byte[] computePublicKey(byte[] privateKey) {
         X25519.precompute();
         if (privateKey.length > ELEMENT_SIZE) {
-            LOGGER.debug("privatekey has is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+            LOGGER.debug("privateKey has is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
+                + " bytes.");
             privateKey = Arrays.copyOfRange(privateKey, 0, ELEMENT_SIZE);
         } else if (privateKey.length < ELEMENT_SIZE) {
-            LOGGER.debug("privatekey has is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
+            LOGGER.debug("privateKey has is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
             privateKey = Arrays.copyOf(privateKey, ELEMENT_SIZE);
         }
         byte[] publicKey = new byte[ELEMENT_SIZE];
@@ -61,12 +59,12 @@ public class ForgivingX25519Curve {
     }
 
     /**
-     * Computes a shared point/secret from a private key and a publickey
+     * Computes a shared point/secret from a private key and a publicKey
      *
      * @param privateKey
-     *            Our side's private key
+     * Our side's private key
      * @param publicKey
-     *            The other sides public key
+     * The other sides public key
      * @return A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
@@ -74,26 +72,26 @@ public class ForgivingX25519Curve {
     }
 
     /**
-     * Computes a shared point/secret from a private key and a publickey
+     * Computes a shared point/secret from a private key and a publicKey
      *
      * @param privateKey
-     *            Our side's private key
+     * Our side's private key
      * @param publicKey
-     *            The other sides public key
+     * The other sides public key
      * @return A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(byte[] privateKey, byte[] publicKey) {
         if (privateKey.length > ELEMENT_SIZE) {
-            LOGGER.debug("privatekey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+            LOGGER.debug("privateKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
+                + " bytes.");
             privateKey = Arrays.copyOfRange(privateKey, 0, ELEMENT_SIZE);
         } else if (privateKey.length < ELEMENT_SIZE) {
-            LOGGER.debug("privatekey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
+            LOGGER.debug("privateKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
             privateKey = Arrays.copyOf(privateKey, ELEMENT_SIZE);
         }
         if (publicKey.length > ELEMENT_SIZE) {
             LOGGER.debug("publicKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                    + " bytes.");
+                + " bytes.");
             publicKey = Arrays.copyOfRange(publicKey, 0, ELEMENT_SIZE);
         } else if (publicKey.length < ELEMENT_SIZE) {
             LOGGER.debug("publicKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");

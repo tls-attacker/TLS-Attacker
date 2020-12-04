@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -25,9 +26,6 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
     // to be mistaken with PKCS#1 padding)
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger paddingLength;
-
-    @ModifiableVariableProperty
-    private ModifiableByte type;
 
     public SSL2HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
@@ -55,20 +53,6 @@ public abstract class SSL2HandshakeMessage extends HandshakeMessage {
 
     public void setPaddingLength(Integer paddingLength) {
         this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
-    }
-
-    @Override
-    public ModifiableByte getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(ModifiableByte type) {
-        this.type = type;
-    }
-
-    public void setType(byte type) {
-        this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
     @Override

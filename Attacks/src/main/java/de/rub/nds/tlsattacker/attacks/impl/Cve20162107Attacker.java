@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -46,8 +47,7 @@ import org.apache.logging.log4j.Logger;
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
  */
 /**
- * Deprecated 18.4.2019 - There is no need for this class. it is completly
- * integrated into the padding oracle attacker
+ * Deprecated 18.4.2019 - There is no need for this class. it is completely integrated into the padding oracle attacker
  */
 @Deprecated
 public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
@@ -76,7 +76,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setDefaultSelectedCipherSuite(suite);
-        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        tlsConfig.setDefaultClientSupportedCipherSuites(suite);
         KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
         if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
             tlsConfig.setAddECPointFormatExtension(true);
@@ -113,8 +113,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         State state = new State(tlsConfig, trace);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
@@ -123,7 +123,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.debug(ex.getLocalizedMessage());
         }
         // The Server has to answer to our ClientHello with a ServerHello
-        // Message, else he does not support the offered Ciphersuite and
+        // Message, else he does not support the offered cipher suite and
         // protocol version
         if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             LOGGER.info("Did not receive ServerHello. Skipping...");
@@ -134,14 +134,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
-                    .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
-                    .getValue(), am.getDescription().getValue());
+                .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
+                .getValue(), am.getDescription().getValue());
         } else {
             LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
         }
 
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
-                && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
+            && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
@@ -151,7 +151,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Record createRecordWithBadPadding() {
-        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+        byte[] plain =
+            new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
@@ -178,14 +179,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolVersion> versions = config.getVersions();
         Config tlsConfig = getTlsConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
-        if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
+        if (tlsConfig.getDefaultClientSupportedCipherSuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
                 if (cs.isCBC()) {
                     ciphers.add(cs);
                 }
             }
         } else {
-            ciphers = tlsConfig.getDefaultClientSupportedCiphersuites();
+            ciphers = tlsConfig.getDefaultClientSupportedCipherSuites();
         }
 
         for (ProtocolVersion version : versions) {
@@ -193,7 +194,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 try {
                     vulnerable |= executeAttackRound(version, suite);
                 } catch (Throwable t) {
-                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                    LOGGER.warn("Problem while testing " + version.name() + " with cipher suite " + suite.name());
                     LOGGER.debug(t);
                 }
             }
