@@ -31,8 +31,6 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
 
     private ServerSocket serverSocket;
 
-    private Socket clientSocket;
-
     private AcceptorCallable callable;
 
     private FutureTask<Socket> task;
@@ -79,9 +77,9 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
         if (task != null) {
             if (callable.isDoneAlready()) {
                 try {
-                    clientSocket = task.get();
-                    clientSocket.setSoTimeout(1);
-                    setStreams(new PushbackInputStream(clientSocket.getInputStream()), clientSocket.getOutputStream());
+                    socket = task.get();
+                    socket.setSoTimeout(1);
+                    setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
                     initialized = true;
                     return true;
                 } catch (IOException | InterruptedException | ExecutionException ex) {
@@ -143,7 +141,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
         if (!isInitialized()) {
             throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
         } else {
-            return clientSocket.getPort();
+            return socket.getPort();
         }
     }
 
