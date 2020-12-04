@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,9 +26,9 @@ public class UnknownHandshakeSerializer extends HandshakeMessageSerializer<Unkno
      * Constructor for the UnknownHandshakeMessageSerializer
      *
      * @param message
-     *            Message that should be serialized
+     * Message that should be serialized
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      */
     public UnknownHandshakeSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {
         super(message, version);

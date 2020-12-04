@@ -7,10 +7,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -38,9 +41,14 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
 
     private boolean initialized = false;
 
-    public ServerTCPNonBlockingTransportHandler(long timeout, int serverPort) {
-        super(timeout, ConnectionEndType.SERVER);
+    public ServerTCPNonBlockingTransportHandler(long firstTimeout, long timeout, int serverPort) {
+        super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.serverPort = serverPort;
+    }
+
+    public ServerTCPNonBlockingTransportHandler(Connection con) {
+        super(con);
+        this.serverPort = con.getPort();
     }
 
     @Override
@@ -48,8 +56,8 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
         if (serverSocket != null) {
             serverSocket.close();
         }
-        if (clientSocket != null) {
-            clientSocket.close();
+        if (socket != null) {
+            socket.close();
         }
     }
 
@@ -93,23 +101,23 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     @Override
     public boolean isClosed() throws IOException {
         if (isInitialized()) {
-            if (clientSocket != null && clientSocket.isClosed()) {
+            if (socket != null && socket.isClosed()) {
                 if (serverSocket.isClosed()) {
                     return true;
-                } else if (clientSocket == null && serverSocket.isClosed()) {
+                } else if (socket == null && serverSocket.isClosed()) {
                     return true;
                 }
             }
             return false;
         } else {
-            throw new IOException("Transporthandler is not initalized!");
+            throw new IOException("TransportHandler is not initialized!");
         }
     }
 
     @Override
     public void closeClientConnection() throws IOException {
-        if (clientSocket != null && !clientSocket.isClosed()) {
-            clientSocket.close();
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
         }
     }
 
@@ -122,7 +130,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public Integer getServerPort() {
+    public Integer getSrcPort() {
         if (!isInitialized()) {
             return serverSocket.getLocalPort();
         } else {
@@ -131,7 +139,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public Integer getClientPort() {
+    public Integer getDstPort() {
         if (!isInitialized()) {
             throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
         } else {
@@ -140,7 +148,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public void setServerPort(int port) {
+    public void setSrcPort(int port) {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
         } else {
@@ -149,7 +157,7 @@ public class ServerTCPNonBlockingTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public void setClientPort(int port) {
+    public void setDstPort(int port) {
         throw new RuntimeException("A ServerTransportHandler cannot set the client port");
     }
 }

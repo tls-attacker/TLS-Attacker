@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -54,7 +55,7 @@ public class ChangeProtocolVersionAction extends ConnectionBoundAction {
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
         LOGGER.info("Changed ProtocolVersion from " + oldValue == null ? oldValue.name() : null + " to "
-                + newValue.name());
+            + newValue.name());
         setExecuted(true);
     }
 

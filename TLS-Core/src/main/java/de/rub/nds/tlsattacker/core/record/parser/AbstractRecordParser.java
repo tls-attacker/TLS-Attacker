@@ -7,16 +7,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
- * @param <AbstractRecord>
- *            The Abstract record that should be parsed
+ * @param <AbstractRecordT>
+ * The Abstract record that should be parsed
  */
-public abstract class AbstractRecordParser<AbstractRecord> extends Parser<AbstractRecord> {
+public abstract class AbstractRecordParser<AbstractRecordT> extends Parser<AbstractRecordT> {
 
     protected final ProtocolVersion version;
 

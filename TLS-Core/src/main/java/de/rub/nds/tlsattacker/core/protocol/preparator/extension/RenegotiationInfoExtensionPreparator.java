@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,7 +25,7 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     private final RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
-            RenegotiationInfoExtensionSerializer serializer) {
+        RenegotiationInfoExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.message = message;
     }
@@ -32,13 +33,13 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     @Override
     public void prepareExtensionContent() {
         if (chooser.getContext().getLastClientVerifyData() != null
-                && chooser.getContext().getLastServerVerifyData() != null) {
+            && chooser.getContext().getLastServerVerifyData() != null) {
             // We are renegotiating
             if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                 message.setRenegotiationInfo(chooser.getContext().getLastClientVerifyData());
             } else {
                 message.setRenegotiationInfo(ArrayConverter.concatenate(chooser.getContext().getLastClientVerifyData(),
-                        chooser.getContext().getLastServerVerifyData()));
+                    chooser.getContext().getLastServerVerifyData()));
             }
         } else {
             // First time we send this message
@@ -50,7 +51,7 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
         }
         message.setRenegotiationInfoLength(message.getRenegotiationInfo().getValue().length);
         LOGGER.debug("Prepared the RenegotiationInfo extension with info "
-                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo().getValue()));
+            + ArrayConverter.bytesToHexString(message.getRenegotiationInfo().getValue()));
     }
 
 }

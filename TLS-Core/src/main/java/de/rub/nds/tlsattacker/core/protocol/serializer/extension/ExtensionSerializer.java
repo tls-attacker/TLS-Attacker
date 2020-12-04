@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- *            The ExtensionMessage that should be serialized
+ * The ExtensionMessage that should be serialized
  */
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
 

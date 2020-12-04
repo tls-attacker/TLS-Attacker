@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
@@ -42,8 +43,9 @@ public class FinishedResumptionPaddingTraceGenerator extends PaddingTraceGenerat
      */
     @Override
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(
-                WorkflowTraceType.FULL_RESUMPTION, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.FULL_RESUMPTION,
+                RunningModeType.CLIENT);
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(new Record(config));

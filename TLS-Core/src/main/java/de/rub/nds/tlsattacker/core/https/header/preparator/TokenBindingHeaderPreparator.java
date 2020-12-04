@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
@@ -30,8 +31,8 @@ public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader>
         header.setHeaderName("Sec-Token-Binding");
         TokenBindingMessagePreparator preparator = new TokenBindingMessagePreparator(chooser, header.getMessage());
         preparator.prepare();
-        TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(header.getMessage(),
-                chooser.getSelectedProtocolVersion());
+        TokenBindingMessageSerializer serializer =
+            new TokenBindingMessageSerializer(header.getMessage(), chooser.getSelectedProtocolVersion());
         String encodedTokenBinding = Base64.getUrlEncoder().withoutPadding().encodeToString(serializer.serialize());
         header.setHeaderValue(encodedTokenBinding);
     }

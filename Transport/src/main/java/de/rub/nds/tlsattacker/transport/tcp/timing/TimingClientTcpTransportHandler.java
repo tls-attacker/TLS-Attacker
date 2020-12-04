@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -24,8 +25,8 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
         super(connection);
     }
 
-    public TimingClientTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout, hostname, port);
+    public TimingClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
     }
 
     @Override

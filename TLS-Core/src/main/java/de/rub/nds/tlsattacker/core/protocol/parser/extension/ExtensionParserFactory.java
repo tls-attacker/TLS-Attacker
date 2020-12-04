@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -22,10 +23,10 @@ public class ExtensionParserFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
-            HandshakeMessageType handshakeMessageType, Config config) {
+        HandshakeMessageType handshakeMessageType, Config config) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new ParserException(
-                    "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
+                "Could not retrieve Parser for ExtensionBytes. Not Enough bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
@@ -68,11 +69,10 @@ public class ExtensionParserFactory {
             case KEY_SHARE_OLD:
                 if ((config == null) || !config.isParseKeyShareOld()) {
                     parser = new ExtendedRandomExtensionParser(pointer, extensionBytes, config);
-                    break;
+                } else {
+                    parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, config);
                 }
-                // No break here. Invoke getKeyShareParser in case KEY_SHARE_OLD
-                // by
-                // falling through to the next case (i.e. KEY_SHARE).
+                break;
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType, config);
                 break;
@@ -154,20 +154,41 @@ public class ExtensionParserFactory {
             case PWD_CLEAR:
                 parser = new PWDClearExtensionParser(pointer, extensionBytes, config);
                 break;
+            case GREASE_00:
+            case GREASE_01:
+            case GREASE_02:
+            case GREASE_03:
+            case GREASE_04:
+            case GREASE_05:
+            case GREASE_06:
+            case GREASE_07:
+            case GREASE_08:
+            case GREASE_09:
+            case GREASE_10:
+            case GREASE_11:
+            case GREASE_12:
+            case GREASE_13:
+            case GREASE_14:
+            case GREASE_15:
+                parser = new GreaseExtensionParser(pointer, extensionBytes, config);
+                break;
             case UNKNOWN:
+                parser = new UnknownExtensionParser(pointer, extensionBytes, config);
+                break;
+            default:
                 parser = new UnknownExtensionParser(pointer, extensionBytes, config);
                 break;
         }
         if (parser == null) {
             LOGGER.debug("The ExtensionParser for the " + type.name()
-                    + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
+                + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
             parser = new UnknownExtensionParser(pointer, extensionBytes, config);
         }
         return parser;
     }
 
     private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type,
-            Config config) {
+        Config config) {
         switch (type) {
             case HELLO_RETRY_REQUEST:
                 return new HRRKeyShareExtensionParser(pointer, extensionBytes, config);
@@ -176,7 +197,7 @@ public class ExtensionParserFactory {
                 return new KeyShareExtensionParser(pointer, extensionBytes, config);
             default:
                 throw new UnsupportedOperationException("KeyShareExtension for following " + type
-                        + " message NOT supported yet.");
+                    + " message NOT supported yet.");
         }
     }
 

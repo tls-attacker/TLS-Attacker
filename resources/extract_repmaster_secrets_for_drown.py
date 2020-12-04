@@ -58,7 +58,7 @@ def extract_secrets(packets):
     def get_cke_bytes(packet):
         exchkeys = str(packet[TLSClientKeyExchange].exchkeys)
         # "the RSA-encrypted PreMasterSecret in a ClientKeyExchange is preceded by two length
-        # bytes" (RFC 5246), these are (currently) not intepreted by Scapy
+        # bytes" (RFC 5246), these are (currently) not interpreted by Scapy
         secret_len = struct.unpack('!H', exchkeys[:2])[0]
         # Scapy sometimes erroneously identifies packets as having a TLSClientKeyExchange layer
         if secret_len != len(exchkeys) - 2:

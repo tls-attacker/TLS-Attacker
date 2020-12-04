@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -61,8 +62,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
                 stream.write(type.getArrayValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare CertificateRequestMessage. Failed to write ClientCertificateType into message",
-                        ex);
+                    "Could not prepare CertificateRequestMessage. Failed to write ClientCertificateType into message",
+                    ex);
             }
         }
         return stream.toByteArray();
@@ -75,8 +76,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
                 stream.write(algo.getByteValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                        "Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into message",
-                        ex);
+                    "Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into "
+                        + "message", ex);
             }
         }
         return stream.toByteArray();
@@ -85,7 +86,7 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     private void prepareClientCertificateTypes(byte[] certTypes, CertificateRequestMessage msg) {
         msg.setClientCertificateTypes(certTypes);
         LOGGER.debug("ClientCertificateTypes: "
-                + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     private void prepareClientCertificateTypesCount(CertificateRequestMessage msg) {
@@ -106,7 +107,7 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(sigHashAlgos);
         LOGGER.debug("SignatureHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
@@ -117,12 +118,12 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
     private void prepareCertificateRequestContext(CertificateRequestMessage msg) {
         msg.setCertificateRequestContext(chooser.getConfig().getDefaultCertificateRequestContext());
         LOGGER.debug("CertificateRequestContext: "
-                + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
     }
 
     private void prepareCertificateRequestContextLength(CertificateRequestMessage msg) {
         msg.setCertificateRequestContextLength(msg.getCertificateRequestContext().getValue().length);
-        LOGGER.debug("CertificateRquestContextLength: " + msg.getCertificateRequestContextLength().getValue());
+        LOGGER.debug("CertificateRequestContextLength: " + msg.getCertificateRequestContextLength().getValue());
     }
 
 }

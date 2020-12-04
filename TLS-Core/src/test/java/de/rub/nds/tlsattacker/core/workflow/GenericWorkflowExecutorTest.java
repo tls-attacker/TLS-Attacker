@@ -7,22 +7,23 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * <p>Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
+ * <p>Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 ///**
 // * TLS-Attacker - A Modular Penetration Testing Framework for TLS
 // *
-// * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+// * <p>Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
 // *
-// * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+// * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
 // */
 //package de.rub.nds.tlsattacker.tls.workflow;
 //
@@ -139,7 +140,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 //        this.initializeContext();
 //        GenericWorkflowExecutorImpl we = new GenericWorkflowExecutorImpl(null, context);
 //        we.removeNextProtocolMessages(context.getWorkflowTrace().getAllMessages(), 2);
-//        assertTrue("Only two messsages left in protocol messages", protocolMessages.size() == 2);
+//        assertTrue("Only two messages left in protocol messages", protocolMessages.size() == 2);
 //        assertTrue(context.getWorkflowTrace().getAllMessages().get(0).getClass() == ClientHelloMessage.class);
 //        assertTrue(context.getWorkflowTrace().getAllMessages().get(1).getClass() == ServerHelloMessage.class);
 //    }

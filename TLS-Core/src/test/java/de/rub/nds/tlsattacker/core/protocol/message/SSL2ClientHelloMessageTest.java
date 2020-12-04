@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import org.junit.After;
@@ -37,7 +38,7 @@ public class SSL2ClientHelloMessageTest {
         sb.append("\n  Protocol Version: ").append("null");
         sb.append("\n  Type: ").append("null");
         sb.append("\n  Supported CipherSuites: ").append("null");
-        sb.append("\n  Challange: ").append("null");
+        sb.append("\n  Challenge: ").append("null");
         sb.append("\n  SessionID: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

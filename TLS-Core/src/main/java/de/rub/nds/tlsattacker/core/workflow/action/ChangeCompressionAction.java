@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -56,7 +57,7 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().updateCompressor();
         tlsContext.getRecordLayer().updateDecompressor();
         LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
-                + newValue.name());
+            + newValue.name());
         setExecuted(true);
     }
 

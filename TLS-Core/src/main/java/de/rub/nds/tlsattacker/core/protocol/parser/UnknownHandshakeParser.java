@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,15 +26,13 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HandshakeMessageParser is
-     *            supposed to start parsing
+     * Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HandshakeMessageParser is supposed to
-     *            parse
+     * The byte[] which the HandshakeMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public UnknownHandshakeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.UNKNOWN, version, config);
@@ -44,7 +43,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
         LOGGER.debug("Parsing UnknownHandshakeMessage");
         parseData(msg);
         LOGGER.warn("Parsed UnknownHandshake Message: "
-                + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
+            + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
 
     }
 
@@ -57,7 +56,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      * Reads the next bytes as the Data and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseData(UnknownHandshakeMessage msg) {
         msg.setData(parseByteArrayField(msg.getLength().getValue()));

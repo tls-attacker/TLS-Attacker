@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config;
 
 import com.beust.jcommander.Parameter;
@@ -69,10 +70,6 @@ public abstract class TLSDelegateConfig {
         return baseConfig;
     }
 
-    public final boolean hasDifferentConfig() {
-        return defaultConfig != null;
-    }
-
     public Config createConfig() {
         Config config = null;
         if (defaultConfig != null) {
@@ -87,5 +84,9 @@ public abstract class TLSDelegateConfig {
         }
 
         return createConfig(config);
+    }
+
+    public final boolean hasDifferentConfig() {
+        return defaultConfig != null;
     }
 }

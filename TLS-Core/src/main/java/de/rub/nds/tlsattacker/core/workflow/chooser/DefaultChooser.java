@@ -7,12 +7,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.chooser;
-
-import java.math.BigInteger;
-import java.util.List;
-
-import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -40,6 +36,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.math.BigInteger;
+import java.util.List;
+import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 
@@ -179,11 +178,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (context.getClientSupportedCiphersuites() != null) {
-            return context.getClientSupportedCiphersuites();
+    public List<CipherSuite> getClientSupportedCipherSuites() {
+        if (context.getClientSupportedCipherSuites() != null) {
+            return context.getClientSupportedCipherSuites();
         } else {
-            return config.getDefaultClientSupportedCiphersuites();
+            return config.getDefaultClientSupportedCipherSuites();
         }
     }
 
@@ -256,8 +255,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated,
-     * we add the additional bytes to the Client Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
+     * Client Random
      */
     @Override
     public byte[] getClientRandom() {
@@ -287,8 +286,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated,
-     * we add the additional bytes to the Server Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
+     * Server Random
      */
     @Override
     public byte[] getServerRandom() {
@@ -778,7 +777,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public ConnectionEndType getMyConnectionPeer() {
         return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
-                : ConnectionEndType.CLIENT;
+            : ConnectionEndType.CLIENT;
     }
 
     @Override
@@ -1082,12 +1081,12 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<CipherSuite> getEsniServerCiphersuites() {
+    public List<CipherSuite> getEsniServerCipherSuites() {
 
-        if (context.getEsniServerCiphersuites() != null) {
-            return context.getEsniServerCiphersuites();
+        if (context.getEsniServerCipherSuites() != null) {
+            return context.getEsniServerCipherSuites();
         } else {
-            return config.getDefaultEsniServerCiphersuites();
+            return config.getDefaultEsniServerCipherSuites();
         }
     }
 

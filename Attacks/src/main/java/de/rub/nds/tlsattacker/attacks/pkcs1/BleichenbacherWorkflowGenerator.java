@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -24,19 +25,19 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
- *
  */
 public class BleichenbacherWorkflowGenerator {
 
     /**
-     *
      * @param tlsConfig
      * @param type
      * @param encryptedPMS
      * @return
      */
-    public static WorkflowTrace generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type, byte[] encryptedPMS) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+    public static WorkflowTrace
+        generateWorkflow(Config tlsConfig, BleichenbacherWorkflowType type, byte[] encryptedPMS) {
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(tlsConfig);
         ModifiableByteArray epms = new ModifiableByteArray();
@@ -52,7 +53,7 @@ public class BleichenbacherWorkflowGenerator {
                     break;
                 case CKE_CCS_FIN:
                     trace.addTlsAction(new SendAction(cke, new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(
-                            tlsConfig)));
+                        tlsConfig)));
                     break;
                 case CKE_FIN:
                     trace.addTlsAction(new SendAction(cke, new FinishedMessage(tlsConfig)));

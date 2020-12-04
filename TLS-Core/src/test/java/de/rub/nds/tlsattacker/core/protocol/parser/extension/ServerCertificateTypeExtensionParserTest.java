@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,12 +31,12 @@ public class ServerCertificateTypeExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0014000100"), 1, 0, null,
-                        Arrays.asList(CertificateType.X509), false },
-                { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001400020100"), 2, 0, 1,
-                        Arrays.asList(CertificateType.X509), true },
-                { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00140003020100"), 3, 0,
-                        2, Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
+            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0014000100"), 1, 0, null,
+                Arrays.asList(CertificateType.X509), false },
+            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001400020100"), 2, 0, 1,
+                Arrays.asList(CertificateType.X509), true },
+            { ExtensionType.SERVER_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("00140003020100"), 3, 0, 2,
+                Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
     }
 
     private final ExtensionType extensionType;
@@ -49,8 +50,8 @@ public class ServerCertificateTypeExtensionParserTest {
     private ServerCertificateTypeExtensionMessage msg;
 
     public ServerCertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, Integer certificateTypesLength,
-            List<CertificateType> certificateTypes, boolean isClientState) {
+        int extensionLength, int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

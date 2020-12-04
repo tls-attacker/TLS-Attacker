@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -82,8 +83,7 @@ public class InboundConnectionTest {
     }
 
     /**
-     * Verify that the ServerConnectionEnd includes manually set values in
-     * serialization output.
+     * Verify that the ServerConnectionEnd includes manually set values in serialization output.
      *
      * @throws Exception
      */

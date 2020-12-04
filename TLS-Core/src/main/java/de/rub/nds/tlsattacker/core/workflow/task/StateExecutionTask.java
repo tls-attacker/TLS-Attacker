@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.state.State;
@@ -29,6 +30,9 @@ public class StateExecutionTask extends TlsTask {
     public boolean execute() {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
+        if (state.getTlsContext().isReceivedTransportHandlerException()) {
+            throw new RuntimeException("TransportHandler exception received.");
+        }
         return true;
     }
 

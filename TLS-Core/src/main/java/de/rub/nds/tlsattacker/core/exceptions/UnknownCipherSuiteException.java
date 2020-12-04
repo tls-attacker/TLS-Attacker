@@ -7,22 +7,23 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
- * Configuration exception
+ * Unknown cipher suite exception
  */
-public class FatalAertMessageException extends RuntimeException {
+public class UnknownCipherSuiteException extends RuntimeException {
 
-    public FatalAertMessageException() {
+    public UnknownCipherSuiteException() {
         super();
     }
 
-    public FatalAertMessageException(String message) {
+    public UnknownCipherSuiteException(String message) {
         super(message);
     }
 
-    public FatalAertMessageException(String message, Throwable cause) {
+    public UnknownCipherSuiteException(String message, Throwable cause) {
         super(message, cause);
     }
 }

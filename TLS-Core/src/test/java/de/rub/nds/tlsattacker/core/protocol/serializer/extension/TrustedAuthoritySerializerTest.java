@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
@@ -36,7 +37,7 @@ public class TrustedAuthoritySerializerTest {
     private TrustedAuthority authority;
 
     public TrustedAuthoritySerializerTest(TrustedCaIndicationIdentifierType identifier, byte[] hash,
-            Integer distNameLength, byte[] distName, byte[] parserBytes) {
+        Integer distNameLength, byte[] distName, byte[] parserBytes) {
         this.identifier = identifier;
         this.hash = hash;
         this.distNameLength = distNameLength;
@@ -47,7 +48,8 @@ public class TrustedAuthoritySerializerTest {
     @Test
     public void testSerializeBytes() {
         authority = new TrustedAuthority(identifier.getValue(), hash, distNameLength, distName);
-        TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), authority);
+        TrustedAuthorityPreparator preparator =
+            new TrustedAuthorityPreparator(new TlsContext().getChooser(), authority);
         preparator.prepare();
         serializer = new TrustedAuthoritySerializer(authority);
 

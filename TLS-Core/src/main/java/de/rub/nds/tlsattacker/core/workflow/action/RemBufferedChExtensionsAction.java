@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,18 +31,15 @@ import org.apache.logging.log4j.Logger;
 /**
  * Remove extensions from extension list of a buffered ClientHello message.
  * <p>
- * This allows changing a ClientHello message in transit, i.e. in MiTM workflows
- * that want to remove proposed extensions.
+ * This allows changing a ClientHello message in transit, i.e. in MiTM workflows that want to remove proposed
+ * extensions.
  *
  * <p>
- * This action assumes that the first message in the message buffer is a
- * ClientHello.
+ * This action assumes that the first message in the message buffer is a ClientHello.
  *
  * <p>
- * Note: This action is currently needed because fresh (ClientHello) messages
- * cannot be fully prepared from context, but partially rely on config values.
- * Thus preventing us to modify values in context and re-creating a CH for
- * forwarding.
+ * Note: This action is currently needed because fresh (ClientHello) messages cannot be fully prepared from context, but
+ * partially rely on config values. Thus preventing us to modify values in context and re-creating a CH for forwarding.
  *
  */
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
@@ -94,13 +92,13 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         List<ExtensionMessage> extensions = ch.getExtensions();
         List<ExtensionMessage> markedForRemoval = new ArrayList<>();
         ByteArrayOutputStream newExtensionBytes = new ByteArrayOutputStream();
-        String msg_name = ch.toCompactString();
+        String msgName = ch.toCompactString();
 
         int msgLength = ch.getLength().getValue();
         int origExtLength = ch.getExtensionBytes().getValue().length;
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original extensions in " + msg_name + ":\n" + summarizeExtensions(ch));
+            LOGGER.debug("Original extensions in " + msgName + ":\n" + summarizeExtensions(ch));
         }
 
         ExtensionType type;
@@ -108,7 +106,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
             try {
                 type = ext.getExtensionTypeConstant();
                 if (removeExtensions.contains(type)) {
-                    LOGGER.debug("Removing " + type + " extensions from " + msg_name);
+                    LOGGER.debug("Removing " + type + " extensions from " + msgName);
                     markedForRemoval.add(ext);
                 } else {
                     newExtensionBytes.write(ext.getExtensionBytes().getValue());
@@ -125,7 +123,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         ch.setExtensionsLength(newExtLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified extensions in " + msg_name + ":\n" + summarizeExtensions(ch));
+            LOGGER.debug("Modified extensions in " + msgName + ":\n" + summarizeExtensions(ch));
         }
 
     }
@@ -155,8 +153,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
     /**
      * Summarize the extension data for pretty printing.
      *
-     * @return a summary of the extension information contained in the CH
-     *         message
+     * @return a summary of the extension information contained in the CH message
      */
     public String summarizeExtensions(ClientHelloMessage ch) {
         StringBuilder sb = new StringBuilder();

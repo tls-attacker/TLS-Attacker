@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -25,19 +26,18 @@ public class MessageActionResult {
     private final List<DtlsHandshakeMessageFragment> messageFragmentList;
 
     public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
-            List<DtlsHandshakeMessageFragment> messageFragmentList) {
+        List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
     }
 
     /**
-     * Generates an empty MessageActionResult, that is, a result whose list
-     * fields are empty.
+     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
      */
     public MessageActionResult() {
         this(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>(),
-                new LinkedList<DtlsHandshakeMessageFragment>());
+            new LinkedList<DtlsHandshakeMessageFragment>());
     }
 
     public List<AbstractRecord> getRecordList() {

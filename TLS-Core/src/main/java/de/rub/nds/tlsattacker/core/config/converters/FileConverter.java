@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
@@ -17,8 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Interprets a string as a file path and reads the whole file as a single
- * string.
+ * Interprets a string as a file path and reads the whole file as a single string.
  */
 public class FileConverter implements IStringConverter<String> {
 

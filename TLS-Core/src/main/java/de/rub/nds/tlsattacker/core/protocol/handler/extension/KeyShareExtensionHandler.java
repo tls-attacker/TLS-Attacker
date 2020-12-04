@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,8 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This handler processes the KeyShare extensions in ClientHello and ServerHello
- * messages, as defined in
+ * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
@@ -40,7 +40,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     public KeyShareExtensionHandler(TlsContext context, ExtensionType type) {
         super(context);
         if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
-            throw new RuntimeException("Trying to initalize KeyShareExtensionHandler with an illegal ExtensionType");
+            throw new RuntimeException("Trying to initialize KeyShareExtensionHandler with an illegal ExtensionType");
         }
         this.type = type;
     }
@@ -70,7 +70,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
                     LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
-                            + ArrayConverter.bytesToHexString(pair.getGroup()));
+                        + ArrayConverter.bytesToHexString(pair.getGroup()));
                     context.setSelectedGroup(type);
                 }
             } else {
@@ -81,7 +81,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             // The server has only one key
             if (ksEntryList.size() > 0) {
                 context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList
-                        .get(0).getPublicKey()));
+                    .get(0).getPublicKey()));
                 NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
                 LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
                 context.setSelectedGroup(selectedGroup);

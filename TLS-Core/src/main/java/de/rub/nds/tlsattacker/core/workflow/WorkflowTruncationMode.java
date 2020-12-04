@@ -7,12 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.exceptions;
 
-public class NoCiphersuiteSelectedException extends WorkflowExecutionException {
+package de.rub.nds.tlsattacker.core.workflow;
 
-    public NoCiphersuiteSelectedException(String message) {
-        super(message);
-    }
-
+public enum WorkflowTruncationMode {
+    AT,
+    AFTER
 }

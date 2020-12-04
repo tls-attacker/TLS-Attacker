@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.connection;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -20,12 +21,14 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "alias", "ip", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
-        "proxyControlHostname", "timeout", "transportHandlerType" })
+    "proxyControlHostname", "timeout", "firstTimeout", "connectionTimeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 60000;
+    public static final Integer DEFAULT_FIRST_TIMEOUT = DEFAULT_TIMEOUT;
     public static final String DEFAULT_HOSTNAME = "localhost";
     public static final String DEFAULT_IP = "127.0.0.1";
     public static final Integer DEFAULT_PORT = 443;
@@ -156,6 +159,18 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 timeout = DEFAULT_TIMEOUT;
             }
         }
+        if (firstTimeout == null) {
+            firstTimeout = defaultCon.getFirstTimeout();
+            if (firstTimeout == null) {
+                firstTimeout = DEFAULT_FIRST_TIMEOUT;
+            }
+        }
+        if (connectionTimeout == null) {
+            connectionTimeout = defaultCon.getConnectionTimeout();
+            if (connectionTimeout == null) {
+                connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
+            }
+        }
         if (hostname == null || hostname.isEmpty()) {
             hostname = defaultCon.getHostname();
             if (hostname == null || hostname.isEmpty()) {
@@ -175,7 +190,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             }
             if (port < 0 || port > 65535) {
                 throw new ConfigurationException("Attempt to set default port "
-                        + "failed. Port must be in interval [0,65535], but is " + port);
+                    + "failed. Port must be in interval [0,65535], but is " + port);
             }
         }
     }
@@ -185,11 +200,15 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             alias = null;
         }
         if (transportHandlerType == defaultCon.getTransportHandlerType()
-                || transportHandlerType == DEFAULT_TRANSPORT_HANDLER_TYPE) {
+            || transportHandlerType == DEFAULT_TRANSPORT_HANDLER_TYPE) {
             transportHandlerType = null;
         }
         if (Objects.equals(timeout, defaultCon.getTimeout()) || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
+        }
+        if (Objects.equals(firstTimeout, defaultCon.getTimeout())
+            || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
+            firstTimeout = null;
         }
         if (hostname.equals(defaultCon.getHostname()) || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
             hostname = null;

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.Serializable;
@@ -28,6 +29,10 @@ public abstract class Connection implements Serializable {
     protected String proxyControlHostname = null;
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
+
+    protected Integer firstTimeout = null;
+
+    protected Integer connectionTimeout = null;
 
     public Connection() {
     }
@@ -51,6 +56,8 @@ public abstract class Connection implements Serializable {
         proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
+        firstTimeout = other.firstTimeout;
+        connectionTimeout = other.connectionTimeout;
     }
 
     public String getIp() {
@@ -125,9 +132,24 @@ public abstract class Connection implements Serializable {
         return timeout;
     }
 
+    public void setFirstTimeout(Integer firstTimeout) {
+        this.firstTimeout = firstTimeout;
+    }
+
+    public Integer getFirstTimeout() {
+        return firstTimeout;
+    }
+
+    public Integer getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(Integer connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
     /**
-     * Get the connection end type of the connection end. This must be
-     * implemented by all children.
+     * Get the connection end type of the connection end. This must be implemented by all children.
      *
      * @return the connection end type of the connection end.
      */

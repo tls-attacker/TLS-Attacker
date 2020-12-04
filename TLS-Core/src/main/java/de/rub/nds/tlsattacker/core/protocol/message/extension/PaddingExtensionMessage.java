@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,8 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class PaddingExtensionMessage extends ExtensionMessage {
 
     /**
-     * Contains the padding bytes of the padding extension. The bytes shall be
-     * empty.
+     * Contains the padding bytes of the padding extension. The bytes shall be empty.
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray paddingBytes;

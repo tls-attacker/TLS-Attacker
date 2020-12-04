@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
@@ -34,7 +35,7 @@ public class VeryShortPaddingGeneratorTest {
                 for (PaddingVector vector : vectors) {
                     int length = vector.getRecordLength(suite, ProtocolVersion.TLS12, 4);
                     assertEquals("We only create vectors of the same length to omit false positives",
-                            ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH, length);
+                        ShortPaddingGenerator.DEFAULT_CIPHERTEXT_LENGTH, length);
                 }
             }
         }

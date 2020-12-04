@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -19,7 +20,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 public class ProtocolVersionDelegate extends Delegate {
 
-    @Parameter(names = "-version", description = "Highest supported protocol version ", converter = ProtocolVersionConverter.class)
+    @Parameter(names = "-version", description = "Highest supported protocol version ",
+        converter = ProtocolVersionConverter.class)
     private ProtocolVersion protocolVersion = null;
 
     public ProtocolVersionDelegate() {

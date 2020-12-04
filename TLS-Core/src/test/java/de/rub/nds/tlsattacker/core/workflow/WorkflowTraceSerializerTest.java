@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
@@ -92,7 +93,7 @@ public class WorkflowTraceSerializerTest {
         LOGGER.debug(new String(os.toByteArray()));
 
         Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
-                os.toByteArray());
+            os.toByteArray());
     }
 
     @Test
@@ -111,10 +112,9 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML with default connection end looks as expected.
-     * If there is no custom connection end defined in the workflow trace, the
-     * default connection end from the config should be used. The default
-     * connection end should not appear in the serialized workflow trace.
+     * Verify that serialized/XML with default connection end looks as expected. If there is no custom connection end
+     * defined in the workflow trace, the default connection end from the config should be used. The default connection
+     * end should not appear in the serialized workflow trace.
      */
     @Test
     public void serializeWithSingleConnectionTest() {
@@ -158,8 +158,7 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML representation with single custom connection
-     * end looks as expected.
+     * Verify that serialized/XML representation with single custom connection end looks as expected.
      */
     @Test
     public void serializeWithSingleCustomConnectionTest() {
@@ -208,8 +207,7 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML representation with multiple connection ends
-     * looks as expected.
+     * Verify that serialized/XML representation with multiple connection ends looks as expected.
      */
     @Test
     public void serializeWithMultipleCustomConnectionTest() {

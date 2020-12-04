@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
@@ -40,8 +41,7 @@ public class RequestItemV2ParserTest {
     private final int requestLength = 21;
     private final int responderIdLength = 0x0b;
     private final List<ResponderId> responderIdList = Arrays.asList(
-            new ResponderId(3, new byte[] { 0x01, 0x02, 0x03 }), new ResponderId(4,
-                    new byte[] { 0x04, 0x05, 0x06, 0x07 }));
+        new ResponderId(3, new byte[] { 0x01, 0x02, 0x03 }), new ResponderId(4, new byte[] { 0x04, 0x05, 0x06, 0x07 }));
     private final int requestExtensionLength = 6;
     private final byte[] requestExtension = hexStringToByteArray("010203040506");
     private final byte[] parsingBytes = hexStringToByteArray("010015000B00030102030004040506070006010203040506");

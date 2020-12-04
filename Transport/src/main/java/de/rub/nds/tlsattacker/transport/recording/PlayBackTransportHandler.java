@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
@@ -30,7 +31,7 @@ public class PlayBackTransportHandler extends TransportHandler {
     private boolean closed = false;
 
     PlayBackTransportHandler(Recording recording) {
-        super(0, ConnectionEndType.SERVER);
+        super(0, 0, ConnectionEndType.SERVER);
         this.recording = recording;
         linesToSend = recording.getReceivedLines();
     }
