@@ -39,13 +39,4 @@ public class AcceptorCallable implements Callable<Socket> {
         }
         return null;
     }
-
-    /**
-     * A faster implection of callable is done to prevent race conditions
-     * 
-     * @return
-     */
-    public synchronized boolean isDoneAlready() {
-        return clientConnection != null;
-    }
 }
