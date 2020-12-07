@@ -20,7 +20,6 @@ import java.net.Socket;
 public class ServerTcpTransportHandler extends TcpTransportHandler {
 
     private ServerSocket serverSocket;
-    private Socket socket;
     private int port;
     /**
      * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
