@@ -24,9 +24,9 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     protected Socket socket;
 
-    protected int srcPort;
+    protected Integer srcPort;
 
-    protected int dstPort;
+    protected Integer dstPort;
 
     public TcpTransportHandler(Connection con) {
         super(con);
