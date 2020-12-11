@@ -23,7 +23,6 @@ import org.bouncycastle.asn1.x509.Certificate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
@@ -92,11 +91,8 @@ public class SignedCertificateTimestampSignature {
         // signature type (0 for Signed Certificate Timestamp)
         outputStream.write(0);
 
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(sct.getTimestamp());
-        byte[] timestamp = buffer.array();
-
         // timestamp
+        byte[] timestamp = ArrayConverter.longToBytes(sct.getTimestamp(), Long.BYTES);
         outputStream.write(timestamp);
 
         // Append two-byte LogEntryType (0 = Cert; 1 = PreCert)
@@ -115,8 +111,7 @@ public class SignedCertificateTimestampSignature {
         byte[] extensions = sct.getExtensions();
 
         // Append two-byte extension length
-        outputStream.write((extensions.length >> 8) & 0xFF);
-        outputStream.write(extensions.length & 0xFF);
+        outputStream.write(ArrayConverter.intToBytes(extensions.length, 2));
 
         // Append extension data
         outputStream.write(extensions);
@@ -198,9 +193,7 @@ public class SignedCertificateTimestampSignature {
         byte[] encodedCertificate = certificate.getEncoded("DER");
 
         // Append three-byte certificate length
-        outputStream.write((encodedCertificate.length >> 16) & 0xFF);
-        outputStream.write((encodedCertificate.length >> 8) & 0xFF);
-        outputStream.write(encodedCertificate.length & 0xFF);
+        outputStream.write(ArrayConverter.intToBytes(encodedCertificate.length, 3));
 
         // Append ASN.1 certificate
         outputStream.write(encodedCertificate);
