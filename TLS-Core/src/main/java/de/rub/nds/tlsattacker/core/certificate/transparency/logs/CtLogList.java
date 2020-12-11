@@ -11,10 +11,11 @@ package de.rub.nds.tlsattacker.core.certificate.transparency.logs;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CtLogList {
 
-    private HashMap<ByteBuffer, CtLog> ctLogHashMap = new HashMap<>();
+    private Map<ByteBuffer, CtLog> ctLogHashMap = new HashMap<>();
 
     public CtLog getCtLog(byte[] logId) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(logId.clone());
