@@ -120,7 +120,11 @@ public class SignedCertificateTimestamp {
         }
 
         sb.append("\n Log: ");
-        sb.append(ctLog.getDescription());
+        if (ctLog != null) {
+            sb.append(ctLog.getDescription());
+        } else {
+            sb.append("Unknown Log");
+        }
 
         sb.append("\n Log ID: ");
         sb.append(ArrayConverter.bytesToHexString(this.logId).replaceAll("\\n", "\n    "));
