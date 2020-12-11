@@ -1,9 +1,9 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- * <p>
+ *
  * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
  * and Hackmanit GmbH
- * <p>
+ *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -14,6 +14,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier;
 import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLog;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.*;
@@ -23,12 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SignedCertificateTimestampSignature {
+
+    protected static final Logger LOGGER = LogManager.getLogger(SignedCertificateTimestampSignature.class.getName());
 
     private byte[] encodedSignature;
     private byte[] signature;
@@ -73,18 +76,8 @@ public class SignedCertificateTimestampSignature {
             signature.update(data);
             return signature.verify(this.signature);
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (ParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.warn("Unable to verify SCT signature", e);
         }
 
         return false;
@@ -137,8 +130,10 @@ public class SignedCertificateTimestampSignature {
      * information on how to construct a precertificate entry:
      * https://tools.ietf.org/html/rfc6962#section-3.2
      *
-     * @param leafCertificate   The leaf certificate
-     * @param issuerCertificate The issuer certificate
+     * @param leafCertificate
+     *            The leaf certificate
+     * @param issuerCertificate
+     *            The issuer certificate
      * @return Precertificate as DER-encoded byte[]
      */
     private byte[] convertToPreCertificate(Certificate leafCertificate, Certificate issuerCertificate)
@@ -154,7 +149,7 @@ public class SignedCertificateTimestampSignature {
             byte[] issuerKeyHash = digest.digest(encodedIssuerCertificate);
             outputStream.write(issuerKeyHash);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.warn("SHA-256 is not supported on this platform", e);
         }
 
         TBSCertificate originalTbsCertificate = leafCertificate.getTBSCertificate();
@@ -182,13 +177,13 @@ public class SignedCertificateTimestampSignature {
         for (ASN1ObjectIdentifier objectIdentifier : extensions.getExtensionOIDs()) {
             if (!ExtensionObjectIdentifier.PRECERTIFICATE_POISON.equals(objectIdentifier.getId())
                     && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID().equals(
-                    objectIdentifier.getId())) {
+                            objectIdentifier.getId())) {
                 Extension extension = extensions.getExtension(objectIdentifier);
                 extensionList.add(extension);
             }
         }
 
-        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[]{})));
+        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[] {})));
         TBSCertificate modifiedTbsCertificate = tbsCertificateGenerator.generateTBSCertificate();
 
         // Append DER encoded TBSCertificate

@@ -1,27 +1,30 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
  * and Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.certificate.transparency.logs;
 
+import de.rub.nds.tlsattacker.core.certificate.transparency.SignedCertificateTimestampSignature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class ChromeCtLogListParser implements CtLogListParser {
+
+    protected static final Logger LOGGER = LogManager.getLogger(ChromeCtLogListParser.class.getName());
 
     private JSONParser jsonParser = new JSONParser();
 
@@ -54,10 +57,8 @@ public class ChromeCtLogListParser implements CtLogListParser {
                     ctLogList.addCtLog(ctLog);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.warn("Could not parse Chrome CT log list from " + filename, e);
         }
         return ctLogList;
     }
