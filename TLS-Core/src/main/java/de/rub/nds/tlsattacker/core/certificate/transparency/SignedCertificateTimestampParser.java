@@ -37,7 +37,6 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
         try {
             // Create SCT object & save encoded response in it
             SignedCertificateTimestamp certificateTimestamp = new SignedCertificateTimestamp();
-            // certificateTimestamp.setEncodedTimestamp(encodedTimestamp);
 
             // Decode and parse SCT version
             SignedCertificateTimestampVersion sctVersion = SignedCertificateTimestampVersion
@@ -77,6 +76,7 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
             SignedCertificateTimestampSignature signature = signatureParser.parse();
             certificateTimestamp.setSignature(signature);
 
+            certificateTimestamp.setEncodedTimestamp(getAlreadyParsed());
             return certificateTimestamp;
         } catch (ParserException e) {
             LOGGER.warn("Could not parse CertificateTimestamp", e);
