@@ -96,17 +96,17 @@ public class SignedCertificateTimestampSignature {
         outputStream.write(timestamp);
 
         // Append two-byte LogEntryType (0 = Cert; 1 = PreCert)
-        outputStream.write(sct.getLogEntryType());
+        outputStream.write(SignedCertificateTimestampEntryType.encodeVersion(sct.getLogEntryType()));
 
-        if (sct.getLogEntryType()[1] == 0) {
+        byte[] encodedCertificate;
+        if (SignedCertificateTimestampEntryType.X509ChainEntry == sct.getLogEntryType()) {
             // X.509 Certificate
-            byte[] encodedCertificate = convertCertificateToDer(sct.getCertificate());
-            outputStream.write(encodedCertificate);
+            encodedCertificate = convertCertificateToDer(sct.getCertificate());
         } else {
             // PreCertificate
-            byte[] encodedCertificate = convertToPreCertificate(sct.getCertificate(), sct.getIssuerCertificate());
-            outputStream.write(encodedCertificate);
+            encodedCertificate = convertToPreCertificate(sct.getCertificate(), sct.getIssuerCertificate());
         }
+        outputStream.write(encodedCertificate);
 
         byte[] extensions = sct.getExtensions();
 

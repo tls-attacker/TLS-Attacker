@@ -46,12 +46,11 @@ public class SignedCertificateTimestampListParser {
             sct.setCertificate(leafCertificate);
             sct.setIssuerCertificate(issuerCertificate);
 
-            // Add two-byte LogEntryType (0 = X.509 Certificate, 1 =
-            // PreCertificate)
+            // Add Log-Entry-Type
             if (isPreCertificateSct) {
-                sct.setLogEntryType(new byte[] { 0, 1 });
+                sct.setLogEntryType(SignedCertificateTimestampEntryType.PrecertChainEntry);
             } else {
-                sct.setLogEntryType(new byte[] { 0, 0 });
+                sct.setLogEntryType(SignedCertificateTimestampEntryType.X509ChainEntry);
             }
 
             // Add parsed SCT to the SCT-List data structure

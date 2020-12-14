@@ -26,7 +26,7 @@ public class SignedCertificateTimestamp {
     // signature validation
     private Certificate certificate;
     private Certificate issuerCertificate;
-    private byte[] logEntryType;
+    private SignedCertificateTimestampEntryType logEntryType;
 
     // Content of the SCT itself
     private byte[] encodedTimestamp;
@@ -56,11 +56,11 @@ public class SignedCertificateTimestamp {
         this.issuerCertificate = issuerCertificate;
     }
 
-    public byte[] getLogEntryType() {
+    public SignedCertificateTimestampEntryType getLogEntryType() {
         return logEntryType;
     }
 
-    public void setLogEntryType(byte[] logEntryType) {
+    public void setLogEntryType(SignedCertificateTimestampEntryType logEntryType) {
         this.logEntryType = logEntryType;
     }
 
