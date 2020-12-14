@@ -88,8 +88,10 @@ public class SignedCertificateTimestampSignature {
         // version
         outputStream.write(SignedCertificateTimestampVersion.encodeVersion(sct.getVersion()));
 
-        // signature type (0 for Signed Certificate Timestamp)
-        outputStream.write(0);
+        // signature type
+        byte signatureType = SignedCertificateTimestampSignatureType
+                .encodeVersion(SignedCertificateTimestampSignatureType.CERTIFICATE_TIMESTAMP);
+        outputStream.write(signatureType);
 
         // timestamp
         byte[] timestamp = ArrayConverter.longToBytes(sct.getTimestamp(), Long.BYTES);
