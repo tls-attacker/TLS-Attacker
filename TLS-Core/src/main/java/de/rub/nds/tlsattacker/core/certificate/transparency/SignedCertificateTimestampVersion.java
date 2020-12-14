@@ -27,7 +27,7 @@ public enum SignedCertificateTimestampVersion {
     public static byte encodeVersion(SignedCertificateTimestampVersion version) throws ParserException {
         switch (version) {
             case V1:
-                return 0b0;
+                return 0;
             default:
                 throw new ParserException("Unknown version");
         }
