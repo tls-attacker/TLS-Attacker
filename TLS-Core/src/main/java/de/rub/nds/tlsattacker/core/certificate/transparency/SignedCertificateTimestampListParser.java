@@ -40,7 +40,9 @@ public class SignedCertificateTimestampListParser {
 
             // Decode and parse Signed Certificate Timestamp list entry
             byte[] encodedEntryData = Arrays.copyOfRange(encodedTimestampList, index + 2, index + 2 + entryLength);
-            SignedCertificateTimestamp sct = SignedCertificateTimestampParser.parseTimestamp(encodedEntryData);
+            SignedCertificateTimestampParser signedCertificateTimestampParser = new SignedCertificateTimestampParser(0,
+                    encodedEntryData);
+            SignedCertificateTimestamp sct = signedCertificateTimestampParser.parse();
 
             // Add certificates required for SCT signature validation
             sct.setCertificate(leafCertificate);
