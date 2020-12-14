@@ -20,12 +20,13 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
     /**
      * Constructor for the Parser
      *
-     * @param startposition Position in the array from which the Parser should start
-     *                      working
+     * @param startposition
+     *            Position in the array from which the Parser should start
+     *            working
      * @param array
      */
     public SignedCertificateTimestampListParser(int startposition, byte[] array, Certificate certificateChain,
-                                                boolean isPreCertificateSct) {
+            boolean isPreCertificateSct) {
         super(startposition, array);
 
         this.isPreCertificateSct = isPreCertificateSct;
@@ -39,8 +40,10 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
         org.bouncycastle.asn1.x509.Certificate leafCertificate = certificateChain.getCertificateAt(0);
         org.bouncycastle.asn1.x509.Certificate issuerCertificate = certificateChain.getCertificateAt(1);
 
+        int length = parseIntField(2);
+
         // Decode and parse every list entry
-        while (getBytesLeft() > 0) {
+        while (getPointer() < length) {
 
             // Determine length of variable-length encoded SCT entry
             int entryLength = parseIntField(2);
