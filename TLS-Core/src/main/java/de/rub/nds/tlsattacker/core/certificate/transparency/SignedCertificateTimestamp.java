@@ -22,8 +22,7 @@ import java.util.Locale;
 
 public class SignedCertificateTimestamp {
 
-    // Context, which will be injected from TLS-Scanner and is required for
-    // signature validation
+    // Context used to verify the signature
     private Certificate certificate;
     private Certificate issuerCertificate;
     private SignedCertificateTimestampEntryType logEntryType;
