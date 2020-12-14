@@ -10,29 +10,37 @@
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-import java.util.Arrays;
+public class SignedCertificateTimestampSignatureParser extends Parser<SignedCertificateTimestampSignature> {
 
-public class SignedCertificateTimestampSignatureParser {
+    /**
+     * Constructor for the Parser
+     *
+     * @param startposition
+     *            Position in the array from which the Parser should start
+     *            working
+     * @param encodedSignature
+     */
+    public SignedCertificateTimestampSignatureParser(int startposition, byte[] encodedSignature) {
+        super(startposition, encodedSignature);
+    }
 
-    public static SignedCertificateTimestampSignature parseSignature(byte[] encodedSignature) {
+    @Override
+    public SignedCertificateTimestampSignature parse() {
         SignedCertificateTimestampSignature signature = new SignedCertificateTimestampSignature();
-        signature.setEncodedSignature(encodedSignature);
 
         SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm
-                .getSignatureAndHashAlgorithm(Arrays.copyOfRange(encodedSignature, 0, 2));
+                .getSignatureAndHashAlgorithm(parseByteArrayField(2));
         signature.setSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
 
-        // Use index value to navigate through variable-length encoded signature
-        int index = 2;
+        int signatureLength = parseIntField(2);
 
-        int signatureLength = encodedSignature[index] << 8 | encodedSignature[index + 1] & 0x00ff;
-        index += 2;
-
-        byte[] rawSignature = Arrays.copyOfRange(encodedSignature, index, index + signatureLength);
+        byte[] rawSignature = parseByteArrayField(signatureLength);
         signature.setSignature(rawSignature);
+
+        signature.setEncodedSignature(getAlreadyParsed());
 
         return signature;
     }
-
 }

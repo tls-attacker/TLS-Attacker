@@ -65,8 +65,9 @@ public class SignedCertificateTimestampParser {
 
         // Decode signature (currently only copied and not further parsed)
         byte[] encodedSignature = Arrays.copyOfRange(encodedTimestamp, index, encodedTimestamp.length);
-        SignedCertificateTimestampSignature signature = SignedCertificateTimestampSignatureParser
-                .parseSignature(encodedSignature);
+        SignedCertificateTimestampSignatureParser signatureParser = new SignedCertificateTimestampSignatureParser(0,
+                encodedSignature);
+        SignedCertificateTimestampSignature signature = signatureParser.parse();
         certificateTimestamp.setSignature(signature);
 
         return certificateTimestamp;
