@@ -352,6 +352,10 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     private boolean isPaddingValid(byte[] padding) {
+        if (padding.length == 0) {
+            LOGGER.debug("Zero Byte Padding is invalid");
+            return false;
+        }
         if (context.getChooser().getSelectedProtocolVersion().isSSL()) {
             return padding.length == padding[padding.length - 1] + 1;
         }
