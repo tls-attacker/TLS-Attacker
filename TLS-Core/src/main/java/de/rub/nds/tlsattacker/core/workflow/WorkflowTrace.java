@@ -43,7 +43,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * A wrapper class over a list of protocol expectedMessages.
  */
-@XmlRootElement
+@XmlRootElement(name = "workflowTrace")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
 

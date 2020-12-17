@@ -10,7 +10,6 @@
 
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -107,11 +106,12 @@ public class WorkflowTraceSerializer {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
             m.marshal(workflowTrace, tempStream);
-            try {
-                outputStream.write(XMLPrettyPrinter.prettyPrintXML(new String(tempStream.toByteArray())).getBytes());
-            } catch (TransformerException | XPathExpressionException | ParserConfigurationException | SAXException ex) {
-                throw new RuntimeException("Could not format XML");
-            }
+            String xml_text = new String(tempStream.toByteArray());
+            // remove the XML header as the first line (JAXB_Fragment=True would still leave an empty line)
+            xml_text = xml_text.substring(xml_text.indexOf('\n') + 1);
+            // and we modify all line separators to the system dependant line separator
+            xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
+            outputStream.write(xml_text.getBytes());
         }
         outputStream.close();
     }
