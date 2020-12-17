@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.XMLConstants;
@@ -29,7 +31,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -105,13 +112,25 @@ public class WorkflowTraceSerializer {
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
-            m.marshal(workflowTrace, tempStream);
+            StringWriter stringWriter = new StringWriter();
+
+            m.marshal(workflowTrace, stringWriter);
+
+            // circumvent the max indentation of 8 of the JAXB marshaller
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.transform(new StreamSource(new StringReader(stringWriter.toString())), new StreamResult(
+                tempStream));
+
             String xml_text = new String(tempStream.toByteArray());
             // remove the XML header as the first line (JAXB_Fragment=True would still leave an empty line)
-            xml_text = xml_text.substring(xml_text.indexOf('\n') + 1);
+            // xml_text = xml_text.substring(xml_text.indexOf('\n') + 1);
             // and we modify all line separators to the system dependant line separator
             xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
             outputStream.write(xml_text.getBytes());
+        } catch (TransformerException E) {
+            LOGGER.debug(E.getStackTrace());
         }
         outputStream.close();
     }
