@@ -267,7 +267,9 @@
   <xs:complexType name="activateEncryptionAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
+        <xs:sequence>
+         <xs:element name="resetSequenceNumbers" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3398,9 +3400,7 @@
   <xs:complexType name="sendAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="optional" type="xs:boolean" minOccurs="0"/>
-        </xs:sequence>
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
