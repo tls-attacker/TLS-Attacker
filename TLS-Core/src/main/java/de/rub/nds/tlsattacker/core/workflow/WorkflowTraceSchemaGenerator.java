@@ -73,7 +73,7 @@ public class WorkflowTraceSchemaGenerator {
         }
 
         private static String mapSystemIds(String ns, String suggestedFileName) {
-            return "WorkflowTrace.xsd";
+            return "workflowTrace.xsd";
         }
 
         public Map<String, StringWriter> getSchemaWriters() {
