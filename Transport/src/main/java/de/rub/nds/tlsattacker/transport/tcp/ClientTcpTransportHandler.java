@@ -97,6 +97,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+        LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout(1);
     }
 
