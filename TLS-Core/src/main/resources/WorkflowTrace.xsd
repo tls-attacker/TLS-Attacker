@@ -268,7 +268,7 @@
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-         <xs:element name="resetSequenceNumbers" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="resetSequenceNumbers" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2593,6 +2593,7 @@
     <xs:complexContent>
       <xs:extension base="abstractRecord">
         <xs:sequence>
+          <xs:element name="allowEncryptedChangeCipherSpec" type="xs:boolean"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
           <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>

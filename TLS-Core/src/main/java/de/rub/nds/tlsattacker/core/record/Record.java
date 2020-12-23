@@ -62,6 +62,8 @@ public class Record extends AbstractRecord {
 
     private RecordCryptoComputations computations;
 
+    private boolean allowEncryptedChangeCipherSpec = false;
+
     public Record(Config config) {
         super(config);
     }
@@ -217,4 +219,11 @@ public class Record extends AbstractRecord {
         return true;
     }
 
+    public boolean isAllowEncryptedChangeCipherSpec() {
+        return allowEncryptedChangeCipherSpec;
+    }
+
+    public void setAllowEncryptedChangeCipherSpec(boolean allowEncryptedChangeCipherSpec) {
+        this.allowEncryptedChangeCipherSpec = allowEncryptedChangeCipherSpec;
+    }
 }
