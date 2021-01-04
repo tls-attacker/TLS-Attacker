@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -64,8 +65,10 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             msg.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
         }
         prepareHandshakeMessageContents();
-        serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
-        prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+        if (!(msg instanceof DtlsHandshakeMessageFragment)) {
+            serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
+            prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+        }
         prepareMessageType(msg.getHandshakeMessageType());
     }
 
