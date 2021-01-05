@@ -3515,6 +3515,7 @@
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
       <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
+      <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>
