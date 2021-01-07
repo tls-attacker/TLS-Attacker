@@ -105,7 +105,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
         assertNotNull(trace);
         normalizer.normalize(trace, config);
         String actual = WorkflowTraceSerializer.write(trace).trim();
-        assertEquals("Normalized output should be fine", actual, expectedNormalizedXml);
+        assertEquals("Normalized output should be fine", expectedNormalizedXml, actual);
 
         filter = new DefaultFilter(config);
         filter.applyFilter(trace);
