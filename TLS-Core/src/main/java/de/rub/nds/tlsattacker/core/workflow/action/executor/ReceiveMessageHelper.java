@@ -44,12 +44,15 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private boolean failedToReceiveMoreRecords = false;
 
     public ReceiveMessageHelper() {
     }
@@ -133,18 +136,40 @@ public class ReceiveMessageHelper {
 
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
         MessageActionResult result = new MessageActionResult();
+        failedToReceiveMoreRecords = false;
+        byte[] preservedDigest = context.getDigest().getRawBytes();
         if (receivedBytes.length > 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                orderDtlsRecords(tempRecords);
-            }
-            List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords);
-            for (RecordGroup recordGroup : recordGroups) {
-                MessageActionResult tempResult = processRecordGroup(recordGroup, context);
-                result = result.merge(tempResult);
+            try {
+                result = processUngroupedRecords(tempRecords, context);
+            } catch (ParserException parserException) {
+                LOGGER
+                    .debug("Encountered ParserException while processing Records - will attempt to receive further records");
+                byte[] additionalBytes = tryToFetchAdditionalBytes(context);
+                if (additionalBytes != null && additionalBytes.length > 0) {
+                    tempRecords = parseRecords(ArrayConverter.concatenate(receivedBytes, additionalBytes), context);
+                } else {
+                    LOGGER.warn("Could not receive more Records after ParserException - Parsing will fail");
+                    failedToReceiveMoreRecords = true;
+                }
+                context.getDigest().setRawBytes(preservedDigest);
+                result = processUngroupedRecords(tempRecords, context);
             }
         }
 
+        return result;
+    }
+
+    private MessageActionResult processUngroupedRecords(List<AbstractRecord> tempRecords, TlsContext context) {
+        MessageActionResult result = new MessageActionResult();
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            orderDtlsRecords(tempRecords);
+        }
+        List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords);
+        for (RecordGroup recordGroup : recordGroups) {
+            MessageActionResult tempResult = processRecordGroup(recordGroup, context);
+            result = result.merge(tempResult);
+        }
         return result;
     }
 
@@ -251,13 +276,7 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             if (context.getTransportHandler() != null) {
                 LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
-                byte[] extraBytes = new byte[0];
-                try {
-                    extraBytes = receiveByteArray(context);
-                } catch (IOException ex2) {
-                    LOGGER.warn("Could not receive more Bytes", ex2);
-                    context.setReceivedTransportHandlerException(true);
-                }
+                byte[] extraBytes = tryToFetchAdditionalBytes(context);
                 if (extraBytes != null && extraBytes.length > 0) {
                     return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
                 }
@@ -442,7 +461,10 @@ public class ReceiveMessageHelper {
                         }
                     }
                 } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
-                    LOGGER.warn("Could not parse Message as a CorrectMessage");
+                    if (exCorrectMsg instanceof ParserException && !failedToReceiveMoreRecords) {
+                        throw new ParserException();
+                    }
+                    LOGGER.error("Could not parse Message as a CorrectMessage");
                     LOGGER.debug(exCorrectMsg);
                     try {
                         if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
@@ -603,5 +625,17 @@ public class ReceiveMessageHelper {
             fragmentList.add((DtlsHandshakeMessageFragment) message);
         }
         return fragmentList;
+    }
+
+    private byte[] tryToFetchAdditionalBytes(TlsContext context) {
+        byte[] extraBytes = new byte[0];
+        try {
+            extraBytes = receiveByteArray(context);
+        } catch (IOException ex2) {
+            LOGGER.warn("Could not receive more Bytes", ex2);
+            context.setReceivedTransportHandlerException(true);
+        } finally {
+            return extraBytes;
+        }
     }
 }
