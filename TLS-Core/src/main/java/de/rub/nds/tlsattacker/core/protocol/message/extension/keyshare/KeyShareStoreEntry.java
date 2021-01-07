@@ -10,7 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare;
 
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class KeyShareStoreEntry implements Serializable {
 
     private NamedGroup group;
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] publicKey;
 
     public KeyShareStoreEntry() {
