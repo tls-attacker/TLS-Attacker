@@ -70,6 +70,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         while (System.currentTimeMillis() < timeoutTime || this.connectionTimeout == 0) {
             try {
                 socket = new Socket();
+                socket.setReuseAddress(true);
                 if (srcPort != null) {
                     socket.bind(new InetSocketAddress(srcPort));
                 }
