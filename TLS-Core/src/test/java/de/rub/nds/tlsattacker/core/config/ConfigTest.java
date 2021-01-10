@@ -24,7 +24,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of createConfig method, of class Config.
+     * Updates the default_config.xml
      */
     @Test
     public void assertConfigInResourcesIsEqual() {

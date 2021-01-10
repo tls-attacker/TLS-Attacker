@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tlsConfig>
+<config>
+    <highestProtocolVersion>TLS12</highestProtocolVersion>
     <defaultClientConnection>
         <alias>client</alias>
         <port>8002</port>
         <hostname>testHostname</hostname>
-    </defaultClientConnection>      
-    <highestProtocolVersion>TLS12</highestProtocolVersion>
+    </defaultClientConnection>
     <alias>default</alias>
     <password>password</password>
     <clientAuthentication>false</clientAuthentication>
@@ -133,4 +133,4 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <defaultDtlsCookie></defaultDtlsCookie>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
-</tlsConfig>
+</config>

@@ -27,6 +27,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -142,21 +144,49 @@ public class WorkflowTraceSerializer {
      * @throws XMLStreamException
      * If there is a Problem with the XML Stream
      */
-    public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
+    public static WorkflowTrace read(InputStream inputStream, String filename) throws JAXBException, IOException,
+        XMLStreamException {
         try {
             context = getJAXBContext();
-            Unmarshaller m = context.createUnmarshaller();
+            Unmarshaller unmarshaller = context.createUnmarshaller();
 
+            unmarshaller.setEventHandler(new ValidationEventHandler() {
+                @Override
+                public boolean handleEvent(ValidationEvent event) {
+                    int severity = event.getSeverity();
+                    String severityName;
+                    switch (severity) {
+                        case 0:
+                            severityName = "WARNING";
+                            break;
+                        case 1:
+                            severityName = "ERROR";
+                            break;
+                        case 2:
+                            severityName = "FATAL_ERROR";
+                            break;
+                        default:
+                            severityName = "UNKNOWN";
+                    }
+                    LOGGER.warn("Parsing error in the given configuration \n" + "Severity: " + severityName + "\n"
+                        + "Message: " + event.getMessage() + "\n" + "Related Exception: " + event.getLinkedException()
+                        + "\n" + "Line/Column: " + event.getLocator().getLineNumber() + "/"
+                        + event.getLocator().getColumnNumber() + "\n" + "File: " + filename);
+                    return true;
+                }
+            });
+
+            String xsd_source = WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema workflowTraceSchema =
-                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/workflowTrace.xsd")));
+                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
             workflowTraceSchema.newValidator();
-            m.setSchema(workflowTraceSchema);
-            WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
+            unmarshaller.setSchema(workflowTraceSchema);
+            WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             inputStream.close();
             return wt;
         } catch (SAXException ex) {
@@ -174,7 +204,7 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try {
-                    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                    trace = WorkflowTraceSerializer.read(new FileInputStream(file), f.getName());
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {

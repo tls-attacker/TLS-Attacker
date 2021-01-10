@@ -46,14 +46,14 @@ public class TlsConfigIOTest {
     public void testEmptyConfig() {
         InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml");
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("no XML is given");
-        Config config = Config.createConfig(stream);
+        exception.expectMessage("Stream cannot be null");
+        Config config = Config.createConfig(stream, "/test_empty_config.xml");
     }
 
     @Test
     public void testIncompleteConfig() {
         InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml");
-        Config config = Config.createConfig(stream);
+        Config config = Config.createConfig(stream, "/test_incomplete_config.xml");
         assertNotNull(config);
         assertTrue(config.getDefaultClientSupportedCipherSuites().size() == 1);
     }
@@ -63,7 +63,7 @@ public class TlsConfigIOTest {
         OutboundConnection expected = new OutboundConnection("testConnection", 8002, "testHostname");
 
         InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml");
-        Config config = Config.createConfig(stream);
+        Config config = Config.createConfig(stream, "/test_config_custom_client_connection.xml");
         assertNotNull(config);
 
         OutboundConnection con = config.getDefaultClientConnection();
@@ -76,7 +76,7 @@ public class TlsConfigIOTest {
         InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml");
 
         InboundConnection expected = new InboundConnection("testConnection", 8004);
-        Config config = Config.createConfig(stream);
+        Config config = Config.createConfig(stream, "/test_config_custom_server_connection.xml");
         assertNotNull(config);
 
         InboundConnection con = config.getDefaultServerConnection();

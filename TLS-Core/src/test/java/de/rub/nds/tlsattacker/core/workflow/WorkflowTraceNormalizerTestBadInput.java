@@ -128,7 +128,9 @@ public class WorkflowTraceNormalizerTestBadInput {
         traceInputXml = testDataSplit[2].trim();
 
         try {
-            config = Config.createConfig(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8.name())));
+            config =
+                Config.createConfig(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8.name())),
+                    configXml);
         } catch (UnsupportedEncodingException ex) {
             LOGGER.error("Could not load config from test file " + testVectorPath + ": " + ex);
             return;
@@ -136,8 +138,9 @@ public class WorkflowTraceNormalizerTestBadInput {
 
         try {
             trace =
-                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
-                    .name())));
+                WorkflowTraceSerializer.read(
+                    new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8.name())),
+                    testVectorPath.getName());
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);
         }
