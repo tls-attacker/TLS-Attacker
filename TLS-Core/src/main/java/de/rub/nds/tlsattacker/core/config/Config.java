@@ -1667,8 +1667,11 @@ public class Config implements Serializable {
 
     /**
      * Returns a list of all fields in which the two given configs differ in content (uses .equal())
-     * @param config1 The first config to be compared
-     * @param config2 The second config to be compared
+     * 
+     * @param config1
+     * The first config to be compared
+     * @param config2
+     * The second config to be compared
      * @return An ArrayList containing the names of fields of the Config class in which the given configs differ
      * @throws IllegalAccessException
      */
@@ -1684,8 +1687,7 @@ public class Config implements Serializable {
                 }
                 // this is a pretty hacky way as it would fail for other array types in Config.java
                 else if (value1.getClass().isArray()) {
-                    if (!Arrays.equals((byte[]) value1,
-                        (byte[]) value2)) {
+                    if (!Arrays.equals((byte[]) value1, (byte[]) value2)) {
                         changedProperties.add(field.getName());
                     }
                 }
