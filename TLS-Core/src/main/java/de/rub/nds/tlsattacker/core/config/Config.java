@@ -81,6 +81,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -1103,6 +1104,13 @@ public class Config implements Serializable {
 
     private Boolean httpsParsingEnabled = false;
 
+    /**
+     * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
+     * or httpsParsing is disabled
+     */
+    @XmlElement(name = "defaultHttpsRequestPath")
+    private String defaultHttpsRequestPath = "/";
+
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
@@ -1527,6 +1535,14 @@ public class Config implements Serializable {
 
     public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
+    }
+
+    public String getDefaultHttpsRequestPath() {
+        return defaultHttpsRequestPath;
+    }
+
+    public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
+        this.defaultHttpsRequestPath = defaultHttpsRequestPath;
     }
 
     public Boolean isUseFreshRandom() {
