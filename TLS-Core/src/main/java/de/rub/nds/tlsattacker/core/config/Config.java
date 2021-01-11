@@ -84,6 +84,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
@@ -96,6 +97,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 @SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {})
 public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -179,7 +181,8 @@ public class Config implements Serializable {
     /**
      * List of filters to apply on workflow traces before serialization.
      */
-    @XmlElement(name = "outputFilters")
+    @XmlElement(name = "outputFilter")
+    @XmlElementWrapper
     private List<FilterType> outputFilters;
 
     /**
@@ -248,37 +251,43 @@ public class Config implements Serializable {
     /**
      * Which Signature and Hash algorithms we support
      */
-    @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithms")
+    @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
+    @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
      * Which Cipher suites we support by default
      */
-    @XmlElement(name = "defaultClientSupportedCipherSuites")
+    @XmlElement(name = "defaultClientSupportedCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultClientSupportedCipherSuites;
 
     /**
      * Which Cipher suites we support by default
      */
-    @XmlElement(name = "defaultServerSupportedCipherSuites")
+    @XmlElement(name = "defaultServerSupportedCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultServerSupportedCipherSuites;
 
     /**
      * Default clientSupportedNamed groups
      */
-    @XmlElement(name = "defaultClientNamedGroups")
+    @XmlElement(name = "defaultClientNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultClientNamedGroups;
 
     /**
      * Default clientSupportedNamed groups
      */
-    @XmlElement(name = "defaultServerNamedGroups")
+    @XmlElement(name = "defaultServerNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultServerNamedGroups;
 
     /**
      * Supported ProtocolVersions by default
      */
-    @XmlElement(name = "supportedVersions")
+    @XmlElement(name = "supportedVersion")
+    @XmlElementWrapper
     private List<ProtocolVersion> supportedVersions;
 
     /**
@@ -302,10 +311,12 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultKeySharePrivateKey")
     private BigInteger defaultKeySharePrivateKey = new BigInteger("FFFF", 16);
 
-    @XmlElement(name = "defaultClientKeyShareNamedGroups")
+    @XmlElement(name = "defaultClientKeyShareNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultClientKeyShareNamedGroups;
 
-    @XmlElement(name = "defaultClientKeyStoreEntries")
+    @XmlElement(name = "defaultClientKeyStoreEntry")
+    @XmlElementWrapper
     private List<KeyShareStoreEntry> defaultClientKeyStoreEntries;
 
     @XmlElement(name = "defaultServerKeyShareEntry")
@@ -361,7 +372,8 @@ public class Config implements Serializable {
     /**
      * Default TokenBinding Key Parameters.
      */
-    @XmlElement(name = "defaultTokenBindingKeyParameters")
+    @XmlElement(name = "defaultTokenBindingKeyParameter")
+    @XmlElementWrapper
     private List<TokenBindingKeyParameters> defaultTokenBindingKeyParameters;
 
     /**
@@ -388,7 +400,8 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
-    @XmlElement(name = "defaultProposedAlpnProtocols")
+    @XmlElement(name = "defaultProposedAlpnProtocol")
+    @XmlElementWrapper
     private List<String> defaultProposedAlpnProtocols;
 
     @XmlElement(name = "defaultSelectedAlpnProtocol")
@@ -404,7 +417,8 @@ public class Config implements Serializable {
     /**
      * Default SRTP extension protection profiles The list contains every protection profile as in RFC 5764
      */
-    @XmlElement(name = "secureRealTimeTransportProtocolProtectionProfiles")
+    @XmlElement(name = "secureRealTimeTransportProtocolProtectionProfile")
+    @XmlElementWrapper
     private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
 
     /**
@@ -423,25 +437,29 @@ public class Config implements Serializable {
     /**
      * Default certificate type extension desired types
      */
-    @XmlElement(name = "certificateTypeDesiredTypes")
+    @XmlElement(name = "certificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> certificateTypeDesiredTypes;
 
     /**
      * Default client certificate type extension desired types
      */
-    @XmlElement(name = "clientCertificateTypeDesiredTypes")
+    @XmlElement(name = "clientCertificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> clientCertificateTypeDesiredTypes;
 
     /**
      * Default server certificate type extension desired types
      */
-    @XmlElement(name = "serverCertificateTypeDesiredTypes")
+    @XmlElement(name = "serverCertificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> serverCertificateTypeDesiredTypes;
 
     /**
      * Default client authz extension data format list
      */
     @XmlElement(name = "clientAuthzExtensionDataFormat")
+    @XmlElementWrapper
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
 
     /**
@@ -454,12 +472,14 @@ public class Config implements Serializable {
      * Default sever authz extension data format list.
      */
     @XmlElement(name = "serverAuthzExtensionDataFormat")
+    @XmlElementWrapper
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
 
     /**
      * Default trusted ca indication extension trusted CAs.
      */
-    @XmlElement(name = "trustedCaIndicationExtensionAuthorities")
+    @XmlElement(name = "trustedCaIndicationExtensionAuthority")
+    @XmlElementWrapper
     private List<TrustedAuthority> trustedCaIndicationExtensionAuthorities;
 
     /**
@@ -477,13 +497,15 @@ public class Config implements Serializable {
     /**
      * Default cached objects for the cached info extension.
      */
-    @XmlElement(name = "cachedObjectList")
+    @XmlElement(name = "cachedObject")
+    @XmlElementWrapper
     private List<CachedObject> cachedObjectList;
 
     /**
      * Default certificate status request v2 extension request list.
      */
-    @XmlElement(name = "statusRequestV2RequestList")
+    @XmlElement(name = "statusRequestV2Request")
+    @XmlElementWrapper
     private List<RequestItemV2> statusRequestV2RequestList;
 
     /**
@@ -776,7 +798,8 @@ public class Config implements Serializable {
     /**
      * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
      */
-    @XmlElement(name = "pskKeyExchangeModes")
+    @XmlElement(name = "pskKeyExchangeMode")
+    @XmlElementWrapper
     List<PskKeyExchangeMode> pskKeyExchangeModes;
 
     /**
@@ -816,7 +839,8 @@ public class Config implements Serializable {
     /**
      * Contains all values related to TLS 1.3 PSKs.
      */
-    @XmlElement(name = "defaultPskSets")
+    @XmlElement(name = "defaultPskSet")
+    @XmlElementWrapper
     private List<PskSet> defaultPskSets = new LinkedList<>();
 
     /**
@@ -874,7 +898,8 @@ public class Config implements Serializable {
     /**
      * ActionOptions that are automatically applied to Actions of the MessageFactory
      */
-    @XmlElement(name = "messageFactoryActionOptions")
+    @XmlElement(name = "messageFactoryActionOption")
+    @XmlElementWrapper
     private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
     @XmlElement(name = "defaultServerDhGenerator")
@@ -971,7 +996,8 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultApplicationMessageData")
     private String defaultApplicationMessageData = "Test";
 
-    @XmlElement(name = "clientCertificateTypes")
+    @XmlElement(name = "clientCertificateType")
+    @XmlElementWrapper
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
@@ -1089,13 +1115,16 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultSSL2CipherSuite")
     private SSL2CipherSuite defaultSSL2CipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
-    @XmlElement(name = "defaultServerSupportedPointFormats")
+    @XmlElement(name = "defaultServerSupportedPointFormat")
+    @XmlElementWrapper
     private List<ECPointFormat> defaultServerSupportedPointFormats;
 
-    @XmlElement(name = "defaultClientSupportedPointFormats")
+    @XmlElement(name = "defaultClientSupportedPointFormat")
+    @XmlElementWrapper
     private List<ECPointFormat> defaultClientSupportedPointFormats;
 
-    @XmlElement(name = "defaultServerSupportedSignatureAndHashAlgorithms")
+    @XmlElement(name = "defaultServerSupportedSignatureAndHashAlgorithm")
+    @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
     @XmlElement(name = "defaultSelectedSignatureAndHashAlgorithm")
@@ -1116,10 +1145,12 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultHeartbeatMode")
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
-    @XmlElement(name = "defaultClientSupportedCompressionMethods")
+    @XmlElement(name = "defaultClientSupportedCompressionMethod")
+    @XmlElementWrapper
     private List<CompressionMethod> defaultClientSupportedCompressionMethods;
 
-    @XmlElement(name = "defaultServerSupportedCompressionMethods")
+    @XmlElement(name = "defaultServerSupportedCompressionMethod")
+    @XmlElementWrapper
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1484,19 +1515,22 @@ public class Config implements Serializable {
     /**
      * Supported Cipher suites for EncryptedServerNameIndication extension.
      */
-    @XmlElement(name = "clientSupportedEsniCipherSuites")
+    @XmlElement(name = "clientSupportedEsniCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList();
 
     /**
      * Supported Groups for EncryptedServerNameIndication extension.
      */
-    @XmlElement(name = "clientSupportedEsniNamedGroups")
+    @XmlElement(name = "clientSupportedEsniNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
 
     /**
      * KeyPairs for Server with EncryptedServerNameIndication extension.
      */
-    @XmlElement(name = "esniServerKeyPairs")
+    @XmlElement(name = "esniServerKeyPair")
+    @XmlElementWrapper
     private List<KeyShareEntry> esniServerKeyPairs = new LinkedList();
 
     /**
@@ -1523,10 +1557,12 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultEsniRecordChecksum")
     private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
 
-    @XmlElement(name = "defaultEsniServerKeyShareEntries")
+    @XmlElement(name = "defaultEsniServerKeyShareEntry")
+    @XmlElementWrapper
     private List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries = new LinkedList<>();
 
-    @XmlElement(name = "defaultEsniServerCipherSuites")
+    @XmlElement(name = "defaultEsniServerCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList();
 
     @XmlElement(name = "defaultEsniPaddedLength")
@@ -1538,7 +1574,8 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultEsniNotAfter")
     private Long defaultEsniNotAfter = 1582655135231L + 2592000000L;
 
-    @XmlElement(name = "defaultEsniExtensions")
+    @XmlElement(name = "defaultEsniExtension")
+    @XmlElementWrapper
     private List<ExtensionType> defaultEsniExtensions = new LinkedList();
 
     @XmlElement(name = "acceptOnlyFittingDtlsFragments")

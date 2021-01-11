@@ -36,7 +36,9 @@
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
-    <defaultClientSupportedCipherSuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuites>
+    <defaultClientSupportedCipherSuites>
+        <defaultClientSupportedCipherSuite>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuite>
+    </defaultClientSupportedCipherSuites>
     <supportedCompressionMethods>NULL</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
     <pointFormats>UNCOMPRESSED</pointFormats>
@@ -100,7 +102,9 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <fixedDHg>02</fixedDHg>
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
     <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
-    <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
+    <clientCertificateTypes>
+        <clientCertificateType>RSA_SIGN</clientCertificateType>
+    </clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
     <heartbeatMinPaddingLength>16</heartbeatMinPaddingLength>
     <heartbeatMaxPaddingLength>256</heartbeatMaxPaddingLength>
