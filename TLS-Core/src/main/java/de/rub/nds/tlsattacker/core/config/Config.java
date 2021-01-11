@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -1662,6 +1663,35 @@ public class Config implements Serializable {
 
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    /**
+     * Returns a list of all fields in which the two given configs differ in content (uses .equal())
+     * @param config1 The first config to be compared
+     * @param config2 The second config to be compared
+     * @return An ArrayList containing the names of fields of the Config class in which the given configs differ
+     * @throws IllegalAccessException
+     */
+    public static List<String> difference(Config config1, Config config2) throws IllegalAccessException {
+        List<String> changedProperties = new ArrayList<>();
+        for (Field field : Config.class.getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value1 = field.get(config1);
+            Object value2 = field.get(config2);
+            if (value1 != null && value2 != null) {
+                if (!value1.getClass().isArray() && !value1.equals(value2)) {
+                    changedProperties.add(field.getName());
+                }
+                // this is a pretty hacky way as it would fail for other array types in Config.java
+                else if (value1.getClass().isArray()) {
+                    if (!Arrays.equals((byte[]) value1,
+                        (byte[]) value2)) {
+                        changedProperties.add(field.getName());
+                    }
+                }
+            }
+        }
+        return changedProperties;
     }
 
     public String getDefaultSelectedAlpnProtocol() {
