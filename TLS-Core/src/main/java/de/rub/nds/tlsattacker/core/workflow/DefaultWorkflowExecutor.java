@@ -30,6 +30,7 @@ import java.util.List;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,13 +106,19 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        TransportHandler handler = state.getTlsContext().getTransportHandler();
-        if (handler instanceof TcpTransportHandler) {
-            SocketState socketSt =
-                ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
-            state.getTlsContext().setFinalSocketState(socketSt);
-        } else {
-            state.getTlsContext().setFinalSocketState(SocketState.UNAVAILABLE);
+        for (TlsContext ctx : allTlsContexts) {
+            TransportHandler handler = ctx.getTransportHandler();
+            if (handler instanceof TcpTransportHandler) {
+                TcpTransportHandler thandler = ((TcpTransportHandler) handler);
+                if (handler instanceof ServerTcpTransportHandler) {
+                    ServerTcpTransportHandler shandler = (ServerTcpTransportHandler) handler;
+                }
+                SocketState socketSt =
+                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+                ctx.setFinalSocketState(socketSt);
+            } else {
+                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
+            }
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
