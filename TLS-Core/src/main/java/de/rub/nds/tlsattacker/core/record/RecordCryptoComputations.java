@@ -13,9 +13,10 @@ package de.rub.nds.tlsattacker.core.record;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class RecordCryptoComputations {
+public class RecordCryptoComputations implements Serializable {
 
     /**
      * The key used for the symmetric cipher

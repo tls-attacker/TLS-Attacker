@@ -297,7 +297,11 @@ public class AlgorithmResolver {
         } else if (cipher.contains("28147_CNT")) {
             return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
-            return CipherAlgorithm.ChaCha20Poly1305;
+            if (cipher.contains("UNOFFICIAL")) {
+                return CipherAlgorithm.UNOFFICIAL_CHA_CHA_POLY1305;
+            } else {
+                return CipherAlgorithm.CHA_CHA_POLY1305;
+            }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
