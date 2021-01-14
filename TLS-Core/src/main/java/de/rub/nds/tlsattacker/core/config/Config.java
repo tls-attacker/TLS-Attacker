@@ -275,6 +275,8 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
+    private int prefferedCertRsaKeySize = 2048;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
@@ -3824,6 +3826,14 @@ public class Config implements Serializable {
 
     public void setDefaultLastClientHello(byte[] defaultLastClientHello) {
         this.defaultLastClientHello = defaultLastClientHello;
+    }
+
+    public int getPrefferedCertRsaKeySize() {
+        return prefferedCertRsaKeySize;
+    }
+
+    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
+        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
     }
 
 }
