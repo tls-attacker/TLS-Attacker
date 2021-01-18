@@ -91,7 +91,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         }
 
         if (!socket.isConnected()) {
-            throw new IOException("Could not connect to " + hostname + ":" + "port");
+            throw new IOException("Could not connect to " + hostname + ":" + serverPort);
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
