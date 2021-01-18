@@ -117,7 +117,7 @@ public class ServerTcpTransportHandlerTest {
         socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, handler.fetchData());
         handler.sendData(new byte[] { 4, 3, 2, 1 });
-        byte[] received = new byte[socket.getInputStream().available()];
+        byte[] received = new byte[4];
         socket.getInputStream().read(received);
         assertArrayEquals(new byte[] { 4, 3, 2, 1 }, received);
     }
