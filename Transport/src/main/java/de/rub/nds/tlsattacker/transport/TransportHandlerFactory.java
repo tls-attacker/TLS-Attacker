@@ -85,7 +85,8 @@ public class TransportHandlerFactory {
                     return new ServerTcpFragmentationTransportHandler(con);
                 }
             default:
-                throw new UnsupportedOperationException("This transport handler " + "type is not supported");
+                throw new UnsupportedOperationException("Transport handler " + con.getTransportHandlerType()
+                    + " is not supported");
         }
     }
 
