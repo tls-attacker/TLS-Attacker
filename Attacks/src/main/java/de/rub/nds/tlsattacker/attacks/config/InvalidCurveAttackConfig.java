@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
-import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
-import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CipherSuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -42,7 +40,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
      */
     public static final String ATTACK_COMMAND = "invalid_curve";
 
-    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
+    @Parameter(names = "-named_curve", description = "Named curve to be used")
     private NamedGroup namedGroup = NamedGroup.SECP256R1;
 
     @Parameter(
@@ -118,8 +116,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     /**
      * Ignore server's preferences and use the specified PointFormat instead
      */
-    @Parameter(names = "-point_format", description = "The format used for the public key",
-        converter = PointFormatConverter.class)
+    @Parameter(names = "-point_format", description = "The format used for the public key")
     private ECPointFormat pointCompressionFormat = ECPointFormat.UNCOMPRESSED;
 
     @Parameter(names = "-renegotiation",
