@@ -298,17 +298,20 @@ public class ReceiveMessageHelper {
                         messages.addAll(parsedMessages);
                     }
 
-                } else {
-                    if (context.getConfig().isIgnoreRetransmittedCss()
-                            && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                        CssManager cssManager = context.getDtlsCssManager();
-                        for (AbstractRecord record : subGroup.getRecords()) {
-                            cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
-                        }
-                        cleanProtocolMessageBytes = cssManager.getUninterpretedCssMessages(subGroup.getDtlsEpoch());
-                    } else {
-                        cleanProtocolMessageBytes = subGroup.getCleanBytes();
+                } else if (context.getChooser().getSelectedProtocolVersion().isDTLS()
+                        && subGroup.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
+                        && context.getConfig().isIgnoreRetransmittedCss()) {
+                    CssManager cssManager = context.getDtlsCssManager();
+                    for (AbstractRecord record : subGroup.getRecords()) {
+                        cssManager.addCssMessage(record, subGroup.getDtlsEpoch());
                     }
+                    cleanProtocolMessageBytes = cssManager.getUninterpretedCssMessages(subGroup.getDtlsEpoch());
+                    List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
+                                    || context.getConfig().getParseInvalidRecordNormally());
+                    messages.addAll(parsedMessages);
+                } else {
+                    cleanProtocolMessageBytes = subGroup.getCleanBytes();
                     List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
                             subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
                                     || context.getConfig().getParseInvalidRecordNormally());
