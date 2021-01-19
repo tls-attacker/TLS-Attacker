@@ -244,6 +244,9 @@ public class CertificateByteChooser {
                 if (neededPublicKeyType == CertificateKeyType.RSA
                     && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertRsaKeySize()) {
                     continue;
+                } else if (neededPublicKeyType == CertificateKeyType.DSS
+                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize()) {
+                    continue;
                 }
                 return pair;
             }

@@ -277,6 +277,8 @@ public class Config implements Serializable {
 
     private int prefferedCertRsaKeySize = 2048;
 
+    private int prefferedCertDssKeySize = 2048;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
@@ -3834,6 +3836,14 @@ public class Config implements Serializable {
 
     public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
         this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    }
+
+    public int getPrefferedCertDssKeySize() {
+        return prefferedCertDssKeySize;
+    }
+
+    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
+        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
     }
 
 }
