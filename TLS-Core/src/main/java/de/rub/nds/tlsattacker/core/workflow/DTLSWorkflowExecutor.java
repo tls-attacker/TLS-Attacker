@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -57,16 +59,23 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             ctx.initRecordLayer();
         }
 
+        // Warum reset, wenn nichts bisher ausgeführt?
         state.getWorkflowTrace().reset();
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
 
         // ------------------------------------------
 
-        int count = 0;
-        boolean error = false;
+        int retransmissions = 0;
+        boolean exec_err = false;
         int errorAction = -1;
         for (int i = 0; i < tlsActions.size(); i++) {
+
+            // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
+            if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
+                LOGGER.debug("Clean shutdown of execution flow");
+                break;
+            }
 
             // Führe Action aus
             TlsAction action = tlsActions.get(i);
@@ -75,55 +84,61 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
-            // Nicht wie geplant abgelaufen
-            // TODO: ReceiveAction macht hier Probleme, falls mehr Nachrichten
-            // erhalten als erwartet... Eventuell ReceiveAction fixen.
+
+            if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
+                LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
+                LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                break;
+            }
             if (!action.executedAsPlanned()) {
-                // Breche ab
+                // Nutze diesen Flag für Retransmissions an/aus
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
-                }
-                // Breche ab
-                if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                    LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                } else if (retransmissions == config.getMaxRetransmissions()) {
                     break;
+                } else {
+                    // Aktuelle Action
+                    action.reset();
+                    // Davorherige Action
+                    int j = i - 1;
+                    for (; j >= 0; j--) {
+                        if (!(tlsActions.get(j) instanceof SendingAction)) {
+                            tlsActions.get(j).reset();
+                        } else {
+                            break;
+                        }
+                    }
+                    for (; j >= 0; j--) {
+                        if (!(tlsActions.get(j) instanceof ReceivingAction)) {
+                            tlsActions.get(j).reset();
+                        } else {
+                            i = j;
+                            break;
+                        }
+                    }
+                    // Merke Action mit Fehler
+                    errorAction = i;
+                    exec_err = true;
                 }
-                // Breche ab
-                if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
-                    LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
-                    break;
-                }
-                // Breche ab, da maximale Anzahl Retransmissions gemacht
-                if (count == config.getMaxRetransmissions()) {
-                    break;
-                }
-                // TODO: Setze nur aktuelle und vorherige Action zurück. Das
-                // reicht nicht aus...
-                action.reset();
-                tlsActions.get(i - 1).reset();
-                i = i - 2;
-                count++;
-                error = true;
-                errorAction = i;
-                // Wie geplant abgelaufen
-            } else {
-                if (errorAction == i && error) {
-                    count = 0;
-                    error = false;
-                }
+            } else if (errorAction == i && exec_err) {
+                retransmissions = 0;
+                errorAction = -1;
+                exec_err = false;
             }
-
         }
 
         // Close with Notify, if execution error
-        TlsAction action = tlsActions.get(tlsActions.size() - 1);
-        try {
-            if (error && config.isFinishWithCloseNotify()) {
+        if (exec_err && config.isFinishWithCloseNotify()) {
+            TlsAction action = tlsActions.get(tlsActions.size() - 1);
+            try {
                 action.execute(state);
+            } catch (PreparationException | WorkflowExecutionException ex) {
+                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
-        } catch (PreparationException | WorkflowExecutionException ex) {
-            throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
         }
 
         // ------------------------------------------
