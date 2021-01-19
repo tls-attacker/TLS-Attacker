@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -55,6 +56,16 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<AbstractRecord> sendFragments;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<AbstractRecord> receivedFragments;
 
     @XmlTransient
     private ReceiveMessageHelper receiveMessageHelper;
@@ -163,6 +174,8 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
         hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
         hash = 89 * hash + Objects.hashCode(this.receivedRecords);
         hash = 89 * hash + Objects.hashCode(this.sendRecords);
+        hash = 89 * hash + Objects.hashCode(this.receivedFragments);
+        hash = 89 * hash + Objects.hashCode(this.sendFragments);
         return hash;
     }
 
@@ -185,6 +198,12 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
             return false;
         }
         if (!Objects.equals(this.executedAsPlanned, other.executedAsPlanned)) {
+            return false;
+        }
+        if (!Objects.equals(this.receivedFragments, other.receivedFragments)) {
+            return false;
+        }
+        if (!Objects.equals(this.sendFragments, other.sendFragments)) {
             return false;
         }
         if (!Objects.equals(this.receivedRecords, other.receivedRecords)) {
@@ -221,6 +240,16 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @Override
     public List<ProtocolMessage> getSendMessages() {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -114,6 +114,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> receivedRecords;
 
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> receivedFragments;
+
     @XmlElementWrapper
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
@@ -170,6 +175,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @HoldsModifiableVariable
     @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> fragments;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
@@ -221,6 +231,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    protected List<DtlsHandshakeMessageFragment> sendFragments;
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -289,7 +304,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receiveFromCtx);
         receivedRecords = result.getRecordList();
         receivedMessages = result.getMessageList();
-
+        if (result.getMessageFragmentList() != null) {
+            receivedFragments = new ArrayList<>(result.getMessageFragmentList());
+        }
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -315,10 +332,13 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(receivedMessages, receivedRecords,
-                    forwardToCtx, withPrepare);
+            MessageActionResult result = sendMessageHelper.sendMessages(receivedMessages, receivedFragments,
+                    receivedRecords, forwardToCtx, withPrepare);
             sendMessages = result.getMessageList();
             sendRecords = result.getRecordList();
+            if (result.getMessageFragmentList() != null) {
+                sendFragments = new ArrayList<>(result.getMessageFragmentList());
+            }
             if (executedAsPlanned) {
                 executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
             }
@@ -376,8 +396,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public void reset() {
         receivedMessages = null;
         receivedRecords = null;
+        receivedFragments = null;
         sendMessages = null;
         sendRecords = null;
+        sendFragments = null;
         executedAsPlanned = false;
         setExecuted(null);
     }
@@ -393,6 +415,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return receivedFragments;
+    }
+
+    @Override
     public List<ProtocolMessage> getSendMessages() {
         return sendMessages;
     }
@@ -400,6 +427,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public List<AbstractRecord> getSendRecords() {
         return sendRecords;
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getSendFragments() {
+        return sendFragments;
     }
 
     public List<ProtocolMessage> getMessages() {
@@ -422,10 +454,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
         hash = 89 * hash + Objects.hashCode(this.receivedMessages);
         hash = 89 * hash + Objects.hashCode(this.receivedRecords);
+        hash = 89 * hash + Objects.hashCode(this.receivedFragments);
         hash = 89 * hash + Objects.hashCode(this.sendMessages);
         hash = 89 * hash + Objects.hashCode(this.sendRecords);
         hash = 89 * hash + Objects.hashCode(this.messages);
         hash = 89 * hash + Objects.hashCode(this.records);
+        hash = 89 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
 
@@ -461,10 +495,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (!Objects.equals(this.receivedRecords, other.receivedRecords)) {
             return false;
         }
+        if (!Objects.equals(this.receivedFragments, other.receivedFragments)) {
+            return false;
+        }
         if (!checkMessageListsEquals(this.sendMessages, other.sendMessages)) {
             return false;
         }
         if (!Objects.equals(this.sendRecords, other.sendRecords)) {
+            return false;
+        }
+        if (!Objects.equals(this.sendFragments, other.sendFragments)) {
             return false;
         }
         if (!checkMessageListsEquals(this.messages, other.messages)) {
@@ -547,17 +587,26 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (records == null || records.isEmpty()) {
             records = null;
         }
+        if (fragments == null || fragments.isEmpty()) {
+            fragments = null;
+        }
         if (receivedMessages == null || receivedMessages.isEmpty()) {
             receivedMessages = null;
         }
         if (receivedRecords == null || receivedRecords.isEmpty()) {
             receivedRecords = null;
         }
+        if (receivedFragments == null || receivedFragments.isEmpty()) {
+            receivedFragments = null;
+        }
         if (sendMessages == null || sendMessages.isEmpty()) {
             sendMessages = null;
         }
         if (sendRecords == null || sendRecords.isEmpty()) {
             sendRecords = null;
+        }
+        if (sendFragments == null || sendFragments.isEmpty()) {
+            sendFragments = null;
         }
     }
 
@@ -568,17 +617,26 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (records == null) {
             records = new ArrayList<>();
         }
+        if (fragments == null) {
+            fragments = new ArrayList<>();
+        }
         if (receivedMessages == null) {
             receivedMessages = new ArrayList<>();
         }
         if (receivedRecords == null) {
             receivedRecords = new ArrayList<>();
         }
+        if (receivedFragments == null) {
+            receivedFragments = new ArrayList<>();
+        }
         if (sendMessages == null) {
             sendMessages = new ArrayList<>();
         }
         if (sendRecords == null) {
             sendRecords = new ArrayList<>();
+        }
+        if (sendFragments == null) {
+            sendFragments = new ArrayList<>();
         }
     }
 }

@@ -143,6 +143,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
         records = new ArrayList<>(result.getRecordList());
         messages = new ArrayList<>(result.getMessageList());
+        if (result.getMessageFragmentList() != null) {
+            fragments = new ArrayList<>(result.getMessageFragmentList());
+        }
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
@@ -245,6 +248,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.records = receivedRecords;
     }
 
+    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
     public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
@@ -257,6 +264,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public void reset() {
         messages = null;
         records = null;
+        fragments = null;
         setExecuted(null);
     }
 
@@ -271,12 +279,17 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return fragments;
+    }
+
+    @Override
     public int hashCode() {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.expectedMessages);
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
-
+        hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
 
@@ -299,6 +312,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
         if (!Objects.equals(this.records, other.records)) {
+            return false;
+        }
+        if (!Objects.equals(this.fragments, other.fragments)) {
             return false;
         }
         return super.equals(obj);

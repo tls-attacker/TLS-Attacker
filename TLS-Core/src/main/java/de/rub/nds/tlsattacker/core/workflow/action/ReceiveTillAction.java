@@ -104,6 +104,9 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         MessageActionResult result = receiveMessageHelper.receiveMessagesTill(waitTillMessage, tlsContext);
         records = new ArrayList<>(result.getRecordList());
         messages = new ArrayList<>(result.getMessageList());
+        if (result.getMessageFragmentList() != null) {
+            fragments = new ArrayList<>(result.getMessageFragmentList());
+        }
         setExecuted(true);
 
         String expected = getReadableString(waitTillMessage);
@@ -183,6 +186,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
         this.records = receivedRecords;
     }
 
+    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
+        this.fragments = fragments;
+    }
+
     public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
@@ -191,6 +198,7 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     public void reset() {
         messages = null;
         records = null;
+        fragments = null;
         setExecuted(null);
     }
 
@@ -205,12 +213,17 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
     }
 
     @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return fragments;
+    }
+
+    @Override
     public int hashCode() {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.waitTillMessage);
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
-
+        hash = 67 * hash + Objects.hashCode(this.fragments);
         return hash;
     }
 
