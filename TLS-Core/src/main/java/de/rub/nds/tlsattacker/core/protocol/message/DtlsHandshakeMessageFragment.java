@@ -40,6 +40,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     private int messageSequenceConfig = 0;
     private int offsetConfig = 0;
     private int handshakeMessageLengthConfig = 0;
+    private HandshakeMessageType handshakeMessageTypeConfig;
+    private int maxFragmentLengthConfig;
 
     public DtlsHandshakeMessageFragment() {
         super(HandshakeMessageType.UNKNOWN);
@@ -52,6 +54,7 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         super(handshakeMessageType);
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
         ADJUST_CONTEXT_DEFAULT = false;
+        this.handshakeMessageTypeConfig = handshakeMessageType;
         this.fragmentContentConfig = fragmentContentConfig;
         this.messageSequenceConfig = messageSequenceConfig;
         this.offsetConfig = offsetConfig;
@@ -62,17 +65,35 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.UNKNOWN);
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
         ADJUST_CONTEXT_DEFAULT = false;
+        this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
-    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
+    public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
+        super(tlsConfig, HandshakeMessageType.UNKNOWN);
         IS_INCLUDE_IN_DIGEST_DEFAULT = false;
         ADJUST_CONTEXT_DEFAULT = false;
+        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     @Override
     public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext context) {
         return new DtlsHandshakeMessageFragmentHandler(context);
+    }
+
+    public HandshakeMessageType getHandshakeMessageTypeConfig() {
+        return handshakeMessageTypeConfig;
+    }
+
+    public void setHandshakeMessageTypeConfig(HandshakeMessageType handshakeMessageTypeConfig) {
+        this.handshakeMessageTypeConfig = handshakeMessageTypeConfig;
+    }
+
+    public Integer getMaxFragmentLengthConfig() {
+        return maxFragmentLengthConfig;
+    }
+
+    public void setMaxFragmentLengthConfig(int maxFragmentLengthConfig) {
+        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     public byte[] getFragmentContentConfig() {

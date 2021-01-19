@@ -31,25 +31,31 @@ public class SendMessageHelper {
     public SendMessageHelper() {
     }
 
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
-            TlsContext context) throws IOException {
-        return sendMessages(messages, records, context, true);
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages,
+            List<DtlsHandshakeMessageFragment> fragments, List<AbstractRecord> records, TlsContext context)
+            throws IOException {
+        return sendMessages(messages, fragments, records, context, true);
     }
 
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
-            TlsContext context, boolean prepareMessages) throws IOException {
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages,
+            List<DtlsHandshakeMessageFragment> fragments, List<AbstractRecord> records, TlsContext context,
+            boolean prepareMessages) throws IOException {
         List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
+        if (fragments == null) {
+            LOGGER.trace("No Fragments Specified, creating emtpy list");
+            fragments = new LinkedList<>();
+        }
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
         }
 
         int recordPosition = 0;
+        int fragmentPosition = 0;
         ProtocolMessageType lastType = null;
         ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        MessageFragmenter fragmenter = new MessageFragmenter(context.getConfig().getDtlsMaximumFragmentLength());
         for (ProtocolMessage message : messages) {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
@@ -71,7 +77,11 @@ public class SendMessageHelper {
                         if (message.isDtlsHandshakeMessageFragment()) {
                             messageFragments = Collections.singletonList((DtlsHandshakeMessageFragment) message);
                         } else {
-                            messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
+                            messageFragments = getEnoughFragments(protocolMessageBytes.length, fragmentPosition,
+                                    fragments, context);
+                            messageFragments = MessageFragmenter.fragmentMessage((HandshakeMessage) message,
+                                    messageFragments, context);
+                            fragmentPosition += messageFragments.size();
                         }
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
                             messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
@@ -98,6 +108,8 @@ public class SendMessageHelper {
             lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
         }
         sendData(messageBytesCollector, context);
+
+        // TODO: Zuviele Fragmente als leere Fragmente senden, wie folgend
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
             int current = 0;
             for (AbstractRecord record : records) {
@@ -168,6 +180,30 @@ public class SendMessageHelper {
                 record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
             }
             recordLength += record.getMaxRecordLengthConfig();
+            position++;
+        }
+        return toFillList;
+    }
+
+    private List<DtlsHandshakeMessageFragment> getEnoughFragments(int length, int position,
+            List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+        List<DtlsHandshakeMessageFragment> toFillList = new LinkedList<>();
+        int fragmentLength = 0;
+        while (fragmentLength < length) {
+            if (position >= fragments.size()) {
+                if (context.getConfig().isCreateFragmentsDynamically()) {
+                    LOGGER.trace("Creating new Fragment");
+                    fragments.add(new DtlsHandshakeMessageFragment(context.getConfig()));
+                } else {
+                    return toFillList;
+                }
+            }
+            DtlsHandshakeMessageFragment fragment = fragments.get(position);
+            toFillList.add(fragment);
+            if (fragment.getMaxFragmentLengthConfig() == null) {
+                fragment.setMaxFragmentLengthConfig(context.getConfig().getDtlsMaximumFragmentLength());
+            }
+            fragmentLength += fragment.getMaxFragmentLengthConfig();
             position++;
         }
         return toFillList;

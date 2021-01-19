@@ -43,6 +43,7 @@ import de.rub.nds.tlsattacker.core.dtls.CssManager;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -577,6 +578,9 @@ public class TlsContext {
     private LinkedList<AbstractRecord> recordBuffer;
 
     @XmlTransient
+    private LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer;
+
+    @XmlTransient
     private Chooser chooser;
 
     /**
@@ -704,6 +708,7 @@ public class TlsContext {
         random = new Random(0);
         messageBuffer = new LinkedList<>();
         recordBuffer = new LinkedList<>();
+        fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new LinkedList<>();
         globalDtlsFragmentManager = new FragmentManager(config);
         globalDtlsCssManager = new CssManager(config);
@@ -779,6 +784,14 @@ public class TlsContext {
 
     public void setRecordBuffer(LinkedList<AbstractRecord> recordBuffer) {
         this.recordBuffer = recordBuffer;
+    }
+
+    public LinkedList<DtlsHandshakeMessageFragment> getFragmentBuffer() {
+        return fragmentBuffer;
+    }
+
+    public void setFragmentBuffer(LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer) {
+        this.fragmentBuffer = fragmentBuffer;
     }
 
     public HttpContext getHttpContext() {

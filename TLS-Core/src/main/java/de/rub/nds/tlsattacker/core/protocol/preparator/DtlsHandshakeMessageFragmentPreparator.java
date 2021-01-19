@@ -27,10 +27,12 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
 
     @Override
     protected void prepareHandshakeMessageContents() {
+        msg.setType(msg.getHandshakeMessageTypeConfig().getValue());
         msg.setContent(msg.getFragmentContentConfig());
+        msg.setLength(msg.getHandshakeMessageLengthConfig());
         msg.setMessageSeq(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
-        msg.setFragmentLength(msg.getHandshakeMessageLengthConfig());
+        msg.setFragmentLength(msg.getContent().getValue().length);
         msg.setEpoch(chooser.getContext().getDtlsWriteEpoch());
     }
 

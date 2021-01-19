@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -62,7 +63,8 @@ public class SendMessageHelperTest {
         r.setMaxRecordLengthConfig(0);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
-        helper.sendMessages(new LinkedList<ProtocolMessage>(), recordList, context);
+        helper.sendMessages(new LinkedList<ProtocolMessage>(), new LinkedList<DtlsHandshakeMessageFragment>(),
+                recordList, context);
         assertArrayEquals(new byte[] { 22, 03, 03, 0, 0 },
                 ((ByteArrayOutputStream) transportHandler.getOutputStream()).toByteArray());
 

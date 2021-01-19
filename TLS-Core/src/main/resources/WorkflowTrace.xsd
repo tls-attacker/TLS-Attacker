@@ -388,6 +388,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="fragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1581,6 +1588,8 @@
           <xs:element name="messageSequenceConfig" type="xs:int"/>
           <xs:element name="offsetConfig" type="xs:int"/>
           <xs:element name="handshakeMessageLengthConfig" type="xs:int"/>
+          <xs:element name="handshakeMessageTypeConfig" type="handshakeMessageType" minOccurs="0"/>
+          <xs:element name="maxFragmentLengthConfig" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2957,6 +2966,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="receivedFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="messages" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -3016,6 +3032,13 @@
                   <xs:element name="Record" type="record"/>
                   <xs:element name="BlobRecord" type="blobRecord"/>
                 </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="fragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -3081,6 +3104,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="sendFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3117,6 +3147,20 @@
                   <xs:element name="Record" type="record"/>
                   <xs:element name="BlobRecord" type="blobRecord"/>
                 </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receivedFragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -3973,6 +4017,33 @@
       <xs:enumeration value="GREASE_15"/>
       <xs:enumeration value="TLS_GOSTR341112_256_WITH_28147_CNT_IMIT"/>
       <xs:enumeration value="TLS_GOSTR341112_256_WITH_NULL_GOSTR3411"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="handshakeMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNKNOWN"/>
+      <xs:enumeration value="HELLO_REQUEST"/>
+      <xs:enumeration value="CLIENT_HELLO"/>
+      <xs:enumeration value="SSL2_CLIENT_HELLO"/>
+      <xs:enumeration value="SERVER_HELLO"/>
+      <xs:enumeration value="SSL2_CLIENT_MASTER_KEY"/>
+      <xs:enumeration value="HELLO_VERIFY_REQUEST"/>
+      <xs:enumeration value="NEW_SESSION_TICKET"/>
+      <xs:enumeration value="SSL2_SERVER_HELLO"/>
+      <xs:enumeration value="END_OF_EARLY_DATA"/>
+      <xs:enumeration value="SSL2_SERVER_VERIFY"/>
+      <xs:enumeration value="HELLO_RETRY_REQUEST"/>
+      <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="CERTIFICATE"/>
+      <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
+      <xs:enumeration value="CERTIFICATE_REQUEST"/>
+      <xs:enumeration value="SERVER_HELLO_DONE"/>
+      <xs:enumeration value="CERTIFICATE_VERIFY"/>
+      <xs:enumeration value="CLIENT_KEY_EXCHANGE"/>
+      <xs:enumeration value="FINISHED"/>
+      <xs:enumeration value="CERTIFICATE_STATUS"/>
+      <xs:enumeration value="SUPPLEMENTAL_DATA"/>
     </xs:restriction>
   </xs:simpleType>
 

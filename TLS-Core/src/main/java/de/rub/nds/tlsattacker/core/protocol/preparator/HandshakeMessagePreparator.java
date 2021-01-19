@@ -62,9 +62,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             msg.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
         }
         prepareHandshakeMessageContents();
-        serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
-        prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
-        prepareMessageType(msg.getHandshakeMessageType());
+        if (!msg.isDtlsHandshakeMessageFragment()) {
+            serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
+            prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+            prepareMessageType(msg.getHandshakeMessageType());
+        }
     }
 
     protected abstract void prepareHandshakeMessageContents();

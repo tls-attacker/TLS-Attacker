@@ -816,6 +816,13 @@ public class Config implements Serializable {
     private Boolean flushOnMessageTypeChange = true;
 
     /**
+     * If there is not enough space in the defined fragments, new fragments are
+     * dynamically added if not set, protocolmessage bytes that wont fit are
+     * discarded
+     */
+    private Boolean createFragmentsDynamically = true;
+
+    /**
      * If there is not enough space in the defined records, new records are
      * dynamically added if not set, protocolmessage bytes that wont fit are
      * discarded
@@ -1055,6 +1062,8 @@ public class Config implements Serializable {
     private Boolean useFreshRandom = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
+
+    private Boolean useAllProvidedFragments = false;
 
     private Boolean useAllProvidedRecords = false;
 
@@ -1465,6 +1474,14 @@ public class Config implements Serializable {
 
     public void setParseKeyShareOld(boolean parseKeyShareOld) {
         this.parseKeyShareOld = parseKeyShareOld;
+    }
+
+    public Boolean isUseAllProvidedFragments() {
+        return useAllProvidedFragments;
+    }
+
+    public void setUseAllProvidedFragments(Boolean useAllProvidedFragments) {
+        this.useAllProvidedFragments = useAllProvidedFragments;
     }
 
     public Boolean isUseAllProvidedRecords() {
@@ -2153,6 +2170,14 @@ public class Config implements Serializable {
 
     public void setFlushOnMessageTypeChange(Boolean flushOnMessageTypeChange) {
         this.flushOnMessageTypeChange = flushOnMessageTypeChange;
+    }
+
+    public Boolean isCreateFragmentsDynamically() {
+        return createFragmentsDynamically;
+    }
+
+    public void setCreateFragmentsDynamicallyy(Boolean createFragmentsDynamically) {
+        this.createFragmentsDynamically = createFragmentsDynamically;
     }
 
     public Boolean isCreateRecordsDynamically() {
