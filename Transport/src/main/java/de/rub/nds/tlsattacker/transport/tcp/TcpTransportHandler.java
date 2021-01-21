@@ -85,9 +85,9 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public abstract Integer getSrcPort();
 
-    public abstract Integer getDstPort();
-
     public abstract void setSrcPort(int port);
+
+    public abstract Integer getDstPort();
 
     public abstract void setDstPort(int port);
 }

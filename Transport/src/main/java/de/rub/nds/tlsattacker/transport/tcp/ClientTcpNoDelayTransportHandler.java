@@ -13,9 +13,6 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import de.rub.nds.tlsattacker.transport.Connection;
 
 import java.io.IOException;
-import java.io.PushbackInputStream;
-import java.net.ConnectException;
-import java.net.Socket;
 
 public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler {
 

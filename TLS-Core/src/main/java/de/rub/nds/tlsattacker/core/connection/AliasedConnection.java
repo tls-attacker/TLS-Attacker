@@ -221,5 +221,17 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         }
     }
 
+    @Override
+    protected void addProperties(StringBuilder sb) {
+        sb.append("alias=").append(alias).append(" ");
+        super.addProperties(sb);
+    }
+
+    @Override
+    protected void addCompactProperties(StringBuilder sb) {
+        sb.append(alias).append(":");
+        super.addCompactProperties(sb);
+    }
+
     public abstract AliasedConnection getCopy();
 }
