@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.asn1.parser.ParserException;
@@ -20,7 +21,7 @@ public enum SignedCertificateTimestampVersion {
                 return SignedCertificateTimestampVersion.V1;
             default:
                 throw new ParserException("SignedCertificateTimestampVersion with byte value \"" + encodedVersion
-                        + "\" is not supported.");
+                    + "\" is not supported.");
         }
     }
 

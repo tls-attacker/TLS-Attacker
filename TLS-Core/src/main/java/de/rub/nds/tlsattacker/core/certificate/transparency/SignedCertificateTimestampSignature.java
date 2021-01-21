@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.asn1.parser.ParserException;
@@ -66,8 +67,8 @@ public class SignedCertificateTimestampSignature {
             Signature signature = Signature.getInstance(signatureAndhashAlgorithm.getJavaName());
 
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(ctLog.getPublicKey());
-            KeyFactory keyFactory = KeyFactory.getInstance(signatureAndhashAlgorithm.getSignatureAlgorithm()
-                    .getJavaName());
+            KeyFactory keyFactory =
+                KeyFactory.getInstance(signatureAndhashAlgorithm.getSignatureAlgorithm().getJavaName());
             PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
             signature.initVerify(publicKey);
@@ -90,7 +91,8 @@ public class SignedCertificateTimestampSignature {
         outputStream.write(SignedCertificateTimestampVersion.encodeVersion(sct.getVersion()));
 
         // signature type
-        byte signatureType = SignedCertificateTimestampSignatureType
+        byte signatureType =
+            SignedCertificateTimestampSignatureType
                 .encodeVersion(SignedCertificateTimestampSignatureType.CERTIFICATE_TIMESTAMP);
         outputStream.write(signatureType);
 
@@ -114,7 +116,8 @@ public class SignedCertificateTimestampSignature {
         byte[] extensions = sct.getExtensions();
 
         // Append two-byte extension length
-        outputStream.write(ArrayConverter.intToBytes(extensions.length, CertificateTransparencyLength.EXTENSION_LENGTH));
+        outputStream
+            .write(ArrayConverter.intToBytes(extensions.length, CertificateTransparencyLength.EXTENSION_LENGTH));
 
         // Append extension data
         outputStream.write(extensions);
@@ -123,17 +126,18 @@ public class SignedCertificateTimestampSignature {
     }
 
     /**
-     * Converts an end-entity certificate into a precertificate used to verify
-     * precertificate SCT signatures. See RFC 6962 Section 3.2 for more
-     * information on how to construct a precertificate entry:
+     * Converts an end-entity certificate into a precertificate used to verify precertificate SCT signatures. See RFC
+     * 6962 Section 3.2 for more information on how to construct a precertificate entry:
      * https://tools.ietf.org/html/rfc6962#section-3.2
      *
-     * @param leafCertificate The leaf certificate
-     * @param issuerCertificate The issuer certificate
+     * @param leafCertificate
+     * The leaf certificate
+     * @param issuerCertificate
+     * The issuer certificate
      * @return Precertificate as DER-encoded byte[]
      */
     private byte[] convertToPreCertificate(Certificate leafCertificate, Certificate issuerCertificate)
-            throws IOException {
+        throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // Compute SHA-256 hash of the certificate issuer's public key,
@@ -172,14 +176,14 @@ public class SignedCertificateTimestampSignature {
         Extensions extensions = originalTbsCertificate.getExtensions();
         for (ASN1ObjectIdentifier objectIdentifier : extensions.getExtensionOIDs()) {
             if (!ExtensionObjectIdentifier.PRECERTIFICATE_POISON.equals(objectIdentifier.getId())
-                    && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID().equals(
-                            objectIdentifier.getId())) {
+                && !ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID().equals(
+                    objectIdentifier.getId())) {
                 Extension extension = extensions.getExtension(objectIdentifier);
                 extensionList.add(extension);
             }
         }
 
-        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[]{})));
+        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[] {})));
         TBSCertificate modifiedTbsCertificate = tbsCertificateGenerator.generateTBSCertificate();
 
         // Append DER encoded TBSCertificate
@@ -207,7 +211,7 @@ public class SignedCertificateTimestampSignature {
 
         sb.append("\n Signature: ");
         sb.append(signatureAndhashAlgorithm.getSignatureAlgorithm() + " with "
-                + signatureAndhashAlgorithm.getHashAlgorithm());
+            + signatureAndhashAlgorithm.getHashAlgorithm());
         if (ctLog != null) {
             boolean signatureValid = verifySignature(sct, ctLog);
             sb.append(signatureValid ? " (valid)" : " (invalid)");

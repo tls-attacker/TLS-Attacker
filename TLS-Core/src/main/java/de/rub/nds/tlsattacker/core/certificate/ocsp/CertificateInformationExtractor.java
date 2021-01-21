@@ -27,6 +27,7 @@ import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.io.ByteArrayInputStream;
@@ -207,8 +208,8 @@ public class CertificateInformationExtractor {
         // Search for X.509 'Signed Certificate Timestamp List' extension
         for (Asn1Encodable enc : x509ExtensionSequences) {
             if (enc instanceof Asn1Sequence) {
-                Asn1ObjectIdentifier objectIdentifier = (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren()
-                        .get(0));
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
 
                 if (objectIdentifier.getValue().equals(SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID())) {
                     precertificateSctListExtension = (Asn1Sequence) enc;

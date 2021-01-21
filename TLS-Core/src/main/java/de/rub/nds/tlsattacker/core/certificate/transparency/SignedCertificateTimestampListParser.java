@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -21,12 +22,11 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
      * Constructor for the Parser
      *
      * @param startposition
-     *            Position in the array from which the Parser should start
-     *            working
+     * Position in the array from which the Parser should start working
      * @param array
      */
     public SignedCertificateTimestampListParser(int startposition, byte[] array, Certificate certificateChain,
-            boolean isPreCertificateSct) {
+        boolean isPreCertificateSct) {
         super(startposition, array);
 
         this.isPreCertificateSct = isPreCertificateSct;
@@ -50,8 +50,8 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
 
             // Decode and parse Signed Certificate Timestamp list entry
             byte[] encodedEntryData = parseByteArrayField(entryLength);
-            SignedCertificateTimestampParser signedCertificateTimestampParser = new SignedCertificateTimestampParser(0,
-                    encodedEntryData);
+            SignedCertificateTimestampParser signedCertificateTimestampParser =
+                new SignedCertificateTimestampParser(0, encodedEntryData);
             SignedCertificateTimestamp sct = signedCertificateTimestampParser.parse();
 
             // Add certificates required for SCT signature validation

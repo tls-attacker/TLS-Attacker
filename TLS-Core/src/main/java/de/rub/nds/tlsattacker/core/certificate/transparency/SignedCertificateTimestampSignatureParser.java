@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -19,8 +20,7 @@ public class SignedCertificateTimestampSignatureParser extends Parser<SignedCert
      * Constructor for the Parser
      *
      * @param startposition
-     *            Position in the array from which the Parser should start
-     *            working
+     * Position in the array from which the Parser should start working
      * @param encodedSignature
      */
     public SignedCertificateTimestampSignatureParser(int startposition, byte[] encodedSignature) {
@@ -31,7 +31,8 @@ public class SignedCertificateTimestampSignatureParser extends Parser<SignedCert
     public SignedCertificateTimestampSignature parse() {
         SignedCertificateTimestampSignature signature = new SignedCertificateTimestampSignature();
 
-        SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm
+        SignatureAndHashAlgorithm signatureAndHashAlgorithm =
+            SignatureAndHashAlgorithm
                 .getSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         signature.setSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
 
