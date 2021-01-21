@@ -1,9 +1,9 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * <p>
  * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
  * and Hackmanit GmbH
- *
+ * <p>
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -127,20 +128,20 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public Integer getDstPort() {
-        if (!isInitialized()) {
-            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
-        } else {
-            return socket.getPort();
-        }
-    }
-
-    @Override
     public void setSrcPort(int port) {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
         } else {
             this.port = port;
+        }
+    }
+
+    @Override
+    public Integer getDstPort() {
+        if (!isInitialized()) {
+            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+        } else {
+            return socket.getPort();
         }
     }
 

@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.transport.socket.SocketState;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 public abstract class UdpTransportHandler extends TransportHandler {
     protected DatagramSocket socket;

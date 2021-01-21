@@ -20,10 +20,8 @@ public class UdpOutputStream extends OutputStream {
     private static final int BUFFER_SIZE = 8192;
 
     private final DatagramSocket socket;
-
-    private int index;
-
     private final byte[] dataBuffer = new byte[BUFFER_SIZE];
+    private int index;
 
     public UdpOutputStream(DatagramSocket socket) {
         this.socket = socket;

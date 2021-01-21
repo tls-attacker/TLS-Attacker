@@ -113,14 +113,13 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         return retryFailedSocketInitialization;
     }
 
-    @Override
-    public Integer getDstPort() {
-        return serverPort;
+    public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
+        this.retryFailedSocketInitialization = retryFailedSocketInitialization;
     }
 
     @Override
-    public Integer getSrcPort() {
-        return clientPort;
+    public Integer getDstPort() {
+        return serverPort;
     }
 
     @Override
@@ -133,15 +132,16 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     }
 
     @Override
+    public Integer getSrcPort() {
+        return clientPort;
+    }
+
+    @Override
     public void setSrcPort(int clientPort) {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
         } else {
             this.clientPort = clientPort;
         }
-    }
-
-    public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
-        this.retryFailedSocketInitialization = retryFailedSocketInitialization;
     }
 }
