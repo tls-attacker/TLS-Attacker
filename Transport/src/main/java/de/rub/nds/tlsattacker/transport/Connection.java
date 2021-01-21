@@ -220,15 +220,9 @@ public abstract class Connection implements Serializable {
         sb.append(" type=").append(transportHandlerType);
         sb.append(" firstTimeout=").append(firstTimeout);
         sb.append(" timeout=").append(timeout);
-        sb.append(" protocolAdapter=").append(protocolAdapterType);
     }
 
     protected void addCompactProperties(StringBuilder sb) {
         sb.append(hostname).append(":").append(port);
-
-        if (protocolAdapterType != ProtocolAdapterType.NONE) {
-            sb.append(":").append(protocolAdapterType);
-        }
     }
-
 }
