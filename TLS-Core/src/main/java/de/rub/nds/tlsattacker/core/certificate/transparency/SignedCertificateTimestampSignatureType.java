@@ -12,7 +12,8 @@ package de.rub.nds.tlsattacker.core.certificate.transparency;
 import de.rub.nds.asn1.parser.ParserException;
 
 public enum SignedCertificateTimestampSignatureType {
-    CERTIFICATE_TIMESTAMP, TREE_HASH;
+    CERTIFICATE_TIMESTAMP,
+    TREE_HASH;
 
     public static SignedCertificateTimestampSignatureType decodeVersion(byte encodedVersion) throws ParserException {
         switch (encodedVersion) {

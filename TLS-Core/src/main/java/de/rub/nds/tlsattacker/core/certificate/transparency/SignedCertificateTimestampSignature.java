@@ -13,6 +13,7 @@ import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier;
 import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLog;
+import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,7 +114,7 @@ public class SignedCertificateTimestampSignature {
         byte[] extensions = sct.getExtensions();
 
         // Append two-byte extension length
-        outputStream.write(ArrayConverter.intToBytes(extensions.length, 2));
+        outputStream.write(ArrayConverter.intToBytes(extensions.length, CertificateTransparencyLength.EXTENSION_LENGTH));
 
         // Append extension data
         outputStream.write(extensions);
@@ -127,10 +128,8 @@ public class SignedCertificateTimestampSignature {
      * information on how to construct a precertificate entry:
      * https://tools.ietf.org/html/rfc6962#section-3.2
      *
-     * @param leafCertificate
-     *            The leaf certificate
-     * @param issuerCertificate
-     *            The issuer certificate
+     * @param leafCertificate The leaf certificate
+     * @param issuerCertificate The issuer certificate
      * @return Precertificate as DER-encoded byte[]
      */
     private byte[] convertToPreCertificate(Certificate leafCertificate, Certificate issuerCertificate)
@@ -180,7 +179,7 @@ public class SignedCertificateTimestampSignature {
             }
         }
 
-        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[] {})));
+        tbsCertificateGenerator.setExtensions(new Extensions(extensionList.toArray(new Extension[]{})));
         TBSCertificate modifiedTbsCertificate = tbsCertificateGenerator.generateTBSCertificate();
 
         // Append DER encoded TBSCertificate

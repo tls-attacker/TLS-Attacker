@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.asn1.parser.ParserException;
+import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,10 +45,10 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
             certificateTimestamp.setVersion(sctVersion);
 
             // Decode 32 byte log id
-            certificateTimestamp.setLogId(parseByteArrayField(32));
+            certificateTimestamp.setLogId(parseByteArrayField(CertificateTransparencyLength.LOG_ID));
 
             // Decode 8 byte unix timestamp
-            byte[] sctTimestamp = parseByteArrayField(8);
+            byte[] sctTimestamp = parseByteArrayField(CertificateTransparencyLength.TIMESTAMP);
             ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
             buffer.put(sctTimestamp, 0, sctTimestamp.length);
             buffer.flip(); // need flip
@@ -56,7 +57,7 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
             certificateTimestamp.setTimestamp(decodedTimestamp);
 
             // Decode extension length for variable-length encoded extensions
-            int extensionLength = parseIntField(2);
+            int extensionLength = parseIntField(CertificateTransparencyLength.EXTENSION_LENGTH);
 
             // Currently there are no extensions defined for
             // SignedCertificateTimestamps. We do not further parse or handle

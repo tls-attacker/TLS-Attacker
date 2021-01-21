@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
@@ -31,10 +32,10 @@ public class SignedCertificateTimestampSignatureParser extends Parser<SignedCert
         SignedCertificateTimestampSignature signature = new SignedCertificateTimestampSignature();
 
         SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm
-                .getSignatureAndHashAlgorithm(parseByteArrayField(2));
+                .getSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         signature.setSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
 
-        int signatureLength = parseIntField(2);
+        int signatureLength = parseIntField(HandshakeByteLength.SIGNATURE_LENGTH);
 
         byte[] rawSignature = parseByteArrayField(signatureLength);
         signature.setSignature(rawSignature);

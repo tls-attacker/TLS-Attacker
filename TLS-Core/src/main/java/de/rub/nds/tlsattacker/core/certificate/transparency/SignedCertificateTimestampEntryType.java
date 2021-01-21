@@ -13,7 +13,8 @@ import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 public enum SignedCertificateTimestampEntryType {
-    X509ChainEntry, PrecertChainEntry;
+    X509ChainEntry,
+    PrecertChainEntry;
 
     public static SignedCertificateTimestampEntryType decodeVersion(byte[] encodedVersion) throws ParserException {
         int encoded = ArrayConverter.bytesToInt(encodedVersion);
