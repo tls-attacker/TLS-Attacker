@@ -45,6 +45,8 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             LOGGER.debug("Could not close client connection", ex);
         }
         LOGGER.info("Resseting Cipher");
+        tlsContext.getRecordLayer().resetDecryptorCipher();
+        tlsContext.getRecordLayer().resetEncryptorCipher();
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();

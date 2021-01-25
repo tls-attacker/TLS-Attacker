@@ -136,4 +136,14 @@ public class BlobRecordLayer extends RecordLayer {
         return decryptor.getRecordMostRecentCipher();
     }
 
+    @Override
+    public void resetEncryptorCipher() {
+        encryptor.resetRecordCipher();
+    }
+
+    @Override
+    public void resetDecryptorCipher() {
+        decryptor.resetRecordCipher();
+    }
+
 }

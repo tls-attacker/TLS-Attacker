@@ -60,4 +60,8 @@ public abstract class RecordLayer {
     public abstract void updateCompressor();
 
     public abstract void updateDecompressor();
+
+    public abstract void resetEncryptorCipher();
+
+    public abstract void resetDecryptorCipher();
 }

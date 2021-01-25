@@ -42,4 +42,7 @@ public abstract class RecordCryptoUnit {
         this.recordCipherList.add(recordCipher);
     }
 
+    public void resetRecordCipher() {
+        this.recordCipherList = new ArrayList<>();
+    }
 }
