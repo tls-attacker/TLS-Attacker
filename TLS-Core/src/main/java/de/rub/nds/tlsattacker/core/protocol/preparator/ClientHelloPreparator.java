@@ -155,11 +155,11 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private boolean hasClientRandom() {
-        return chooser.getContext().getClientRandom() != null;
+        return chooser.getContext().getClientRandom() != null && chooser.getContext().getClientRandom().length != 0;
     }
 
     private boolean hasHandshakeCookie() {
-        return chooser.getContext().getDtlsCookie() != null;
+        return chooser.getContext().getDtlsCookie() != null && chooser.getContext().getDtlsCookie().length != 0;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {
