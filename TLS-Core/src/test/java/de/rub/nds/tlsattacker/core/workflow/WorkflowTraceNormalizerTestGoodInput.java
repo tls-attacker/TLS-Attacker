@@ -137,9 +137,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
         }
 
         try {
-            config =
-                Config.createConfig(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8.name())),
-                    configXml);
+            config = Config.createConfig(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8.name())));
         } catch (UnsupportedEncodingException ex) {
             LOGGER.error("Could not load config from test file " + testVectorPath + ": " + ex);
             return;
