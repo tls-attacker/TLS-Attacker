@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -60,6 +61,11 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     public void adjustTLSContext(NewSessionTicketMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustPskSets(message);
+        } else if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12) {
+            LOGGER.debug("Adjusting SessionTickets");
+            tlsContext.setSessionTicketTLS(message.getTicket().getIdentity().getValue());
+            tlsContext.getConfig().setTlsSessionTicket(message.getTicket().getIdentity().getValue());
+
         }
     }
 
