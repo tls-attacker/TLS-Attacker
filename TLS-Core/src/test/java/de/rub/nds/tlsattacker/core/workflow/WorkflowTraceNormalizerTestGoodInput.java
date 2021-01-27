@@ -147,8 +147,8 @@ public class WorkflowTraceNormalizerTestGoodInput {
 
         try {
             trace =
-                WorkflowTraceSerializer.read(
-                    new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8.name())), traceInputXml);
+                WorkflowTraceSerializer.read(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8
+                    .name())));
         } catch (JAXBException | IOException | XMLStreamException | DataBindingException ex) {
             LOGGER.error("Could not load workflow trace from test file " + testVectorPath + ": " + ex);
         }

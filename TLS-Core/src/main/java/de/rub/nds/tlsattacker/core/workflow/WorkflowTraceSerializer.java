@@ -144,8 +144,7 @@ public class WorkflowTraceSerializer {
      * @throws XMLStreamException
      * If there is a Problem with the XML Stream
      */
-    public static WorkflowTrace read(InputStream inputStream, String filename) throws JAXBException, IOException,
-        XMLStreamException {
+    public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         try {
             context = getJAXBContext();
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -153,26 +152,8 @@ public class WorkflowTraceSerializer {
             unmarshaller.setEventHandler(new ValidationEventHandler() {
                 @Override
                 public boolean handleEvent(ValidationEvent event) {
-                    int severity = event.getSeverity();
-                    String severityName;
-                    switch (severity) {
-                        case 0:
-                            severityName = "WARNING";
-                            break;
-                        case 1:
-                            severityName = "ERROR";
-                            break;
-                        case 2:
-                            severityName = "FATAL_ERROR";
-                            break;
-                        default:
-                            severityName = "UNKNOWN";
-                    }
-                    LOGGER.warn("Parsing error in the given configuration \n" + "Severity: " + severityName + "\n"
-                        + "Message: " + event.getMessage() + "\n" + "Related Exception: " + event.getLinkedException()
-                        + "\n" + "Line/Column: " + event.getLocator().getLineNumber() + "/"
-                        + event.getLocator().getColumnNumber() + "\n" + "File: " + filename);
-                    return true;
+                    // raise an Exception also on Warnings
+                    return false;
                 }
             });
 
@@ -204,7 +185,7 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try {
-                    trace = WorkflowTraceSerializer.read(new FileInputStream(file), f.getName());
+                    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {

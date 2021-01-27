@@ -68,7 +68,7 @@ public class WorkflowTrace implements Serializable {
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
-            copy = WorkflowTraceSerializer.read(is, "no filename, error while" + " copying");
+            copy = WorkflowTraceSerializer.read(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
         }

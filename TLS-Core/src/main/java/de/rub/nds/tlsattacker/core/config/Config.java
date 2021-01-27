@@ -118,7 +118,7 @@ public class Config implements Serializable {
             return DEFAULT_CONFIG_CACHE.getCachedCopy();
         }
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
-        return ConfigIO.read(stream, DEFAULT_CONFIG_FILE);
+        return ConfigIO.read(stream);
 
     }
 
@@ -127,12 +127,12 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream, String fileName) {
-        Config config = ConfigIO.read(stream, fileName);
+        Config config = ConfigIO.read(stream);
         try {
             stream.close();
         } catch (IOException ex) {
             LOGGER.warn("Could not close resource Stream!", ex);
-            return ConfigIO.read(stream, fileName);
+            return ConfigIO.read(stream);
         }
         return config;
     }
@@ -1548,7 +1548,7 @@ public class Config implements Serializable {
     public Config createCopy() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ConfigIO.write(this, stream);
-        return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()), "no filename, error while" + " copying");
+        return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
 
     public CertificateType getDefaultSelectedServerCertificateType() {

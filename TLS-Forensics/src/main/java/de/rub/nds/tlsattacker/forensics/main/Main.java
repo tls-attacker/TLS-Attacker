@@ -52,8 +52,7 @@ public class Main {
             // Cmd was parsable
             try {
                 String workflowFile = config.getWorkflowInput();
-                WorkflowTrace trace =
-                    WorkflowTraceSerializer.read(new FileInputStream(new File(workflowFile)), workflowFile);
+                WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(new File(workflowFile)));
                 ForensicAnalyzer analyzer = new ForensicAnalyzer();
                 BigInteger rsaPrivateKey = null;
                 if (config.getKeyFile() != null) {

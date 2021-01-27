@@ -86,7 +86,7 @@ public class WorkflowTraceSerializerTest {
         String serializedWorkflow = new String(os.toByteArray());
 
         ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
-        WorkflowTrace wt = WorkflowTraceSerializer.read(bis, "no filename, error while" + " copying");
+        WorkflowTrace wt = WorkflowTraceSerializer.read(bis);
 
         os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);

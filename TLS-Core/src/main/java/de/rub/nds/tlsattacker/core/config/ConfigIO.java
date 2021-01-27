@@ -89,45 +89,54 @@ public class ConfigIO {
 
     public static Config read(File f) {
         try {
-            return read(new FileInputStream(f), f.getName());
+            Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
+            // output any anomalies in the given config file
+            unmarshaller.setEventHandler(new ValidationEventHandler() {
+                @Override
+                public boolean handleEvent(ValidationEvent event) {
+                    // Raise an exception also on warnings
+                    return false;
+                }
+            });
+            return read(new FileInputStream(f), unmarshaller);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("File cannot be found");
         }
     }
 
-    public static Config read(InputStream stream, String filename) {
-        if (stream == null) {
-            throw new IllegalArgumentException("Stream cannot be null");
-        }
+    public static Config read(InputStream stream) {
         try {
             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
             // output any anomalies in the given config file
             unmarshaller.setEventHandler(new ValidationEventHandler() {
                 @Override
                 public boolean handleEvent(ValidationEvent event) {
-                    int severity = event.getSeverity();
-                    String severityName;
-                    switch (severity) {
-                        case 0:
-                            severityName = "WARNING";
-                            break;
-                        case 1:
-                            severityName = "ERROR";
-                            break;
-                        case 2:
-                            severityName = "FATAL_ERROR";
-                            break;
-                        default:
-                            severityName = "UNKNOWN";
-                    }
-                    LOGGER.warn("Parsing error in the given configuration \n" + "Severity: " + severityName + "\n"
-                        + "Message: " + event.getMessage() + "\n" + "Related Exception: " + event.getLinkedException()
-                        + "\n" + "Line/Column: " + event.getLocator().getLineNumber() + "/"
-                        + event.getLocator().getColumnNumber() + "\n" + "File: " + filename);
-                    return true;
+                    // Raise an exception also on warnings
+                    return false;
                 }
             });
+            return read(stream, unmarshaller);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    /**
+     * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
+     * 
+     * @param stream
+     * The stream that provides the XML structure
+     * @param unmarshaller
+     * The unmarshaller that will be used during the parsing
+     * @return Config a new Config that contains the parsed values from the inputStream
+     */
+    private static Config read(InputStream stream, Unmarshaller unmarshaller) {
+        if (stream == null) {
+            throw new IllegalArgumentException("Stream cannot be null");
+        }
+        try {
             String xsd_source = ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
@@ -143,14 +152,12 @@ public class ConfigIO {
         } catch (XMLStreamException | SAXException | JAXBException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static Config copy(Config config) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ConfigIO.write(config, byteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), "no filename, error while"
-            + " copying");
+        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
     private ConfigIO() {

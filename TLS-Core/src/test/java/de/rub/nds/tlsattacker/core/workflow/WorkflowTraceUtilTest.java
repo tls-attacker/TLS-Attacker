@@ -358,7 +358,7 @@ public class WorkflowTraceUtilTest {
         InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_default_alias.xml");
 
         try {
-            trace = WorkflowTraceSerializer.read(stream, "/test_good_workflow_trace_default_alias.xml");
+            trace = WorkflowTraceSerializer.read(stream);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             fail();
         }
