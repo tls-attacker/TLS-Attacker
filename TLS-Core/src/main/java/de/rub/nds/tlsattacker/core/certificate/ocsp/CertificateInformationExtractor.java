@@ -27,6 +27,7 @@ import de.rub.nds.asn1.parser.Asn1Parser;
 import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.SIGNED_CERTIFICATE_TIMESTAMP_LIST;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.io.ByteArrayInputStream;
@@ -45,6 +46,7 @@ public class CertificateInformationExtractor {
     private List<Asn1Encodable> x509ExtensionSequences;
     private Asn1Sequence authorityInfoAccessEntities;
     private Asn1Sequence tlsFeatureExtension;
+    private Asn1Sequence precertificateSctListExtension;
     private Boolean mustStaple;
     private Boolean mustStaplev2;
     private String ocspServerUrl;
@@ -109,6 +111,13 @@ public class CertificateInformationExtractor {
         }
 
         return certificateIssuerUrl;
+    }
+
+    public Asn1Sequence getPrecertificateSCTs() throws IOException, ParserException {
+        if (precertificateSctListExtension == null) {
+            extractPrecertificateSCTs();
+        }
+        return precertificateSctListExtension;
     }
 
     private void extractX509Extensions() throws IOException, ParserException {
@@ -185,6 +194,25 @@ public class CertificateInformationExtractor {
                 // defines the TLS feature X.509 extension
                 if (objectIdentifier.getValue().equals(TLS_FEATURE.getOID())) {
                     tlsFeatureExtension = (Asn1Sequence) enc;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void extractPrecertificateSCTs() throws IOException, ParserException {
+        if (x509ExtensionSequences == null) {
+            extractX509Extensions();
+        }
+
+        // Search for X.509 'Signed Certificate Timestamp List' extension
+        for (Asn1Encodable enc : x509ExtensionSequences) {
+            if (enc instanceof Asn1Sequence) {
+                Asn1ObjectIdentifier objectIdentifier =
+                    (Asn1ObjectIdentifier) (((Asn1Sequence) enc).getChildren().get(0));
+
+                if (objectIdentifier.getValue().equals(SIGNED_CERTIFICATE_TIMESTAMP_LIST.getOID())) {
+                    precertificateSctListExtension = (Asn1Sequence) enc;
                     break;
                 }
             }

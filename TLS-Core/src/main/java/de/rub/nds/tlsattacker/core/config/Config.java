@@ -86,6 +86,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
@@ -126,7 +127,7 @@ public class Config implements Serializable {
         return ConfigIO.read(f);
     }
 
-    public static Config createConfig(InputStream stream, String fileName) {
+    public static Config createConfig(InputStream stream) {
         Config config = ConfigIO.read(stream);
         try {
             stream.close();
@@ -1170,6 +1171,12 @@ public class Config implements Serializable {
 
     private Boolean httpsParsingEnabled = false;
 
+    /**
+     * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
+     * or httpsParsing is disabled
+     */
+    private String defaultHttpsRequestPath = "/";
+
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
@@ -1460,7 +1467,7 @@ public class Config implements Serializable {
 
     /**
      * Returns a list of all fields in which the two given configs differ in content (uses .equal())
-     * 
+     *
      * @param config1
      * The first config to be compared
      * @param config2
@@ -1637,6 +1644,14 @@ public class Config implements Serializable {
 
     public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
+    }
+
+    public String getDefaultHttpsRequestPath() {
+        return defaultHttpsRequestPath;
+    }
+
+    public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
+        this.defaultHttpsRequestPath = defaultHttpsRequestPath;
     }
 
     public Boolean isUseFreshRandom() {
