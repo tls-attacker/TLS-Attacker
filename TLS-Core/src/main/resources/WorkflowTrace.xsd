@@ -806,6 +806,7 @@
                   <xs:element name="PWDProtect" type="pwdProtectExtensionMessage"/>
                   <xs:element name="PasswordSalt" type="passwordSaltExtensionMessage"/>
                   <xs:element name="CachedInfoExtension" type="cachedInfoExtensionMessage"/>
+                  <xs:element name="CookieExtension" type="cookieExtensionMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
                 </xs:choice>
               </xs:sequence>
@@ -1571,6 +1572,17 @@
           <xs:element name="hashValue" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="hashValueConfig" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="hashValueLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cookieExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

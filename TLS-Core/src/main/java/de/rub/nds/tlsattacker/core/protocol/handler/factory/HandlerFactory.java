@@ -65,6 +65,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EcPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
@@ -273,6 +274,8 @@ public class HandlerFactory {
                     return new PWDClearExtensionHandler(context);
                 case PASSWORD_SALT:
                     return new PasswordSaltExtensionHandler(context);
+                case COOKIE:
+                    return new CookieExtensionHandler(context);
                 case GREASE_00:
                 case GREASE_01:
                 case GREASE_02:

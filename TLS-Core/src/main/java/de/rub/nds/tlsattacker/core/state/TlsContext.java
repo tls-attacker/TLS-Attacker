@@ -252,6 +252,8 @@ public class TlsContext {
 
     private byte[] dtlsCookie;
 
+    private byte[] extensionCookie;
+
     private ProtocolVersion selectedProtocolVersion;
 
     private ProtocolVersion highestClientProtocolVersion;
@@ -2495,5 +2497,13 @@ public class TlsContext {
 
     public void setLastClientHello(byte[] lastClientHello) {
         this.lastClientHello = lastClientHello;
+    }
+
+    public byte[] getExtensionCookie() {
+        return extensionCookie;
+    }
+
+    public void setExtensionCookie(byte[] extensionCookie) {
+        this.extensionCookie = extensionCookie;
     }
 }
