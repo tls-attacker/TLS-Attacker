@@ -9,6 +9,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -62,7 +63,9 @@ public class RecordDecryptor extends Decryptor {
             recordCipher = getRecordMostRecentCipher();
         }
         record.prepareComputations();
-        record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+        if (!ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue()).isDTLS()) {
+            record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+        }
         try {
             recordCipher.decrypt(record);
         } catch (CryptoException | ParserException ex) {
