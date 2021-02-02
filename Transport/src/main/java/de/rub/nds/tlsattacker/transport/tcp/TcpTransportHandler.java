@@ -48,6 +48,9 @@ public abstract class TcpTransportHandler extends TransportHandler {
      */
     public SocketState getSocketState(boolean withTimeout) {
         try {
+            if (inStream == null) {
+                return SocketState.UNAVAILABLE;
+            }
             if (inStream.available() > 0) {
                 return SocketState.DATA_AVAILABLE;
             }
@@ -82,9 +85,9 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public abstract Integer getSrcPort();
 
-    public abstract Integer getDstPort();
-
     public abstract void setSrcPort(int port);
+
+    public abstract Integer getDstPort();
 
     public abstract void setDstPort(int port);
 }

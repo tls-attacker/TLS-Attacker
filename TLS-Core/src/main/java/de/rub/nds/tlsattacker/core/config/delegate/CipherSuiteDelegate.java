@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.CipherSuiteConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +21,7 @@ import java.util.List;
 public class CipherSuiteDelegate extends Delegate {
 
     @Parameter(names = "-cipher", description = "TLS cipher suites to use, divided by a comma, e.g. "
-        + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
+        + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA")
     private List<CipherSuite> cipherSuites = null;
 
     public CipherSuiteDelegate() {

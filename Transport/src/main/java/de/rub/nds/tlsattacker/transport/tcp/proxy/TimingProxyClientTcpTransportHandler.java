@@ -30,6 +30,20 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     protected int proxyControlPort = 5555;
     protected Long measurement = null;
 
+    public TimingProxyClientTcpTransportHandler(Connection connection) {
+        super(connection);
+        this.proxyDataHostName = connection.getProxyDataHostname();
+        this.proxyDataPort = connection.getProxyDataPort();
+        this.proxyControlHostName = connection.getProxyControlHostname();
+        this.proxyControlPort = connection.getProxyControlPort();
+        setIsInStreamTerminating(false);
+    }
+
+    public TimingProxyClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+        super(firstTimeout, timeout, hostname, port);
+        setIsInStreamTerminating(false);
+    }
+
     @Override
     public byte[] fetchData() throws IOException {
         byte[] data = super.fetchData();
@@ -43,20 +57,6 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
 
         }
         return data;
-    }
-
-    public TimingProxyClientTcpTransportHandler(Connection connection) {
-        super(connection);
-        this.proxyDataHostName = connection.getProxyDataHostname();
-        this.proxyDataPort = connection.getProxyDataPort();
-        this.proxyControlHostName = connection.getProxyControlHostname();
-        this.proxyControlPort = connection.getProxyControlPort();
-        setIsInStreamTerminating(false);
-    }
-
-    public TimingProxyClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
-        super(firstTimeout, timeout, hostname, port);
-        setIsInStreamTerminating(false);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
 
         /* tell the proxy where the real server is */
         controlSocket.getOutputStream().write((hostname + "\n").getBytes());
-        controlSocket.getOutputStream().write((Integer.toString(serverPort) + "\n").getBytes());
+        controlSocket.getOutputStream().write((serverPort + "\n").getBytes());
         controlSocket.getOutputStream().flush();
     }
 

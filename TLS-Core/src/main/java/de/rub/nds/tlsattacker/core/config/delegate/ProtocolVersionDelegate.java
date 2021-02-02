@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.ProtocolVersionConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -20,8 +19,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 public class ProtocolVersionDelegate extends Delegate {
 
-    @Parameter(names = "-version", description = "Highest supported protocol version ",
-        converter = ProtocolVersionConverter.class)
+    @Parameter(names = "-version", description = "Highest supported protocol version ")
     private ProtocolVersion protocolVersion = null;
 
     public ProtocolVersionDelegate() {
