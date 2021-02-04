@@ -19,6 +19,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
@@ -27,6 +28,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 public class Record extends AbstractRecord {
@@ -215,6 +217,15 @@ public class Record extends AbstractRecord {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (computations != null) {
+            holders.add(computations);
+        }
+        return holders;
     }
 
 }

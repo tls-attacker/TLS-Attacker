@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -28,6 +29,10 @@ public class PWDClearExtensionMessage extends ExtensionMessage {
     private ModifiableString username;
 
     public PWDClearExtensionMessage() {
+        super(ExtensionType.PWD_CLEAR);
+    }
+
+    public PWDClearExtensionMessage(Config config) {
         super(ExtensionType.PWD_CLEAR);
     }
 

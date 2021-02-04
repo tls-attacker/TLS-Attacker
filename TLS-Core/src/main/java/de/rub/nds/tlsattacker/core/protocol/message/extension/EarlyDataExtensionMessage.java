@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -30,6 +31,10 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
     public EarlyDataExtensionMessage(boolean newSessionTicketExtension) {
         super(ExtensionType.EARLY_DATA);
         this.newSessionTicketExtension = newSessionTicketExtension;
+    }
+
+    public EarlyDataExtensionMessage(Config config) {
+        super(ExtensionType.EARLY_DATA);
     }
 
     /**

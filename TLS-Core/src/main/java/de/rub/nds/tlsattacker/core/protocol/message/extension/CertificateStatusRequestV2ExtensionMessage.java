@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import java.util.List;
@@ -32,6 +33,10 @@ public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage
     ModifiableByteArray statusRequestBytes;
 
     public CertificateStatusRequestV2ExtensionMessage() {
+        super(ExtensionType.STATUS_REQUEST_V2);
+    }
+
+    public CertificateStatusRequestV2ExtensionMessage(Config config) {
         super(ExtensionType.STATUS_REQUEST_V2);
     }
 

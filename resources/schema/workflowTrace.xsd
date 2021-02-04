@@ -532,7 +532,7 @@
 
   <xs:complexType name="byteArrayXorModification">
     <xs:sequence>
-      <xs:element name="xor" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="xor" type="xs:string" minOccurs="0"/>
       <xs:element name="startPosition" type="xs:int"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
@@ -540,16 +540,16 @@
 
   <xs:complexType name="byteArrayShuffleModification">
     <xs:sequence>
-      <xs:element name="shuffle" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="shuffle" type="xs:string" minOccurs="0"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="byteArrayPayloadModification">
     <xs:sequence>
-      <xs:element name="prependPayload" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="payload" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="appendPayload" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="prependPayload" type="xs:string" minOccurs="0"/>
+      <xs:element name="payload" type="xs:string" minOccurs="0"/>
+      <xs:element name="appendPayload" type="xs:string" minOccurs="0"/>
       <xs:element name="insert" type="xs:boolean"/>
       <xs:element name="insertPosition" type="xs:int"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
@@ -558,7 +558,7 @@
 
   <xs:complexType name="byteArrayInsertModification">
     <xs:sequence>
-      <xs:element name="bytesToInsert" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="bytesToInsert" type="xs:string" minOccurs="0"/>
       <xs:element name="startPosition" type="xs:int"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
@@ -566,7 +566,7 @@
 
   <xs:complexType name="byteArrayExplicitValueModification">
     <xs:sequence>
-      <xs:element name="explicitValue" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -692,7 +692,6 @@
 
   <xs:complexType name="modifiableByteArray">
     <xs:sequence>
-      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
       <xs:choice minOccurs="0">
         <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
         <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
@@ -726,8 +725,8 @@
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
+      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -2617,25 +2616,29 @@
   </xs:complexType>
 
   <xs:complexType name="recordCryptoComputations">
-    <xs:sequence>
-      <xs:element name="additionalPaddingLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="aeadSalt" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="authenticatedMetaData" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="authenticatedNonMetaData" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="authenticationTag" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="authenticationTagValid" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="cbcInitialisationVector" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="cipherKey" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="ciphertext" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="explicitNonce" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="gcmNonce" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="mac" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="macKey" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="macValid" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="additionalPaddingLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="aeadSalt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticatedMetaData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticatedNonMetaData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticationTag" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticationTagValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="cbcInitialisationVector" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cipherKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ciphertext" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="explicitNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="gcmNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="mac" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="macKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="macValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="blobRecord">

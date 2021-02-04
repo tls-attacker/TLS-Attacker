@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,6 +31,10 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
+        super(ExtensionType.EC_POINT_FORMATS);
+    }
+
+    public ECPointFormatExtensionMessage(Config config) {
         super(ExtensionType.EC_POINT_FORMATS);
     }
 

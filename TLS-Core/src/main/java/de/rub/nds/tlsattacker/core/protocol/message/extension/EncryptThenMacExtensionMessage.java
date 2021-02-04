@@ -10,6 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -18,6 +19,10 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 
     public EncryptThenMacExtensionMessage() {
+        super(ExtensionType.ENCRYPT_THEN_MAC);
+    }
+
+    public EncryptThenMacExtensionMessage(Config configF) {
         super(ExtensionType.ENCRYPT_THEN_MAC);
     }
 

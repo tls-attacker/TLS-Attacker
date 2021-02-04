@@ -121,8 +121,13 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
-                    .getBytes(Charset.forName("ASCII")));
+                if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
+                    pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
+                        .getBytes(Charset.forName("ASCII")));
+                } else {
+                    LOGGER.warn("SNI not correctly configured!");
+                    pair.setServerName(new byte[0]);
+                }
                 pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
@@ -132,7 +137,13 @@ public class ClientHelloMessage extends HelloMessage {
                     new EncryptedServerNameIndicationExtensionMessage();
                 String hostname = tlsConfig.getDefaultClientConnection().getHostname();
                 ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
+                if (hostname != null) {
+                    pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
+                        .getBytes(Charset.forName("ASCII")));
+                } else {
+                    LOGGER.warn("SNI not correctly configured!");
+                    pair.setServerName(new byte[0]);
+                }
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }

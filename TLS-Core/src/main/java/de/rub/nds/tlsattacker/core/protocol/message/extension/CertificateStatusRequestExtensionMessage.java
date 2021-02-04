@@ -15,6 +15,7 @@ import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetV
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -37,7 +38,6 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
      * As a TLS 1.3 CertificateEntry extension, this extension uses the format of a CertificateStatus message. If this
      * is the case, let's have the same fields as such a message.
      */
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificateStatusType;
 
@@ -48,6 +48,10 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray ocspResponseBytes;
 
     public CertificateStatusRequestExtensionMessage() {
+        super(ExtensionType.STATUS_REQUEST);
+    }
+
+    public CertificateStatusRequestExtensionMessage(Config config) {
         super(ExtensionType.STATUS_REQUEST);
     }
 

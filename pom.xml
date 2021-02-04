@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
@@ -8,12 +8,12 @@
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
-    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/). </description>
+    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (https://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (https://hackmanit.de/). </description>
 
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -41,9 +41,9 @@
             <id>jsomorovsky</id>
             <name>Juraj Somorovsky</name>
             <email>Juraj.Somorovsky@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Architect</role>
                 <role>Developer</role>
@@ -53,9 +53,9 @@
             <id>ic0ns</id>
             <name>Robert Merget</name>
             <email>robert.merget@rub.de</email>
-            <url>http://www.nds.rub.de/</url>
+            <url>https://www.nds.rub.de/</url>
             <organization>NDS</organization>
-            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <organizationUrl>https://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -476,7 +476,6 @@
             </plugin>
         </plugins>
     </reporting>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

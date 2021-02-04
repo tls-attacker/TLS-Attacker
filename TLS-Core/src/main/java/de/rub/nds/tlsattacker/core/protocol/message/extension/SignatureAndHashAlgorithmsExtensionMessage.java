@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  * This extension is defined in RFC5246
@@ -28,6 +29,10 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
+        super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
+    }
+
+    public SignatureAndHashAlgorithmsExtensionMessage(Config config) {
         super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
     }
 

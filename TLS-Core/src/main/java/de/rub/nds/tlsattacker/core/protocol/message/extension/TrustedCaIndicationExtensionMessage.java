@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import java.util.List;
@@ -29,6 +30,10 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray trustedAuthoritiesBytes;
 
     public TrustedCaIndicationExtensionMessage() {
+        super(ExtensionType.TRUSTED_CA_KEYS);
+    }
+
+    public TrustedCaIndicationExtensionMessage(Config config) {
         super(ExtensionType.TRUSTED_CA_KEYS);
     }
 

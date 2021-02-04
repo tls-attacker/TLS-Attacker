@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -30,6 +31,10 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage {
     private ModifiableBoolean isClientMessage;
 
     public CertificateTypeExtensionMessage() {
+        super(ExtensionType.CERT_TYPE);
+    }
+
+    public CertificateTypeExtensionMessage(Config config) {
         super(ExtensionType.CERT_TYPE);
     }
 

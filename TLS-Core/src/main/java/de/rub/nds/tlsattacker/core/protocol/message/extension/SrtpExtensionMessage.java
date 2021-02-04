@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -22,15 +23,19 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class SrtpExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    ModifiableByteArray srtpProtectionProfiles;
+    private ModifiableByteArray srtpProtectionProfiles;
     @ModifiableVariableProperty
-    ModifiableInteger srtpProtectionProfilesLength; // 2 Byte
+    private ModifiableInteger srtpProtectionProfilesLength; // 2 Byte
     @ModifiableVariableProperty
-    ModifiableByteArray srtpMki; // SRTP Master Key Identifier
+    private ModifiableByteArray srtpMki; // SRTP Master Key Identifier
     @ModifiableVariableProperty
-    ModifiableInteger srtpMkiLength; // 1 Byte
+    private ModifiableInteger srtpMkiLength; // 1 Byte
 
     public SrtpExtensionMessage() {
+        super(ExtensionType.USE_SRTP);
+    }
+
+    public SrtpExtensionMessage(Config config) {
         super(ExtensionType.USE_SRTP);
     }
 

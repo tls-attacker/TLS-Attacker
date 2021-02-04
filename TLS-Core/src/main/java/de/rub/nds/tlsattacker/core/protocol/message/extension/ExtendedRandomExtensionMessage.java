@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -29,6 +30,10 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
     private ModifiableInteger extendedRandomLength;
 
     public ExtendedRandomExtensionMessage() {
+        super(ExtensionType.EXTENDED_RANDOM);
+    }
+
+    public ExtendedRandomExtensionMessage(Config config) {
         super(ExtensionType.EXTENDED_RANDOM);
     }
 

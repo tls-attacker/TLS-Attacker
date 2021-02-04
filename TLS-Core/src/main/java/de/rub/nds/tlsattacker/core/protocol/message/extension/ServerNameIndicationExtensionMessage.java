@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -36,6 +37,11 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     private List<ServerNamePair> serverNameList;
 
     public ServerNameIndicationExtensionMessage() {
+        super(ExtensionType.SERVER_NAME_INDICATION);
+        serverNameList = new LinkedList<>();
+    }
+
+    public ServerNameIndicationExtensionMessage(Config config) {
         super(ExtensionType.SERVER_NAME_INDICATION);
         serverNameList = new LinkedList<>();
     }

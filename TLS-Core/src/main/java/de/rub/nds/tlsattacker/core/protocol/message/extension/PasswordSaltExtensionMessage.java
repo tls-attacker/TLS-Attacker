@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -28,6 +29,10 @@ public class PasswordSaltExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray salt;
 
     public PasswordSaltExtensionMessage() {
+        super(ExtensionType.PASSWORD_SALT);
+    }
+
+    public PasswordSaltExtensionMessage(Config config) {
         super(ExtensionType.PASSWORD_SALT);
     }
 
