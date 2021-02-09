@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -34,7 +35,8 @@ public class CipherWrapper {
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
+            return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType),
+                AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -54,7 +56,8 @@ public class CipherWrapper {
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getReadKey(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
+            return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType),
+                AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
