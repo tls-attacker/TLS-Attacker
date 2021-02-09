@@ -177,7 +177,7 @@ public class RecordGroup {
         } else {
             List<AbstractRecord> recordList = new LinkedList<>();
             Boolean valid = null;
-            for (AbstractRecord record : recordList) {
+            for (AbstractRecord record : records) {
                 boolean tempValid = isRecordInvalid(record);
                 if (valid == null || Objects.equals(tempValid, valid)) {
                     valid = tempValid;
