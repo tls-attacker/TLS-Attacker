@@ -33,14 +33,9 @@ public class SocketOpenerCallable implements Callable<Socket> {
     public Socket call() throws Exception {
         while (true) {
             Socket socket = new Socket();
-            try {
-                socket.connect(new InetSocketAddress(host, port));
-                if (socket.isConnected()) {
-                    return socket;
-                }
-            } catch (IOException e) {
-                LOGGER.debug(e);
-                return null;
+            socket.connect(new InetSocketAddress(host, port));
+            if (socket.isConnected()) {
+                return socket;
             }
         }
     }
