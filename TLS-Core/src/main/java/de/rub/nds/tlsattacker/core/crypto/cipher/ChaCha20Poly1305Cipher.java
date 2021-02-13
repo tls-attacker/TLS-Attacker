@@ -76,7 +76,8 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext) {
+    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] ciphertext)
+        throws CryptoException {
         this.cipher.init(false, new ParametersWithIV(new KeyParameter(this.key, 0, this.key.length),
             new byte[(tagLength / Bits.IN_A_BYTE) - 1], 0, iv.length));
         int additionalDataLength = additionalAuthenticatedData.length;
@@ -108,7 +109,8 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
         byte[] receivedMAC = Arrays.copyOfRange(ciphertext, ciphertextLength, ciphertext.length);
         if (!Arrays.areEqual(calculatedMAC, receivedMAC)) {
-            LOGGER.warn("MAC verification failed, continuing anyways.");
+            LOGGER.warn("MAC verification failed");
+            throw new CryptoException();
         }
         this.cipher.processBytes(ciphertext, 0, ciphertextLength, plaintext, 0);
 
