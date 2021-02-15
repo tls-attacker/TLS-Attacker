@@ -120,6 +120,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                             break;
                         }
                     }
+                    retransmissions++;
                     // Merke Action mit Fehler
                     errorAction = i;
                     exec_err = true;
