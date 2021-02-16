@@ -454,6 +454,8 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
+    private boolean receivedMessageWithWrongTls13KeyType = false;
+
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -2505,5 +2507,13 @@ public class TlsContext {
 
     public void setExtensionCookie(byte[] extensionCookie) {
         this.extensionCookie = extensionCookie;
+    }
+
+    public boolean isReceivedMessageWithWrongTls13KeyType() {
+        return receivedMessageWithWrongTls13KeyType;
+    }
+
+    public void setReceivedMessageWithWrongTls13KeyType(boolean receivedMessageWithWrongTls13KeyType) {
+        this.receivedMessageWithWrongTls13KeyType = receivedMessageWithWrongTls13KeyType;
     }
 }

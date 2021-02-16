@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.record;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -90,6 +91,8 @@ public class RecordCryptoComputations implements Serializable {
     private Boolean macValid = null;
 
     private Boolean authenticationTagValid = null;
+
+    private Tls13KeySetType usedTls13KeySetType = Tls13KeySetType.NONE;
 
     public RecordCryptoComputations() {
     }
@@ -381,6 +384,14 @@ public class RecordCryptoComputations implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public Tls13KeySetType getUsedTls13KeySetType() {
+        return usedTls13KeySetType;
+    }
+
+    public void setUsedTls13KeySetType(Tls13KeySetType usedTls13KeySetType) {
+        this.usedTls13KeySetType = usedTls13KeySetType;
     }
 
 }

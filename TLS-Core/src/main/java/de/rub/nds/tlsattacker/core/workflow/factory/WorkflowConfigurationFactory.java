@@ -702,7 +702,7 @@ public class WorkflowConfigurationFactory {
 
         MessageAction newSessionTicketAction =
             MessageActionFactory.createAction(config, ourConnection, ConnectionEndType.SERVER,
-                new NewSessionTicketMessage(false));
+                new NewSessionTicketMessage(config, false));
         if (newSessionTicketAction instanceof ReceiveAction) {
             newSessionTicketAction.getActionOptions().add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
         }
