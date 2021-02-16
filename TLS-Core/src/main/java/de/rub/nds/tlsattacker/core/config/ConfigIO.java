@@ -19,11 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXB;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-import org.xml.sax.SAXException;
 
 public class ConfigIO {
 
@@ -37,10 +34,9 @@ public class ConfigIO {
 
     public static void write(Config config, OutputStream os) {
         ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
-
         JAXB.marshal(config, tempStream);
         try {
-            os.write(new String(tempStream.toByteArray()).getBytes());
+            os.write(new String(tempStream.toByteArray()).getBytes(StandardCharsets.ISO_8859_1));
         } catch (IOException ex) {
             throw new RuntimeException("Could not format XML");
         }

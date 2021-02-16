@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -342,6 +343,7 @@ public class Config implements Serializable {
      */
     private List<String> defaultProposedAlpnProtocols;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
 
     /**
@@ -568,11 +570,13 @@ public class Config implements Serializable {
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieName = "tls-attacker";
 
     /**
      * Default cookie value to use if addHttpsCookie is true.
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsCookieValue = "42130912812";
 
     /**
@@ -818,6 +822,7 @@ public class Config implements Serializable {
 
     private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultApplicationMessageData = "Test";
 
     private List<ClientCertificateType> clientCertificateTypes;
@@ -1109,6 +1114,7 @@ public class Config implements Serializable {
      * or httpsParsing is disabled
      */
     @XmlElement(name = "defaultHttpsRequestPath")
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
@@ -1156,6 +1162,7 @@ public class Config implements Serializable {
     /**
      * Use username from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultClientPWDUsername = "fred";
 
     /**
@@ -1176,6 +1183,7 @@ public class Config implements Serializable {
     /**
      * Use password from the example of RFC8492
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
     /**

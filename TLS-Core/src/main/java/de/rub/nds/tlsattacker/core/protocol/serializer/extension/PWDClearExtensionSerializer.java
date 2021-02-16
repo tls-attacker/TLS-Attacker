@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +40,7 @@ public class PWDClearExtensionSerializer extends ExtensionSerializer<PWDClearExt
     }
 
     private void writeUsername(PWDClearExtensionMessage msg) {
-        appendBytes(msg.getUsername().getValue().getBytes());
+        appendBytes(msg.getUsername().getValue().getBytes(StandardCharsets.ISO_8859_1));
         LOGGER.debug("Username: " + msg.getUsername().getValue());
     }
 }

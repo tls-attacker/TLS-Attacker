@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
 
@@ -803,7 +804,7 @@ public class DefaultChooser extends Chooser {
         if (context.getLastHandledApplicationMessageData() != null) {
             return copy(context.getLastHandledApplicationMessageData());
         } else {
-            return config.getDefaultApplicationMessageData().getBytes();
+            return config.getDefaultApplicationMessageData().getBytes(StandardCharsets.ISO_8859_1);
         }
     }
 

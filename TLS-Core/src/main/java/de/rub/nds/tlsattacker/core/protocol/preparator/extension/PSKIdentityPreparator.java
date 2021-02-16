@@ -52,16 +52,22 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
 
     private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime ticketDate = LocalDateTime.parse(ticketAge, dateTimeFormatter);
-        BigInteger difference = BigInteger.valueOf(Duration.between(ticketDate, LocalDateTime.now()).toMillis());
-        BigInteger addValue = BigInteger.valueOf(ArrayConverter.bytesToLong(ticketAgeAdd));
-        BigInteger mod = BigInteger.valueOf(2).pow(32);
-        difference = difference.add(addValue);
-        difference = difference.mod(mod);
-        byte[] obfTicketAge = ArrayConverter.longToBytes(difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
+        try {
+            LocalDateTime ticketDate = LocalDateTime.parse(ticketAge, dateTimeFormatter);
+            BigInteger difference = BigInteger.valueOf(Duration.between(ticketDate, LocalDateTime.now()).toMillis());
+            BigInteger addValue = BigInteger.valueOf(ArrayConverter.bytesToLong(ticketAgeAdd));
+            BigInteger mod = BigInteger.valueOf(2).pow(32);
+            difference = difference.add(addValue);
+            difference = difference.mod(mod);
+            byte[] obfTicketAge =
+                ArrayConverter.longToBytes(difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
 
-        LOGGER.debug("Calculated ObfuscatedTicketAge: " + ArrayConverter.bytesToHexString(obfTicketAge));
-        return obfTicketAge;
+            LOGGER.debug("Calculated ObfuscatedTicketAge: " + ArrayConverter.bytesToHexString(obfTicketAge));
+            return obfTicketAge;
+        } catch (Exception e) {
+            LOGGER.warn("Could not parse ticketAge: " + ticketAge + " - Using empty obfuscated ticket age instead", e);
+            return new byte[0];
+        }
     }
 
 }

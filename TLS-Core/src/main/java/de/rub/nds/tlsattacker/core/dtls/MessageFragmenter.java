@@ -10,13 +10,10 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.util.Arrays;
@@ -34,6 +31,10 @@ public class MessageFragmenter {
 
     /**
      * Takes a message and splits it into prepared fragments.
+     * 
+     * @param message
+     * @param context
+     * @return
      */
     public List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer =
@@ -46,6 +47,10 @@ public class MessageFragmenter {
 
     /**
      * Generates a single fragment carrying the contents of the message as payload.
+     * 
+     * @param message
+     * @param context
+     * @return
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer =

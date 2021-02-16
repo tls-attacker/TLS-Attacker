@@ -213,9 +213,13 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
             LOGGER.warn("Something going wrong here...");
         }
         msg.getComputations().setEncryptedKey(cek);
-
-        byte[] mac = new byte[wrapped.length - cek.length];
-        System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+        byte[] mac;
+        if (wrapped.length - cek.length < 0) {
+            mac = new byte[0];
+        } else {
+            mac = new byte[wrapped.length - cek.length];
+            System.arraycopy(wrapped, cek.length, mac, 0, mac.length);
+        }
         msg.getComputations().setMacKey(mac);
     }
 

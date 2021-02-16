@@ -23,8 +23,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class JavaCipher extends BaseCipher {
+
+    private Logger LOGGER = LogManager.getLogger();
 
     private final CipherAlgorithm algorithm;
 
@@ -107,6 +111,9 @@ class JavaCipher extends BaseCipher {
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
             | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not encrypt data", ex);
+        } catch (IllegalArgumentException ex2) {
+            LOGGER.error("Could not encrypt: " + algorithm.name());
+            throw new CryptoException("Could not encrypt data", ex2);
         }
     }
 

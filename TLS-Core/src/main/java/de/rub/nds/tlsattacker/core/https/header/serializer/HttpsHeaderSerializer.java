@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.https.header.serializer;
 
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import java.nio.charset.StandardCharsets;
 
 public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
 
@@ -24,9 +25,9 @@ public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendBytes(header.getHeaderName().getValue().getBytes());
+        appendBytes(header.getHeaderName().getValue().getBytes(StandardCharsets.ISO_8859_1));
         appendBytes(": ".getBytes());
-        appendBytes(header.getHeaderValue().getValue().getBytes());
+        appendBytes(header.getHeaderValue().getValue().getBytes(StandardCharsets.ISO_8859_1));
         appendBytes("\r\n".getBytes());
         return getAlreadySerialized();
     }

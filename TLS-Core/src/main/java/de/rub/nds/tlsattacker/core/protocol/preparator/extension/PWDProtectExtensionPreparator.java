@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,7 +82,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
         SivMode aesSIV = new SivMode();
-        byte[] protectedUsername = aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes());
+        byte[] protectedUsername =
+            aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
         msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey, curve
             .getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
         LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
