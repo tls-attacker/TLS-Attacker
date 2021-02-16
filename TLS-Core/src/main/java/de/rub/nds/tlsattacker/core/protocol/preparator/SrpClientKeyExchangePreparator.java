@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,9 +45,9 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         setSRPIdentity(msg);
         setSRPPassword(msg);
 
-        clientPublicKey =
-            calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations().getModulus()
-                .getValue(), msg.getComputations().getPrivateKey().getValue());
+        clientPublicKey
+                = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations().getModulus()
+                        .getValue(), msg.getComputations().getPrivateKey().getValue());
         prepareModulus(msg);
         prepareModulusLength(msg);
         prepareGenerator(msg);
@@ -57,21 +56,26 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        premasterSecret =
-            calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg.getComputations()
-                .getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt().getValue(), msg
-                .getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword().getValue());
+        premasterSecret
+                = calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
+                        .getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg.getComputations()
+                        .getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt().getValue(), msg
+                        .getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword().getValue());
         preparePremasterSecret(msg);
         prepareClientServerRandom(msg);
     }
 
     private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
-        return generator.modPow(privateKey, modulus);
+        if (modulus.compareTo(BigInteger.ZERO) == 1) {
+            return generator.modPow(privateKey, modulus);
+        } else {
+            LOGGER.warn("Modulusis smaller than zero, using zero as the public key");
+            return BigInteger.ZERO;
+        }
     }
 
     private byte[] calculateClientPremasterSecret(BigInteger modulus, BigInteger generator, BigInteger privateKey,
-        BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt, byte[] identity, byte[] password) {
+            BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt, byte[] identity, byte[] password) {
         // PremasterSecret: (ServerPublicKey -(k * g^x))^(ClientPrivatKey +(u *
         // x)) % modulus
         BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
@@ -81,7 +85,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("Intermediate Value X" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(x)));
         BigInteger helpValue1 = generator.modPow(x, modulus);
         LOGGER.debug("Intermediate Value V"
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
         BigInteger helpValue2 = k.multiply(helpValue1);
         BigInteger helpValue3 = helpValue2.mod(modulus);
         // helpValue1 = helpValue2.subtract(serverPublicKey);
@@ -97,8 +101,8 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private byte[] calculatePremasterSecretServer(BigInteger modulus, BigInteger generator,
-        BigInteger serverPrivateKey, BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt,
-        byte[] identity, byte[] password) {
+            BigInteger serverPrivateKey, BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt,
+            byte[] identity, byte[] password) {
         // PremasterSecret: (ClientPublicKey * v^u) ^ServerPrivatKey % modulus
         BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
         LOGGER.debug("Intermediate Value U" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(u)));
@@ -113,7 +117,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("A * v^u" + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue3)));
         helpValue1 = helpValue3.modPow(serverPrivateKey, modulus);
         LOGGER.debug("PremasterSecret"
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
         return ArrayConverter.bigIntegerToByteArray(helpValue1);
     }
 
@@ -125,11 +129,11 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private BigInteger calculateU(BigInteger clientPublic, BigInteger serverPublic, BigInteger modulus) {
         byte[] paddedClientPublic = calculatePadding(modulus, clientPublic);
         LOGGER.debug("ClientPublic Key:"
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(clientPublic)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(clientPublic)));
         LOGGER.debug("PaddedClientPublic. " + ArrayConverter.bytesToHexString(paddedClientPublic));
         byte[] paddedServerPublic = calculatePadding(modulus, serverPublic);
         LOGGER.debug("ServerPublic Key:"
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(serverPublic)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(serverPublic)));
         LOGGER.debug("PaddedServerPublic. " + ArrayConverter.bytesToHexString(paddedServerPublic));
         byte[] hashInput = ArrayConverter.concatenate(paddedClientPublic, paddedServerPublic);
         LOGGER.debug("HashInput for u: " + ArrayConverter.bytesToHexString(hashInput));
@@ -200,7 +204,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void preparePublicKey(SrpClientKeyExchangeMessage msg) {
@@ -218,7 +222,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -227,10 +231,10 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             BigInteger privateKey = chooser.getSRPServerPrivateKey();
             BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
             msg.prepareComputations();
-            premasterSecret =
-                calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(), privateKey,
-                    chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
-                    chooser.getSRPIdentity(), chooser.getSRPPassword());
+            premasterSecret
+                    = calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(), privateKey,
+                            chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
+                            chooser.getSRPIdentity(), chooser.getSRPPassword());
             preparePremasterSecret(msg);
             prepareClientServerRandom(msg);
         }
