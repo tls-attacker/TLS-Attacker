@@ -190,6 +190,12 @@ public class CyclicParserSerializerTest {
                 if (version.isDTLS()) {
                     continue;
                 }
+
+                TlsContext context = new TlsContext();
+                context.setSelectedProtocolVersion(version);
+                context.getConfig().setHighestProtocolVersion(version);
+                context.getConfig().setDefaultHighestClientProtocolVersion(version);
+
                 // Trying to find equivalent preparator, message and serializer
                 try {
                     Class<? extends ProtocolMessage> protocolMessageClass = getProtocolMessage(testName);
@@ -207,10 +213,6 @@ public class CyclicParserSerializerTest {
                     }
 
                     try {
-                        TlsContext context = new TlsContext();
-                        context.setSelectedProtocolVersion(version);
-                        context.getConfig().setHighestProtocolVersion(version);
-                        context.getConfig().setDefaultHighestClientProtocolVersion(version);
                         preparator =
                             (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
                                 context.getChooser(), message);
@@ -238,8 +240,8 @@ public class CyclicParserSerializerTest {
                     byte[] serializedMessage = serializer.serialize();
                     try {
                         parser =
-                            (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
-                                serializedMessage, version);
+                            (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                                serializedMessage, version, context.getConfig());
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);
