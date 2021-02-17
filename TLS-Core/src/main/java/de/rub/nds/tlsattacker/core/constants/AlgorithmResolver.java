@@ -298,9 +298,9 @@ public class AlgorithmResolver {
             return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             if (cipher.contains("UNOFFICIAL")) {
-                return CipherAlgorithm.UNOFFICIAL_CHA_CHA_POLY1305;
+                return CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305;
             } else {
-                return CipherAlgorithm.CHA_CHA_POLY1305;
+                return CipherAlgorithm.CHA_CHA_20_POLY1305;
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
