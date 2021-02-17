@@ -12,8 +12,6 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -131,20 +129,20 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public Integer getDstPort() {
-        if (!isInitialized()) {
-            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
-        } else {
-            return socket.getPort();
-        }
-    }
-
-    @Override
     public void setSrcPort(int port) {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
         } else {
             this.port = port;
+        }
+    }
+
+    @Override
+    public Integer getDstPort() {
+        if (!isInitialized()) {
+            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+        } else {
+            return socket.getPort();
         }
     }
 

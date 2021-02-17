@@ -12,14 +12,12 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.WorkflowTraceTypeConverter;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class MitmWorkflowTypeDelegate extends Delegate {
 
     @Parameter(names = "-mitm_workflow_type",
-        description = "Type of the workflow trace (currently only SIMPLE_MITM_PROXY, RSA_SYNC_PROXY)",
-        converter = WorkflowTraceTypeConverter.class)
+        description = "Type of the workflow trace (currently only SIMPLE_MITM_PROXY, RSA_SYNC_PROXY)")
     private WorkflowTraceType workflowTraceType = WorkflowTraceType.SIMPLE_MITM_PROXY;
 
     public MitmWorkflowTypeDelegate() {

@@ -93,7 +93,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         }
 
         if (!socket.isConnected()) {
-            throw new IOException("Could not connect to " + hostname + ":" + "port");
+            throw new IOException("Could not connect to " + hostname + ":" + serverPort);
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
@@ -116,12 +116,13 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         return retryFailedSocketInitialization;
     }
 
-    @Override
-    public Integer getDstPort() {
-        return dstPort;
+    public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
+        this.retryFailedSocketInitialization = retryFailedSocketInitialization;
     }
 
     @Override
+    public Integer getDstPort() {
+        return serverPort;
     public Integer getSrcPort() {
         return srcPort;
     }
@@ -136,15 +137,16 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     }
 
     @Override
+    public Integer getSrcPort() {
+        return clientPort;
+    }
+
+    @Override
     public void setSrcPort(int clientPort) {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
         } else {
             this.srcPort = clientPort;
         }
-    }
-
-    public void setRetryFailedSocketInitialization(boolean retryFailedSocketInitialization) {
-        this.retryFailedSocketInitialization = retryFailedSocketInitialization;
     }
 }
