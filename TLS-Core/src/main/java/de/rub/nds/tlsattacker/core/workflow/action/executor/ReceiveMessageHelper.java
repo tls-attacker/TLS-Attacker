@@ -731,13 +731,13 @@ public class ReceiveMessageHelper {
 
         if (expectedKeyTypes.size() > 1) {
             return true;
-        }
-
-        for (AbstractRecord abstractRecord : recordGroup.getRecords()) {
-            if (abstractRecord instanceof Record
-                && !expectedKeyTypes.contains(((Record) abstractRecord).getComputations().getUsedTls13KeySetType())) {
-                return true;
+        } else if (expectedKeyTypes.size() == 1) {
+            for (AbstractRecord abstractRecord : recordGroup.getRecords()) {
+                if (abstractRecord instanceof Record) {
+                    expectedKeyTypes.remove(((Record) abstractRecord).getComputations().getUsedTls13KeySetType());
+                }
             }
+            return !expectedKeyTypes.isEmpty();
         }
         return false;
     }
