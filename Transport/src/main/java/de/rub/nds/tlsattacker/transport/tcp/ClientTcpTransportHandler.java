@@ -124,7 +124,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     public Integer getDstPort() {
         return dstPort;
     }
-    
+
     @Override
     public Integer getSrcPort() {
         return srcPort;
