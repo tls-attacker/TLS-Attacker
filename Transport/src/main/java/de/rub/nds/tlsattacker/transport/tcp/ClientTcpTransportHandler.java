@@ -93,7 +93,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         }
 
         if (!socket.isConnected()) {
-            throw new IOException("Could not connect to " + hostname + ":" + serverPort);
+            throw new IOException("Could not connect to " + hostname + ":" + dstPort);
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
@@ -122,7 +122,10 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     @Override
     public Integer getDstPort() {
-        return serverPort;
+        return dstPort;
+    }
+    
+    @Override
     public Integer getSrcPort() {
         return srcPort;
     }
@@ -134,11 +137,6 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         } else {
             this.dstPort = serverPort;
         }
-    }
-
-    @Override
-    public Integer getSrcPort() {
-        return clientPort;
     }
 
     @Override
