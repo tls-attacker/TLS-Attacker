@@ -54,7 +54,8 @@ public class StateExecutionServerTask extends TlsTask {
                         LOGGER.error(e);
                         try {
                             Thread.sleep(200);
-                        } catch (InterruptedException ignored) { }
+                        } catch (InterruptedException ignored) {
+                        }
                     }
                 }
             }).start();
@@ -76,7 +77,6 @@ public class StateExecutionServerTask extends TlsTask {
             throw e;
         }
     }
-
 
     private boolean innerExecute() {
         Socket socket;

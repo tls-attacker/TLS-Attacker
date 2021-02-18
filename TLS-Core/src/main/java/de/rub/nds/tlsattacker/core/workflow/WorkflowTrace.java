@@ -134,6 +134,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = RemBufferedChCiphersAction.class, name = "RemBufferedChCiphers"),
         @XmlElement(type = RemBufferedChExtensionsAction.class, name = "RemBufferedChExtensions"),
         @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
+        @XmlElement(type = ResetRecordCipherListsAction.class, name = "ResetRecordCipherLists"),
         @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
         @XmlElement(type = SendAction.class, name = "Send"),
         @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicClientKeyExchange"),
