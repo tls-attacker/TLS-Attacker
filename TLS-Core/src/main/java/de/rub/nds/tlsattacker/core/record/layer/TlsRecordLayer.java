@@ -211,4 +211,11 @@ public class TlsRecordLayer extends RecordLayer {
         return decryptor.getRecordMostRecentCipher();
     }
 
+    public Encryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public Decryptor getDecryptor() {
+        return decryptor;
+    }
 }
