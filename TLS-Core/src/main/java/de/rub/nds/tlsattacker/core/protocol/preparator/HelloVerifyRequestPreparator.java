@@ -37,7 +37,12 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private byte[] generateCookie() {
-        byte[] cookie = new byte[chooser.getConfig().getDtlsDefaultCookieLength()];
+        int cookieLength = chooser.getConfig().getDtlsDefaultCookieLength();
+        if (cookieLength > 256) {
+            LOGGER.warn("Cookie length is greater than 256. Returning it mod 256");
+            cookieLength = cookieLength % 256;
+        }
+        byte[] cookie = new byte[cookieLength];
         chooser.getContext().getRandom().nextBytes(cookie);
         return cookie;
     }
