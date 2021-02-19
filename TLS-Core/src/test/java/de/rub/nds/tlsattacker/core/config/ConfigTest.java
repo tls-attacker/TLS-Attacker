@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -19,18 +18,25 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.io.File;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @SuppressWarnings("SpellCheckingInspection")
 public class ConfigTest {
+
+    private Logger LOGGER = LogManager.getLogger();
 
     public ConfigTest() {
     }
@@ -44,7 +50,21 @@ public class ConfigTest {
      */
     @Test
     public void assertConfigInResourcesIsEqual() {
-        ConfigIO.write(new Config(), new File("src/main/resources/default_config.xml"));
+        ConfigIO.write(Config.createConfig(), new File("src/main/resources/default_config.xml"));
+    }
+
+    private void stripConfig(Config config) {
+        Field[] declaredFields = config.getClass().getDeclaredFields();
+        for (Field f : declaredFields) {
+            try {
+                if (!Modifier.isFinal(f.getModifiers())) {
+                    f.setAccessible(true);
+                    f.set(config, null);
+                }
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                LOGGER.error("Could not strip config from fields", ex);
+            }
+        }
     }
 
     /**
@@ -52,22 +72,24 @@ public class ConfigTest {
      */
     @Test
     public void generateAppdataConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setDefaultApplicationMessageData("ayy lmao");
         writeToConfig(config, "appdata.config");
     }
 
     @Test
     public void generateConfigBlobConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setRecordLayerType(RecordLayerType.BLOB);
         writeToConfig(config, "config_blob.config");
     }
 
     @Test
     public void generateEcClientAuthenticationConfig() {
-        Config config = new Config();
-
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setClientAuthentication(true);
 
         ArrayList<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = new ArrayList<SignatureAndHashAlgorithm>();
@@ -81,21 +103,24 @@ public class ConfigTest {
 
     @Test
     public void generateEncryptThenMacConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddEncryptThenMacExtension(true);
         writeToConfig(config, "encryptThenMac.config");
     }
 
     @Test
     public void generateEnforceSettingsConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setEnforceSettings(true);
         writeToConfig(config, "enforceSettings.config");
     }
 
     @Test
     public void generateEsniServerConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddEncryptedServerNameIndicationExtension(true);
 
         KeyShareEntry keyShareEntry = new KeyShareEntry();
@@ -122,43 +147,48 @@ public class ConfigTest {
 
     @Test
     public void generateExtendedMasterSecretConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddExtendedMasterSecretExtension(true);
         writeToConfig(config, "extended_master_secret.config");
     }
 
     @Test
     public void generateExtendedRandomConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddExtendedRandomExtension(true);
         writeToConfig(config, "extended_random.config");
     }
 
     @Test
     public void generateHeartbeatConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddHeartbeatExtension(true);
         writeToConfig(config, "heartbeat.config");
     }
 
     @Test
     public void generateHttpsConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setHttpsParsingEnabled(true);
         writeToConfig(config, "https.config");
     }
 
     @Test
     public void generatePskConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("AA"));
         writeToConfig(config, "psk.config");
     }
 
     @Test
     public void generatePwdConfig() {
-        Config config = new Config();
-
+        Config config = Config.createConfig();
+        stripConfig(config);
         ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
@@ -208,8 +238,8 @@ public class ConfigTest {
 
     @Test
     public void generatePwd13Config() {
-        Config config = new Config();
-
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
         config.setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
@@ -264,8 +294,8 @@ public class ConfigTest {
 
     @Test
     public void generateRsaClientAuthenticationConfig() {
-        Config config = new Config();
-
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setClientAuthentication(true);
 
         ArrayList<SignatureAndHashAlgorithm> list = new ArrayList<SignatureAndHashAlgorithm>();
@@ -279,14 +309,16 @@ public class ConfigTest {
 
     @Test
     public void generateSniConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddServerNameIndicationExtension(true);
         writeToConfig(config, "sni.config");
     }
 
     @Test
     public void generateSrpConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setAddSRPExtension(true);
         config.setServerSendsApplicationData(true);
         writeToConfig(config, "srp.config");
@@ -294,7 +326,8 @@ public class ConfigTest {
 
     @Test
     public void generateSSL2Config() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
 
         ArrayList<ProtocolVersion> protocolVersions = new ArrayList<ProtocolVersion>();
@@ -307,14 +340,16 @@ public class ConfigTest {
 
     @Test
     public void stripTracesConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
         config.setResetWorkflowTracesBeforeSaving(true);
         writeToConfig(config, "stripTraces.config");
     }
 
     @Test
     public void generateTls13Config() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -378,7 +413,8 @@ public class ConfigTest {
 
     @Test
     public void generateTls13Draft21Config() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -437,7 +473,8 @@ public class ConfigTest {
 
     @Test
     public void generateTls13EsniConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -499,7 +536,8 @@ public class ConfigTest {
 
     @Test
     public void generateTls13SniConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -558,7 +596,8 @@ public class ConfigTest {
 
     @Test
     public void generateTlsX25519Config() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -617,7 +656,8 @@ public class ConfigTest {
 
     @Test
     public void generateTlsZeroRttConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -684,7 +724,9 @@ public class ConfigTest {
 
     @Test
     public void generateTokenbindingConfig() {
-        Config config = new Config();
+        Config config = Config.createConfig();
+        stripConfig(config);
+
         config.setAddTokenBindingExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(true);
@@ -694,24 +736,13 @@ public class ConfigTest {
     }
 
     private void writeToConfig(Config config, String configName) {
-        Config default_config = Config.createConfig();
         try {
-            List<String> changed_fields = Config.difference(default_config, config);
-            String changed_fields_description = "";
-            for (String string : changed_fields) {
-                changed_fields_description += "    " + string + "\n";
-            }
-            String comment =
-                "<!-- Generated at " + this.getClass().getName() + "\n"
-                    + "Differs to the default configuration in the following fields: \n" + changed_fields_description
-                    + "-->";
             JAXBContext context = JAXBContext.newInstance(Config.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            m.setProperty("com.sun.xml.bind.xmlHeaders", "\n" + comment);
             // m.setProperty("com.sun.xml.internal.bind.xmlHeaders", "\n" + comment);
             m.marshal(config, new File("src/../../resources/configs/" + configName));
-        } catch (JAXBException | IllegalAccessException e) {
+        } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
     }
