@@ -108,7 +108,7 @@ public abstract class RecordCipher {
                 }
                 return stream.toByteArray();
             } else {
-                if (protocolVersion.isDTLS()) {
+                if (protocolVersion.isDTLS() && record.getEpoch() != null) {
                     stream.write(ArrayConverter.intToBytes(record.getEpoch().getValue().shortValue(),
                         RecordByteLength.DTLS_EPOCH));
                     stream.write(ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
