@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -67,13 +68,14 @@ public class SignatureCalculator {
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name().contains("RSA")) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
+            if (keyExchangeAlgorithm.name().contains("RSA")) {
                 algoName = "NONEwithRSA";
                 toBeSigned = ArrayConverter.concatenate(MD5Utils.md5(toBeSigned), SHA1Utils.sha1(toBeSigned));
-            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
+            } else if (keyExchangeAlgorithm.name()
                 .contains("ECDSA")) {
                 algoName = "SHA1withECDSA";
-            } else if (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite()).name()
+            } else if (keyExchangeAlgorithm.name()
                 .contains("DSS")) {
                 algoName = "SHA1withDSA";
             } else {
