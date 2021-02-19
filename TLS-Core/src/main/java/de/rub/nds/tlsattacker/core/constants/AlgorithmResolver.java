@@ -302,7 +302,7 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
             || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
-                + " does not specify a Cipher");
+                + " does not specify a CipherAlgorithm");
         }
 
         LOGGER.warn("The cipher algorithm in " + cipherSuite + " is not supported yet. Falling back to NULL.");
