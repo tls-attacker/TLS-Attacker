@@ -149,7 +149,7 @@ public class WorkflowTraceSerializerTest {
             DefaultNormalizeFilter.normalizeAndFilter(trace, config);
             String actual = WorkflowTraceSerializer.write(trace);
             LOGGER.info(actual);
-            Assert.assertEquals(actual, expected);
+            Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);

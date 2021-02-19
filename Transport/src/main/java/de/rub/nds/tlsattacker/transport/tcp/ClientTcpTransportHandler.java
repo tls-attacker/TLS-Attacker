@@ -26,8 +26,6 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected String hostname;
-    protected int serverPort;
-    protected Integer clientPort;
     protected long connectionTimeout;
     private boolean retryFailedSocketInitialization = false;
 
@@ -44,18 +42,18 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         int serverPort) {
         super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
-        this.serverPort = serverPort;
+        this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;
-        clientPort = null;
+        this.srcPort = null;
     }
 
     public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int serverPort,
         int clientPort) {
         super(connectionTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
-        this.serverPort = serverPort;
+        this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;
-        this.clientPort = clientPort;
+        this.srcPort = clientPort;
     }
 
     @Override
@@ -72,17 +70,21 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         while (System.currentTimeMillis() < timeoutTime || this.connectionTimeout == 0) {
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(hostname, serverPort), (int) connectionTimeout);
+                socket.setReuseAddress(true);
+                if (srcPort != null) {
+                    socket.bind(new InetSocketAddress(srcPort));
+                }
+                socket.connect(new InetSocketAddress(hostname, dstPort), (int) connectionTimeout);
                 if (!socket.isConnected()) {
-                    throw new ConnectException("Could not connect to " + hostname + ":" + serverPort);
+                    throw new ConnectException("Could not connect to " + hostname + ":" + dstPort);
                 }
                 break;
             } catch (Exception e) {
                 if (!retryFailedSocketInitialization) {
-                    LOGGER.warn("Socket initialization to {}:{} failed", hostname, serverPort, e);
+                    LOGGER.warn("Socket initialization to {}:{} failed", hostname, dstPort, e);
                     break;
                 }
-                LOGGER.warn("Server @{}:{} is not available yet", hostname, serverPort);
+                LOGGER.warn("Server @{}:{} is not available yet", hostname, dstPort);
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ignore) {
@@ -91,11 +93,12 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         }
 
         if (!socket.isConnected()) {
-            throw new IOException("Could not connect to " + hostname + ":" + serverPort);
+            throw new IOException("Could not connect to " + hostname + ":" + dstPort);
         }
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+        LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout(1);
     }
 
@@ -119,7 +122,12 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     @Override
     public Integer getDstPort() {
-        return serverPort;
+        return dstPort;
+    }
+
+    @Override
+    public Integer getSrcPort() {
+        return srcPort;
     }
 
     @Override
@@ -127,13 +135,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change the server port once the TransportHandler is initialized");
         } else {
-            this.serverPort = serverPort;
+            this.dstPort = serverPort;
         }
-    }
-
-    @Override
-    public Integer getSrcPort() {
-        return clientPort;
     }
 
     @Override
@@ -141,7 +144,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         if (isInitialized()) {
             throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
         } else {
-            this.clientPort = clientPort;
+            this.srcPort = clientPort;
         }
     }
 }
