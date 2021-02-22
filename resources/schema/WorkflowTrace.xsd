@@ -214,6 +214,7 @@
         <xs:element name="RemBufferedChCiphers" type="remBufferedChCiphersAction"/>
         <xs:element name="RemBufferedChExtensions" type="remBufferedChExtensionsAction"/>
         <xs:element name="Renegotiation" type="renegotiationAction"/>
+        <xs:element name="ResetRecordCipherLists" type="resetRecordCipherListsAction"/>
         <xs:element name="ResetConnection" type="resetConnectionAction"/>
         <xs:element name="Send" type="sendAction"/>
         <xs:element name="SendDynamicClientKeyExchange" type="sendDynamicClientKeyExchangeAction"/>
@@ -267,7 +268,9 @@
   <xs:complexType name="activateEncryptionAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="resetSequenceNumbers" type="xs:boolean"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -804,6 +807,7 @@
                   <xs:element name="PWDProtect" type="pwdProtectExtensionMessage"/>
                   <xs:element name="PasswordSalt" type="passwordSaltExtensionMessage"/>
                   <xs:element name="CachedInfoExtension" type="cachedInfoExtensionMessage"/>
+                  <xs:element name="CookieExtension" type="cookieExtensionMessage"/>
                   <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
                 </xs:choice>
               </xs:sequence>
@@ -1569,6 +1573,17 @@
           <xs:element name="hashValue" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="hashValueConfig" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="hashValueLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cookieExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2591,6 +2606,7 @@
     <xs:complexContent>
       <xs:extension base="abstractRecord">
         <xs:sequence>
+          <xs:element name="allowEncryptedChangeCipherSpec" type="xs:boolean"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
           <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
@@ -2635,6 +2651,7 @@
       <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
       <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="usedTls13KeySetType" type="tls13KeySetType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3385,6 +3402,17 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="resetRecordCipherListsAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="toRemoveEncryptor" type="xs:int"/>
+          <xs:element name="toRemoveDecryptor" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="resetConnectionAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
@@ -3398,9 +3426,7 @@
   <xs:complexType name="sendAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="optional" type="xs:boolean" minOccurs="0"/>
-        </xs:sequence>
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3514,6 +3540,7 @@
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
       <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
+      <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>
@@ -4073,6 +4100,15 @@
       <xs:enumeration value="HANDSHAKE"/>
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tls13KeySetType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="EARLY_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="HANDSHAKE_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="APPLICATION_TRAFFIC_SECRETS"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -214,6 +214,7 @@
         <xs:element name="RemBufferedChCiphers" type="remBufferedChCiphersAction"/>
         <xs:element name="RemBufferedChExtensions" type="remBufferedChExtensionsAction"/>
         <xs:element name="Renegotiation" type="renegotiationAction"/>
+        <xs:element name="ResetRecordCipherLists" type="resetRecordCipherListsAction"/>
         <xs:element name="ResetConnection" type="resetConnectionAction"/>
         <xs:element name="Send" type="sendAction"/>
         <xs:element name="SendDynamicClientKeyExchange" type="sendDynamicClientKeyExchangeAction"/>
@@ -2650,6 +2651,7 @@
       <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
       <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="usedTls13KeySetType" type="tls13KeySetType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3400,6 +3402,17 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="resetRecordCipherListsAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="toRemoveEncryptor" type="xs:int"/>
+          <xs:element name="toRemoveDecryptor" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="resetConnectionAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
@@ -4087,6 +4100,15 @@
       <xs:enumeration value="HANDSHAKE"/>
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tls13KeySetType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="EARLY_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="HANDSHAKE_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="APPLICATION_TRAFFIC_SECRETS"/>
     </xs:restriction>
   </xs:simpleType>
 
