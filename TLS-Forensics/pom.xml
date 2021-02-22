@@ -4,8 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>3.8.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>3.7.0-SNAPSHOT</version>
     </parent>
     <artifactId>TLS-Forensics</artifactId>
     <packaging>jar</packaging>
