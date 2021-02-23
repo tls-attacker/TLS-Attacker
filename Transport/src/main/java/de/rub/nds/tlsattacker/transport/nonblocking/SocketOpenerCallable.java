@@ -11,6 +11,7 @@
 package de.rub.nds.tlsattacker.transport.nonblocking;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.Callable;
@@ -33,9 +34,16 @@ public class SocketOpenerCallable implements Callable<Socket> {
     public Socket call() throws Exception {
         while (true) {
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port));
-            if (socket.isConnected()) {
-                return socket;
+            try {
+                socket.connect(new InetSocketAddress(host, port));
+                if (socket.isConnected()) {
+                    return socket;
+                }
+            } catch (IOException e) {
+                String s = new String();
+                PrintWriter printWriter = new PrintWriter(s);
+                e.printStackTrace(printWriter);
+                LOGGER.debug(s);
             }
         }
     }
