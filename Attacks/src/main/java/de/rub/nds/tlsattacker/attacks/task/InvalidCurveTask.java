@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -57,7 +58,7 @@ public class InvalidCurveTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor = new DefaultWorkflowExecutor(getState());
+            WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
             if (getState().getTlsContext().getServerEcPublicKey() != null) {
