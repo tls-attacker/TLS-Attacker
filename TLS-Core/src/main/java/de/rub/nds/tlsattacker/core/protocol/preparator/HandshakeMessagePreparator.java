@@ -121,11 +121,17 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
-
-                try {
-                    stream.write(extensionMessage.getExtensionBytes().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                if (extensionMessage.getExtensionBytes() != null
+                    && extensionMessage.getExtensionBytes().getValue() != null) {
+                    try {
+                        stream.write(extensionMessage.getExtensionBytes().getValue());
+                    } catch (IOException ex) {
+                        throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                    }
+                } else {
+                    LOGGER
+                        .debug("If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
+                    LOGGER.debug("If however, the extensions are prepared, we will ad themm");
                 }
             }
         }
