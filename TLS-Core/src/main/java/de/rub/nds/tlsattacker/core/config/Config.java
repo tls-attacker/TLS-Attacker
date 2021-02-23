@@ -3531,7 +3531,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDSalt() {
-        return defaultServerPWDSalt;
+        return Arrays.copyOf(defaultServerPWDSalt, defaultServerPWDSalt.length);
     }
 
     public void setDefaultServerPWDSalt(byte[] salt) {
@@ -3555,7 +3555,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDPrivate() {
-        return defaultServerPWDPrivate;
+        return Arrays.copyOf(defaultServerPWDPrivate, defaultServerPWDPrivate.length);
     }
 
     public void setDefaultServerPWDPrivate(byte[] defaultServerPWDPrivate) {
@@ -3563,7 +3563,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultServerPWDMask() {
-        return defaultServerPWDMask;
+        return Arrays.copyOf(defaultServerPWDMask, defaultServerPWDMask.length);
     }
 
     public void setDefaultServerPWDMask(byte[] defaultServerPWDMask) {
@@ -3571,7 +3571,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDPrivate() {
-        return defaultClientPWDPrivate;
+        return Arrays.copyOf(defaultClientPWDPrivate, defaultClientPWDPrivate.length);
     }
 
     public void setDefaultClientPWDPrivate(byte[] defaultClientPWDPrivate) {
@@ -3579,7 +3579,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultClientPWDMask() {
-        return defaultClientPWDMask;
+        return Arrays.copyOf(defaultClientPWDMask, defaultClientPWDMask.length);
     }
 
     public void setDefaultClientPWDMask(byte[] defaultClientPWDMask) {
@@ -3671,7 +3671,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniClientNonce() {
-        return defaultEsniClientNonce;
+        return Arrays.copyOf(defaultEsniClientNonce, defaultEsniClientNonce.length);
     }
 
     public void setDefaultEsniClientNonce(byte[] defaultEsniClientNonce) {
@@ -3679,7 +3679,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniServerNonce() {
-        return defaultEsniServerNonce;
+        return Arrays.copyOf(defaultEsniServerNonce, defaultEsniServerNonce.length);
     }
 
     public void setDefaultEsniServerNonce(byte[] defaultEsniServerNonce) {
@@ -3687,7 +3687,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordBytes() {
-        return defaultEsniRecordBytes;
+        return Arrays.copyOf(defaultEsniRecordBytes, defaultEsniRecordBytes.length);
     }
 
     public void setDefaultEsniRecordBytes(byte[] defaultEsniRecordBytes) {
@@ -3703,7 +3703,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultEsniRecordChecksum() {
-        return defaultEsniRecordChecksum;
+        return Arrays.copyOf(defaultEsniRecordChecksum, defaultEsniRecordChecksum.length);
     }
 
     public void setDefaultEsniRecordChecksum(byte[] defaultEsniRecordChecksum) {
@@ -3843,7 +3843,7 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultLastClientHello() {
-        return defaultLastClientHello;
+        return Arrays.copyOf(defaultLastClientHello, defaultLastClientHello.length);
     }
 
     public void setDefaultLastClientHello(byte[] defaultLastClientHello) {
