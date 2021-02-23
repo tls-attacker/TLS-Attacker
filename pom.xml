@@ -279,12 +279,9 @@
                 </plugin>
                 <!-- Format the Code -->
                 <plugin>
-                    <groupId>net.revelc.code</groupId>
+                    <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
-                    <version>0.5.2</version>
-                    <configuration>
-                        <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
-                    </configuration>
+                    <version>2.14.0</version>
                 </plugin>
                 <!-- Use a Licence Header -->
                 <plugin>
@@ -305,7 +302,7 @@
                 <version>2.8.1</version>
             </plugin>
             <plugin>
-                <groupId>net.revelc.code</groupId>
+                <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
                 <configuration>
                     <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
