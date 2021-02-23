@@ -68,15 +68,14 @@ public class SignatureCalculator {
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS11
             || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
-            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
+            KeyExchangeAlgorithm keyExchangeAlgorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
             if (keyExchangeAlgorithm.name().contains("RSA")) {
                 algoName = "NONEwithRSA";
                 toBeSigned = ArrayConverter.concatenate(MD5Utils.md5(toBeSigned), SHA1Utils.sha1(toBeSigned));
-            } else if (keyExchangeAlgorithm.name()
-                .contains("ECDSA")) {
+            } else if (keyExchangeAlgorithm.name().contains("ECDSA")) {
                 algoName = "SHA1withECDSA";
-            } else if (keyExchangeAlgorithm.name()
-                .contains("DSS")) {
+            } else if (keyExchangeAlgorithm.name().contains("DSS")) {
                 algoName = "SHA1withDSA";
             } else {
                 throw new UnsupportedOperationException("Cipher suite not supported - Check Debug Log");
