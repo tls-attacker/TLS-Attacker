@@ -594,8 +594,8 @@ public class ReceiveMessageHelper {
             && cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
-            //The SSL2ServerVerifyMessage is currently not supported for parsing purposes
-            //handler = new SSL2ServerVerifyHandler(context);
+            // The SSL2ServerVerifyMessage is currently not supported for parsing purposes
+            // handler = new SSL2ServerVerifyHandler(context);
             throw new ParserException("SSL2ServerVerifyMessage is not supported");
         }
         return handler.parseMessage(cleanProtocolMessageBytes, dataPointer, false);
