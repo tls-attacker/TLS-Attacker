@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,7 +26,9 @@ public class PSKIdentity implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] identityConfig;
 
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String ticketAgeConfig;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAddConfig;
 
