@@ -58,7 +58,8 @@ public class InvalidCurveTask extends TlsTask {
     @Override
     public boolean execute() {
         try {
-            WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+            WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                    .getWorkflowExecutorType(), state);
             executor.executeWorkflow();
 
             if (getState().getTlsContext().getServerEcPublicKey() != null) {
