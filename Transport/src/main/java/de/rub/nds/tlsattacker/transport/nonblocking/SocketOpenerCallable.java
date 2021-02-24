@@ -35,15 +35,13 @@ public class SocketOpenerCallable implements Callable<Socket> {
         while (true) {
             Socket socket = new Socket();
             try {
-                socket.connect(new InetSocketAddress(host, port));
+                socket.connect(new InetSocketAddress(host, port), 10000);
                 if (socket.isConnected()) {
                     return socket;
                 }
             } catch (IOException e) {
-                String s = new String();
-                PrintWriter printWriter = new PrintWriter(s);
-                e.printStackTrace(printWriter);
-                LOGGER.debug(s);
+                LOGGER.debug(e);
+                return null;
             }
         }
     }
