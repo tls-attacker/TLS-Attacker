@@ -341,6 +341,7 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private List<String> defaultProposedAlpnProtocols;
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
