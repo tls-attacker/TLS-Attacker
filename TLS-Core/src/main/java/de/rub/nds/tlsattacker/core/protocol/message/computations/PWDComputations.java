@@ -59,7 +59,7 @@ public class PWDComputations extends KeyExchangeComputations {
         BigInteger prime = curve.getModulus();
 
         byte[] base;
-        byte[] salt = chooser.getServerPWDSalt();
+        byte[] salt = chooser.getContext().getServerPWDSalt();
         if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }

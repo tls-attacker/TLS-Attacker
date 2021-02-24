@@ -227,7 +227,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] saltHandshakeSecret =
                 HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret, HKDFunction.DERIVED,
                     ArrayConverter.hexStringToByteArray(""));
-            byte[] sharedSecret = new byte[macLength];
+            byte[] sharedSecret;
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(tlsContext.getChooser().getServerKeyShare());
