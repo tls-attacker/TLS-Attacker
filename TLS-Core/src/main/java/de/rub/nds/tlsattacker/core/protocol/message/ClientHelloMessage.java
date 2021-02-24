@@ -61,7 +61,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicatio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
