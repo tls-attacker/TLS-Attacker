@@ -228,4 +228,10 @@ public class Record extends AbstractRecord {
         return holders;
     }
 
+    @Override
+    public void reset() {
+        super.reset();
+        setContentMessageType(null);
+    }
+
 }

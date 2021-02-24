@@ -3,9 +3,15 @@
 
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
+  <xs:element name="activateEncryptionAction" type="activateEncryptionAction"/>
+
   <xs:element name="alertMessage" type="alertMessage"/>
 
   <xs:element name="applicationMessage" type="applicationMessage"/>
+
+  <xs:element name="applyBufferedMessagesAction" type="applyBufferedMessagesAction"/>
+
+  <xs:element name="asciiAction" type="asciiAction"/>
 
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
 
@@ -24,6 +30,10 @@
   <xs:element name="booleanExplicitValueModification" type="booleanExplicitValueModification"/>
 
   <xs:element name="booleanToggleModification" type="booleanToggleModification"/>
+
+  <xs:element name="bufferedGenericReceiveAction" type="bufferedGenericReceiveAction"/>
+
+  <xs:element name="bufferedSendAction" type="bufferedSendAction"/>
 
   <xs:element name="byteAddModification" type="byteAddModification"/>
 
@@ -55,7 +65,47 @@
 
   <xs:element name="changeCipherSpecMessage" type="changeCipherSpecMessage"/>
 
+  <xs:element name="changeCipherSuiteAction" type="changeCipherSuiteAction"/>
+
+  <xs:element name="changeClientRandomAction" type="changeClientRandomAction"/>
+
+  <xs:element name="changeCompressionAction" type="changeCompressionAction"/>
+
+  <xs:element name="changeContextValueAction" type="changeContextValueAction"/>
+
+  <xs:element name="changeDefaultPreMasterSecretAction" type="changeDefaultPreMasterSecretAction"/>
+
+  <xs:element name="changeMasterSecretAction" type="changeMasterSecretAction"/>
+
+  <xs:element name="changePreMasterSecretAction" type="changePreMasterSecretAction"/>
+
+  <xs:element name="changeProtocolVersionAction" type="changeProtocolVersionAction"/>
+
+  <xs:element name="changeServerRandomAction" type="changeServerRandomAction"/>
+
+  <xs:element name="clearBuffersAction" type="clearBuffersAction"/>
+
   <xs:element name="clientHelloMessage" type="clientHelloMessage"/>
+
+  <xs:element name="copyBufferedMessagesAction" type="copyBufferedMessagesAction"/>
+
+  <xs:element name="copyBufferedRecordsAction" type="copyBufferedRecordsAction"/>
+
+  <xs:element name="copyBuffersAction" type="copyBuffersAction"/>
+
+  <xs:element name="copyClientRandomAction" type="copyClientRandomAction"/>
+
+  <xs:element name="copyPreMasterSecretAction" type="copyPreMasterSecretAction"/>
+
+  <xs:element name="copyServerRandomAction" type="copyServerRandomAction"/>
+
+  <xs:element name="deactivateEncryptionAction" type="deactivateEncryptionAction"/>
+
+  <xs:element name="deepCopyBufferedMessagesAction" type="deepCopyBufferedMessagesAction"/>
+
+  <xs:element name="deepCopyBufferedRecordsAction" type="deepCopyBufferedRecordsAction"/>
+
+  <xs:element name="deepCopyBuffersAction" type="deepCopyBuffersAction"/>
 
   <xs:element name="dhClientKeyExchangeMessage" type="dhClientKeyExchangeMessage"/>
 
@@ -71,9 +121,25 @@
 
   <xs:element name="emptyClientKeyExchangeMessage" type="emptyClientKeyExchangeMessage"/>
 
+  <xs:element name="esniKeyDnsRequestAction" type="esniKeyDnsRequestAction"/>
+
   <xs:element name="extensionMessage" type="extensionMessage"/>
 
+  <xs:element name="findReceivedProtocolMessageAction" type="findReceivedProtocolMessageAction"/>
+
   <xs:element name="finishedMessage" type="finishedMessage"/>
+
+  <xs:element name="flushSessionCacheAction" type="flushSessionCacheAction"/>
+
+  <xs:element name="forwardMessagesAction" type="forwardMessagesAction"/>
+
+  <xs:element name="forwardMessagesWithPrepareAction" type="forwardMessagesWithPrepareAction"/>
+
+  <xs:element name="forwardRecordsAction" type="forwardRecordsAction"/>
+
+  <xs:element name="genericReceiveAction" type="genericReceiveAction"/>
+
+  <xs:element name="genericReceiveAsciiAction" type="genericReceiveAsciiAction"/>
 
   <xs:element name="gostClientKeyExchangeMessage" type="gostClientKeyExchangeMessage"/>
 
@@ -117,9 +183,29 @@
 
   <xs:element name="modifiableString" type="modifiableString"/>
 
+  <xs:element name="multiReceiveAction" type="multiReceiveAction"/>
+
   <xs:element name="newSessionTicketMessage" type="newSessionTicketMessage"/>
 
   <xs:element name="point" type="point"/>
+
+  <xs:element name="popAndSendAction" type="popAndSendAction"/>
+
+  <xs:element name="popAndSendMessageAction" type="popAndSendMessageAction"/>
+
+  <xs:element name="popAndSendRecordAction" type="popAndSendRecordAction"/>
+
+  <xs:element name="popBufferedMessageAction" type="popBufferedMessageAction"/>
+
+  <xs:element name="popBufferedRecordAction" type="popBufferedRecordAction"/>
+
+  <xs:element name="popBuffersAction" type="popBuffersAction"/>
+
+  <xs:element name="printLastHandledApplicationDataAction" type="printLastHandledApplicationDataAction"/>
+
+  <xs:element name="printProposedExtensionsAction" type="printProposedExtensionsAction"/>
+
+  <xs:element name="printSecretsAction" type="printSecretsAction"/>
 
   <xs:element name="pskClientKeyExchangeMessage" type="pskClientKeyExchangeMessage"/>
 
@@ -135,7 +221,33 @@
 
   <xs:element name="pskServerKeyExchangeMessage" type="pskServerKeyExchangeMessage"/>
 
+  <xs:element name="receiveAction" type="receiveAction"/>
+
+  <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
+
+  <xs:element name="receiveTillAction" type="receiveTillAction"/>
+
+  <xs:element name="remBufferedChCiphersAction" type="remBufferedChCiphersAction"/>
+
+  <xs:element name="remBufferedChExtensionsAction" type="remBufferedChExtensionsAction"/>
+
+  <xs:element name="renegotiationAction" type="renegotiationAction"/>
+
+  <xs:element name="resetConnectionAction" type="resetConnectionAction"/>
+
   <xs:element name="rsaClientKeyExchangeMessage" type="rsaClientKeyExchangeMessage"/>
+
+  <xs:element name="sendAction" type="sendAction"/>
+
+  <xs:element name="sendAsciiAction" type="sendAsciiAction"/>
+
+  <xs:element name="sendDynamicClientKeyExchangeAction" type="sendDynamicClientKeyExchangeAction"/>
+
+  <xs:element name="sendDynamicServerCertificateAction" type="sendDynamicServerCertificateAction"/>
+
+  <xs:element name="sendDynamicServerKeyExchangeAction" type="sendDynamicServerKeyExchangeAction"/>
+
+  <xs:element name="sendRaccoonCkeAction" type="sendRaccoonCkeAction"/>
 
   <xs:element name="serverHelloDoneMessage" type="serverHelloDoneMessage"/>
 
@@ -156,6 +268,8 @@
   <xs:element name="unknownHandshakeMessage" type="unknownHandshakeMessage"/>
 
   <xs:element name="unknownMessage" type="unknownMessage"/>
+
+  <xs:element name="waitAction" type="waitAction"/>
 
   <xs:element name="workflowTrace" type="workflowTrace"/>
 

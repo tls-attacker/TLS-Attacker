@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +43,7 @@ import org.apache.logging.log4j.Logger;
  * partially rely on config values. Thus preventing us to modify values in context and re-creating a CH for forwarding.
  *
  */
+@XmlRootElement
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

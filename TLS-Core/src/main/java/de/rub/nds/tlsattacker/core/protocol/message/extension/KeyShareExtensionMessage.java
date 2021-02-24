@@ -19,6 +19,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,4 +103,12 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public void setRetryRequestMode(ModifiableBoolean retryRequestMode) {
         this.retryRequestMode = retryRequestMode;
     }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        allModifiableVariableHolders.addAll(keyShareList);
+        return allModifiableVariableHolders;
+    }
+
 }

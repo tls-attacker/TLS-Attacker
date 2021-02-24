@@ -17,11 +17,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * An action that can be used for testing or to provide defaults for the filter/ normalize methods.
  */
+@XmlRootElement
 public class GeneralAction extends TlsAction {
 
     @XmlTransient

@@ -94,6 +94,14 @@ public class RecordCryptoComputations extends ModifiableVariableHolder {
     public RecordCryptoComputations() {
     }
 
+    @Override
+    public void reset() {
+        super.reset();
+        paddingValid = null;
+        macValid = null;
+        authenticationTagValid = null;
+    }
+
     public ModifiableByteArray getCipherKey() {
         return cipherKey;
     }
