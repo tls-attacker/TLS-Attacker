@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
@@ -32,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  * An abstract Parser class for HandshakeMessages
  *
  * @param <T>
- * Type of the HandshakeMessages to parse
+ *            Type of the HandshakeMessages to parse
  */
 public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
@@ -49,18 +48,18 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Constructor for the Parser class
      *
      * @param pointer
-     * Position in the array where the HandshakeMessageParser is supposed to start parsing
+     *                     Position in the array where the HandshakeMessageParser is supposed to start parsing
      * @param array
-     * The byte[] which the HandshakeMessageParser is supposed to parse
+     *                     The byte[] which the HandshakeMessageParser is supposed to parse
      * @param expectedType
-     * The expected type of the parsed HandshakeMessage
+     *                     The expected type of the parsed HandshakeMessage
      * @param version
-     * The Version with which this message should be parsed
+     *                     The Version with which this message should be parsed
      * @param config
-     * A Config used in the current context
+     *                     A Config used in the current context
      */
-    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType,
-        ProtocolVersion version, Config config) {
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version,
+        Config config) {
         super(pointer, array, version, config);
         this.expectedType = expectedType;
         this.version = version;
@@ -70,7 +69,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Reads the next bytes as a HandshakeMessageType and writes them in the message
      *
      * @param message
-     * Message to write in
+     *                Message to write in
      */
     private void parseType(HandshakeMessage message) {
         message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
@@ -85,7 +84,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Reads the next bytes as the MessageLength and writes them in the message
      *
      * @param message
-     * Message to write in
+     *                Message to write in
      */
     private void parseLength(HandshakeMessage message) {
         message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
@@ -112,7 +111,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Reads the next bytes as the ExtensionLength and writes them in the message
      *
      * @param message
-     * Message to write in
+     *                Message to write in
      */
     protected void parseExtensionLength(T message) {
         message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
@@ -124,7 +123,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * message
      *
      * @param message
-     * Message to write in
+     *                Message to write in
      */
     protected void parseExtensionBytes(T message) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
@@ -152,9 +151,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Checks if the message has an ExtensionLength field, by checking if the value specified in the length field is big
      * enough to allow it.
      *
-     * @param message
-     * Message to check
-     * @return True if the message has an Extension field
+     * @param  message
+     *                 Message to check
+     * @return         True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(T message) {
         return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
@@ -164,9 +163,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     /**
      * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if there are Extensions present.
      *
-     * @param message
-     * Message to check
-     * @return True if the message has Extensions
+     * @param  message
+     *                 Message to check
+     * @return         True if the message has Extensions
      */
     protected boolean hasExtensions(T message) {
         return message.getExtensionsLength().getValue() > 0;

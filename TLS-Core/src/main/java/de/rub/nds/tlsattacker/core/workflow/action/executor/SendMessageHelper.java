@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
@@ -84,8 +83,8 @@ public class SendMessageHelper {
                             messageFragments = fragmenter.fragmentMessage((HandshakeMessage) message, context);
                         }
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
-                            messageBytesCollector.appendProtocolMessageBytes(fragment.getCompleteResultingMessage()
-                                .getValue());
+                            messageBytesCollector
+                                .appendProtocolMessageBytes(fragment.getCompleteResultingMessage().getValue());
                             fragmentMessages.add(fragment);
                             recordPosition =
                                 flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
@@ -117,9 +116,9 @@ public class SendMessageHelper {
                     }
                     List<AbstractRecord> emptyRecords = new LinkedList<>();
                     emptyRecords.add(record);
-                    messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
-                        messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(),
-                        emptyRecords));
+                    messageBytesCollector.appendRecordBytes(
+                        context.getRecordLayer().prepareRecords(messageBytesCollector.getProtocolMessageBytesStream(),
+                            record.getContentMessageType(), emptyRecords));
                     sendData(messageBytesCollector, context);
                 }
                 current++;
@@ -153,8 +152,8 @@ public class SendMessageHelper {
         List<AbstractRecord> records, int recordPosition, TlsContext context) {
         int length = collector.getProtocolMessageBytesStream().length;
         List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
-        collector.appendRecordBytes(context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(),
-            type, toFillList));
+        collector.appendRecordBytes(
+            context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
@@ -186,12 +185,12 @@ public class SendMessageHelper {
     /**
      * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param handler
-     * TransportHandler to send the Data with
-     * @param messageBytesCollector
-     * MessageBytes to send
+     * @param  handler
+     *                               TransportHandler to send the Data with
+     * @param  messageBytesCollector
+     *                               MessageBytes to send
      * @throws IOException
-     * Thrown if something goes wrong while sending
+     *                               Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());

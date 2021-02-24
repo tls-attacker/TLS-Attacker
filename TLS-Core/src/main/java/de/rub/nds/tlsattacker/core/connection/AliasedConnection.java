@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.connection;
@@ -189,8 +188,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 port = DEFAULT_PORT;
             }
             if (port < 0 || port > 65535) {
-                throw new ConfigurationException("Attempt to set default port "
-                    + "failed. Port must be in interval [0,65535], but is " + port);
+                throw new ConfigurationException(
+                    "Attempt to set default port " + "failed. Port must be in interval [0,65535], but is " + port);
             }
         }
     }

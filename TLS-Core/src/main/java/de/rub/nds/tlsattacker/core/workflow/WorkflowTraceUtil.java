@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -194,7 +193,8 @@ public class WorkflowTraceUtil {
         return returnedMessages;
     }
 
-    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages, HandshakeMessageType type) {
+    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages,
+        HandshakeMessageType type) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (HandshakeMessage handshakeMessage : messages) {
             if (handshakeMessage.getHandshakeMessageType() == type) {

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.parser;
@@ -75,7 +74,7 @@ public class RecordParser extends AbstractRecordParser<Record> {
 
     private void parseProtocolMessageBytes(Record record) {
         record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
-        LOGGER.debug("ProtocolMessageBytes: "
-            + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+        LOGGER.debug(
+            "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

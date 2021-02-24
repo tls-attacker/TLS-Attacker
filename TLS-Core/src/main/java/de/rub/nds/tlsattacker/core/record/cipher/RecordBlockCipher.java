@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.cipher;
@@ -86,9 +85,9 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param request
-     * The RequestedEncryption operation
-     * @return The EncryptionResult
+     * @param  request
+     *                 The RequestedEncryption operation
+     * @return         The EncryptionResult
      */
     private byte[] encrypt(byte[] plaintext, byte[] iv) throws CryptoException {
         byte[] expandedPlaintext = this.expandToBlocksize(plaintext);
@@ -126,20 +125,21 @@ public final class RecordBlockCipher extends RecordCipher {
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
 
             computations.setPadding(calculatePadding(calculatePaddingLength(record, cleanBytes.length)));
-            computations.setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding()
-                .getValue()));
+            computations
+                .setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes, computations.getPadding().getValue()));
             byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
             computations.setCiphertext(ciphertext);
             if (useExplicitIv) {
-                computations.setAuthenticatedNonMetaData(ArrayConverter.concatenate(iv, record.getComputations()
-                    .getCiphertext().getValue()));
+                computations.setAuthenticatedNonMetaData(
+                    ArrayConverter.concatenate(iv, record.getComputations().getCiphertext().getValue()));
             } else {
                 computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
             }
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
-            computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                .getLocalConnectionEndType()));
+            computations.setMac(calculateMac(
+                ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                    computations.getAuthenticatedNonMetaData().getValue()),
+                context.getConnection().getLocalConnectionEndType()));
             if (useExplicitIv) {
                 record.setProtocolMessageBytes(ArrayConverter.concatenate(iv, computations.getCiphertext().getValue(),
                     computations.getMac().getValue()));
@@ -150,16 +150,16 @@ public final class RecordBlockCipher extends RecordCipher {
         } else {
             computations.setAuthenticatedNonMetaData(cleanBytes);
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
-            computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData()
-                .getValue(), computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                .getLocalConnectionEndType()));
+            computations.setMac(calculateMac(
+                ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                    computations.getAuthenticatedNonMetaData().getValue()),
+                context.getConnection().getLocalConnectionEndType()));
 
-            computations.setPadding(calculatePadding(calculatePaddingLength(record, cleanBytes.length
-                + computations.getMac().getValue().length)));
+            computations.setPadding(calculatePadding(
+                calculatePaddingLength(record, cleanBytes.length + computations.getMac().getValue().length)));
 
-            record.getComputations().setPlainRecordBytes(
-                ArrayConverter.concatenate(cleanBytes, computations.getMac().getValue(), computations.getPadding()
-                    .getValue()));
+            record.getComputations().setPlainRecordBytes(ArrayConverter.concatenate(cleanBytes,
+                computations.getMac().getValue(), computations.getPadding().getValue()));
 
             computations.setCiphertext(encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
 
@@ -182,7 +182,7 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Makes sure that the plaintext we are passing to the encrypt function is a multiple of the blocksize
      *
-     * @param plaintext
+     * @param  plaintext
      * @return
      */
     private byte[] expandToBlocksize(byte[] plaintext) {
@@ -293,8 +293,9 @@ public final class RecordBlockCipher extends RecordCipher {
                 parser.parseByteArrayField(plainData.length - (plainData[plainData.length - 1] + 1));
             record.setCleanProtocolMessageBytes(cleanProtocolBytes);
             if (useExplicitIv) {
-                computations.setAuthenticatedNonMetaData(ArrayConverter.concatenate(record.getComputations()
-                    .getCbcInitialisationVector().getValue(), record.getComputations().getCiphertext().getValue()));
+                computations.setAuthenticatedNonMetaData(
+                    ArrayConverter.concatenate(record.getComputations().getCbcInitialisationVector().getValue(),
+                        record.getComputations().getCiphertext().getValue()));
             } else {
                 computations.setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
             }
@@ -304,10 +305,10 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPadding(padding);
             computations.setPaddingValid(isPaddingValid(padding));
 
-            byte[] calculatedHMAC =
-                calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                    computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                    .getLocalConnectionEndType().getPeer());
+            byte[] calculatedHMAC = calculateMac(
+                ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                    computations.getAuthenticatedNonMetaData().getValue()),
+                context.getConnection().getLocalConnectionEndType().getPeer());
             computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
         } else {
             byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
@@ -321,9 +322,8 @@ public final class RecordBlockCipher extends RecordCipher {
 
             parser = new DecryptionParser(0, plainData);
 
-            byte[] cleanProtocolBytes =
-                parser.parseByteArrayField(plainData.length - readMac.getMacLength()
-                    - (plainData[plainData.length - 1] + 1));
+            byte[] cleanProtocolBytes = parser
+                .parseByteArrayField(plainData.length - readMac.getMacLength() - (plainData[plainData.length - 1] + 1));
             record.setCleanProtocolMessageBytes(cleanProtocolBytes);
 
             byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
@@ -336,10 +336,10 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
 
             computations.setPaddingValid(isPaddingValid(padding));
-            byte[] calculatedHMAC =
-                calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                    computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                    .getLocalConnectionEndType().getPeer());
+            byte[] calculatedHMAC = calculateMac(
+                ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                    computations.getAuthenticatedNonMetaData().getValue()),
+                context.getConnection().getLocalConnectionEndType().getPeer());
             computations.setMacValid(Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
         }
 

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate.transparency;
@@ -22,7 +21,7 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
      * Constructor for the Parser
      *
      * @param startposition
-     * Position in the array from which the Parser should start working
+     *                      Position in the array from which the Parser should start working
      * @param array
      */
     public SignedCertificateTimestampListParser(int startposition, byte[] array, Certificate certificateChain,

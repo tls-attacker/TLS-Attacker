@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto;
@@ -67,13 +66,13 @@ public class HKDFunction {
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
-     * @param hkdfAlgorithm
-     * The HKDFAlgorithm
-     * @param salt
-     * The Salt
-     * @param ikm
-     * The IKM
-     * @return The HKDF-Extracted output
+     * @param  hkdfAlgorithm
+     *                                                                The HKDFAlgorithm
+     * @param  salt
+     *                                                                The Salt
+     * @param  ikm
+     *                                                                The IKM
+     * @return                                                        The HKDF-Extracted output
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] extract(HKDFAlgorithm hkdfAlgorithm, byte[] salt, byte[] ikm) throws CryptoException {
@@ -95,15 +94,15 @@ public class HKDFunction {
     /**
      * Computes HKDF-Expand output as defined in RFC 5869
      *
-     * @param hkdfAlgorithm
-     * The HKDF Algorithm
-     * @param prk
-     * THE prk
-     * @param info
-     * The info
-     * @param outLen
-     * The output Length
-     * @return The expanded bytes
+     * @param  hkdfAlgorithm
+     *                                                                The HKDF Algorithm
+     * @param  prk
+     *                                                                THE prk
+     * @param  info
+     *                                                                The info
+     * @param  outLen
+     *                                                                The output Length
+     * @return                                                        The expanded bytes
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expand(HKDFAlgorithm hkdfAlgorithm, byte[] prk, byte[] info, int outLen)
@@ -152,17 +151,17 @@ public class HKDFunction {
     /**
      * Computes Derive-Secret output as defined in TLS 1.3
      *
-     * @param hkdfAlgorithm
-     * The HKDF Algorithm
-     * @param hashAlgorithm
-     * The Hash Algorithm
-     * @param prk
-     * The prk
-     * @param labelIn
-     * The label input
-     * @param toHash
-     * The data to hash
-     * @return The derivedSecret
+     * @param  hkdfAlgorithm
+     *                                                                The HKDF Algorithm
+     * @param  hashAlgorithm
+     *                                                                The Hash Algorithm
+     * @param  prk
+     *                                                                The prk
+     * @param  labelIn
+     *                                                                The label input
+     * @param  toHash
+     *                                                                The data to hash
+     * @return                                                        The derivedSecret
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] deriveSecret(HKDFAlgorithm hkdfAlgorithm, String hashAlgorithm, byte[] prk, String labelIn,
@@ -195,17 +194,17 @@ public class HKDFunction {
     /**
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
      *
-     * @param hkdfAlgorithm
-     * The HKDF Algorithm
-     * @param prk
-     * The Prk
-     * @param labelIn
-     * The InputLabel
-     * @param hashValue
-     * The hash value
-     * @param outLen
-     * The output length
-     * @return The expanded Label bytes
+     * @param  hkdfAlgorithm
+     *                                                                The HKDF Algorithm
+     * @param  prk
+     *                                                                The Prk
+     * @param  labelIn
+     *                                                                The InputLabel
+     * @param  hashValue
+     *                                                                The hash value
+     * @param  outLen
+     *                                                                The output length
+     * @return                                                        The expanded Label bytes
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expandLabel(HKDFAlgorithm hkdfAlgorithm, byte[] prk, String labelIn, byte[] hashValue,

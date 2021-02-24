@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.tcp;
@@ -35,16 +34,6 @@ public class ServerTcpTransportHandlerTest {
         if (handler.isInitialized()) {
             handler.closeConnection();
         }
-    }
-
-    /**
-     * Test of closeConnection method, of class ServerTcpTransportHandler.
-     *
-     * @throws java.io.IOException
-     */
-    @Test(expected = IOException.class)
-    public void testCloseConnection() throws IOException {
-        handler.closeConnection();
     }
 
     @Test
@@ -82,6 +71,16 @@ public class ServerTcpTransportHandlerTest {
         } catch (IOException E) {
             // Should happen
         }
+    }
+
+    /**
+     * Test of closeConnection method, of class ServerTcpTransportHandler.
+     *
+     * @throws java.io.IOException
+     */
+    @Test(expected = IOException.class)
+    public void testCloseConnection() throws IOException {
+        handler.closeConnection();
     }
 
     /**

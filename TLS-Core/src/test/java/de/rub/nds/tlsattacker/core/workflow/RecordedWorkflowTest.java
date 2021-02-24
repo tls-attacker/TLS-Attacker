@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -90,10 +89,10 @@ public class RecordedWorkflowTest {
      * @throws java.security.SignatureException
      */
     // TODO
-    public void testFullWorkflowDeterministicWorkflow() throws IOException, NoSuchAlgorithmException,
-        KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException,
-        KeyManagementException, InvalidKeyException, NoSuchProviderException, SignatureException,
-        OperatorCreationException, KeyManagementException {
+    public void testFullWorkflowDeterministicWorkflow()
+        throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
+        UnrecoverableKeyException, KeyManagementException, KeyManagementException, InvalidKeyException,
+        NoSuchProviderException, SignatureException, OperatorCreationException, KeyManagementException {
         Config c = Config.createConfig();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

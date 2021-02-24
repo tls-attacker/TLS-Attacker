@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -54,23 +53,19 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
         byte[] toBeSigned = chooser.getContext().getDigest().getRawBytes();
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                toBeSigned =
-                    ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
-                            + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                        CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
-                        new byte[] { (byte) 0x00 },
-                        chooser.getContext().getDigest()
-                            .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
+                toBeSigned = ArrayConverter.concatenate(
+                    ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
+                        + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                    CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(), new byte[] { (byte) 0x00 },
+                    chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite()));
             } else {
-                toBeSigned =
-                    ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
-                            + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                        CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
-                        new byte[] { (byte) 0x00 },
-                        chooser.getContext().getDigest()
-                            .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
+                toBeSigned = ArrayConverter.concatenate(
+                    ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
+                        + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                    CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(), new byte[] { (byte) 0x00 },
+                    chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite()));
             }
         } else if (chooser.getSelectedProtocolVersion().isSSL()) {
             final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
@@ -93,7 +88,7 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
 
     private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         msg.setSignatureHashAlgorithm(algorithm.getByteValue());
-        LOGGER.debug("SignatureHasAlgorithm: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug(
+            "SignatureHasAlgorithm: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
     }
 }

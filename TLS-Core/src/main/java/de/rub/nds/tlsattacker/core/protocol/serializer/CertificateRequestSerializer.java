@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
@@ -27,9 +26,9 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      * Constructor for the CertificateRequestSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * Version of the Protocol
+     *                Version of the Protocol
      */
     public CertificateRequestSerializer(CertificateRequestMessage message, ProtocolVersion version) {
         super(message, version);
@@ -73,8 +72,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
-        LOGGER.debug("ClientCertificateTypes: "
-            + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug(
+            "ClientCertificateTypes: " + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     /**
@@ -91,8 +90,8 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      */
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
-        LOGGER.debug("SignatureHashAlgorithms: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug(
+            "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     /**

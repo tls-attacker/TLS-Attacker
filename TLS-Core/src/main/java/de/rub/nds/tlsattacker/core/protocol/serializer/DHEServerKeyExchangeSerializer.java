@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
@@ -17,8 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessage> extends
-    ServerKeyExchangeSerializer<T> {
+public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessage>
+    extends ServerKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,9 +27,9 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
      * Constructor for the DHServerKeyExchangeSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * Version of the Protocol
+     *                Version of the Protocol
      */
     public DHEServerKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);

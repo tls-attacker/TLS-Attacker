@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.layer;
@@ -25,18 +24,18 @@ public abstract class RecordLayer {
     /**
      * Tries to parse rawBytes into AbstractRecords. If this is not possible a Parser Exception is thrown
      *
-     * @param rawBytes
-     * Bytes to parse
-     * @return List of parsed records
+     * @param  rawBytes
+     *                  Bytes to parse
+     * @return          List of parsed records
      */
     public abstract List<AbstractRecord> parseRecords(byte[] rawBytes) throws ParserException;
 
     /**
      * Tries to parse rawBytes into AbstractRecords. Exceptions which might occur are handled.
      *
-     * @param rawBytes
-     * Bytes to parse
-     * @return List of parsed records
+     * @param  rawBytes
+     *                  Bytes to parse
+     * @return          List of parsed records
      */
     public abstract List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes);
 
