@@ -7,7 +7,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -33,11 +32,13 @@ public class GreaseExtensionMessage extends ExtensionMessage {
     public GreaseExtensionMessage() {
         super(ExtensionType.GREASE_00);
         this.type = ExtensionType.GREASE_00;
+        data = new byte[0];
     }
 
     public GreaseExtensionMessage(Config config) {
         super(ExtensionType.GREASE_00);
         this.type = ExtensionType.GREASE_00;
+        data = new byte[0];
     }
 
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {
