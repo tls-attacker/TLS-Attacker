@@ -76,9 +76,10 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         if (!externalServerSocket) {
             if (serverSocket == null || serverSocket.isClosed()) {
                 serverSocket = new ServerSocket(port);
+                serverSocket.setSoTimeout(1000);
             }
-            socket.setSoTimeout(1000);
             socket = serverSocket.accept();
+            socket.setSoTimeout(1);
         }
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
