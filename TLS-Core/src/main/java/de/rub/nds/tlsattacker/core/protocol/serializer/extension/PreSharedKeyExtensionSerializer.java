@@ -35,7 +35,7 @@ public class PreSharedKeyExtensionSerializer extends ExtensionSerializer<PreShar
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing PreSharedKeyExtensionMessage");
-        if (connectionType == ConnectionEndType.CLIENT) {
+        if (msg.getSelectedIdentity() == null || msg.getSelectedIdentity().getValue() == null) {
             appendInt(msg.getIdentityListLength().getValue(), ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH);
             LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
             writeIdentities();
