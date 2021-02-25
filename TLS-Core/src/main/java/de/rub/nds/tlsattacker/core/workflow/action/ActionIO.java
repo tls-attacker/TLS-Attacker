@@ -32,21 +32,10 @@ import org.reflections.Reflections;
 
 public class ActionIO {
 
-    // TODO this is a little bit redundant
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * context initialization is expensive, we need to do that only once
-     */
     private static JAXBContext context;
 
-    /**
-     * Returns an initialized JaxbContext
-     *
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     */
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.workflow.action");
@@ -57,20 +46,6 @@ public class ActionIO {
         return context;
     }
 
-    /**
-     * Writes a TlsAction to a File
-     *
-     * @param file
-     * File to which the TestVector should be written
-     * @param action
-     * TlsAction to serialize
-     * @throws FileNotFoundException
-     * Is thrown if the File cannot be found
-     * @throws JAXBException
-     * Is thrown when the Object cannot be serialized
-     * @throws IOException
-     * Is thrown if the Process doesn't have the rights to write to the File
-     */
     public static void write(File file, TlsAction action) throws FileNotFoundException, JAXBException, IOException {
         if (!file.exists()) {
             file.createNewFile();
@@ -79,18 +54,6 @@ public class ActionIO {
         ActionIO.write(fos, action);
     }
 
-    /**
-     * Writes a TlsAction to an Outputstream
-     *
-     * @param outputStream
-     * Outputstream to write to
-     * @param action
-     * TlsAction to serialize
-     * @throws JAXBException
-     * If something goes wrong
-     * @throws IOException
-     * If something goes wrong
-     */
     public static void write(OutputStream outputStream, TlsAction action) throws JAXBException, IOException {
         context = getJAXBContext();
         Marshaller m = context.createMarshaller();
@@ -99,19 +62,6 @@ public class ActionIO {
         outputStream.close();
     }
 
-    /**
-     * Reads a TlsAction from an InputStream
-     *
-     * @param inputStream
-     * Inputstream to read from
-     * @return Read TlsAction
-     * @throws JAXBException
-     * If something goes wrong
-     * @throws IOException
-     * If something goes wrong
-     * @throws XMLStreamException
-     * If something goes wrong
-     */
     public static TlsAction read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();
         Unmarshaller m = context.createUnmarshaller();
@@ -119,20 +69,11 @@ public class ActionIO {
         xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-        TlsAction vector = (TlsAction) m.unmarshal(xsr);
+        TlsAction action = (TlsAction) m.unmarshal(xsr);
         inputStream.close();
-        return vector;
+        return action;
     }
 
-    /**
-     * Returns a deep copy of the action.
-     *
-     * @param tlsAction
-     * @return
-     * @throws javax.xml.bind.JAXBException
-     * @throws java.io.IOException
-     * @throws javax.xml.stream.XMLStreamException
-     */
     public static TlsAction copyTlsAction(TlsAction tlsAction) throws JAXBException, IOException, XMLStreamException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ActionIO.write(stream, tlsAction);
