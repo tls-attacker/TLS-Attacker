@@ -144,6 +144,9 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
     private void prepareKek(BigInteger privateKey, Point publicKey) throws GeneralSecurityException {
         EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedGostCurve());
         Point sharedPoint = curve.mult(privateKey, publicKey);
+        LOGGER.error("Computed a null point for: " + chooser.getSelectedGostCurve() + ", priv:" + privateKey + " pub:"
+            + publicKey.toString());
+
         byte[] pms = PointFormatter.toRawFormat(sharedPoint);
         Digest digest = getKeyAgreementDigestAlgorithm();
         digest.update(pms, 0, pms.length);
@@ -183,14 +186,20 @@ public abstract class GOSTClientKeyExchangePreparator extends ClientKeyExchangeP
 
         GOST28147WrapEngine cipher = new GOST28147WrapEngine();
         cipher.init(wrap, withIV);
-
         byte[] result;
-        if (wrap) {
-            LOGGER.debug("Wrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
-            result = cipher.wrap(bytes, 0, bytes.length);
-        } else {
-            LOGGER.debug("Unwrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
-            result = cipher.unwrap(bytes, 0, bytes.length);
+        try {
+            if (wrap) {
+                LOGGER.debug("Wrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                result = cipher.wrap(bytes, 0, bytes.length);
+            } else {
+                LOGGER.debug("Unwrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                result = cipher.unwrap(bytes, 0, bytes.length);
+            }
+        } catch (IndexOutOfBoundsException ex) {
+            // TODO this is not so nice, but its honestly not worth fixing as gost is not used and this can only happen
+            // during fuzzing
+            LOGGER.warn("IndexOutOfBounds within GOST code. We catch this and return an empty byte array");
+            result = new byte[0];
         }
         LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
         return result;

@@ -49,7 +49,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
-
+        if (sharedPoint == null) {
+            LOGGER.error("Computed a null point for: " + chooser.getSelectedNamedGroup() + ", priv:" + privateKey
+                + " pub:" + publicKey.toString());
+        }
         int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
         return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
     }

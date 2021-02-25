@@ -40,7 +40,14 @@ public class MessageFragmenter {
     public List<DtlsHandshakeMessageFragment> fragmentMessage(HandshakeMessage message, TlsContext context) {
         HandshakeMessageSerializer serializer =
             (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
-        byte[] bytes = serializer.serializeHandshakeMessageContent();
+        byte[] bytes;
+        if (serializer instanceof HandshakeMessageSerializer) {// This is necessary because of SSL2 messages...
+            HandshakeMessageSerializer handshakeMessageSerializer =
+                (HandshakeMessageSerializer) message.getHandler(context).getSerializer(message);
+            bytes = handshakeMessageSerializer.serializeHandshakeMessageContent();
+        } else {
+            bytes = serializer.serializeProtocolMessageContent();
+        }
         List<DtlsHandshakeMessageFragment> dtlsFragments =
             generateFragments(message, bytes, maxFragmentLength, context);
         return dtlsFragments;
@@ -76,9 +83,17 @@ public class MessageFragmenter {
             byte[] fragmentBytes =
                 Arrays.copyOfRange(handshakeBytes, currentOffset,
                     Math.min(currentOffset + maxFragmentLength, handshakeBytes.length));
+            int sequence;
+            if (message.getMessageSequence() != null) {
+                sequence = message.getMessageSequence().getValue();
+            } else {
+                // it is possible that not all messages are created under a DTLS context such that they do not have a
+                // message sequence
+                sequence = 0;
+            }
             DtlsHandshakeMessageFragment fragment =
-                new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(), fragmentBytes, message
-                    .getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
+                new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(), fragmentBytes, sequence,
+                    currentOffset, handshakeBytes.length);
             fragment.getHandler(context).prepareMessage(fragment);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;

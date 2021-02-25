@@ -74,10 +74,18 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             if (extension != null) {
                 algoList = convertSignatureAndHashAlgorithms(extension.getSignatureAndHashAlgorithms().getValue());
             } else {
-                algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+                if (message.getSignatureHashAlgorithms() != null) {
+                    algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+                } else {
+                    algoList = new LinkedList<>();
+                }
             }
         } else {
-            algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+            if (message.getSignatureHashAlgorithms() != null) {
+                algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+            } else {
+                algoList = new LinkedList<>();
+            }
         }
         tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
         LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to " + algoList.toString());
