@@ -78,7 +78,11 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                 new byte[0], curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
-
+        if(key.length %16 != 0)
+        {
+            LOGGER.warn("PWD key is of incorrect size. Padding to 16 byte");
+            key = Arrays.copyOf(key, 16);
+        }
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
         SivMode aesSIV = new SivMode();
