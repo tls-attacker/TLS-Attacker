@@ -149,7 +149,7 @@ public abstract class Parser<T> {
             byte b = parseByteField(1);
             stream.write(b);
             if (b == endSequence) {
-                return new String(stream.toByteArray());
+                return stream.toString();
             }
         }
     }
