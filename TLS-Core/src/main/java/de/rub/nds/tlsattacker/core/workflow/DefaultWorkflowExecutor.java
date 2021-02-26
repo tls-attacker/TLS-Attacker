@@ -109,10 +109,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         for (TlsContext ctx : allTlsContexts) {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
-                TcpTransportHandler thandler = ((TcpTransportHandler) handler);
-                if (handler instanceof ServerTcpTransportHandler) {
-                    ServerTcpTransportHandler shandler = (ServerTcpTransportHandler) handler;
-                }
                 SocketState socketSt =
                     ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
                 ctx.setFinalSocketState(socketSt);
