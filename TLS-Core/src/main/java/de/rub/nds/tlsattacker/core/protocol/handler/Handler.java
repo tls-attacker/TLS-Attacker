@@ -19,11 +19,11 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
  * The Object that should be Handled
  */
 public abstract class Handler<T> {
-    public abstract Parser getParser(byte[] message, int pointer);
+    public abstract Parser<T> getParser(byte[] message, int pointer);
 
-    public abstract Preparator getPreparator(T message);
+    public abstract Preparator<T> getPreparator(T message);
 
-    public abstract Serializer getSerializer(T message);
+    public abstract Serializer<T> getSerializer(T message);
 
     protected abstract void adjustContext(T object);
 }
