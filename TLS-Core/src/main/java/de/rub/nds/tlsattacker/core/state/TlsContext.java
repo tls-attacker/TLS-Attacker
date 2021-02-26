@@ -43,6 +43,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -139,6 +140,13 @@ public class TlsContext {
     private byte[] psk;
 
     /**
+     * Cached NewSessionTicketMessage
+     */
+    private NewSessionTicketMessage cachedNewSessionTicketMessage = null;
+
+    private boolean clientFinishedSent = false;
+
+    /**
      * The selected earlyData PSK.
      */
     private byte[] earlyDataPsk;
@@ -177,6 +185,11 @@ public class TlsContext {
      * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
+
+    /**
+     * Master secret established during the handshake.
+     */
+    private byte[] resumptionMasterSecret;
 
     /**
      * Client Extended Random used in Extended Random Extension
@@ -1378,6 +1391,10 @@ public class TlsContext {
         return masterSecret;
     }
 
+    public byte[] getResumptionMasterSecret() {
+        return resumptionMasterSecret;
+    }
+
     public CipherSuite getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -1389,6 +1406,10 @@ public class TlsContext {
     public void setMasterSecret(byte[] masterSecret) {
         keylogfile.writeKey("CLIENT_RANDOM", masterSecret);
         this.masterSecret = masterSecret;
+    }
+
+    public byte[] setResumptionMasterSecret(byte[] resumptionMasterSecret) {
+        return this.resumptionMasterSecret = resumptionMasterSecret;
     }
 
     public void setSelectedCipherSuite(CipherSuite selectedCipherSuite) {
@@ -2066,6 +2087,22 @@ public class TlsContext {
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
+    }
+
+    public NewSessionTicketMessage getCachedNewSessionTicketMessage() {
+        return cachedNewSessionTicketMessage;
+    }
+
+    public void setCachedNewSessionTicketMessage(NewSessionTicketMessage cachedNewSessionTicketMessage) {
+        this.cachedNewSessionTicketMessage = cachedNewSessionTicketMessage;
+    }
+
+    public boolean isClientFinishedSent() {
+        return clientFinishedSent;
+    }
+
+    public void setClientFinishedSent(boolean clientFinishedSent) {
+        this.clientFinishedSent = clientFinishedSent;
     }
 
     /**
