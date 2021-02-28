@@ -12,15 +12,13 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DtlsCloseConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
@@ -108,9 +106,14 @@ public class State {
     public final void initState() {
         // TODO: Suche nach geeigneter Stelle
         if (config.isFinishWithCloseNotify() && config.getHighestProtocolVersion().isDTLS()) {
-            AlertMessage alert = new AlertMessage();
-            alert.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-            workflowTrace.addTlsAction(new SendAction(alert));
+            DtlsCloseConnectionAction closeConnectionAction = new DtlsCloseConnectionAction(false);
+            closeConnectionAction.getActionOptions().add(ActionOption.MAY_FAIL);
+            workflowTrace.addTlsAction(closeConnectionAction);
+            if (config.isSafelyFinishWithCloseNotify()) {
+                DtlsCloseConnectionAction closeConnectionWithEpochZeroAction = new DtlsCloseConnectionAction(true);
+                closeConnectionWithEpochZeroAction.getActionOptions().add(ActionOption.MAY_FAIL);
+                workflowTrace.addTlsAction(closeConnectionWithEpochZeroAction);
+            }
         }
 
         // Keep a snapshot to restore user defined trace values after filtering.
