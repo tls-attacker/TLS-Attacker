@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
@@ -79,6 +80,9 @@ public class CyclicParserSerializerTest {
                 // Trying to find equivalent preparator, message and serializer
                 try {
                     Class<? extends ProtocolMessage> protocolMessageClass = getProtocolMessage(testName);
+                    if (protocolMessageClass == DtlsHandshakeMessageFragment.class) {
+                        continue;
+                    }
                     try {
                         Constructor tempConstructor = getMessageConstructor(protocolMessageClass);
                         if (tempConstructor != null) {
