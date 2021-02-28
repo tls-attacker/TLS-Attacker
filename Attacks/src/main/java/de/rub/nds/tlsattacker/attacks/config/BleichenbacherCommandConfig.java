@@ -134,6 +134,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(false);
         config.setWorkflowExecutorShouldClose(false);
 
+        if (protocolVersionDelegate.getProtocolVersion().isDTLS()) {
+            config.setFinishWithCloseNotify(true);
+            config.setSafelyFinishWithCloseNotify(true);
+        }
+
         return config;
     }
 
