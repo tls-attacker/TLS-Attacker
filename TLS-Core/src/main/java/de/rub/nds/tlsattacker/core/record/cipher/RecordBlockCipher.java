@@ -287,7 +287,7 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPlainRecordBytes(plainData);
             plainData = computations.getPlainRecordBytes().getValue();
 
-            LOGGER.info(ArrayConverter.bytesToHexString(plainData));
+            LOGGER.debug("Decrypted plaintext: " + ArrayConverter.bytesToHexString(plainData));
             parser = new DecryptionParser(0, plainData);
             byte[] cleanProtocolBytes =
                 parser.parseByteArrayField(plainData.length - (plainData[plainData.length - 1] + 1));

@@ -50,7 +50,7 @@ public class ConfigTest {
      */
     @Test
     public void assertConfigInResourcesIsEqual() {
-        ConfigIO.write(Config.createConfig(), new File("src/main/resources/default_config.xml"));
+        ConfigIO.write(new Config(), new File("src/main/resources/default_config.xml"));
     }
 
     private void stripConfig(Config config) {

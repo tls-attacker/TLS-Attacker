@@ -47,22 +47,5 @@
             <goals>
                 <goal>site</goal>
             </goals>
-        </action>
-    <action>
-            <actionName>CUSTOM-No Tests</actionName>
-            <displayName>No Tests</displayName>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </action>
-    <action>
-            <actionName>CUSTOM-No Tests 2</actionName>
-            <displayName>No Tests 2</displayName>
-            <goals>
-                <goal>install</goal>
-            </goals>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </action>
+    </action>
 </actions>

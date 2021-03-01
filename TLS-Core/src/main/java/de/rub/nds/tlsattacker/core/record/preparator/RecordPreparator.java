@@ -54,7 +54,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareSequenceNumber(record);
         compressor.compress(record);
         if (chooser.getSelectedProtocolVersion().isTLS13()
-            && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            && record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC
+            && !chooser.getConfig().isEncryptChangeCipherSpec()) {
             // The CCS message in TLS 1.3 is an exception that does not get
             // encrypted
             record.prepareComputations();

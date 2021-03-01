@@ -168,7 +168,10 @@
       </xs:element>
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
+      <xs:element name="prefferedCertRsaKeySize" type="xs:int"/>
+      <xs:element name="prefferedCertDssKeySize" type="xs:int"/>
       <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientRenegotiationInfo" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerRenegotiationInfo" type="xs:string" minOccurs="0"/>
@@ -308,6 +311,7 @@
       <xs:element name="addClientCertificateUrlExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addTrustedCaIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="updateTimestamps" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
@@ -446,6 +450,7 @@
       <xs:element name="defaultServerSessionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSelectedCompressionMethod" type="compressionMethod" minOccurs="0"/>
       <xs:element name="dtlsDefaultCookie" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultExtensionCookie" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultCertificateRequestContext" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPRFAlgorithm" type="prfAlgorithm" minOccurs="0"/>
       <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
@@ -2001,6 +2006,7 @@
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
       <xs:enumeration value="EARLY_CLEAN_SHUTDOWN"/>
+      <xs:enumeration value="IGNORE_UNEXPECTED_NEW_SESSION_TICKETS"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_WARNINGS"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>

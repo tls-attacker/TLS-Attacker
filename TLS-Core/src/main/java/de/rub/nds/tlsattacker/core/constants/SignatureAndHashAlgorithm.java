@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,7 +97,6 @@ public enum SignatureAndHashAlgorithm {
 
     public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(DSA_MD5);
         algoList.add(DSA_SHA1);
         algoList.add(DSA_SHA224);
         algoList.add(DSA_SHA256);
@@ -108,7 +108,6 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(RSA_SHA256);
         algoList.add(RSA_SHA384);
         algoList.add(RSA_SHA512);
-        algoList.add(ECDSA_MD5);
         algoList.add(ECDSA_SHA1);
         algoList.add(ECDSA_SHA224);
         algoList.add(ECDSA_SHA256);
@@ -138,6 +137,12 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         return algos;
+    }
+
+    public static List<SignatureAndHashAlgorithm> getImplementedTls13SignatureAndHashAlgorithms() {
+        return getTls13SignatureAndHashAlgorithms().stream()
+            .filter(algorithm -> SignatureAndHashAlgorithm.getImplemented().contains(algorithm))
+            .collect(Collectors.toList());
     }
 
     private int value;
