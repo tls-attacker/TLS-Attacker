@@ -286,9 +286,9 @@ public class Config implements Serializable {
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
 
     /**
-     * Determine if CCS should be encrypted if encryption is set up for record layer
+     * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
      */
-    private Boolean encryptChangeCipherSpec = false;
+    private Boolean encryptChangeCipherSpecTls13 = false;
 
     /**
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session ticket since we initiate a new
@@ -3892,10 +3892,10 @@ public class Config implements Serializable {
     }
 
     public Boolean isEncryptChangeCipherSpec() {
-        return encryptChangeCipherSpec;
+        return encryptChangeCipherSpecTls13;
     }
 
     public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
-        this.encryptChangeCipherSpec = encryptChangeCipherSpec;
+        this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
     }
 }
