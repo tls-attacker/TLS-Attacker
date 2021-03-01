@@ -9,6 +9,8 @@
 
   <xs:element name="bigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
 
+  <xs:element name="bigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+
   <xs:element name="bigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
 
   <xs:element name="bigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
@@ -806,6 +808,7 @@
         <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
         <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
         <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
         <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
         <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
         <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
@@ -832,7 +835,6 @@
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
-      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -896,6 +898,13 @@
 
   <xs:complexType name="bigIntegerInteractiveModification">
     <xs:sequence>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bigIntegerMultiplyModification">
+    <xs:sequence>
+      <xs:element name="factor" type="xs:integer" minOccurs="0"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -1075,7 +1084,6 @@
 
   <xs:complexType name="modifiableInteger">
     <xs:sequence>
-      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
       <xs:choice minOccurs="0">
         <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
         <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
@@ -1084,6 +1092,7 @@
         <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
         <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
         <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
         <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
         <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
         <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
@@ -1117,7 +1126,6 @@
 
   <xs:complexType name="modifiableByte">
     <xs:sequence>
-      <xs:element name="autoformat" type="xs:boolean" minOccurs="0"/>
       <xs:choice minOccurs="0">
         <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
         <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
@@ -1126,6 +1134,7 @@
         <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
         <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
         <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
         <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
         <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
         <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
