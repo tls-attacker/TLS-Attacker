@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -29,7 +30,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,7 +72,7 @@ public class ConfigTest {
      */
     @Test
     public void generateAppdataConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setDefaultApplicationMessageData("ayy lmao");
         writeToConfig(config, "appdata.config");
@@ -80,7 +80,7 @@ public class ConfigTest {
 
     @Test
     public void generateConfigBlobConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setRecordLayerType(RecordLayerType.BLOB);
         writeToConfig(config, "config_blob.config");
@@ -88,7 +88,7 @@ public class ConfigTest {
 
     @Test
     public void generateEcClientAuthenticationConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setClientAuthentication(true);
 
@@ -103,7 +103,7 @@ public class ConfigTest {
 
     @Test
     public void generateEncryptThenMacConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddEncryptThenMacExtension(true);
         writeToConfig(config, "encryptThenMac.config");
@@ -111,7 +111,7 @@ public class ConfigTest {
 
     @Test
     public void generateEnforceSettingsConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setEnforceSettings(true);
         writeToConfig(config, "enforceSettings.config");
@@ -119,7 +119,7 @@ public class ConfigTest {
 
     @Test
     public void generateEsniServerConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddEncryptedServerNameIndicationExtension(true);
 
@@ -147,7 +147,7 @@ public class ConfigTest {
 
     @Test
     public void generateExtendedMasterSecretConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddExtendedMasterSecretExtension(true);
         writeToConfig(config, "extended_master_secret.config");
@@ -155,7 +155,7 @@ public class ConfigTest {
 
     @Test
     public void generateExtendedRandomConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddExtendedRandomExtension(true);
         writeToConfig(config, "extended_random.config");
@@ -163,7 +163,7 @@ public class ConfigTest {
 
     @Test
     public void generateHeartbeatConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddHeartbeatExtension(true);
         writeToConfig(config, "heartbeat.config");
@@ -171,7 +171,7 @@ public class ConfigTest {
 
     @Test
     public void generateHttpsConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setHttpsParsingEnabled(true);
         writeToConfig(config, "https.config");
@@ -179,7 +179,7 @@ public class ConfigTest {
 
     @Test
     public void generatePskConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("AA"));
         writeToConfig(config, "psk.config");
@@ -187,7 +187,7 @@ public class ConfigTest {
 
     @Test
     public void generatePwdConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
@@ -238,7 +238,7 @@ public class ConfigTest {
 
     @Test
     public void generatePwd13Config() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
@@ -294,7 +294,7 @@ public class ConfigTest {
 
     @Test
     public void generateRsaClientAuthenticationConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setClientAuthentication(true);
 
@@ -309,7 +309,7 @@ public class ConfigTest {
 
     @Test
     public void generateSniConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddServerNameIndicationExtension(true);
         writeToConfig(config, "sni.config");
@@ -317,7 +317,7 @@ public class ConfigTest {
 
     @Test
     public void generateSrpConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setAddSRPExtension(true);
         config.setServerSendsApplicationData(true);
@@ -326,7 +326,7 @@ public class ConfigTest {
 
     @Test
     public void generateSSL2Config() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
 
@@ -340,7 +340,7 @@ public class ConfigTest {
 
     @Test
     public void stripTracesConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
         config.setResetWorkflowTracesBeforeSaving(true);
         writeToConfig(config, "stripTraces.config");
@@ -348,7 +348,7 @@ public class ConfigTest {
 
     @Test
     public void generateTls13Config() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -413,7 +413,7 @@ public class ConfigTest {
 
     @Test
     public void generateTls13Draft21Config() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
@@ -473,7 +473,7 @@ public class ConfigTest {
 
     @Test
     public void generateTls13EsniConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -536,7 +536,7 @@ public class ConfigTest {
 
     @Test
     public void generateTls13SniConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -596,7 +596,7 @@ public class ConfigTest {
 
     @Test
     public void generateTlsX25519Config() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -656,7 +656,7 @@ public class ConfigTest {
 
     @Test
     public void generateTlsZeroRttConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -724,7 +724,7 @@ public class ConfigTest {
 
     @Test
     public void generateTokenbindingConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         stripConfig(config);
 
         config.setAddTokenBindingExtension(true);
