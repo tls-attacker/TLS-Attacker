@@ -48,9 +48,7 @@ public class ClientEsniInnerSerializerTest {
         clientEsniInner = new ClientEsniInner();
         clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
         clientEsniInnerSerializer = new ClientEsniInnerSerializer(clientEsniInner);
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameTypeConfig(nameType);
-        pair.setServerNameConfig(hostname.getBytes(StandardCharsets.UTF_8));
+        ServerNamePair pair = new ServerNamePair(nameType, hostname.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
 
         clientEsniInnerPreparator.prepare();

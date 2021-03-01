@@ -29,9 +29,7 @@ public class ServerNamePairPreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        pair = new ServerNamePair();
-        pair.setServerNameConfig(serverName);
-        pair.setServerNameTypeConfig(serverNameType);
+        pair = new ServerNamePair(serverNameType, serverName);
         preparator = new ServerNamePairPreparator(context.getChooser(), pair);
     }
 

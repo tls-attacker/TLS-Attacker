@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -178,7 +179,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
         }
         if (getEncryptedKeyData() != null && getEncryptedKeyData().getValue() != null) {
             sb.append("\n Encrypted Key Data: ").append(
-                    ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
+                ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
         }
         if (getKeyArgData() != null && getKeyArgData().getValue() != null) {
             sb.append("\n Key Arg Data: ").append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));

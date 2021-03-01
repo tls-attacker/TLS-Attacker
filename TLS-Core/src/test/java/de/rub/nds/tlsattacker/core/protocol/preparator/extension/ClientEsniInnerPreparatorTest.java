@@ -47,9 +47,7 @@ public class ClientEsniInnerPreparatorTest {
 
         ClientEsniInner clientEsniInner = new ClientEsniInner();
         ClientEsniInnerPreparator clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameTypeConfig(nameType);
-        pair.setServerNameConfig(hostName.getBytes(StandardCharsets.UTF_8));
+        ServerNamePair pair = new ServerNamePair(nameType, hostName.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
         context.setEsniPaddedLength(260);
 

@@ -119,15 +119,16 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                ServerNamePair pair = new ServerNamePair();
+                byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
-                    pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
-                        .getBytes(Charset.forName("ASCII")));
+                    serverName =
+                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
-                    pair.setServerName(new byte[0]);
+                    serverName = new byte[0];
                 }
-                pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
+                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
+
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -135,14 +136,15 @@ public class ClientHelloMessage extends HelloMessage {
                 EncryptedServerNameIndicationExtensionMessage extensionMessage =
                     new EncryptedServerNameIndicationExtensionMessage();
                 String hostname = tlsConfig.getDefaultClientConnection().getHostname();
-                ServerNamePair pair = new ServerNamePair();
-                if (hostname != null) {
-                    pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
-                        .getBytes(Charset.forName("ASCII")));
+                byte[] serverName;
+                if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
+                    serverName =
+                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
-                    pair.setServerName(new byte[0]);
+                    serverName = new byte[0];
                 }
+                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }

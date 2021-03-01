@@ -92,9 +92,9 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
-                    .getBytes(Charset.forName("US-ASCII")));
+                ServerNamePair pair =
+                    new ServerNamePair(tlsConfig.getSniType().getValue(), tlsConfig.getDefaultServerConnection()
+                        .getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }

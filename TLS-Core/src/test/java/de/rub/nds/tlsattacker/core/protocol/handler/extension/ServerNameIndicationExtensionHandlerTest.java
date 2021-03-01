@@ -42,9 +42,9 @@ public class ServerNameIndicationExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerName("localhost".getBytes());
-        pair.setServerNameType(NameType.HOST_NAME.getValue());
+        ServerNamePair pair = new ServerNamePair(NameType.HOST_NAME.getValue(), "localhost".getBytes());
+        pair.setServerName(pair.getServerNameConfig());
+        pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustTLSContext(msg);
@@ -58,9 +58,9 @@ public class ServerNameIndicationExtensionHandlerTest {
     public void testUndefinedAdjustTLSContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerName("localhost".getBytes());
-        pair.setServerNameType((byte) 99);
+        ServerNamePair pair = new ServerNamePair((byte) 99, "localhost".getBytes());
+        pair.setServerName(pair.getServerNameConfig());
+        pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustTLSContext(msg);
