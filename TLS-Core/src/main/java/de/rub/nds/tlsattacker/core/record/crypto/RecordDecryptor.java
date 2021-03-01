@@ -75,35 +75,5 @@ public class RecordDecryptor extends Decryptor {
             }
         }
         context.increaseReadSequenceNumber();
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
-            && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            checkForEndOfEarlyData(record.getCleanProtocolMessageBytes().getValue());
-        }
-    }
-
-    private void checkForEndOfEarlyData(byte[] unpaddedBytes) {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
-        if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
-            adjustClientCipherAfterEarly();
-        }
-    }
-
-    public void adjustClientCipherAfterEarly() {
-        try {
-            context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            LOGGER.debug("Setting cipher for client to use handshake secrets");
-            KeySet clientKeySet =
-                KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
-                    context.getActiveClientKeySetType());
-            RecordCipher recordCipherClient =
-                RecordCipherFactory.getRecordCipher(context, clientKeySet, context.getChooser()
-                    .getSelectedCipherSuite());
-            context.getRecordLayer().setRecordCipher(recordCipherClient);
-            context.getRecordLayer().updateDecryptionCipher();
-            context.setReadSequenceNumber(0);
-        } catch (CryptoException | NoSuchAlgorithmException ex) {
-            LOGGER.error("Generating KeySet failed", ex);
-            throw new WorkflowExecutionException(ex.toString());
-        }
     }
 }

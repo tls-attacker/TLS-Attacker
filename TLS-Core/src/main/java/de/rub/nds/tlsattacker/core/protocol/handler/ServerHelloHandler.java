@@ -279,7 +279,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     /**
-     * Computes the shared secret for ECDH_X25519
+     * Computes the shared secret for Elliptic Curves
      *
      * @return
      */
@@ -294,7 +294,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case ECDH_X25519:
             case ECDH_X448:
                 RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-                return rfcCurve.computeSharedSecretDecodedPoint(privateKey, publicPoint);
+                return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicPoint);
             case SECP160K1:
             case SECP160R1:
             case SECP160R2:

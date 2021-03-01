@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -79,9 +80,12 @@ public class RecordAEADCipher extends RecordCipher {
 
     private byte[] prepareEncryptionGcmNonce(byte[] aeadSalt, byte[] explicitNonce, Record record) {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
-        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
-            // Nonce construction is different for chacha & tls1.3
+
+        // Nonce construction is different for chacha & tls1.3
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
@@ -210,9 +214,12 @@ public class RecordAEADCipher extends RecordCipher {
             ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
-        if (version.isTLS13() || bulkCipherAlg == BulkCipherAlgorithm.CHACHA20_POLY1305) {
-            // Nonce construction is different for chacha & tls1.3
+
+        // Nonce construction is different for chacha & tls1.3
+        if (version.isTLS13() || cipherAlg == CipherAlgorithm.CHA_CHA_20_POLY1305) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305) {
+            gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
