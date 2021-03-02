@@ -13,6 +13,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
@@ -41,7 +44,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private HandshakeMessageSerializer serializer;
+    private HandshakeMessageSerializer<T> serializer;
     private final HandshakeMessage msg;
 
     public HandshakeMessagePreparator(Chooser chooser, T message) {
@@ -87,8 +90,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     }
                 }
                 ExtensionHandler handler =
-                    HandlerFactory.getExtensionHandler(chooser.getContext(),
-                        extensionMessage.getExtensionTypeConstant());
+                        HandlerFactory.getExtensionHandler(chooser.getContext(),
+                                extensionMessage.getExtensionTypeConstant());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
@@ -107,18 +110,18 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
                 ExtensionHandler handler =
-                    HandlerFactory.getExtensionHandler(chooser.getContext(),
-                        extensionMessage.getExtensionTypeConstant());
+                        HandlerFactory.getExtensionHandler(chooser.getContext(),
+                                extensionMessage.getExtensionTypeConstant());
                 Preparator preparator = handler.getPreparator(extensionMessage);
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
-                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
                 } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
-                    && msg instanceof ClientHelloMessage && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && msg instanceof ClientHelloMessage && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) msg;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                        .setClientHelloMessage(clientHelloMessage);
+                            .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
 

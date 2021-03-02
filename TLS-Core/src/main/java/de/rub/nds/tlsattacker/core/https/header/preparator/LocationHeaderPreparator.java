@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

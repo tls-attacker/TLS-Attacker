@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,7 +58,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public TlsMessageHandler getHandler(TlsContext context) {
         return new UnknownHandshakeHandler(context);
     }
 

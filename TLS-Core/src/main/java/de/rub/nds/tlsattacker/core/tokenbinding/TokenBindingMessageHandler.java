@@ -10,10 +10,10 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage> {
+public class TokenBindingMessageHandler extends TlsMessageHandler<TokenBindingMessage> {
 
     public TokenBindingMessageHandler(TlsContext tlsContext) {
         super(tlsContext);

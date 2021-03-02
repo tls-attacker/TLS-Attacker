@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -47,7 +47,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public TlsMessageHandler getHandler(TlsContext context) {
         return new DHClientKeyExchangeHandler(context);
     }
 

@@ -12,9 +12,6 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -49,11 +46,11 @@ public class CyclicParserSerializerTest {
         Set<Class<? extends ProtocolMessageParser>> parserClasses =
             reflections.getSubTypesOf(ProtocolMessageParser.class);
         CONSOLE.info("ProtocolMessageParser classes:" + parserClasses.size());
-        ProtocolMessageParser parser = null;
-        ProtocolMessagePreparator preparator = null;
+        ProtocolMessageParser<? extends ProtocolMessage> parser = null;
+        ProtocolMessagePreparator<? extends ProtocolMessage> preparator = null;
         ProtocolMessage message = null;
         Config config = null;
-        ProtocolMessageSerializer serializer = null;
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
                 CONSOLE.info("Skipping:" + someParserClass.getSimpleName());
@@ -163,10 +160,10 @@ public class CyclicParserSerializerTest {
         Set<Class<? extends ProtocolMessageParser>> parserClasses =
             reflections.getSubTypesOf(ProtocolMessageParser.class);
         CONSOLE.info("ProtocolMessageParser classes:" + parserClasses.size());
-        ProtocolMessageParser parser = null;
-        ProtocolMessagePreparator preparator = null;
+        ProtocolMessageParser<? extends ProtocolMessage> parser = null;
+        ProtocolMessagePreparator<? extends ProtocolMessage> preparator = null;
         ProtocolMessage message = null;
-        ProtocolMessageSerializer serializer = null;
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer = null;
         for (Class<? extends ProtocolMessageParser> someParserClass : parserClasses) {
             if (Modifier.isAbstract(someParserClass.getModifiers())) {
                 CONSOLE.info("Skipping:" + someParserClass.getSimpleName());
@@ -190,6 +187,12 @@ public class CyclicParserSerializerTest {
                 if (version.isDTLS()) {
                     continue;
                 }
+
+                TlsContext context = new TlsContext();
+                context.setSelectedProtocolVersion(version);
+                context.getConfig().setHighestProtocolVersion(version);
+                context.getConfig().setDefaultHighestClientProtocolVersion(version);
+
                 // Trying to find equivalent preparator, message and serializer
                 try {
                     Class<? extends ProtocolMessage> protocolMessageClass = getProtocolMessage(testName);
@@ -207,10 +210,6 @@ public class CyclicParserSerializerTest {
                     }
 
                     try {
-                        TlsContext context = new TlsContext();
-                        context.setSelectedProtocolVersion(version);
-                        context.getConfig().setHighestProtocolVersion(version);
-                        context.getConfig().setDefaultHighestClientProtocolVersion(version);
                         preparator =
                             (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
                                 context.getChooser(), message);
@@ -238,8 +237,8 @@ public class CyclicParserSerializerTest {
                     byte[] serializedMessage = serializer.serialize();
                     try {
                         parser =
-                            (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
-                                serializedMessage, version);
+                            (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                                serializedMessage, version, context.getConfig());
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);

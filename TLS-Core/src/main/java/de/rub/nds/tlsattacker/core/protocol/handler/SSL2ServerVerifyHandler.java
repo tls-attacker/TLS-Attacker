@@ -11,9 +11,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;

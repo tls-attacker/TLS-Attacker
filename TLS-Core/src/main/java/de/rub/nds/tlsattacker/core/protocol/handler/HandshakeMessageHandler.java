@@ -21,11 +21,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServer
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @param <ProtocolMessageT>
+ * @param <HandshakeMessageT>
  * The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<ProtocolMessageT extends HandshakeMessage> extends
-    ProtocolMessageHandler<ProtocolMessageT> {
+public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage> extends
+        TlsMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -43,26 +43,26 @@ public abstract class HandshakeMessageHandler<ProtocolMessageT extends Handshake
     }
 
     @Override
-    public void prepareAfterParse(ProtocolMessageT handshakeMessage) {
-        super.prepareAfterParse(handshakeMessage);
-        if (handshakeMessage.getExtensions() != null) {
-            for (ExtensionMessage extensionMessage : handshakeMessage.getExtensions()) {
+    public void prepareAfterParse(HandshakeMessageT message) {
+        super.prepareAfterParse(message);
 
-                HandshakeMessageType handshakeMessageType = handshakeMessage.getHandshakeMessageType();
+        if (message.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : message.getExtensions()) {
+                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
+
                 ExtensionHandler extensionHandler =
-                    HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
+                        HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
-                        (EncryptedServerNameIndicationExtensionPreparator) extensionHandler
-                            .getPreparator(extensionMessage);
-                    if (handshakeMessage instanceof ClientHelloMessage) {
-                        preparator.setClientHelloMessage((ClientHelloMessage) handshakeMessage);
+                            (EncryptedServerNameIndicationExtensionPreparator) extensionHandler
+                                    .getPreparator(extensionMessage);
+                    if (message instanceof ClientHelloMessage) {
+                        preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }
                     preparator.prepareAfterParse();
                 }
             }
         }
     }
-
 }

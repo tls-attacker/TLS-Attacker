@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,7 +29,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public TlsMessageHandler getHandler(TlsContext context) {
         return new ServerHelloDoneHandler(context);
     }
 

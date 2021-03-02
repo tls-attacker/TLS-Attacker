@@ -16,8 +16,13 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -25,6 +30,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFact
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +41,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  * Type of the HandshakeMessages to parse
  */
-public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
+public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends TlsMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecHandler extends TlsMessageHandler<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

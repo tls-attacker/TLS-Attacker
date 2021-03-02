@@ -8,12 +8,14 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import static org.junit.Assert.*;
+
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import org.junit.Before;
 import org.junit.Test;
 

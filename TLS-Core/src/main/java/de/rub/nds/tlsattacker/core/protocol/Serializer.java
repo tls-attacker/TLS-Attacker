@@ -8,7 +8,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.serializer;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;

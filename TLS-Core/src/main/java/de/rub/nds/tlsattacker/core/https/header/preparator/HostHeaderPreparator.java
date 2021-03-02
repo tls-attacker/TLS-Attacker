@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
 import de.rub.nds.tlsattacker.core.https.header.HostHeader;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class HostHeaderPreparator extends Preparator<HostHeader> {

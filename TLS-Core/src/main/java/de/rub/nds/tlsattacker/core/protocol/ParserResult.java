@@ -8,9 +8,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 
 public class ParserResult {
 

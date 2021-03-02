@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.https.header.serializer;
 
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
 public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
 

@@ -41,7 +41,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;

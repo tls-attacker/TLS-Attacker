@@ -24,12 +24,9 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -269,7 +266,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                 if (message instanceof ChangeCipherSpecMessage) {
                     break;
                 }
-                if (message.isHandshakeMessage()) {
+                if (message instanceof HandshakeMessage) {
                     HandshakeMessage handshakeMessage = (HandshakeMessage) message;
                     if (handshakeMessage.getIncludeInDigest()) {
                         tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

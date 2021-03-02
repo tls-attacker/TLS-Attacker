@@ -25,13 +25,13 @@ import org.apache.logging.log4j.Logger;
  * The HelloMessage that should be prepared
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
-    HandshakeMessagePreparator<HandshakeMessage> {
+    HandshakeMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final HelloMessage msg;
+    private final T msg;
 
-    public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
+    public HelloMessagePreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
     }

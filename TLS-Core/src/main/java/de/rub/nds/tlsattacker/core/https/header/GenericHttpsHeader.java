@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.https.header;
 
 import de.rub.nds.tlsattacker.core.https.header.preparator.GenericHttpsHeaderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class GenericHttpsHeader extends HttpsHeader {
@@ -45,7 +45,7 @@ public class GenericHttpsHeader extends HttpsHeader {
     }
 
     @Override
-    public Preparator getPreparator(Chooser chooser) {
+    public GenericHttpsHeaderPreparator getPreparator(Chooser chooser) {
         return new GenericHttpsHeaderPreparator(chooser, this);
     }
 }

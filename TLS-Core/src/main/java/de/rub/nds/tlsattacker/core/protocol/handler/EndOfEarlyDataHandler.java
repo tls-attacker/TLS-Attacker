@@ -12,9 +12,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;

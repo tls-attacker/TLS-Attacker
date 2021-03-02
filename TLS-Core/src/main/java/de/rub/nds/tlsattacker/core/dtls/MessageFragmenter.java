@@ -10,15 +10,14 @@
 
 package de.rub.nds.tlsattacker.core.dtls;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import org.bouncycastle.util.Arrays;
 
 /**
@@ -66,7 +65,7 @@ public class MessageFragmenter {
             DtlsHandshakeMessageFragment fragment =
                 new DtlsHandshakeMessageFragment(message.getHandshakeMessageType(), fragmentBytes, message
                     .getMessageSequence().getValue(), currentOffset, handshakeBytes.length);
-            fragment.getHandler(context).prepareMessage(fragment);
+            SendMessageHelper.prepareMessage(fragment, context);
             fragments.add(fragment);
             currentOffset += maxFragmentLength;
         } while (currentOffset < handshakeBytes.length);

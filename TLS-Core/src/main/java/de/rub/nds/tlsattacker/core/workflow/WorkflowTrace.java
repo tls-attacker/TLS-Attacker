@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.ByteArrayInputStream;
@@ -458,7 +459,7 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
-    public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getFirstReceivedMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -470,7 +471,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getLastReceivedMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getLastReceivedMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -482,7 +483,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getFirstSendMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());
@@ -494,7 +495,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
+    public <T extends TlsMessage> T getLastSendMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
         messageList =
             messageList.stream().filter(i -> msgClass.isAssignableFrom(i.getClass())).collect(Collectors.toList());

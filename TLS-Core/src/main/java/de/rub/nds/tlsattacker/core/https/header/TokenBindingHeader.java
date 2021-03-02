@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.https.header;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.https.header.preparator.TokenBindingHeaderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -34,7 +34,7 @@ public class TokenBindingHeader extends HttpsHeader {
     }
 
     @Override
-    public Preparator getPreparator(Chooser chooser) {
+    public TokenBindingHeaderPreparator getPreparator(Chooser chooser) {
         return new TokenBindingHeaderPreparator(chooser, this);
     }
 }

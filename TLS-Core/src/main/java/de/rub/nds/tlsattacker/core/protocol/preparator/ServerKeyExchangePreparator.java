@@ -18,9 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  * The ServerKeyExchangeMessage that should be prepared
  */
 public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMessage> extends
-    HandshakeMessagePreparator<ServerKeyExchangeMessage> {
+    HandshakeMessagePreparator<T> {
 
-    public ServerKeyExchangePreparator(Chooser chooser, ServerKeyExchangeMessage message) {
+    public ServerKeyExchangePreparator(Chooser chooser, T message) {
         super(chooser, message);
     }
 

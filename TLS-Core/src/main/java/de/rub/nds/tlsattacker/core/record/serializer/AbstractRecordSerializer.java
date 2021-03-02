@@ -10,7 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.record.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
 /**
  * @param <AbstractRecordT>

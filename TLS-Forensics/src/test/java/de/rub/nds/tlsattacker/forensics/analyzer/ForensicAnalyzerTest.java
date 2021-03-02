@@ -19,11 +19,12 @@ import java.util.function.Predicate;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -43,11 +44,8 @@ public class ForensicAnalyzerTest {
         @Override
         public boolean matches(TlsAction value) {
             return value.isMessageAction()
-                && ((MessageAction) value).getMessages().stream().anyMatch(new Predicate<ProtocolMessage>() {
-                    @Override
-                    public boolean test(ProtocolMessage it) {
-                        return it.getProtocolMessageType() == ProtocolMessageType.UNKNOWN;
-                    }
+                && ((MessageAction) value).getMessages().stream().anyMatch(it -> {
+                        return it instanceof TlsMessage && ((TlsMessage) it).getProtocolMessageType() == ProtocolMessageType.UNKNOWN;
                 });
         }
     };

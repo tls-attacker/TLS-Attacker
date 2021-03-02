@@ -10,7 +10,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import java.util.List;
 

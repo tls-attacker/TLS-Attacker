@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends ProtocolMessageParser<T> {
+public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends TlsMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

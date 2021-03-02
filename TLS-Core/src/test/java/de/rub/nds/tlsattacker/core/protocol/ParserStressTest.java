@@ -8,12 +8,14 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.protocol.parser.*;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.junit.Test;

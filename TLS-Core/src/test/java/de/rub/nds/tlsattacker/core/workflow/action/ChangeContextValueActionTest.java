@@ -158,7 +158,7 @@ public class ChangeContextValueActionTest {
 
         trace.addTlsActions(action2);
         trace.addTlsActions(action3);
-        trace.addTlsActions(action4);
+//        trace.addTlsActions(action4);
         WorkflowTrace copy = state.getWorkflowTraceCopy();
 
         assertEquals(action, (ChangeContextValueAction<ProtocolVersion>) copy.getTlsActions().get(0));

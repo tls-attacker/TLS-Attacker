@@ -8,11 +8,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.handler;
-
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+package de.rub.nds.tlsattacker.core.protocol;
 
 /**
  * @param <T>
@@ -25,5 +21,5 @@ public abstract class Handler<T> {
 
     public abstract Serializer<T> getSerializer(T message);
 
-    protected abstract void adjustContext(T object);
+    public abstract void adjustContext(T object);
 }

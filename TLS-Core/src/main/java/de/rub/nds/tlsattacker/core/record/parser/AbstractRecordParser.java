@@ -11,7 +11,7 @@
 package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 
 /**
  * @param <AbstractRecordT>

@@ -12,7 +12,7 @@ package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 
 public class SignedCertificateTimestampSignatureParser extends Parser<SignedCertificateTimestampSignature> {
 

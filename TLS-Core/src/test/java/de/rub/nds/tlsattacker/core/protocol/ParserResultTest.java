@@ -8,7 +8,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package de.rub.nds.tlsattacker.core.protocol.handler;
+package de.rub.nds.tlsattacker.core.protocol;
 
 import org.junit.After;
 import org.junit.Before;

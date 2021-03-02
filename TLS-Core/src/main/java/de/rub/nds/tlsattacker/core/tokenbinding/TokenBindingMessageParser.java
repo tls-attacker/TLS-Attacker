@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
+public class TokenBindingMessageParser extends TlsMessageParser<TokenBindingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

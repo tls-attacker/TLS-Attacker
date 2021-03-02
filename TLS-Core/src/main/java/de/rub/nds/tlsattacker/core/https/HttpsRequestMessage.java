@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.https.header.HostHeader;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
-public class HttpsRequestMessage extends ProtocolMessage {
+public class HttpsRequestMessage extends TlsMessage {
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = GenericHttpsHeader.class, name = "HttpsHeader"),

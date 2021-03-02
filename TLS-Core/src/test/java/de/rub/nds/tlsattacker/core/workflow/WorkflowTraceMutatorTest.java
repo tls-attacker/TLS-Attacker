@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 
@@ -110,7 +111,7 @@ public class WorkflowTraceMutatorTest {
     public void testReplaceReceivingMessageProtocolMessage() throws WorkflowTraceMutationException {
         trace.addTlsAction(rcvServerHello);
 
-        ProtocolMessage replaceMsg = new FinishedMessage();
+        TlsMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
 
         ReceiveAction action =
