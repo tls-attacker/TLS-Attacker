@@ -59,12 +59,14 @@ public class WorkflowTraceSerializer {
     private static JAXBContext context;
     private static Class<?>[] classListForSchemaGeneration;
 
-    private static final Class<?>[] JAXB2_ANNOTATIONS = {
-            XmlRootElement.class,
-            XmlType.class,
-            XmlSeeAlso.class,
-            XmlEnum.class,
-            XmlRegistry.class
+    private static final List<Class<? extends Annotation>> JAXB2_ANNOTATIONS = new ArrayList<Class<? extends Annotation>>() {
+        {
+            add(XmlRootElement.class);
+            add(XmlType.class);
+            add(XmlSeeAlso.class);
+            add(XmlEnum.class);
+            add(XmlRegistry.class);
+        }
     };
 
     private static Class<?>[] generateClassListForSchemaGeneration() {
@@ -74,8 +76,8 @@ public class WorkflowTraceSerializer {
                 .forPackages("de.rub.nds.tlsattacker")
                 .addScanners(new TypeAnnotationsScanner()));
 
-        for (Class<?> jaxbType : JAXB2_ANNOTATIONS) {
-            Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith((Class<? extends Annotation>) jaxbType);
+        for (Class<? extends Annotation> jaxbType : JAXB2_ANNOTATIONS) {
+            Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(jaxbType);
             annotatedClasses.stream()
                     .filter(c -> !c.isInterface() && !c.isMemberClass() && !c.isAnonymousClass())
                     .forEach(classes::add);
