@@ -168,8 +168,8 @@
       </xs:element>
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
-      <xs:element name="prefferedCertRsaKeySize" type="xs:int"/>
-      <xs:element name="prefferedCertDssKeySize" type="xs:int"/>
+      <xs:element name="prefferedCertRsaKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>

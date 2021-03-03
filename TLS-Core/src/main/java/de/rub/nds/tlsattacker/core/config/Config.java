@@ -300,9 +300,9 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
-    private int prefferedCertRsaKeySize = 2048;
+    private Integer prefferedCertRsaKeySize = 2048;
 
-    private int prefferedCertDssKeySize = 2048;
+    private Integer prefferedCertDssKeySize = 2048;
 
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
