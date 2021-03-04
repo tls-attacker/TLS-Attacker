@@ -412,66 +412,6 @@ public class ConfigTest {
     }
 
     @Test
-    public void generateTls13Draft21Config() {
-        Config config = new Config();
-        stripConfig(config);
-
-        config.setHighestProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
-        config.setSupportedVersions(ProtocolVersion.TLS13);
-
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
-        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
-        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
-        config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
-
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
-        defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
-        config.setDefaultClientNamedGroups(defaultClientNamedGroups);
-
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
-        defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
-        config.setDefaultServerNamedGroups(defaultServerNamedGroups);
-
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
-        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
-
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
-        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
-
-        config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
-        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-
-        config.setAddECPointFormatExtension(false);
-        config.setAddEllipticCurveExtension(true);
-        config.setAddSignatureAndHashAlgorithmsExtension(true);
-        config.setAddSupportedVersionsExtension(true);
-        config.setAddKeyShareExtension(true);
-
-        writeToConfig(config, "tls13_draf21.config");
-    }
-
-    @Test
     public void generateTls13EsniConfig() {
         Config config = new Config();
         stripConfig(config);
