@@ -25,13 +25,13 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     }
 
     @Override
-    public ProtocolMessageParser<SSL2ServerVerifyMessage> getParser(byte[] message, int pointer) {
+    public SSL2ServerVerifyParser getParser(byte[] message, int pointer) {
         return new SSL2ServerVerifyParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion(),
             tlsContext.getConfig());
     }
 
     @Override
-    public ProtocolMessagePreparator<SSL2ServerVerifyMessage> getPreparator(SSL2ServerVerifyMessage message) {
+    public SSL2ServerVerifyPreparator getPreparator(SSL2ServerVerifyMessage message) {
         return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), message);
     }
 

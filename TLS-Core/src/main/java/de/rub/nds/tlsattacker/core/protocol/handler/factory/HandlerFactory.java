@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
@@ -98,6 +99,10 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,8 +111,8 @@ public class HandlerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
-        HandshakeMessageType handshakeType) {
+    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(TlsContext context, ProtocolMessageType protocolType,
+                                                                               HandshakeMessageType handshakeType) {
         if (protocolType == null) {
             throw new RuntimeException("Cannot retrieve Handler, ProtocolMessageType is null");
         }
@@ -134,7 +139,7 @@ public class HandlerFactory {
         }
     }
 
-    public static HandshakeMessageHandler getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
+    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
         try {
             switch (type) {
                 case CERTIFICATE:
@@ -172,7 +177,6 @@ public class HandlerFactory {
                 case SUPPLEMENTAL_DATA:
                     return new SupplementalDataHandler(context);
                 case UNKNOWN:
-                    return new UnknownHandshakeHandler(context);
                 default:
                     return new UnknownHandshakeHandler(context);
             }
@@ -191,7 +195,7 @@ public class HandlerFactory {
      * Type of the Extension
      * @return Correct ExtensionHandler
      */
-    public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type) {
+    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context, ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -300,7 +304,7 @@ public class HandlerFactory {
         return new UnknownExtensionHandler(context);
     }
 
-    private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
+    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage> getClientKeyExchangeHandler(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
@@ -339,7 +343,7 @@ public class HandlerFactory {
         }
     }
 
-    private static HandshakeMessageHandler getServerKeyExchangeHandler(TlsContext context) {
+    private static HandshakeMessageHandler<? extends HandshakeMessage> getServerKeyExchangeHandler(TlsContext context) {
         // TODO: There should be a server KeyExchangeHandler
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
@@ -349,7 +353,7 @@ public class HandlerFactory {
             case ECDH_RSA:
             case ECDHE_RSA:
             case ECDH_ANON:
-                return new ECDHEServerKeyExchangeHandler(context);
+                return new ECDHEServerKeyExchangeHandler<>(context);
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:
