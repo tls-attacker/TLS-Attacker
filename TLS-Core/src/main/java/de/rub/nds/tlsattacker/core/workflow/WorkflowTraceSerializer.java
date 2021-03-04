@@ -57,46 +57,46 @@ public class WorkflowTraceSerializer {
      * context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
-    private static Class<?>[] classListForSchemaGeneration;
-
-    private static final List<Class<? extends Annotation>> JAXB2_ANNOTATIONS = new ArrayList<Class<? extends Annotation>>() {
-        {
-            add(XmlRootElement.class);
-            add(XmlType.class);
-            add(XmlSeeAlso.class);
-            add(XmlEnum.class);
-            add(XmlRegistry.class);
-        }
-    };
-
-    private static Class<?>[] generateClassListForSchemaGeneration() {
-        List<Class<?>> classes = new ArrayList<>();
-
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .forPackages("de.rub.nds.tlsattacker")
-                .addScanners(new TypeAnnotationsScanner()));
-
-        for (Class<? extends Annotation> jaxbType : JAXB2_ANNOTATIONS) {
-            Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(jaxbType);
-            annotatedClasses.stream()
-                    .filter(c -> !c.isInterface() && !c.isMemberClass() && !c.isAnonymousClass())
-                    .forEach(classes::add);
-        }
-
-        Class<?>[] classList = new Class<?>[classes.size()];
-        return classes.toArray(classList);
-    }
-
-    private static Class<?>[] getClassListForSchemaGeneration() {
-        if (classListForSchemaGeneration == null) {
-            classListForSchemaGeneration = generateClassListForSchemaGeneration();
-        }
-        return classListForSchemaGeneration;
-    }
+//    private static Class<?>[] classListForSchemaGeneration;
+//
+//    private static final List<Class<? extends Annotation>> JAXB2_ANNOTATIONS = new ArrayList<Class<? extends Annotation>>() {
+//        {
+//            add(XmlRootElement.class);
+//            add(XmlType.class);
+//            add(XmlSeeAlso.class);
+//            add(XmlEnum.class);
+//            add(XmlRegistry.class);
+//        }
+//    };
+//
+//    private static Class<?>[] generateClassListForSchemaGeneration() {
+//        List<Class<?>> classes = new ArrayList<>();
+//
+//        Reflections reflections = new Reflections(new ConfigurationBuilder()
+//                .forPackages("de.rub.nds.tlsattacker")
+//                .addScanners(new TypeAnnotationsScanner()));
+//
+//        for (Class<? extends Annotation> jaxbType : JAXB2_ANNOTATIONS) {
+//            Set<Class<?>> annotatedClasses = reflections.getTypesAnnotatedWith(jaxbType);
+//            annotatedClasses.stream()
+//                    .filter(c -> !c.isInterface() && !c.isMemberClass() && !c.isAnonymousClass())
+//                    .forEach(classes::add);
+//        }
+//
+//        Class<?>[] classList = new Class<?>[classes.size()];
+//        return classes.toArray(classList);
+//    }
+//
+//    private static Class<?>[] getClassListForSchemaGeneration() {
+//        if (classListForSchemaGeneration == null) {
+//            classListForSchemaGeneration = generateClassListForSchemaGeneration();
+//        }
+//        return classListForSchemaGeneration;
+//    }
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(getClassListForSchemaGeneration());
+            context = JAXBContext.newInstance(WorkflowTrace.class);
         }
         return context;
     }
