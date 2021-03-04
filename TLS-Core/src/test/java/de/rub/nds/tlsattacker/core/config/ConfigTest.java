@@ -92,7 +92,7 @@ public class ConfigTest {
         stripConfig(config);
         config.setClientAuthentication(true);
 
-        ArrayList<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = new ArrayList<>();
         signatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
 
@@ -137,7 +137,7 @@ public class ConfigTest {
 
         keyShareEntry.setGroup(group);
         keyShareEntry.setPublicKey(publicKey);
-        ArrayList<KeyShareEntry> list = new ArrayList<KeyShareEntry>();
+        ArrayList<KeyShareEntry> list = new ArrayList<>();
         list.add(keyShareEntry);
 
         config.setEsniServerKeyPairs(list);
@@ -189,12 +189,12 @@ public class ConfigTest {
     public void generatePwdConfig() {
         Config config = new Config();
         stripConfig(config);
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_CCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
@@ -202,11 +202,11 @@ public class ConfigTest {
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.BRAINPOOLP256R1);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.BRAINPOOLP256R1);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
@@ -245,12 +245,12 @@ public class ConfigTest {
         config.setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
         config.setTls13BackwardsCompatibilityMode(false);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_CCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_256_GCM_SHA384);
         serverSupportedCipherSuites.add(CipherSuite.TLS_ECCPWD_WITH_AES_128_CCM_SHA256);
@@ -258,11 +258,11 @@ public class ConfigTest {
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.BRAINPOOLP256R1);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.BRAINPOOLP256R1);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
@@ -298,7 +298,7 @@ public class ConfigTest {
         stripConfig(config);
         config.setClientAuthentication(true);
 
-        ArrayList<SignatureAndHashAlgorithm> list = new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> list = new ArrayList<>();
         list.add(SignatureAndHashAlgorithm.RSA_SHA256);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(list);
 
@@ -330,7 +330,7 @@ public class ConfigTest {
         stripConfig(config);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
 
-        ArrayList<ProtocolVersion> protocolVersions = new ArrayList<ProtocolVersion>();
+        ArrayList<ProtocolVersion> protocolVersions = new ArrayList<>();
         protocolVersions.add(ProtocolVersion.SSL2);
         config.setSupportedVersions(protocolVersions);
         config.setWorkflowTraceType(WorkflowTraceType.SSL2_HELLO);
@@ -354,25 +354,24 @@ public class ConfigTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -384,8 +383,7 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
 
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -419,25 +417,24 @@ public class ConfigTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -449,8 +446,7 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
 
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -482,25 +478,24 @@ public class ConfigTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -512,8 +507,7 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
 
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -542,25 +536,24 @@ public class ConfigTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -572,8 +565,7 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
 
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -602,25 +594,24 @@ public class ConfigTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
 
-        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<CipherSuite>();
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
         config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
 
-        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
         defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultClientNamedGroups(defaultClientNamedGroups);
 
-        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<NamedGroup>();
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
         defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
         config.setDefaultServerNamedGroups(defaultServerNamedGroups);
 
-        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
@@ -632,8 +623,7 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
 
-        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms =
-            new ArrayList<SignatureAndHashAlgorithm>();
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
