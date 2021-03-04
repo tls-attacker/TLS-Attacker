@@ -35,7 +35,7 @@ public class SocketOpenerCallable implements Callable<Socket> {
         while (true) {
             Socket socket = new Socket();
             try {
-                socket.connect(new InetSocketAddress(host, port), 10000);
+                socket.connect(new InetSocketAddress(host, port));
                 if (socket.isConnected()) {
                     return socket;
                 }
