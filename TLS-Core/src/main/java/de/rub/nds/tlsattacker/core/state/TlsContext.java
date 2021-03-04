@@ -252,6 +252,8 @@ public class TlsContext {
 
     private byte[] dtlsCookie;
 
+    private byte[] extensionCookie;
+
     private ProtocolVersion selectedProtocolVersion;
 
     private ProtocolVersion highestClientProtocolVersion;
@@ -451,6 +453,8 @@ public class TlsContext {
     private List<ECPointFormat> serverPointFormatsList;
 
     private boolean receivedFatalAlert = false;
+
+    private boolean receivedMessageWithWrongTls13KeyType = false;
 
     private List<ClientCertificateType> clientCertificateTypes;
 
@@ -2495,5 +2499,21 @@ public class TlsContext {
 
     public void setLastClientHello(byte[] lastClientHello) {
         this.lastClientHello = lastClientHello;
+    }
+
+    public byte[] getExtensionCookie() {
+        return extensionCookie;
+    }
+
+    public void setExtensionCookie(byte[] extensionCookie) {
+        this.extensionCookie = extensionCookie;
+    }
+
+    public boolean isReceivedMessageWithWrongTls13KeyType() {
+        return receivedMessageWithWrongTls13KeyType;
+    }
+
+    public void setReceivedMessageWithWrongTls13KeyType(boolean receivedMessageWithWrongTls13KeyType) {
+        this.receivedMessageWithWrongTls13KeyType = receivedMessageWithWrongTls13KeyType;
     }
 }

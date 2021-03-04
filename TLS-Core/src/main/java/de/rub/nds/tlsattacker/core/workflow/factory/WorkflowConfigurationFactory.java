@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
@@ -39,6 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
@@ -65,6 +67,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
@@ -93,6 +96,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeA
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -582,13 +586,13 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createTls13PskWorkflow(boolean zeroRtt) {
         AliasedConnection connection = getConnection();
-        ChangeCipherSpecMessage ccsS = new ChangeCipherSpecMessage();
-        ChangeCipherSpecMessage ccsC = new ChangeCipherSpecMessage();
+        ChangeCipherSpecMessage ccsServer = new ChangeCipherSpecMessage();
+        ChangeCipherSpecMessage ccsClient = new ChangeCipherSpecMessage();
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            ccsS.setRequired(false);
+            ccsServer.setRequired(false);
         } else {
-            ccsC.setRequired(false);
+            ccsClient.setRequired(false);
         }
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -611,8 +615,9 @@ public class WorkflowConfigurationFactory {
         }
         clientHelloMessages.add(clientHello);
         if (zeroRtt) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-                clientHelloMessages.add(ccsC);
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                clientHelloMessages.add(ccsClient);
             }
             clientHelloMessages.add(earlyDataMsg);
         }
@@ -636,11 +641,14 @@ public class WorkflowConfigurationFactory {
         }
 
         serverMessages.add(serverHello);
-        if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
-            serverMessages.add(ccsS);
-            if (!zeroRtt) {
-                clientMessages.add(ccsC);
-            }
+        if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+            || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            serverMessages.add(ccsServer);
+        }
+        if (!zeroRtt
+            && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE) || connection
+                .getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
+            clientMessages.add(ccsClient);
         }
         serverMessages.add(encExtMsg);
         serverMessages.add(serverFin);
@@ -660,28 +668,41 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createFullTls13PskWorkflow(boolean zeroRtt) {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
-        // Remove extensions that are only required in the 2nd ClientHello
-        for (TlsAction action : trace.getTlsActions()) {
-            if (action.isMessageAction()) {
-                for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
-                    if ((msg instanceof ClientHelloMessage && ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
-                        || (msg instanceof ServerHelloMessage && ourConnection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
-                        List<ExtensionMessage> extensions = ((HandshakeMessage) msg).getExtensions();
-                        if (extensions != null) {
-                            for (int x = 0; x < extensions.size(); x++) {
-                                if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
-                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
-                                    ((HandshakeMessage) msg).getExtensions().remove(extensions.get(x));
-                                    x--;
-                                }
-                            }
-                        }
-                    }
-                }
+        // Remove extensions that are only required in the second handshake
+        HelloMessage initialHello;
+        if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            initialHello =
+                (HelloMessage) WorkflowTraceUtil.getFirstSendMessage(HandshakeMessageType.CLIENT_HELLO, trace);
+            EarlyDataExtensionMessage earlyDataExtension = initialHello.getExtension(EarlyDataExtensionMessage.class);
+            if (initialHello.getExtensions() != null) {
+                initialHello.getExtensions().remove(earlyDataExtension);
             }
+        } else {
+            initialHello =
+                (HelloMessage) WorkflowTraceUtil.getFirstSendMessage(HandshakeMessageType.SERVER_HELLO, trace);
+            EncryptedExtensionsMessage encryptedExtensionsMessage =
+                (EncryptedExtensionsMessage) WorkflowTraceUtil.getFirstSendMessage(
+                    HandshakeMessageType.ENCRYPTED_EXTENSIONS, trace);
+            if (encryptedExtensionsMessage != null && encryptedExtensionsMessage.getExtensions() != null) {
+                EarlyDataExtensionMessage earlyDataExtension =
+                    encryptedExtensionsMessage.getExtension(EarlyDataExtensionMessage.class);
+                encryptedExtensionsMessage.getExtensions().remove(earlyDataExtension);
+            }
+
         }
-        trace.addTlsAction(MessageActionFactory.createAction(config, ourConnection, ConnectionEndType.SERVER,
-            new NewSessionTicketMessage(false)));
+
+        if (initialHello.getExtensions() != null) {
+            PreSharedKeyExtensionMessage pskExtension = initialHello.getExtension(PreSharedKeyExtensionMessage.class);
+            initialHello.getExtensions().remove(pskExtension);
+        }
+
+        MessageAction newSessionTicketAction =
+            MessageActionFactory.createAction(config, ourConnection, ConnectionEndType.SERVER,
+                new NewSessionTicketMessage(config, false));
+        if (newSessionTicketAction instanceof ReceiveAction) {
+            newSessionTicketAction.getActionOptions().add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        }
+        trace.addTlsAction(newSessionTicketAction);
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace zeroRttTrace = createTls13PskWorkflow(zeroRtt);
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {

@@ -71,7 +71,9 @@ public class SendMessageHelper {
                 if (tlsMessage.getProtocolMessageType() != lastType && lastMessage != null
                         && context.getConfig().isFlushOnMessageTypeChange()) {
                     recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                    lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                    if (tlsMessage.getAdjustContext()) {
+                        lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                    }
                     lastMessage = null;
                 }
                 lastMessage = tlsMessage;
@@ -110,12 +112,14 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                protocolMessage.getHandler(context).adjustTlsContextAfterSerialize(protocolMessage);
+                if (protocolMessage.getAdjustContext()) {
+                    protocolMessage.getHandler(context).adjustTlsContextAfterSerialize(protocolMessage);
+                }
                 lastMessage = null;
             }
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-        if (lastMessage != null) {
+        if (lastMessage != null && lastMessage.getAdjustContext()) {
             lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
         }
         sendData(messageBytesCollector, context);
@@ -197,9 +201,7 @@ public class SendMessageHelper {
     /**
      * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param handler
-     * TransportHandler to send the Data with
-     * @param messageBytesCollector
+     * @param collector
      * MessageBytes to send
      * @throws IOException
      * Thrown if something goes wrong while sending

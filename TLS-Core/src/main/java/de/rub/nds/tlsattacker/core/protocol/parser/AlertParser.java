@@ -41,9 +41,6 @@ public class AlertParser extends TlsMessageParser<AlertMessage> {
     @Override
     protected AlertMessage parseMessageContent() {
         LOGGER.debug("Parsing AlertMessage");
-        if (getBytesLeft() > 2) {
-            throw new ParserException("Too many bytes left in message, probably encrypted Alert: " + getBytesLeft());
-        }
         AlertMessage msg = new AlertMessage();
         parseLevel(msg);
         parseDescription(msg);

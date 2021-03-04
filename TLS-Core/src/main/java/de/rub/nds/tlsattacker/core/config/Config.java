@@ -276,10 +276,19 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
+    private int prefferedCertRsaKeySize = 2048;
+
+    private int prefferedCertDssKeySize = 2048;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+
+    /**
+     * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
+     */
+    private Boolean encryptChangeCipherSpecTls13 = false;
 
     /**
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session ticket since we initiate a new
@@ -656,6 +665,11 @@ public class Config implements Serializable {
     private Boolean addCertificateStatusRequestV2Extension = false;
 
     /**
+     * If we generate ClientHello with TLS 1.3 cookie extension
+     */
+    private Boolean addCookieExtension = false;
+
+    /**
      * If set to true, timestamps will be updated upon execution of a workflowTrace
      */
     private Boolean updateTimestamps = true;
@@ -968,6 +982,9 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dtlsDefaultCookie = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultExtensionCookie = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -3842,4 +3859,43 @@ public class Config implements Serializable {
         this.defaultLastClientHello = defaultLastClientHello;
     }
 
+    public int getPrefferedCertRsaKeySize() {
+        return prefferedCertRsaKeySize;
+    }
+
+    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
+        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    }
+
+    public int getPrefferedCertDssKeySize() {
+        return prefferedCertDssKeySize;
+    }
+
+    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
+        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
+    }
+
+    public byte[] getDefaultExtensionCookie() {
+        return defaultExtensionCookie;
+    }
+
+    public void setDefaultExtensionCookie(byte[] defaultExtensionCookie) {
+        this.defaultExtensionCookie = defaultExtensionCookie;
+    }
+
+    public Boolean isAddCookieExtension() {
+        return addCookieExtension;
+    }
+
+    public void setAddCookieExtension(Boolean addCookieExtension) {
+        this.addCookieExtension = addCookieExtension;
+    }
+
+    public Boolean isEncryptChangeCipherSpec() {
+        return encryptChangeCipherSpecTls13;
+    }
+
+    public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
+        this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
+    }
 }
