@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SignatureAndHashAlgorithmsExtensionSerializer extends
-        ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
+    ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +30,7 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     @Override
     public byte[] serializeExtensionContent() {
-        LOGGER.debug("Serializing SigantureAndHashAlgorithmsExtensionMessage");
+        LOGGER.debug("Serializing SignatureAndHashAlgorithmsExtensionMessage");
         writeSignatureAndHashAlgorithmsLength(msg);
         writeSignatureAndHashAlgorithms(msg);
         return getAlreadySerialized();
@@ -37,13 +38,13 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     private void writeSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
         appendInt(msg.getSignatureAndHashAlgorithmsLength().getValue(),
-                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
+            ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
         LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
     private void writeSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithms().getValue());
         LOGGER.debug("SignatureAndHashAlgorithms: "
-                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 }

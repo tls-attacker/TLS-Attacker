@@ -7,14 +7,16 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public EncryptThenMacExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override

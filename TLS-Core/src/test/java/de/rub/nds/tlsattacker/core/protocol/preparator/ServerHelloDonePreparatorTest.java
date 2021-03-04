@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -28,8 +29,7 @@ public class ServerHelloDonePreparatorTest {
     }
 
     /**
-     * Test of prepareHandshakeMessageContents method, of class
-     * ServerHelloDonePreparator.
+     * Test of prepareHandshakeMessageContents method, of class ServerHelloDonePreparator.
      */
     @Test
     public void testPrepare() {

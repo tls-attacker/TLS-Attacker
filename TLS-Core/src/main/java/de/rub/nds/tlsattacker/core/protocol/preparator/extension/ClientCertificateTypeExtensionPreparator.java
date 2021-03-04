@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -15,12 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ClientCertificateTypeExtensionPreparator extends
-        ExtensionPreparator<ClientCertificateTypeExtensionMessage> {
+    ExtensionPreparator<ClientCertificateTypeExtensionMessage> {
 
     private final ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionPreparator(Chooser chooser, ClientCertificateTypeExtensionMessage message,
-            ExtensionSerializer<ClientCertificateTypeExtensionMessage> serializer) {
+        ExtensionSerializer<ClientCertificateTypeExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }

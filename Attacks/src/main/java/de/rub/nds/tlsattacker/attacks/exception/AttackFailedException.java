@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.exception;
 
 /**
@@ -21,7 +22,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      */
     public AttackFailedException(String message) {
@@ -29,7 +29,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param cause
      */
@@ -38,7 +37,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param cause
      */
     public AttackFailedException(Throwable cause) {
@@ -46,7 +44,6 @@ public class AttackFailedException extends RuntimeException {
     }
 
     /**
-     *
      * @param message
      * @param cause
      * @param enableSuppression

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
@@ -71,7 +72,7 @@ public class CertificateUtils {
         } else if (key instanceof DSAPrivateKey) {
             DSAPrivateKey privKey = (DSAPrivateKey) key;
             return new CustomDSAPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getQ(),
-                    privKey.getParams().getG());
+                privKey.getParams().getG());
         } else if (key instanceof DHPrivateKey) {
             DHPrivateKey privKey = (DHPrivateKey) key;
             return new CustomDHPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getG());
@@ -93,7 +94,7 @@ public class CertificateUtils {
             LOGGER.trace("Found a DSA PublicKey");
             DSAPublicKey pubKey = (DSAPublicKey) key;
             return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(), pubKey.getParams()
-                    .getG(), pubKey.getY());
+                .getG(), pubKey.getY());
         } else if (key instanceof DHPublicKey) {
             LOGGER.trace("Found a DH PublicKey");
             DHPublicKey pubKey = (DHPublicKey) key;
@@ -104,7 +105,7 @@ public class CertificateUtils {
             NamedGroup group = NamedGroup.getNamedGroup(pubKey);
             if (group == null) {
                 return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(),
-                        GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
+                    GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
             } else {
                 return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), group);
             }
@@ -117,7 +118,7 @@ public class CertificateUtils {
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
      * @param cert
-     *            The Certificate from which the PublicKey should be extracted
+     * The Certificate from which the PublicKey should be extracted
      * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
@@ -127,10 +128,12 @@ public class CertificateUtils {
             if (key instanceof RSAPublicKey || key instanceof ECPublicKey || key instanceof DSAPublicKey) {
                 return key;
             } else {
-                // Since java does not support DH nativly we can try to manually
+                // Since java does not support DH natively we can try to
+                // manually
                 // parse this, this may fail
-                ASN1InputStream stream = new ASN1InputStream(cert.getCertificateAt(0).getSubjectPublicKeyInfo()
-                        .toASN1Primitive().getEncoded());
+                ASN1InputStream stream =
+                    new ASN1InputStream(cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive()
+                        .getEncoded());
                 DLSequence sequence = (DLSequence) stream.readObject();
                 DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
                 DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
@@ -343,7 +346,7 @@ public class CertificateUtils {
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         ASN1ObjectIdentifier alg = keyInfo.getAlgorithm().getAlgorithm();
         return alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
-                || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
+            || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
     }
 
     private CertificateUtils() {

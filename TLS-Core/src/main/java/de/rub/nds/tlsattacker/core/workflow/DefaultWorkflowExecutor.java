@@ -7,12 +7,17 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -21,6 +26,11 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +55,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                     LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
                 }
                 ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initiliazed");
+                LOGGER.debug("Connection for " + ctx + " initialized");
             }
         }
 
@@ -56,6 +66,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.isResetTrace()) {
             state.getWorkflowTrace().reset();
         }
+        state.setStartTimestamp(System.currentTimeMillis());
         int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
@@ -69,6 +80,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
+            if ((state.getConfig().getStopActionsAfterWarning() && isReceivedWarningAlert())) {
+                LOGGER.debug("Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
+                break;
+            }
             if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
                 LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
@@ -79,12 +94,30 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                     action.execute(state);
                 }
             } catch (PreparationException | WorkflowExecutionException ex) {
+                state.setExecutionException(ex);
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+            } catch (Exception e) {
+                LOGGER.error("", e);
+                state.setExecutionException(e);
+                throw e;
+            } finally {
+                state.setEndTimestamp(System.currentTimeMillis());
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
+            }
+        }
+
+        for (TlsContext ctx : allTlsContexts) {
+            TransportHandler handler = ctx.getTransportHandler();
+            if (handler instanceof TcpTransportHandler) {
+                SocketState socketSt =
+                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+                ctx.setFinalSocketState(socketSt);
+            } else {
+                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
             }
         }
 
@@ -99,7 +132,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
+        if (state.getConfig().isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
 
@@ -116,6 +149,21 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     private boolean isReceivedFatalAlert() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a at least one TLS context received a warning alert.
+     */
+    private boolean isReceivedWarningAlert() {
+        List<ProtocolMessage> allReceivedMessages =
+            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
+        for (ProtocolMessage message : allReceivedMessages) {
+            AlertMessage alert = (AlertMessage) message;
+            if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
                 return true;
             }
         }

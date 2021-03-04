@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.https.header.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -35,8 +36,8 @@ public class HttpsHeaderParser extends Parser<HttpsHeader> {
             throw new ParserException("Could not parse " + parsedLine + " as HttpsHeader");
         }
         String headerName = split[0];
-        String headerValue = parsedLine.replaceFirst(split[0] + ":", "").replaceAll("\n", "").replaceAll("\r", "")
-                .trim();
+        String headerValue =
+            parsedLine.replaceFirst(split[0] + ":", "").replaceAll("\n", "").replaceAll("\r", "").trim();
         switch (headerName) {
             case "Host":
                 header = new HostHeader();

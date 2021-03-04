@@ -7,16 +7,16 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.WorkflowTraceTypeConverter;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class WorkflowTypeDelegate extends Delegate {
 
-    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace", converter = WorkflowTraceTypeConverter.class)
+    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace")
     private WorkflowTraceType workflowTraceType = null;
 
     public WorkflowTypeDelegate() {

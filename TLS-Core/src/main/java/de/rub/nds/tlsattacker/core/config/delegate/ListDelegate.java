@@ -7,11 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.ListDelegateConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ListDelegateType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ListDelegate extends Delegate {
 
     // Setting help=true allows us to surpass any parameters marked as required.
-    @Parameter(names = "-list", description = "Plot a list of available parameters", converter = ListDelegateConverter.class)
+    @Parameter(names = "-list", description = "Plot a list of available parameters")
     private ListDelegateType listDelegateType = null;
 
     public ListDelegate() {
@@ -63,6 +63,9 @@ public class ListDelegate extends Delegate {
                 break;
             case workflow_trace_types:
                 list = StringUtils.join(EnumSet.allOf(WorkflowTraceType.class), '\n');
+                break;
+            default:
+                throw new ConfigurationException("Nothing to plot");
         }
         return list;
     }

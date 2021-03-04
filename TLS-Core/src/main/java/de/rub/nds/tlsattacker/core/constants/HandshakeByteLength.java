@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 public class HandshakeByteLength {
@@ -32,8 +33,7 @@ public class HandshakeByteLength {
     public static final int EXTENSION_LENGTH = 2;
 
     /**
-     * certificates length field (certificate array can include several
-     * certificates)
+     * certificates length field (certificate array can include several certificates)
      */
     public static final int CERTIFICATES_LENGTH = 3;
     /**
@@ -148,8 +148,7 @@ public class HandshakeByteLength {
      */
     public static final int HASH = 1;
     /**
-     * Length of the signature hash algorithms field in the certificateVerify
-     * message
+     * Length of the signature hash algorithms field in the certificateVerify message
      */
     public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
@@ -163,8 +162,7 @@ public class HandshakeByteLength {
     public static final int ELLIPTIC_CURVE = 1;
 
     /**
-     * Length of the cookie field in DTLS ClientHello and ClientHelloVerify
-     * messages.
+     * Length of the cookie field in DTLS ClientHello and ClientHelloVerify messages.
      */
     public static final int DTLS_HANDSHAKE_COOKIE_LENGTH = 1;
 
@@ -184,7 +182,7 @@ public class HandshakeByteLength {
     public static final int DTLS_FRAGMENT_LENGTH = 3;
 
     /**
-     * Lenght of PSK_Identity
+     * Length of PSK_Identity
      */
     public static final int PSK_IDENTITY_LENGTH = 2;
 

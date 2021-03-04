@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -37,9 +38,11 @@ public class PreSharedKeyExtensionHandlerTest {
     public void setUp() {
         context = new TlsContext();
 
-        pskSet1 = new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 },
+        pskSet1 =
+            new PskSet(new byte[] { 0x00 }, new byte[] { 0x00 }, "0", new byte[] { 0x00 },
                 CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-        pskSet2 = new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 },
+        pskSet2 =
+            new PskSet(new byte[] { 0x01 }, new byte[] { 0x01 }, "1", new byte[] { 0x01 },
                 CipherSuite.TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
         List<PskSet> pskSetList = new ArrayList<PskSet>();
         pskSetList.add(pskSet1);
@@ -93,7 +96,7 @@ public class PreSharedKeyExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof PreSharedKeyExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof PreSharedKeyExtensionParser);
     }
 
     @Test

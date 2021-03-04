@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -101,8 +102,8 @@ public class StatePlaintext {
     }
 
     public void setClientAuthenticationType(byte clientAuthenticationType) {
-        this.clientAuthenticationType = ModifiableVariableFactory.safelySetValue(this.clientAuthenticationType,
-                clientAuthenticationType);
+        this.clientAuthenticationType =
+            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationType, clientAuthenticationType);
     }
 
     public ModifiableInteger getClientAuthenticationDataLength() {
@@ -114,8 +115,9 @@ public class StatePlaintext {
     }
 
     public void setClientAuthenticationDataLength(int clientAuthenticationDataLength) {
-        this.clientAuthenticationDataLength = ModifiableVariableFactory.safelySetValue(
-                this.clientAuthenticationDataLength, clientAuthenticationDataLength);
+        this.clientAuthenticationDataLength =
+            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationDataLength,
+                clientAuthenticationDataLength);
     }
 
     public ModifiableByteArray getClientAuthenticationData() {
@@ -127,8 +129,8 @@ public class StatePlaintext {
     }
 
     public void setClientAuthenticationData(byte[] clientAuthenticationData) {
-        this.clientAuthenticationData = ModifiableVariableFactory.safelySetValue(this.clientAuthenticationData,
-                clientAuthenticationData);
+        this.clientAuthenticationData =
+            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationData, clientAuthenticationData);
     }
 
     public ModifiableLong getTimestamp() {

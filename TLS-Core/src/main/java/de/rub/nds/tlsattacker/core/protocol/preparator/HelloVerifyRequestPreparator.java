@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,7 +48,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private void prepareCookieLength(HelloVerifyRequestMessage msg) {
-        msg.setCookieLength((byte) msg.getCookie().getValue().length);// TODO
+        msg.setCookieLength((byte) msg.getCookie().getValue().length); // TODO
         LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
 

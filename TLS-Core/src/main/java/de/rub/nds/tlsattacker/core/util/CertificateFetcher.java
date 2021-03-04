@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -49,22 +50,22 @@ public class CertificateFetcher {
 
     public static Certificate fetchServerCertificate(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         trace.addTlsAction(new ReceiveTillAction(new CertificateMessage(config)));
         State state = new State(config, trace);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                WorkflowExecutorType.DEFAULT, state);
+        WorkflowExecutor workflowExecutor =
+            WorkflowExecutorFactory.createWorkflowExecutor(WorkflowExecutorType.DEFAULT, state);
         try {
             workflowExecutor.executeWorkflow();
 
             if (!state.getTlsContext().getTransportHandler().isClosed()) {
                 state.getTlsContext().getTransportHandler().closeConnection();
             }
-        } catch (IOException | WorkflowExecutionException E) {
+        } catch (IOException | WorkflowExecutionException e) {
             LOGGER.warn("Could not fetch ServerCertificate");
-            LOGGER.debug(E);
+            LOGGER.debug(e);
         }
         return state.getTlsContext().getServerCertificate();
     }

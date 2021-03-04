@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.task;
 
 import de.rub.nds.tlsattacker.attacks.exception.FingerprintExtractionException;
@@ -22,6 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.task.TlsTask;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
 import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
@@ -68,7 +70,8 @@ public class InvalidCurveTask extends TlsTask {
             }
             fingerprint = ResponseExtractor.getFingerprint(getState());
 
-            if (fingerprint == null) {
+            if (fingerprint == null || fingerprint.getSocketState() == SocketState.DATA_AVAILABLE) {
+                fingerprint = null;
                 return false;
             }
             return true;

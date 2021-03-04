@@ -7,10 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -23,9 +24,9 @@ public class ChangeClientRandomAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] newValue = null;
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
     public ChangeClientRandomAction(byte[] newValue) {
@@ -58,7 +59,7 @@ public class ChangeClientRandomAction extends ConnectionBoundAction {
         oldValue = tlsContext.getClientRandom();
         tlsContext.setClientRandom(newValue);
         LOGGER.info("Changed ClientRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
-                + ArrayConverter.bytesToHexString(newValue));
+            + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 

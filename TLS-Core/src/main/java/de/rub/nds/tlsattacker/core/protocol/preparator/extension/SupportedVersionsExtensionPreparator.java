@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -28,7 +29,7 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
     private final SupportedVersionsExtensionMessage msg;
 
     public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message,
-            SupportedVersionsExtensionSerializer serializer) {
+        SupportedVersionsExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }

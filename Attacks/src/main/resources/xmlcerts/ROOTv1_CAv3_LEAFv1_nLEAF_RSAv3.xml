@@ -174,7 +174,7 @@
                 <value>28</value>
             </asn1Integer>
             <asn1Sequence identifier="signature" type="AlgorithmIdentifier" fromIdentifier="/ROOTv1_CAv3_LEAFv1_nLEAF_RSAv3__ca_certificate1/signatureAlgorithm" />
-            <asn1RawBytes identifier="issuer" type="RawBytes" placeholder="replace_me"><value></value></asn1RawBytes>
+            <asn1RawBytes identifier="issuer" type="RawBytes" placeholder="replace_me"/>
             <asn1Sequence identifier="validity" type="Validity">
                 <asn1PrimitiveUtcTime identifier="notBefore" type="Time">
                     <value>191212000000Z</value>

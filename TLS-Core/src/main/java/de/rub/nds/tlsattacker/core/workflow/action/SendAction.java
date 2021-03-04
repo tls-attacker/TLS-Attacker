@@ -7,15 +7,20 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,8 +43,20 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
+    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
         super(messages);
+
+        if (option != null) {
+            this.addActionOption(option);
+        }
+    }
+
+    public SendAction(List<ProtocolMessage> messages) {
+        this((ActionOption) null, messages);
+    }
+
+    public SendAction(ActionOption option, ProtocolMessage... messages) {
+        this(option, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -78,10 +95,12 @@ public class SendAction extends MessageAction implements SendingAction {
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
-        } catch (IOException E) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
-            setExecuted(false);
+        } catch (IOException e) {
+            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+            }
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 
@@ -184,6 +203,11 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -211,6 +235,26 @@ public class SendAction extends MessageAction implements SendingAction {
         hash = 67 * hash + Objects.hashCode(this.records);
 
         return hash;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
+        }
+        return protocolMessageTypes;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
+        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : messages) {
+            if (msg.isHandshakeMessage()) {
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
+            }
+        }
+        return handshakeMessageTypes;
     }
 
 }

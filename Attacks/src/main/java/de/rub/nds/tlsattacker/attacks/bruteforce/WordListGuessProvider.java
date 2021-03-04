@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,9 +17,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * A GuessProvider based on a WordList. It reads bytes from the inpustream until
- * a newline character is found. If the InputStream does not contain anymore
- * lines. Null is returned.
+ * A GuessProvider based on a WordList. It reads bytes from the input stream until a newline character is found. If the
+ * InputStream does not contain anymore lines. Null is returned.
  */
 public class WordListGuessProvider extends GuessProvider {
 
@@ -28,7 +28,7 @@ public class WordListGuessProvider extends GuessProvider {
      * Constructor
      *
      * @param stream
-     *            An Inputstream to read Guesses from
+     * An Input stream to read Guesses from
      */
     public WordListGuessProvider(InputStream stream) {
         super(GuessProviderType.WORDLIST);
@@ -36,11 +36,9 @@ public class WordListGuessProvider extends GuessProvider {
     }
 
     /**
-     * Returns the next word from the inputstream. If no more words are in the
-     * in InputStream null is returned.
+     * Returns the next word from the input stream. If no more words are in the in InputStream null is returned.
      *
-     * @return The next word from the inputstream. If no more words are in the
-     *         in InputStream null is returned.
+     * @return The next word from the input stream. If no more words are in the in InputStream null is returned.
      */
     @Override
     public byte[] getGuess() {

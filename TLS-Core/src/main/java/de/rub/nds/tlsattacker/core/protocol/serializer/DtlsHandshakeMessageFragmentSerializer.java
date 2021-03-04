@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -36,7 +37,7 @@ public class DtlsHandshakeMessageFragmentSerializer extends HandshakeMessageSeri
     }
 
     /**
-     * Writes the SequenzNumber of the HandshakeMessage into the final byte[]
+     * Writes the sequenceNumber of the HandshakeMessage into the final byte[]
      */
     private void writeMessageSequence() {
         appendInt(fragment.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);

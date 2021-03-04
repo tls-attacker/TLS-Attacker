@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -22,7 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CertificateStatusRequestExtensionHandlerTest {
-    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
+    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
+        CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
     private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
     private TlsContext context;
@@ -38,23 +40,23 @@ public class CertificateStatusRequestExtensionHandlerTest {
     public void testAdjustTLSContext() {
         CertificateStatusRequestExtensionMessage message = new CertificateStatusRequestExtensionMessage();
         message.setCertificateStatusRequestType(certificateStatusRequestExtensionRequestType
-                .getCertificateStatusRequestValue());
+            .getCertificateStatusRequestValue());
         message.setResponderIDList(certificateStatusRequestExtensionResponderIDList);
         message.setRequestExtension(certificateStatusRequestExtensionRequestExtension);
 
         handler.adjustTLSContext(message);
 
         assertEquals(certificateStatusRequestExtensionRequestType,
-                context.getCertificateStatusRequestExtensionRequestType());
+            context.getCertificateStatusRequestExtensionRequestType());
         assertArrayEquals(certificateStatusRequestExtensionResponderIDList,
-                context.getCertificateStatusRequestExtensionResponderIDList());
+            context.getCertificateStatusRequestExtensionResponderIDList());
         assertArrayEquals(certificateStatusRequestExtensionRequestExtension,
-                context.getCertificateStatusRequestExtensionRequestExtension());
+            context.getCertificateStatusRequestExtensionRequestExtension());
     }
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0) instanceof CertificateStatusRequestExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof CertificateStatusRequestExtensionParser);
     }
 
     @Test

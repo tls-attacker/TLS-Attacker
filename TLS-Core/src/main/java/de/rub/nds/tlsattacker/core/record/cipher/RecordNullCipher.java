@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -34,6 +35,12 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
+    public void encrypt(BlobRecord br) throws CryptoException {
+        LOGGER.debug("Encrypting BlobRecord: (null cipher)");
+        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
+    }
+
+    @Override
     public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record: (null cipher)");
         record.prepareComputations();
@@ -42,14 +49,8 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public void encrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Encrypting BlobRecord: (null cipher)");
-        br.setProtocolMessageBytes(br.getCleanProtocolMessageBytes().getValue());
-    }
-
-    @Override
     public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Derypting BlobRecord: (null cipher)");
+        LOGGER.debug("Decrypting BlobRecord: (null cipher)");
         br.setCleanProtocolMessageBytes(br.getProtocolMessageBytes().getValue());
     }
 

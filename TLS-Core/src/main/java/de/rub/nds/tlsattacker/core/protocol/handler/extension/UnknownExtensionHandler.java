@@ -7,8 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
@@ -26,8 +28,8 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
     }
 
     @Override
-    public UnknownExtensionParser getParser(byte[] message, int pointer) {
-        return new UnknownExtensionParser(pointer, message);
+    public UnknownExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new UnknownExtensionParser(pointer, message, config);
     }
 
     @Override

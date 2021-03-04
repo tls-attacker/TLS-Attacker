@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
@@ -24,8 +25,8 @@ public class AlpnEntryPreparator extends Preparator<AlpnEntry> {
 
     @Override
     public void prepare() {
-        entry.setAlpnEntryBytes(entry.getAlpnEntryConfig());
-        entry.setAlpnEntryLength(entry.getAlpnEntryBytes().getValue().length);
+        entry.setAlpnEntry(entry.getAlpnEntryConfig());
+        entry.setAlpnEntryLength(entry.getAlpnEntry().getValue().getBytes().length);
     }
 
 }

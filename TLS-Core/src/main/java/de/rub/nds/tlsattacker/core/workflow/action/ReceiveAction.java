@@ -7,18 +7,73 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -32,58 +87,55 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-            @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
-            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
-            @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
-            @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
-            @XmlElement(type = FinishedMessage.class, name = "Finished"),
-            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-            @XmlElement(type = AlertMessage.class, name = "Alert"),
-            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-            @XmlElement(type = ApplicationMessage.class, name = "Application"),
-            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-            @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
-            @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
-            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
-            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+        @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+        @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+        @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+        @XmlElement(type = CertificateStatusMessage.class, name = "CertificateStatus"),
+        @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+        @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
+        @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
+        @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
+        @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
+        @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
+        @XmlElement(type = PWDServerKeyExchangeMessage.class, name = "PWDServerKeyExchange"),
+        @XmlElement(type = PWDClientKeyExchangeMessage.class, name = "PWDClientKeyExchange"),
+        @XmlElement(type = FinishedMessage.class, name = "Finished"),
+        @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
+        @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
+        @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
+        @XmlElement(type = AlertMessage.class, name = "Alert"),
+        @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = ApplicationMessage.class, name = "Application"),
+        @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+        @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
+        @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+        @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
+        @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
+        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+        @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
+        @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
+        @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+        @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+        @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+        @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
+        @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+        @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
+        @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
+        @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
+        @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
+        @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
+        @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
+        @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
+        @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
+        @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
+        @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
+        @XmlElement(type = GOSTClientKeyExchangeMessage.class, name = "GostClientKeyExchangeMessage"),
+        @XmlElement(type = EmptyClientKeyExchangeMessage.class, name = "EmptyClientKeyExchangeMessage"),
+        @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsHandshakeMessageFragment"),
+        @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
-
-    @XmlElement
-    protected Boolean earlyCleanShutdown = null;
-
-    @XmlElement
-    protected Boolean checkOnlyExpected = null;
 
     public ReceiveAction() {
         super();
@@ -99,29 +151,24 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
+    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage... messages) {
-        this(receiveOptions, new ArrayList(Arrays.asList(messages)));
+    public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
+        this(actionOptions, new ArrayList(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage> messages) {
+    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
-        switch (receiveOption) {
-            case CHECK_ONLY_EXPECTED:
-                this.checkOnlyExpected = true;
-                break;
-            case EARLY_CLEAN_SHUTDOWN:
-                this.earlyCleanShutdown = true;
-        }
+        HashSet myActionOptions = new HashSet();
+        myActionOptions.add(actionOption);
+        setActionOptions(myActionOptions);
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage... messages) {
-        this(receiveOption, new ArrayList<>(Arrays.asList(messages)));
+    public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
+        this(actionOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public ReceiveAction(String connectionAlias) {
@@ -159,7 +206,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
-        tlsContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
+        tlsContext.setEarlyCleanShutdown(getActionOptions().contains(ActionOption.EARLY_CLEAN_SHUTDOWN));
     }
 
     @Override
@@ -215,16 +262,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 return false;
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
-                        && expectedMessages.get(i).isRequired()) {
-                    return false;
+                    && expectedMessages.get(i).isRequired()) {
+                    if (receivedMessageCanBeIgnored(messages.get(j))) {
+                        j++;
+                        i--;
+                    } else {
+                        return false;
+                    }
+
                 } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
                     j++;
                 }
             }
         }
 
-        if (j < messages.size() && (checkOnlyExpected == null || checkOnlyExpected == false)) {
-            return false; // additional messages are not allowed
+        for (; j < messages.size(); j++) {
+            if (!receivedMessageCanBeIgnored(messages.get(j))
+                && !getActionOptions().contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+                return false; // additional messages are not allowed
+            }
         }
 
         return true;
@@ -338,14 +394,44 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    public enum ReceiveOption {
-        EARLY_CLEAN_SHUTDOWN,
-        CHECK_ONLY_EXPECTED;
-
-        public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
-            HashSet<ReceiveOption> options = new HashSet<>();
-            options.addAll(Arrays.asList(receiveOptions));
-            return options;
+    private boolean receivedMessageCanBeIgnored(ProtocolMessage msg) {
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+            if (msg instanceof AlertMessage) {
+                AlertMessage alert = (AlertMessage) msg;
+                if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
+                    return true;
+                }
+            }
+        } else if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
+            && msg instanceof NewSessionTicketMessage) {
+            return true;
         }
+
+        return false;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
+    }
+
+    @Override
+    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : expectedMessages) {
+            protocolMessageTypes.add(msg.getProtocolMessageType());
+        }
+        return protocolMessageTypes;
+    }
+
+    @Override
+    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
+        for (ProtocolMessage msg : expectedMessages) {
+            if (msg.isHandshakeMessage()) {
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
+            }
+        }
+        return handshakeMessageTypes;
     }
 }

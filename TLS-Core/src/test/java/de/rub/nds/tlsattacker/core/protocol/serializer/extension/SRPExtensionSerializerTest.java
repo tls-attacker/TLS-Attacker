@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -36,7 +37,7 @@ public class SRPExtensionSerializerTest {
     private SRPExtensionMessage message;
 
     public SRPExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
+        int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;

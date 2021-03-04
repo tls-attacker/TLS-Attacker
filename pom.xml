@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>3.6.0</version>
+    <version>3.7.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -74,9 +74,19 @@
     </modules>
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
-            <version>3.2.2</version>
+            <version>2.1.9</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
@@ -96,10 +106,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>2.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>4.13.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -136,7 +157,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>ModifiableVariable</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -151,7 +172,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>X509Attacker</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -211,7 +232,8 @@
                         <includes>
                             <include>**/*.java</include>
                         </includes>
-                        <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
+                        <!-- Integration tests and slow tests are excluded by default when running mvn package. Fast
+                        tests and not annotated tests are executed -->
                         <excludedGroups>${slowTests}</excludedGroups>
                         <argLine>
                             -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
@@ -260,6 +282,9 @@
                     <groupId>net.revelc.code</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>0.5.2</version>
+                    <configuration>
+                        <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    </configuration>
                 </plugin>
                 <!-- Use a Licence Header -->
                 <plugin>
@@ -284,7 +309,6 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <configuration>
                     <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
-                    <lineEnding>LF</lineEnding>
                 </configuration>
                 <executions>
                     <execution>
@@ -367,7 +391,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <doclint>none</doclint>
                         </configuration>
                     </execution>
                 </executions>
@@ -401,6 +425,23 @@
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.37</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <violationSeverity>info</violationSeverity>
+                    <failOnViolation>false</failOnViolation>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -413,14 +454,6 @@
                     <effort>Max</effort>
                     <threshold>Low</threshold>
                     <xmlOutput>true</xmlOutput>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
             <plugin>
@@ -451,7 +484,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
-        <!-- We redefine the signature generation process, whic is enabled by default,
+        <!-- We redefine the signature generation process, which is enabled by default,
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
         <jmockit.version>1.49</jmockit.version>

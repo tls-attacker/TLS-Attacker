@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.config.delegate;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -31,7 +32,7 @@ public class GeneralAttackDelegate extends GeneralDelegate {
      * Adjusts the Config according to the specified values.
      *
      * @param config
-     *            Config to adjust
+     * Config to adjust
      */
     @Override
     public void applyDelegate(Config config) {

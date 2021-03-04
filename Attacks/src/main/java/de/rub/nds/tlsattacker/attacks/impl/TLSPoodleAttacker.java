@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -34,8 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Executes a poodle attack. It logs an error in case the tested server is
- * vulnerable to poodle.
+ * Executes a poodle attack. It logs an error in case the tested server is vulnerable to poodle.
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
@@ -62,8 +62,9 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = getTlsConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
 
         ModifiableByteArray padding = new ModifiableByteArray();
         // https://mta.openssl.org/pipermail/openssl-announce/2018-March/000119.html
@@ -86,8 +87,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         State state = new State(tlsConfig, trace);
 
         try {
-            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                    tlsConfig.getWorkflowExecutorType(), state);
+            WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow");
@@ -95,7 +96,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             return null;
         }
         if (state.getTlsContext().isReceivedFatalAlert()) {
-            LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
+            LOGGER
+                .info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
             LOGGER.info("Vulnerable (definitely), Finished message found");

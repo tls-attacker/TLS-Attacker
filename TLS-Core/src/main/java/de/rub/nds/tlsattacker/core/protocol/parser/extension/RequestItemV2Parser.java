@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -35,17 +36,17 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
         item.setRequestExtensions(parseByteArrayField(item.getRequestExtensionsLength().getValue()));
 
         int position = 0;
-        List<ResponderId> resonderIds = new LinkedList<>();
+        List<ResponderId> responderIds = new LinkedList<>();
 
         while (position < item.getResponderIdListBytes().getValue().length) {
             ResponderIdParser parser = new ResponderIdParser(position, item.getResponderIdListBytes().getValue());
-            resonderIds.add(parser.parse());
+            responderIds.add(parser.parse());
             if (position == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing ResponderId");
             }
             position = parser.getPointer();
         }
-        item.setResponderIdList(resonderIds);
+        item.setResponderIdList(responderIds);
 
         return item;
     }

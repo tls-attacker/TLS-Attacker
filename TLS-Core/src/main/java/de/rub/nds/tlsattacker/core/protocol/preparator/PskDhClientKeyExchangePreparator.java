@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -48,7 +49,7 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
             outputStream.write(otherSecret);
             LOGGER.debug("OtherSecret: " + ArrayConverter.bytesToHexString(otherSecret));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
-                    HandshakeByteLength.PSK_LENGTH));
+                HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");

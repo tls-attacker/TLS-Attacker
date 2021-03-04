@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
@@ -32,7 +34,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     public void adjustTLSExtensionContext(HeartbeatExtensionMessage message) {
         byte[] heartbeatMode = message.getHeartbeatMode().getValue();
         if (heartbeatMode.length != 1) {
-            throw new AdjustmentException("Cannot set Heartbeatmode to a resonable Value");
+            throw new AdjustmentException("Cannot set HeartbeatMode to a reasonable Value");
         }
         HeartbeatMode mode = HeartbeatMode.getHeartbeatMessageType(heartbeatMode[0]);
         if (mode == null) {
@@ -43,8 +45,8 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     }
 
     @Override
-    public HeartbeatExtensionParser getParser(byte[] message, int pointer) {
-        return new HeartbeatExtensionParser(pointer, message);
+    public HeartbeatExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new HeartbeatExtensionParser(pointer, message, config);
     }
 
     @Override

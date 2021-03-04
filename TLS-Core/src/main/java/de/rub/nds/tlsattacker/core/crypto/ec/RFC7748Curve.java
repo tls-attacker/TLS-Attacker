@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,10 +21,10 @@ import org.bouncycastle.util.Arrays;
  */
 public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected RFC7748Curve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX,
-            BigInteger basePointY, BigInteger basePointOrder) {
+        BigInteger basePointY, BigInteger basePointOrder) {
         super(a, b, modulus, basePointX, basePointY, basePointOrder);
     }
 
@@ -38,10 +39,10 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         BigInteger decodedKey = decodeScalar(privateKey);
         Point publicPoint = mult(decodedKey, getBasePoint());
 
-        return encodeCoordinate(publicPoint.getX().getData());
+        return encodeCoordinate(publicPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
+    private byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
         privateKey = reduceLongKey(privateKey);
         BigInteger decodedCoord = decodeCoordinate(new BigInteger(1, publicKey));
         BigInteger decodedKey = decodeScalar(privateKey);
@@ -52,21 +53,15 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
             publicPoint = getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
         Point sharedPoint = mult(decodedKey, publicPoint);
-        if (sharedPoint.getX() == null) {
+        if (sharedPoint.getFieldX() == null) {
             LOGGER.warn("Cannot encode point in infinity. Using X coordinate of base point as shared secret");
-            return encodeCoordinate(getBasePoint().getX().getData());
+            return encodeCoordinate(getBasePoint().getFieldX().getData());
         }
-        return encodeCoordinate(sharedPoint.getX().getData());
+        return encodeCoordinate(sharedPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, Point publicKey) {
-        byte[] pkBytes = ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getX().getData(),
-                ArrayConverter.bigIntegerToByteArray(getModulus()).length);
-        return computeSharedSecret(privateKey, pkBytes);
-    }
-
-    public byte[] computeSharedSecretDecodedPoint(BigInteger privateKey, Point publicKey) {
-        byte[] reEncoded = encodeCoordinate(publicKey.getX().getData());
+    public byte[] computeSharedSecretFromDecodedPoint(BigInteger privateKey, Point publicKey) {
+        byte[] reEncoded = encodeCoordinate(publicKey.getFieldX().getData());
         return computeSharedSecret(privateKey, reEncoded);
     }
 

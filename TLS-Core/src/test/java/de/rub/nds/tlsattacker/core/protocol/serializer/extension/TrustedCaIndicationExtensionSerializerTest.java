@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -37,7 +38,7 @@ public class TrustedCaIndicationExtensionSerializerTest {
     private final int trustedAuthoritiesLength;
 
     public TrustedCaIndicationExtensionSerializerTest(ExtensionType type, byte[] extensionBytes, int startposition,
-            int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
+        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
         this.type = type;
         this.extensionBytes = extensionBytes;
         this.startposition = startposition;

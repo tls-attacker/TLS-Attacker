@@ -7,13 +7,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
 
 import com.google.common.io.ByteStreams;
 import de.rub.nds.asn1.parser.ParserException;
-import org.apache.commons.lang3.NotImplementedException;
-import org.bouncycastle.asn1.x509.Certificate;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -22,8 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
+import org.apache.commons.lang3.NotImplementedException;
+import org.bouncycastle.asn1.x509.Certificate;
 
 public class OCSPRequest {
 
@@ -126,7 +126,7 @@ public class OCSPRequest {
     }
 
     private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod) throws IOException,
-            ParserException {
+        ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
         HttpURLConnection httpCon = null;
         if (requestMethod.equals("POST")) {
@@ -151,10 +151,11 @@ public class OCSPRequest {
         httpCon.setConnectTimeout(5000);
         int status = httpCon.getResponseCode();
         byte[] response;
-        if (status == 200)
+        if (status == 200) {
             response = ByteStreams.toByteArray(httpCon.getInputStream());
-        else
+        } else {
             throw new RuntimeException("Response not successful: Received status code " + status);
+        }
 
         httpCon.disconnect();
 

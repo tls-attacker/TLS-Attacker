@@ -7,8 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,14 +23,25 @@ public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final EarlyDataExtensionMessage msg;
+
     public EarlyDataExtensionSerializer(EarlyDataExtensionMessage message) {
         super(message);
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing EarlyDataExtensionMessage");
+        if (msg.isNewSessionTicketExtension()) {
+            serializeMaxEarlyData();
+        }
         return getAlreadySerialized();
+    }
+
+    private void serializeMaxEarlyData() {
+        appendInt(msg.getMaxEarlyDataSize().getValue(), ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH);
+        LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize());
     }
 
 }

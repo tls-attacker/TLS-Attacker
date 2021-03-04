@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -24,7 +25,7 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
     @Override
     public SSL2ClientHelloParser getParser(byte[] message, int pointer) {
         return new SSL2ClientHelloParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getConfig());
+            tlsContext.getConfig());
     }
 
     @Override

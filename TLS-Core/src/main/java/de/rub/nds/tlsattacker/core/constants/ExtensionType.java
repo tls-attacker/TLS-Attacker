@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -47,11 +48,11 @@ public enum ExtensionType {
     PASSWORD_SALT(new byte[] { (byte) 0, (byte) 31 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
     EXTENDED_RANDOM(new byte[] { (byte) 0, (byte) 40 }), // Shares same IANA ID
-                                                         // as old keyshare
-                                                         // extension.
+    // as old keyshare
+    // extension.
     KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
-                                                       // extension before TLS
-                                                       // 1.3 Draft 23
+    // extension before TLS
+    // 1.3 Draft 23
     PRE_SHARED_KEY(new byte[] { (byte) 0, (byte) 41 }),
     EARLY_DATA(new byte[] { (byte) 0, (byte) 42 }),
     SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),
@@ -167,6 +168,7 @@ public enum ExtensionType {
         list.add(TRUNCATED_HMAC);
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
+        list.add(COOKIE);
 
         return list;
     }
@@ -206,6 +208,7 @@ public enum ExtensionType {
         list.add(TRUNCATED_HMAC);
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
+        list.add(COOKIE);
 
         return list;
     }
@@ -228,6 +231,23 @@ public enum ExtensionType {
         list.add(RENEGOTIATION_INFO);
         list.add(HEARTBEAT);
         list.add(EXTENDED_RANDOM);
+        list.add(COOKIE);
         return list;
+    }
+
+    public static boolean allowedInEncryptedExtensions(ExtensionType extType) {
+        switch (extType) {
+            case SERVER_NAME_INDICATION:
+            case MAX_FRAGMENT_LENGTH:
+            case ELLIPTIC_CURVES:
+            case USE_SRTP:
+            case HEARTBEAT:
+            case ALPN:
+            case CLIENT_CERTIFICATE_TYPE:
+            case SERVER_CERTIFICATE_TYPE:
+            case EARLY_DATA:
+                return true;
+        }
+        return false;
     }
 }

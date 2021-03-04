@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -28,9 +29,10 @@ public class DtlsHandshakeMessageFragmentPreparator extends HandshakeMessagePrep
     @Override
     protected void prepareHandshakeMessageContents() {
         msg.setContent(msg.getFragmentContentConfig());
+        msg.setLength(msg.getHandshakeMessageLengthConfig());
         msg.setMessageSeq(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
-        msg.setFragmentLength(msg.getHandshakeMessageLengthConfig());
+        msg.setFragmentLength(msg.getContent().getValue().length);
         msg.setEpoch(chooser.getContext().getDtlsWriteEpoch());
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
 public enum WorkflowTraceType {
@@ -21,10 +22,13 @@ public enum WorkflowTraceType {
     CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
     CLIENT_RENEGOTIATION,
     SERVER_RENEGOTIATION,
+    DYNAMIC_CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
     HTTPS,
     DYNAMIC_HTTPS,
     SSL2_HELLO,
     SIMPLE_MITM_PROXY,
+    TLS13_PSK,
+    FULL_TLS13_PSK,
     ZERO_RTT,
     FULL_ZERO_RTT,
     FALSE_START,

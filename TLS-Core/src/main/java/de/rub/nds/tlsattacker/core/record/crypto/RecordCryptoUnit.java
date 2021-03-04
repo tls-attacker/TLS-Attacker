@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class RecordCryptoUnit {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected ArrayList<RecordCipher> recordCipherList;
 
@@ -40,6 +41,16 @@ public abstract class RecordCryptoUnit {
 
     public void addNewRecordCipher(RecordCipher recordCipher) {
         this.recordCipherList.add(recordCipher);
+    }
+
+    public void removeCiphers(int toRemove) {
+        while (toRemove > 0 && !recordCipherList.isEmpty()) {
+            recordCipherList.remove(recordCipherList.size() - 1);
+            toRemove--;
+        }
+        if (toRemove > 0) {
+            LOGGER.warn("Could not remove as many ciphers as specified");
+        }
     }
 
 }

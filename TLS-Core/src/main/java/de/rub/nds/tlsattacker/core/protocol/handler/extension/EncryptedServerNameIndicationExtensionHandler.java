@@ -7,11 +7,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -20,9 +19,11 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EncryptedServerNameIndicationExtensionHandler extends
-        ExtensionHandler<EncryptedServerNameIndicationExtensionMessage> {
+    ExtensionHandler<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,14 +32,14 @@ public class EncryptedServerNameIndicationExtensionHandler extends
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
-        return new EncryptedServerNameIndicationExtensionParser(pointer, message);
+    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new EncryptedServerNameIndicationExtensionParser(pointer, message, config);
     }
 
     @Override
     public ExtensionPreparator getPreparator(EncryptedServerNameIndicationExtensionMessage message) {
         return new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), message,
-                getSerializer(message));
+            getSerializer(message));
     }
 
     @Override
@@ -48,8 +49,9 @@ public class EncryptedServerNameIndicationExtensionHandler extends
 
     @Override
     public void adjustTLSExtensionContext(EncryptedServerNameIndicationExtensionMessage message) {
-        if (message.getClientEsniInner().getClientNonce() != null)
+        if (message.getClientEsniInner().getClientNonce() != null) {
             context.setEsniClientNonce(message.getClientEsniInner().getClientNonce().getValue());
+        }
         if (message.getServerNonce() != null) {
             context.setEsniServerNonce(message.getServerNonce().getValue());
         }

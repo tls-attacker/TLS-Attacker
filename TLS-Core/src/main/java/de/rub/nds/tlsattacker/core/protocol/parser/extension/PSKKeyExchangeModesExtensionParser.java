@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +24,8 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PSKKeyExchangeModesExtensionParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public PSKKeyExchangeModesExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
     private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg) {
         msg.setKeyExchangeModesListBytes(parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
         LOGGER.debug("PSKKeyModesList bytes:"
-                + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
     }
 
 }

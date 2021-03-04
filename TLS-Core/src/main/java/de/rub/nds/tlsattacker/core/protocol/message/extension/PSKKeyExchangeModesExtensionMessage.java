@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,7 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] keyExchangeModesConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -53,6 +54,10 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
     public ModifiableInteger getKeyExchangeModesListLength() {
         return keyExchangeModesListLength;
+    }
+
+    public void setKeyExchangeModesListLength(ModifiableInteger length) {
+        this.keyExchangeModesListLength = length;
     }
 
     public void setKeyExchangeModesListLength(int length) {

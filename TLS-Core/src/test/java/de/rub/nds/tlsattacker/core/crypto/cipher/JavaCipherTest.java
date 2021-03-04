@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -78,7 +79,7 @@ public class JavaCipherTest {
         algos.add(CipherAlgorithm.SEED_CBC);
         for (CipherAlgorithm algo : algos) {
             byte[] key = new byte[algo.getKeySize()];
-            JavaCipher cipher = new JavaCipher(algo, key);
+            JavaCipher cipher = new JavaCipher(algo, key, false);
         }
     }
 }

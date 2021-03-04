@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -20,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class KeyBlockParser extends Parser<KeySet> {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * sequence Number length in byte
@@ -52,7 +53,7 @@ public class KeyBlockParser extends Parser<KeySet> {
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
         if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !version.usesExplicitIv())
-                || suite.isSteamCipherWithIV()) {
+            || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
         } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {

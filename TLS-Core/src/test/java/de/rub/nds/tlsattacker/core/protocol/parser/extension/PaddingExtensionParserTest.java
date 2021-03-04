@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import java.util.Arrays;
@@ -27,13 +29,12 @@ public class PaddingExtensionParserTest {
     /**
      * Parameterized set up of the test vector.
      *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
+     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.PADDING, 6, new byte[] { 0, 0, 0, 0, 0, 0 },
-                ArrayConverter.hexStringToByteArray("00150006000000000000"), 0 } });
+            ArrayConverter.hexStringToByteArray("00150006000000000000"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -45,7 +46,7 @@ public class PaddingExtensionParserTest {
     private PaddingExtensionMessage message;
 
     public PaddingExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-            byte[] expectedBytes, int startParsing) {
+        byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
@@ -55,7 +56,7 @@ public class PaddingExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new PaddingExtensionParser(startParsing, expectedBytes);
+        parser = new PaddingExtensionParser(startParsing, expectedBytes, Config.createConfig());
     }
 
     @Test

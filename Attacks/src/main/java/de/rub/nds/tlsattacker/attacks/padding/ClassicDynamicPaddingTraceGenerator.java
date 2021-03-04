@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import java.util.LinkedList;
@@ -55,7 +56,7 @@ public class ClassicDynamicPaddingTraceGenerator extends PaddingTraceGenerator {
     public WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector) {
         RunningModeType runningMode = config.getDefaultRunningMode();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowtrace(config.getDefaultClientConnection());
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         ApplicationMessage applicationMessage = new ApplicationMessage(config);
         SendAction sendAction = new SendAction(applicationMessage);

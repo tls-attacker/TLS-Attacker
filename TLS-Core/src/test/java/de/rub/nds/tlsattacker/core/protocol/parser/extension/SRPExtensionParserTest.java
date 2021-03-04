@@ -7,9 +7,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import java.util.Arrays;
@@ -26,8 +28,8 @@ public class SRPExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.SRP,
-                new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 }, 5, 0, 4,
-                ArrayConverter.hexStringToByteArray("01020304") } });
+            new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 }, 5, 0, 4,
+            ArrayConverter.hexStringToByteArray("01020304") } });
     }
 
     private final ExtensionType extensionType;
@@ -40,7 +42,7 @@ public class SRPExtensionParserTest {
     private SRPExtensionMessage message;
 
     public SRPExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
+        int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;
@@ -51,7 +53,7 @@ public class SRPExtensionParserTest {
 
     @Before
     public void setUp() {
-        parser = new SRPExtensionParser(startParsing, extensionBytes);
+        parser = new SRPExtensionParser(startParsing, extensionBytes, Config.createConfig());
 
     }
 

@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,14 +28,13 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HelloMessageParser is supposed
-     *            to start parsing
+     * Position in the array where the HelloMessageParser is supposed to start parsing
      * @param array
-     *            The byte[] which the HelloMessageParser is supposed to parse
+     * The byte[] which the HelloMessageParser is supposed to parse
      * @param version
-     *            Version of the Protocol
+     * Version of the Protocol
      * @param config
-     *            A Config used in the current context
+     * A Config used in the current context
      */
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
@@ -60,7 +61,11 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
+                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
+                    "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
                 parseExtensionBytes(msg);
+                popContext();
+
             }
         }
     }
@@ -71,11 +76,10 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuiteLength and writes them in the
-     * message
+     * Reads the next bytes as the CypherSuiteLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCipherSuiteLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
@@ -86,7 +90,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Reads the next bytes as the CypherSuites and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
@@ -94,11 +98,10 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CompressionLength and writes them in the
-     * message
+     * Reads the next bytes as the CompressionLength and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCompressionLength(ClientHelloMessage msg) {
         msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
@@ -109,7 +112,7 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
      * Reads the next bytes as the Compression and writes them in the message
      *
      * @param msg
-     *            Message to write in
+     * Message to write in
      */
     private void parseCompressions(ClientHelloMessage msg) {
         msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));

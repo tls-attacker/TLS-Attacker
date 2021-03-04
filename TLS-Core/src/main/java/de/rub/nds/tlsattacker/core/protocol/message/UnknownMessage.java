@@ -7,13 +7,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -22,13 +23,22 @@ public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;
 
+    private ProtocolMessageType recordContentMessageType;
+
     public UnknownMessage() {
-        super();
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
     public UnknownMessage(Config config) {
         super();
+        this.recordContentMessageType = ProtocolMessageType.UNKNOWN;
+        protocolMessageType = ProtocolMessageType.HANDSHAKE;
+    }
+
+    public UnknownMessage(Config config, ProtocolMessageType recordContentMessageType) {
+        super();
+        this.recordContentMessageType = recordContentMessageType;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
@@ -40,6 +50,14 @@ public class UnknownMessage extends ProtocolMessage {
         this.dataConfig = dataConfig;
     }
 
+    public ProtocolMessageType getRecordContentMessageType() {
+        return recordContentMessageType;
+    }
+
+    public void setRecordContentMessageType(ProtocolMessageType recordContentMessageType) {
+        this.recordContentMessageType = recordContentMessageType;
+    }
+
     @Override
     public String toCompactString() {
         return "UNKNOWN_MESSAGE";
@@ -47,7 +65,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new UnknownHandler(context);
+        return new UnknownMessageHandler(context, recordContentMessageType);
     }
 
     @Override

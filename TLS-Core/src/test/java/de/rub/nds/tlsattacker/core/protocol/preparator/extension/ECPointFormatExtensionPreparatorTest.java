@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import org.junit.Before;
@@ -19,8 +20,7 @@ public class ECPointFormatExtensionPreparatorTest {
     }
 
     /**
-     * Test of prepareExtensionContent method, of class
-     * ECPointFormatExtensionPreparator.
+     * Test of prepareExtensionContent method, of class ECPointFormatExtensionPreparator.
      */
     @Test
     public void testPrepareExtensionContent() {

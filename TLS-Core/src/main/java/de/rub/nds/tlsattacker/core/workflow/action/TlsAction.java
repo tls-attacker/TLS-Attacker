@@ -7,26 +7,31 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic
- * building block for WorkflowTraces. A WorkflowTrace is a list of TLSActions.
- * Executing a WorkflowTrace means iterating through this list and calling
+ * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for WorkflowTraces. A
+ * WorkflowTrace is a list of TLSActions. Executing a WorkflowTrace means iterating through this list and calling
  * execute() on each TlsAction.
  *
  */
@@ -38,6 +43,10 @@ public abstract class TlsAction implements Serializable, Aliasable {
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;
+
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = ActionOption.class, name = "ActionOption") })
+    private Set<ActionOption> actionOptions = new HashSet<>();
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
@@ -84,7 +93,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
      * Add default values from given defaultAction and initialize empty fields.
      *
      * @param defaultAction
-     *            Not needed / not evaluated
+     * Not needed / not evaluated
      */
     public void normalize(TlsAction defaultAction) {
         // We don't need any defaults
@@ -100,7 +109,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
      * Filter empty fields and default values given in defaultAction.
      *
      * @param defaultAction
-     *            Not needed / not evaluated
+     * Not needed / not evaluated
      */
     public void filter(TlsAction defaultAction) {
     }
@@ -161,6 +170,18 @@ public abstract class TlsAction implements Serializable, Aliasable {
             sb.append(" [").append(aliasesToString()).append("]");
         }
         return sb.toString();
+    }
+
+    public final Set<ActionOption> getActionOptions() {
+        return actionOptions;
+    }
+
+    public final void setActionOptions(Set<ActionOption> actionOptions) {
+        this.actionOptions = actionOptions;
+    }
+
+    public final void addActionOption(ActionOption option) {
+        this.actionOptions.add(option);
     }
 
 }

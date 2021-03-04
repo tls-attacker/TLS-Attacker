@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -29,7 +30,8 @@ public class ClientCertificateUrlExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ClientCertificateUrlExtensionMessage();
-        preparator = new ClientCertificateUrlExtensionPreparator(context.getChooser(), message,
+        preparator =
+            new ClientCertificateUrlExtensionPreparator(context.getChooser(), message,
                 new ClientCertificateUrlExtensionSerializer(message));
     }
 

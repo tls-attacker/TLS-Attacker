@@ -7,6 +7,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -62,8 +63,7 @@ public class CopyServerRandomActionTest {
     }
 
     /**
-     * Test of getSrc/DstContextAlias methods, of class
-     * ChangeServerRandomAction.
+     * Test of getSrc/DstContextAlias methods, of class ChangeServerRandomAction.
      */
     @Test
     public void testGetAlias() {
