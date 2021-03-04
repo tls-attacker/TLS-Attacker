@@ -105,5 +105,4 @@ public class PoodleCommandConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
-
 }

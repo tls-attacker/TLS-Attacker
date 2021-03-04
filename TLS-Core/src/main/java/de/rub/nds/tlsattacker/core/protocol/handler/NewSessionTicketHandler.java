@@ -121,5 +121,4 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             throw new WorkflowExecutionException(ex.toString());
         }
     }
-
 }

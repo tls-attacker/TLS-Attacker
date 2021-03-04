@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  * The ProtocolMessage that should be handled
  */
 public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage> extends
-        TlsMessageHandler<HandshakeMessageT> {
+    TlsMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -51,12 +51,12 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
                 HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
 
                 ExtensionHandler extensionHandler =
-                        HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
+                    HandlerFactory.getExtensionHandler(tlsContext, extensionMessage.getExtensionTypeConstant());
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
-                            (EncryptedServerNameIndicationExtensionPreparator) extensionHandler
-                                    .getPreparator(extensionMessage);
+                        (EncryptedServerNameIndicationExtensionPreparator) extensionHandler
+                            .getPreparator(extensionMessage);
                     if (message instanceof ClientHelloMessage) {
                         preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }

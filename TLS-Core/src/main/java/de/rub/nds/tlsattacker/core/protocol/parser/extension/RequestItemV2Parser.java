@@ -50,5 +50,4 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
 
         return item;
     }
-
 }

@@ -75,5 +75,4 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
             }
         }
     }
-
 }

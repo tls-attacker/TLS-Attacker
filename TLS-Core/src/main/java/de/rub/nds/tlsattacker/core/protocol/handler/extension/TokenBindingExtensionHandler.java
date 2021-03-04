@@ -54,5 +54,4 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
             context.setTokenBindingNegotiatedSuccessfully(true);
         }
     }
-
 }

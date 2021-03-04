@@ -69,5 +69,4 @@ public class SendMessageHelperTest {
             ((ByteArrayOutputStream) transportHandler.getOutputStream()).toByteArray());
 
     }
-
 }

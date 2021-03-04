@@ -45,5 +45,4 @@ public class ProtocolVersionTest {
         ProtocolVersion highestProtocolVersion = ProtocolVersion.getHighestProtocolVersion(versions);
         assertArrayEquals(ProtocolVersion.TLS13.getValue(), highestProtocolVersion.getValue());
     }
-
 }

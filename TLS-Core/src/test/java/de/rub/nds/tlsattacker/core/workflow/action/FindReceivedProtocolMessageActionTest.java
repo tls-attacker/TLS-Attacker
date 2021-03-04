@@ -124,5 +124,4 @@ public class FindReceivedProtocolMessageActionTest {
         assertTrue(action_find_handshake.isFound());
         assertFalse(action_find_app_data.isFound());
     }
-
 }

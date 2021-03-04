@@ -111,8 +111,8 @@ public class HandlerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(TlsContext context, ProtocolMessageType protocolType,
-                                                                               HandshakeMessageType handshakeType) {
+    public static ProtocolMessageHandler<? extends ProtocolMessage> getHandler(TlsContext context,
+        ProtocolMessageType protocolType, HandshakeMessageType handshakeType) {
         if (protocolType == null) {
             throw new RuntimeException("Cannot retrieve Handler, ProtocolMessageType is null");
         }
@@ -139,7 +139,8 @@ public class HandlerFactory {
         }
     }
 
-    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
+    public static HandshakeMessageHandler<? extends HandshakeMessage> getHandshakeHandler(TlsContext context,
+        HandshakeMessageType type) {
         try {
             switch (type) {
                 case CERTIFICATE:
@@ -195,7 +196,8 @@ public class HandlerFactory {
      * Type of the Extension
      * @return Correct ExtensionHandler
      */
-    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context, ExtensionType type) {
+    public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context,
+        ExtensionType type) {
         try {
             switch (type) {
                 case ALPN:
@@ -304,7 +306,8 @@ public class HandlerFactory {
         return new UnknownExtensionHandler(context);
     }
 
-    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage> getClientKeyExchangeHandler(TlsContext context) {
+    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage> getClientKeyExchangeHandler(
+        TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {

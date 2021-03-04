@@ -213,7 +213,6 @@ public class SendMessageHelper {
         return prepareMessage(message, withPrepare, context);
     }
 
-
     /**
      * Prepare message for sending. This method invokes before and after method hooks.
      *
@@ -245,8 +244,9 @@ public class SendMessageHelper {
         }
         try {
             if (message.getAdjustContext()) {
-                if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS() && (message instanceof HandshakeMessage)
-                        && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
+                if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
+                    && (message instanceof HandshakeMessage)
+                    && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
                     context.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }

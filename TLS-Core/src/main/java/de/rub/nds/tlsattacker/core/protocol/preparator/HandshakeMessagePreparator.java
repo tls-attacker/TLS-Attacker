@@ -91,8 +91,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                     }
                 }
                 ExtensionHandler handler =
-                        HandlerFactory.getExtensionHandler(chooser.getContext(),
-                                extensionMessage.getExtensionTypeConstant());
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
+                        extensionMessage.getExtensionTypeConstant());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
@@ -111,18 +111,18 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
                 ExtensionHandler handler =
-                        HandlerFactory.getExtensionHandler(chooser.getContext(),
-                                extensionMessage.getExtensionTypeConstant());
+                    HandlerFactory.getExtensionHandler(chooser.getContext(),
+                        extensionMessage.getExtensionTypeConstant());
                 Preparator preparator = handler.getPreparator(extensionMessage);
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
                 } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
-                        && msg instanceof ClientHelloMessage && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    && msg instanceof ClientHelloMessage && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) msg;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                            .setClientHelloMessage(clientHelloMessage);
+                        .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
 

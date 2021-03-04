@@ -74,5 +74,4 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
 
         dst.setMessageBuffer(messageBuffer);
     }
-
 }

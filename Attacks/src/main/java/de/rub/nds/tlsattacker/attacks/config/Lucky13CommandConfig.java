@@ -144,5 +144,4 @@ public class Lucky13CommandConfig extends AttackConfig {
         }
         return config;
     }
-
 }
