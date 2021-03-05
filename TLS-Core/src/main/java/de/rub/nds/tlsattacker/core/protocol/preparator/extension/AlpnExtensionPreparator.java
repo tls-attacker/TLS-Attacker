@@ -46,18 +46,7 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                 alpnEntryList.add(new AlpnEntry(alpnProtocol));
             }
             msg.setAlpnEntryList(alpnEntryList);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            for (AlpnEntry entry : alpnEntryList) {
-                AlpnEntryPreparator preparator = new AlpnEntryPreparator(chooser, entry);
-                preparator.prepare();
-                AlpnEntrySerializer serializer = new AlpnEntrySerializer(entry);
-                try {
-                    stream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not serialize AlpnEntry", ex);
-                }
-            }
-            msg.setProposedAlpnProtocols(stream.toByteArray());
+            setEntryListBytes(alpnEntryList);
             LOGGER.debug("Prepared the ALPN Extension with announced protocols "
                 + ArrayConverter.bytesToHexString(msg.getProposedAlpnProtocols()));
             msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
@@ -82,7 +71,25 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                     alpnEntryList.add(new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
                     LOGGER.debug("Cannot choose protocol the client supported. Enforcing server choice");
                 }
+                msg.setAlpnEntryList(alpnEntryList);
+                setEntryListBytes(alpnEntryList);
+                msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
             }
         }
+    }
+
+    private void setEntryListBytes(List<AlpnEntry> alpnEntryList) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (AlpnEntry entry : alpnEntryList) {
+            AlpnEntryPreparator preparator = new AlpnEntryPreparator(chooser, entry);
+            preparator.prepare();
+            AlpnEntrySerializer serializer = new AlpnEntrySerializer(entry);
+            try {
+                stream.write(serializer.serialize());
+            } catch (IOException ex) {
+                LOGGER.warn("Could not serialize AlpnEntry", ex);
+            }
+        }
+        msg.setProposedAlpnProtocols(stream.toByteArray());
     }
 }

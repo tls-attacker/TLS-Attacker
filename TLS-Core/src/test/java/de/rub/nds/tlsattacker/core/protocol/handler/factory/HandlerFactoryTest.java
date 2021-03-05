@@ -99,6 +99,7 @@ public class HandlerFactoryTest {
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PWD_CLEAR) instanceof PWDClearExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.PASSWORD_SALT) instanceof PasswordSaltExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.EXTENDED_RANDOM) instanceof ExtendedRandomExtensionHandler);
+        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.COOKIE) instanceof CookieExtensionHandler);
     }
 
     @Test

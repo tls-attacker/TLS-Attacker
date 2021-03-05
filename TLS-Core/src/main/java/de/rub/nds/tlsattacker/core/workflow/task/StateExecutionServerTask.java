@@ -55,7 +55,6 @@ public class StateExecutionServerTask extends TlsTask {
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException ignored) {
-
                         }
                     }
                 }
@@ -71,6 +70,15 @@ public class StateExecutionServerTask extends TlsTask {
     @Override
     public boolean execute() {
         stateFinished = false;
+        try {
+            return innerExecute();
+        } catch (Exception e) {
+            stateFinished = true;
+            throw e;
+        }
+    }
+
+    private boolean innerExecute() {
         Socket socket;
         try {
             socket = acceptConnection();
@@ -102,7 +110,6 @@ public class StateExecutionServerTask extends TlsTask {
         try {
             workflowExecutor.executeWorkflow();
         } catch (Exception e) {
-            stateFinished = true;
             throw e;
         }
 

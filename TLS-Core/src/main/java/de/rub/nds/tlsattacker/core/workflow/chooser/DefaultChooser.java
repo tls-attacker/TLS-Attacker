@@ -1148,4 +1148,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultLastClientHello();
         }
     }
+
+    @Override
+    public byte[] getExtensionCookie() {
+        if (context.getExtensionCookie() != null) {
+            return context.getExtensionCookie();
+        } else {
+            return config.getDefaultExtensionCookie();
+        }
+    }
 }

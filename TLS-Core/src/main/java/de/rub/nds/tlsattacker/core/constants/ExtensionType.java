@@ -168,6 +168,7 @@ public enum ExtensionType {
         list.add(TRUNCATED_HMAC);
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
+        list.add(COOKIE);
 
         return list;
     }
@@ -207,6 +208,7 @@ public enum ExtensionType {
         list.add(TRUNCATED_HMAC);
         list.add(TRUSTED_CA_KEYS);
         list.add(USE_SRTP);
+        list.add(COOKIE);
 
         return list;
     }
@@ -229,6 +231,7 @@ public enum ExtensionType {
         list.add(RENEGOTIATION_INFO);
         list.add(HEARTBEAT);
         list.add(EXTENDED_RANDOM);
+        list.add(COOKIE);
         return list;
     }
 

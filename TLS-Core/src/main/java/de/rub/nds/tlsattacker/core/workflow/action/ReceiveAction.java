@@ -404,6 +404,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                     return true;
                 }
             }
+        } else if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
+            && msg instanceof NewSessionTicketMessage) {
+            return true;
         }
 
         return false;

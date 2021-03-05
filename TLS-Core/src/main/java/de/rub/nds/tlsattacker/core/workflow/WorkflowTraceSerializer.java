@@ -27,6 +27,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -145,18 +147,27 @@ public class WorkflowTraceSerializer {
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         try {
             context = getJAXBContext();
-            Unmarshaller m = context.createUnmarshaller();
+            Unmarshaller unmarshaller = context.createUnmarshaller();
 
+            unmarshaller.setEventHandler(new ValidationEventHandler() {
+                @Override
+                public boolean handleEvent(ValidationEvent event) {
+                    // raise an Exception also on Warnings
+                    return false;
+                }
+            });
+
+            String xsd_source = WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema workflowTraceSchema =
-                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/workflowTrace.xsd")));
+                sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
             workflowTraceSchema.newValidator();
-            m.setSchema(workflowTraceSchema);
-            WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
+            unmarshaller.setSchema(workflowTraceSchema);
+            WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             inputStream.close();
             return wt;
         } catch (SAXException ex) {
