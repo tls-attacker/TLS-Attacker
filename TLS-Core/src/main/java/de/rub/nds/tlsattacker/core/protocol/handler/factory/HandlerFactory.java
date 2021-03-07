@@ -164,6 +164,8 @@ public class HandlerFactory {
                     return new HelloVerifyRequestHandler(context);
                 case NEW_SESSION_TICKET:
                     return new NewSessionTicketHandler(context);
+                case KEY_UPDATE:
+                    return new KeyUpdateHandler(context);
                 case SERVER_HELLO:
                     return new ServerHelloHandler(context);
                 case SERVER_HELLO_DONE:

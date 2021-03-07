@@ -255,6 +255,11 @@ public class HandshakeByteLength {
      */
     public static final int CERTIFICATE_STATUS_RESPONSE_LENGTH = 3;
 
+    /**
+     * KeyUpdate Message Length
+     */
+    public static final int KEY_UPDATE_LENGTH = 1;
+
     private HandshakeByteLength() {
     }
 }

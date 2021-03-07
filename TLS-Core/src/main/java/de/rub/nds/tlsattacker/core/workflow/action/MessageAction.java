@@ -102,6 +102,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
         @XmlElement(type = AlertMessage.class, name = "Alert"),
         @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+        @XmlElement(type = KeyUpdateMessage.class, name = "KeyUpdate"),
         @XmlElement(type = ApplicationMessage.class, name = "Application"),
         @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
         @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
