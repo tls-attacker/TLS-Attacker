@@ -657,6 +657,13 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
+
+        // for convenience, RFC8446 defines the new, TLS13-exclusive cipher suites as (0x13, 0x??) which fortunately
+        // makes it easy to test for those here
+        if (0x1301 <= this.value && this.value <= 0x1305) {
+            return version == ProtocolVersion.TLS13;
+        }
+
         if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()
             && !this.name().contains("IDEA") && !this.name().contains("_DES") && !this.isExportSymmetricCipher()) {
             return (version == ProtocolVersion.TLS12);
