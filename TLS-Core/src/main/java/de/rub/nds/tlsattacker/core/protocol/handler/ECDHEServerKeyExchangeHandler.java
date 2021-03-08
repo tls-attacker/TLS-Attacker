@@ -64,17 +64,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
         if (group != null) {
             LOGGER.debug("Adjusting selected named group: " + group.name());
             tlsContext.setSelectedGroup(group);
-        }
-        if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
-            LOGGER.debug("Adjusting Montgomery EC Point");
-            EllipticCurve curve = CurveFactory.getCurve(group);
-            // TODO This is only a temporary solution. Montgomery Curves need to
-            // be integrated into the new EC framework
-            tlsContext.setServerEcPublicKey(
-                new Point(new FieldElementF2m(new BigInteger(message.getPublicKey().getValue()), curve.getModulus()),
-                    new FieldElementF2m(new BigInteger(message.getPublicKey().getValue()), curve.getModulus())));
 
-        } else if (group != null) {
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
             tlsContext.setServerEcPublicKey(publicKeyPoint);

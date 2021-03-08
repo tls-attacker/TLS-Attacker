@@ -89,6 +89,9 @@ public class ExtensionParserFactory {
             case CLIENT_CERTIFICATE_TYPE:
                 parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes, config);
                 break;
+            case COOKIE:
+                parser = new CookieExtensionParser(pointer, extensionBytes, config);
+                break;
             case EARLY_DATA:
                 parser = new EarlyDataExtensionParser(pointer, extensionBytes, config);
                 break;

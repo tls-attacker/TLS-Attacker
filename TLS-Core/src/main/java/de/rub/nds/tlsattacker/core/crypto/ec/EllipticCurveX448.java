@@ -33,8 +33,8 @@ public class EllipticCurveX448 extends RFC7748Curve {
     }
 
     public BigInteger decodeScalar(BigInteger scalar) {
-        byte[] scalarA = ArrayConverter.bigIntegerToNullPaddedByteArray(scalar,
-            ArrayConverter.bigIntegerToByteArray(getModulus()).length);
+        byte[] scalarA = ArrayConverter.bigIntegerToByteArray(scalar,
+            ArrayConverter.bigIntegerToByteArray(getModulus()).length, true);
         scalarA[0] = (byte) (scalarA[0] & 252);
         scalarA[55] = (byte) (scalarA[55] | 128);
 
@@ -43,16 +43,16 @@ public class EllipticCurveX448 extends RFC7748Curve {
     }
 
     public BigInteger decodeCoordinate(BigInteger encCoordinate) {
-        byte[] coordinate = ArrayConverter.bigIntegerToNullPaddedByteArray(encCoordinate,
-            ArrayConverter.bigIntegerToByteArray(getModulus()).length);
+        byte[] coordinate = ArrayConverter.bigIntegerToByteArray(encCoordinate,
+            ArrayConverter.bigIntegerToByteArray(getModulus()).length, true);
         ArrayUtils.reverse(coordinate);
 
         return new BigInteger(1, coordinate).mod(getModulus());
     }
 
     public byte[] encodeCoordinate(BigInteger coordinate) {
-        byte[] encX = ArrayConverter.bigIntegerToNullPaddedByteArray(coordinate,
-            ArrayConverter.bigIntegerToByteArray(getModulus()).length);
+        byte[] encX = ArrayConverter.bigIntegerToByteArray(coordinate,
+            ArrayConverter.bigIntegerToByteArray(getModulus()).length, true);
         ArrayUtils.reverse(encX);
         return encX;
     }

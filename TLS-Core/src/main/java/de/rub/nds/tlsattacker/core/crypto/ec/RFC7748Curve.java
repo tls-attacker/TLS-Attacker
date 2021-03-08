@@ -41,7 +41,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         return encodeCoordinate(publicPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
+    private byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
         privateKey = reduceLongKey(privateKey);
         BigInteger decodedCoord = decodeCoordinate(new BigInteger(1, publicKey));
         BigInteger decodedKey = decodeScalar(privateKey);
@@ -59,13 +59,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         return encodeCoordinate(sharedPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, Point publicKey) {
-        byte[] pkBytes = ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getFieldX().getData(),
-            ArrayConverter.bigIntegerToByteArray(getModulus()).length);
-        return computeSharedSecret(privateKey, pkBytes);
-    }
-
-    public byte[] computeSharedSecretDecodedPoint(BigInteger privateKey, Point publicKey) {
+    public byte[] computeSharedSecretFromDecodedPoint(BigInteger privateKey, Point publicKey) {
         byte[] reEncoded = encodeCoordinate(publicKey.getFieldX().getData());
         return computeSharedSecret(privateKey, reEncoded);
     }

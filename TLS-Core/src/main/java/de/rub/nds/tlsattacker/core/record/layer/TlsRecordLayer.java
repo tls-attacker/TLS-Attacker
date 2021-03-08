@@ -179,6 +179,7 @@ public class TlsRecordLayer extends RecordLayer {
                     && record.getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
+                ((Record) record).getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeRead());
             } else {
                 // Do not decrypt the record
                 record.prepareComputations();
@@ -209,4 +210,11 @@ public class TlsRecordLayer extends RecordLayer {
         return decryptor.getRecordMostRecentCipher();
     }
 
+    public Encryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public Decryptor getDecryptor() {
+        return decryptor;
+    }
 }

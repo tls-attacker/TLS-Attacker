@@ -281,11 +281,17 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT)
             == CipherAlgorithm.GOST_28147_CNT);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256)
-            == CipherAlgorithm.ChaCha20Poly1305);
+            == CipherAlgorithm.CHA_CHA_20_POLY1305);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256)
-            == CipherAlgorithm.ChaCha20Poly1305);
+            == CipherAlgorithm.CHA_CHA_20_POLY1305);
         assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256)
-            == CipherAlgorithm.ChaCha20Poly1305);
+            == CipherAlgorithm.CHA_CHA_20_POLY1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256)
+            == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256)
+            == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256)
+            == CipherAlgorithm.UNOFFICIAL_CHA_CHA_20_POLY1305);
     }
 
     @Test

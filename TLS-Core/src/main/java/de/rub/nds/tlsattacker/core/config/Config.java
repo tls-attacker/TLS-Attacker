@@ -78,18 +78,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 @SuppressWarnings("SpellCheckingInspection")
-@XmlRootElement
+@XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {})
 public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -111,7 +118,6 @@ public class Config implements Serializable {
         }
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
-
     }
 
     public static Config createConfig(File f) {
@@ -148,7 +154,7 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
-    private boolean throwExceptionOnParserContextViolation = false;
+    private Boolean throwExceptionOnParserContextViolation = false;
 
     private CertificateKeyType preferredCertificateSignatureType = CertificateKeyType.RSA;
 
@@ -165,6 +171,8 @@ public class Config implements Serializable {
     /**
      * List of filters to apply on workflow traces before serialization.
      */
+    @XmlElement(name = "outputFilter")
+    @XmlElementWrapper
     private List<FilterType> outputFilters;
 
     /**
@@ -223,31 +231,43 @@ public class Config implements Serializable {
     /**
      * Which Signature and Hash algorithms we support
      */
+    @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
+    @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms;
 
     /**
      * Which Cipher suites we support by default
      */
+    @XmlElement(name = "defaultClientSupportedCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultClientSupportedCipherSuites;
 
     /**
      * Which Cipher suites we support by default
      */
+    @XmlElement(name = "defaultServerSupportedCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultServerSupportedCipherSuites;
 
     /**
      * Default clientSupportedNamed groups
      */
+    @XmlElement(name = "defaultClientNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultClientNamedGroups;
 
     /**
      * Default clientSupportedNamed groups
      */
+    @XmlElement(name = "defaultServerNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultServerNamedGroups;
 
     /**
      * Supported ProtocolVersions by default
      */
+    @XmlElement(name = "supportedVersion")
+    @XmlElementWrapper
     private List<ProtocolVersion> supportedVersions;
 
     /**
@@ -267,18 +287,31 @@ public class Config implements Serializable {
 
     private BigInteger defaultKeySharePrivateKey = new BigInteger("FFFF", 16);
 
+    @XmlElement(name = "defaultClientKeyShareNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> defaultClientKeyShareNamedGroups;
 
+    @XmlElement(name = "defaultClientKeyStoreEntry")
+    @XmlElementWrapper
     private List<KeyShareStoreEntry> defaultClientKeyStoreEntries;
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;
 
     private NameType sniType = NameType.HOST_NAME;
 
+    private Integer prefferedCertRsaKeySize = 2048;
+
+    private Integer prefferedCertDssKeySize = 2048;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+
+    /**
+     * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
+     */
+    private Boolean encryptChangeCipherSpecTls13 = false;
 
     /**
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session ticket since we initiate a new
@@ -316,6 +349,8 @@ public class Config implements Serializable {
     /**
      * Default TokenBinding Key Parameters.
      */
+    @XmlElement(name = "defaultTokenBindingKeyParameter")
+    @XmlElementWrapper
     private List<TokenBindingKeyParameters> defaultTokenBindingKeyParameters;
 
     /**
@@ -339,6 +374,8 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
+    @XmlElement(name = "defaultProposedAlpnProtocol")
+    @XmlElementWrapper
     private List<String> defaultProposedAlpnProtocols;
 
     private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
@@ -352,6 +389,8 @@ public class Config implements Serializable {
     /**
      * Default SRTP extension protection profiles The list contains every protection profile as in RFC 5764
      */
+    @XmlElement(name = "secureRealTimeTransportProtocolProtectionProfile")
+    @XmlElementWrapper
     private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
 
     /**
@@ -368,21 +407,29 @@ public class Config implements Serializable {
     /**
      * Default certificate type extension desired types
      */
+    @XmlElement(name = "certificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> certificateTypeDesiredTypes;
 
     /**
      * Default client certificate type extension desired types
      */
+    @XmlElement(name = "clientCertificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> clientCertificateTypeDesiredTypes;
 
     /**
      * Default server certificate type extension desired types
      */
+    @XmlElement(name = "serverCertificateTypeDesiredType")
+    @XmlElementWrapper
     private List<CertificateType> serverCertificateTypeDesiredTypes;
 
     /**
      * Default client authz extension data format list
      */
+    @XmlElement(name = "clientAuthzExtensionDataFormat")
+    @XmlElementWrapper
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
 
     /**
@@ -393,11 +440,15 @@ public class Config implements Serializable {
     /**
      * Default sever authz extension data format list.
      */
+    @XmlElement(name = "serverAuthzExtensionDataFormat")
+    @XmlElementWrapper
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
 
     /**
      * Default trusted ca indication extension trusted CAs.
      */
+    @XmlElement(name = "trustedCaIndicationExtensionAuthority")
+    @XmlElementWrapper
     private List<TrustedAuthority> trustedCaIndicationExtensionAuthorities;
 
     /**
@@ -413,11 +464,15 @@ public class Config implements Serializable {
     /**
      * Default cached objects for the cached info extension.
      */
+    @XmlElement(name = "cachedObject")
+    @XmlElementWrapper
     private List<CachedObject> cachedObjectList;
 
     /**
      * Default certificate status request v2 extension request list.
      */
+    @XmlElement(name = "statusRequestV2Request")
+    @XmlElementWrapper
     private List<RequestItemV2> statusRequestV2RequestList;
 
     /**
@@ -655,6 +710,11 @@ public class Config implements Serializable {
     private Boolean addCertificateStatusRequestV2Extension = false;
 
     /**
+     * If we generate ClientHello with TLS 1.3 cookie extension
+     */
+    private Boolean addCookieExtension = false;
+
+    /**
      * If set to true, timestamps will be updated upon execution of a workflowTrace
      */
     private Boolean updateTimestamps = true;
@@ -662,6 +722,8 @@ public class Config implements Serializable {
     /**
      * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
      */
+    @XmlElement(name = "pskKeyExchangeMode")
+    @XmlElementWrapper
     List<PskKeyExchangeMode> pskKeyExchangeModes;
 
     /**
@@ -696,6 +758,8 @@ public class Config implements Serializable {
     /**
      * Contains all values related to TLS 1.3 PSKs.
      */
+    @XmlElement(name = "defaultPskSet")
+    @XmlElementWrapper
     private List<PskSet> defaultPskSets = new LinkedList<>();
 
     /**
@@ -743,6 +807,8 @@ public class Config implements Serializable {
     /**
      * ActionOptions that are automatically applied to Actions of the MessageFactory
      */
+    @XmlElement(name = "messageFactoryActionOption")
+    @XmlElementWrapper
     private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
@@ -797,6 +863,8 @@ public class Config implements Serializable {
 
     private String defaultApplicationMessageData = "Test";
 
+    @XmlElement(name = "clientCertificateType")
+    @XmlElementWrapper
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
@@ -815,6 +883,7 @@ public class Config implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    @XmlElement(name = "defaultPaddingExtensionBytes")
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     /**
@@ -891,10 +960,16 @@ public class Config implements Serializable {
 
     private SSL2CipherSuite defaultSSL2CipherSuite = SSL2CipherSuite.SSL_CK_RC4_128_WITH_MD5;
 
+    @XmlElement(name = "defaultServerSupportedPointFormat")
+    @XmlElementWrapper
     private List<ECPointFormat> defaultServerSupportedPointFormats;
 
+    @XmlElement(name = "defaultClientSupportedPointFormat")
+    @XmlElementWrapper
     private List<ECPointFormat> defaultClientSupportedPointFormats;
 
+    @XmlElement(name = "defaultServerSupportedSignatureAndHashAlgorithm")
+    @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
     private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
@@ -909,8 +984,12 @@ public class Config implements Serializable {
 
     private HeartbeatMode defaultHeartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
 
+    @XmlElement(name = "defaultClientSupportedCompressionMethod")
+    @XmlElementWrapper
     private List<CompressionMethod> defaultClientSupportedCompressionMethods;
 
+    @XmlElement(name = "defaultServerSupportedCompressionMethod")
+    @XmlElementWrapper
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -945,6 +1024,9 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dtlsDefaultCookie = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultExtensionCookie = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -1063,7 +1145,6 @@ public class Config implements Serializable {
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received HttpsRequestMessage
      * or httpsParsing is disabled
      */
-    @XmlElement(name = "defaultHttpsRequestPath")
     private String defaultHttpsRequestPath = "/";
 
     private StarttlsType starttlsType = StarttlsType.NONE;
@@ -1175,16 +1256,22 @@ public class Config implements Serializable {
     /**
      * Supported Cipher suites for EncryptedServerNameIndication extension.
      */
+    @XmlElement(name = "clientSupportedEsniCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList();
 
     /**
      * Supported Groups for EncryptedServerNameIndication extension.
      */
+    @XmlElement(name = "clientSupportedEsniNamedGroup")
+    @XmlElementWrapper
     private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
 
     /**
      * KeyPairs for Server with EncryptedServerNameIndication extension.
      */
+    @XmlElement(name = "esniServerKeyPair")
+    @XmlElementWrapper
     private List<KeyShareEntry> esniServerKeyPairs = new LinkedList();
 
     /**
@@ -1205,8 +1292,12 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
 
+    @XmlElement(name = "defaultEsniServerKeyShareEntry")
+    @XmlElementWrapper
     private List<KeyShareStoreEntry> defaultEsniServerKeyShareEntries = new LinkedList<>();
 
+    @XmlElement(name = "defaultEsniServerCipherSuite")
+    @XmlElementWrapper
     private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList();
 
     private Integer defaultEsniPaddedLength = 260;
@@ -1215,13 +1306,15 @@ public class Config implements Serializable {
 
     private Long defaultEsniNotAfter = 1582655135231L + 2592000000L;
 
+    @XmlElement(name = "defaultEsniExtension")
+    @XmlElementWrapper
     private List<ExtensionType> defaultEsniExtensions = new LinkedList();
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;
 
-    private boolean writeKeylogFile = false;
+    private Boolean writeKeylogFile = false;
 
     private String keylogFilePath = null;
 
@@ -1339,11 +1432,11 @@ public class Config implements Serializable {
         this.defaultSelectedAlpnProtocol = defaultSelectedAlpnProtocol;
     }
 
-    public boolean isThrowExceptionOnParserContextViolation() {
+    public Boolean isThrowExceptionOnParserContextViolation() {
         return throwExceptionOnParserContextViolation;
     }
 
-    public void setThrowExceptionOnParserContextViolation(boolean throwExceptionOnParserContextViolation) {
+    public void setThrowExceptionOnParserContextViolation(Boolean throwExceptionOnParserContextViolation) {
         this.throwExceptionOnParserContextViolation = throwExceptionOnParserContextViolation;
     }
 
@@ -1950,11 +2043,11 @@ public class Config implements Serializable {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
     }
 
-    public boolean isAddExtendedRandomExtension() {
+    public Boolean isAddExtendedRandomExtension() {
         return this.addExtendedRandomExtension;
     }
 
-    public void setAddExtendedRandomExtension(boolean addExtendedRandomExtension) {
+    public void setAddExtendedRandomExtension(Boolean addExtendedRandomExtension) {
         this.addExtendedRandomExtension = addExtendedRandomExtension;
     }
 
@@ -2516,11 +2609,11 @@ public class Config implements Serializable {
         this.addHeartbeatExtension = addHeartbeatExtension;
     }
 
-    public boolean isAddMaxFragmentLengthExtension() {
+    public Boolean isAddMaxFragmentLengthExtension() {
         return addMaxFragmentLengthExtension;
     }
 
-    public void setAddMaxFragmentLengthExtension(boolean addMaxFragmentLengthExtension) {
+    public void setAddMaxFragmentLengthExtension(Boolean addMaxFragmentLengthExtension) {
         this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtension;
     }
 
@@ -3354,11 +3447,11 @@ public class Config implements Serializable {
         this.defaultServerDsaGenerator = defaultServerDsaGenerator;
     }
 
-    public boolean isAutoSelectCertificate() {
+    public Boolean isAutoSelectCertificate() {
         return autoSelectCertificate;
     }
 
-    public void setAutoSelectCertificate(boolean autoSelectCertificate) {
+    public void setAutoSelectCertificate(Boolean autoSelectCertificate) {
         this.autoSelectCertificate = autoSelectCertificate;
     }
 
@@ -3694,11 +3787,11 @@ public class Config implements Serializable {
         this.defaultEsniExtensions = defaultEsniExtensions;
     }
 
-    public boolean isWriteKeylogFile() {
+    public Boolean isWriteKeylogFile() {
         return writeKeylogFile;
     }
 
-    public void setWriteKeylogFile(boolean writeKeylogFile) {
+    public void setWriteKeylogFile(Boolean writeKeylogFile) {
         this.writeKeylogFile = writeKeylogFile;
     }
 
@@ -3786,4 +3879,43 @@ public class Config implements Serializable {
         this.defaultLastClientHello = defaultLastClientHello;
     }
 
+    public int getPrefferedCertRsaKeySize() {
+        return prefferedCertRsaKeySize;
+    }
+
+    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
+        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    }
+
+    public int getPrefferedCertDssKeySize() {
+        return prefferedCertDssKeySize;
+    }
+
+    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
+        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
+    }
+
+    public byte[] getDefaultExtensionCookie() {
+        return defaultExtensionCookie;
+    }
+
+    public void setDefaultExtensionCookie(byte[] defaultExtensionCookie) {
+        this.defaultExtensionCookie = defaultExtensionCookie;
+    }
+
+    public Boolean isAddCookieExtension() {
+        return addCookieExtension;
+    }
+
+    public void setAddCookieExtension(Boolean addCookieExtension) {
+        this.addCookieExtension = addCookieExtension;
+    }
+
+    public Boolean isEncryptChangeCipherSpec() {
+        return encryptChangeCipherSpecTls13;
+    }
+
+    public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
+        this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
+    }
 }

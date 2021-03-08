@@ -64,14 +64,14 @@ public class WorkflowTraceSchemaGenerator {
         public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
             String ns = StringUtils.isBlank(namespaceURI) ? NO_NS : namespaceURI;
             schemaWriters.put(ns, new StringWriter());
-            String systemId = mapSystemIds(ns, suggestedFileName);
+            String systemId = mapSystemIds();
             systemIds.put(ns, systemId);
             StreamResult result = new StreamResult(schemaWriters.get(ns));
             result.setSystemId(systemId);
             return result;
         }
 
-        private static String mapSystemIds(String ns, String suggestedFileName) {
+        public static String mapSystemIds() {
             return "workflowTrace.xsd";
         }
 

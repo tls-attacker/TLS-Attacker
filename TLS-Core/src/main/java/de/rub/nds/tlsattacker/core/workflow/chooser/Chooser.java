@@ -123,6 +123,8 @@ public abstract class Chooser {
 
     public abstract byte[] getDtlsCookie();
 
+    public abstract byte[] getExtensionCookie();
+
     public abstract TransportHandler getTransportHandler();
 
     public abstract PRFAlgorithm getPRFAlgorithm();

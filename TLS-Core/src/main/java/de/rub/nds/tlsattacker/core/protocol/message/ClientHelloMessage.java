@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -224,6 +225,9 @@ public class ClientHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
+            }
+            if (tlsConfig.isAddCookieExtension()) {
+                addExtension(new CookieExtensionMessage());
             }
             if (tlsConfig.isAddPreSharedKeyExtension()) {
                 addExtension(new PreSharedKeyExtensionMessage(tlsConfig));

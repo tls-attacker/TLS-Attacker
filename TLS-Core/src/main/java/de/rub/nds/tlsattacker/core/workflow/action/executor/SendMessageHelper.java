@@ -63,7 +63,9 @@ public class SendMessageHelper {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                 && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                if (message.getAdjustContext()) {
+                    lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+                }
                 lastMessage = null;
             }
             lastMessage = message;
@@ -98,12 +100,14 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                if (message.getAdjustContext()) {
+                    message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                }
                 lastMessage = null;
             }
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-        if (lastMessage != null) {
+        if (lastMessage != null && lastMessage.getAdjustContext()) {
             lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
         }
         sendData(messageBytesCollector, context);

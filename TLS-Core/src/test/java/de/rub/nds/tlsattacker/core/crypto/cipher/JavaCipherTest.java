@@ -78,7 +78,7 @@ public class JavaCipherTest {
         algos.add(CipherAlgorithm.SEED_CBC);
         for (CipherAlgorithm algo : algos) {
             byte[] key = new byte[algo.getKeySize()];
-            JavaCipher cipher = new JavaCipher(algo, key);
+            JavaCipher cipher = new JavaCipher(algo, key, false);
         }
     }
 }

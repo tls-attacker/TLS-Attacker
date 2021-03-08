@@ -239,6 +239,13 @@ public class CertificateByteChooser {
                     && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 && pair.getPublicKey().keySize() < 2048) {
                     continue;
                 }
+                if (neededPublicKeyType == CertificateKeyType.RSA
+                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertRsaKeySize()) {
+                    continue;
+                } else if (neededPublicKeyType == CertificateKeyType.DSS
+                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize()) {
+                    continue;
+                }
                 return pair;
             }
 

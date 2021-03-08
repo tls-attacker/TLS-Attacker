@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -43,7 +44,7 @@ public abstract class RecordCipher {
     /**
      * CipherAlgorithm algorithm (AES, ...)
      */
-    protected final BulkCipherAlgorithm bulkCipherAlg;
+    protected final CipherAlgorithm cipherAlg;
 
     private final KeySet keySet;
     /**
@@ -60,7 +61,7 @@ public abstract class RecordCipher {
         this.context = context;
         this.cipherSuite = context.getChooser().getSelectedCipherSuite();
         this.version = context.getChooser().getSelectedProtocolVersion();
-        this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
+        this.cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
     }
 
     public abstract void encrypt(Record record) throws CryptoException;

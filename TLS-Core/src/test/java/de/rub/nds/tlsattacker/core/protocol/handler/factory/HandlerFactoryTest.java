@@ -153,6 +153,7 @@ public class HandlerFactoryTest {
             ExtensionType.PASSWORD_SALT) instanceof PasswordSaltExtensionHandler);
         assertTrue(HandlerFactory.getExtensionHandler(context,
             ExtensionType.EXTENDED_RANDOM) instanceof ExtendedRandomExtensionHandler);
+        assertTrue(HandlerFactory.getExtensionHandler(context, ExtensionType.COOKIE) instanceof CookieExtensionHandler);
     }
 
     @Test

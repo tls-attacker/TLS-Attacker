@@ -120,6 +120,15 @@ public class WorkflowTraceUtil {
         }
     }
 
+    public static TlsAction getFirstFailedAction(WorkflowTrace trace) {
+        for (TlsAction action : trace.getTlsActions()) {
+            if (!action.executedAsPlanned()) {
+                return action;
+            }
+        }
+        return null;
+    }
+
     public static List<HandshakeMessage> getAllSendHandshakeMessages(WorkflowTrace trace) {
         return filterHandshakeMessagesFromList(getAllSendMessages(trace));
     }

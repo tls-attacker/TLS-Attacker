@@ -47,10 +47,16 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected byte[] computePremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
-        Point sharedPoint = curve.mult(privateKey, publicKey);
+        if (curve instanceof RFC7748Curve) {
+            RFC7748Curve rfc7748Curve = (RFC7748Curve) curve;
+            return rfc7748Curve.computeSharedSecretFromDecodedPoint(msg.getComputations().getPrivateKey().getValue(),
+                publicKey);
+        } else {
+            Point sharedPoint = curve.mult(privateKey, publicKey);
 
-        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
+            int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+            return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
+        }
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
@@ -81,26 +87,14 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             setComputationPrivateKey(msg, clientMode);
         }
         EllipticCurve curve = CurveFactory.getCurve(usedGroup);
-        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
-            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-            if (clientMode) {
-                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
-                    chooser.getServerEcPublicKey());
-            } else {
-                premasterSecret = rfcCurve.computeSharedSecret(msg.getComputations().getPrivateKey().getValue(),
-                    msg.getPublicKey().getValue());
-            }
-        } else {
+        Point publicKey;
 
-            Point publicKey;
-            if (clientMode) {
-                publicKey = chooser.getServerEcPublicKey();
-            } else {
-                publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
-            }
-            premasterSecret =
-                computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
+        if (clientMode) {
+            publicKey = chooser.getServerEcPublicKey();
+        } else {
+            publicKey = PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
         }
+        premasterSecret = computePremasterSecret(curve, publicKey, msg.getComputations().getPrivateKey().getValue());
         preparePremasterSecret(msg);
     }
 

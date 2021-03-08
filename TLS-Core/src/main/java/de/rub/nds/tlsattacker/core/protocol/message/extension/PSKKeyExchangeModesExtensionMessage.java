@@ -55,6 +55,10 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
         return keyExchangeModesListLength;
     }
 
+    public void setKeyExchangeModesListLength(ModifiableInteger length) {
+        this.keyExchangeModesListLength = length;
+    }
+
     public void setKeyExchangeModesListLength(int length) {
         this.keyExchangeModesListLength = ModifiableVariableFactory.safelySetValue(keyExchangeModesListLength, length);
     }

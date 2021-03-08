@@ -179,4 +179,8 @@ public abstract class TlsAction implements Serializable, Aliasable {
         this.actionOptions = actionOptions;
     }
 
+    public final void addActionOption(ActionOption option) {
+        this.actionOptions.add(option);
+    }
+
 }

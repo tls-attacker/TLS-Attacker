@@ -46,7 +46,7 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
         int pointer = 0;
         int chunk_size = (int) Math.ceil((double) data.length / packetChunks);
 
-        while (pointer < data.length - 1) {
+        while (pointer <= data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {
                 chunk_size = data.length - pointer;
             }

@@ -45,7 +45,7 @@ public class TlsConfigIOTest {
     public void testEmptyConfig() {
         InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml");
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("no XML is given");
+        exception.expectMessage("Stream cannot be null");
         Config config = Config.createConfig(stream);
     }
 

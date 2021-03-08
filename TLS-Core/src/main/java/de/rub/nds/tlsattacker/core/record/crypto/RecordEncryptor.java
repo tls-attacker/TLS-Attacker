@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,5 +71,8 @@ public class RecordEncryptor extends Encryptor {
             }
         }
         context.increaseWriteSequenceNumber();
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            record.getComputations().setUsedTls13KeySetType(context.getActiveKeySetTypeWrite());
+        }
     }
 }

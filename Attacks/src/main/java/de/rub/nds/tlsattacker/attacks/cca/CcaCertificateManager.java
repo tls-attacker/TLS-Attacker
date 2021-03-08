@@ -11,14 +11,12 @@ package de.rub.nds.tlsattacker.attacks.cca;
 
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPublicKey;
-import static de.rub.nds.x509attacker.X509Attacker.registerTypes;
-import static de.rub.nds.x509attacker.X509Attacker.registerXmlClasses;
-import static de.rub.nds.x509attacker.X509Attacker.writeCertificates;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1EncoderForX509;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.KeyInfo;
+import de.rub.nds.asn1.util.AttributeParser;
 import de.rub.nds.asn1tool.xmlparser.Asn1XmlContent;
 import de.rub.nds.asn1tool.xmlparser.XmlParser;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
@@ -35,9 +33,12 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.x509attacker.X509Attributes;
+import de.rub.nds.x509attacker.filesystem.CertificateFileWriter;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManager;
 import de.rub.nds.x509attacker.keyfilemanager.KeyFileManagerException;
 import de.rub.nds.x509attacker.linker.Linker;
+import de.rub.nds.x509attacker.registry.Registry;
 import de.rub.nds.x509attacker.xmlsignatureengine.XmlSignatureEngine;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -79,8 +80,7 @@ public class CcaCertificateManager {
 
     private static String extractXMLCertificateSubject(String certificateInputDirectory, String rootCertificate) {
         // Register XmlClasses and Types
-        registerXmlClasses();
-        registerTypes();
+        Registry.getInstance();
 
         CcaFileManager ccaFileManager = CcaFileManager.getReference(certificateInputDirectory);
 
@@ -179,7 +179,7 @@ public class CcaCertificateManager {
             Asn1Encodable certificate = certificates.get(i);
             ccaCertificateChain.appendEncodedCertificate(Asn1EncoderForX509.encodeForCertificate(linker, certificate));
             if (certificate instanceof Asn1Sequence && readKey == false) {
-                keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFile();
+                keyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getKeyFileName();
                 pubKeyName = ((KeyInfo) ((Asn1Sequence) certificate).getChildren().get(0)).getPubKeyFile();
                 keyType = ((Asn1Sequence) certificate).getChildren().get(0).getAttribute("keyType");
                 readKey = true;
@@ -231,10 +231,40 @@ public class CcaCertificateManager {
             encodedCertificates[i] = ccaCertificateChain.getEncodedCertificates().get(i);
         }
         try {
+
             writeCertificates(outputDirectory, certificates, encodedCertificates);
         } catch (IOException ioe) {
             LOGGER.error("Couldn't write certificates to output directory. " + ioe);
         }
+    }
+
+    public static void writeCertificates(final String certificateOutputDirectory,
+        final List<Asn1Encodable> certificates, final byte[][] encodedCertificates) throws IOException {
+        CertificateFileWriter certificateChainFileWriter =
+            new CertificateFileWriter(certificateOutputDirectory, "certificate_chain.pem");
+        for (int i = 0; i < certificates.size(); i++) {
+            Asn1Encodable certificate = certificates.get(i);
+            if (certificate.getType().equalsIgnoreCase("Certificate") == false) {
+                continue;
+            }
+            // Append certificate to certificate chain file
+            if (AttributeParser.parseBooleanAttributeOrDefault(certificate, X509Attributes.ATTACH_TO_CERTIFICATE_LIST,
+                false)) {
+                certificateChainFileWriter.writeCertificate(encodedCertificates[i]);
+            }
+            // Write certificate in its own file
+            writeSingleCertificate(certificateOutputDirectory, certificate, encodedCertificates[i]);
+        }
+        certificateChainFileWriter.close();
+    }
+
+    private static void writeSingleCertificate(final String certificateOutputDirectory, final Asn1Encodable certificate,
+        final byte[] encodedCertificate) throws IOException {
+        String certificateFileName = certificate.getIdentifier() + ".pem";
+        CertificateFileWriter certificateFileWriter =
+            new CertificateFileWriter(certificateOutputDirectory, certificateFileName);
+        certificateFileWriter.writeCertificate(encodedCertificate);
+        certificateFileWriter.close();
     }
 
     /**

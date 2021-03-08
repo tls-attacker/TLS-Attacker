@@ -89,7 +89,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
 
         /* tell the proxy where the real server is */
         controlSocket.getOutputStream().write((hostname + "\n").getBytes());
-        controlSocket.getOutputStream().write((serverPort + "\n").getBytes());
+        controlSocket.getOutputStream().write((Integer.toString(dstPort) + "\n").getBytes());
         controlSocket.getOutputStream().flush();
     }
 
