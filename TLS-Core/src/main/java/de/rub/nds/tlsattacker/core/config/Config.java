@@ -119,7 +119,6 @@ public class Config implements Serializable {
         }
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
-
     }
 
     public static Config createConfig(File f) {
@@ -301,10 +300,19 @@ public class Config implements Serializable {
 
     private NameType sniType = NameType.HOST_NAME;
 
+    private Integer prefferedCertRsaKeySize = 2048;
+
+    private Integer prefferedCertDssKeySize = 2048;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+
+    /**
+     * Determine if CCS should be encrypted in TLS 1.3 if encryption is set up for record layer
+     */
+    private Boolean encryptChangeCipherSpecTls13 = false;
 
     /**
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session ticket since we initiate a new
@@ -703,6 +711,11 @@ public class Config implements Serializable {
     private Boolean addCertificateStatusRequestV2Extension = false;
 
     /**
+     * If we generate ClientHello with TLS 1.3 cookie extension
+     */
+    private Boolean addCookieExtension = false;
+
+    /**
      * If set to true, timestamps will be updated upon execution of a workflowTrace
      */
     private Boolean updateTimestamps = true;
@@ -1034,6 +1047,9 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dtlsDefaultCookie = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultExtensionCookie = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultCertificateRequestContext = new byte[0];
@@ -1462,37 +1478,6 @@ public class Config implements Serializable {
 
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
-    }
-
-    /**
-     * Returns a list of all fields in which the two given configs differ in content (uses .equal())
-     *
-     * @param config1
-     * The first config to be compared
-     * @param config2
-     * The second config to be compared
-     * @return An ArrayList containing the names of fields of the Config class in which the given configs differ
-     * @throws IllegalAccessException
-     */
-    public static List<String> difference(Config config1, Config config2) throws IllegalAccessException {
-        List<String> changedProperties = new ArrayList<>();
-        for (Field field : Config.class.getDeclaredFields()) {
-            field.setAccessible(true);
-            Object value1 = field.get(config1);
-            Object value2 = field.get(config2);
-            if (value1 != null && value2 != null) {
-                if (!value1.getClass().isArray() && !value1.equals(value2)) {
-                    changedProperties.add(field.getName());
-                }
-                // this is a pretty hacky way as it would fail for other array types in Config.java
-                else if (value1.getClass().isArray()) {
-                    if (!Arrays.equals((byte[]) value1, (byte[]) value2)) {
-                        changedProperties.add(field.getName());
-                    }
-                }
-            }
-        }
-        return changedProperties;
     }
 
     public String getDefaultSelectedAlpnProtocol() {
@@ -3950,4 +3935,43 @@ public class Config implements Serializable {
         this.defaultLastClientHello = defaultLastClientHello;
     }
 
+    public int getPrefferedCertRsaKeySize() {
+        return prefferedCertRsaKeySize;
+    }
+
+    public void setPrefferedCertRsaKeySize(int prefferedCertRsaKeySize) {
+        this.prefferedCertRsaKeySize = prefferedCertRsaKeySize;
+    }
+
+    public int getPrefferedCertDssKeySize() {
+        return prefferedCertDssKeySize;
+    }
+
+    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
+        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
+    }
+
+    public byte[] getDefaultExtensionCookie() {
+        return defaultExtensionCookie;
+    }
+
+    public void setDefaultExtensionCookie(byte[] defaultExtensionCookie) {
+        this.defaultExtensionCookie = defaultExtensionCookie;
+    }
+
+    public Boolean isAddCookieExtension() {
+        return addCookieExtension;
+    }
+
+    public void setAddCookieExtension(Boolean addCookieExtension) {
+        this.addCookieExtension = addCookieExtension;
+    }
+
+    public Boolean isEncryptChangeCipherSpec() {
+        return encryptChangeCipherSpecTls13;
+    }
+
+    public void setEncryptChangeCipherSpec(Boolean encryptChangeCipherSpec) {
+        this.encryptChangeCipherSpecTls13 = encryptChangeCipherSpec;
+    }
 }

@@ -12,6 +12,8 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
@@ -19,9 +21,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerTcpTransportHandler extends TcpTransportHandler {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ServerSocket serverSocket;
-    private Socket socket;
     private int port;
     /**
      * If true, don't create a new ServerSocket and just use the given socket. Useful for spawning server
@@ -82,6 +84,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         }
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
+        LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
     }
 
@@ -121,7 +124,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     @Override
     public Integer getSrcPort() {
         if (isInitialized()) {
-            return serverSocket.getLocalPort();
+            return socket.getLocalPort();
         } else {
             return port;
         }

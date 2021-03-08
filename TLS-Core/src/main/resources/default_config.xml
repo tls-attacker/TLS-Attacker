@@ -42,7 +42,6 @@
     <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientAuthentication>false</clientAuthentication>
     <defaultClientSupportedSignatureAndHashAlgorithms>
-        <defaultClientSupportedSignatureAndHashAlgorithm>DSA_MD5</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>DSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>DSA_SHA224</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>DSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
@@ -54,7 +53,6 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
-        <defaultClientSupportedSignatureAndHashAlgorithm>ECDSA_MD5</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>ECDSA_SHA1</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>ECDSA_SHA224</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>ECDSA_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
@@ -810,7 +808,10 @@
         <publicKey>2A 98 1D B6 CD D0 2A 06 C1 76 31 02 C9 E7 41 36 5A C4 E6 F7 2B 31 76 A6 BD 6A 35 23 D3 EC 0F 4C</publicKey>
     </defaultServerKeyShareEntry>
     <sniType>HOST_NAME</sniType>
+    <prefferedCertRsaKeySize>2048</prefferedCertRsaKeySize>
+    <prefferedCertDssKeySize>2048</prefferedCertDssKeySize>
     <maxFragmentLength>TWO_9</maxFragmentLength>
+    <encryptChangeCipherSpecTls13>false</encryptChangeCipherSpecTls13>
     <tlsSessionTicket></tlsSessionTicket>
     <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
     <defaultServerRenegotiationInfo></defaultServerRenegotiationInfo>
@@ -913,6 +914,7 @@
     <addClientCertificateUrlExtension>false</addClientCertificateUrlExtension>
     <addTrustedCaIndicationExtension>false</addTrustedCaIndicationExtension>
     <addCertificateStatusRequestV2Extension>false</addCertificateStatusRequestV2Extension>
+    <addCookieExtension>false</addCookieExtension>
     <updateTimestamps>true</updateTimestamps>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
@@ -988,7 +990,6 @@
         <defaultClientSupportedPointFormat>UNCOMPRESSED</defaultClientSupportedPointFormat>
     </defaultClientSupportedPointFormats>
     <defaultServerSupportedSignatureAndHashAlgorithms>
-        <defaultServerSupportedSignatureAndHashAlgorithm>DSA_MD5</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>DSA_SHA1</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>DSA_SHA224</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>DSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
@@ -1000,7 +1001,6 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
-        <defaultServerSupportedSignatureAndHashAlgorithm>ECDSA_MD5</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>ECDSA_SHA1</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>ECDSA_SHA224</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>ECDSA_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
@@ -1035,6 +1035,7 @@
     <defaultServerSessionId></defaultServerSessionId>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <dtlsDefaultCookie></dtlsDefaultCookie>
+    <defaultExtensionCookie></defaultExtensionCookie>
     <defaultCertificateRequestContext></defaultCertificateRequestContext>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
     <defaultAlertDescription>CLOSE_NOTIFY</defaultAlertDescription>

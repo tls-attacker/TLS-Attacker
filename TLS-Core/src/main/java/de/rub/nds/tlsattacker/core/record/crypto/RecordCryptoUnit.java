@@ -43,4 +43,14 @@ public abstract class RecordCryptoUnit {
         this.recordCipherList.add(recordCipher);
     }
 
+    public void removeCiphers(int toRemove) {
+        while (toRemove > 0 && !recordCipherList.isEmpty()) {
+            recordCipherList.remove(recordCipherList.size() - 1);
+            toRemove--;
+        }
+        if (toRemove > 0) {
+            LOGGER.warn("Could not remove as many ciphers as specified");
+        }
+    }
+
 }

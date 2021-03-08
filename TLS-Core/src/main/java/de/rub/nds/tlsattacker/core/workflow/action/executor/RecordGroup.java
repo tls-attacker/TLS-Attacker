@@ -47,18 +47,30 @@ public class RecordGroup {
 
         RecordGroup group = new RecordGroup();
         recordGroups.add(group);
-        for (AbstractRecord record : records) {
-            if (!group.addRecord(record)) {
-                group = new RecordGroup();
-                recordGroups.add(group);
-                group.addRecord(record);
-            }
-        }
+        splitIntoGroups(recordGroups, group, records);
 
         return recordGroups;
     }
 
-    private final List<AbstractRecord> records;
+    static final void mergeRecordsIntoGroups(List<RecordGroup> preGrouped, List<AbstractRecord> newRecords) {
+        if (!newRecords.isEmpty()) {
+            RecordGroup lastGroup = preGrouped.get(preGrouped.size() - 1);
+            splitIntoGroups(preGrouped, lastGroup, newRecords);
+        }
+    }
+
+    private static void splitIntoGroups(List<RecordGroup> recordGroups, RecordGroup startingGroup,
+        List<AbstractRecord> records) {
+        for (AbstractRecord record : records) {
+            if (!startingGroup.addRecord(record)) {
+                startingGroup = new RecordGroup();
+                recordGroups.add(startingGroup);
+                startingGroup.addRecord(record);
+            }
+        }
+    }
+
+    private List<AbstractRecord> records;
 
     private RecordGroup() {
         records = new LinkedList<>();
@@ -106,12 +118,24 @@ public class RecordGroup {
         return stream.toByteArray();
     }
 
+    public void decryptRecord(TlsContext context, int recordIndex) {
+
+        context.getRecordLayer().decryptAndDecompressRecord(getRecords().get(recordIndex));
+
+    }
+
+    @Deprecated
     public void decryptRecords(TlsContext context) {
         for (AbstractRecord record : getRecords()) {
             context.getRecordLayer().decryptAndDecompressRecord(record);
         }
     }
 
+    public void adjustContextForRecord(TlsContext context, int recordIndex) {
+        getRecords().get(recordIndex).adjustContext(context);
+    }
+
+    @Deprecated
     public void adjustContext(TlsContext context) {
         for (AbstractRecord record : getRecords()) {
             record.adjustContext(context);
@@ -139,6 +163,10 @@ public class RecordGroup {
             records.add(record);
         }
         return isFitting;
+    }
+
+    public void removeFromGroup(List<AbstractRecord> toRemove) {
+        records.removeAll(toRemove);
     }
 
     public boolean areAllRecordsValid() {
@@ -177,7 +205,7 @@ public class RecordGroup {
         } else {
             List<AbstractRecord> recordList = new LinkedList<>();
             Boolean valid = null;
-            for (AbstractRecord record : recordList) {
+            for (AbstractRecord record : records) {
                 boolean tempValid = isRecordInvalid(record);
                 if (valid == null || Objects.equals(tempValid, valid)) {
                     valid = tempValid;

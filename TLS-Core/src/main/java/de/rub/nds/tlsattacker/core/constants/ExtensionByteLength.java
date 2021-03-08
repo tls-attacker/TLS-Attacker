@@ -288,6 +288,11 @@ public class ExtensionByteLength {
      */
     public static final int RECORD_DIGEST_LENGTH = 2;
 
+    /**
+     * cookieLength in the CookieExtension
+     */
+    public static final int COOKIE_LENGTH = 2;
+
     private ExtensionByteLength() {
     }
 }
