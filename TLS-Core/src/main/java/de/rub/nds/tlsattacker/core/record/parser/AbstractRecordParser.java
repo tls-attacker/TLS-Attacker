@@ -12,12 +12,13 @@ package de.rub.nds.tlsattacker.core.record.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 
 /**
  * @param <AbstractRecordT>
  * The Abstract record that should be parsed
  */
-public abstract class AbstractRecordParser<AbstractRecordT> extends Parser<AbstractRecordT> {
+public abstract class AbstractRecordParser<AbstractRecordT extends AbstractRecord> extends Parser<AbstractRecordT> {
 
     protected final ProtocolVersion version;
 

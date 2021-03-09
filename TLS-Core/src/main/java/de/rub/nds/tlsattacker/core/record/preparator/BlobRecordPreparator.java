@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BlobRecordPreparator extends AbstractRecordPreparator {
+public class BlobRecordPreparator extends AbstractRecordPreparator<BlobRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
