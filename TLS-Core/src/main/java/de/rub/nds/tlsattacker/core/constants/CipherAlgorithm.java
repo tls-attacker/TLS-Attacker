@@ -32,8 +32,8 @@ public enum CipherAlgorithm {
     SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"),
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
-    CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
-    UNOFFICIAL_CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
+    CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
+    UNOFFICIAL_CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
     DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently
     // uses
     // des
