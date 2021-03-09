@@ -44,8 +44,8 @@ public enum CipherAlgorithm {
     ARIA_256_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
-    AES_128_CTR(16, 16, 0, 16, "AES/CTR/NoPadding"),
-    AES_256_CTR(32, 16, 0, 16, "AES/CTR/NoPadding");
+    AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
+    AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
         this.keySize = keySize;
