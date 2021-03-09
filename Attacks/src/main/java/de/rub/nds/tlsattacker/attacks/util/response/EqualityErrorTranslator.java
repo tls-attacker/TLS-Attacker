@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.util.response;
 
 /**
@@ -16,9 +17,9 @@ public class EqualityErrorTranslator {
 
     /**
      *
-     * @param error
-     * @param fingerprint1
-     * @param fingerprint2
+     * @param  error
+     * @param  fingerprint1
+     * @param  fingerprint2
      * @return
      */
     public static String translation(EqualityError error, ResponseFingerprint fingerprint1,
@@ -32,12 +33,12 @@ public class EqualityErrorTranslator {
                 builder.append("The server responds with a different number of protocol messages.");
                 break;
             case NONE:
-                builder
-                    .append("The server shows no behaviour difference on the protocol / socket layer. The Server seems to be fine.");
+                builder.append(
+                    "The server shows no behaviour difference on the protocol / socket layer. The Server seems to be fine.");
                 break;
             case RECORD_CLASS:
-                builder
-                    .append("The server sometimes responds with something which cannot be interpreted as TLS but sometimes he does.");
+                builder.append(
+                    "The server sometimes responds with something which cannot be interpreted as TLS but sometimes he does.");
                 break;
             case RECORD_CONTENT_TYPE:
                 builder.append("The server responds with records which differentiate on the record content type.");

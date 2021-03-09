@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -34,7 +35,8 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
         this.additionalTcpTimeout = 5000;
     }
 
-    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes, long additionalTcpTimeout) {
+    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes,
+        long additionalTcpTimeout) {
         this.reexecutions = reexecutions;
         this.additionalSleepTime = additionalSleepTime;
         this.increasingSleepTimes = increasingSleepTimes;

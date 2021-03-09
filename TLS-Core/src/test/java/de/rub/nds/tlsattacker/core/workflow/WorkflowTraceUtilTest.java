@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -283,30 +284,30 @@ public class WorkflowTraceUtilTest {
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
         assertEquals(sClientHello,
             WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).get(0));
-        assertEquals(sClientHello, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace)
-            .get(0));
+        assertEquals(sClientHello,
+            WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0));
 
         trace.addTlsAction(sHeartbeat);
 
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
         assertEquals(1, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).size());
-        assertEquals(sHeartbeat, WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace)
-            .get(0));
+        assertEquals(sHeartbeat,
+            WorkflowTraceUtil.getSendingActionsForMessage(ProtocolMessageType.HEARTBEAT, trace).get(0));
     }
 
     @Test
     public void testGetReceivingActionsForMessage() {
         assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(0, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace)
-            .size());
+        assertEquals(0,
+            WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.CLIENT_HELLO, trace).size());
 
         ReceiveAction serverHelloRAction = new ReceiveAction(new ServerHelloMessage());
         trace.addTlsAction(serverHelloRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
-            .size());
+        assertEquals(1,
+            WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
         assertEquals(serverHelloRAction,
             WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).get(0));
         assertEquals(serverHelloRAction,
@@ -316,23 +317,25 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(alertRAction);
 
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).size());
-        assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace)
-            .size());
+        assertEquals(1,
+            WorkflowTraceUtil.getReceivingActionsForMessage(HandshakeMessageType.SERVER_HELLO, trace).size());
         assertEquals(1, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).size());
-        assertEquals(alertRAction, WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace)
-            .get(0));
+        assertEquals(alertRAction,
+            WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.ALERT, trace).get(0));
     }
 
     @Test
     public void testGetFirstActionForMessage() {
         trace.addTlsActions(new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
-        assertTrue(WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof SendAction);
+        assertTrue(
+            WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof SendAction);
     }
 
     @Test
     public void testGetFirstActionForMessage2() {
         trace.addTlsActions(new ReceiveAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
-        assertTrue(WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof ReceiveAction);
+        assertTrue(
+            WorkflowTraceUtil.getFirstActionForMessage(HandshakeMessageType.FINISHED, trace) instanceof ReceiveAction);
     }
 
     @Test
@@ -368,17 +371,17 @@ public class WorkflowTraceUtilTest {
         // StringBuilder sb = new
         // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
         // sb.append("<workflowTrace>\n");
-        // sb.append("    <Send>\n");
-        // sb.append("        <messages>\n");
-        // sb.append("            <ClientHello>\n");
-        // sb.append("                <extensions>\n");
-        // sb.append("                    <ECPointFormat/>\n");
-        // sb.append("                    <EllipticCurves/>\n");
-        // sb.append("                </extensions>\n");
-        // sb.append("            </ClientHello>\n");
-        // sb.append("        </messages>\n");
-        // sb.append("        <records/>\n");
-        // sb.append("    </Send>\n");
+        // sb.append(" <Send>\n");
+        // sb.append(" <messages>\n");
+        // sb.append(" <ClientHello>\n");
+        // sb.append(" <extensions>\n");
+        // sb.append(" <ECPointFormat/>\n");
+        // sb.append(" <EllipticCurves/>\n");
+        // sb.append(" </extensions>\n");
+        // sb.append(" </ClientHello>\n");
+        // sb.append(" </messages>\n");
+        // sb.append(" <records/>\n");
+        // sb.append(" </Send>\n");
         // sb.append("</workflowTrace>\n");
         // String expected = sb.toString();
         String actual = WorkflowTraceSerializer.write(trace);
@@ -392,16 +395,16 @@ public class WorkflowTraceUtilTest {
         // StringBuilder sb = new
         // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
         // sb.append("<workflowTrace>\n");
-        // sb.append("    <Send>\n");
-        // sb.append("        <messages>\n");
-        // sb.append("            <ClientHello>\n");
-        // sb.append("                <extensions>\n");
-        // sb.append("                    <ECPointFormat/>\n");
-        // sb.append("                    <EllipticCurves/>\n");
-        // sb.append("                </extensions>\n");
-        // sb.append("            </ClientHello>\n");
-        // sb.append("        </messages>\n");
-        // sb.append("    </Send>\n");
+        // sb.append(" <Send>\n");
+        // sb.append(" <messages>\n");
+        // sb.append(" <ClientHello>\n");
+        // sb.append(" <extensions>\n");
+        // sb.append(" <ECPointFormat/>\n");
+        // sb.append(" <EllipticCurves/>\n");
+        // sb.append(" </extensions>\n");
+        // sb.append(" </ClientHello>\n");
+        // sb.append(" </messages>\n");
+        // sb.append(" </Send>\n");
         // sb.append("</workflowTrace>\n");
         // String expected = sb.toString();
         actual = WorkflowTraceSerializer.write(trace);

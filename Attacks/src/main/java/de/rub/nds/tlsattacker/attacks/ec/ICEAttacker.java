@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -172,14 +173,14 @@ public class ICEAttacker {
     /**
      * Creates recursively all possible combinations of equations and tries to compute the server private key with CRT.
      *
-     * @param usedOracleEquations
-     * The used oracle equations
-     * @param congs
-     * The congruences
-     * @param modulis
-     * The modulis
-     * @param pointer
-     * the pointer
+     * @param  usedOracleEquations
+     *                             The used oracle equations
+     * @param  congs
+     *                             The congruences
+     * @param  modulis
+     *                             The modulis
+     * @param  pointer
+     *                             the pointer
      * @return
      */
     public BigInteger bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
@@ -209,13 +210,13 @@ public class ICEAttacker {
     /**
      * Computes CRT from a given combination of congs and modulis
      *
-     * @param usedOracleEquations
-     * The used oracle equations
-     * @param congs
-     * The congruences
-     * @param modulis
-     * The modulis
-     * @return CRTF
+     * @param  usedOracleEquations
+     *                             The used oracle equations
+     * @param  congs
+     *                             The congruences
+     * @param  modulis
+     *                             The modulis
+     * @return                     CRTF
      */
     private BigInteger computeCRTFromCombination(int[] usedOracleEquations, BigInteger[] congs, BigInteger[] modulis) {
         BigInteger[] usedCongs = new BigInteger[usedOracleEquations.length];
@@ -238,9 +239,9 @@ public class ICEAttacker {
     /**
      * Uses the oracle to get a congruence for a specific point
      *
-     * @param point
-     * A Point
-     * @return The Congruence
+     * @param  point
+     *               A Point
+     * @return       The Congruence
      */
     private BigInteger getCongruence(ICEPoint point) {
         BigInteger secretModOrder = BigInteger.ZERO;

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -85,9 +86,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         tlsConfig.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP_PROXY_TIMING);
         tlsConfig.setWorkflowExecutorShouldClose(true);
 
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
+            RunningModeType.CLIENT);
 
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
         LinkedList<AbstractRecord> records = new LinkedList<>();
@@ -208,10 +208,9 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                             config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j] + "-" + suite.name() + ".csv";
                         String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
                         createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                        String command =
-                            "java -jar " + config.getMonaJar() + " --inputFile=" + fileName + " --name=lucky13-"
-                                + suite.name().replace('_', '-') + "-" + paddings[i] + "-" + paddings[j]
-                                + " --lowerBound=0.3 --upperBound=0.5";
+                        String command = "java -jar " + config.getMonaJar() + " --inputFile=" + fileName
+                            + " --name=lucky13-" + suite.name().replace('_', '-') + "-" + paddings[i] + "-"
+                            + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
                         LOGGER.info("Run mona timing lib with: " + command);
                         commands.append(command);
                         commands.append(System.getProperty("line.separator"));

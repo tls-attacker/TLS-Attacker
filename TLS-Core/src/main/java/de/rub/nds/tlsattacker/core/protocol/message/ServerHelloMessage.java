@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -91,8 +92,8 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultServerConnection().getHostname()
-                    .getBytes(Charset.forName("US-ASCII")));
+                pair.setServerNameConfig(
+                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -230,8 +231,8 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
             && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-            sb.append("\n  Server Unix Time: ").append(
-                new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+            sb.append("\n  Server Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {

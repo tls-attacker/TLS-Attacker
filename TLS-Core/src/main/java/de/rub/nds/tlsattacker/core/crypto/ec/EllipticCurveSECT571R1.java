@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -13,11 +14,9 @@ import java.math.BigInteger;
 @SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveSECT571R1 extends EllipticCurveOverF2m {
     public EllipticCurveSECT571R1() {
-        super(
-            BigInteger.ONE,
-            new BigInteger(
-                "02F40E7E2221F295DE297117B7F3D62F5C6A97FFCB8CEFF1CD6BA8CE4A9A18AD84FFABBD8EFA59332BE7AD6756A66E294AFD185A78FF12AA520E4DE739BACA0C7FFEFF7F2955727A",
-                16),
+        super(BigInteger.ONE, new BigInteger(
+            "02F40E7E2221F295DE297117B7F3D62F5C6A97FFCB8CEFF1CD6BA8CE4A9A18AD84FFABBD8EFA59332BE7AD6756A66E294AFD185A78FF12AA520E4DE739BACA0C7FFEFF7F2955727A",
+            16),
             new BigInteger(
                 "80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000425",
                 16),

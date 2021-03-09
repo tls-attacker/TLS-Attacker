@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -159,7 +160,7 @@ public class State {
      * newTlsContext.connection.
      *
      * @param newTlsContext
-     * The new TlsContext to replace the old with
+     *                      The new TlsContext to replace the old with
      */
     public void replaceTlsContext(TlsContext newTlsContext) {
         contextContainer.replaceTlsContext(newTlsContext);
@@ -187,10 +188,10 @@ public class State {
      * TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
      *
-     * @param alias
-     * The Alias for which the TLSContext should be returned
+     * @param  alias
+     *               The Alias for which the TLSContext should be returned
      *
-     * @return the context with the given connection end alias
+     * @return       the context with the given connection end alias
      */
     public TlsContext getTlsContext(String alias) {
         return contextContainer.getTlsContext(alias);
@@ -241,9 +242,9 @@ public class State {
     /**
      * Return a filtered copy of the given workflow trace. This method does not modify the input trace.
      *
-     * @param trace
-     * The workflow trace that should be filtered
-     * @return A filtered copy of the input workflow trace
+     * @param  trace
+     *               The workflow trace that should be filtered
+     * @return       A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
         WorkflowTrace filtered = WorkflowTrace.copy(trace);
@@ -255,7 +256,7 @@ public class State {
      * Apply filters to trace in place.
      *
      * @param trace
-     * The workflow trace that should be filtered
+     *              The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();

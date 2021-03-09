@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -39,7 +40,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareCipherSuite();
         prepareCompressionMethod();
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
-            || (chooser.getConfig().getHighestProtocolVersion().isSSL() && chooser.getConfig().isAddExtensionsInSSL())) {
+            || (chooser.getConfig().getHighestProtocolVersion().isSSL()
+                && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }

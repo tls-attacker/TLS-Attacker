@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -27,13 +28,13 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Constructor for the ServerHelloMessageParser
      *
      * @param pointer
-     * Position in the array where the ServerHelloParser is supposed to start parsing
+     *                Position in the array where the ServerHelloParser is supposed to start parsing
      * @param array
-     * The byte[] which the ServerHelloParser is supposed to parse
+     *                The byte[] which the ServerHelloParser is supposed to parse
      * @param version
-     * The Version for which this message should be parsed
+     *                The Version for which this message should be parsed
      * @param config
-     * A Config used in the current context
+     *                A Config used in the current context
      */
     public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO, version, config);
@@ -43,7 +44,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Reads the next bytes as a CipherSuite and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     protected void parseSelectedCipherSuite(ServerHelloMessage msg) {
         msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
@@ -53,7 +54,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
      * Reads the next bytes as a CompressionMethod and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     protected void parseSelectedCompressionMethod(ServerHelloMessage msg) {
         msg.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));

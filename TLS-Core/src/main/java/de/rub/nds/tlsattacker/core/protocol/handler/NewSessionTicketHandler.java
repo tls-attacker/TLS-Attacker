@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -102,17 +103,15 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
                 AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
-            DigestAlgorithm digestAlgo =
-                AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
-                    .getChooser().getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
+                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret =
                 HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
                     HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
-            byte[] psk =
-                HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
-                    .getTicket().getTicketNonce().getValue(), macLength);
+            byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
+                message.getTicket().getTicketNonce().getValue(), macLength);
             LOGGER.debug("Derived PSK: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 

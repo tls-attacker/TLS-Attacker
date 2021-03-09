@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -39,7 +40,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      * Reads the next bytes as the SupportedCurvesLength of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroupsLength(parseIntField(ExtensionByteLength.SUPPORTED_GROUPS));
@@ -50,7 +51,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      * Reads the next bytes as the SupportedCurves of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseSupportedGroups(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroups(parseByteArrayField(msg.getSupportedGroupsLength().getValue()));

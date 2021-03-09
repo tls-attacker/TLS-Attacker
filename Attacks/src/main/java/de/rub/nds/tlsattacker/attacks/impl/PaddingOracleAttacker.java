@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -135,8 +136,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     /**
      *
-     * @param responseVectorListOne
-     * @param responseVectorListTwo
+     * @param  responseVectorListOne
+     * @param  responseVectorListTwo
      * @return
      */
     public boolean lookEqual(List<VectorResponse> responseVectorListOne, List<VectorResponse> responseVectorListTwo) {
@@ -193,9 +194,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         for (PaddingVector vector : vectorGenerator.getVectors(tlsConfig.getDefaultSelectedCipherSuite(),
             tlsConfig.getDefaultHighestClientProtocolVersion())) {
             State state = new State(tlsConfig, generator.getPaddingOracleWorkflowTrace(tlsConfig, vector));
-            FingerPrintTask fingerPrintTask =
-                new FingerPrintTask(state, additionalTimeout, increasingTimeout, executor.getReexecutions(),
-                    additionalTcpTimeout);
+            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
+                executor.getReexecutions(), additionalTcpTimeout);
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
@@ -223,7 +223,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     /**
      * This assumes that the responseVectorList only contains comparable vectors
      *
-     * @param responseVectorList
+     * @param  responseVectorList
      * @return
      */
     public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {

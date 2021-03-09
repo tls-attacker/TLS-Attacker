@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -44,12 +45,14 @@ public class PasswordSaltExtensionHandlerTest {
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new PasswordSaltExtensionMessage()) instanceof PasswordSaltExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new PasswordSaltExtensionMessage()) instanceof PasswordSaltExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new PasswordSaltExtensionMessage()) instanceof PasswordSaltExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new PasswordSaltExtensionMessage()) instanceof PasswordSaltExtensionSerializer);
     }
 
 }

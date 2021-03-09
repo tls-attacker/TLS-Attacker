@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -52,9 +53,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             throw new PreparationException("Failed to generate password element", e);
         }
         prepareScalarElement(msg);
-        byte[] premasterSecret =
-            generatePremasterSecret(msg.getComputations().getPasswordElement(), msg.getComputations()
-                .getPrivateKeyScalar(), curve);
+        byte[] premasterSecret = generatePremasterSecret(msg.getComputations().getPasswordElement(),
+            msg.getComputations().getPrivateKeyScalar(), curve);
         preparePremasterSecret(msg, premasterSecret);
         prepareClientServerRandom(msg);
     }
@@ -64,9 +64,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (!clientMode) {
             msg.prepareComputations();
             EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
-            byte[] premasterSecret =
-                generatePremasterSecret(chooser.getContext().getPWDPE(), chooser.getContext().getServerPWDPrivate(),
-                    curve);
+            byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(),
+                chooser.getContext().getServerPWDPrivate(), curve);
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
@@ -77,9 +76,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
-                .getData())));
+        LOGGER.debug("PasswordElement.x: " + ArrayConverter
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -148,9 +146,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement =
-            PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(), element, chooser
-                .getConfig().getDefaultSelectedPointFormat());
+        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
+            element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }

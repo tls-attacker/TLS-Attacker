@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,8 +26,8 @@ import org.junit.runners.Parameterized;
 public class ExtendedMasterSecretExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_MASTER_SECRET, 0,
-            ArrayConverter.hexStringToByteArray("00170000"), 0 } });
+        return Arrays.asList(new Object[][] {
+            { ExtensionType.EXTENDED_MASTER_SECRET, 0, ArrayConverter.hexStringToByteArray("00170000"), 0 } });
     }
 
     private final ExtensionType extensionType;

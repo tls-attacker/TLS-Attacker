@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -54,7 +55,8 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[] { 123 }, 0, context.getConfig()) instanceof ECPointFormatExtensionParser);
     }
 
     /**
@@ -62,7 +64,8 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionPreparator);
     }
 
     /**
@@ -70,7 +73,8 @@ public class EcPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionSerializer);
     }
 
 }

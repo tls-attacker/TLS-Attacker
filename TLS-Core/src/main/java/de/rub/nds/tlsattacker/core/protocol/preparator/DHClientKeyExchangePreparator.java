@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangePreparator<T> {
+public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
+    extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -109,15 +111,13 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         setComputationModulus(msg);
         setComputationPrivateKey(msg, clientMode);
         if (clientMode) {
-            clientPublicKey =
-                calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations().getModulus()
-                    .getValue(), msg.getComputations().getPrivateKey().getValue());
+            clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(),
+                msg.getComputations().getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
             preparePublicKey(msg);
         }
         setComputationPublicKey(msg, clientMode);
-        premasterSecret =
-            calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
+        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(),
+            msg.getComputations().getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
         preparePremasterSecret(msg);
 
     }

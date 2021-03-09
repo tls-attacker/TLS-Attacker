@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -47,9 +48,8 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
         prepareSessionIDLength(message);
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
-        int length =
-            SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-                + SSL2ByteLength.SESSIONID_LENGTH;
+        int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
+            + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;

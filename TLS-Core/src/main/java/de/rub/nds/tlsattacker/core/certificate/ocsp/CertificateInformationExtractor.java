@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.AUTHORITY_INFO_ACCESS;
@@ -382,13 +383,11 @@ public class CertificateInformationExtractor {
         httpCon.disconnect();
 
         // Recreate TLS certificate length information
-        byte[] certificateWithLength =
-            ArrayConverter.concatenate(
-                ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
-        ByteArrayInputStream stream =
-            new ByteArrayInputStream(ArrayConverter.concatenate(
-                ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
-                certificateWithLength));
+        byte[] certificateWithLength = ArrayConverter
+            .concatenate(ArrayConverter.intToBytes(response.length, HandshakeByteLength.CERTIFICATES_LENGTH), response);
+        ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+            ArrayConverter.intToBytes(certificateWithLength.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+            certificateWithLength));
 
         // Parse and create a Certificate object
         org.bouncycastle.crypto.tls.Certificate tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);

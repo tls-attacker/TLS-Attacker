@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import static org.junit.Assert.assertNotNull;
@@ -62,10 +63,9 @@ public class ClientHelloTest {
 
     public ClientHelloTest() throws Exception {
         writer = new StringWriter();
-        context =
-            JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
-                ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
+        context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
+            ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
+            ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
         m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setAdapter(new UnformattedByteArrayAdapter());

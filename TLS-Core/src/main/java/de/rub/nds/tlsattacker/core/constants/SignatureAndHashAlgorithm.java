@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import com.google.common.collect.Sets;
@@ -200,8 +201,8 @@ public enum SignatureAndHashAlgorithm {
                 return algo;
             }
         }
-        throw new UnsupportedOperationException("Requested SignatureHashAlgorithm is not supported. Requested Sign:"
-            + signatureAlgo + " Hash:" + hashAlgo);
+        throw new UnsupportedOperationException(
+            "Requested SignatureHashAlgorithm is not supported. Requested Sign:" + signatureAlgo + " Hash:" + hashAlgo);
     }
 
     public byte[] getByteValue() {
@@ -286,8 +287,8 @@ public enum SignatureAndHashAlgorithm {
                 default:
                     break;
             }
-            signature.setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength,
-                1));
+            signature
+                .setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
         }
     }
 

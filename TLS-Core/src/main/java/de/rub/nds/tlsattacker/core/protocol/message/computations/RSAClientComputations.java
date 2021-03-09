@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -66,9 +67,8 @@ public class RSAClientComputations extends KeyExchangeComputations {
     }
 
     public void setPremasterSecretProtocolVersion(byte[] premasterSecretProtocolVersion) {
-        this.premasterSecretProtocolVersion =
-            ModifiableVariableFactory.safelySetValue(this.premasterSecretProtocolVersion,
-                premasterSecretProtocolVersion);
+        this.premasterSecretProtocolVersion = ModifiableVariableFactory
+            .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
 
     @Override

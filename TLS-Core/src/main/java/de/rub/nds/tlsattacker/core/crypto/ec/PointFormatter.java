@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,10 +32,10 @@ public class PointFormatter {
                 case UNCOMPRESSED:
                     stream.write(0x04);
                     try {
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(),
-                            elementLength));
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(),
-                            elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldY().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -49,8 +50,8 @@ public class PointFormatter {
                         stream.write(0x02);
                     }
                     try {
-                        stream.write(ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(),
-                            elementLength));
+                        stream.write(
+                            ArrayConverter.bigIntegerToNullPaddedByteArray(point.getFieldX().getData(), elementLength));
                     } catch (IOException ex) {
                         throw new PreparationException("Could not serialize ec point", ex);
                     }
@@ -87,8 +88,8 @@ public class PointFormatter {
      * Tries to read the first N byte[] as a point of the curve of the form x|y. If the byte[] has enough bytes the base
      * point of the named group is returned
      *
-     * @param group
-     * @param pointBytes
+     * @param  group
+     * @param  pointBytes
      * @return
      */
     public static Point fromRawFormat(NamedGroup group, byte[] pointBytes) {

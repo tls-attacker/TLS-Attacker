@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -38,7 +39,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      * Reads the next bytes as the certificateLength of the CertificatePair and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCertificateLength(CertificatePair pair) {
         pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
@@ -49,7 +50,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      * Reads the next bytes as the certificate of the CertificatePair and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCertificate(CertificatePair pair) {
         pair.setCertificate(parseByteArrayField(pair.getCertificateLength().getValue()));
@@ -60,7 +61,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      * Reads the next bytes as the extensionsLength of the CertificatePair and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseExtensionsLength(CertificatePair pair) {
         pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
@@ -71,7 +72,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      * Reads the next bytes as the extensions of the CertificatePair and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseExtensions(CertificatePair pair) {
         pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));

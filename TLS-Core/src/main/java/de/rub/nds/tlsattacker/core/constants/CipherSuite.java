@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -647,9 +648,9 @@ public enum CipherSuite {
      * Returns true if the cipher suite is supported by the specified protocol version. TODO: this is still very
      * imprecise and must be improved with new ciphers.
      *
-     * @param version
-     * The ProtocolVersion to check
-     * @return True if the cipher suite is supported in the ProtocolVersion
+     * @param  version
+     *                 The ProtocolVersion to check
+     * @return         True if the cipher suite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
         if (version == ProtocolVersion.SSL3) {
@@ -663,18 +664,18 @@ public enum CipherSuite {
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    public static final Set<CipherSuite> SSL3_SUPPORTED_CIPHERSUITES = Collections.unmodifiableSet(new HashSet<>(Arrays
-        .asList(TLS_NULL_WITH_NULL_NULL, TLS_RSA_WITH_NULL_MD5, TLS_RSA_WITH_NULL_SHA, TLS_RSA_EXPORT_WITH_RC4_40_MD5,
-            TLS_RSA_WITH_RC4_128_MD5, TLS_RSA_WITH_RC4_128_SHA, TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5,
-            TLS_RSA_WITH_IDEA_CBC_SHA, TLS_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_RSA_WITH_DES_CBC_SHA,
-            TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_DSS_WITH_DES_CBC_SHA,
-            TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_RSA_WITH_DES_CBC_SHA,
-            TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_DSS_WITH_DES_CBC_SHA,
-            TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_RSA_WITH_DES_CBC_SHA,
-            TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5, TLS_DH_anon_WITH_RC4_128_MD5,
-            TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA, TLS_DH_anon_WITH_3DES_EDE_CBC_SHA,
-            TLS_ECCPWD_WITH_AES_128_CCM_SHA256, TLS_ECCPWD_WITH_AES_128_GCM_SHA256, TLS_ECCPWD_WITH_AES_256_CCM_SHA384,
-            TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
+    public static final Set<CipherSuite> SSL3_SUPPORTED_CIPHERSUITES =
+        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(TLS_NULL_WITH_NULL_NULL, TLS_RSA_WITH_NULL_MD5,
+            TLS_RSA_WITH_NULL_SHA, TLS_RSA_EXPORT_WITH_RC4_40_MD5, TLS_RSA_WITH_RC4_128_MD5, TLS_RSA_WITH_RC4_128_SHA,
+            TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, TLS_RSA_WITH_IDEA_CBC_SHA, TLS_RSA_EXPORT_WITH_DES40_CBC_SHA,
+            TLS_RSA_WITH_DES_CBC_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA,
+            TLS_DH_DSS_WITH_DES_CBC_SHA, TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA,
+            TLS_DH_RSA_WITH_DES_CBC_SHA, TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA,
+            TLS_DHE_DSS_WITH_DES_CBC_SHA, TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA,
+            TLS_DHE_RSA_WITH_DES_CBC_SHA, TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
+            TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
+            TLS_DH_anon_WITH_3DES_EDE_CBC_SHA, TLS_ECCPWD_WITH_AES_128_CCM_SHA256, TLS_ECCPWD_WITH_AES_128_GCM_SHA256,
+            TLS_ECCPWD_WITH_AES_256_CCM_SHA384, TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();

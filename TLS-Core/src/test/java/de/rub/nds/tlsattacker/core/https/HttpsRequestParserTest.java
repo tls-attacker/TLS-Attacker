@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,9 +34,8 @@ public class HttpsRequestParserTest {
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
-        HttpsRequestParser parser =
-            new HttpsRequestParser(0, ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"),
-                ProtocolVersion.TLS12, config);
+        HttpsRequestParser parser = new HttpsRequestParser(0,
+            ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12, config);
         parser.parse();
     }
 

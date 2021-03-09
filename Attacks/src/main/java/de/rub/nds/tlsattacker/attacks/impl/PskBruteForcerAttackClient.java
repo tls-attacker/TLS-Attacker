@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -71,16 +72,15 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     @Override
     public void executeAttack() {
-        guessProvider =
-            GuessProviderFactory.createGuessProvider(config.getGuessProviderType(),
-                config.getGuessProviderInputStream());
+        guessProvider = GuessProviderFactory.createGuessProvider(config.getGuessProviderType(),
+            config.getGuessProviderInputStream());
         State state = executeHandshakeWithClient();
         if (state != null) {
             Record encryptedRecord = getEncryptedRecordFormClient(state);
             if (encryptedRecord != null) {
                 boolean result = false;
-                CONSOLE
-                    .info("Got a client connection - starting to guess the PSK. Depending on the Key this may take some time...");
+                CONSOLE.info(
+                    "Got a client connection - starting to guess the PSK. Depending on the Key this may take some time...");
                 long startTime = System.currentTimeMillis();
                 int counter = 0;
                 while (!result) {
@@ -100,12 +100,9 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                         if (result) {
                             long stopTime = System.currentTimeMillis();
                             CONSOLE.info("Found the psk in "
-                                + String.format(
-                                    "%d min, %d sec",
-                                    TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
-                                    TimeUnit.MILLISECONDS.toSeconds(stopTime - startTime)
-                                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime
-                                            - startTime))));
+                                + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime),
+                                    TimeUnit.MILLISECONDS.toSeconds(stopTime - startTime) - TimeUnit.MINUTES
+                                        .toSeconds(TimeUnit.MILLISECONDS.toMinutes(stopTime - startTime))));
                             CONSOLE.info("Guessed " + counter + " times");
                         }
                     } catch (NoSuchAlgorithmException ex) {
@@ -146,7 +143,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private Record getEncryptedRecordFormClient(State state) {
         if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, state.getWorkflowTrace())) {
-            if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, state.getWorkflowTrace())) {
+            if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                state.getWorkflowTrace())) {
                 return (Record) WorkflowTraceUtil.getLastReceivedRecord(state.getWorkflowTrace());
             }
             LOGGER.debug("Could not find encrypted record");
@@ -195,9 +193,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private void continueProtocolFlowToClient(State state) {
         TlsAction clientHelloAction = state.getWorkflowTrace().getTlsActions().get(0);
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(state.getConfig()).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.SERVER);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(state.getConfig())
+            .createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.SERVER);
         trace.removeTlsAction(0); // Remove client hello action
         trace.removeTlsAction(trace.getTlsActions().size() - 1);
         state.getWorkflowTrace().removeTlsAction(0);
@@ -225,9 +222,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     }
 
     private void computeMasterSecret(TlsContext tlsContext, WorkflowTrace trace) {
-        ClientKeyExchangeMessage clientKeyExchangeMessage =
-            (ClientKeyExchangeMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        ClientKeyExchangeMessage clientKeyExchangeMessage = (ClientKeyExchangeMessage) WorkflowTraceUtil
+            .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) clientKeyExchangeMessage.getHandler(tlsContext);
         handler.getPreparator(clientKeyExchangeMessage).prepareAfterParse(false);
         tlsContext.setPreMasterSecret(clientKeyExchangeMessage.getComputations().getPremasterSecret().getValue());
@@ -235,8 +231,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         handler.adjustMasterSecret(clientKeyExchangeMessage);
     }
 
-    private boolean tryPsk(byte[] guessedPsk, Record encryptedRecord, State state) throws CryptoException,
-        NoSuchAlgorithmException {
+    private boolean tryPsk(byte[] guessedPsk, Record encryptedRecord, State state)
+        throws CryptoException, NoSuchAlgorithmException {
         state.getConfig().setDefaultPSKKey(guessedPsk);
         computeMasterSecret(state.getTlsContext(), state.getWorkflowTrace());
         byte[] controlValue = computeControlValue(state.getWorkflowTrace(), state.getTlsContext());
@@ -244,9 +240,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet);
         RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getTlsContext());
         dec.decrypt(encryptedRecord);
-        byte[] receivedVrfyData =
-            Arrays.copyOfRange(encryptedRecord.getComputations().getPlainRecordBytes().getValue(), 0,
-                controlValue.length);
+        byte[] receivedVrfyData = Arrays.copyOfRange(encryptedRecord.getComputations().getPlainRecordBytes().getValue(),
+            0, controlValue.length);
         LOGGER.debug("Received Data " + ArrayConverter.bytesToHexString(receivedVrfyData));
         LOGGER.debug("Control Data " + ArrayConverter.bytesToHexString(controlValue));
         if (Arrays.equals(receivedVrfyData, controlValue)) {
@@ -276,12 +271,10 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         byte[] handshakeMessageHash =
             tlsContext.getDigest().digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite());
         PRFAlgorithm prfAlgorithm = tlsContext.getChooser().getPRFAlgorithm();
-        byte[] control =
-            PseudoRandomFunction.compute(prfAlgorithm, tlsContext.getMasterSecret(),
-                PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
-        byte[] compare =
-            ArrayConverter.concatenate(HandshakeMessageType.FINISHED.getArrayValue(),
-                ArrayConverter.intToBytes(control.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), control);
+        byte[] control = PseudoRandomFunction.compute(prfAlgorithm, tlsContext.getMasterSecret(),
+            PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+        byte[] compare = ArrayConverter.concatenate(HandshakeMessageType.FINISHED.getArrayValue(),
+            ArrayConverter.intToBytes(control.length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), control);
         return compare;
     }
 }

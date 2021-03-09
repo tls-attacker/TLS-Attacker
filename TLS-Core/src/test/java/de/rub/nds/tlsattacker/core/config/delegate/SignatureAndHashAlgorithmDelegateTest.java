@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -80,10 +81,10 @@ public class SignatureAndHashAlgorithmDelegateTest {
         assertFalse(config.isAddSignatureAndHashAlgorithmsExtension());
         delegate.applyDelegate(config);
         assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
-        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
-            SignatureAndHashAlgorithm.RSA_SHA512));
-        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().contains(
-            SignatureAndHashAlgorithm.DSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+            .contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+            .contains(SignatureAndHashAlgorithm.DSA_SHA512));
     }
 
     @Test

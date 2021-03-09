@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -13,8 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateT
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class ClientCertificateTypeExtensionPreparator extends
-    ExtensionPreparator<ClientCertificateTypeExtensionMessage> {
+public class ClientCertificateTypeExtensionPreparator
+    extends ExtensionPreparator<ClientCertificateTypeExtensionMessage> {
 
     private final ClientCertificateTypeExtensionMessage msg;
 
@@ -26,7 +27,8 @@ public class ClientCertificateTypeExtensionPreparator extends
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCertificateTypes(CertificateType.toByteArray(chooser.getConfig().getClientCertificateTypeDesiredTypes()));
+        msg.setCertificateTypes(
+            CertificateType.toByteArray(chooser.getConfig().getClientCertificateTypeDesiredTypes()));
         msg.setCertificateTypesLength(msg.getCertificateTypes().getValue().length);
         msg.setIsClientMessage(chooser.getConfig().isClientCertificateTypeExtensionMessageState());
     }

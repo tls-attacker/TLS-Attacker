@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -22,8 +23,8 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
-    ClientKeyExchangePreparator<T> {
+public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage>
+    extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -113,9 +114,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
             msg.getComputations().setPublicKeyX(publicKey.getFieldX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getFieldY().getData());
-            publicKey =
-                curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations().getPublicKeyY()
-                    .getValue());
+            publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(),
+                msg.getComputations().getPublicKeyY().getValue());
             publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -65,9 +66,8 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] plainStateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
         try {
-            encryptedState =
-                StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainStateSerialized, keyAES, newTicket.getIV()
-                    .getValue());
+            encryptedState = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainStateSerialized, keyAES,
+                newTicket.getIV().getValue());
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
             LOGGER.debug(e);
@@ -77,10 +77,9 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
 
         byte[] keyHMAC = cfg.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macInput =
-            ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
-                ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-                encryptedState);
+        byte[] macInput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
+            ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+            encryptedState);
         byte[] hmac;
         try {
             hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macInput, keyHMAC);

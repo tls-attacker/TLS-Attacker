@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -88,10 +89,10 @@ public class RecordStreamCipher extends RecordCipher {
         record.setLength(cleanBytes.length + AlgorithmResolver.getMacAlgorithm(version, cipherSuite).getSize());
 
         computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
-        computations
-            .setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-                computations.getAuthenticatedNonMetaData().getValue()), context.getConnection()
-                .getLocalConnectionEndType()));
+        computations.setMac(calculateMac(
+            ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
+                computations.getAuthenticatedNonMetaData().getValue()),
+            context.getConnection().getLocalConnectionEndType()));
 
         computations.setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
             computations.getMac().getValue()));
@@ -134,10 +135,10 @@ public class RecordStreamCipher extends RecordCipher {
         record.getComputations().setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, version));
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
-        byte[] calculatedHmac =
-            calculateMac(
-                ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(), record
-                    .getComputations().getAuthenticatedNonMetaData().getValue()), context.getTalkingConnectionEndType());
+        byte[] calculatedHmac = calculateMac(
+            ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
+                record.getComputations().getAuthenticatedNonMetaData().getValue()),
+            context.getTalkingConnectionEndType());
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 

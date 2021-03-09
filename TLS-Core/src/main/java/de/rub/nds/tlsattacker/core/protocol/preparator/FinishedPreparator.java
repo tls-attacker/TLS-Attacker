@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -59,19 +60,17 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
                 if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                    finishedKey =
-                        HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
-                    finishedKey =
-                        HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
-                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
+                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getDigest()
-                    .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
+                mac.update(chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
@@ -89,9 +88,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.trace("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
-            byte[] handshakeMessageHash =
-                chooser.getContext().getDigest()
-                    .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+            byte[] handshakeMessageHash = chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
 
             String label;
@@ -101,9 +99,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             } else {
                 label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
-            byte[] res =
-                PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
-                    HandshakeByteLength.VERIFY_DATA);
+            byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
+                HandshakeByteLength.VERIFY_DATA);
             return res;
         }
     }

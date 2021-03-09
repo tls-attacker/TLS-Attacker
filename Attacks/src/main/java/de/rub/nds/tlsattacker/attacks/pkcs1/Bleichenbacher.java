@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -76,9 +77,8 @@ public class Bleichenbacher extends Pkcs1Attack {
             oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
-            interval =
-                new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                    (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+            interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
         } else {
             stepOne();
         }
@@ -122,16 +122,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         c0 = new BigInteger(1, send);
         s0 = si;
         // mi = {[2B,3B-1]}
-        interval =
-            new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
-                (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
+        interval = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
+            (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
         LOGGER.debug(" Found s0 : " + si);
     }
 
     /**
      *
-     * @param i
+     * @param  i
      * @throws OracleException
      */
     protected void stepTwo(final int i) throws OracleException {
@@ -325,9 +324,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param upperIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  upperIntervalBound
      * @return
      */
     protected BigInteger step2cComputeLowerBound(final BigInteger r, final BigInteger modulus,
@@ -341,9 +340,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     /**
      *
-     * @param r
-     * @param modulus
-     * @param lowerIntervalBound
+     * @param  r
+     * @param  modulus
+     * @param  lowerIntervalBound
      * @return
      */
     protected BigInteger step2cComputeUpperBound(final BigInteger r, final BigInteger modulus,

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.util.Comparator;
@@ -18,8 +19,8 @@ public class ICEPointComparator implements Comparator<ICEPoint> {
 
     /**
      *
-     * @param o1
-     * @param o2
+     * @param  o1
+     * @param  o2
      * @return
      */
     @Override

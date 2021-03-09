@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -72,24 +73,24 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                 + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
         } else if (clientAuthenticationType == ClientAuthenticationType.CERTIFICATE_BASED.getValue()) {
             appendByte(clientAuthenticationType);
-            appendBytes(statePlaintext.getClientAuthenticationDataLength().getByteArray(
-                HandshakeByteLength.CERTIFICATES_LENGTH));
+            appendBytes(statePlaintext.getClientAuthenticationDataLength()
+                .getByteArray(HandshakeByteLength.CERTIFICATES_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug("ClientAuthenticationType: "
                 + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
-            LOGGER.debug("ClientAuthenticationDataLength: "
-                + statePlaintext.getClientAuthenticationDataLength().getValue());
+            LOGGER.debug(
+                "ClientAuthenticationDataLength: " + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug("ClientAuthenticationData: "
                 + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true, true));
         } else if (clientAuthenticationType == ClientAuthenticationType.PSK.getValue()) {
             appendByte(clientAuthenticationType);
-            appendBytes(statePlaintext.getClientAuthenticationDataLength().getByteArray(
-                HandshakeByteLength.PSK_IDENTITY_LENGTH));
+            appendBytes(statePlaintext.getClientAuthenticationDataLength()
+                .getByteArray(HandshakeByteLength.PSK_IDENTITY_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug("ClientAuthenticationType: "
                 + ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType).name());
-            LOGGER.debug("ClientAuthenticationDataLength: "
-                + statePlaintext.getClientAuthenticationDataLength().getValue());
+            LOGGER.debug(
+                "ClientAuthenticationDataLength: " + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug("ClientAuthenticationData: "
                 + ArrayConverter.bytesToHexString(statePlaintext.getClientAuthenticationData().getValue(), true, true));
         } else {
@@ -101,8 +102,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
 
     private void writeTimestamp(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug("Timestamp: "
-            + ArrayConverter
-                .bytesToHexString(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME)));
+        LOGGER.debug("Timestamp: " + ArrayConverter
+            .bytesToHexString(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME)));
     }
 }

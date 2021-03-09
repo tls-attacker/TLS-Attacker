@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,7 +27,7 @@ public class WordListGuessProvider extends GuessProvider {
      * Constructor
      *
      * @param stream
-     * An Input stream to read Guesses from
+     *               An Input stream to read Guesses from
      */
     public WordListGuessProvider(InputStream stream) {
         super(GuessProviderType.WORDLIST);

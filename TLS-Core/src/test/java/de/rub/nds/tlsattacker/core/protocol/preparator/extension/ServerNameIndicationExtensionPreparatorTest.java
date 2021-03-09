@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -54,8 +55,8 @@ public class ServerNameIndicationExtensionPreparatorTest {
 
         serverPrep.prepareExtensionContent();
 
-        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02 }, serverPrep.getObject().getServerNameListBytes()
-            .getValue());
+        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02 },
+            serverPrep.getObject().getServerNameListBytes().getValue());
         assertEquals(5, (long) serverPrep.getObject().getServerNameListLength().getOriginalValue());
     }
 

@@ -6,14 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignedCertificateTimestampExtensionSerializer extends
-    ExtensionSerializer<SignedCertificateTimestampExtensionMessage> {
+public class SignedCertificateTimestampExtensionSerializer
+    extends ExtensionSerializer<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -23,7 +24,7 @@ public class SignedCertificateTimestampExtensionSerializer extends
      * Constructor
      *
      * @param message
-     * A SignedCertificateTimestampExtensionMessage
+     *                A SignedCertificateTimestampExtensionMessage
      */
     public SignedCertificateTimestampExtensionSerializer(SignedCertificateTimestampExtensionMessage message) {
         super(message);

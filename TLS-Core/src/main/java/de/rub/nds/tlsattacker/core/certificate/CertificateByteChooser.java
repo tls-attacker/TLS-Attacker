@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -130,13 +131,11 @@ public class CertificateByteChooser {
             for (String file : getResourceFiles()) {
                 if (file.endsWith("cert.pem")) {
                     try {
-                        Certificate readCertificate =
-                            PemUtil.readCertificate(this.getClass().getClassLoader()
-                                .getResourceAsStream(RESOURCE_PATH + file));
+                        Certificate readCertificate = PemUtil.readCertificate(
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file));
                         String keyName = file.replace("cert.pem", "key.pem");
-                        PrivateKey privateKey =
-                            PemUtil.readPrivateKey(this.getClass().getClassLoader()
-                                .getResourceAsStream(RESOURCE_PATH + keyName));
+                        PrivateKey privateKey = PemUtil.readPrivateKey(
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName));
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
                     } catch (Exception e) {
                         LOGGER.warn("Could not load: " + file, e);
@@ -228,7 +227,8 @@ public class CertificateByteChooser {
                             return pair;
                         }
                     }
-                    if (namedGroup != pair.getPublicKeyGroup() || pair.getSignatureGroup() != pair.getSignatureGroup()) {
+                    if (namedGroup != pair.getPublicKeyGroup()
+                        || pair.getSignatureGroup() != pair.getSignatureGroup()) {
                         continue;
                     }
                 }

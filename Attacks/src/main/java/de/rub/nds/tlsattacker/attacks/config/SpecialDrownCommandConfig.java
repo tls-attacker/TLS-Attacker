@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -23,11 +24,11 @@ public class SpecialDrownCommandConfig extends BaseDrownCommandConfig {
 
     public static final String COMMAND = "specialDrown";
 
-    @Parameter(names = "-oracleType", description = "The oracle to use, i.e. the "
-        + "variant of Special DROWN to be executed", required = true)
+    @Parameter(names = "-oracleType",
+        description = "The oracle to use, i.e. the " + "variant of Special DROWN to be executed", required = true)
     private OracleType oracleType = OracleType.EXTRA_CLEAR;
-    @Parameter(names = "-checkDataFile", description = "Path of the state file for "
-        + "'leaky export' oracle vulnerability check")
+    @Parameter(names = "-checkDataFile",
+        description = "Path of the state file for " + "'leaky export' oracle vulnerability check")
     private String checkDataFilePath;
     @Parameter(names = "-genCheckData", description = "Generate state file for 'leaky export' vulnerability check")
     private boolean genCheckData;

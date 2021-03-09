@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -53,8 +54,8 @@ public class FragmentCollector {
     public void addFragment(DtlsHandshakeMessageFragment fragment) {
         if (wouldAdd(fragment)) {
             if (isFragmentOverwritingContent(fragment)) {
-                LOGGER
-                    .warn("Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
+                LOGGER.warn(
+                    "Found a fragment which tries to rewrite history. Setting interpreted to false and resetting Stream.");
                 fragmentStream = new FragmentStream(messageLength);
                 this.messageLength = fragment.getFragmentLength().getValue();
                 this.messageSeq = fragment.getMessageSeq().getValue();
@@ -71,9 +72,9 @@ public class FragmentCollector {
      * Tests if a Fragment would be added into the fragmentStream. The test depends on config flags and if the fragment
      * is fitting into the stream.
      *
-     * @param fragment
-     * the fragment that should be tested.
-     * @return True if it would be added, false otherwise
+     * @param  fragment
+     *                  the fragment that should be tested.
+     * @return          True if it would be added, false otherwise
      */
     public boolean wouldAdd(DtlsHandshakeMessageFragment fragment) {
         if (config.isAcceptContentRewritingDtlsFragments() || !isFragmentOverwritingContent(fragment)) {
@@ -93,14 +94,14 @@ public class FragmentCollector {
      * Returns true for fragments which "fit" the collector, that is they share the type, length and message sequence
      * with the first fragment added to the collector.
      *
-     * @param fragment
-     * @return true if fragment fits the collector, false if it doesn't
+     * @param  fragment
+     * @return          true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
         if (fragment.getType().getValue() == type && fragment.getMessageSeq().getValue() == this.messageSeq
             && fragment.getLength().getValue() == this.messageLength) {
-            return fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
-                .getValue());
+            return fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
+                fragment.getFragmentOffset().getValue());
         } else {
             return false;
         }
@@ -109,13 +110,13 @@ public class FragmentCollector {
     /**
      * Tests if the fragment if added to the fragmentStream would rewrite previously received messages
      *
-     * @param fragment
-     * Fragment that should be tested
-     * @return True if the fragment would overwrite paste messages
+     * @param  fragment
+     *                  Fragment that should be tested
+     * @return          True if the fragment would overwrite paste messages
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
-        return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(), fragment.getFragmentOffset()
-            .getValue());
+        return !fragmentStream.canInsertByteArray(fragment.getContent().getValue(),
+            fragment.getFragmentOffset().getValue());
     }
 
     /**

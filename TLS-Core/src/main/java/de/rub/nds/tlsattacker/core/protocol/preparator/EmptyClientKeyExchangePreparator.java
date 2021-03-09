@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,8 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage> extends
-    ClientKeyExchangePreparator<T> {
+public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage>
+    extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -78,9 +79,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         if (chooser.getContext().getClientCertificate() != null
             && !chooser.getContext().getClientCertificate().isEmpty()) {
 
-            String algorithm =
-                chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo()
-                    .getAlgorithm().getAlgorithm().toString();
+            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo()
+                .getAlgorithm().getAlgorithm().toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();

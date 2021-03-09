@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,8 +34,8 @@ public class SRPExtensionPreparator extends ExtensionPreparator<SRPExtensionMess
         LOGGER.debug("Prepared the SRP Extension with user identifier "
             + ArrayConverter.bytesToHexString(message.getSrpIdentifier().getValue()));
         message.setSrpIdentifierLength(message.getSrpIdentifier().getValue().length);
-        LOGGER.debug("Prepared the SRP Extension with user identifier length "
-            + message.getSrpIdentifierLength().getValue());
+        LOGGER.debug(
+            "Prepared the SRP Extension with user identifier length " + message.getSrpIdentifierLength().getValue());
     }
 
 }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -27,14 +28,15 @@ public class UnknownMessageParser extends TlsMessageParser<UnknownMessage> {
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to start parsing
+     *                                 Position in the array where the ProtocolMessageParser is supposed to start
+     *                                 parsing
      * @param array
-     * The byte[] which the ProtocolMessageParser is supposed to parse
+     *                                 The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                                 Version of the Protocol
      * @param recordContentMessageType
      * @param config
-     * A Config used in the current context
+     *                                 A Config used in the current context
      */
     public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version,
         ProtocolMessageType recordContentMessageType, Config config) {

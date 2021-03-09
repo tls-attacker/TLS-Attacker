@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -16,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import java.util.LinkedList;
 import java.util.List;
 
-public class CertificateStatusRequestV2ExtensionParser extends
-    ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
+public class CertificateStatusRequestV2ExtensionParser
+    extends ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
     public CertificateStatusRequestV2ExtensionParser(int startposition, byte[] array, Config config) {
         super(startposition, array, config);

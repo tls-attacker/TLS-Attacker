@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.padding.vector.PaddingVector;
@@ -21,8 +22,8 @@ public abstract class PaddingVectorGenerator {
 
     /**
      *
-     * @param suite
-     * @param version
+     * @param  suite
+     * @param  version
      * @return
      */
     public abstract List<PaddingVector> getVectors(CipherSuite suite, ProtocolVersion version);
@@ -32,7 +33,7 @@ public abstract class PaddingVectorGenerator {
      *
      * Example for padding 03: [03 03 03 03]
      *
-     * @param padding
+     * @param  padding
      * @return
      */
     protected final byte[] createPaddingBytes(int padding) {

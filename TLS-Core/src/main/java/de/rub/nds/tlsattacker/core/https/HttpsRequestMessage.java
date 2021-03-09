@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.https;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -73,10 +74,8 @@ public class HttpsRequestMessage extends TlsMessage {
             header.add(new CookieHeader());
         }
         header.add(new GenericHttpsHeader("Upgrade-Insecure-Requests", "1"));
-        header
-            .add(new GenericHttpsHeader(
-                "User-Agent",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/59.0.3071.109 Chrome/59.0.3071.109 Safari/537.36"));
+        header.add(new GenericHttpsHeader("User-Agent",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/59.0.3071.109 Chrome/59.0.3071.109 Safari/537.36"));
     }
 
     public List<HttpsHeader> getHeader() {

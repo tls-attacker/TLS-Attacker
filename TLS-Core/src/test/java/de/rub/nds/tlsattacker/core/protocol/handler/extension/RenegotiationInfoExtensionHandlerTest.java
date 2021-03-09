@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -49,12 +50,14 @@ public class RenegotiationInfoExtensionHandlerTest {
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionPreparator);
+        assertTrue(handler
+            .getPreparator(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionSerializer);
+        assertTrue(handler
+            .getSerializer(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionSerializer);
     }
 
 }

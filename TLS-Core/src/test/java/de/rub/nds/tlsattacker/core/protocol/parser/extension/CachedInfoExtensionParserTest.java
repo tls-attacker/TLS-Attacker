@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -35,10 +36,7 @@ public class CachedInfoExtensionParserTest {
             { ExtensionType.CACHED_INFO, ConnectionEndType.SERVER, 2, new byte[] { 0x01, 0x02 },
                 Arrays.asList(new CachedObject((byte) 1, null, null), new CachedObject((byte) 2, null, null)),
                 ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
-            {
-                ExtensionType.CACHED_INFO,
-                ConnectionEndType.CLIENT,
-                13,
+            { ExtensionType.CACHED_INFO, ConnectionEndType.CLIENT, 13,
                 ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
                 Arrays.asList(new CachedObject((byte) 1, 6, ArrayConverter.hexStringToByteArray("010203040506")),
                     new CachedObject((byte) 2, 3, new byte[] { 0x07, 0x08, 0x09 })),
@@ -87,12 +85,12 @@ public class CachedInfoExtensionParserTest {
                 new CachedObjectPreparator(new TlsContext().getChooser(), expectedObject);
             preparator.prepare();
 
-            assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
-                .getValue());
+            assertEquals(expectedObject.getCachedInformationType().getValue(),
+                actualObject.getCachedInformationType().getValue());
 
             if (expectedObject.getHashValueLength() != null && expectedObject.getHashValueLength().getValue() != null) {
-                assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
-                    .getValue());
+                assertEquals(expectedObject.getHashValueLength().getValue(),
+                    actualObject.getHashValueLength().getValue());
             } else {
                 assertNull(actualObject.getHashValueLength());
             }

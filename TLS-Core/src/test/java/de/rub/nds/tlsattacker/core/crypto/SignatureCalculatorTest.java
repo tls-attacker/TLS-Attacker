@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -51,8 +52,8 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void RSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-        SignatureException {
+    public void RSASignatureTest()
+        throws NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -69,8 +70,8 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void RSASSSL3signatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-        SignatureException {
+    public void RSASSSL3signatureTest()
+        throws NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_NONE;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -88,8 +89,8 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void DSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-        SignatureException {
+    public void DSASignatureTest()
+        throws NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.DSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
         keyPairGenerator.initialize(1024, context.getBadSecureRandom());
@@ -108,8 +109,8 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void ECDSASignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-        SignatureException {
+    public void ECDSASignatureTest()
+        throws NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
         keyPairGenerator.initialize(256, context.getBadSecureRandom());
@@ -127,8 +128,8 @@ public class SignatureCalculatorTest {
     }
 
     @Test
-    public void ECDSASSL3SignatureTest() throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-        SignatureException {
+    public void ECDSASSL3SignatureTest()
+        throws NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
         keyPairGenerator.initialize(256, context.getBadSecureRandom());

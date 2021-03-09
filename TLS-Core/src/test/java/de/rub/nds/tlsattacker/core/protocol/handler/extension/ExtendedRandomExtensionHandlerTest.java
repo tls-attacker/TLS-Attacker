@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,10 +24,10 @@ import static org.junit.Assert.*;
 
 public class ExtendedRandomExtensionHandlerTest {
     private final byte[] EXTENDED_RANDOM_SHORT = new byte[0];
-    private final byte[] EXTENDED_RANDOM_DEFAULT = ArrayConverter
-        .hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
-    private final byte[] EXTENDED_RANDOM_LONG = ArrayConverter
-        .hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    private final byte[] EXTENDED_RANDOM_DEFAULT =
+        ArrayConverter.hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+    private final byte[] EXTENDED_RANDOM_LONG =
+        ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     private final byte[] EXTENDED_RANDOM_CLIENT = ArrayConverter.hexStringToByteArray("AABBCCDDEEFF");
     private final byte[] EXTENDED_RANDOM_SERVER = ArrayConverter.hexStringToByteArray("112233445566");
@@ -126,12 +127,14 @@ public class ExtendedRandomExtensionHandlerTest {
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ExtendedRandomExtensionMessage()) instanceof ExtendedRandomExtensionPreparator);
+        assertTrue(
+            handler.getPreparator(new ExtendedRandomExtensionMessage()) instanceof ExtendedRandomExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ExtendedRandomExtensionMessage()) instanceof ExtendedRandomExtensionSerializer);
+        assertTrue(
+            handler.getSerializer(new ExtendedRandomExtensionMessage()) instanceof ExtendedRandomExtensionSerializer);
     }
 
 }

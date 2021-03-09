@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
 import java.io.InputStream;
@@ -19,12 +20,12 @@ public class GuessProviderFactory {
      * Creates GuessProvider objects based on a GuessProviderType. Some GuessProvider require an InputSource to create
      * their guesses. If the GuessProvider does not use an InputStream, the InputStream is ignored
      *
-     * @param type
-     * Type of the GuessProvider which should be created
-     * @param guessSource
-     * An InputStream as an input source for the GuessProvider. If the GuessProvider does not use an InputStream the
-     * guessSource is ignored.
-     * @return A new GuessProvider object.
+     * @param  type
+     *                     Type of the GuessProvider which should be created
+     * @param  guessSource
+     *                     An InputStream as an input source for the GuessProvider. If the GuessProvider does not use an
+     *                     InputStream the guessSource is ignored.
+     * @return             A new GuessProvider object.
      */
     public static GuessProvider createGuessProvider(GuessProviderType type, InputStream guessSource) {
         switch (type) {

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,11 +26,10 @@ public class SupportedVersionsExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-            .asList(new Object[][] { { ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), 0,
-                ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
-                ExtensionType.SUPPORTED_VERSIONS, 13, 12,
-                ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
+        return Arrays.asList(new Object[][] { {
+            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), 0,
+            ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"), ExtensionType.SUPPORTED_VERSIONS,
+            13, 12, ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
     }
 
     private final byte[] extension;

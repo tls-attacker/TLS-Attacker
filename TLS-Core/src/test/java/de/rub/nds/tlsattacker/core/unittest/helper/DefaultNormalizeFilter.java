@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -26,9 +27,9 @@ public class DefaultNormalizeFilter {
      * Normalized and filtered the given workflow trace.
      * 
      * @param trace
-     * the workflow trace that should be normalized and filtered
+     *               the workflow trace that should be normalized and filtered
      * @param config
-     * the Config used for normalization/filtering
+     *               the Config used for normalization/filtering
      */
     public static void normalizeAndFilter(WorkflowTrace trace, Config config) {
 
@@ -54,11 +55,11 @@ public class DefaultNormalizeFilter {
      * <p>
      * This method does not modify the input trace.
      * 
-     * @param trace
-     * the workflow trace that should be normalized and filtered
-     * @param config
-     * the Config used for normalization/filtering
-     * @return a normalized and filtered copy of the input workflow trace
+     * @param  trace
+     *                the workflow trace that should be normalized and filtered
+     * @param  config
+     *                the Config used for normalization/filtering
+     * @return        a normalized and filtered copy of the input workflow trace
      */
     public static WorkflowTrace getNormalizedAndFilteredCopy(WorkflowTrace trace, Config config) {
         WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);

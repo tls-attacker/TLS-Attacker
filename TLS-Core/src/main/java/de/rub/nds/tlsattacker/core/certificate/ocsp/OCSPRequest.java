@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
@@ -123,8 +124,8 @@ public class OCSPRequest {
         return requestMessage;
     }
 
-    private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod) throws IOException,
-        ParserException {
+    private OCSPResponse performRequest(OCSPRequestMessage requestMessage, String requestMethod)
+        throws IOException, ParserException {
         byte[] encodedRequest = requestMessage.getEncodedRequest();
         HttpURLConnection httpCon = null;
         if (requestMethod.equals("POST")) {

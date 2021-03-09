@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,9 +22,8 @@ public class TLSGostKeyTransportBlobTest {
 
     @Test
     public void testGetInstance() {
-        byte[] messageBytes =
-            ArrayConverter
-                .hexStringToByteArray("304330413028042083BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA04046EE7685FA01506092A8503070102050101040850D55A4BB4D33355");
+        byte[] messageBytes = ArrayConverter.hexStringToByteArray(
+            "304330413028042083BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA04046EE7685FA01506092A8503070102050101040850D55A4BB4D33355");
         TLSGostKeyTransportBlob blob = TLSGostKeyTransportBlob.getInstance(messageBytes);
         byte[] expected =
             ArrayConverter.hexStringToByteArray("83BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA");
@@ -48,9 +48,8 @@ public class TLSGostKeyTransportBlobTest {
         GostR3410KeyTransport keyTransport = new GostR3410KeyTransport(encryptedKey, parameters);
         TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(keyTransport);
 
-        byte[] expected =
-            ArrayConverter
-                .hexStringToByteArray("304330413028042083BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA04046EE7685FA01506092A8503070102050101040850D55A4BB4D33355");
+        byte[] expected = ArrayConverter.hexStringToByteArray(
+            "304330413028042083BE410A078B313050F47E89124DE9DCEC591B770D0AB638712E6F8412A874BA04046EE7685FA01506092A8503070102050101040850D55A4BB4D33355");
         assertArrayEquals(expected, blob.getEncoded());
     }
 

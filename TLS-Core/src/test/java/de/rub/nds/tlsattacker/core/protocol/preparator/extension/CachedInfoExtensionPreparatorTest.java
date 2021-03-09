@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -25,8 +26,8 @@ public class CachedInfoExtensionPreparatorTest {
     private TlsContext context;
     private CachedInfoExtensionMessage msg;
     private CachedInfoExtensionPreparator preparator;
-    private final List<CachedObject> cachedObjectsClient = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] {
-        0x01, 0x02 }));
+    private final List<CachedObject> cachedObjectsClient =
+        Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01, 0x02 }));
     private final List<CachedObject> cachedObjectsServer = Arrays.asList(new CachedObject((byte) 0x02, null, null));
     private final int cachedObjectClientLength = 4;
     private final int cachedObjectServerLength = 1;
@@ -62,11 +63,11 @@ public class CachedInfoExtensionPreparatorTest {
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
-                .getValue());
+            assertEquals(expectedObject.getCachedInformationType().getValue(),
+                actualObject.getCachedInformationType().getValue());
             if (expectedObject.getHashValueLength() != null && expectedObject.getHashValueLength().getValue() != null) {
-                assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
-                    .getValue());
+                assertEquals(expectedObject.getHashValueLength().getValue(),
+                    actualObject.getHashValueLength().getValue());
             } else {
                 assertNull(actualObject.getHashValueLength());
             }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,9 +25,9 @@ import org.junit.runners.Parameterized;
 public class AlpnExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.ALPN,
-            ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0, 12,
-            ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
+        return Arrays.asList(new Object[][] {
+            { ExtensionType.ALPN, ArrayConverter.hexStringToByteArray("0010000e000c02683208687474702f312e31"), 14, 0,
+                12, ArrayConverter.hexStringToByteArray("02683208687474702f312e31") } });
     }
 
     private final ExtensionType extensionType;

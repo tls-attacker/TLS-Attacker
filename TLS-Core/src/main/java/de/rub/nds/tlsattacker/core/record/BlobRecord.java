@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -38,8 +39,8 @@ public class BlobRecord extends AbstractRecord {
     }
 
     @Override
-    public BlobRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
-        RecordCompressor compressor, ProtocolMessageType type) {
+    public BlobRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, RecordCompressor compressor,
+        ProtocolMessageType type) {
         return new BlobRecordPreparator(chooser, this, encryptor, type, compressor);
     }
 

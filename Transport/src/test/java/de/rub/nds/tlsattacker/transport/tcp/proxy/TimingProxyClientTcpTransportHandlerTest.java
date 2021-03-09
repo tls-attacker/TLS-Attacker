@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
 import java.io.IOException;
@@ -52,9 +53,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler =
-                new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1", serverSocketChannel.socket()
-                    .getLocalPort());
+            handler = new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1",
+                serverSocketChannel.socket().getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
@@ -79,9 +79,8 @@ public class TimingProxyClientTcpTransportHandlerTest {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
-            handler =
-                new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1", serverSocketChannel.socket()
-                    .getLocalPort());
+            handler = new TimingProxyClientTcpTransportHandler(100, 100, "127.0.0.1",
+                serverSocketChannel.socket().getLocalPort());
             handler.setProxy("127.0.0.1", 4444, "127.0.0.1", 5555);
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();

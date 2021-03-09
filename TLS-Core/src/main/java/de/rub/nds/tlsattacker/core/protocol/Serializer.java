@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  * The Serializer is responsible to write an Object T into a byte[] form. This is comparable to byte[] serialization.
  *
  * @param <T>
- * Type of the Object to write
+ *            Type of the Object to write
  */
 public abstract class Serializer<T> {
 
@@ -50,9 +51,9 @@ public abstract class Serializer<T> {
      * only the lower length bytes are serialized.
      *
      * @param i
-     * The Integer that should be appended
+     *               The Integer that should be appended
      * @param length
-     * The number of bytes which should be reserved for this Integer
+     *               The number of bytes which should be reserved for this Integer
      */
     protected final void appendInt(int i, int length) {
         byte[] bytes = ArrayConverter.intToBytes(i, length);
@@ -69,9 +70,9 @@ public abstract class Serializer<T> {
      * greater than the specified length only the lower length bytes are serialized.
      *
      * @param i
-     * The BigInteger that should be appended
+     *               The BigInteger that should be appended
      * @param length
-     * The number of bytes which should be reserved for this BigInteger
+     *               The number of bytes which should be reserved for this BigInteger
      */
     protected final void appendBigInteger(BigInteger i, int length) {
         byte[] bytes;
@@ -89,7 +90,7 @@ public abstract class Serializer<T> {
      * Adds a byte to the final byte[].
      *
      * @param b
-     * Byte which should be added
+     *          Byte which should be added
      */
     protected final void appendByte(byte b) {
         outputStream.write(b);
@@ -99,7 +100,7 @@ public abstract class Serializer<T> {
      * Adds a byte[] to the final byte[].
      *
      * @param bytes
-     * bytes that should be added
+     *              bytes that should be added
      */
     protected final void appendBytes(byte[] bytes) {
         try {

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -118,8 +119,8 @@ public class GOST28147Mac implements Mac, Memoable {
             key = ((KeyParameter) params).getKey();
             workingKey = generateWorkingKey(key);
         } else {
-            throw new IllegalArgumentException("invalid parameter passed to GOST28147 init - "
-                + params.getClass().getName());
+            throw new IllegalArgumentException(
+                "invalid parameter passed to GOST28147 init - " + params.getClass().getName());
         }
     }
 

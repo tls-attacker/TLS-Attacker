@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.cca;
 
 import static de.rub.nds.tlsattacker.core.certificate.PemUtil.readPrivateKey;
@@ -196,15 +197,16 @@ public class CcaCertificateManager {
 
     /**
      *
-     * @param xmlString
-     * Content of the XML file describing the certificate chain.
-     * @param rootCertificateKeyName
-     * Name of the root certificates key.
-     * @param rootCaSubject
-     * ASN.1 Subject of the root certificate encoded as a hex string.
-     * @return The xmlString in which the placeholder for the issuer (which is the root CA) has been replaced with the
-     * hex string encoding the root CAs subject. Additionally, the key placeholder has been replaced with the filename
-     * of the keyfile of the root CA certificate.
+     * @param  xmlString
+     *                                Content of the XML file describing the certificate chain.
+     * @param  rootCertificateKeyName
+     *                                Name of the root certificates key.
+     * @param  rootCaSubject
+     *                                ASN.1 Subject of the root certificate encoded as a hex string.
+     * @return                        The xmlString in which the placeholder for the issuer (which is the root CA) has
+     *                                been replaced with the hex string encoding the root CAs subject. Additionally, the
+     *                                key placeholder has been replaced with the filename of the keyfile of the root CA
+     *                                certificate.
      */
     private String replacePlaceholders(String xmlString, String rootCertificateKeyName, String rootCaSubject) {
         String needle = "<asn1RawBytes identifier=\"issuer\" type=\"RawBytes\" placeholder=\"replace_me\"><value>";
@@ -256,8 +258,8 @@ public class CcaCertificateManager {
         certificateChainFileWriter.close();
     }
 
-    private static void writeSingleCertificate(final String certificateOutputDirectory,
-        final Asn1Encodable certificate, final byte[] encodedCertificate) throws IOException {
+    private static void writeSingleCertificate(final String certificateOutputDirectory, final Asn1Encodable certificate,
+        final byte[] encodedCertificate) throws IOException {
         String certificateFileName = certificate.getIdentifier() + ".pem";
         CertificateFileWriter certificateFileWriter =
             new CertificateFileWriter(certificateOutputDirectory, certificateFileName);
@@ -269,12 +271,12 @@ public class CcaCertificateManager {
      * Based on the provided parameters this function adds the correct Custom Private/Public Keys to the certificate
      * chain.
      *
-     * @param ccaCertificateChain
-     * @param keyName
-     * @param pubKeyName
-     * @param keyType
-     * @param keyFileManager
-     * @return Boolean indicating if an error occurred.
+     * @param  ccaCertificateChain
+     * @param  keyName
+     * @param  pubKeyName
+     * @param  keyType
+     * @param  keyFileManager
+     * @return                     Boolean indicating if an error occurred.
      */
     private boolean setLeafCertificateKeys(CcaCertificateChain ccaCertificateChain, String keyName, String pubKeyName,
         String keyType, KeyFileManager keyFileManager) {

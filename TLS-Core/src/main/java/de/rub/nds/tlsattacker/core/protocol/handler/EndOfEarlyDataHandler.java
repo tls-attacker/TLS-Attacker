@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -62,12 +63,10 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
         try {
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use handshake secrets");
-            KeySet clientKeySet =
-                KeySetGenerator.generateKeySet(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
-                    tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient =
-                RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext.getChooser()
-                    .getSelectedCipherSuite());
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext,
+                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
+                tlsContext.getChooser().getSelectedCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -122,7 +123,7 @@ public class PaddingOracleCommandConfig extends AttackConfig {
 
     /**
      *
-     * @param config
+     * @param  config
      * @return
      */
     @Override

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -94,8 +95,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     private void adjustServerKeyShareStore(List<KeyShareStoreEntry> ksEntryList) {
         // The server has only one key
         if (ksEntryList.size() > 0) {
-            context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList
-                .get(0).getPublicKey()));
+            context.setServerKeyShareStoreEntry(
+                new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = context.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
             context.setSelectedGroup(selectedGroup);

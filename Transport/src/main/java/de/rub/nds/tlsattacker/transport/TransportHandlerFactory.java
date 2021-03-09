@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
@@ -83,8 +84,8 @@ public class TransportHandlerFactory {
                     return new ServerTcpFragmentationTransportHandler(con);
                 }
             default:
-                throw new UnsupportedOperationException("Transport handler " + con.getTransportHandlerType()
-                    + " is not supported");
+                throw new UnsupportedOperationException(
+                    "Transport handler " + con.getTransportHandlerType() + " is not supported");
         }
     }
 

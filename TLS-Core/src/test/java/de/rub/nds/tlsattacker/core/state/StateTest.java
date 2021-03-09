@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -122,8 +123,8 @@ public class StateTest {
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("This workflow can only be configured for modes CLIENT and "
-            + "SERVER, but actual mode was MITM");
+        exception.expectMessage(
+            "This workflow can only be configured for modes CLIENT and " + "SERVER, but actual mode was MITM");
         State state = new State(config);
     }
 
@@ -159,7 +160,8 @@ public class StateTest {
         assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
         state.replaceTlsContext(newCtx);
         assertNotSame(state.getTlsContext(conAlias1), origCtx1);
-        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
+        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(),
+            equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
     }
 
     @Test

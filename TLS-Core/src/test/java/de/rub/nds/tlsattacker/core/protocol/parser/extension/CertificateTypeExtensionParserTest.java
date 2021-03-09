@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -48,7 +49,8 @@ public class CertificateTypeExtensionParserTest {
     private CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-        int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes, boolean isClientState) {
+        int startParsing, Integer certificateTypesLength, List<CertificateType> certificateTypes,
+        boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;

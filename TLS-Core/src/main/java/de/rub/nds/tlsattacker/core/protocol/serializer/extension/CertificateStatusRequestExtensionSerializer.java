@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
@@ -13,8 +14,8 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 
-public class CertificateStatusRequestExtensionSerializer extends
-    ExtensionSerializer<CertificateStatusRequestExtensionMessage> {
+public class CertificateStatusRequestExtensionSerializer
+    extends ExtensionSerializer<CertificateStatusRequestExtensionMessage> {
 
     private final CertificateStatusRequestExtensionMessage message;
 

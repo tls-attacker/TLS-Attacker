@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.io.ByteArrayInputStream;
@@ -77,8 +78,8 @@ public enum ECPointFormat {
 
     }
 
-    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) throws IOException,
-        ClassNotFoundException {
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
+        throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }

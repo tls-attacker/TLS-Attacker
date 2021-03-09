@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp.proxy;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -18,8 +19,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler implements
-    ProxyableTransportHandler, TimeableTransportHandler {
+public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler
+    implements ProxyableTransportHandler, TimeableTransportHandler {
 
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";

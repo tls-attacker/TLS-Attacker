@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  * might be serialization/deserialization issues with the types used in the {@link TlsContext}.
  *
  * @param <T>
- * Object type of the field inside the {@link TlsContext}
+ *            Object type of the field inside the {@link TlsContext}
  */
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
@@ -83,13 +84,13 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (!isUsesList()) {
                 oldValue = (T) field.get(tlsContext);
                 field.set(tlsContext, this.newValue);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValue == null ? "null"
-                    : oldValue.toString(), newValue.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
             } else {
                 oldValueList = (List<T>) field.get(tlsContext);
                 field.set(tlsContext, this.newValueList);
-                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName, oldValueList == null ? "null"
-                    : oldValueList.toString(), newValueList.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
             }
 
             setExecuted(true);

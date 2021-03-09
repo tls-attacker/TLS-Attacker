@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.padding;
 
 import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
@@ -53,8 +54,8 @@ public abstract class PaddingTraceGenerator {
 
     /**
      *
-     * @param config
-     * @param vector
+     * @param  config
+     * @param  vector
      * @return
      */
     public abstract WorkflowTrace getPaddingOracleWorkflowTrace(Config config, PaddingVector vector);

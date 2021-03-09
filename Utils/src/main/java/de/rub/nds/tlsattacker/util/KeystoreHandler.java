@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.util;
 
 import java.io.FileInputStream;
@@ -26,8 +27,8 @@ public class KeystoreHandler {
         return ks;
     }
 
-    public static KeyStore loadKeyStore(InputStream stream, final String keyStorePassword) throws KeyStoreException,
-        IOException, NoSuchAlgorithmException, CertificateException {
+    public static KeyStore loadKeyStore(InputStream stream, final String keyStorePassword)
+        throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance("JKS");
         ks.load(stream, keyStorePassword.toCharArray());
 

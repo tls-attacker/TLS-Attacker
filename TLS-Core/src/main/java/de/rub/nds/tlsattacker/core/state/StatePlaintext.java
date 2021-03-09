@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -113,9 +114,8 @@ public class StatePlaintext {
     }
 
     public void setClientAuthenticationDataLength(int clientAuthenticationDataLength) {
-        this.clientAuthenticationDataLength =
-            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationDataLength,
-                clientAuthenticationDataLength);
+        this.clientAuthenticationDataLength = ModifiableVariableFactory
+            .safelySetValue(this.clientAuthenticationDataLength, clientAuthenticationDataLength);
     }
 
     public ModifiableByteArray getClientAuthenticationData() {

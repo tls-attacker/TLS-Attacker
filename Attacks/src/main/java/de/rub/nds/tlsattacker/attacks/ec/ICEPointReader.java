@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -32,18 +33,17 @@ public class ICEPointReader {
     /**
      * Reads points for the attack on elliptic curves from a file specific for this named curve
      *
-     * @param group
-     * The NamedCurve as a String
-     * @return the deserialized Points
+     * @param  group
+     *               The NamedCurve as a String
+     * @return       the deserialized Points
      */
     public static List<ICEPoint> readPoints(NamedGroup group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         String namedCurveLow = group.name().toLowerCase();
         String fileName = "points_" + namedCurveLow + ".txt";
 
-        BufferedReader br =
-            new BufferedReader(new InputStreamReader(ICEPointReader.class.getClassLoader()
-                .getResourceAsStream(fileName)));
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader(ICEPointReader.class.getClassLoader().getResourceAsStream(fileName)));
         String line;
         List<ICEPoint> points = new LinkedList<>();
         try {

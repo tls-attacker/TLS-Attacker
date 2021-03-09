@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
@@ -37,7 +38,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
      * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
-     * The Message for which this context should be adjusted
+     *                The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(MessageT message);
 

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -24,9 +25,9 @@ public class SupplementalDataSerializer extends HandshakeMessageSerializer<Suppl
      * Constructor for the SupplementalDataMessageSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * The Version for which this message should be serialized
+     *                The Version for which this message should be serialized
      */
     public SupplementalDataSerializer(SupplementalDataMessage message, ProtocolVersion version) {
         super(message, version);

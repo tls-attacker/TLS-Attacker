@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,8 +22,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignatureAndHashAlgorithmsExtensionPreparator extends
-    ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
+public class SignatureAndHashAlgorithmsExtensionPreparator
+    extends ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

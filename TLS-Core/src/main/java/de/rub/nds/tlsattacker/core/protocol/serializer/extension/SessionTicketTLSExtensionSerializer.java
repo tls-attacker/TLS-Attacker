@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
@@ -22,7 +23,7 @@ public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<Ses
      * Default constructor
      *
      * @param message
-     * A SessionTicketTLSExtensionMessage
+     *                A SessionTicketTLSExtensionMessage
      */
     public SessionTicketTLSExtensionSerializer(SessionTicketTLSExtensionMessage message) {
         super(message);
@@ -37,8 +38,8 @@ public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<Ses
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(message.getTicket().getValue());
-        LOGGER.debug("Serialized PaddingExtension with SessionTicket of length "
-            + message.getTicket().getValue().length);
+        LOGGER
+            .debug("Serialized PaddingExtension with SessionTicket of length " + message.getTicket().getValue().length);
         return getAlreadySerialized();
     }
 

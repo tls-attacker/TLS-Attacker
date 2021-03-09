@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -73,8 +74,8 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         try {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
-            LOGGER.warn("Failed to base64 decode Resource Record for" + hostname + ". Resource Record: "
-                + esniKeyRecordStr);
+            LOGGER.warn(
+                "Failed to base64 decode Resource Record for" + hostname + ". Resource Record: " + esniKeyRecordStr);
             setExecuted(true);
             return;
         }

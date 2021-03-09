@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
@@ -14,8 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignedCertificateTimestampExtensionPreparator extends
-    ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
+public class SignedCertificateTimestampExtensionPreparator
+    extends ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

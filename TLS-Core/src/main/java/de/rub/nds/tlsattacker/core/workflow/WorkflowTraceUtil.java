@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -195,14 +196,16 @@ public class WorkflowTraceUtil {
     private static List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
         List<ProtocolMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage instanceof TlsMessage && ((TlsMessage) protocolMessage).getProtocolMessageType() == type) {
+            if (protocolMessage instanceof TlsMessage
+                && ((TlsMessage) protocolMessage).getProtocolMessageType() == type) {
                 returnedMessages.add(protocolMessage);
             }
         }
         return returnedMessages;
     }
 
-    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages, HandshakeMessageType type) {
+    private static List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages,
+        HandshakeMessageType type) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (HandshakeMessage handshakeMessage : messages) {
             if (handshakeMessage.getHandshakeMessageType() == type) {

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -57,7 +58,7 @@ public class PSKBinder implements Serializable {
 
     /**
      * @param binderCipherConfig
-     * the binderCipherConfig to set
+     *                           the binderCipherConfig to set
      */
     public void setBinderCipherConfig(CipherSuite binderCipherConfig) {
         this.binderCipherConfig = binderCipherConfig;

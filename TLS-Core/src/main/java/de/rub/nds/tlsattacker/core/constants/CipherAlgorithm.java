@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 /**
@@ -43,7 +44,8 @@ public enum CipherAlgorithm {
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0); // TODO
 
-    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize,
+        String javaName) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;

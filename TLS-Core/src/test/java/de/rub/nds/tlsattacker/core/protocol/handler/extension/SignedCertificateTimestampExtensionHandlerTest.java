@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -59,16 +60,19 @@ public class SignedCertificateTimestampExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(firstExpectedBytes, 0, context.getConfig()) instanceof SignedCertificateTimestampExtensionParser);
+        assertTrue(handler.getParser(firstExpectedBytes, 0,
+            context.getConfig()) instanceof SignedCertificateTimestampExtensionParser);
     }
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionSerializer);
     }
 }

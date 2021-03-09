@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -29,20 +30,19 @@ public class CertificateRequestParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-            .asList(new Object[][] { {
-                ArrayConverter
-                    .hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
-                0,
-                ArrayConverter
-                    .hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
-                HandshakeMessageType.CERTIFICATE_REQUEST, 38, 3, RSA_DSS_ECDSA_TYPES, 30,
-                ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,
-                null, ProtocolVersion.TLS12 },
+        return Arrays.asList(new Object[][] { {
+            ArrayConverter.hexStringToByteArray(
+                "0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
+            0,
+            ArrayConverter.hexStringToByteArray(
+                "0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
+            HandshakeMessageType.CERTIFICATE_REQUEST, 38, 3, RSA_DSS_ECDSA_TYPES, 30,
+            ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,
+            null, ProtocolVersion.TLS12 },
             /*
              * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG, HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
              * RSA_DSS_ECDSA_TYPES, 0,null, 0, null,ProtocolVersion.SSL3 }
-             */});
+             */ });
         // TestData is correct, however Certificate request and other
         // Client-Authentication related messages are not yet supported for
         // TLS-Version < 1.2

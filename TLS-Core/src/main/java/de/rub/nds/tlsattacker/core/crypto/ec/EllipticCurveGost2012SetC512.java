@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -14,10 +15,9 @@ import java.math.BigInteger;
 public class EllipticCurveGost2012SetC512 extends EllipticCurveOverF2m {
 
     public EllipticCurveGost2012SetC512() {
-        super(
-            new BigInteger(
-                "DC9203E514A721875485A529D2C722FB187BC8980EB866644DE41C68E143064546E861C0E2C9EDD92ADE71F46FCF50FF2AD97F951FDA9F2A2EB6546F39689BD3",
-                16),
+        super(new BigInteger(
+            "DC9203E514A721875485A529D2C722FB187BC8980EB866644DE41C68E143064546E861C0E2C9EDD92ADE71F46FCF50FF2AD97F951FDA9F2A2EB6546F39689BD3",
+            16),
             new BigInteger(
                 "B4C4EE28CEBC6C2C8AC12952CF37F16AC7EFB6A9F69F4B57FFDA2E4F0DE5ADE038CBC2FFF719D2C18DE0284B8BFEF3B52B8CC7A5F5BF0A3C8D2319A5312557E1",
                 16),

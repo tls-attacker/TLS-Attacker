@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.context;
 
 import de.rub.nds.tlsattacker.core.protocol.Parser;
@@ -44,12 +45,12 @@ public class MessageParserBoundaryVerificationContext implements ParserContext {
             return new ParserContextResult() {
                 @Override
                 public void evaluate() {
-                    String message =
-                        String.format("Attempt to parse over boundary %s while in context %s, "
+                    String message = String.format(
+                        "Attempt to parse over boundary %s while in context %s, "
                             + "boundary only has %d bytes left, but parse request was for %d bytes in %s",
-                            boundaryQualifier, previous != null ? previous.toString() : "Message",
-                            MessageParserBoundaryVerificationContext.this.boundary - (p.getPointer() - pointerOffset),
-                            requestedLength, MessageParserBoundaryVerificationContext.this);
+                        boundaryQualifier, previous != null ? previous.toString() : "Message",
+                        MessageParserBoundaryVerificationContext.this.boundary - (p.getPointer() - pointerOffset),
+                        requestedLength, MessageParserBoundaryVerificationContext.this);
                     if (throwing) {
                         throw new ParserContextParserException(message, MessageParserBoundaryVerificationContext.this,
                             previous);

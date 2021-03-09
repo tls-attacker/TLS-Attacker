@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -37,16 +38,19 @@ public class ClientCertificateUrlExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateUrlExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[0], 0, context.getConfig()) instanceof ClientCertificateUrlExtensionParser);
     }
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new ClientCertificateUrlExtensionMessage()) instanceof ClientCertificateUrlExtensionSerializer);
     }
 }

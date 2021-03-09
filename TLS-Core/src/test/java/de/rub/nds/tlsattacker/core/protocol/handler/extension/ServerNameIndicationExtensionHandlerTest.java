@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -70,7 +71,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0, context.getConfig()) instanceof ServerNameIndicationExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0,
+            context.getConfig()) instanceof ServerNameIndicationExtensionParser);
     }
 
     /**
@@ -78,7 +80,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
     }
 
     /**
@@ -86,7 +89,8 @@ public class ServerNameIndicationExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
     }
 
 }

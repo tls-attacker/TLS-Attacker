@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -104,7 +105,8 @@ public class ParserSerializerStressTest {
         }
     }
 
-    private ProtocolMessageParser<? extends ProtocolMessage> getRandomParser(int random, int start, byte[] bytesToParse) {
+    private ProtocolMessageParser<? extends ProtocolMessage> getRandomParser(int random, int start,
+        byte[] bytesToParse) {
         switch (random) {
             case 0:
                 return new AlertParser(start, bytesToParse, ProtocolVersion.TLS12, config);
@@ -145,14 +147,15 @@ public class ParserSerializerStressTest {
             case 18:
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
-                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
-                    ProtocolMessageType.UNKNOWN, config);
+                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN,
+                    config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }
     }
 
-    private ProtocolMessageSerializer<? extends ProtocolMessage> getRandomSerializer(int random, ProtocolMessage message) {
+    private ProtocolMessageSerializer<? extends ProtocolMessage> getRandomSerializer(int random,
+        ProtocolMessage message) {
         switch (random) {
             case 0:
                 return new AlertSerializer((AlertMessage) message, ProtocolVersion.TLS12);
@@ -171,7 +174,8 @@ public class ParserSerializerStressTest {
             case 7:
                 return new DHClientKeyExchangeSerializer<>((DHClientKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 8:
-                return new DHEServerKeyExchangeSerializer<>((DHEServerKeyExchangeMessage) message, ProtocolVersion.TLS12);
+                return new DHEServerKeyExchangeSerializer<>((DHEServerKeyExchangeMessage) message,
+                    ProtocolVersion.TLS12);
             case 9:
                 return new ECDHClientKeyExchangeSerializer<>((ECDHClientKeyExchangeMessage) message,
                     ProtocolVersion.TLS12);
@@ -187,7 +191,8 @@ public class ParserSerializerStressTest {
             case 14:
                 return new HelloVerifyRequestSerializer((HelloVerifyRequestMessage) message, ProtocolVersion.TLS12);
             case 15:
-                return new RSAClientKeyExchangeSerializer<>((RSAClientKeyExchangeMessage) message, ProtocolVersion.TLS12);
+                return new RSAClientKeyExchangeSerializer<>((RSAClientKeyExchangeMessage) message,
+                    ProtocolVersion.TLS12);
             case 16:
                 return new ServerHelloDoneSerializer((ServerHelloDoneMessage) message, ProtocolVersion.TLS12);
             case 17:

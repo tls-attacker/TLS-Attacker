@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -70,8 +71,8 @@ public class JKSLoader {
 
     }
 
-    public static X509CertificateObject loadX509Certificate(KeyStore keyStore, String alias) throws KeyStoreException,
-        CertificateEncodingException, IOException, CertificateParsingException {
+    public static X509CertificateObject loadX509Certificate(KeyStore keyStore, String alias)
+        throws KeyStoreException, CertificateEncodingException, IOException, CertificateParsingException {
         return new X509CertificateObject(loadTLSCertificate(keyStore, alias).getCertificateAt(0));
     }
 

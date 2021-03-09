@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -96,7 +97,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     /**
      *
-     * @param targetVersion
+     * @param  targetVersion
      * @return
      */
     public boolean checkTargetVersion(TargetVersion targetVersion) {

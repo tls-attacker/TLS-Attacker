@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -64,8 +65,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
             ParametersWithRandom params =
-                new ParametersWithRandom(new ECPrivateKeyParameters(privateKey, generateEcParameters()), new BadRandom(
-                    new Random(0), new byte[0]));
+                new ParametersWithRandom(new ECPrivateKeyParameters(privateKey, generateEcParameters()),
+                    new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
             MessageDigest dig = null;
@@ -98,9 +99,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     private ECDomainParameters generateEcParameters() {
         NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
-        InputStream is =
-            new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
+        InputStream is = new ByteArrayInputStream(ArrayConverter
+            .concatenate(new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);

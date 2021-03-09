@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -120,8 +121,8 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair = new ServerNamePair();
-                pair.setServerNameConfig(tlsConfig.getDefaultClientConnection().getHostname()
-                    .getBytes(Charset.forName("ASCII")));
+                pair.setServerNameConfig(
+                    tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII")));
                 pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
                 extension.getServerNameList().add(pair);
                 addExtension(extension);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
@@ -48,16 +49,19 @@ public class CertificateStatusRequestV2ExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[0], 0, context.getConfig()) instanceof CertificateStatusRequestV2ExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0,
+            context.getConfig()) instanceof CertificateStatusRequestV2ExtensionParser);
     }
 
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionPreparator);
     }
 
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new CertificateStatusRequestV2ExtensionMessage()) instanceof CertificateStatusRequestV2ExtensionSerializer);
     }
 }

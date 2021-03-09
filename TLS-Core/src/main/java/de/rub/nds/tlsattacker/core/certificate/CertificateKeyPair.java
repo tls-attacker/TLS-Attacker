@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -152,10 +153,11 @@ public class CertificateKeyPair implements Serializable {
         this.certSignatureType = CertificateKeyType.RSA;
         // To get the same output as cert.encode() but using the raw bytes
         // pack them accordingly
-        this.certificateBytes =
-            ArrayConverter.concatenate(ArrayConverter.intToBytes(certificateBytes.length
-                + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
-                .intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH), certificateBytes);
+        this.certificateBytes = ArrayConverter.concatenate(
+            ArrayConverter.intToBytes(certificateBytes.length + HandshakeByteLength.CERTIFICATES_LENGTH,
+                HandshakeByteLength.CERTIFICATES_LENGTH),
+            ArrayConverter.intToBytes(certificateBytes.length, HandshakeByteLength.CERTIFICATES_LENGTH),
+            certificateBytes);
         this.publicKeyGroup = null;
         this.signatureGroup = null;
         gostCurve = null;
@@ -180,8 +182,8 @@ public class CertificateKeyPair implements Serializable {
         this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
     }
 
-    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
-        File certFile, File privateKeyFile) throws CertificateException, IOException {
+    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType, File certFile,
+        File privateKeyFile) throws CertificateException, IOException {
         this.certPublicKeyType = certPublicKeyType;
         this.certSignatureType = certSignatureType;
         Certificate certificate = PemUtil.readCertificate(certFile);
@@ -310,9 +312,8 @@ public class CertificateKeyPair implements Serializable {
         // the signature group is
         // the same as for the public key
         try {
-            ASN1ObjectIdentifier publicKeyParameters =
-                (ASN1ObjectIdentifier) cert.getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm()
-                    .getParameters();
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
             return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
@@ -331,9 +332,8 @@ public class CertificateKeyPair implements Serializable {
             return null;
         }
         try {
-            ASN1ObjectIdentifier publicKeyParameters =
-                (ASN1ObjectIdentifier) cert.getCertificateAt(0).getSubjectPublicKeyInfo().getAlgorithm()
-                    .getParameters();
+            ASN1ObjectIdentifier publicKeyParameters = (ASN1ObjectIdentifier) cert.getCertificateAt(0)
+                .getSubjectPublicKeyInfo().getAlgorithm().getParameters();
             return NamedGroup.fromJavaName(ECNamedCurveTable.getName(publicKeyParameters));
         } catch (Exception ex) {
             LOGGER.warn("Could not determine EC public key group", ex);
@@ -388,7 +388,8 @@ public class CertificateKeyPair implements Serializable {
             privateKey.adjustInContext(context, connectionEnd);
         }
         if (!context.getChooser().getSelectedCipherSuite().isTLS13()
-            && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite()) == CertificateKeyType.ECDH) {
+            && AlgorithmResolver.getCertificateKeyType(context.getChooser().getSelectedCipherSuite())
+                == CertificateKeyType.ECDH) {
             context.setSelectedGroup(publicKeyGroup);
         } else {
             context.setEcCertificateCurve(publicKeyGroup);
@@ -468,9 +469,9 @@ public class CertificateKeyPair implements Serializable {
     @Override
     public String toString() {
         return "CertificateKeyPair{" + "certPublicKeyType=" + certPublicKeyType + ", certSignatureType="
-            + certSignatureType + ", certificateBytes=" + Arrays.toString(certificateBytes) + ", publicKey="
-            + publicKey + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup="
-            + publicKeyGroup + '}';
+            + certSignatureType + ", certificateBytes=" + Arrays.toString(certificateBytes) + ", publicKey=" + publicKey
+            + ", privateKey=" + privateKey + ", signatureGroup=" + signatureGroup + ", publicKeyGroup=" + publicKeyGroup
+            + '}';
     }
 
     public boolean isUsable(CertificateKeyType neededPublicKeyType,

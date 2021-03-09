@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -179,10 +180,9 @@ public class RecordGroup {
     private boolean isRecordInvalid(AbstractRecord record) {
         if (record instanceof Record) {
             RecordCryptoComputations computations = ((Record) record).getComputations();
-            if (computations != null
-                && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
-                    || Objects.equals(computations.getPaddingValid(), Boolean.FALSE) || Objects.equals(
-                    computations.getAuthenticationTagValid(), Boolean.FALSE))) {
+            if (computations != null && (Objects.equals(computations.getMacValid(), Boolean.FALSE)
+                || Objects.equals(computations.getPaddingValid(), Boolean.FALSE)
+                || Objects.equals(computations.getAuthenticationTagValid(), Boolean.FALSE))) {
                 return true;
             }
         }

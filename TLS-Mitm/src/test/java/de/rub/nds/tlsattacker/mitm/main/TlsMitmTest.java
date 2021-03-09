@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -120,9 +121,9 @@ public class TlsMitmTest {
             serverThread.shutdown();
             LOGGER.info("Done.");
 
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-            | KeyManagementException | InterruptedException | OperatorCreationException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException
+            | InterruptedException | OperatorCreationException ex) {
             LOGGER.warn(ex);
             fail();
         }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -36,9 +37,8 @@ public class SendMessageHelperTest {
     @Before
     public void setUp() throws IOException {
         context = new TlsContext();
-        transportHandler =
-            new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[] {}),
-                new ByteArrayOutputStream());
+        transportHandler = new StreamTransportHandler(0, 0, ConnectionEndType.CLIENT,
+            new ByteArrayInputStream(new byte[] {}), new ByteArrayOutputStream());
         context.setTransportHandler(transportHandler);
         context.getTransportHandler().initialize();
         context.setRecordLayer(new TlsRecordLayer(context));

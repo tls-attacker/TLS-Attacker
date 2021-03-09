@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,13 +25,13 @@ public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMes
      * Constructor for the Parser class
      *
      * @param startposition
-     * Position in the array where the ProtocolMessageParser is supposed to start parsing
+     *                      Position in the array where the ProtocolMessageParser is supposed to start parsing
      * @param array
-     * The byte[] which the ProtocolMessageParser is supposed to parse
+     *                      The byte[] which the ProtocolMessageParser is supposed to parse
      * @param version
-     * Version of the Protocol
+     *                      Version of the Protocol
      * @param config
-     * A Config used in the current context
+     *                      A Config used in the current context
      */
     public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
         super(startposition, array, version, config);
@@ -48,7 +49,7 @@ public class ChangeCipherSpecParser extends TlsMessageParser<ChangeCipherSpecMes
      * Reads the next bytes as the CcsProtocolType and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseCcsProtocolType(ChangeCipherSpecMessage msg) {
         msg.setCcsProtocolType(parseByteArrayField(ChangeCipherSpecByteLength.TYPE_LENGTH));

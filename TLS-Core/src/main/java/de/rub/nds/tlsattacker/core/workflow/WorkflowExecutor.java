@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -38,9 +39,9 @@ public abstract class WorkflowExecutor {
      * config.getWorkflowTraceType().
      * 
      * @param type
-     * of the workflow executor (currently only DEFAULT)
+     *              of the workflow executor (currently only DEFAULT)
      * @param state
-     * to work on
+     *              to work on
      */
     public WorkflowExecutor(WorkflowExecutorType type, State state) {
         this.type = type;

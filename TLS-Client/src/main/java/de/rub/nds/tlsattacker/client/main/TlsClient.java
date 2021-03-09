@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.main;
 
 import com.beust.jcommander.JCommander;
@@ -66,8 +67,8 @@ public class TlsClient {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER
-                .warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.warn(
+                "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -108,10 +109,11 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
             ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
     }
 
-    public abstract AbstractRecordPreparator<? extends AbstractRecord> getRecordPreparator(Chooser chooser, Encryptor encryptor,
-        RecordCompressor compressor, ProtocolMessageType type);
+    public abstract AbstractRecordPreparator<? extends AbstractRecord> getRecordPreparator(Chooser chooser,
+        Encryptor encryptor, RecordCompressor compressor, ProtocolMessageType type);
 
-    public abstract AbstractRecordParser<? extends AbstractRecord> getRecordParser(int startposition, byte[] array, ProtocolVersion version);
+    public abstract AbstractRecordParser<? extends AbstractRecord> getRecordParser(int startposition, byte[] array,
+        ProtocolVersion version);
 
     public abstract AbstractRecordSerializer<? extends AbstractRecord> getRecordSerializer();
 

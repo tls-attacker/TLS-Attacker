@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.main;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -99,9 +100,8 @@ public class TlsClientTest {
             CONSOLE.info("Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-            | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             LOGGER.warn(ex);
             fail();
         }
@@ -176,8 +176,8 @@ public class TlsClientTest {
                 config.setDefaultClientSupportedCipherSuites(csList);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                CONSOLE.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Success:"
-                    + result);
+                CONSOLE.info(
+                    "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Success:" + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
                     result, is(true));
             }
@@ -219,8 +219,8 @@ public class TlsClientTest {
 
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
-            new ClientHelloMessage(config)));
+        trace.addTlsAction(
+            MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
             new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 

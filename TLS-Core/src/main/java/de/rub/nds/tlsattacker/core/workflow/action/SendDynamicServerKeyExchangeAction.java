@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
@@ -52,8 +53,8 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         }
         messages = new LinkedList<>();
         ServerKeyExchangeMessage msg =
-            new WorkflowConfigurationFactory(state.getConfig()).createServerKeyExchangeMessage(AlgorithmResolver
-                .getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
+            new WorkflowConfigurationFactory(state.getConfig()).createServerKeyExchangeMessage(
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
         if (msg != null) {
             messages.add(msg);
         }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -189,11 +190,11 @@ public class HandlerFactory {
     /**
      * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
-     * @param context
-     * Current TlsContext
-     * @param type
-     * Type of the Extension
-     * @return Correct ExtensionHandler
+     * @param  context
+     *                 Current TlsContext
+     * @param  type
+     *                 Type of the Extension
+     * @return         Correct ExtensionHandler
      */
     public static ExtensionHandler<? extends ExtensionMessage> getExtensionHandler(TlsContext context,
         ExtensionType type) {
@@ -307,8 +308,8 @@ public class HandlerFactory {
         return new UnknownExtensionHandler(context);
     }
 
-    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage> getClientKeyExchangeHandler(
-        TlsContext context) {
+    private static ClientKeyExchangeHandler<? extends ClientKeyExchangeMessage>
+        getClientKeyExchangeHandler(TlsContext context) {
         CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {

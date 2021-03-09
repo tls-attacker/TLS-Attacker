@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -43,7 +44,8 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
         withPrepare = true;
     }
 
-    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+    public ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias,
+        ProtocolMessage... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }

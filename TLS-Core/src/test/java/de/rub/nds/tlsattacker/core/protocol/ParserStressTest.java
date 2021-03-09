@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -89,8 +90,8 @@ public class ParserStressTest {
             case 18:
                 return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
             case 19:
-                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12,
-                    ProtocolMessageType.UNKNOWN, config);
+                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN,
+                    config);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

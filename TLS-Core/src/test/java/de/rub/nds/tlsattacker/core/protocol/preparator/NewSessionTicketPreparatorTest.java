@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -57,9 +58,8 @@ public class NewSessionTicketPreparatorTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedCompressionMethod(CompressionMethod.NULL);
-        context
-            .setMasterSecret(ArrayConverter
-                .hexStringToByteArray("53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
+        context.setMasterSecret(ArrayConverter.hexStringToByteArray(
+            "53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
         context.setClientAuthentication(false);
         TimeHelper.setProvider(new FixedTimeProvider(152113433000l)); // 0x09111119
         context.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
@@ -69,20 +69,16 @@ public class NewSessionTicketPreparatorTest {
 
         // Check ticketdata
         // Correct value was calculated by http://aes.online-domain-tools.com/
-        assertArrayEquals(
-            message.getTicket().getEncryptedState().getValue(),
-            ArrayConverter
-                .hexStringToByteArray("23403433756E7E6C0777047BECA5B4A1FC987804A39B420BE56DA996D6F9C233CC6C97FC2F5A3EE3A193A2ACE6F320E6AA3E98B66B4A3C51AA4056D7EF5898F8"));
+        assertArrayEquals(message.getTicket().getEncryptedState().getValue(), ArrayConverter.hexStringToByteArray(
+            "23403433756E7E6C0777047BECA5B4A1FC987804A39B420BE56DA996D6F9C233CC6C97FC2F5A3EE3A193A2ACE6F320E6AA3E98B66B4A3C51AA4056D7EF5898F8"));
 
         // Revert encryption to check the correct encryption
         // Correct value was assembled by hand because I found no testdata
         byte[] decrypted =
             StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, message.getTicket().getEncryptedState().getValue(),
                 context.getChooser().getConfig().getSessionTicketKeyAES(), message.getTicket().getIV().getValue());
-        assertArrayEquals(
-            decrypted,
-            ArrayConverter
-                .hexStringToByteArray("0303009c0053657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b0009111119"));
+        assertArrayEquals(decrypted, ArrayConverter.hexStringToByteArray(
+            "0303009c0053657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b0009111119"));
 
         // Smaller Tests to be complete
         assertTrue(message.getTicketLifetimeHint().getValue() == 3600);
@@ -97,12 +93,10 @@ public class NewSessionTicketPreparatorTest {
         assertArrayEquals(message.getTicket().getMAC().getValue(),
             ArrayConverter.hexStringToByteArray("C12AC5FD8690B8E61F647F86630271F16C9A6281663014C2873EE4934A6C9C3B"));
 
-        byte[] macinput =
-            ArrayConverter.concatenate(message.getTicket().getKeyName().getValue(), message.getTicket().getIV()
-                .getValue());
-        macinput =
-            ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(message.getTicket().getEncryptedState()
-                .getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
+        byte[] macinput = ArrayConverter.concatenate(message.getTicket().getKeyName().getValue(),
+            message.getTicket().getIV().getValue());
+        macinput = ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(
+            message.getTicket().getEncryptedState().getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
         macinput = ArrayConverter.concatenate(macinput, message.getTicket().getEncryptedState().getValue());
         assertTrue(StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, message.getTicket().getMAC().getValue(),
             macinput, context.getChooser().getConfig().getSessionTicketKeyHMAC()));

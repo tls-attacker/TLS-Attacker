@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -112,9 +113,8 @@ public class WorkflowTraceMutatorTest {
         TlsMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
 
-        ReceiveAction action =
-            (ReceiveAction) WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace)
-                .get(0);
+        ReceiveAction action = (ReceiveAction) WorkflowTraceUtil
+            .getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
     }
 
@@ -125,9 +125,8 @@ public class WorkflowTraceMutatorTest {
         HandshakeMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(trace, HandshakeMessageType.SERVER_HELLO, replaceMsg);
 
-        ReceiveAction action =
-            (ReceiveAction) WorkflowTraceUtil.getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace)
-                .get(0);
+        ReceiveAction action = (ReceiveAction) WorkflowTraceUtil
+            .getReceivingActionsForMessage(ProtocolMessageType.HANDSHAKE, trace).get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
     }
 
@@ -155,10 +154,12 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testMoreComplexExample() throws WorkflowTraceMutationException {
-        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)), new ReceiveAction(new ServerHelloMessage(
-            config), new CertificateMessage(config), new ServerHelloDoneMessage(config)),
+        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
+            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(config),
+                new ServerHelloDoneMessage(config)),
             new SendAction(new ECDHClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config),
-                new FinishedMessage(config)), new ReceiveAction(new FinishedMessage(config)));
+                new FinishedMessage(config)),
+            new ReceiveAction(new FinishedMessage(config)));
 
         HandshakeMessage chm = new SrpClientKeyExchangeMessage();
 
@@ -193,8 +194,8 @@ public class WorkflowTraceMutatorTest {
 
         WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
         assertEquals(1, trace.getTlsActions().size());
-        assertEquals(ClientHelloMessage.class, ((ReceiveAction) trace.getTlsActions().get(0)).getExpectedMessages()
-            .get(0).getClass());
+        assertEquals(ClientHelloMessage.class,
+            ((ReceiveAction) trace.getTlsActions().get(0)).getExpectedMessages().get(0).getClass());
     }
 
     @Test
@@ -227,10 +228,12 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testTruncatingWorkflow() {
-        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)), new ReceiveAction(new ServerHelloMessage(
-            config), new CertificateMessage(config), new ServerHelloDoneMessage(config)),
+        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
+            new ReceiveAction(new ServerHelloMessage(config), new CertificateMessage(config),
+                new ServerHelloDoneMessage(config)),
             new SendAction(new ECDHClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config),
-                new FinishedMessage(config)), new ReceiveAction(new FinishedMessage(config)));
+                new FinishedMessage(config)),
+            new ReceiveAction(new FinishedMessage(config)));
 
         // Delete after first finished message
         WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
@@ -250,10 +253,10 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testTruncatingWorkflowWithDynamicActions() {
-        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)), new ReceiveTillAction(
-            new ServerHelloDoneMessage()), new SendDynamicClientKeyExchangeAction(), new SendAction(
-            new ChangeCipherSpecMessage(config), new FinishedMessage(config)), new ReceiveAction(
-            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        trace.addTlsActions(new SendAction(new ClientHelloMessage(config)),
+            new ReceiveTillAction(new ServerHelloDoneMessage()), new SendDynamicClientKeyExchangeAction(),
+            new SendAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)),
+            new ReceiveAction(new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
 
         // Delete after first ClientKeyExchange message
         WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE, false);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -79,10 +80,8 @@ public class TlsAttackerSocketTest {
     public void testSend_String() throws IOException {
         socket.send("test");
         byte[] sentBytes = transportHandler.getSendByte();
-        assertArrayEquals(
-            sentBytes,
-            ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-                "test".getBytes(Charset.forName("ASCII"))));
+        assertArrayEquals(sentBytes, ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
+            "test".getBytes(Charset.forName("ASCII"))));
     }
 
     /**

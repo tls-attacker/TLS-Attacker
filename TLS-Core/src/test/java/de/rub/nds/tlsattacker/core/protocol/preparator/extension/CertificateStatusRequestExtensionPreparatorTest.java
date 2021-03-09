@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -34,25 +35,24 @@ public class CertificateStatusRequestExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new CertificateStatusRequestExtensionMessage();
-        preparator =
-            new CertificateStatusRequestExtensionPreparator(context.getChooser(), msg,
-                new CertificateStatusRequestExtensionSerializer(msg));
+        preparator = new CertificateStatusRequestExtensionPreparator(context.getChooser(), msg,
+            new CertificateStatusRequestExtensionSerializer(msg));
     }
 
     @Test
     public void testPreparator() {
-        context.getConfig().setCertificateStatusRequestExtensionRequestType(
-            certificateStatusRequestExtensionRequestType);
-        context.getConfig().setCertificateStatusRequestExtensionResponderIDList(
-            certificateStatusRequestExtensionResponderIDList);
-        context.getConfig().setCertificateStatusRequestExtensionRequestExtension(
-            certificateStatusRequestExtensionRequestExtension);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionRequestType(certificateStatusRequestExtensionRequestType);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionResponderIDList(certificateStatusRequestExtensionResponderIDList);
+        context.getConfig()
+            .setCertificateStatusRequestExtensionRequestExtension(certificateStatusRequestExtensionRequestExtension);
 
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), msg.getExtensionType().getValue());
-        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(), (long) msg
-            .getCertificateStatusRequestType().getValue());
+        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(),
+            (long) msg.getCertificateStatusRequestType().getValue());
         assertEquals(responderIDListLength, (long) msg.getResponderIDListLength().getValue());
         assertArrayEquals(certificateStatusRequestExtensionResponderIDList, msg.getResponderIDList().getValue());
         assertEquals(requestExtensionLength, (long) msg.getRequestExtensionLength().getValue());

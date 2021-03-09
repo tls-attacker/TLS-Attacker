@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -34,9 +35,8 @@ public class TokenBindingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TokenBindingExtensionMessage();
-        preparator =
-            new TokenBindingExtensionPreparator(context.getChooser(), message, new TokenBindingExtensionSerializer(
-                message));
+        preparator = new TokenBindingExtensionPreparator(context.getChooser(), message,
+            new TokenBindingExtensionSerializer(message));
         keyParameters = new LinkedList<>();
         keyParameters.add(TokenBindingKeyParameters.ECDSAP256);
     }

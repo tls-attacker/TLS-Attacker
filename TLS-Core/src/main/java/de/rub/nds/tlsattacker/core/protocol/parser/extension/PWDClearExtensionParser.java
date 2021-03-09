@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -37,7 +38,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
      * Reads the next bytes as the username length of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseUsernameLength(PWDClearExtensionMessage msg) {
         msg.setUsernameLength(parseIntField(ExtensionByteLength.PWD_NAME));
@@ -48,7 +49,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
      * Reads the next bytes as the username of the Extension and writes them in the message
      *
      * @param msg
-     * Message to write in
+     *            Message to write in
      */
     private void parseUsername(PWDClearExtensionMessage msg) {
         msg.setUsername(new String(parseByteArrayField(msg.getUsernameLength().getValue())));

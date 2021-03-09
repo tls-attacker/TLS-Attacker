@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl.drown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -110,8 +111,8 @@ public class ServerVerifyChecker {
         byte[] clientReadKey = makeKeyMaterial(context, "0");
         byte[] iv = context.getSSL2Iv();
 
-        return decryptRC2(clientReadKey, message.getEncryptedPart().getValue(), iv, message.getPaddingLength()
-            .getValue());
+        return decryptRC2(clientReadKey, message.getEncryptedPart().getValue(), iv,
+            message.getPaddingLength().getValue());
     }
 
     static byte[] decryptRC2(byte[] clientReadKey, byte[] encrypted, byte[] iv, int paddingLength) {
@@ -136,8 +137,8 @@ public class ServerVerifyChecker {
         ParametersWithIV cbcDesParams = new ParametersWithIV(new DESParameters(clientReadKey), iv);
         cbcDes.init(false, cbcDesParams);
 
-        return processEncryptedBlocks(cbcDes, message.getEncryptedPart().getValue(), message.getPaddingLength()
-            .getValue());
+        return processEncryptedBlocks(cbcDes, message.getEncryptedPart().getValue(),
+            message.getPaddingLength().getValue());
     }
 
     private static byte[] decryptCbcDesEde3(SSL2ServerVerifyMessage message, TlsContext context) {
@@ -152,18 +153,18 @@ public class ServerVerifyChecker {
         ParametersWithIV params = new ParametersWithIV(new KeyParameter(clientReadKey), iv);
         cbcDesEde.init(false, params);
 
-        return processEncryptedBlocks(cbcDesEde, message.getEncryptedPart().getValue(), message.getPaddingLength()
-            .getValue());
+        return processEncryptedBlocks(cbcDesEde, message.getEncryptedPart().getValue(),
+            message.getPaddingLength().getValue());
     }
 
     /**
      * Computes KEY-MATERIAL from information contained in the TLS context using MD5.
      *
      * @param tlsContext
-     * The TLS context to get information for key derivation from.
+     *                   The TLS context to get information for key derivation from.
      * @param index
-     * Additional characters to mix into key derivation. This will usually either be an empty String, or one of "0" and
-     * "1" for KEY-MATERIAL-0 resp. KEY-MATERIAL-1.
+     *                   Additional characters to mix into key derivation. This will usually either be an empty String,
+     *                   or one of "0" and "1" for KEY-MATERIAL-0 resp. KEY-MATERIAL-1.
      */
     private static byte[] makeKeyMaterial(TlsContext tlsContext, String index) {
         SSL2CipherSuite cipherSuite = tlsContext.getChooser().getSSL2CipherSuite();

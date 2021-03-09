@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -55,9 +56,9 @@ public class WorkflowTrace implements Serializable {
      * "tweaks", i.e. we have to manually restore important fields marked as XmlTransient. This problem arises because
      * the classes are configured for nice JAXB output, and not for copying/storing full objects.
      *
-     * @param orig
-     * the original WorkflowTrace object to copy
-     * @return a copy of the original WorkflowTrace
+     * @param  orig
+     *              the original WorkflowTrace object to copy
+     * @return      a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
         WorkflowTrace copy = null;
@@ -225,7 +226,7 @@ public class WorkflowTrace implements Serializable {
      * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connections
-     * new connection to use with this workflow trace
+     *                    new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -237,7 +238,7 @@ public class WorkflowTrace implements Serializable {
      * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connection
-     * new connection to add to the workflow trace
+     *                   new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
@@ -211,8 +212,8 @@ public class OCSPResponse {
         for (CertificateStatus certificateStatus : getCertificateStatusList()) {
             certificateCounter++;
             sb.append("\n Certificate Status No. ").append(certificateCounter);
-            sb.append("\n   Hash Algorithm: ").append(
-                ObjectIdentifierTranslator.translate(certificateStatus.getHashAlgorithmIdentifier()));
+            sb.append("\n   Hash Algorithm: ")
+                .append(ObjectIdentifierTranslator.translate(certificateStatus.getHashAlgorithmIdentifier()));
             sb.append("\n   Issuer Name Hash: ").append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
             sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
             sb.append("\n   Serial Number: ").append("0x").append(certificateStatus.getSerialNumber().toString(16));
@@ -229,8 +230,8 @@ public class OCSPResponse {
             sb.append("\n   Next Update: ").append(formatDate(certificateStatus.getTimeOfNextUpdate()));
         }
 
-        sb.append("\n Signature Algorithm: ").append(
-            ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
+        sb.append("\n Signature Algorithm: ")
+            .append(ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
 
         if (includeSignatureAndCertificate) {
             if (signature != null) {

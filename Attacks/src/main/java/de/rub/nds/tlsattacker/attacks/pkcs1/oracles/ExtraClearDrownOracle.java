@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -59,9 +60,9 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
      * Checks if the given message is accepted as valid ENCRYPTED-KEY-DATA of a Client Master Key message in an SSLv2
      * handshake. This is based on the "extra clear" oracle vulnerability in OpenSSL (CVE-2016-0703).
      *
-     * @param msg
-     * Potential RSA ciphertext to be checked
-     * @return True if the message was accepted, i.e. it is PKCS conforming
+     * @param  msg
+     *             Potential RSA ciphertext to be checked
+     * @return     True if the message was accepted, i.e. it is PKCS conforming
      */
     @Override
     public boolean checkPKCSConformity(byte[] msg) throws OracleException {
@@ -88,11 +89,12 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
      * relevant for figuring out the actual plaintext value of ENCRYPTED-KEY-DATA after finding a conformant ciphertext
      * in an "extra clear" oracle DROWN attack. See section 5.1 of the DROWN paper for the general idea.
      *
-     * @param ciphertext
-     * An RSA ciphertext representing valid ENCRYPTED-KEY-DATA
-     * @param knownPlaintext
-     * The already known portion of SECRET-KEY-DATA, i.e. the plaintext corresponding to `ciphertext`
-     * @return An additional byte of SECRET-KEY-DATA to be appended to `knownPlaintext`
+     * @param  ciphertext
+     *                        An RSA ciphertext representing valid ENCRYPTED-KEY-DATA
+     * @param  knownPlaintext
+     *                        The already known portion of SECRET-KEY-DATA, i.e. the plaintext corresponding to
+     *                        `ciphertext`
+     * @return                An additional byte of SECRET-KEY-DATA to be appended to `knownPlaintext`
      */
     public byte bruteForceKeyByte(byte[] ciphertext, byte[] knownPlaintext) {
         int pos = knownPlaintext.length;
@@ -144,9 +146,8 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
         encryptedKeyData.setModification(ByteArrayModificationFactory.explicitValue(encryptedKey));
         clientMasterKeyMessage.setEncryptedKeyData(encryptedKeyData);
 
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.SSL2_HELLO,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig)
+            .createWorkflowTrace(WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(clientMasterKeyMessage));
         trace.addTlsAction(new ReceiveAction(new SSL2ServerVerifyMessage()));
         result.state = new State(tlsConfig, trace);
@@ -154,9 +155,8 @@ public class ExtraClearDrownOracle extends Pkcs1Oracle {
         WorkflowExecutor workflowExecutor =
             WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), result.state);
         workflowExecutor.executeWorkflow();
-        result.serverVerifyMessage =
-            (SSL2ServerVerifyMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
+        result.serverVerifyMessage = (SSL2ServerVerifyMessage) WorkflowTraceUtil
+            .getFirstReceivedMessage(HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
 
         return result;
     }

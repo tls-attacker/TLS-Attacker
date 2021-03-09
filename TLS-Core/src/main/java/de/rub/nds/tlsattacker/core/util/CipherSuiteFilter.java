@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -20,7 +21,7 @@ public class CipherSuiteFilter {
      * establishing new workflows.
      * 
      * @param cipherSuites
-     * The CipherSuites that should be filtered
+     *                     The CipherSuites that should be filtered
      */
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,9 +26,9 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      * Constructor for the ClientHelloSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * Version of the Protocol
+     *                Version of the Protocol
      */
     public ClientHelloSerializer(ClientHelloMessage message, ProtocolVersion version) {
         super(message, version);

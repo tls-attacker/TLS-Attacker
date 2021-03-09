@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,9 +35,8 @@ public class KeySetGenerator {
 
     private static final int AEAD_IV_LENGTH = 12;
 
-    public static KeySet
-        generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
-            throws NoSuchAlgorithmException, CryptoException {
+    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
+        throws NoSuchAlgorithmException, CryptoException {
         if (protocolVersion.isTLS13()) {
             return getTls13KeySet(context, keySetType);
         } else {
@@ -88,11 +88,11 @@ public class KeySetGenerator {
         keySet.setServerWriteKey(HKDFunction.expandLabel(hkdfAlgorithm, serverSecret, HKDFunction.KEY, new byte[] {},
             cipherAlg.getKeySize()));
         LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
-        keySet.setClientWriteIv(HKDFunction.expandLabel(hkdfAlgorithm, clientSecret, HKDFunction.IV, new byte[] {},
-            AEAD_IV_LENGTH));
+        keySet.setClientWriteIv(
+            HKDFunction.expandLabel(hkdfAlgorithm, clientSecret, HKDFunction.IV, new byte[] {}, AEAD_IV_LENGTH));
         LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
-        keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgorithm, serverSecret, HKDFunction.IV, new byte[] {},
-            AEAD_IV_LENGTH));
+        keySet.setServerWriteIv(
+            HKDFunction.expandLabel(hkdfAlgorithm, serverSecret, HKDFunction.IV, new byte[] {}, AEAD_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
@@ -112,9 +112,8 @@ public class KeySetGenerator {
                 SSLUtils.calculateKeyBlockSSL3(masterSecret, seed, getSecretSetSize(protocolVersion, cipherSuite));
         } else {
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-            keyBlock =
-                PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.KEY_EXPANSION_LABEL,
-                    seed, getSecretSetSize(protocolVersion, cipherSuite));
+            keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, getSecretSetSize(protocolVersion, cipherSuite));
         }
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
@@ -147,9 +146,8 @@ public class KeySetGenerator {
 
         int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
         byte[] emptySecret = {};
-        byte[] ivBlock =
-            PseudoRandomFunction.compute(prfAlgorithm, emptySecret, PseudoRandomFunction.IV_BLOCK_LABEL,
-                clientAndServerRandom, 2 * blockSize);
+        byte[] ivBlock = PseudoRandomFunction.compute(prfAlgorithm, emptySecret, PseudoRandomFunction.IV_BLOCK_LABEL,
+            clientAndServerRandom, 2 * blockSize);
         keySet.setClientWriteIv(Arrays.copyOfRange(ivBlock, 0, blockSize));
         keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
     }

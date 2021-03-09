@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -28,9 +29,8 @@ public class PasswordSaltExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PasswordSaltExtensionMessage();
-        preparator =
-            new PasswordSaltExtensionPreparator(context.getChooser(), message, new PasswordSaltExtensionSerializer(
-                message));
+        preparator = new PasswordSaltExtensionPreparator(context.getChooser(), message,
+            new PasswordSaltExtensionSerializer(message));
     }
 
     @Test

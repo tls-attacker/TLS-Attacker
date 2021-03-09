@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -221,15 +222,15 @@ public class WorkflowTraceMutator {
             } else if (!(action instanceof SendDynamicServerCertificateAction)
                 && !(action instanceof SendDynamicClientKeyExchangeAction)
                 && !(action instanceof SendDynamicServerKeyExchangeAction)) {
-                LOGGER
-                    .warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
+                LOGGER.warn(
+                    "Unsupported action for truncating operation, actions after the selected action are still being deleted.");
             }
         } else if (action instanceof ReceivingAction) {
             if (action instanceof ReceiveAction) {
                 messages = ((ReceiveAction) action).getExpectedMessages();
             } else if (!(action instanceof ReceiveTillAction)) {
-                LOGGER
-                    .warn("Unsupported action for truncating operation, actions after the selected action are still being deleted.");
+                LOGGER.warn(
+                    "Unsupported action for truncating operation, actions after the selected action are still being deleted.");
             }
         }
 
@@ -246,7 +247,7 @@ public class WorkflowTraceMutator {
                     break;
                 }
             } else {
-                if (i instanceof TlsMessage &&  ((TlsMessage) i).getProtocolMessageType() == type) {
+                if (i instanceof TlsMessage && ((TlsMessage) i).getProtocolMessageType() == type) {
                     messageIndex = messages.indexOf(i);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
@@ -314,13 +315,13 @@ public class WorkflowTraceMutator {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
     }
 
-    public static void
-        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type, Boolean untilLast) {
+    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull HandshakeMessageType type,
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
-    public static void
-        truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type, Boolean untilLast) {
+    public static void truncateAfter(@Nonnull WorkflowTrace trace, @Nonnull ProtocolMessageType type,
+        Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 

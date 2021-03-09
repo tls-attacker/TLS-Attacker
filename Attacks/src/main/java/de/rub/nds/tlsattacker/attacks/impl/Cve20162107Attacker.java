@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.VariableModification;
@@ -140,15 +141,17 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
         if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
-            LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
-                .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
-                .getValue(), am.getDescription().getValue());
+            LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
+                AlertLevel.getAlertLevel(am.getLevel().getValue()),
+                AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel().getValue(),
+                am.getDescription().getValue());
         } else {
             LOGGER.info("  Last protocol message: {}", tlsMessage.getProtocolMessageType());
         }
 
         if (tlsMessage.getProtocolMessageType() == ProtocolMessageType.ALERT
-            && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
+            && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue())
+                == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
@@ -158,16 +161,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Record createRecordWithBadPadding() {
-        byte[] plain =
-            new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
+        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+            (byte) 255, (byte) 255, (byte) 255 };
         Record r = new Record();
         r.prepareComputations();
         ModifiableByteArray plainData = new ModifiableByteArray();

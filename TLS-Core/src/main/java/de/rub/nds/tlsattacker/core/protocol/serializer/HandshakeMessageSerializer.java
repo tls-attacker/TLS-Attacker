@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  * Abstract Serializer for HandshakeMessages
  *
  * @param <T>
- * Type of the HandshakeMessages to serialize
+ *            Type of the HandshakeMessages to serialize
  */
 public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
@@ -34,9 +35,9 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      * Constructor for the HandshakeMessageSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * Version of the Protocol
+     *                Version of the Protocol
      */
     public HandshakeMessageSerializer(T message, ProtocolVersion version) {
         super(message, version);

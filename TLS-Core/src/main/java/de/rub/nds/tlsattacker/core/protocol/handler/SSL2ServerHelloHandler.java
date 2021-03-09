@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -52,10 +53,10 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
         LOGGER.debug("SSL2 bytesToParse:" + ArrayConverter.bytesToHexString(bytesToParse, false));
 
         try {
-            byte[] concatenated =
-                ArrayConverter.concatenate(ArrayConverter.intToBytes(lengthBytes
-                    + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
-                    .intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse);
+            byte[] concatenated = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
+                    HandshakeByteLength.CERTIFICATES_LENGTH),
+                ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse);
             LOGGER.debug("SSL2 concatenated:" + ArrayConverter.bytesToHexString(concatenated, false));
             ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
             return Certificate.parse(stream);

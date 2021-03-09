@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,8 +47,8 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         try {
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                 HandshakeByteLength.PSK_LENGTH));
-            outputStream.write(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, chooser.getConfig()
-                .getDefaultPSKKey().length));
+            outputStream.write(
+                ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, chooser.getConfig().getDefaultPSKKey().length));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                 HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());

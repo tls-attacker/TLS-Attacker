@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -25,14 +26,12 @@ public class UnknownParserTest {
      */
     @Test
     public void testParse() {
-        parser =
-            new UnknownMessageParser(0, new byte[] { 0, 1, 2, 3 }, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN,
-                config);
+        parser = new UnknownMessageParser(0, new byte[] { 0, 1, 2, 3 }, ProtocolVersion.TLS12,
+            ProtocolMessageType.UNKNOWN, config);
         UnknownMessage message = parser.parse();
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, message.getCompleteResultingMessage().getValue());
-        parser =
-            new UnknownMessageParser(1, new byte[] { 0, 1, 2, 3 }, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN,
-                config);
+        parser = new UnknownMessageParser(1, new byte[] { 0, 1, 2, 3 }, ProtocolVersion.TLS12,
+            ProtocolMessageType.UNKNOWN, config);
         message = parser.parse();
         assertArrayEquals(new byte[] { 1, 2, 3 }, message.getCompleteResultingMessage().getValue());
     }

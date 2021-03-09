@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.cca;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,8 +31,8 @@ public class CcaCertificateGenerator {
 
     /**
      *
-     * @param ccaCertificateManager
-     * @param ccaCertificateType
+     * @param  ccaCertificateManager
+     * @param  ccaCertificateType
      * @return
      */
     public static CertificateMessage generateCertificate(CcaCertificateManager ccaCertificateManager,
@@ -41,9 +42,8 @@ public class CcaCertificateGenerator {
             switch (ccaCertificateType) {
                 case CLIENT_INPUT:
                     List<CertificatePair> certificatePairsList = new LinkedList<>();
-                    CertificatePair certificatePair =
-                        new CertificatePair(ccaCertificateManager.getCertificateChain(ccaCertificateType)
-                            .getEncodedCertificates().get(0));
+                    CertificatePair certificatePair = new CertificatePair(
+                        ccaCertificateManager.getCertificateChain(ccaCertificateType).getEncodedCertificates().get(0));
                     certificatePairsList.add(certificatePair);
                     certificateMessage.setCertificatesList(certificatePairsList);
                     break;
@@ -150,18 +150,16 @@ public class CcaCertificateGenerator {
         if (certificate != null) {
             try {
                 certificateKeyPair =
-                    new CertificateKeyPair(certificate,
-                        (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
+                    new CertificateKeyPair(certificate, (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
                         (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
             } catch (IOException ioe) {
                 LOGGER.error("IOE while creating CertificateKeyPair");
                 return null;
             }
         } else {
-            certificateKeyPair =
-                new CertificateKeyPair(encodedLeafCertificate,
-                    (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
-                    (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
+            certificateKeyPair = new CertificateKeyPair(encodedLeafCertificate,
+                (PrivateKey) ccaCertificateChain.getLeafCertificatePrivateKey(),
+                (PublicKey) ccaCertificateChain.getLeafCertificatePublicKey());
 
         }
         certificateMessage.setCertificateKeyPair(certificateKeyPair);
@@ -171,10 +169,10 @@ public class CcaCertificateGenerator {
 
     private static Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream =
-                new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter.intToBytes(lengthBytes
-                    + HandshakeByteLength.CERTIFICATES_LENGTH, HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter
-                    .intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
+                    HandshakeByteLength.CERTIFICATES_LENGTH),
+                ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (Exception e) {
             return null;

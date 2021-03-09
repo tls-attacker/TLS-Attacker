@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
@@ -71,13 +72,13 @@ public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> 
         workflowTrace.addTlsAction(new SendDynamicClientKeyExchangeAction(connection.getAlias()));
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT,
-            messages));
+        workflowTrace
+            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.CLIENT, messages));
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(tlsConfig));
         messages.add(new FinishedMessage(tlsConfig));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER,
-            messages));
+        workflowTrace
+            .addTlsAction(MessageActionFactory.createAction(tlsConfig, connection, ConnectionEndType.SERVER, messages));
 
         State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor =

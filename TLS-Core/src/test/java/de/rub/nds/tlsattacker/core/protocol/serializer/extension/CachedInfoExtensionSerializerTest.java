@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -64,9 +65,8 @@ public class CachedInfoExtensionSerializerTest {
         msg.setExtensionLength(extensionLength);
         msg.setCachedInfoLength(cachedInfoLength);
 
-        CachedInfoExtensionPreparator preparator =
-            new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
-                new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
+            new CachedInfoExtensionSerializer(msg));
         preparator.prepare();
 
         assertArrayEquals(extensionBytes, serializer.serialize());

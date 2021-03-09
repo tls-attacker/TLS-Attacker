@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
@@ -46,20 +47,19 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
 
-    @Parameter(names = "-encrypted_premaster_secret", description = "Encrypted premaster secret from the RSA client "
-        + "key exchange message. You can retrieve this message from the Wireshark traffic. Find the client key "
-        + "exchange message, right click on the \"EncryptedPremaster\" value and copy this value as a Hex Stream.")
+    @Parameter(names = "-encrypted_premaster_secret",
+        description = "Encrypted premaster secret from the RSA client "
+            + "key exchange message. You can retrieve this message from the Wireshark traffic. Find the client key "
+            + "exchange message, right click on the \"EncryptedPremaster\" value and copy this value as a Hex Stream.")
     private String encryptedPremasterSecret;
 
     @Parameter(names = "-type", description = "Type of the Bleichenbacher test. FAST contains only basic server test "
         + "queries. FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
 
-    @Parameter(
-        names = "-msgPkcsConform",
-        description = "Used by the real Bleichenbacher attack. Indicates whether the "
-            + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
-            + "with 0x00 0x02).", arity = 1)
+    @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the "
+        + "original message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts "
+        + "with 0x00 0x02).", arity = 1)
     private boolean msgPkcsConform = true;
 
     @ParametersDelegate

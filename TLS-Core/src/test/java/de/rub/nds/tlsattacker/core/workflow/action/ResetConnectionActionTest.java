@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -47,8 +48,8 @@ public class ResetConnectionActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(
-            new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+        tlsContext.getRecordLayer()
+            .setRecordCipher(new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         tlsContext.getRecordLayer().updateEncryptionCipher();
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);

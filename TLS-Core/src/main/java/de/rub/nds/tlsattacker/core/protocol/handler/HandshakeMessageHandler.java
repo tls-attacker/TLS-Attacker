@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -20,10 +21,10 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @param <HandshakeMessageT>
- * The ProtocolMessage that should be handled
+ *                            The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage> extends
-    TlsMessageHandler<HandshakeMessageT> {
+public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
+    extends TlsMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);

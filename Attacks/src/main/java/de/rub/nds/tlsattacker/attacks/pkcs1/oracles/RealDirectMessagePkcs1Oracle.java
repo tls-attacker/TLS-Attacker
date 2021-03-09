@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
@@ -103,8 +104,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
             return fingerprint;
         } else {
-            LOGGER
-                .debug("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.debug(
+                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
     }

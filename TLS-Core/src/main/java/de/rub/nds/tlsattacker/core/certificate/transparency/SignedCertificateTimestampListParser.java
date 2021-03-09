@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.protocol.Parser;
@@ -20,7 +21,7 @@ public class SignedCertificateTimestampListParser extends Parser<SignedCertifica
      * Constructor for the Parser
      *
      * @param startposition
-     * Position in the array from which the Parser should start working
+     *                      Position in the array from which the Parser should start working
      * @param array
      */
     public SignedCertificateTimestampListParser(int startposition, byte[] array, Certificate certificateChain,

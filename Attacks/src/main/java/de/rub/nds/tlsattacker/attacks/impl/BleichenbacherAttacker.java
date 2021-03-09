@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -83,8 +84,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
-     * @param type
-     * @param encryptedPMS
+     * @param  type
+     * @param  encryptedPMS
      * @return
      */
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
@@ -161,9 +162,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             return null;
         }
         LOGGER.info("Fetched the following server public key: " + publicKey);
-        List<Pkcs1Vector> pkcs1Vectors =
-            Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
-                tlsConfig.getDefaultHighestClientProtocolVersion());
+        List<Pkcs1Vector> pkcs1Vectors = Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType(),
+            tlsConfig.getDefaultHighestClientProtocolVersion());
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
         CONSOLE
@@ -175,7 +175,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
-     * @param bleichenbacherVectorMap
+     * @param  bleichenbacherVectorMap
      * @return
      */
     public EqualityError getEqualityError(List<VectorResponse> bleichenbacherVectorMap) {
@@ -208,9 +208,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         List<State> stateList = new LinkedList<>();
         List<StateVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
-            WorkflowTrace trace =
-                BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
-                    pkcs1Vector.getEncryptedValue());
+            WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, bbWorkflowType,
+                pkcs1Vector.getEncryptedValue());
             State state = new State(tlsConfig, trace);
             stateList.add(state);
             stateVectorPairList.add(new StateVectorPair(state, pkcs1Vector));
@@ -242,8 +241,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(stateVectorPair.getState());
             bleichenbacherVectorMap.add(new VectorResponse(stateVectorPair.getVector(), fingerprint));
         } else {
-            LOGGER
-                .warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.warn(
+                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         clearConnections(stateVectorPair.getState());
 
@@ -257,8 +256,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             return fingerprint;
         } else {
             clearConnections(state);
-            LOGGER
-                .warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.warn(
+                "Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
     }
@@ -282,8 +281,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
 
         if (config.getEncryptedPremasterSecret() == null) {
-            throw new ConfigurationException("You have to set the encrypted premaster secret you are "
-                + "going to decrypt");
+            throw new ConfigurationException(
+                "You have to set the encrypted premaster secret you are " + "going to decrypt");
         }
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
@@ -292,9 +291,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                 + "is not equal to the server public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle =
-            new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(), extractValidFingerprint(publicKey,
-                tlsConfig.getDefaultHighestClientProtocolVersion()), null, vulnerableType);
+        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(),
+            extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
+            vulnerableType);
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
@@ -302,8 +301,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey, ProtocolVersion version) {
-        return getFingerprint(vulnerableType, Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version)
-            .getEncryptedValue());
+        return getFingerprint(vulnerableType,
+            Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, version).getEncryptedValue());
     }
 
     /**

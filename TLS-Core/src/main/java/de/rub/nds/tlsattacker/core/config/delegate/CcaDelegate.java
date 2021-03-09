@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -25,13 +26,13 @@ public class CcaDelegate extends Delegate {
     @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates "
         + "for CCA test cases. Required for further CCA tests.")
     private String certificateInputDirectory;
-    @Parameter(names = "-certificateOutputDirectory",
-        description = "Path to directory to which certificates generated "
-            + "for test cases are written. Required for further CCA tests.")
+    @Parameter(names = "-certificateOutputDirectory", description = "Path to directory to which certificates generated "
+        + "for test cases are written. Required for further CCA tests.")
     private String certificateOutputDirectory;
-    @Parameter(names = "-keyDirectory", description = "Path to directory containing pre generated keys for "
-        + "certificates that will be generated, as well as the keys to the root certificates. Keys for root "
-        + "certificates need to have the same name as the certificate. Required for further CCA tests.")
+    @Parameter(names = "-keyDirectory",
+        description = "Path to directory containing pre generated keys for "
+            + "certificates that will be generated, as well as the keys to the root certificates. Keys for root "
+            + "certificates need to have the same name as the certificate. Required for further CCA tests.")
     private String keyDirectory;
 
     public CcaDelegate() {

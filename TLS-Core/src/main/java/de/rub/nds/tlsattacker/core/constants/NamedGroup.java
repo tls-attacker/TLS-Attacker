@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -217,8 +218,8 @@ public enum NamedGroup {
         }
 
         if (sourceBytes.length % NamedGroup.LENGTH != 0) {
-            throw new IllegalArgumentException("Failed to convert byte array. "
-                + "Source array size is not a multiple of destination type size.");
+            throw new IllegalArgumentException(
+                "Failed to convert byte array. " + "Source array size is not a multiple of destination type size.");
         }
 
         int pointer = 0;

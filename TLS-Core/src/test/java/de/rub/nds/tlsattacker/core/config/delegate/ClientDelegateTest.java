@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -180,7 +181,8 @@ public class ClientDelegateTest {
         checkHostIsAsExpected("hackmanit.de:123", InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("hackmanit.de:123/", InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("hackmanit.de:123/test.php", InetAddress.getByName("hackmanit.de").getHostName(), 123);
-        checkHostIsAsExpected("hackmanit.de:123/test.php?a=b", InetAddress.getByName("hackmanit.de").getHostName(), 123);
+        checkHostIsAsExpected("hackmanit.de:123/test.php?a=b", InetAddress.getByName("hackmanit.de").getHostName(),
+            123);
         checkHostIsAsExpected("hackmanit.de:123/test.php?a=b#", InetAddress.getByName("hackmanit.de").getHostName(),
             123);
         checkHostIsAsExpected("http://hackmanit.de", InetAddress.getByName("hackmanit.de").getHostName(), 443);
@@ -188,19 +190,19 @@ public class ClientDelegateTest {
         checkHostIsAsExpected("http://hackmanit.de:123/", InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("http://hackmanit.de:123/test.php", InetAddress.getByName("hackmanit.de").getHostName(),
             123);
-        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b", InetAddress.getByName("hackmanit.de")
-            .getHostName(), 123);
-        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b#", InetAddress.getByName("hackmanit.de")
-            .getHostName(), 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b",
+            InetAddress.getByName("hackmanit.de").getHostName(), 123);
+        checkHostIsAsExpected("http://hackmanit.de:123/test.php?a=b#",
+            InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("https://hackmanit.de", InetAddress.getByName("hackmanit.de").getHostName(), 443);
         checkHostIsAsExpected("https://hackmanit.de:123", InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("https://hackmanit.de:123/", InetAddress.getByName("hackmanit.de").getHostName(), 123);
         checkHostIsAsExpected("https://hackmanit.de:123/test.php", InetAddress.getByName("hackmanit.de").getHostName(),
             123);
-        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b", InetAddress.getByName("hackmanit.de")
-            .getHostName(), 123);
-        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b#", InetAddress.getByName("hackmanit.de")
-            .getHostName(), 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b",
+            InetAddress.getByName("hackmanit.de").getHostName(), 123);
+        checkHostIsAsExpected("https://hackmanit.de:123/test.php?a=b#",
+            InetAddress.getByName("hackmanit.de").getHostName(), 123);
 
     }
 

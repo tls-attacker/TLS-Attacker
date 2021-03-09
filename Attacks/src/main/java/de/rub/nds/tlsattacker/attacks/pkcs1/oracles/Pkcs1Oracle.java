@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.OracleException;
@@ -93,9 +94,9 @@ public abstract class Pkcs1Oracle {
     /**
      * Checks for PKCS conformity - 00 02 padding 00 pms
      *
-     * @param msg
-     * Encrypted message to check for conformity
-     * @return True if PKCS conforming, else false
+     * @param  msg
+     *             Encrypted message to check for conformity
+     * @return     True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
 

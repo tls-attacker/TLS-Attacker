@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -34,7 +35,8 @@ public class ServerHelloDoneSerializerTest {
     private int length;
     private ProtocolVersion version;
 
-    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
+    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length,
+        ProtocolVersion version) {
         this.message = message;
         this.start = 0;
         this.expectedPart = message;

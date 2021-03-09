@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -34,8 +35,8 @@ public class PasswordSaltExtensionSerializerTest {
     private PasswordSaltExtensionSerializer serializer;
     private PasswordSaltExtensionMessage msg;
 
-    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type,
-        int extensionLength, int saltLength, byte[] salt) {
+    public PasswordSaltExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
+        int saltLength, byte[] salt) {
         this.expectedBytes = expectedBytes;
         this.start = start;
         this.type = type;

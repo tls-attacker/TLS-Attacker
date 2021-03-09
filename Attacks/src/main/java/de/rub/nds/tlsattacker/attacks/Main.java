@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -175,14 +176,12 @@ public class Main {
                 attacker = new SimpleMitmProxy(simpleMITMProxy, simpleMITMProxy.createConfig());
                 break;
             case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
-                attacker =
-                    new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
-                        pskBruteForcerAttackClientTest.createConfig());
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
+                    pskBruteForcerAttackClientTest.createConfig());
                 break;
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
-                attacker =
-                    new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
-                        pskBruteForcerAttackServerTest.createConfig());
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
+                    pskBruteForcerAttackServerTest.createConfig());
                 break;
             case GeneralDrownCommandConfig.COMMAND:
                 attacker = new GeneralDrownAttacker(generalDrownConfig, generalDrownConfig.createConfig());

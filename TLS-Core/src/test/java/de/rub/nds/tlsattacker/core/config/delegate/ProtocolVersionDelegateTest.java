@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
@@ -79,8 +80,10 @@ public class ProtocolVersionDelegateTest {
         args[0] = "-version";
         args[1] = "TLS12";
         assertThat(config.getHighestProtocolVersion(), equalTo(ProtocolVersion.SSL2));
-        assertThat(config.getDefaultClientConnection().getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
-        assertThat(config.getDefaultServerConnection().getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
+        assertThat(config.getDefaultClientConnection().getTransportHandlerType(),
+            equalTo(TransportHandlerType.EAP_TLS));
+        assertThat(config.getDefaultServerConnection().getTransportHandlerType(),
+            equalTo(TransportHandlerType.EAP_TLS));
 
         jcommander.parse(args);
         delegate.applyDelegate(config);

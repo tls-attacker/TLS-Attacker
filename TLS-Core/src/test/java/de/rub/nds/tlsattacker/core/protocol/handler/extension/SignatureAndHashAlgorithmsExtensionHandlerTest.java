@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
@@ -39,8 +40,10 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         msg.setSignatureAndHashAlgorithms(new byte[] { 0, 0 });
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm() == SignatureAlgorithm.ANONYMOUS);
+        assertTrue(
+            context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm()
+            == SignatureAlgorithm.ANONYMOUS);
     }
 
     /**
@@ -48,7 +51,8 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SignatureAndHashAlgorithmsExtensionParser);
+        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0,
+            context.getConfig()) instanceof SignatureAndHashAlgorithmsExtensionParser);
     }
 
     /**
@@ -56,7 +60,8 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionPreparator);
+        assertTrue(handler.getPreparator(
+            new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionPreparator);
     }
 
     /**
@@ -64,7 +69,8 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionSerializer);
+        assertTrue(handler.getSerializer(
+            new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionSerializer);
     }
 
 }

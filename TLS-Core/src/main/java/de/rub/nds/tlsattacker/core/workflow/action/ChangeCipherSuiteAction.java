@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -60,8 +61,8 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         tlsContext.setSelectedCipherSuite(newValue);
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
-        LOGGER.info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to "
-            + newValue.name());
+        LOGGER
+            .info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to " + newValue.name());
         setExecuted(true);
     }
 

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
@@ -62,7 +63,8 @@ public class SessionTicketTlsExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionPreparator);
+        assertTrue(handler
+            .getPreparator(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionPreparator);
     }
 
     /**
@@ -70,7 +72,8 @@ public class SessionTicketTlsExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionSerializer);
+        assertTrue(handler
+            .getSerializer(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionSerializer);
     }
 
 }

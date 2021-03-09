@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -28,8 +29,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     private boolean retryFailedSocketInitialization = false;
 
     public ClientTcpTransportHandler(Connection connection) {
-        this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(), connection
-            .getIp(), connection.getPort());
+        this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(),
+            connection.getIp(), connection.getPort());
     }
 
     public ClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {

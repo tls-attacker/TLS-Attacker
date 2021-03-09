@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -72,13 +73,11 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean checkSecretCorrectness(Point ecPoint, BigInteger secret) {
 
-        WorkflowTrace trace =
-            new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
-                RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+            RunningModeType.CLIENT);
 
-        ECDHClientKeyExchangeMessage message =
-            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+            .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         message.prepareComputations();
 
         // modify public point base X coordinate
@@ -144,9 +143,8 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         workflowExecutor.executeWorkflow();
 
-        ECDHClientKeyExchangeMessage message =
-            (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+            .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates
         BigInteger x = message.getComputations().getPublicKeyX().getValue();

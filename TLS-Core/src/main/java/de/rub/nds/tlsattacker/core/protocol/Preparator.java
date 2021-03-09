@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T>
- * The Object that should be prepared
+ *            The Object that should be prepared
  */
 public abstract class Preparator<T> {
 

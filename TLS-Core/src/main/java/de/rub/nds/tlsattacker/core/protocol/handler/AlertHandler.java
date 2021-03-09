@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -27,7 +28,8 @@ public class AlertHandler extends TlsMessageHandler<AlertMessage> {
 
     @Override
     public AlertParser getParser(byte[] message, int pointer) {
-        return new AlertParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(), tlsContext.getConfig());
+        return new AlertParser(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
     }
 
     @Override

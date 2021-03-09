@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.dtls.MessageFragmenter;
@@ -16,13 +17,13 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @param <MessageT>
- * The ProtocolMessage that should be handled
+ *                   The ProtocolMessage that should be handled
  */
 public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends ProtocolMessageHandler<MessageT> {
 
     /**
      * @param tlsContext
-     * The Context which should be Adjusted with this Handler
+     *                   The Context which should be Adjusted with this Handler
      */
     public TlsMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -41,8 +42,8 @@ public abstract class TlsMessageHandler<MessageT extends TlsMessage> extends Pro
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                new MessageFragmenter(tlsContext.getConfig().getDtlsMaximumFragmentLength()).wrapInSingleFragment(
-                    handshakeMessage, tlsContext);
+                new MessageFragmenter(tlsContext.getConfig().getDtlsMaximumFragmentLength())
+                    .wrapInSingleFragment(handshakeMessage, tlsContext);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

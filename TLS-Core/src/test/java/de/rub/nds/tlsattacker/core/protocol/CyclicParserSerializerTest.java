@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -78,9 +79,8 @@ public class CyclicParserSerializerTest {
                     try {
                         Constructor tempConstructor = getMessageConstructor(protocolMessageClass);
                         if (tempConstructor != null) {
-                            message =
-                                (ProtocolMessage) getMessageConstructor(protocolMessageClass).newInstance(
-                                    Config.createConfig());
+                            message = (ProtocolMessage) getMessageConstructor(protocolMessageClass)
+                                .newInstance(Config.createConfig());
                         } else {
                             fail("Could not find Constructor for " + testName);
                         }
@@ -95,9 +95,8 @@ public class CyclicParserSerializerTest {
                         context.getConfig().setHighestProtocolVersion(version);
                         context.getConfig().setDefaultHighestClientProtocolVersion(version);
                         config = context.getConfig();
-                        preparator =
-                            (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
-                                context.getChooser(), message);
+                        preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2)
+                            .newInstance(context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create preparator instance for " + testName);
@@ -111,18 +110,16 @@ public class CyclicParserSerializerTest {
                     }
                     Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
                     try {
-                        serializer =
-                            (ProtocolMessageSerializer) getConstructor(serializerClass, 2)
-                                .newInstance(message, version);
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(message,
+                            version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create serializer instance for " + testName);
                     }
                     byte[] serializedMessage = serializer.serialize();
                     try {
-                        parser =
-                            (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
-                                serializedMessage, version, config);
+                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                            serializedMessage, version, config);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);
@@ -134,9 +131,8 @@ public class CyclicParserSerializerTest {
                         continue;
                     }
                     try {
-                        serializer =
-                            (ProtocolMessageSerializer) getConstructor(serializerClass, 2)
-                                .newInstance(message, version);
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(message,
+                            version);
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException ex) {
                         fail("Could not create serializer instance for " + testName);
@@ -208,9 +204,8 @@ public class CyclicParserSerializerTest {
                     }
 
                     try {
-                        preparator =
-                            (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
-                                context.getChooser(), message);
+                        preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2)
+                            .newInstance(context.getChooser(), message);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         ex.printStackTrace();
@@ -225,18 +220,16 @@ public class CyclicParserSerializerTest {
                     }
                     Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
                     try {
-                        serializer =
-                            (ProtocolMessageSerializer) getConstructor(serializerClass, 2)
-                                .newInstance(message, version);
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(message,
+                            version);
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create serializer instance for " + testName);
                     }
                     byte[] serializedMessage = serializer.serialize();
                     try {
-                        parser =
-                            (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
-                                serializedMessage, version, context.getConfig());
+                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 4).newInstance(0,
+                            serializedMessage, version, context.getConfig());
                     } catch (SecurityException | InstantiationException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException ex) {
                         fail("Could not create parser instance for " + testName);
@@ -248,9 +241,8 @@ public class CyclicParserSerializerTest {
                         continue;
                     }
                     try {
-                        serializer =
-                            (ProtocolMessageSerializer) getConstructor(serializerClass, 2)
-                                .newInstance(message, version);
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(message,
+                            version);
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException ex) {
                         fail("Could not create serializer instance for " + testName);

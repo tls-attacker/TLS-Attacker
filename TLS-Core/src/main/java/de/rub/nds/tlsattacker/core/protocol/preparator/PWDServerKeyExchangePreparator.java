@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -66,9 +67,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PasswordElement.x: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX()
-                .getData())));
+        LOGGER.debug("PasswordElement.x: " + ArrayConverter
+            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -179,9 +179,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement =
-            PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(), element, chooser
-                .getConfig().getDefaultSelectedPointFormat());
+        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
+            element, chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
         LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
     }

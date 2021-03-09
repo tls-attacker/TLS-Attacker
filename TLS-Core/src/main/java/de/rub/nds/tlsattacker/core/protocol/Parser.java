@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * Abstract Parser class which can be used to read a byte array.
  *
  * @param <T>
- * Type of the Object that should be parsed
+ *            Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
 
@@ -50,17 +51,17 @@ public abstract class Parser<T> {
      * Constructor for the Parser
      *
      * @param startposition
-     * Position in the array from which the Parser should start working
+     *                      Position in the array from which the Parser should start working
      * @param array
-     * Array that should be parsed
+     *                      Array that should be parsed
      */
     public Parser(int startposition, byte[] array) {
         this.startPoint = startposition;
         this.pointer = startposition;
         this.array = array;
         if (startposition > array.length) {
-            throw new ParserException("Cannot create parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
-                + array.length);
+            throw new ParserException(
+                "Cannot create parser beyond pointer. Pointer:" + pointer + " ArrayLength:" + array.length);
         }
         this.context = new Stack<>();
     }
@@ -69,9 +70,9 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a byte[]. Throws a ParserException if the number of
      * bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length
-     * Number of bytes to be parsed
-     * @return A subByteArray of according size from the Array
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        A subByteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
         LOGGER.trace("Request to parse {} bytes with pointer at {}", length, getPointer());
@@ -97,9 +98,9 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException if the number of
      * bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length
-     * Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        An integer representation of the subByteArray
      */
     protected int parseIntField(int length) {
         if (length == 0) {
@@ -112,9 +113,9 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a ParserException if
      * the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length
-     * Number of bytes to be parsed
-     * @return A BigInteger representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        A BigInteger representation of the subByteArray
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
@@ -127,9 +128,9 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a byte. Throws a ParserException if the number of
      * bytes cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length
-     * Number of bytes to be parsed
-     * @return An integer representation of the subByteArray
+     * @param  length
+     *                Number of bytes to be parsed
+     * @return        An integer representation of the subByteArray
      */
     protected byte parseByteField(int length) {
         if (length == 0) {
@@ -178,7 +179,7 @@ public abstract class Parser<T> {
      * Set the current position of the pointer in the array
      *
      * @param pointer
-     * The new position of the pointer in the array
+     *                The new position of the pointer in the array
      */
     public void setPointer(int pointer) {
         this.pointer = pointer;
@@ -205,9 +206,9 @@ public abstract class Parser<T> {
     /**
      * Checks if there are at least count bytes left to read
      *
-     * @param count
-     * Number of bytes to check for
-     * @return True if there are at least count bytes left to read
+     * @param  count
+     *               Number of bytes to check for
+     * @return       True if there are at least count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;

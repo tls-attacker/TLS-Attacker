@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -48,12 +49,12 @@ public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<Serv
             if (message.getCertificateTypes().getValue().length != 1) {
                 LOGGER.warn("Invalid ServerCertificateType extension. Not adjusting context");
             } else {
-                context.setSelectedServerCertificateType(CertificateType.getCertificateType(message
-                    .getCertificateTypes().getValue()[0]));
+                context.setSelectedServerCertificateType(
+                    CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
             }
         } else {
-            context.setServerCertificateTypeDesiredTypes(CertificateType.getCertificateTypesAsList(message
-                .getCertificateTypes().getValue()));
+            context.setServerCertificateTypeDesiredTypes(
+                CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
         }
     }
 

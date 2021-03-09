@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -113,9 +114,8 @@ public class FindReceivedProtocolMessageActionTest {
             LOGGER.info("Killing server...");
             tlsServer.shutdown();
             LOGGER.info("Done.");
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-            | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             fail();
         }
 

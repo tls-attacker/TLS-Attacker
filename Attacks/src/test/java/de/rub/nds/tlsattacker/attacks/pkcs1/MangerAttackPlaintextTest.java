@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -114,9 +115,8 @@ public class MangerAttackPlaintextTest {
             cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
             byte[] message = cipher.doFinal(cipherBytes);
 
-            Pkcs1Oracle oracle =
-                new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00,
-                    cipher.getBlockSize());
+            Pkcs1Oracle oracle = new StdPlainPkcs1Oracle(keyPair.getPublic(), TestPkcs1Oracle.OracleType.MANGER_0x00,
+                cipher.getBlockSize());
 
             // we are handling plaintexts, so we insert raw message there
             Manger attacker = new Manger(message, oracle);

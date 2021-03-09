@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -88,10 +89,10 @@ public class RecordedWorkflowTest {
      * @throws java.security.SignatureException
      */
     // TODO
-    public void testFullWorkflowDeterministicWorkflow() throws IOException, NoSuchAlgorithmException,
-        KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException,
-        KeyManagementException, InvalidKeyException, NoSuchProviderException, SignatureException,
-        OperatorCreationException, KeyManagementException {
+    public void testFullWorkflowDeterministicWorkflow()
+        throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
+        UnrecoverableKeyException, KeyManagementException, KeyManagementException, InvalidKeyException,
+        NoSuchProviderException, SignatureException, OperatorCreationException, KeyManagementException {
         Config c = Config.createConfig();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

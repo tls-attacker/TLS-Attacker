@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,9 +31,8 @@ public class KeySharePairPreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        entry =
-            new KeyShareEntry(NamedGroup.ECDH_X25519, new BigInteger(
-                "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF", 16));
+        entry = new KeyShareEntry(NamedGroup.ECDH_X25519,
+            new BigInteger("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF", 16));
         preparator = new KeyShareEntryPreparator(context.getChooser(), entry);
 
     }

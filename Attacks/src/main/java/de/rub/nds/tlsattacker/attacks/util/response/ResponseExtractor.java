@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -31,8 +32,8 @@ public class ResponseExtractor {
 
     /**
      *
-     * @param state
-     * @param action
+     * @param  state
+     * @param  action
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
@@ -44,7 +45,7 @@ public class ResponseExtractor {
 
     /**
      *
-     * @param state
+     * @param  state
      * @return
      */
     public static ResponseFingerprint getFingerprint(State state) {

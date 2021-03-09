@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
@@ -79,7 +80,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      * found in StandardCharsets
      *
      * @param stringEncoding
-     * The encoding that should be used
+     *                       The encoding that should be used
      *
      */
     public void setStringEncoding(String stringEncoding) {

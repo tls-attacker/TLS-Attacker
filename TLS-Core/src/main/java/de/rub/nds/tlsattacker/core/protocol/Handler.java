@@ -6,11 +6,12 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol;
 
 /**
  * @param <T>
- * The Object that should be Handled
+ *            The Object that should be Handled
  */
 public abstract class Handler<T> {
     public abstract Parser<T> getParser(byte[] message, int pointer);

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,8 +41,8 @@ public class SupportedVersionsExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
-        msg.setSupportedVersions(ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(),
-            ProtocolVersion.TLS13.getValue()));
+        msg.setSupportedVersions(
+            ArrayConverter.concatenate(ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientSupportedProtocolVersions().size() == 2);
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());
@@ -61,7 +62,8 @@ public class SupportedVersionsExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SupportedVersionsExtensionParser);
+        assertTrue(
+            handler.getParser(new byte[] { 0, 2 }, 0, context.getConfig()) instanceof SupportedVersionsExtensionParser);
     }
 
     /**
@@ -69,7 +71,8 @@ public class SupportedVersionsExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionPreparator);
+        assertTrue(handler
+            .getPreparator(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionPreparator);
     }
 
     /**
@@ -77,6 +80,7 @@ public class SupportedVersionsExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionSerializer);
+        assertTrue(handler
+            .getSerializer(new SupportedVersionsExtensionMessage()) instanceof SupportedVersionsExtensionSerializer);
     }
 }

@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -120,8 +121,8 @@ public class SendDynamicServerCertificateActionTest {
         // check if the correct amount of messages have been sent
         assertTrue(action.getSendMessages().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendMessages().size() == 1
-            && action.getSendMessages().get(0) instanceof CertificateMessage);
+        assertTrue(
+            action.getSendMessages().size() == 1 && action.getSendMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test

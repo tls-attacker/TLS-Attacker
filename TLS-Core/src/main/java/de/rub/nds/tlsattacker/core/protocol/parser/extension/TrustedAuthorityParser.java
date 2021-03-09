@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -37,8 +38,8 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
                 authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
                 break;
             case X509_NAME:
-                authority
-                    .setDistinguishedNameLength(parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
+                authority.setDistinguishedNameLength(
+                    parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
                 authority.setDistinguishedName(parseByteArrayField(authority.getDistinguishedNameLength().getValue()));
                 break;
             default:

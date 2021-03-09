@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -26,9 +27,9 @@ public class ForgivingX25519Curve {
     /**
      * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
-     * @param privateKey
-     * The private key to use
-     * @return publicKey The computed public key
+     * @param  privateKey
+     *                    The private key to use
+     * @return            publicKey The computed public key
      */
     public static byte[] computePublicKey(BigInteger privateKey) {
         return computePublicKey(privateKey.toByteArray());
@@ -37,9 +38,9 @@ public class ForgivingX25519Curve {
     /**
      * Generates a publicKey for a given private key. The key is truncated or padded to the correct size if necessary
      *
-     * @param privateKey
-     * The private key to use
-     * @return publicKey The computed public key
+     * @param  privateKey
+     *                    The private key to use
+     * @return            publicKey The computed public key
      */
     public static byte[] computePublicKey(byte[] privateKey) {
         X25519.precompute();
@@ -59,11 +60,11 @@ public class ForgivingX25519Curve {
     /**
      * Computes a shared point/secret from a private key and a publicKey
      *
-     * @param privateKey
-     * Our side's private key
-     * @param publicKey
-     * The other sides public key
-     * @return A shared secret computed with the private and public key
+     * @param  privateKey
+     *                    Our side's private key
+     * @param  publicKey
+     *                    The other sides public key
+     * @return            A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
         return computeSharedSecret(privateKey.toByteArray(), publicKey);
@@ -72,24 +73,24 @@ public class ForgivingX25519Curve {
     /**
      * Computes a shared point/secret from a private key and a publicKey
      *
-     * @param privateKey
-     * Our side's private key
-     * @param publicKey
-     * The other sides public key
-     * @return A shared secret computed with the private and public key
+     * @param  privateKey
+     *                    Our side's private key
+     * @param  publicKey
+     *                    The other sides public key
+     * @return            A shared secret computed with the private and public key
      */
     public static byte[] computeSharedSecret(byte[] privateKey, byte[] publicKey) {
         if (privateKey.length > ELEMENT_SIZE) {
-            LOGGER.debug("privateKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                + " bytes.");
+            LOGGER.debug(
+                "privateKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE + " bytes.");
             privateKey = Arrays.copyOfRange(privateKey, 0, ELEMENT_SIZE);
         } else if (privateKey.length < ELEMENT_SIZE) {
             LOGGER.debug("privateKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");
             privateKey = Arrays.copyOf(privateKey, ELEMENT_SIZE);
         }
         if (publicKey.length > ELEMENT_SIZE) {
-            LOGGER.debug("publicKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE
-                + " bytes.");
+            LOGGER.debug(
+                "publicKey is longer than " + ELEMENT_SIZE + " bytes. Using only first " + ELEMENT_SIZE + " bytes.");
             publicKey = Arrays.copyOfRange(publicKey, 0, ELEMENT_SIZE);
         } else if (publicKey.length < ELEMENT_SIZE) {
             LOGGER.debug("publicKey is shorter than " + ELEMENT_SIZE + " bytes. Padding with 0x00...");

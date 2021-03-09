@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,8 +25,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SignatureAndHashAlgorithmsExtensionHandler extends
-    ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+public class SignatureAndHashAlgorithmsExtensionHandler
+    extends ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -60,14 +61,14 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(
-        SignatureAndHashAlgorithmsExtensionMessage message) {
+    public SignatureAndHashAlgorithmsExtensionPreparator
+        getPreparator(SignatureAndHashAlgorithmsExtensionMessage message) {
         return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(
-        SignatureAndHashAlgorithmsExtensionMessage message) {
+    public SignatureAndHashAlgorithmsExtensionSerializer
+        getSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
         return new SignatureAndHashAlgorithmsExtensionSerializer(message);
     }
 

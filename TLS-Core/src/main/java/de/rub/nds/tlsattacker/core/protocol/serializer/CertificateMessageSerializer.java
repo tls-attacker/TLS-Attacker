@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,9 +26,9 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
      * Constructor for the CertificateMessageSerializer
      *
      * @param message
-     * Message that should be serialized
+     *                Message that should be serialized
      * @param version
-     * Version of the Protocol
+     *                Version of the Protocol
      */
     public CertificateMessageSerializer(CertificateMessage message, ProtocolVersion version) {
         super(message, version);
@@ -75,8 +76,8 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
      */
     private void writeCertificatesListBytes(CertificateMessage msg) {
         appendBytes(msg.getCertificatesListBytes().getValue());
-        LOGGER.debug("certificatesListBytes: "
-            + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
+        LOGGER.debug(
+            "certificatesListBytes: " + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
     }
 
 }

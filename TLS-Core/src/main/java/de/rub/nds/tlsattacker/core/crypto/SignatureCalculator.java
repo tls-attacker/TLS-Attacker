@@ -6,6 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -52,8 +53,8 @@ public class SignatureCalculator {
             case GOSTR34102012_512:
                 return generateGost12Signature(chooser, toBeSigned, algorithm);
             default:
-                throw new UnsupportedOperationException("Unknown SignatureAlgorithm:"
-                    + algorithm.getSignatureAlgorithm().name());
+                throw new UnsupportedOperationException(
+                    "Unknown SignatureAlgorithm:" + algorithm.getSignatureAlgorithm().name());
         }
     }
 
@@ -106,9 +107,8 @@ public class SignatureCalculator {
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
 
-    public static byte[]
-        generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
-            throws CryptoException {
+    public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
+        throws CryptoException {
         ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
