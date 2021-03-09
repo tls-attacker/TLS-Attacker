@@ -59,8 +59,8 @@ public class PskSet implements Serializable {
     public PskSet() {
     }
 
-    public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd, byte[] ticketNonce,
-        CipherSuite cipherSuite) {
+    public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd,
+        byte[] ticketNonce, CipherSuite cipherSuite) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
         this.preSharedKey = preSharedKey;
         this.ticketAge = ticketAge;
@@ -193,6 +193,5 @@ public class PskSet implements Serializable {
         }
         return this.cipherSuite == other.cipherSuite;
     }
-
 
 }

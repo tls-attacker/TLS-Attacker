@@ -92,13 +92,13 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.warn("No nonce in ticket. Using new byte[] instead");
             pskSet.setTicketNonce(new byte[0]);
         }
+        // only derive PSK if client finished was already sent, because full handshake transcript is required
+        if (tlsContext.getActiveClientKeySetType() != Tls13KeySetType.NONE) {
+            pskSet.setPreSharedKey(derivePsk(pskSet));
+        }
+
         LOGGER.debug("Adding PSK Set");
         pskSets.add(pskSet);
-
-        //only derive PSK if client finished was already sent, because full handshake transcript is required
-        if(tlsContext.getActiveClientKeySetType() != Tls13KeySetType.NONE) {
-            derivePsk(pskSet);
-        }
         tlsContext.setPskSets(pskSets);
 
     }
@@ -114,20 +114,22 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         try {
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
-                    AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
+                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
             DigestAlgorithm digestAlgo =
-                    AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
-                            .getChooser().getSelectedCipherSuite());
+                AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext
+                    .getChooser().getSelectedCipherSuite());
             int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret =
-                    HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
-                            HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
+                HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), tlsContext.getMasterSecret(),
+                    HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest().getRawBytes());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             LOGGER.debug("Derived Master Secret: " + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
-            LOGGER.debug("Handshake Transcript Raw Bytes: " + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+            LOGGER.debug("Handshake Transcript Raw Bytes: "
+                + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
             byte[] psk =
-                    HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION, pskSet.getTicketNonce(), macLength);
+                HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
+                    pskSet.getTicketNonce(), macLength);
             LOGGER.debug("new derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
