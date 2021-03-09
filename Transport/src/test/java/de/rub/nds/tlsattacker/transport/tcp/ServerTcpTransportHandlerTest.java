@@ -20,12 +20,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServerTcpTransportHandlerTest {
 
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
     private ServerTcpTransportHandler handler;
 
     @Before
@@ -38,6 +40,11 @@ public class ServerTcpTransportHandlerTest {
         if (handler.isInitialized()) {
             handler.closeConnection();
         }
+    }
+
+    @AfterClass
+    public static void closeExecutor() {
+        executor.shutdown();
     }
 
     /**
