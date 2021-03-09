@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -154,9 +153,9 @@ public enum ProtocolVersion {
     /**
      * Maps a string protocol version value to an enum. It handles specific cases like TLSv1.2 or SSLv3
      *
-     * @param protocolVersion
-     * The ProtocolVersion as a String
-     * @return The ProtocolVersion as an Enum
+     * @param  protocolVersion
+     *                         The ProtocolVersion as a String
+     * @return                 The ProtocolVersion as an Enum
      */
     public static ProtocolVersion fromString(String protocolVersion) {
         protocolVersion = protocolVersion.replaceFirst("v", "");
@@ -173,9 +172,9 @@ public enum ProtocolVersion {
     /**
      * Return the highest protocol version.
      *
-     * @param list
-     * The List of protocolVersions to search in
-     * @return The highest ProtocolVersion
+     * @param  list
+     *              The List of protocolVersions to search in
+     * @return      The highest ProtocolVersion
      */
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
@@ -185,9 +184,8 @@ public enum ProtocolVersion {
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
             }
-            if (pv != null
-                && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
-                    .getValue())) {
+            if (pv != null && ArrayConverter.bytesToInt(pv.getValue())
+                > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
                 highestProtocolVersion = pv;
             }
         }

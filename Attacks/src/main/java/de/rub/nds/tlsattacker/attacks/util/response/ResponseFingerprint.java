@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.util.response;
@@ -187,7 +186,7 @@ public class ResponseFingerprint {
 
     /**
      *
-     * @param obj
+     * @param  obj
      * @return
      */
     @Override
@@ -218,28 +217,28 @@ public class ResponseFingerprint {
                         return false;
                     }
                     // This also finds fragmentation issues
-                    if (this.recordList.get(i).getCompleteRecordBytes().getValue().length != other.recordList.get(i)
-                        .getCompleteRecordBytes().getValue().length) {
+                    if (this.recordList.get(i).getCompleteRecordBytes().getValue().length
+                        != other.recordList.get(i).getCompleteRecordBytes().getValue().length) {
                         return false;
                     }
                     if (this.recordList.get(i) instanceof Record && other.recordList.get(i) instanceof Record) {
                         // Comparing Records
                         Record thisRecord = (Record) this.getRecordList().get(i);
                         Record otherRecord = (Record) other.getRecordList().get(i);
-                        if (thisRecord.getContentMessageType().getValue() != otherRecord.getContentMessageType()
-                            .getValue()) {
+                        if (thisRecord.getContentMessageType().getValue()
+                            != otherRecord.getContentMessageType().getValue()) {
                             return false;
                         }
 
-                        if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(), otherRecord.getProtocolVersion()
-                            .getValue())) {
+                        if (!Arrays.equals(thisRecord.getProtocolVersion().getValue(),
+                            otherRecord.getProtocolVersion().getValue())) {
                             return false;
                         }
 
                     } else {
                         // Comparing BlobRecords
-                        if (!Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(), other
-                            .getRecordList().get(i).getCompleteRecordBytes().getValue())) {
+                        if (!Arrays.equals(this.getRecordList().get(i).getCompleteRecordBytes().getValue(),
+                            other.getRecordList().get(i).getCompleteRecordBytes().getValue())) {
                             return false;
                         }
                     }
@@ -254,7 +253,7 @@ public class ResponseFingerprint {
     /**
      * //TODO, this does not check record layer compatibility
      *
-     * @param fingerprint
+     * @param  fingerprint
      * @return
      */
     public boolean areCompatible(ResponseFingerprint fingerprint) {

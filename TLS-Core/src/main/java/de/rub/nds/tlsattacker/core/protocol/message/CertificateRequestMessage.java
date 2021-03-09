@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.message;
@@ -161,9 +160,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     public void setCertificateRequestContextLength(int certificateRequestContextLength) {
-        this.certificateRequestContextLength =
-            ModifiableVariableFactory.safelySetValue(this.certificateRequestContextLength,
-                certificateRequestContextLength);
+        this.certificateRequestContextLength = ModifiableVariableFactory
+            .safelySetValue(this.certificateRequestContextLength, certificateRequestContextLength);
     }
 
     public ModifiableByteArray getCertificateRequestContext() {
@@ -192,8 +190,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
         sb.append("\n  Certificate Types: ");
         if (clientCertificateTypes != null && clientCertificateTypes.getValue() != null) {
             for (int i = 0; i < clientCertificateTypes.getValue().length; i++) {
-                sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i])).append(
-                    ", ");
+                sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i]))
+                    .append(", ");
             }
         } else {
             sb.append("null");
@@ -226,7 +224,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        // sb.append("\n  Distinguished Names: ").append(ArrayConverter
+        // sb.append("\n Distinguished Names: ").append(ArrayConverter
         // .bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
     }

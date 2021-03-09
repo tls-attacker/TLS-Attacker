@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.layer;
@@ -109,9 +108,8 @@ public class TlsRecordLayer extends RecordLayer {
             } catch (ParserException e) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
                 LOGGER.trace(e);
-                BlobRecordParser blobParser =
-                    new BlobRecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
-                        .getSelectedProtocolVersion());
+                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
+                    tlsContext.getChooser().getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
                 if (dataPointer == blobParser.getPointer()) {
@@ -177,7 +175,8 @@ public class TlsRecordLayer extends RecordLayer {
     public void decryptAndDecompressRecord(AbstractRecord record) {
         if (record instanceof Record) {
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() && record.getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
+                || (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    && record.getContentMessageType() == ProtocolMessageType.APPLICATION_DATA)) {
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
                 ((Record) record).getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeRead());

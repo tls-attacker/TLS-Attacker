@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -24,8 +23,8 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
-    ClientKeyExchangePreparator<T> {
+public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage>
+    extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -115,9 +114,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
             msg.getComputations().setPublicKeyX(publicKey.getFieldX().getData());
             msg.getComputations().setPublicKeyY(publicKey.getFieldY().getData());
-            publicKey =
-                curve.getPoint(msg.getComputations().getPublicKeyX().getValue(), msg.getComputations().getPublicKeyY()
-                    .getValue());
+            publicKey = curve.getPoint(msg.getComputations().getPublicKeyX().getValue(),
+                msg.getComputations().getPublicKeyY().getValue());
             publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
         }
         msg.setPublicKey(publicKeyBytes);

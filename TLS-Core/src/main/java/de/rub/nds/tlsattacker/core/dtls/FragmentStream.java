@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.dtls;
@@ -51,13 +50,14 @@ public class FragmentStream {
     /**
      * Checks if the fragment stream is complete up to the specified index
      *
-     * @param tillIndex
-     * Bytes till the maximum index
-     * @return true if all keys are in the map, otherwise false
+     * @param  tillIndex
+     *                   Bytes till the maximum index
+     * @return           true if all keys are in the map, otherwise false
      */
     public boolean isComplete(int tillIndex) {
         if (tillIndex < 0) {
-            throw new IllegalArgumentException("Cannot check stream for completeness with negative index: " + tillIndex);
+            throw new IllegalArgumentException(
+                "Cannot check stream for completeness with negative index: " + tillIndex);
         }
         for (int i = 0; i < tillIndex; i++) {
             if (!fragmentByteMap.containsKey(i)) {
@@ -70,9 +70,9 @@ public class FragmentStream {
     /**
      * Returns the fragment streams contents and fills any holes in it with the specified filling byte
      *
-     * @param fillingByte
-     * the byte with which we fill holes in the fragment
-     * @return the stream
+     * @param  fillingByte
+     *                     the byte with which we fill holes in the fragment
+     * @return             the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -101,7 +101,7 @@ public class FragmentStream {
 
     /**
      *
-     * @param fillingByte
+     * @param  fillingByte
      * @return
      */
     public byte[] getCompleteTruncatedStream() {

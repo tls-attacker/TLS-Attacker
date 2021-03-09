@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
@@ -83,8 +82,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         if (message.getSelectedIdentity() != null && message.getSelectedIdentity().getValue() != null
             && message.getSelectedIdentity().getValue() < context.getChooser().getPskSets().size()) {
             LOGGER.debug("Setting PSK as chosen by server");
-            context.setPsk(context.getChooser().getPskSets().get(message.getSelectedIdentity().getValue())
-                .getPreSharedKey());
+            context.setPsk(
+                context.getChooser().getPskSets().get(message.getSelectedIdentity().getValue()).getPreSharedKey());
             context.setSelectedIdentityIndex(message.getSelectedIdentity().getValue());
         } else {
             LOGGER.warn("The server's chosen PSK identity is unknown - no psk set");
@@ -119,8 +118,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
 
         List<PskSet> pskSets = context.getChooser().getPskSets();
         for (int x = 0; x < pskSets.size(); x++) {
-            if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity()
-                .getValue())) {
+            if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(),
+                message.getIdentities().get(0).getIdentity().getValue())) {
                 context.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
                 context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                 LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKey()));

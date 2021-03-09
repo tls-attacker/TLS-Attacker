@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -26,10 +25,10 @@ public class PasswordSaltExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter.hexStringToByteArray("001f00120010843711c21d47ce6e6383cdda37e47da3"), 0,
-            ExtensionType.PASSWORD_SALT, 18, 16,
-            ArrayConverter.hexStringToByteArray("843711c21d47ce6e6383cdda37e47da3") } });
+        return Arrays.asList(
+            new Object[][] { { ArrayConverter.hexStringToByteArray("001f00120010843711c21d47ce6e6383cdda37e47da3"), 0,
+                ExtensionType.PASSWORD_SALT, 18, 16,
+                ArrayConverter.hexStringToByteArray("843711c21d47ce6e6383cdda37e47da3") } });
     }
 
     private final byte[] expectedBytes;

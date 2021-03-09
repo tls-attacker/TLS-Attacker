@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -48,21 +47,17 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT, new AlertMessage(
-                config));
+        MessageAction action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.CLIENT,
+            new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action =
-            MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, clientConnection, ConnectionEndType.SERVER,
+            new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.CLIENT,
+            new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action =
-            MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER, new AlertMessage(
-                config));
+        action = MessageActionFactory.createAction(config, serverConnection, ConnectionEndType.SERVER,
+            new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.messages.size() == 1);
     }

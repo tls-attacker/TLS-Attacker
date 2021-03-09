@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
@@ -162,18 +161,16 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
                 byte[] psk = pskSets.get(x).getPreSharedKey();
                 byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
-                byte[] binderKey =
-                    HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
-                        HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
-                byte[] binderFinKey =
-                    HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED, new byte[0],
-                        mac.getMacLength());
+                byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(), earlySecret,
+                    HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
+                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED,
+                    new byte[0], mac.getMacLength());
 
                 chooser.getContext().getDigest().setRawBytes(relevantBytes);
                 SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getDigest()
-                    .digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
+                mac.update(
+                    chooser.getContext().getDigest().digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
                 byte[] binderVal = mac.doFinal();
                 chooser.getContext().getDigest().setRawBytes(new byte[0]);
 
@@ -200,7 +197,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     /**
      * @param clientHello
-     * the clientHello to set
+     *                    the clientHello to set
      */
     public void setClientHello(ClientHelloMessage clientHello) {
         this.clientHello = clientHello;
