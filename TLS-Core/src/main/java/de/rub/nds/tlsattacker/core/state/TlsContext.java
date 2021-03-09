@@ -140,13 +140,6 @@ public class TlsContext {
     private byte[] psk;
 
     /**
-     * Cached NewSessionTicketMessage
-     */
-    private NewSessionTicketMessage cachedNewSessionTicketMessage = null;
-
-    private boolean clientFinishedSent = false;
-
-    /**
      * The selected earlyData PSK.
      */
     private byte[] earlyDataPsk;
@@ -2087,22 +2080,6 @@ public class TlsContext {
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
-    }
-
-    public NewSessionTicketMessage getCachedNewSessionTicketMessage() {
-        return cachedNewSessionTicketMessage;
-    }
-
-    public void setCachedNewSessionTicketMessage(NewSessionTicketMessage cachedNewSessionTicketMessage) {
-        this.cachedNewSessionTicketMessage = cachedNewSessionTicketMessage;
-    }
-
-    public boolean isClientFinishedSent() {
-        return clientFinishedSent;
-    }
-
-    public void setClientFinishedSent(boolean clientFinishedSent) {
-        this.clientFinishedSent = clientFinishedSent;
     }
 
     /**

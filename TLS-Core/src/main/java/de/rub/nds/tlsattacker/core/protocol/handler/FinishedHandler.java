@@ -11,16 +11,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
@@ -30,12 +27,11 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static de.rub.nds.tlsattacker.core.constants.HandshakeMessageType.NEW_SESSION_TICKET;
+import javax.crypto.Mac;
+import java.security.NoSuchAlgorithmException;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -75,12 +71,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                 || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-                tlsContext.setClientFinishedSent(true);
-                if (tlsContext.getCachedNewSessionTicketMessage() != null) {
-                    // handle cached New SessionTicketMessage
-                    HandlerFactory.getHandshakeHandler(tlsContext, NEW_SESSION_TICKET).adjustTLSContext(
-                        tlsContext.getCachedNewSessionTicketMessage());
-                    tlsContext.setCachedNewSessionTicketMessage(null);
+
+                NewSessionTicketHandler ticketHandler = (NewSessionTicketHandler) HandlerFactory.getHandshakeHandler(tlsContext, HandshakeMessageType.NEW_SESSION_TICKET);
+                //Question: only derive if pskSet preshared-key is empty ?
+                //if derive psk always if pskSet is set in PskSetList then reusage of state wont be possible any more
+                for(PskSet pskSet: tlsContext.getPskSets()){
+                    pskSet.setPreSharedKey(ticketHandler.derivePsk(pskSet));
                 }
             }
         }
