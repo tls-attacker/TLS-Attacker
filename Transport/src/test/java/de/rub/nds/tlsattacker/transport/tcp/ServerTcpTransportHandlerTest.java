@@ -16,13 +16,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import static org.junit.Assert.*;
+
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServerTcpTransportHandlerTest {
 
+    private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
     private ServerTcpTransportHandler handler;
 
     @Before
@@ -35,6 +40,11 @@ public class ServerTcpTransportHandlerTest {
         if (handler.isInitialized()) {
             handler.closeConnection();
         }
+    }
+
+    @AfterClass
+    public static void closeExecutor() {
+        executor.shutdown();
     }
 
     /**
@@ -52,8 +62,8 @@ public class ServerTcpTransportHandlerTest {
         handler.closeClientConnection(); // should do nothing
         SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
         FutureTask task = new FutureTask(callable);
-        Thread t = new Thread(task);
-        t.start();
+        // gives the server time to start
+        executor.schedule(task, 1, TimeUnit.SECONDS);
         handler.initialize();
         assertTrue(handler.isInitialized());
         Socket socket = (Socket) task.get();
@@ -92,8 +102,9 @@ public class ServerTcpTransportHandlerTest {
     @Test
     public void testInitialize() throws Exception {
         SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
-        Thread t = new Thread(new FutureTask(callable));
-        t.start();
+        FutureTask task = new FutureTask(callable);
+        // gives the server time to start
+        executor.schedule(task, 1, TimeUnit.SECONDS);
         handler.initialize();
         assertTrue(handler.isInitialized());
     }
@@ -102,8 +113,8 @@ public class ServerTcpTransportHandlerTest {
     public void fullTest() throws IOException, InterruptedException, ExecutionException {
         SocketOpenerCallable callable = new SocketOpenerCallable("localhost", handler.getSrcPort());
         FutureTask<Socket> task = new FutureTask(callable);
-        Thread t = new Thread(task);
-        t.start();
+        // gives the server time to start
+        executor.schedule(task, 1, TimeUnit.SECONDS);
         handler.initialize();
         long time = System.currentTimeMillis();
         long timeout = 1000;
