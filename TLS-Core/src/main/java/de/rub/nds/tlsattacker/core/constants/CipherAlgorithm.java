@@ -33,7 +33,7 @@ public enum CipherAlgorithm {
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
     CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20Poly1305"),
-    UNOFFICIAL_CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20Poly1305"),
+    UNOFFICIAL_CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
     DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently
     // uses
     // des
@@ -43,7 +43,9 @@ public enum CipherAlgorithm {
     ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     ARIA_256_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"), // not tested yet
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
-    FORTEZZA_CBC(0, 0, 0, 0); // TODO
+    FORTEZZA_CBC(0, 0, 0, 0), // TODO
+    AES_128_CTR(16, 16, 0, 16, "AES/CTR/NoPadding"),
+    AES_256_CTR(32, 16, 0, 16, "AES/CTR/NoPadding");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
         this.keySize = keySize;
