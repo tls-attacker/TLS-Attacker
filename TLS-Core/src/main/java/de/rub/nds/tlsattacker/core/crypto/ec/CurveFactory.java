@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
@@ -21,9 +20,9 @@ public class CurveFactory {
     /**
      * Returns a named elliptic curve.
      *
-     * @param name
-     * The name of the curve, that should be returned.
-     * @return EllipticCurve for the provided NamedGroup
+     * @param  name
+     *              The name of the curve, that should be returned.
+     * @return      EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
         if (name.isGrease()) {
@@ -93,8 +92,8 @@ public class CurveFactory {
             case ECDH_X448:
                 return new EllipticCurveX448();
             default:
-                throw new UnsupportedOperationException("The provided group '" + name
-                    + "' is not supported by this method.");
+                throw new UnsupportedOperationException(
+                    "The provided group '" + name + "' is not supported by this method.");
 
         }
     }
@@ -102,8 +101,8 @@ public class CurveFactory {
     /**
      * Returns a named gost curve.
      *
-     * @param curve
-     * The name of the curve, that should be returned.
+     * @param  curve
+     *               The name of the curve, that should be returned.
      * @return
      */
     public static EllipticCurve getCurve(GOSTCurve curve) {

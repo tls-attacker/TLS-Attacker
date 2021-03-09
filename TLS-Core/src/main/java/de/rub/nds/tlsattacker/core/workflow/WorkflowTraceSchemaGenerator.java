@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -65,14 +64,14 @@ public class WorkflowTraceSchemaGenerator {
         public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
             String ns = StringUtils.isBlank(namespaceURI) ? NO_NS : namespaceURI;
             schemaWriters.put(ns, new StringWriter());
-            String systemId = mapSystemIds(ns, suggestedFileName);
+            String systemId = mapSystemIds();
             systemIds.put(ns, systemId);
             StreamResult result = new StreamResult(schemaWriters.get(ns));
             result.setSystemId(systemId);
             return result;
         }
 
-        private static String mapSystemIds(String ns, String suggestedFileName) {
+        public static String mapSystemIds() {
             return "workflowTrace.xsd";
         }
 

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow;
@@ -30,6 +29,7 @@ import java.util.List;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,13 +105,15 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        TransportHandler handler = state.getTlsContext().getTransportHandler();
-        if (handler instanceof TcpTransportHandler) {
-            SocketState socketSt =
-                ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
-            state.getTlsContext().setFinalSocketState(socketSt);
-        } else {
-            state.getTlsContext().setFinalSocketState(SocketState.UNAVAILABLE);
+        for (TlsContext ctx : allTlsContexts) {
+            TransportHandler handler = ctx.getTransportHandler();
+            if (handler instanceof TcpTransportHandler) {
+                SocketState socketSt =
+                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+                ctx.setFinalSocketState(socketSt);
+            } else {
+                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
+            }
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {

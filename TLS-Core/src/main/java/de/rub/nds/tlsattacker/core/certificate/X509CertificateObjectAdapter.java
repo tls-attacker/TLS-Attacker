@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate;
@@ -24,9 +23,8 @@ public class X509CertificateObjectAdapter extends XmlAdapter<String, X509Certifi
     @Override
     public X509CertificateObject unmarshal(String v) throws Exception {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs =
-            certFactory.generateCertificates(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll(
-                "\\s+", ""))));
+        Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(
+            new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+", ""))));
         java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
         ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);

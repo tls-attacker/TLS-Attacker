@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.ec;
@@ -23,8 +22,8 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected RFC7748Curve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX,
-        BigInteger basePointY, BigInteger basePointOrder) {
+    protected RFC7748Curve(BigInteger a, BigInteger b, BigInteger modulus, BigInteger basePointX, BigInteger basePointY,
+        BigInteger basePointOrder) {
         super(a, b, modulus, basePointX, basePointY, basePointOrder);
     }
 
@@ -42,7 +41,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         return encodeCoordinate(publicPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
+    private byte[] computeSharedSecret(BigInteger privateKey, byte[] publicKey) {
         privateKey = reduceLongKey(privateKey);
         BigInteger decodedCoord = decodeCoordinate(new BigInteger(1, publicKey));
         BigInteger decodedKey = decodeScalar(privateKey);
@@ -60,14 +59,7 @@ public abstract class RFC7748Curve extends SimulatedMontgomeryCurve {
         return encodeCoordinate(sharedPoint.getFieldX().getData());
     }
 
-    public byte[] computeSharedSecret(BigInteger privateKey, Point publicKey) {
-        byte[] pkBytes =
-            ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey.getFieldX().getData(),
-                ArrayConverter.bigIntegerToByteArray(getModulus()).length);
-        return computeSharedSecret(privateKey, pkBytes);
-    }
-
-    public byte[] computeSharedSecretDecodedPoint(BigInteger privateKey, Point publicKey) {
+    public byte[] computeSharedSecretFromDecodedPoint(BigInteger privateKey, Point publicKey) {
         byte[] reEncoded = encodeCoordinate(publicKey.getFieldX().getData());
         return computeSharedSecret(privateKey, reEncoded);
     }

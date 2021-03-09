@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler.factory;
@@ -65,6 +64,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EcPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
@@ -185,11 +185,11 @@ public class HandlerFactory {
     /**
      * Returns the correct extension Handler for a specified ExtensionType in a HandshakeMessage
      *
-     * @param context
-     * Current TlsContext
-     * @param type
-     * Type of the Extension
-     * @return Correct ExtensionHandler
+     * @param  context
+     *                 Current TlsContext
+     * @param  type
+     *                 Type of the Extension
+     * @return         Correct ExtensionHandler
      */
     public static ExtensionHandler getExtensionHandler(TlsContext context, ExtensionType type) {
         try {
@@ -273,6 +273,8 @@ public class HandlerFactory {
                     return new PWDClearExtensionHandler(context);
                 case PASSWORD_SALT:
                     return new PasswordSaltExtensionHandler(context);
+                case COOKIE:
+                    return new CookieExtensionHandler(context);
                 case GREASE_00:
                 case GREASE_01:
                 case GREASE_02:

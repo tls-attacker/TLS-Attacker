@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
@@ -25,9 +24,9 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      * Constructor
      *
      * @param startposition
-     * Start of the extension in the byte array
+     *                      Start of the extension in the byte array
      * @param array
-     * Array which holds the extensions
+     *                      Array which holds the extensions
      */
     public SessionTicketTLSExtensionParser(int startposition, byte[] array, Config config) {
         super(startposition, array, config);
@@ -37,13 +36,13 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
      * Parses the content of the given byte array to a SessionTicketTLSExtensionMessage
      *
      * @param msg
-     * Message, which will hold the parsed extension
+     *            Message, which will hold the parsed extension
      */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
         if (msg.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. "
-                + "Length was " + msg.getExtensionLength().getValue());
+            LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. " + "Length was "
+                + msg.getExtensionLength().getValue());
         }
         msg.setTicket(parseByteArrayField(msg.getExtensionLength().getValue()));
         LOGGER.debug("The session ticket TLS parser parsed the value " + bytesToHexString(msg.getTicket()));

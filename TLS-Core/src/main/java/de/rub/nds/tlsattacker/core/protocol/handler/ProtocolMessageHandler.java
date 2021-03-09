@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -31,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <MessageT>
- * The ProtocolMessage that should be handled
+ *                   The ProtocolMessage that should be handled
  */
 public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> extends Handler<MessageT> {
 
@@ -44,7 +43,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
 
     /**
      * @param tlsContext
-     * The Context which should be Adjusted with this Handler
+     *                   The Context which should be Adjusted with this Handler
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
@@ -53,9 +52,9 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     /**
      * Prepare message for sending. This method invokes before and after method hooks.
      *
-     * @param message
-     * The Message that should be prepared
-     * @return message in bytes
+     * @param  message
+     *                 The Message that should be prepared
+     * @return         message in bytes
      */
     public byte[] prepareMessage(MessageT message) {
         return prepareMessage(message, true);
@@ -64,11 +63,11 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
     /**
      * Prepare message for sending. This method invokes before and after method hooks.
      *
-     * @param message
-     * The message that should be prepared
-     * @param withPrepare
-     * if the prepare function should be called or only the rest
-     * @return message in bytes
+     * @param  message
+     *                     The message that should be prepared
+     * @param  withPrepare
+     *                     if the prepare function should be called or only the rest
+     * @return             message in bytes
      */
     public byte[] prepareMessage(MessageT message, boolean withPrepare) {
         if (withPrepare) {
@@ -103,11 +102,11 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
      * Parses a byteArray from a Position into a MessageObject and returns the parsed MessageObjet and parser position
      * in a parser result. The current Chooser is adjusted as
      *
-     * @param message
-     * The byte[] messages which should be parsed
-     * @param pointer
-     * The pointer (startposition) into the message bytes
-     * @return The Parser result
+     * @param  message
+     *                 The byte[] messages which should be parsed
+     * @param  pointer
+     *                 The pointer (startposition) into the message bytes
+     * @return         The Parser result
      */
     public ParserResult parseMessage(byte[] message, int pointer, boolean onlyParse) {
         Parser<MessageT> parser = getParser(message, pointer);
@@ -135,8 +134,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
         if (message.isHandshakeMessage() && ((HandshakeMessage) message).getIncludeInDigest()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 DtlsHandshakeMessageFragment fragment =
-                    new MessageFragmenter(tlsContext.getConfig().getDtlsMaximumFragmentLength()).wrapInSingleFragment(
-                        (HandshakeMessage) message, tlsContext);
+                    new MessageFragmenter(tlsContext.getConfig().getDtlsMaximumFragmentLength())
+                        .wrapInSingleFragment((HandshakeMessage) message, tlsContext);
                 tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
             } else {
                 tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
@@ -158,7 +157,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> e
      * Adjusts the TLS Context according to the received or sending ProtocolMessage
      *
      * @param message
-     * The Message for which this context should be adjusted
+     *                The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(MessageT message);
 

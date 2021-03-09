@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.preparator;
@@ -77,7 +76,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
             } catch (IOException ex) {
                 throw new PreparationException(
                     "Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into "
-                        + "message", ex);
+                        + "message",
+                    ex);
             }
         }
         return stream.toByteArray();
@@ -85,8 +85,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
 
     private void prepareClientCertificateTypes(byte[] certTypes, CertificateRequestMessage msg) {
         msg.setClientCertificateTypes(certTypes);
-        LOGGER.debug("ClientCertificateTypes: "
-            + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug(
+            "ClientCertificateTypes: " + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     private void prepareClientCertificateTypesCount(CertificateRequestMessage msg) {
@@ -106,8 +106,8 @@ public class CertificateRequestPreparator extends HandshakeMessagePreparator<Cer
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(sigHashAlgos);
-        LOGGER.debug("SignatureHashAlgorithms: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug(
+            "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {

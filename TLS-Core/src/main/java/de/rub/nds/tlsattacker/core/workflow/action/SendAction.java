@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -39,30 +38,24 @@ public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Boolean optional = null;
-
     public SendAction() {
         super();
     }
 
-    public SendAction(boolean optional, List<ProtocolMessage> messages) {
+    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
         super(messages);
-        this.optional = optional ? optional : null;
-        if (!optional) {
-            boolean tmp = true;
-            for (ProtocolMessage message : messages) {
-                tmp = tmp && !message.isRequired();
-            }
-            this.optional = tmp ? tmp : null;
+
+        if (option != null) {
+            this.addActionOption(option);
         }
     }
 
     public SendAction(List<ProtocolMessage> messages) {
-        this(false, messages);
+        this((ActionOption) null, messages);
     }
 
-    public SendAction(boolean optional, ProtocolMessage... messages) {
-        this(optional, new ArrayList<>(Arrays.asList(messages)));
+    public SendAction(ActionOption option, ProtocolMessage... messages) {
+        this(option, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -263,11 +256,4 @@ public class SendAction extends MessageAction implements SendingAction {
         return handshakeMessageTypes;
     }
 
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public void setOptional(boolean optional) {
-        this.optional = optional;
-    }
 }

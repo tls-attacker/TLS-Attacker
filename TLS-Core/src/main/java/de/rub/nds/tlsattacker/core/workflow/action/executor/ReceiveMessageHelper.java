@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
@@ -15,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -30,9 +30,12 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ParserResult;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -42,14 +45,19 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ReceiveMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private boolean failedToReceiveMoreRecords = false;
 
     public ReceiveMessageHelper() {
     }
@@ -61,11 +69,11 @@ public class ReceiveMessageHelper {
     /**
      * Receives messages, and tries to receive the messages specified in messages
      *
-     * @param expectedMessages
-     * Messages which should be received
-     * @param context
-     * The context on which Messages should be received
-     * @return Actually received Messages
+     * @param  expectedMessages
+     *                          Messages which should be received
+     * @param  context
+     *                          The context on which Messages should be received
+     * @return                  Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
@@ -133,25 +141,103 @@ public class ReceiveMessageHelper {
 
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
         MessageActionResult result = new MessageActionResult();
+        failedToReceiveMoreRecords = false;
+        byte[] preservedDigest = context.getDigest().getRawBytes();
         if (receivedBytes.length > 0) {
             List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                orderDtlsRecords(tempRecords);
-            }
-            List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords);
-            for (RecordGroup recordGroup : recordGroups) {
-                MessageActionResult tempResult = processRecordGroup(recordGroup, context);
-                result = result.merge(tempResult);
-            }
+            result = processUngroupedRecords(tempRecords, context);
         }
 
         return result;
     }
 
-    private MessageActionResult processRecordGroup(RecordGroup recordGroup, TlsContext context) {
-        recordGroup.adjustContext(context);
-        recordGroup.decryptRecords(context);
+    private MessageActionResult processUngroupedRecords(List<AbstractRecord> tempRecords, TlsContext context) {
+        MessageActionResult result = new MessageActionResult();
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            orderDtlsRecords(tempRecords);
+        }
+        List<RecordGroup> recordGroups = RecordGroup.generateRecordGroups(tempRecords);
+        for (int groupIndex = 0; groupIndex < recordGroups.size(); groupIndex++) {
+            RecordGroup currentGroup = recordGroups.get(groupIndex);
+
+            boolean foundValidRecordInGroup = false;
+            byte[] preservedDigest = context.getDigest().getRawBytes();
+            long preservedReadSQN = context.getReadSequenceNumber();
+
+            for (int recordIndex = 0; recordIndex < recordGroups.get(groupIndex).getRecords().size(); recordIndex++) {
+                currentGroup.decryptRecord(context, recordIndex);
+                currentGroup.adjustContextForRecord(context, recordIndex);
+
+                if (currentGroup.areAllRecordsValid()) {
+                    foundValidRecordInGroup = true;
+                } else if (!currentGroup.areAllRecordsValid() && foundValidRecordInGroup) {
+                    context.setReadSequenceNumber(context.getReadSequenceNumber() - 1);
+                    formNewGroupFromLastAndComingRecords(recordIndex, groupIndex, recordGroups);
+                }
+            }
+
+            try {
+                MessageActionResult tempResult = parseRecordGroup(recordGroups.get(groupIndex), context);
+                result = result.merge(tempResult);
+            } catch (ParserException parserException) {
+                List<AbstractRecord> additionalRecords = tryToFetchAdditionalRecords(context);
+                RecordGroup.mergeRecordsIntoGroups(recordGroups, additionalRecords);
+                restorePreGroupState(context, preservedDigest, preservedReadSQN);
+                groupIndex--;
+            }
+        }
+        return result;
+    }
+
+    private void restorePreGroupState(TlsContext context, byte[] preservedDigest, long preservedReadSQN) {
+        context.getDigest().setRawBytes(preservedDigest);
+        context.setReadSequenceNumber(preservedReadSQN);
+    }
+
+    private List<AbstractRecord> tryToFetchAdditionalRecords(TlsContext context) {
+        LOGGER.debug("Encountered ParserException while processing Records - will attempt to receive further Records");
+        byte[] additionalBytes = tryToFetchAdditionalBytes(context);
+        if (additionalBytes != null && additionalBytes.length > 0) {
+            List<AbstractRecord> fetchedRecords = parseRecords(additionalBytes, context);
+            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                orderDtlsRecords(fetchedRecords);
+            }
+            return fetchedRecords;
+        } else {
+            LOGGER.warn("Could not receive more Records after ParserException - Parsing will fail");
+            failedToReceiveMoreRecords = true;
+            return new LinkedList<>();
+        }
+    }
+
+    /**
+     * Records (in TLS 1.3) might have been protected using different keys they need to be decrypted and processed
+     * sequentially.
+     */
+    private void formNewGroupFromLastAndComingRecords(int recordIndex, int groupIndex, List<RecordGroup> recordGroups) {
+        LOGGER
+            .debug("Found invalid Record after valid ones - will parse other messages first and reattempt decryption");
+        List<AbstractRecord> recordsForGroup = new LinkedList<>();
+        for (int i = recordIndex; i < recordGroups.get(groupIndex).getRecords().size(); i++) {
+            recordsForGroup.add(recordGroups.get(groupIndex).getRecords().get(i));
+        }
+
+        // Records were in one group before, they thus will remain in one group
+        RecordGroup createdGroup = RecordGroup.generateRecordGroups(recordsForGroup).get(0);
+        recordGroups.get(groupIndex).removeFromGroup(createdGroup.getRecords());
+        recordGroups.add(groupIndex + 1, createdGroup);
+    }
+
+    private MessageActionResult parseRecordGroup(RecordGroup recordGroup, TlsContext context) {
         MessageParsingResult messageParsingResult = parseMessages(recordGroup, context);
+
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            if (recordGroupIndicatesWrongTls13KeySet(messageParsingResult.getMessages(), recordGroup)) {
+                LOGGER.warn(
+                    "Messages obtained from RecordGroup indicate that peer's keys have not been updated properly");
+                context.setReceivedMessageWithWrongTls13KeyType(true);
+            }
+        }
 
         return new MessageActionResult(recordGroup.getRecords(), messageParsingResult.getMessages(),
             messageParsingResult.getMessageFragments());
@@ -251,13 +337,7 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             if (context.getTransportHandler() != null) {
                 LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
-                byte[] extraBytes = new byte[0];
-                try {
-                    extraBytes = receiveByteArray(context);
-                } catch (IOException ex2) {
-                    LOGGER.warn("Could not receive more Bytes", ex2);
-                    context.setReceivedTransportHandlerException(true);
-                }
+                byte[] extraBytes = tryToFetchAdditionalBytes(context);
                 if (extraBytes != null && extraBytes.length > 0) {
                     return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
                 }
@@ -289,28 +369,27 @@ public class ReceiveMessageHelper {
                 byte[] cleanProtocolMessageBytes;
                 if (context.getChooser().getSelectedProtocolVersion().isDTLS()
                     && subGroup.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-                    List<ProtocolMessage> messageList =
-                        handleDtlsHandshakeRecordBytes(subGroup.getCleanBytes(), context, true, subGroup.getDtlsEpoch());
+                    List<ProtocolMessage> messageList = handleDtlsHandshakeRecordBytes(subGroup.getCleanBytes(),
+                        context, true, subGroup.getDtlsEpoch());
                     if (isListOnlyDtlsHandshakeMessageFragments(messageList)) {
                         messageFragments = convertToDtlsFragmentList(messageList);
                         List<DtlsHandshakeMessageFragment> defragmentedReorderedFragments =
                             defragmentAndReorder(messageFragments, context);
                         for (DtlsHandshakeMessageFragment fragment : defragmentedReorderedFragments) {
                             context.setDtlsReadHandshakeMessageSequence(fragment.getMessageSeq().getValue());
-                            List<ProtocolMessage> parsedMessages =
-                                handleCleanBytes(convertDtlsFragmentToCleanTlsBytes(fragment),
-                                    subGroup.getProtocolMessageType(), context, false, subGroup.areAllRecordsValid()
-                                        || context.getConfig().getParseInvalidRecordNormally());
+                            List<ProtocolMessage> parsedMessages = handleCleanBytes(
+                                convertDtlsFragmentToCleanTlsBytes(fragment), subGroup.getProtocolMessageType(),
+                                context, false,
+                                subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
                             messages.addAll(parsedMessages);
                         }
                     } else {
-                        LOGGER
-                            .warn("Receive non DTLS-Handshake message Fragment - Not trying to defragment this - passing as is (probably wrong)");
+                        LOGGER.warn(
+                            "Receive non DTLS-Handshake message Fragment - Not trying to defragment this - passing as is (probably wrong)");
                         cleanProtocolMessageBytes = subGroup.getCleanBytes();
-                        List<ProtocolMessage> parsedMessages =
-                            handleCleanBytes(cleanProtocolMessageBytes, subGroup.getProtocolMessageType(), context,
-                                false, subGroup.areAllRecordsValid()
-                                    || context.getConfig().getParseInvalidRecordNormally());
+                        List<ProtocolMessage> parsedMessages = handleCleanBytes(cleanProtocolMessageBytes,
+                            subGroup.getProtocolMessageType(), context, false,
+                            subGroup.areAllRecordsValid() || context.getConfig().getParseInvalidRecordNormally());
                         messages.addAll(parsedMessages);
                     }
 
@@ -330,10 +409,10 @@ public class ReceiveMessageHelper {
      * Takes a list of AbstractRecords and tries to sort them by their epoch/sqn. The sorting ist epoch > sqn. Smaller
      * epochs are sorted before bigger epochs smaller sqns are sorted before higher sqns
      *
-     * @param abstractRecordList
-     * List that should be sorted
+     * @param  abstractRecordList
+     *                                     List that should be sorted
      * @throws UnsortableRecordsExceptions
-     * If the list contains blob records
+     *                                     If the list contains blob records
      */
     private void orderDtlsRecords(List<AbstractRecord> abstractRecordList) throws UnsortableRecordsExceptions {
         for (AbstractRecord abstractRecord : abstractRecordList) {
@@ -362,9 +441,9 @@ public class ReceiveMessageHelper {
      * Tries to parse a byte array as DTLS handshake message fragments, if this does not work they are parsed as unknown
      * messages
      *
-     * @param recordBytes
-     * @param context
-     * @param onlyParse
+     * @param  recordBytes
+     * @param  context
+     * @param  onlyParse
      * @return
      */
     private List<ProtocolMessage> handleDtlsHandshakeRecordBytes(byte[] recordBytes, TlsContext context,
@@ -403,8 +482,8 @@ public class ReceiveMessageHelper {
         return receivedFragments;
     }
 
-    private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,
-        ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse, boolean tryParseAsValid) {
+    private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord,
+        TlsContext context, boolean onlyParse, boolean tryParseAsValid) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         /*
@@ -423,39 +502,38 @@ public class ReceiveMessageHelper {
                             try {
                                 result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
                             } catch (ParserException | AdjustmentException | UnsupportedOperationException e) {
-                                result =
-                                    tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
-                                        context, onlyParse);
+                                result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer,
+                                    typeFromRecord, context, onlyParse);
                             }
                         } else {
-                            result =
-                                tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
-                                    context, onlyParse);
+                            result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                                context, onlyParse);
                         }
                     } else {
                         if (cleanProtocolMessageBytes.length > 2) {
                             result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                         } else {
-                            result =
-                                tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
-                                    typeFromRecord);
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                typeFromRecord);
                         }
                     }
                 } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
-                    LOGGER.warn("Could not parse Message as a CorrectMessage");
+                    if (exCorrectMsg instanceof ParserException && !failedToReceiveMoreRecords) {
+                        throw new ParserException();
+                    }
+                    LOGGER.error("Could not parse Message as a CorrectMessage");
                     LOGGER.debug(exCorrectMsg);
                     try {
                         if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
                             LOGGER.warn("Trying to parse Message as UnknownHandshakeMessage");
-                            result =
-                                tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
-                                    typeFromRecord, context);
+                            result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
+                                typeFromRecord, context);
                         } else {
                             try {
-                                result =
-                                    tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
-                                        typeFromRecord);
-                            } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
+                                result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                    typeFromRecord);
+                            } catch (ParserException | AdjustmentException
+                                | UnsupportedOperationException exUnknownHMsg) {
                                 LOGGER.warn("Could not parse Message as UnknownMessage");
                                 LOGGER.debug(exUnknownHMsg);
                                 break;
@@ -466,9 +544,8 @@ public class ReceiveMessageHelper {
                         LOGGER.debug(exUnknownHandshakeMsg);
 
                         try {
-                            result =
-                                tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
-                                    typeFromRecord);
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context,
+                                typeFromRecord);
                         } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                             LOGGER.warn("Could not parse Message as UnknownMessage");
                             LOGGER.debug(exUnknownHMsg);
@@ -509,8 +586,8 @@ public class ReceiveMessageHelper {
     }
 
     private ParserResult tryHandleAsCorrectMessage(byte[] protocolMessageBytes, int pointer,
-        ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse) throws ParserException,
-        AdjustmentException {
+        ProtocolMessageType typeFromRecord, TlsContext context, boolean onlyParse)
+        throws ParserException, AdjustmentException {
 
         if (typeFromRecord == ProtocolMessageType.UNKNOWN) {
             return tryHandleAsSslMessage(protocolMessageBytes, pointer, context);
@@ -541,7 +618,8 @@ public class ReceiveMessageHelper {
         }
 
         if (cleanProtocolMessageBytes.length > (dataPointer + typeOffset)
-            && cleanProtocolMessageBytes[dataPointer + typeOffset] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
+            && cleanProtocolMessageBytes[dataPointer + typeOffset]
+                == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
             handler = new SSL2ServerVerifyHandler(context);
@@ -588,8 +666,8 @@ public class ReceiveMessageHelper {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         stream.write(fragment.getType().getValue());
         try {
-            stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
-                HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+            stream.write(
+                ArrayConverter.intToBytes(fragment.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD));
             stream.write(fragment.getContent().getValue());
         } catch (IOException ex) {
             LOGGER.warn("Could not write fragment to stream.", ex);
@@ -603,5 +681,59 @@ public class ReceiveMessageHelper {
             fragmentList.add((DtlsHandshakeMessageFragment) message);
         }
         return fragmentList;
+    }
+
+    private byte[] tryToFetchAdditionalBytes(TlsContext context) {
+        byte[] extraBytes = new byte[0];
+        try {
+            extraBytes = receiveByteArray(context);
+        } catch (IOException ex2) {
+            LOGGER.warn("Could not receive more Bytes", ex2);
+            context.setReceivedTransportHandlerException(true);
+        } finally {
+            return extraBytes;
+        }
+    }
+
+    /**
+     * Due to the way we handle records, we accept messages that have been encrypted using an old key type as long as
+     * the message that initiates a key change has been received together with the new one - messages for which we
+     * expect different key types must never appear in one record group
+     */
+    private boolean recordGroupIndicatesWrongTls13KeySet(List<ProtocolMessage> parsedMessages,
+        RecordGroup recordGroup) {
+        // todo: once KeyUpdate is implemented, check if it counts as HS message
+        Set<Tls13KeySetType> expectedKeyTypes = new HashSet<>();
+        for (ProtocolMessage msg : parsedMessages) {
+            switch (msg.getProtocolMessageType()) {
+                case HANDSHAKE:
+                    if (msg instanceof NewSessionTicketMessage) {
+                        expectedKeyTypes.add(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                    } else if (msg instanceof ClientHelloMessage || msg instanceof ServerHelloMessage) {
+                        expectedKeyTypes.add(Tls13KeySetType.NONE);
+                    } else {
+                        expectedKeyTypes.add(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                    }
+                    break;
+                case APPLICATION_DATA:
+                    expectedKeyTypes.add(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                    break;
+                default:
+                    // ALERT may have different KeyTypes (see RC8446 A.1. Client)
+                    // Other types are legacy or due to parsing error
+            }
+        }
+
+        if (expectedKeyTypes.size() > 1) {
+            return true;
+        } else if (expectedKeyTypes.size() == 1) {
+            for (AbstractRecord abstractRecord : recordGroup.getRecords()) {
+                if (abstractRecord instanceof Record) {
+                    expectedKeyTypes.remove(((Record) abstractRecord).getComputations().getUsedTls13KeySetType());
+                }
+            }
+            return !expectedKeyTypes.isEmpty();
+        }
+        return false;
     }
 }

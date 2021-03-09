@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.util;
@@ -93,8 +92,8 @@ public class CertificateUtils {
         } else if (key instanceof DSAPublicKey) {
             LOGGER.trace("Found a DSA PublicKey");
             DSAPublicKey pubKey = (DSAPublicKey) key;
-            return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(), pubKey.getParams()
-                .getG(), pubKey.getY());
+            return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(),
+                pubKey.getParams().getG(), pubKey.getY());
         } else if (key instanceof DHPublicKey) {
             LOGGER.trace("Found a DH PublicKey");
             DHPublicKey pubKey = (DHPublicKey) key;
@@ -117,9 +116,9 @@ public class CertificateUtils {
     /**
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
-     * @param cert
-     * The Certificate from which the PublicKey should be extracted
-     * @return The parsed PublicKey
+     * @param  cert
+     *              The Certificate from which the PublicKey should be extracted
+     * @return      The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
@@ -131,9 +130,8 @@ public class CertificateUtils {
                 // Since java does not support DH natively we can try to
                 // manually
                 // parse this, this may fail
-                ASN1InputStream stream =
-                    new ASN1InputStream(cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive()
-                        .getEncoded());
+                ASN1InputStream stream = new ASN1InputStream(
+                    cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive().getEncoded());
                 DLSequence sequence = (DLSequence) stream.readObject();
                 DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
                 DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
@@ -155,7 +153,8 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("EC");
             ECPrivateKeySpec s = f.getKeySpec(key, ECPrivateKeySpec.class);
             k = (ECPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException | ClassCastException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
+            | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -169,7 +168,8 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("RSA");
             RSAPrivateKeySpec s = f.getKeySpec(key, RSAPrivateKeySpec.class);
             k = (RSAPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException | ClassCastException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
+            | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;

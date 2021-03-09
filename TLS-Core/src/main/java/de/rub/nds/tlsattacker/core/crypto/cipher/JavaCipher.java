@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.crypto.cipher;
@@ -31,11 +30,15 @@ class JavaCipher extends BaseCipher {
     private byte[] iv;
     private byte[] key;
 
+    // stream ciphers require a continuous state
+    private boolean keepCipherState;
+
     private Cipher cipher = null;
 
-    public JavaCipher(CipherAlgorithm algorithm, byte[] key) {
+    public JavaCipher(CipherAlgorithm algorithm, byte[] key, boolean keepCipherState) {
         this.algorithm = algorithm;
         this.key = key;
+        this.keepCipherState = keepCipherState;
     }
 
     @Override
@@ -68,7 +71,11 @@ class JavaCipher extends BaseCipher {
                 String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
-            return cipher.doFinal(someBytes);
+            if (keepCipherState) {
+                return cipher.update(someBytes);
+            } else {
+                return cipher.doFinal(someBytes);
+            }
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
             | InvalidKeyException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not encrypt data", ex);
@@ -147,8 +154,12 @@ class JavaCipher extends BaseCipher {
                 String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
                 cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
-            byte[] result = cipher.doFinal(someBytes);
-            return result;
+
+            if (keepCipherState) {
+                return cipher.update(someBytes);
+            } else {
+                return cipher.doFinal(someBytes);
+            }
         } catch (IllegalStateException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
             | IllegalBlockSizeException | BadPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.certificate;
@@ -132,13 +131,11 @@ public class CertificateByteChooser {
             for (String file : getResourceFiles()) {
                 if (file.endsWith("cert.pem")) {
                     try {
-                        Certificate readCertificate =
-                            PemUtil.readCertificate(this.getClass().getClassLoader()
-                                .getResourceAsStream(RESOURCE_PATH + file));
+                        Certificate readCertificate = PemUtil.readCertificate(
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file));
                         String keyName = file.replace("cert.pem", "key.pem");
-                        PrivateKey privateKey =
-                            PemUtil.readPrivateKey(this.getClass().getClassLoader()
-                                .getResourceAsStream(RESOURCE_PATH + keyName));
+                        PrivateKey privateKey = PemUtil.readPrivateKey(
+                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName));
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
                     } catch (Exception e) {
                         LOGGER.warn("Could not load: " + file, e);
@@ -230,7 +227,8 @@ public class CertificateByteChooser {
                             return pair;
                         }
                     }
-                    if (namedGroup != pair.getPublicKeyGroup() || pair.getSignatureGroup() != pair.getSignatureGroup()) {
+                    if (namedGroup != pair.getPublicKeyGroup()
+                        || pair.getSignatureGroup() != pair.getSignatureGroup()) {
                         continue;
                     }
                 }
@@ -239,6 +237,13 @@ public class CertificateByteChooser {
                 if (neededPublicKeyType == CertificateKeyType.RSA
                     && sigHashAlgo.getSignatureAlgorithm().toString().startsWith("RSA_PSS")
                     && sigHashAlgo.getHashAlgorithm() == HashAlgorithm.SHA512 && pair.getPublicKey().keySize() < 2048) {
+                    continue;
+                }
+                if (neededPublicKeyType == CertificateKeyType.RSA
+                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertRsaKeySize()) {
+                    continue;
+                } else if (neededPublicKeyType == CertificateKeyType.DSS
+                    && pair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize()) {
                     continue;
                 }
                 return pair;

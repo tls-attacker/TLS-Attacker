@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.crypto;
@@ -41,6 +40,16 @@ public abstract class RecordCryptoUnit {
 
     public void addNewRecordCipher(RecordCipher recordCipher) {
         this.recordCipherList.add(recordCipher);
+    }
+
+    public void removeCiphers(int toRemove) {
+        while (toRemove > 0 && !recordCipherList.isEmpty()) {
+            recordCipherList.remove(recordCipherList.size() - 1);
+            toRemove--;
+        }
+        if (toRemove > 0) {
+            LOGGER.warn("Could not remove as many ciphers as specified");
+        }
     }
 
 }

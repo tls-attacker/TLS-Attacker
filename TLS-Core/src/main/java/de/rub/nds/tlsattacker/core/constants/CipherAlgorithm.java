@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.constants;
@@ -32,7 +31,8 @@ public enum CipherAlgorithm {
     SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"),
     AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
-    ChaCha20Poly1305(32, 12, 0, 0, "ChaCha20Poly1305"),
+    CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20Poly1305"),
+    UNOFFICIAL_CHA_CHA_20_POLY1305(32, 12, 0, 0, "ChaCha20Poly1305"),
     DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently
     // uses
     // des
@@ -44,7 +44,8 @@ public enum CipherAlgorithm {
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0); // TODO
 
-    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize,
+        String javaName) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;

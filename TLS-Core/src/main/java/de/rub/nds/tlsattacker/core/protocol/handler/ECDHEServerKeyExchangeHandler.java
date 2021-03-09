@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -26,7 +25,8 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
+public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage>
+    extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -64,17 +64,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
         if (group != null) {
             LOGGER.debug("Adjusting selected named group: " + group.name());
             tlsContext.setSelectedGroup(group);
-        }
-        if (group == NamedGroup.ECDH_X448 || group == NamedGroup.ECDH_X25519) {
-            LOGGER.debug("Adjusting Montgomery EC Point");
-            EllipticCurve curve = CurveFactory.getCurve(group);
-            // TODO This is only a temporary solution. Montgomery Curves need to
-            // be integrated into the new EC framework
-            tlsContext.setServerEcPublicKey(new Point(new FieldElementF2m(new BigInteger(message.getPublicKey()
-                .getValue()), curve.getModulus()), new FieldElementF2m(
-                new BigInteger(message.getPublicKey().getValue()), curve.getModulus())));
 
-        } else if (group != null) {
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
             tlsContext.setServerEcPublicKey(publicKeyPoint);

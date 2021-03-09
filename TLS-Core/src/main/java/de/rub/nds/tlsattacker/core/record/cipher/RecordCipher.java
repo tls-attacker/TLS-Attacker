@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.record.cipher;
@@ -13,6 +12,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -44,7 +44,7 @@ public abstract class RecordCipher {
     /**
      * CipherAlgorithm algorithm (AES, ...)
      */
-    protected final BulkCipherAlgorithm bulkCipherAlg;
+    protected final CipherAlgorithm cipherAlg;
 
     private final KeySet keySet;
     /**
@@ -61,7 +61,7 @@ public abstract class RecordCipher {
         this.context = context;
         this.cipherSuite = context.getChooser().getSelectedCipherSuite();
         this.version = context.getChooser().getSelectedProtocolVersion();
-        this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
+        this.cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
     }
 
     public abstract void encrypt(Record record) throws CryptoException;
@@ -84,11 +84,11 @@ public abstract class RecordCipher {
      * forms a 5-byte field HDR consisting of a 1-byte type field, a 2-byte version field, and a 2-byte length field. It
      * then calculates a MAC over the bytes SQN || HDR || R.
      *
-     * @param record
-     * The Record for which the data should be collected
-     * @param protocolVersion
-     * According to which ProtocolVersion the AdditionalAuthenticationData is collected
-     * @return The AdditionalAuthenticatedData
+     * @param  record
+     *                         The Record for which the data should be collected
+     * @param  protocolVersion
+     *                         According to which ProtocolVersion the AdditionalAuthenticationData is collected
+     * @return                 The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

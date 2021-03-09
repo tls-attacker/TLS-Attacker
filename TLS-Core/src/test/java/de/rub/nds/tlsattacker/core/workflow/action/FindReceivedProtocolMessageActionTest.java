@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.workflow.action;
@@ -115,9 +114,8 @@ public class FindReceivedProtocolMessageActionTest {
             LOGGER.info("Killing server...");
             tlsServer.shutdown();
             LOGGER.info("Done.");
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-            | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-            | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException
+            | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             fail();
         }
 

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
@@ -22,8 +21,8 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
     private int packetChunks = 3;
 
     public ClientTcpFragmentationTransportHandler(Connection connection) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(), connection
-            .getIp(), connection.getPort());
+        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(),
+            connection.getIp(), connection.getPort());
     }
 
     public ClientTcpFragmentationTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
@@ -43,7 +42,7 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
         int pointer = 0;
         int chunk_size = (int) Math.ceil((double) data.length / packetChunks);
 
-        while (pointer < data.length - 1) {
+        while (pointer <= data.length - 1) {
             if (pointer + chunk_size > data.length - 1) {
                 chunk_size = data.length - pointer;
             }

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.attacks.actions;
@@ -43,7 +42,7 @@ public class EarlyCcsAction extends TlsAction {
      * Constructor for the Action. If the target is Openssl 1.0.0 the boolean value should be set to true
      *
      * @param targetsOpenssl100
-     * If the target is an openssl 1.0.0 server
+     *                          If the target is an openssl 1.0.0 server
      */
     public EarlyCcsAction(Boolean targetsOpenssl100) {
         this.targetOpenssl100 = targetsOpenssl100;
@@ -54,14 +53,13 @@ public class EarlyCcsAction extends TlsAction {
      * version cryptographic material is adjusted.
      *
      * @param state
-     * the State in which the action should be executed in
+     *              the State in which the action should be executed in
      */
     @Override
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
-        ClientKeyExchangeMessage message =
-            factory.createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(state.getTlsContext()
-                .getChooser().getSelectedCipherSuite()));
+        ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(
+            AlgorithmResolver.getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
         if (!targetOpenssl100) {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }
@@ -77,9 +75,8 @@ public class EarlyCcsAction extends TlsAction {
         Record r = new Record();
         r.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         recordList.add(r);
-        byte[] prepareRecords =
-            state.getTlsContext().getRecordLayer()
-                .prepareRecords(protocolMessageBytes, ProtocolMessageType.HANDSHAKE, recordList);
+        byte[] prepareRecords = state.getTlsContext().getRecordLayer().prepareRecords(protocolMessageBytes,
+            ProtocolMessageType.HANDSHAKE, recordList);
         try {
             state.getTlsContext().getTransportHandler().sendData(prepareRecords);
             executedAsPlanned = true;

@@ -1,11 +1,10 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2020 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
@@ -22,10 +21,10 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @param <ProtocolMessageT>
- * The ProtocolMessage that should be handled
+ *                           The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<ProtocolMessageT extends HandshakeMessage> extends
-    ProtocolMessageHandler<ProtocolMessageT> {
+public abstract class HandshakeMessageHandler<ProtocolMessageT extends HandshakeMessage>
+    extends ProtocolMessageHandler<ProtocolMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
