@@ -6,23 +6,28 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+package de.rub.nds.tlsattacker.core.config;
 
-package de.rub.nds.tlsattacker.core.workflow;
-
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSchemaGenerator;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
 
-public class WorkflowTraceSchemaGenerator {
+/**
+ *
+ * @author ic0ns
+ * @author JonSnowWhite
+ */
+public class ConfigSchemaGenerator {
 
     private static final String ROOT_NS = "";
 
@@ -39,8 +44,8 @@ public class WorkflowTraceSchemaGenerator {
 
     private static void generateSchema(String path) throws IOException, JAXBException {
         AccumulatingSchemaOutputResolver sor = new AccumulatingSchemaOutputResolver();
-        WorkflowTraceSerializer.getJAXBContext().generateSchema(sor);
-        for (Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
+        ConfigIO.getJAXBContext().generateSchema(sor);
+        for (Map.Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
             String systemId = sor.getSystemIds().get(e.getKey());
             FileWriter w = null;
             try {
@@ -72,7 +77,7 @@ public class WorkflowTraceSchemaGenerator {
         }
 
         public static String mapSystemIds() {
-            return "workflowTrace.xsd";
+            return "Config.xsd";
         }
 
         public Map<String, StringWriter> getSchemaWriters() {
@@ -83,5 +88,4 @@ public class WorkflowTraceSchemaGenerator {
             return systemIds;
         }
     }
-
 }
